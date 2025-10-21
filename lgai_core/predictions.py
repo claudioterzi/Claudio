@@ -168,6 +168,10 @@ class PredictionSystem:
         last_7 = history[-7:] if len(history) >= 7 else history
 
         for area in Area:
+            # Skip se area non inizializzata (backward compatibility)
+            if area not in stats.livelli_per_area or area not in stats.xp_per_area:
+                continue
+
             # XP mancanti per next level
             livello_attuale = stats.livelli_per_area[area]
             xp_corrente = stats.xp_per_area[area]

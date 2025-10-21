@@ -16,6 +16,7 @@ from lgai_core.data_manager import DataManager
 from lgai_core.baros_shop import BarosShop, PurchaseHistory
 from lgai_core.predictions import PredictionSystem
 from lgai_core.missions_catalog import MissionsCatalog
+from lgai_core.habits_catalog import HabitsCatalog
 import argparse
 from datetime import datetime
 
@@ -116,24 +117,79 @@ class LGAICLI:
 
         print("✅ Check-in salvato!\n")
 
-    def checkout(self, abitudini_positive: int, abitudini_negative: int, note: str = ""):
-        """Check-out serale"""
+    def checkout(self, abitudini_positive: int = None, abitudini_negative: int = None,
+                 note: str = "", habits_positive: str = None, habits_negative: str = None):
+        """Check-out serale - supporta sia conteggio semplice che tracking dettagliato"""
         print("\n🌙 CHECK-OUT SERALE")
 
-        # Calcola PV delta
-        pv_loss = abitudini_negative * 10
-        pv_gain = self.calc.calcola_regen_giornaliera(self.player,
-                                                      abitudini_positive, 10)
+        # Determina se usiamo tracking dettagliato o semplice
+        use_detailed = habits_positive is not None or habits_negative is not None
 
-        pv_delta = pv_gain - pv_loss
+        if use_detailed:
+            # MODALITÀ DETTAGLIATA - Usa HabitsCatalog
+            positive_ids = [int(x.strip()) for x in habits_positive.split(',')] if habits_positive else []
+            negative_ids = [int(x.strip()) for x in habits_negative.split(',')] if habits_negative else []
 
-        print(f"   Abitudini Positive: {abitudini_positive}/10")
-        print(f"   Abitudini Negative: {abitudini_negative}")
-        print(f"\n   PV Regen: +{pv_gain}")
-        print(f"   PV Loss: -{pv_loss}")
-        print(f"   Delta: {pv_delta:+d} PV")
+            # Calcola impatto PV
+            impact = HabitsCatalog.calculate_pv_impact(positive_ids, negative_ids)
 
-        # Applica modifiche
+            print("\n📈 ABITUDINI POSITIVE COMPLETATE:")
+            if positive_ids:
+                for hid in positive_ids:
+                    habit = HabitsCatalog.get_by_id(hid)
+                    if habit:
+                        print(f"   {habit.icona} {habit.nome} ({habit.pv_delta:+d} PV)")
+            else:
+                print("   Nessuna")
+
+            print("\n📉 ABITUDINI NEGATIVE CADUTE:")
+            if negative_ids:
+                for hid in negative_ids:
+                    habit = HabitsCatalog.get_by_id(hid)
+                    if habit:
+                        print(f"   {habit.icona} {habit.nome} ({habit.pv_delta} PV)")
+            else:
+                print("   Nessuna 🎉 PERFECT DAY!")
+
+            pv_delta = impact['total_delta']
+            print(f"\n💰 CALCOLO PV:")
+            print(f"   Positive: +{impact['positive_delta']}")
+            print(f"   Negative: {impact['negative_delta']}")
+            if impact['bonus'] > 0:
+                print(f"   🌟 BONUS PERFECT DAY: +{impact['bonus']}")
+            print(f"   DELTA TOTALE: {pv_delta:+d} PV")
+
+            # Salva dettagli abitudini nel log
+            positive_habits_details = [
+                {'id': hid, 'nome': HabitsCatalog.get_by_id(hid).nome}
+                for hid in positive_ids if HabitsCatalog.get_by_id(hid)
+            ]
+            negative_habits_details = [
+                {'id': hid, 'nome': HabitsCatalog.get_by_id(hid).nome}
+                for hid in negative_ids if HabitsCatalog.get_by_id(hid)
+            ]
+
+        else:
+            # MODALITÀ SEMPLICE - Conteggio base
+            if abitudini_positive is None or abitudini_negative is None:
+                print("❌ Devi fornire o i conteggi (positive negative) o gli ID (--habits-positive --habits-negative)")
+                return
+
+            pv_loss = abitudini_negative * 10
+            pv_gain = self.calc.calcola_regen_giornaliera(self.player,
+                                                          abitudini_positive, 10)
+            pv_delta = pv_gain - pv_loss
+
+            print(f"   Abitudini Positive: {abitudini_positive}/10")
+            print(f"   Abitudini Negative: {abitudini_negative}")
+            print(f"\n   PV Regen: +{pv_gain}")
+            print(f"   PV Loss: -{pv_loss}")
+            print(f"   Delta: {pv_delta:+d} PV")
+
+            positive_habits_details = None
+            negative_habits_details = None
+
+        # Applica modifiche PV
         result = self.calc.modifica_pv(self.player, pv_delta, "Daily checkout")
 
         print(f"\n   Nuovi PV: {result['new_pv']}/{self.player.pv_max}")
@@ -143,20 +199,38 @@ class LGAICLI:
             print("\n   🔴🔴🔴 GAME OVER 🔴🔴🔴")
             print("   Attiva Sfida di Resurrezione!")
 
+        # Messaggio Raffaello
+        if use_detailed and positive_habits_details:
+            print(f"\n💬 RAFFAELLO:")
+            analisi = self.raffaello.analizza_giorno(self.player,
+                                                     len(positive_habits_details),
+                                                     len(negative_habits_details) if negative_habits_details else 0,
+                                                     note)
+            print(f"   {analisi.messaggio_motivazionale}")
+
         # Incrementa giorno
         self.player.giorno += 1
 
         # Salva
         self.dm.save_player(self.player)
 
+        # Log con dettagli
         log = {
             'tipo': 'checkout',
-            'abitudini_positive': abitudini_positive,
-            'abitudini_negative': abitudini_negative,
             'pv_delta': pv_delta,
             'pv_final': result['new_pv'],
             'note': note
         }
+
+        if use_detailed:
+            log['abitudini_positive_dettagli'] = positive_habits_details
+            log['abitudini_negative_dettagli'] = negative_habits_details
+            log['abitudini_positive'] = len(positive_ids)
+            log['abitudini_negative'] = len(negative_ids)
+        else:
+            log['abitudini_positive'] = abitudini_positive
+            log['abitudini_negative'] = abitudini_negative
+
         self.dm.save_daily_log(self.player.giorno - 1, log)
 
         print("\n✅ Check-out salvato! Giorno completato.\n")
@@ -308,6 +382,59 @@ class LGAICLI:
         if len(missions) > 15:
             print(f"... e altre {len(missions) - 15} missioni!\n")
 
+    def habits_list(self, tipo: str = None, area: str = None):
+        """Mostra catalogo abitudini tracciabili"""
+        print("\n📋 CATALOGO ABITUDINI\n")
+
+        if tipo and tipo.lower() == "positive":
+            habits = HabitsCatalog.get_all_positive()
+            print("📈 ABITUDINI POSITIVE\n")
+        elif tipo and tipo.lower() == "negative":
+            habits = HabitsCatalog.get_all_negative()
+            print("📉 ABITUDINI NEGATIVE\n")
+        elif area:
+            try:
+                area_enum = Area(area)
+                pos = HabitsCatalog.get_by_area(area_enum, "positive")
+                neg = HabitsCatalog.get_by_area(area_enum, "negative")
+                print(f"🎯 ABITUDINI PER AREA: {area}\n")
+                print("📈 Positive:")
+                for h in pos:
+                    print(f"   {h.icona} {h.id}. {h.nome} ({h.pv_delta:+d} PV)")
+                    print(f"      {h.descrizione}\n")
+                print("📉 Negative:")
+                for h in neg:
+                    print(f"   {h.icona} {h.id}. {h.nome} ({h.pv_delta} PV)")
+                    print(f"      {h.descrizione}\n")
+                return
+            except ValueError:
+                print(f"❌ Area non valida: {area}")
+                return
+        else:
+            print("📊 TUTTE LE ABITUDINI\n")
+            print("📈 POSITIVE (26 totali):")
+            habits_pos = HabitsCatalog.get_all_positive()
+            for h in habits_pos:
+                print(f"   {h.icona} {h.id:3d}. {h.nome:30s} ({h.area.value}) {h.pv_delta:+d} PV")
+
+            print("\n📉 NEGATIVE (20 totali):")
+            habits_neg = HabitsCatalog.get_all_negative()
+            for h in habits_neg:
+                print(f"   {h.icona} {h.id:3d}. {h.nome:30s} ({h.area.value}) {h.pv_delta} PV")
+
+            print(f"\n💡 Usa 'habits --tipo positive' o '--tipo negative' per vedere solo un tipo")
+            print(f"💡 Usa 'habits --area \"Nome Area\"' per vedere abitudini di un'area\n")
+            return
+
+        # Mostra habits filtrate
+        for h in habits:
+            print(f"{h.icona} {h.id}. {h.nome}")
+            print(f"   Area: {h.area.value}")
+            print(f"   Impatto: {h.pv_delta:+d} PV" if h.tipo == "positive" else f"   Impatto: {h.pv_delta} PV")
+            print(f"   {h.descrizione}\n")
+
+        print(f"Totale: {len(habits)} abitudini\n")
+
     def reset(self):
         """Reset completo (usa con cautela!)"""
         confirm = input("⚠️  Sei sicuro? Questo cancellerà TUTTI i dati. (scrivi 'RESET'): ")
@@ -333,8 +460,10 @@ def main():
 
     # Check-out
     checkout_parser = subparsers.add_parser('checkout', help='Check-out serale')
-    checkout_parser.add_argument('positive', type=int, help='Abitudini positive completate')
-    checkout_parser.add_argument('negative', type=int, help='Abitudini negative cadute')
+    checkout_parser.add_argument('positive', type=int, nargs='?', help='Abitudini positive (conteggio semplice)')
+    checkout_parser.add_argument('negative', type=int, nargs='?', help='Abitudini negative (conteggio semplice)')
+    checkout_parser.add_argument('--habits-positive', type=str, help='ID abitudini positive (es: 1,3,6)')
+    checkout_parser.add_argument('--habits-negative', type=str, help='ID abitudini negative (es: 101,112)')
     checkout_parser.add_argument('--note', type=str, default='', help='Note opzionali')
 
     # Add XP
@@ -362,6 +491,11 @@ def main():
     missioni_parser.add_argument('--categoria', type=str, help='Filtra per categoria')
     missioni_parser.add_argument('--difficolta', type=str, help='Filtra per difficoltà')
 
+    # Habits Catalog
+    habits_parser = subparsers.add_parser('habits', help='Catalogo abitudini tracciabili')
+    habits_parser.add_argument('--tipo', type=str, help='positive o negative')
+    habits_parser.add_argument('--area', type=str, help='Filtra per area vita')
+
     # Reset
     subparsers.add_parser('reset', help='Reset completo (ATTENZIONE!)')
 
@@ -376,7 +510,9 @@ def main():
     elif args.command == 'checkin':
         cli.checkin(args.mood, args.energia, args.note)
     elif args.command == 'checkout':
-        cli.checkout(args.positive, args.negative, args.note)
+        cli.checkout(args.positive, args.negative, args.note,
+                     getattr(args, 'habits_positive', None),
+                     getattr(args, 'habits_negative', None))
     elif args.command == 'xp':
         cli.add_xp(args.area, args.xp)
     elif args.command == 'talk':
@@ -389,6 +525,8 @@ def main():
         cli.predictions()
     elif args.command == 'missioni':
         cli.missioni_catalog(args.categoria, args.difficolta)
+    elif args.command == 'habits':
+        cli.habits_list(args.tipo, args.area)
     elif args.command == 'reset':
         cli.reset()
 
