@@ -77,7 +77,7 @@ class LGAICLI:
 
         print("\n" + "="*50 + "\n")
 
-    def checkin(self, mood: int, energia: int, note: str = ""):
+    def checkin(self, mood: int, energia: int, note: str = "", interactive: bool = False):
         """Check-in mattutino"""
         print("\n🌅 CHECK-IN MATTUTINO")
         print(f"   Mood: {mood}/10")
@@ -102,6 +102,10 @@ class LGAICLI:
             print(f"      {m['descrizione']}")
             print(f"      Reward: {m['xp']} XP ({m['area'].value})\n")
 
+        # Modalità Interattiva
+        if interactive:
+            self._interactive_chat(context="checkin", mood=mood, energia=energia, missioni=missioni)
+
         # Salva log (converti Area enum in string)
         missioni_serializable = [
             {**m, 'area': m['area'].value} for m in missioni
@@ -118,9 +122,16 @@ class LGAICLI:
         print("✅ Check-in salvato!\n")
 
     def checkout(self, abitudini_positive: int = None, abitudini_negative: int = None,
-                 note: str = "", habits_positive: str = None, habits_negative: str = None):
+                 note: str = "", habits_positive: str = None, habits_negative: str = None,
+                 interactive: bool = False):
         """Check-out serale - supporta sia conteggio semplice che tracking dettagliato"""
         print("\n🌙 CHECK-OUT SERALE")
+
+        # Modalità Interattiva PRIMA del checkout (per decidere quali abitudini tracciare)
+        if interactive:
+            print("\n💡 Stai per fare il checkout. Vuoi chattare con Raffaello prima?")
+            print("   Può aiutarti a riflettere sulla giornata e scegliere le abitudini.\n")
+            self._interactive_chat(context="pre-checkout")
 
         # Determina se usiamo tracking dettagliato o semplice
         use_detailed = habits_positive is not None or habits_negative is not None
@@ -435,6 +446,102 @@ class LGAICLI:
 
         print(f"Totale: {len(habits)} abitudini\n")
 
+    def _interactive_chat(self, context: str = "general", **kwargs):
+        """
+        Modalità chat interattiva con Raffaello
+        Permette di fare domande durante checkin/checkout
+        """
+        print("\n" + "="*60)
+        print("💬 MODALITÀ INTERATTIVA - CHAT CON RAFFAELLO")
+        print("="*60)
+        print("📝 Puoi fare domande a Raffaello sul tuo stato, abitudini, strategie...")
+        print("💡 Comandi speciali:")
+        print("   - 'continua' o 'esci' → Termina la chat e continua")
+        print("   - 'status' → Mostra il tuo stato attuale")
+        print("   - 'habits' → Suggerisce abitudini da tracciare")
+        print("   - 'help' → Mostra questi comandi")
+        print("="*60 + "\n")
+
+        chat_count = 0
+        while True:
+            try:
+                # Input utente
+                domanda = input("🌹 Tu: ").strip()
+
+                if not domanda:
+                    continue
+
+                # Comandi speciali
+                if domanda.lower() in ['continua', 'esci', 'exit', 'quit']:
+                    print("\n🌹 Raffaello: Perfetto! Torniamo al flusso principale.\n")
+                    break
+
+                if domanda.lower() == 'status':
+                    zona = self.calc.get_zona(self.player.pv_current)
+                    liv_globale = self.calc.calcola_livello_globale(self.player)
+                    print(f"\n📊 STATUS RAPIDO:")
+                    print(f"   PV: {self.player.pv_current}/{self.player.pv_max} | Zona: {zona.value}")
+                    print(f"   Livello Globale: {liv_globale}")
+                    print(f"   Baros: {self.player.baros}")
+                    print(f"   Giorno: {self.player.giorno}\n")
+                    continue
+
+                if domanda.lower() == 'habits':
+                    print("\n🎯 ABITUDINI CONSIGLIATE PER OGGI:")
+                    zona = self.calc.get_zona(self.player.pv_current)
+
+                    # Suggerisci 5 abitudini positive base
+                    base_habits = [1, 4, 5, 6, 13]  # Workout, Cibo, Sonno, Meditazione, Lettura
+                    print("   📈 Positive da prioritizzare:")
+                    for hid in base_habits:
+                        h = HabitsCatalog.get_by_id(hid)
+                        if h:
+                            print(f"      {h.icona} {h.id}. {h.nome} (+{h.pv_delta} PV)")
+
+                    # Avvisa su negative comuni
+                    print("\n   📉 Negative da evitare oggi:")
+                    danger_habits = [101, 105, 112]  # Junk food, Overthinking, Procrastination
+                    for hid in danger_habits:
+                        h = HabitsCatalog.get_by_id(hid)
+                        if h:
+                            print(f"      {h.icona} {h.id}. {h.nome} ({h.pv_delta} PV)")
+                    print()
+                    continue
+
+                if domanda.lower() == 'help':
+                    print("\n💡 COMANDI DISPONIBILI:")
+                    print("   - 'status' → Il tuo stato corrente")
+                    print("   - 'habits' → Suggerimenti abitudini")
+                    print("   - 'continua' → Esci dalla chat")
+                    print("   - Qualsiasi domanda → Raffaello risponde!\n")
+                    continue
+
+                # Domanda normale a Raffaello
+                # Aggiungi contesto alla domanda
+                contesto_extra = f"\n\nContesto: {context}"
+                if context == "checkin":
+                    contesto_extra += f" - Mood: {kwargs.get('mood')}/10, Energia: {kwargs.get('energia')}/10"
+                elif context == "checkout" and 'habits_done' in kwargs:
+                    contesto_extra += f" - Abitudini completate oggi"
+
+                risposta = self.raffaello.parla_con_me(self.player, domanda + contesto_extra)
+
+                print(f"\n🌹 Raffaello: {risposta}\n")
+                chat_count += 1
+
+                # Dopo 5 messaggi, suggerisci gentilmente di continuare
+                if chat_count >= 5:
+                    print("💡 (Hai fatto molte domande! Ricorda: puoi scrivere 'continua' quando sei pronto)\n")
+
+            except KeyboardInterrupt:
+                print("\n\n🌹 Raffaello: Capisco. Torniamo al flusso principale.\n")
+                break
+            except EOFError:
+                print("\n\n🌹 Raffaello: Sembra che tu voglia uscire. Procediamo!\n")
+                break
+
+        print("="*60 + "\n")
+
     def reset(self):
         """Reset completo (usa con cautela!)"""
         confirm = input("⚠️  Sei sicuro? Questo cancellerà TUTTI i dati. (scrivi 'RESET'): ")
@@ -457,6 +564,7 @@ def main():
     checkin_parser.add_argument('mood', type=int, help='Mood 1-10')
     checkin_parser.add_argument('energia', type=int, help='Energia 1-10')
     checkin_parser.add_argument('--note', type=str, default='', help='Note opzionali')
+    checkin_parser.add_argument('--interactive', '-i', action='store_true', help='Modalità interattiva con Raffaello')
 
     # Check-out
     checkout_parser = subparsers.add_parser('checkout', help='Check-out serale')
@@ -465,6 +573,7 @@ def main():
     checkout_parser.add_argument('--habits-positive', type=str, help='ID abitudini positive (es: 1,3,6)')
     checkout_parser.add_argument('--habits-negative', type=str, help='ID abitudini negative (es: 101,112)')
     checkout_parser.add_argument('--note', type=str, default='', help='Note opzionali')
+    checkout_parser.add_argument('--interactive', '-i', action='store_true', help='Modalità interattiva con Raffaello')
 
     # Add XP
     xp_parser = subparsers.add_parser('xp', help='Aggiungi XP a un\'area')
@@ -508,11 +617,12 @@ def main():
     if args.command == 'status' or args.command is None:
         cli.status()
     elif args.command == 'checkin':
-        cli.checkin(args.mood, args.energia, args.note)
+        cli.checkin(args.mood, args.energia, args.note, args.interactive)
     elif args.command == 'checkout':
         cli.checkout(args.positive, args.negative, args.note,
                      getattr(args, 'habits_positive', None),
-                     getattr(args, 'habits_negative', None))
+                     getattr(args, 'habits_negative', None),
+                     args.interactive)
     elif args.command == 'xp':
         cli.add_xp(args.area, args.xp)
     elif args.command == 'talk':
