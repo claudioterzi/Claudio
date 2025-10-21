@@ -13,6 +13,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from lgai_core.calculator import PlayerStats, Area, LGAICalculator
 from lgai_core.raffaello import Raffaello
 from lgai_core.data_manager import DataManager
+from lgai_core.baros_shop import BarosShop, PurchaseHistory
+from lgai_core.predictions import PredictionSystem
+from lgai_core.missions_catalog import MissionsCatalog
 import argparse
 from datetime import datetime
 
@@ -24,6 +27,9 @@ class LGAICLI:
         self.dm = DataManager()
         self.calc = LGAICalculator()
         self.raffaello = Raffaello()
+        self.shop = BarosShop()
+        self.predictions = PredictionSystem()
+        self.purchase_history = PurchaseHistory()
 
         # Carica o crea player
         self.player = self.dm.load_player()
@@ -184,6 +190,124 @@ class LGAICLI:
         risposta = self.raffaello.parla_con_me(self.player, domanda)
         print(f"🌹 Raffaello: {risposta}\n")
 
+    def shop_list(self, categoria: str = None):
+        """Mostra ricompense shop"""
+        print("\n💰 BAROS SHOP")
+        print(f"   Baros Disponibili: {self.player.baros}\n")
+
+        if categoria:
+            rewards = self.shop.get_by_categoria(categoria)
+            print(f"📦 Categoria: {categoria}\n")
+        else:
+            affordable = self.shop.get_affordable(self.player.baros)
+            print(f"🛍️ Ricompense che puoi permetterti ({len(affordable)}):\n")
+            rewards = affordable[:10]  # Solo prime 10
+
+        for r in rewards:
+            can_afford = "✅" if r.costo <= self.player.baros else "❌"
+            print(f"{can_afford} {r.icona} {r.nome} - {r.costo} Baros")
+            print(f"   {r.descrizione}")
+            if r.restrizioni:
+                print(f"   Restrizioni: {r.restrizioni}")
+            print()
+
+        if not categoria:
+            print(f"💡 Usa 'shop --categoria \"Nome Categoria\"' per vedere tutte le ricompense\n")
+
+    def shop_buy(self, reward_id: int):
+        """Acquista ricompensa"""
+        reward = self.shop.get_by_id(reward_id)
+
+        if not reward:
+            print("❌ Ricompensa non trovata!\n")
+            return
+
+        if reward.costo > self.player.baros:
+            print(f"❌ Baros insufficienti!")
+            print(f"   Ti servono: {reward.costo} Baros")
+            print(f"   Hai: {self.player.baros} Baros")
+            print(f"   Mancano: {reward.costo - self.player.baros} Baros\n")
+            return
+
+        # Check restrizioni
+        now = datetime.now()
+        can_buy = self.purchase_history.can_purchase(reward, now.month, now.year)
+
+        if not can_buy:
+            print(f"❌ Limite mensile raggiunto per questa ricompensa!")
+            print(f"   Restrizione: {reward.restrizioni}\n")
+            return
+
+        # Acquista
+        self.player.baros -= reward.costo
+        self.purchase_history.add_purchase(reward_id, reward.costo)
+        self.dm.save_player(self.player)
+
+        print(f"\n🎉 ACQUISTO COMPLETATO!")
+        print(f"   {reward.icona} {reward.nome}")
+        print(f"   Costo: {reward.costo} Baros")
+        print(f"   Baros rimasti: {self.player.baros}\n")
+        print(f"✨ Goditi la tua ricompensa! ✨\n")
+
+    def predictions(self):
+        """Mostra predizioni avanzate"""
+        print("\n🔮 PREDIZIONI QUANTICHE\n")
+
+        # Carica history
+        history = list(self.dm.load_history().values())
+
+        # Risk Score
+        print("1️⃣ RISK SCORE")
+        risk = self.predictions.calculate_risk_score(self.player, history)
+        print(f"   Score: {risk.score}/100")
+        print(f"   Livello: {risk.livello}")
+        if risk.raccomandazioni:
+            print(f"\n   📋 Raccomandazioni:")
+            for r in risk.raccomandazioni[:3]:
+                print(f"   - {r}")
+
+        # Growth Predictions
+        print(f"\n2️⃣ LEVEL UP PREDICTIONS (Top 5)")
+        growth = self.predictions.predict_level_ups(self.player, history)
+        for g in growth[:5]:
+            print(f"   {g.area.value:20s} Lv.{g.livello_attuale} → {g.livello_attuale+1}")
+            print(f"   {' '*23}~{g.giorni_stimati} giorni ({g.probabilita}% probabilità)")
+
+        # Breakthrough Windows
+        print(f"\n3️⃣ BREAKTHROUGH WINDOWS (Prossimi 3 giorni)")
+        windows = self.predictions.find_breakthrough_windows(history, days_ahead=3)
+        for w in windows[:3]:
+            print(f"   {w.data.strftime('%A %d/%m')}: {w.ora_inizio}-{w.ora_fine}")
+            print(f"   Energia: {w.energia_prevista}/10 | Prob: {w.probabilita_breakthrough}%")
+
+        print("\n" + "="*50 + "\n")
+
+    def missioni_catalog(self, categoria: str = None, difficolta: str = None):
+        """Mostra catalogo missioni"""
+        print("\n🎯 CATALOGO MISSIONI\n")
+
+        if categoria:
+            missions = MissionsCatalog.get_by_categoria(categoria)
+            print(f"📦 Categoria: {categoria}\n")
+        elif difficolta:
+            missions = MissionsCatalog.get_by_difficolta(difficolta)
+            print(f"⚡ Difficoltà: {difficolta.capitalize()}\n")
+        else:
+            missions = MissionsCatalog.get_all_missions()
+            print(f"📚 TUTTE LE MISSIONI ({len(missions)} totali)\n")
+
+        for i, m in enumerate(missions[:15], 1):  # Max 15
+            print(f"{i}. {m.titolo}")
+            print(f"   {m.descrizione}")
+            print(f"   Reward: {m.xp_primaria} XP ({m.area_primaria.value}) + {m.baros} Baros")
+            print(f"   Tipo: {m.tipo.capitalize()} | Difficoltà: {m.difficolta.capitalize()}")
+            if m.restrizioni:
+                print(f"   ⚠️  {m.restrizioni}")
+            print()
+
+        if len(missions) > 15:
+            print(f"... e altre {len(missions) - 15} missioni!\n")
+
     def reset(self):
         """Reset completo (usa con cautela!)"""
         confirm = input("⚠️  Sei sicuro? Questo cancellerà TUTTI i dati. (scrivi 'RESET'): ")
@@ -222,6 +346,22 @@ def main():
     talk_parser = subparsers.add_parser('talk', help='Parla con Raffaello')
     talk_parser.add_argument('domanda', type=str, help='Cosa vuoi chiedere?')
 
+    # Shop
+    shop_parser = subparsers.add_parser('shop', help='Baros Shop - lista ricompense')
+    shop_parser.add_argument('--categoria', type=str, help='Filtra per categoria')
+
+    # Shop Buy
+    buy_parser = subparsers.add_parser('buy', help='Acquista ricompensa Baros')
+    buy_parser.add_argument('reward_id', type=int, help='ID ricompensa (1-50)')
+
+    # Predictions
+    subparsers.add_parser('predict', help='Predizioni Quantiche (Risk, Growth, Breakthrough)')
+
+    # Missioni Catalog
+    missioni_parser = subparsers.add_parser('missioni', help='Catalogo missioni complete')
+    missioni_parser.add_argument('--categoria', type=str, help='Filtra per categoria')
+    missioni_parser.add_argument('--difficolta', type=str, help='Filtra per difficoltà')
+
     # Reset
     subparsers.add_parser('reset', help='Reset completo (ATTENZIONE!)')
 
@@ -241,6 +381,14 @@ def main():
         cli.add_xp(args.area, args.xp)
     elif args.command == 'talk':
         cli.talk(args.domanda)
+    elif args.command == 'shop':
+        cli.shop_list(args.categoria)
+    elif args.command == 'buy':
+        cli.shop_buy(args.reward_id)
+    elif args.command == 'predict':
+        cli.predictions()
+    elif args.command == 'missioni':
+        cli.missioni_catalog(args.categoria, args.difficolta)
     elif args.command == 'reset':
         cli.reset()
 

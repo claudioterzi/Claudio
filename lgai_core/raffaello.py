@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from datetime import datetime
 import random
 from .calculator import PlayerStats, Area, Zona, LGAICalculator
+from .missions_catalog import MissionsCatalog, Mission
 
 
 @dataclass
@@ -95,34 +96,54 @@ class Raffaello:
             prediction=prediction
         )
 
-    def genera_missioni_giornaliere(self, stats: PlayerStats, difficolta: str = "media") -> List[Dict]:
+    def genera_missioni_giornaliere(self, stats: PlayerStats, difficolta: str = None) -> List[Dict]:
         """
-        Genera 3 missioni personalizzate per il giorno
+        Genera 3 missioni personalizzate per il giorno usando il catalogo completo
 
-        Difficoltà: "facile", "media", "difficile", "selvaggia"
+        Difficoltà: "facile", "media", "difficile", "selvaggia" (opzionale)
         """
-        missioni = []
-
-        # Identifica aree che hanno bisogno di focus
-        aree_debolezza = self._trova_aree_debolezza(stats)
-
         # Genera missioni basate su zona corrente
         zona = self.calc.get_zona(stats.pv_current)
 
+        # Seleziona tipo missione in base a zona
         if zona == Zona.SOPRAVVIVENZA:
-            # Focus su recupero
-            missioni = self._missioni_recupero()
+            tipo = "recupero"
         elif zona == Zona.STAGNAZIONE:
-            # Focus su attivazione
-            missioni = self._missioni_attivazione()
+            tipo = "attivazione"
         elif zona == Zona.CRESCITA:
-            # Focus su momentum
-            missioni = self._missioni_momentum()
+            tipo = "momentum"
         else:  # TRASFORMAZIONE
-            # Focus su breakthrough
-            missioni = self._missioni_breakthrough()
+            tipo = "breakthrough"
 
-        return missioni[:3]  # Solo 3 missioni al giorno
+        # Ottieni missioni del tipo corretto
+        if difficolta:
+            # Filtra per difficoltà specifica
+            pool = [m for m in MissionsCatalog.get_by_tipo(tipo) if m.difficolta == difficolta]
+        else:
+            # Tutte le missioni del tipo
+            pool = MissionsCatalog.get_by_tipo(tipo)
+
+        # Se pool vuoto, usa tutte le missioni
+        if not pool:
+            pool = MissionsCatalog.get_all_missions()
+
+        # Seleziona 3 casuali
+        selected = random.sample(pool, min(3, len(pool)))
+
+        # Converti in dizionario per compatibilità
+        missioni = []
+        for m in selected:
+            missioni.append({
+                'titolo': m.titolo,
+                'descrizione': m.descrizione,
+                'area': m.area_primaria,
+                'xp': m.xp_primaria,
+                'baros': m.baros,
+                'tipo': m.tipo,
+                'difficolta': m.difficolta
+            })
+
+        return missioni
 
     def _determina_trend(self, stats: PlayerStats) -> str:
         """Determina se il trend è positivo, negativo o stabile"""
@@ -180,111 +201,8 @@ class Raffaello:
 
         return None
 
-    # Generatori Missioni per Zona
-
-    def _missioni_recupero(self) -> List[Dict]:
-        """Missioni per Zona Sopravvivenza - Focus: RECUPERO"""
-        return [
-            {
-                "titolo": "🛌 Recupero Totale",
-                "descrizione": "Dormi 8+ ore stanotte. Niente schermi 1h prima di dormire.",
-                "area": Area.SALUTE_FISICA,
-                "xp": 30,
-                "tipo": "recupero"
-            },
-            {
-                "titolo": "🧘 Reset Mentale",
-                "descrizione": "10 minuti di meditazione o respirazione consapevole. Solo questo.",
-                "area": Area.SALUTE_MENTALE,
-                "xp": 25,
-                "tipo": "recupero"
-            },
-            {
-                "titolo": "🚫 Zero Tossicità",
-                "descrizione": "Evita TUTTE le abitudini negative oggi. Solo per oggi.",
-                "area": Area.SALUTE_MENTALE,
-                "xp": 40,
-                "tipo": "recupero"
-            }
-        ]
-
-    def _missioni_attivazione(self) -> List[Dict]:
-        """Missioni per Zona Stagnazione - Focus: ATTIVAZIONE"""
-        return [
-            {
-                "titolo": "⚡ Scossa Fisica",
-                "descrizione": "30 min movimento intenso (corsa/HIIT/danza). Fai sudare il corpo.",
-                "area": Area.SALUTE_FISICA,
-                "xp": 40,
-                "tipo": "attivazione"
-            },
-            {
-                "titolo": "📞 Connessione Umana",
-                "descrizione": "Chiama o vedi di persona qualcuno che ami. Conversazione vera.",
-                "area": Area.RELAZIONI,
-                "xp": 35,
-                "tipo": "attivazione"
-            },
-            {
-                "titolo": "🎨 Atto Creativo",
-                "descrizione": "Crea qualcosa con le tue mani. Disegno, musica, scrittura. 30 min.",
-                "area": Area.CREATIVITA,
-                "xp": 45,
-                "tipo": "attivazione"
-            }
-        ]
-
-    def _missioni_momentum(self) -> List[Dict]:
-        """Missioni per Zona Crescita - Focus: MOMENTUM"""
-        return [
-            {
-                "titolo": "🚀 Push Estremo",
-                "descrizione": "Fai 1.5x del tuo workout normale. Supera il tuo limite.",
-                "area": Area.SALUTE_FISICA,
-                "xp": 60,
-                "tipo": "momentum"
-            },
-            {
-                "titolo": "📚 Deep Learning",
-                "descrizione": "2h di studio profondo su skill che vuoi masterizzare. No distrazioni.",
-                "area": Area.CRESCITA,
-                "xp": 70,
-                "tipo": "momentum"
-            },
-            {
-                "titolo": "💰 Money Move",
-                "descrizione": "Fai 1 azione concreta per aumentare entrate (pitch, vendita, investimento).",
-                "area": Area.FINANZE,
-                "xp": 80,
-                "tipo": "momentum"
-            }
-        ]
-
-    def _missioni_breakthrough(self) -> List[Dict]:
-        """Missioni per Zona Trasformazione - Focus: BREAKTHROUGH"""
-        return [
-            {
-                "titolo": "🔥 Impossibile Reso Possibile",
-                "descrizione": "Fai qualcosa che ieri avresti detto 'non posso'. Rompi il limite.",
-                "area": Area.CRESCITA,
-                "xp": 100,
-                "tipo": "breakthrough"
-            },
-            {
-                "titolo": "🎁 Contributo Estremo",
-                "descrizione": "Fai qualcosa che migliora la vita di uno sconosciuto. Senza aspettarti nulla.",
-                "area": Area.CONTRIBUTO,
-                "xp": 90,
-                "tipo": "breakthrough"
-            },
-            {
-                "titolo": "✨ Creazione Magica",
-                "descrizione": "Crea un'opera che esprima la tua essenza più profonda. Condividila.",
-                "area": Area.CREATIVITA,
-                "xp": 120,
-                "tipo": "breakthrough"
-            }
-        ]
+    # Le missioni sono ora gestite dal MissionsCatalog
+    # Non servono più metodi separati
 
     def parla_con_me(self, stats: PlayerStats, domanda: str) -> str:
         """

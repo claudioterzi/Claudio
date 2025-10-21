@@ -10,7 +10,7 @@ import math
 
 
 class Area(Enum):
-    """Le 7 Aree della Vita"""
+    """Le 9 Aree della Vita"""
     SALUTE_FISICA = "Salute Fisica"
     SALUTE_MENTALE = "Salute Mentale"
     RELAZIONI = "Relazioni"
@@ -18,6 +18,8 @@ class Area(Enum):
     CREATIVITA = "Creatività"
     FINANZE = "Finanze"
     CONTRIBUTO = "Contributo"
+    SPIRITUALE = "Spirituale"
+    CARRIERA = "Carriera"
 
 
 class Zona(Enum):
