@@ -28,7 +28,7 @@ class LGAICLI:
         self.calc = LGAICalculator()
         self.raffaello = Raffaello()
         self.shop = BarosShop()
-        self.predictions = PredictionSystem()
+        self.pred_system = PredictionSystem()
         self.purchase_history = PurchaseHistory()
 
         # Carica o crea player
@@ -258,7 +258,7 @@ class LGAICLI:
 
         # Risk Score
         print("1️⃣ RISK SCORE")
-        risk = self.predictions.calculate_risk_score(self.player, history)
+        risk = self.pred_system.calculate_risk_score(self.player, history)
         print(f"   Score: {risk.score}/100")
         print(f"   Livello: {risk.livello}")
         if risk.raccomandazioni:
@@ -268,14 +268,14 @@ class LGAICLI:
 
         # Growth Predictions
         print(f"\n2️⃣ LEVEL UP PREDICTIONS (Top 5)")
-        growth = self.predictions.predict_level_ups(self.player, history)
+        growth = self.pred_system.predict_level_ups(self.player, history)
         for g in growth[:5]:
             print(f"   {g.area.value:20s} Lv.{g.livello_attuale} → {g.livello_attuale+1}")
             print(f"   {' '*23}~{g.giorni_stimati} giorni ({g.probabilita}% probabilità)")
 
         # Breakthrough Windows
         print(f"\n3️⃣ BREAKTHROUGH WINDOWS (Prossimi 3 giorni)")
-        windows = self.predictions.find_breakthrough_windows(history, days_ahead=3)
+        windows = self.pred_system.find_breakthrough_windows(history, days_ahead=3)
         for w in windows[:3]:
             print(f"   {w.data.strftime('%A %d/%m')}: {w.ora_inizio}-{w.ora_fine}")
             print(f"   Energia: {w.energia_prevista}/10 | Prob: {w.probabilita_breakthrough}%")
