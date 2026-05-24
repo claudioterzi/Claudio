@@ -1,0 +1,91 @@
+# ============================================================
+# SDQ-1 — Sistema Di Quadranti, Fase 1
+# Configurazione aggiornata (model: Sonnet 4.6, timeout estesi)
+# ============================================================
+
+sistema:
+  nome: "SDQ-1"
+  fase: 1
+  versione: "1.1.0"
+  ambiente: "sviluppo"
+
+redis:
+  host: "localhost"
+  porta: 6379
+  db: 0
+  prefisso_chiavi: "sdq1:"
+  ttl_stato_secondi: 3600
+  ttl_memoria_secondi: 86400
+
+modello:
+  fornitore: "anthropic"
+  nome: "claude-sonnet-4-6"
+  nome_critico: "claude-opus-4-7"   # usato dagli agenti ad alta responsabilità
+  temperatura: 0.7
+  max_token: 4096
+  timeout_secondi: 60
+
+caselle_attive:
+  - 0    # Analisi Semantica       -> RAFFA-001
+  - 2    # Memoria RAG             -> MEMO-002
+  - 4    # Allineamento Identitario -> SENTIN-004
+  - 12   # Stile e Tono            -> WAVE-003
+
+agenti_attivi:
+  - id: "RAFFA-001"
+    ruolo: "architetto"
+    casella: 0
+    modello: "claude-opus-4-7"
+    critico: true
+  - id: "MEMO-002"
+    ruolo: "custode"
+    casella: 2
+    modello: "claude-sonnet-4-6"
+    critico: false
+  - id: "SENTIN-004"
+    ruolo: "vigilante"
+    casella: 4
+    modello: "claude-opus-4-7"
+    critico: true
+  - id: "WAVE-003"
+    ruolo: "messaggero"
+    casella: 12
+    modello: "claude-sonnet-4-6"
+    critico: false
+
+orchestratore:
+  tipo: "gerarchico"
+  capo: "RAFFA-001"
+  max_iterazioni: 10
+  timeout_nodo_secondi: 90
+  persistenza: true
+  retry:
+    max_tentativi: 2
+    backoff_secondi: [2, 4]
+
+memoria:
+  tipo_vettoriale: "in_memoria"
+  dimensione_vettori: 384
+  modello_embedding: "all-MiniLM-L6-v2"
+  max_risultati_recupero: 5
+  soglia_similarita: 0.55
+  qdrant:
+    host: "localhost"
+    porta: 6333
+    collezione: "sdq1_memoria"
+
+sicurezza:
+  filtro_identita: true
+  max_tentativi_validazione: 3
+  log_violazioni: true
+  interruttore_emergenza: true
+  whitelist_pattern_identita:
+    - "raffaello"
+    - "sdq1"
+    - "claudio"
+
+log:
+  livello: "INFO"
+  file: "sdq1.log"
+  formato: "%(asctime)s [%(name)s] %(levelname)s: %(message)s"
+  rotazione_mb: 10
