@@ -25,6 +25,38 @@ modello:
   max_token: 4096
   timeout_secondi: 60
 
+# --- Router multi-provider ---
+# Ogni profilo definisce una cascata di provider: si prova il primo
+# disponibile, se fallisce si passa al successivo. 'stub' garantisce
+# sempre una risposta (deterministica) in fondo.
+router:
+  regole:
+    - profilo: "default"
+      cascata: ["anthropic", "openai", "gemini", "deepseek", "stub"]
+      modelli:
+        anthropic: "claude-sonnet-4-6"
+        openai: "gpt-4o-mini"
+        gemini: "gemini-2.0-flash"
+        deepseek: "deepseek-chat"
+    - profilo: "ragionamento"
+      cascata: ["anthropic", "openai", "deepseek", "stub"]
+      modelli:
+        anthropic: "claude-opus-4-7"
+        openai: "gpt-4o"
+        deepseek: "deepseek-reasoner"
+    - profilo: "veloce"
+      cascata: ["anthropic", "gemini", "openai", "stub"]
+      modelli:
+        anthropic: "claude-haiku-4-5-20251001"
+        gemini: "gemini-2.0-flash"
+        openai: "gpt-4o-mini"
+    - profilo: "ricerca"
+      cascata: ["perplexity", "openai", "anthropic", "stub"]
+      modelli:
+        perplexity: "sonar"
+        openai: "gpt-4o"
+        anthropic: "claude-sonnet-4-6"
+
 caselle_attive:
   - 0    # Analisi Semantica         -> RAFFA-001
   - 1    # Decomposizione Intento    -> DECOMP-005   (Fase 2)

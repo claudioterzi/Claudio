@@ -31,6 +31,7 @@ class SDQ1Config:
     sistema: dict[str, Any]
     redis: dict[str, Any]
     modello: dict[str, Any]
+    router: dict[str, Any]
     caselle_attive: list[int]
     agenti: list[AgenteConfig]
     orchestratore: dict[str, Any]
@@ -52,7 +53,6 @@ class SDQ1Config:
         return None
 
     def pipeline(self) -> list[int]:
-        """Ordine di esecuzione: 'pipeline' se definita, altrimenti caselle_attive."""
         return list(self.orchestratore.get("pipeline") or self.caselle_attive)
 
 
@@ -81,10 +81,13 @@ def carica_config(path: str | Path | None = None) -> SDQ1Config:
                 f"Pipeline contiene caselle non attive: {sorted(extra)}"
             )
 
+    router_cfg = data.get("router") or {"regole": [{"profilo": "default", "cascata": ["stub"]}]}
+
     return SDQ1Config(
         sistema=data["sistema"],
         redis=data["redis"],
         modello=data["modello"],
+        router=router_cfg,
         caselle_attive=sorted(caselle_dichiarate),
         agenti=agenti,
         orchestratore=data["orchestratore"],
