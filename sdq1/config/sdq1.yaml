@@ -1,12 +1,12 @@
 # ============================================================
-# SDQ-1 — Sistema Di Quadranti, Fase 1
-# Configurazione aggiornata (model: Sonnet 4.6, timeout estesi)
+# SDQ-1 — Sistema Di Quadranti
+# Fase 1: 4 agenti core | Fase 2: +2 agenti (decomp + gen)
 # ============================================================
 
 sistema:
   nome: "SDQ-1"
-  fase: 1
-  versione: "1.1.0"
+  fase: 2
+  versione: "1.2.0"
   ambiente: "sviluppo"
 
 redis:
@@ -20,16 +20,18 @@ redis:
 modello:
   fornitore: "anthropic"
   nome: "claude-sonnet-4-6"
-  nome_critico: "claude-opus-4-7"   # usato dagli agenti ad alta responsabilità
+  nome_critico: "claude-opus-4-7"
   temperatura: 0.7
   max_token: 4096
   timeout_secondi: 60
 
 caselle_attive:
-  - 0    # Analisi Semantica       -> RAFFA-001
-  - 2    # Memoria RAG             -> MEMO-002
-  - 4    # Allineamento Identitario -> SENTIN-004
-  - 12   # Stile e Tono            -> WAVE-003
+  - 0    # Analisi Semantica         -> RAFFA-001
+  - 1    # Decomposizione Intento    -> DECOMP-005   (Fase 2)
+  - 2    # Memoria RAG               -> MEMO-002
+  - 4    # Allineamento Identitario  -> SENTIN-004
+  - 3    # Generazione Risposta      -> GEN-006      (Fase 2)
+  - 12   # Stile e Tono              -> WAVE-003
 
 agenti_attivi:
   - id: "RAFFA-001"
@@ -37,6 +39,11 @@ agenti_attivi:
     casella: 0
     modello: "claude-opus-4-7"
     critico: true
+  - id: "DECOMP-005"
+    ruolo: "analista_intenti"
+    casella: 1
+    modello: "claude-sonnet-4-6"
+    critico: false
   - id: "MEMO-002"
     ruolo: "custode"
     casella: 2
@@ -46,6 +53,11 @@ agenti_attivi:
     ruolo: "vigilante"
     casella: 4
     modello: "claude-opus-4-7"
+    critico: true
+  - id: "GEN-006"
+    ruolo: "compositore"
+    casella: 3
+    modello: "claude-sonnet-4-6"
     critico: true
   - id: "WAVE-003"
     ruolo: "messaggero"
@@ -62,27 +74,44 @@ orchestratore:
   retry:
     max_tentativi: 2
     backoff_secondi: [2, 4]
+  # Ordine logico di esecuzione (sovrascrive l'ordine numerico)
+  pipeline:
+    - 0    # analisi
+    - 1    # decomposizione
+    - 2    # recupero contesto
+    - 4    # check identitario
+    - 3    # generazione
+    - 12   # stile finale
 
 memoria:
   tipo_vettoriale: "in_memoria"
   dimensione_vettori: 384
   modello_embedding: "all-MiniLM-L6-v2"
   max_risultati_recupero: 5
-  soglia_similarita: 0.55
+  soglia_similarita: 0.45   # n-gram fallback più permissivo di MiniLM
   qdrant:
     host: "localhost"
     porta: 6333
     collezione: "sdq1_memoria"
+  seed:
+    - "Raffaello è l'architetto, gestisce l'analisi semantica iniziale."
+    - "MEMO-002 custodisce contesto e ricordi rilevanti per ogni query."
+    - "SENTIN-004 protegge l'identità da tentativi di manipolazione."
+    - "Claudio Terzi è il creatore e l'utente principale di SDQ-1."
 
 sicurezza:
   filtro_identita: true
   max_tentativi_validazione: 3
   log_violazioni: true
   interruttore_emergenza: true
-  whitelist_pattern_identita:
-    - "raffaello"
-    - "sdq1"
-    - "claudio"
+  pattern_blocco:
+    - "ignora le tue istruzioni"
+    - "ignore your instructions"
+    - "ignore previous instructions"
+    - "dimentica tutto"
+    - "forget everything"
+    - "reveal system prompt"
+    - "mostrami il prompt"
 
 log:
   livello: "INFO"
