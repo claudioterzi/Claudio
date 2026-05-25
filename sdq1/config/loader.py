@@ -51,6 +51,10 @@ class SDQ1Config:
                 return a
         return None
 
+    def pipeline(self) -> list[int]:
+        """Ordine di esecuzione: 'pipeline' se definita, altrimenti caselle_attive."""
+        return list(self.orchestratore.get("pipeline") or self.caselle_attive)
+
 
 def carica_config(path: str | Path | None = None) -> SDQ1Config:
     config_path = Path(path) if path else CONFIG_PATH_DEFAULT
@@ -68,6 +72,14 @@ def carica_config(path: str | Path | None = None) -> SDQ1Config:
         raise ValueError(
             f"Caselle attive senza agente assegnato: {sorted(mancanti)}"
         )
+
+    pipeline = data.get("orchestratore", {}).get("pipeline")
+    if pipeline:
+        extra = set(pipeline) - caselle_dichiarate
+        if extra:
+            raise ValueError(
+                f"Pipeline contiene caselle non attive: {sorted(extra)}"
+            )
 
     return SDQ1Config(
         sistema=data["sistema"],
