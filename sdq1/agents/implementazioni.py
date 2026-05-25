@@ -52,7 +52,16 @@ class RaffaArchitetto(AgenteSDQ):
                 "analisi_semantica": analisi_base,
                 "interpretazione": risposta.testo,
             },
-            metadata={"via_api": risposta.via_api},
+            metadata={
+                "via_api": risposta.via_api,
+                "provider": risposta.provider,
+                "modello": risposta.modello,
+                "latenza_ms": risposta.metadata.get("latenza_ms"),
+                "input_tokens": risposta.metadata.get("input_tokens"),
+                "output_tokens": risposta.metadata.get("output_tokens"),
+                "profilo": risposta.metadata.get("profilo"),
+                "provider_tentati": risposta.metadata.get("provider_tentati"),
+            },
         )
 
 
@@ -77,7 +86,16 @@ class DecompAnalista(AgenteSDQ):
             mittente=self.id,
             successo=True,
             output={"intenti": intenti[:5] or [testo]},
-            metadata={"via_api": risposta.via_api},
+            metadata={
+                "via_api": risposta.via_api,
+                "provider": risposta.provider,
+                "modello": risposta.modello,
+                "latenza_ms": risposta.metadata.get("latenza_ms"),
+                "input_tokens": risposta.metadata.get("input_tokens"),
+                "output_tokens": risposta.metadata.get("output_tokens"),
+                "profilo": risposta.metadata.get("profilo"),
+                "provider_tentati": risposta.metadata.get("provider_tentati"),
+            },
         )
 
 
@@ -155,7 +173,16 @@ class GenCompositore(AgenteSDQ):
             mittente=self.id,
             successo=bool(risposta.testo),
             output={"risposta_bozza": risposta.testo},
-            metadata={"via_api": risposta.via_api},
+            metadata={
+                "via_api": risposta.via_api,
+                "provider": risposta.provider,
+                "modello": risposta.modello,
+                "latenza_ms": risposta.metadata.get("latenza_ms"),
+                "input_tokens": risposta.metadata.get("input_tokens"),
+                "output_tokens": risposta.metadata.get("output_tokens"),
+                "profilo": risposta.metadata.get("profilo"),
+                "provider_tentati": risposta.metadata.get("provider_tentati"),
+            },
         )
 
 

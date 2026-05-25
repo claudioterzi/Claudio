@@ -1,13 +1,17 @@
 # LGAI - Life Game AI System
 # Python 3.7+ sufficiente per il core LGAI.
 
-# SDQ-1 (Sistema Di Quadranti, Fase 1)
+# SDQ-1 (Sistema Di Quadranti, Fase 1+2)
 pyyaml>=6.0
 
-# Opzionali per future features:
-# anthropic>=0.39.0              # Chiamate Claude API negli agenti
-# redis>=5.0.0                   # Persistenza orchestratore
-# sentence-transformers>=2.2.0   # Embedding MiniLM
+# SDQ-1 multi-provider LLM (tutti opzionali: fallback automatico a stub)
+anthropic>=0.39.0          # Claude (ANTHROPIC_API_KEY)
+openai>=1.50.0             # OpenAI / DeepSeek / Perplexity (compat-API)
+google-genai>=1.0.0        # Gemini (GOOGLE_API_KEY)
+redis>=5.0.0               # Persistenza orchestratore (fallback in-memory)
+
+# Future features (non ancora integrate):
+# sentence-transformers>=2.2.0   # Embedding MiniLM (sostituisce n-gram)
 # qdrant-client>=1.7.0           # Vector DB in produzione
 # requests>=2.28.0               # Notion API
 # python-dateutil>=2.8.2         # Date parsing avanzato
