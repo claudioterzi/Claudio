@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from lgai_core.calculator import PlayerStats, Area, LGAICalculator
 from lgai_core.raffaello import Raffaello
 from lgai_core.data_manager import DataManager
+from lgai_core.piano_palestra import PianoPalestra, TipoGiorno
 import argparse
 from datetime import datetime
 
@@ -184,6 +185,67 @@ class LGAICLI:
         risposta = self.raffaello.parla_con_me(self.player, domanda)
         print(f"🌹 Raffaello: {risposta}\n")
 
+    def palestra(self, giorno: str = None, schema: bool = False):
+        """Mostra il piano palestra"""
+        piano = PianoPalestra()
+
+        if schema:
+            piano.stampa_schema_settimanale()
+            return
+
+        mappa_giorni = {
+            "a": TipoGiorno.FORZA,
+            "forza": TipoGiorno.FORZA,
+            "b": TipoGiorno.IPERTROFIA,
+            "ipertrofia": TipoGiorno.IPERTROFIA,
+            "c": TipoGiorno.METABOLICO,
+            "metabolico": TipoGiorno.METABOLICO,
+        }
+
+        if giorno:
+            tipo = mappa_giorni.get(giorno.lower())
+            if not tipo:
+                print(f"❌ Giorno non valido: '{giorno}'")
+                print("   Usa: a/forza | b/ipertrofia | c/metabolico")
+                return
+            piano.stampa_piano(tipo)
+        else:
+            piano.stampa_schema_settimanale()
+            piano.stampa_piano()
+
+    def palestra_xp(self, giorno: str):
+        """Registra un allenamento completato e guadagna XP + PV"""
+        piano = PianoPalestra()
+        mappa = {
+            "a": TipoGiorno.FORZA,
+            "b": TipoGiorno.IPERTROFIA,
+            "c": TipoGiorno.METABOLICO,
+        }
+        tipo = mappa.get(giorno.lower())
+        if not tipo:
+            print(f"❌ Giorno non valido. Usa: a | b | c")
+            return
+
+        sessione = piano.giorni[tipo]
+        icone = {TipoGiorno.FORZA: "🔴", TipoGiorno.IPERTROFIA: "🟡", TipoGiorno.METABOLICO: "🟢"}
+
+        print(f"\n{icone[tipo]} ALLENAMENTO COMPLETATO: {sessione.tipo.value.upper()}")
+        print(f"   ⚡ +{sessione.xp_reward} XP a Salute Fisica")
+        print(f"   💚 +{sessione.pv_reward} PV")
+
+        # Aggiungi XP
+        result = self.calc.aggiungi_xp(self.player, Area.SALUTE_FISICA, sessione.xp_reward)
+        if result['level_up']:
+            print(f"\n   🎉 LEVEL UP Salute Fisica! → Lv.{result['new_level']}")
+            print(f"   💰 +{result['baros_earned']} Baros!")
+
+        # Aggiungi PV
+        self.calc.modifica_pv(self.player, sessione.pv_reward, f"Allenamento {sessione.tipo.value}")
+        print(f"\n   PV aggiornati: {self.player.pv_current}/{self.player.pv_max}")
+
+        self.dm.save_player(self.player)
+        print("\n✅ Allenamento registrato!\n")
+
     def reset(self):
         """Reset completo (usa con cautela!)"""
         confirm = input("⚠️  Sei sicuro? Questo cancellerà TUTTI i dati. (scrivi 'RESET'): ")
@@ -225,6 +287,16 @@ def main():
     # Reset
     subparsers.add_parser('reset', help='Reset completo (ATTENZIONE!)')
 
+    # Palestra
+    palestra_parser = subparsers.add_parser('palestra', help='Piano palestra body recomposition')
+    palestra_parser.add_argument('giorno', nargs='?', default=None,
+                                 help='Giorno da visualizzare: a/forza | b/ipertrofia | c/metabolico')
+    palestra_parser.add_argument('--schema', action='store_true', help='Mostra solo lo schema settimanale')
+
+    # Allenamento completato
+    gym_done_parser = subparsers.add_parser('gym-done', help='Registra allenamento completato (guadagna XP+PV)')
+    gym_done_parser.add_argument('giorno', type=str, help='Giorno completato: a | b | c')
+
     args = parser.parse_args()
 
     # Crea CLI instance
@@ -243,6 +315,10 @@ def main():
         cli.talk(args.domanda)
     elif args.command == 'reset':
         cli.reset()
+    elif args.command == 'palestra':
+        cli.palestra(args.giorno, args.schema)
+    elif args.command == 'gym-done':
+        cli.palestra_xp(args.giorno)
 
 
 if __name__ == "__main__":
