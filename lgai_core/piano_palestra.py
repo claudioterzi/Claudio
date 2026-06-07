@@ -37,6 +37,23 @@ class Esercizio:
     note: str = ""
     peso_iniziale_kg: Optional[float] = None  # suggerimento per iniziare
     incremento_kg: float = 2.5  # incremento progressivo
+    immagine: str = ""  # URL o path della foto del macchinario (slot pronto)
+
+    # Emoji segnaposto per gruppo muscolare (usata quando manca la foto)
+    ICONE_GRUPPO = {
+        "Gambe": "🦵",
+        "Petto": "🫁",
+        "Schiena": "🔙",
+        "Spalle": "💪",
+        "Bicipiti": "💪",
+        "Tricipiti": "💪",
+        "Core": "🧱",
+        "Full Body": "🤸",
+    }
+
+    @property
+    def icona(self) -> str:
+        return self.ICONE_GRUPPO.get(self.gruppo.value, "🏋️")
 
     @property
     def reps_str(self) -> str:
@@ -396,3 +413,65 @@ class PianoPalestra:
         print("  al numero MAX di reps → aumenta il peso la settimana dopo.")
         print("  Forza: +2.5kg | Ipertrofia: +2-2.5kg | Metabolico: +2kg")
         print()
+
+
+@dataclass
+class StrengthScore:
+    """
+    STRENGTH SCORE - Punteggio di forza gamificato (ispirato a Gravl).
+
+    Calcola un punteggio 0-1000 basato sui carichi dei lift principali,
+    normalizzati rispetto al peso corporeo (rapporto forza/peso).
+    Suddiviso in sub-score per fascia muscolare.
+    """
+
+    peso_corporeo_kg: float
+
+    # Standard di riferimento (rapporto carico/peso corporeo per "buon" livello
+    # intermedio, 1 rep max stimato). Fonte: standard comuni di forza.
+    STANDARD = {
+        "Squat": 1.5,
+        "Stacco": 1.75,
+        "Panca": 1.25,
+        "Military Press": 0.8,
+        "Rematore": 1.0,
+    }
+
+    def sub_score(self, lift: str, carico_kg: float) -> int:
+        """Sub-score 0-200 per un singolo lift."""
+        target = self.STANDARD.get(lift)
+        if not target or self.peso_corporeo_kg <= 0:
+            return 0
+        ratio = carico_kg / self.peso_corporeo_kg
+        # 200 punti quando raggiungi lo standard intermedio
+        return min(200, int((ratio / target) * 200))
+
+    def calcola(self, carichi: Dict[str, float]) -> Dict:
+        """
+        carichi: dizionario {nome_lift: carico_kg}
+        Ritorna lo score totale (0-1000), i sub-score e il livello.
+        """
+        sub = {
+            lift: self.sub_score(lift, carichi.get(lift, 0))
+            for lift in self.STANDARD
+        }
+        totale = sum(sub.values())
+
+        if totale >= 800:
+            livello = "🏆 Elite"
+        elif totale >= 600:
+            livello = "💪 Avanzato"
+        elif totale >= 400:
+            livello = "🔥 Intermedio"
+        elif totale >= 200:
+            livello = "🌱 Novizio"
+        else:
+            livello = "🥚 Principiante"
+
+        return {
+            "score_totale": totale,
+            "max": 1000,
+            "sub_score": sub,
+            "livello": livello,
+            "percentuale": int(totale / 10),
+        }
