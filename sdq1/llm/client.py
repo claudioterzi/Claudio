@@ -26,11 +26,12 @@ class ClaudeClient:
 
     # Mapping modello-hint -> profilo router
     PROFILI_PER_MODELLO = {
-        "claude-opus-4-8": "ragionamento",
-        "claude-opus-4-7": "ragionamento",   # retrocompat
-        "claude-sonnet-4-6": "default",
+        "claude-fable-5":           "ragionamento",
+        "claude-opus-4-8":          "ragionamento",
+        "claude-opus-4-7":          "ragionamento",   # retrocompat
+        "claude-sonnet-4-6":        "default",
         "claude-haiku-4-5-20251001": "veloce",
-        "claude-haiku-4-5": "veloce",
+        "claude-haiku-4-5":         "veloce",
     }
 
     def __init__(self, router: LLMRouter, modello_hint: str | None = None):

@@ -6,7 +6,7 @@
 sistema:
   nome: "SDQ-1"
   fase: 2
-  versione: "1.3.0"
+  versione: "1.4.0"
   ambiente: "sviluppo"
 
 redis:
@@ -19,8 +19,8 @@ redis:
 
 modello:
   fornitore: "anthropic"
-  nome: "claude-sonnet-4-6"
-  nome_critico: "claude-opus-4-8"
+  nome: "claude-fable-5"
+  nome_critico: "claude-fable-5"
   temperatura: 0.7
   max_token: 4096
   timeout_secondi: 60
@@ -34,14 +34,14 @@ router:
     - profilo: "default"
       cascata: ["anthropic", "openai", "gemini", "deepseek", "stub"]
       modelli:
-        anthropic: "claude-sonnet-4-6"
+        anthropic: "claude-fable-5"
         openai: "gpt-4o-mini"
         gemini: "gemini-2.5-flash"
         deepseek: "deepseek-chat"
     - profilo: "ragionamento"
       cascata: ["anthropic", "openai", "deepseek", "stub"]
       modelli:
-        anthropic: "claude-opus-4-8"
+        anthropic: "claude-fable-5"
         openai: "gpt-4o"
         deepseek: "deepseek-reasoner"
     - profilo: "veloce"
@@ -55,7 +55,7 @@ router:
       modelli:
         perplexity: "sonar-pro"
         openai: "gpt-4o"
-        anthropic: "claude-sonnet-4-6"
+        anthropic: "claude-fable-5"
 
 caselle_attive:
   - 0    # Analisi Semantica         -> RAFFA-001
@@ -69,7 +69,7 @@ agenti_attivi:
   - id: "RAFFA-001"
     ruolo: "architetto"
     casella: 0
-    modello: "claude-opus-4-8"
+    modello: "claude-fable-5"
     critico: true
   - id: "DECOMP-005"
     ruolo: "analista_intenti"
@@ -84,12 +84,12 @@ agenti_attivi:
   - id: "SENTIN-004"
     ruolo: "vigilante"
     casella: 4
-    modello: "claude-opus-4-8"
+    modello: "claude-fable-5"
     critico: true
   - id: "GEN-006"
     ruolo: "compositore"
     casella: 3
-    modello: "claude-sonnet-4-6"
+    modello: "claude-fable-5"
     critico: true
   - id: "WAVE-003"
     ruolo: "messaggero"
