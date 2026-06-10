@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 
 # Mapping provider_name -> (classe, modello_default)
 PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
-    "anthropic": (AnthropicProvider, "claude-sonnet-4-6"),
+    "anthropic": (AnthropicProvider, "claude-fable-5"),
     "openai": (OpenAIProvider, "gpt-4o-mini"),
     "deepseek": (DeepSeekProvider, "deepseek-chat"),
     "perplexity": (PerplexityProvider, "sonar-pro"),
