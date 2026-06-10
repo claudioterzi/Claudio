@@ -12,8 +12,30 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 import time
+from pathlib import Path
+
+
+def _carica_dotenv() -> None:
+    """Carica .env dalla root del progetto se presente, senza dipendenze esterne."""
+    env_path = Path(__file__).resolve().parent.parent / ".env"
+    if not env_path.exists():
+        return
+    with env_path.open() as f:
+        for riga in f:
+            riga = riga.strip()
+            if not riga or riga.startswith("#") or "=" not in riga:
+                continue
+            chiave, _, valore = riga.partition("=")
+            chiave = chiave.strip()
+            valore = valore.strip().strip('"').strip("'")
+            if chiave and chiave not in os.environ:
+                os.environ[chiave] = valore
+
+
+_carica_dotenv()
 
 from .agents import costruisci_agenti, implementazioni
 from .config import carica_config
