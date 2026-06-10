@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from lgai_core.calculator import PlayerStats, Area, LGAICalculator
 from lgai_core.raffaello import Raffaello
 from lgai_core.data_manager import DataManager
+from lgai_core.libro_oracolo import LibroOracolo
 import argparse
 from datetime import datetime
 
@@ -24,6 +25,7 @@ class LGAICLI:
         self.dm = DataManager()
         self.calc = LGAICalculator()
         self.raffaello = Raffaello()
+        self.oracolo = LibroOracolo()
 
         # Carica o crea player
         self.player = self.dm.load_player()
@@ -184,6 +186,23 @@ class LGAICLI:
         risposta = self.raffaello.parla_con_me(self.player, domanda)
         print(f"🌹 Raffaello: {risposta}\n")
 
+    def oracle(self, domanda: str = "", area: str = ""):
+        """Consulta il Libro Oracolo"""
+        print()
+        if area:
+            try:
+                area_enum = Area(area)
+                carta = self.oracolo.consulta_area(self.player, area_enum)
+            except ValueError:
+                print(f"❌ Area non valida: {area}")
+                print(f"   Aree disponibili: {[a.value for a in Area]}")
+                return
+        else:
+            carta = self.oracolo.consulta(self.player, domanda)
+
+        print(self.oracolo.formato_display(carta, domanda))
+        print()
+
     def reset(self):
         """Reset completo (usa con cautela!)"""
         confirm = input("⚠️  Sei sicuro? Questo cancellerà TUTTI i dati. (scrivi 'RESET'): ")
@@ -222,6 +241,11 @@ def main():
     talk_parser = subparsers.add_parser('talk', help='Parla con Raffaello')
     talk_parser.add_argument('domanda', type=str, help='Cosa vuoi chiedere?')
 
+    # Oracle
+    oracle_parser = subparsers.add_parser('oracle', help='Consulta il Libro Oracolo')
+    oracle_parser.add_argument('--domanda', type=str, default='', help='Domanda o intenzione per l\'oracolo')
+    oracle_parser.add_argument('--area', type=str, default='', help='Focus su un\'area specifica')
+
     # Reset
     subparsers.add_parser('reset', help='Reset completo (ATTENZIONE!)')
 
@@ -241,6 +265,8 @@ def main():
         cli.add_xp(args.area, args.xp)
     elif args.command == 'talk':
         cli.talk(args.domanda)
+    elif args.command == 'oracle':
+        cli.oracle(args.domanda, args.area)
     elif args.command == 'reset':
         cli.reset()
 
