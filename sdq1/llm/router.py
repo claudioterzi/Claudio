@@ -25,8 +25,8 @@ PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
     "anthropic": (AnthropicProvider, "claude-sonnet-4-6"),
     "openai": (OpenAIProvider, "gpt-4o-mini"),
     "deepseek": (DeepSeekProvider, "deepseek-chat"),
-    "perplexity": (PerplexityProvider, "sonar"),
-    "gemini": (GeminiProvider, "gemini-2.0-flash"),
+    "perplexity": (PerplexityProvider, "sonar-pro"),
+    "gemini": (GeminiProvider, "gemini-2.5-flash"),
     "stub": (StubProvider, "stub-model"),
 }
 
