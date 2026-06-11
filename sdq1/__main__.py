@@ -42,6 +42,7 @@ from .config import carica_config
 from .llm.client import ClaudeClient
 from .llm.router import crea_router_da_config
 from .memory.store import MemoriaVettoriale
+from .memory.vss import VectorStateStore
 from .monitoring import HealthChecker, MetricsCollector
 from .orchestrator.gerarchico import OrchestratoreGerarchico
 from .persistence.store import crea_store
@@ -60,6 +61,8 @@ def costruisci_sistema(verbose: bool = False):
     for s in config.memoria.get("seed", []) or []:
         memoria.aggiungi(s, metadata={"origine": "seed"})
 
+    vss = VectorStateStore(memoria)
+
     opts_globali = {
         "temperatura": config.modello.get("temperatura", 0.7),
         "max_token": config.modello.get("max_token", 4096),
@@ -77,6 +80,7 @@ def costruisci_sistema(verbose: bool = False):
     implementazioni.imposta_runtime(
         llm_factory=llm_factory,
         memoria=memoria,
+        vss=vss,
         pattern_blocco=config.sicurezza.get("pattern_blocco", []),
     )
 
@@ -85,7 +89,7 @@ def costruisci_sistema(verbose: bool = False):
     orch = OrchestratoreGerarchico(config, agenti, stato=stato)
     metrics = MetricsCollector(stato, prefisso=config.redis.get("prefisso_chiavi", "") + "metriche:")
     health = HealthChecker(router)
-    return orch, router, memoria, stato, metrics, health
+    return orch, router, memoria, stato, metrics, health, vss
 
 
 def _registra_metriche(metrics: MetricsCollector, esecuzione, profilo_default: str = "default"):
@@ -118,7 +122,7 @@ def main(argv: list[str]) -> int:
                         help="Stampa aggregati metriche correnti")
     args = parser.parse_args(argv[1:])
 
-    orch, router, memoria, stato, metrics, health = costruisci_sistema(args.verbose)
+    orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
 
     if args.health:
         riepilogo = health.riepilogo()
@@ -162,6 +166,7 @@ def main(argv: list[str]) -> int:
         "durata_secondi": esecuzione.durata_secondi,
         "risposta_finale": (esecuzione.output_finale or {}).get("risposta_finale"),
         "memoria_size": memoria.dimensione(),
+        "vss_size": vss.dimensione(),
         "persistenza": stato.__class__.__name__,
         "provider_attivi": router.provider_attivi(),
     }

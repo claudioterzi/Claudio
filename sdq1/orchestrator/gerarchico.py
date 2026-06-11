@@ -58,6 +58,7 @@ class OrchestratoreGerarchico:
         )
         inizio = time.time()
         contesto: dict[str, Any] = dict(payload)
+        contesto["_run_id"] = esecuzione.id   # usato dal VectorStateStore per namespace
         self._persisti(esecuzione, contesto, stato="started")
 
         for casella in self.pipeline_caselle:

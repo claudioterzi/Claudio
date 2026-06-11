@@ -71,7 +71,7 @@ def test_persistenza():
 
 def test_pipeline_completa():
     print("\n[6] Pipeline 6 agenti via router")
-    orch, router, memoria, stato, metrics, health = costruisci_sistema()
+    orch, router, memoria, stato, metrics, health, vss = costruisci_sistema()
     esecuzione = orch.esegui({"testo": "Spiegami brevemente SDQ-1"})
     assert not esecuzione.interrotta, esecuzione.motivo_interruzione
     nomi = [p.mittente for p in esecuzione.passi]
@@ -94,7 +94,7 @@ def test_jailbreak():
 
 def test_health_check():
     print("\n[8] HealthChecker ping di tutti i provider")
-    _, _, _, _, _, health = costruisci_sistema()
+    _, _, _, _, _, health, _ = costruisci_sistema()
     riepilogo = health.riepilogo()
     assert riepilogo["provider_totali"] >= 6, riepilogo
     assert riepilogo["provider_raggiungibili"] >= 1, "stub deve sempre rispondere"
@@ -107,7 +107,7 @@ def test_health_check():
 def test_metriche():
     print("\n[9] MetricsCollector aggrega chiamate")
     from sdq1.__main__ import _registra_metriche
-    orch, _, _, _, metrics, _ = costruisci_sistema()
+    orch, _, _, _, metrics, _, _ = costruisci_sistema()
     esecuzione = orch.esegui({"testo": "test metriche"})
     _registra_metriche(metrics, esecuzione)
     agg = metrics.aggregati()
