@@ -117,26 +117,34 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--solo-output", action="store_true")
     parser.add_argument("--health", action="store_true",
-                        help="Ping tutti i provider configurati")
+                        help="Ping tutti i provider configurati + stato circuit breaker")
     parser.add_argument("--metrics", action="store_true",
                         help="Stampa aggregati metriche correnti")
+    parser.add_argument("--sim-to-real", action="store_true",
+                        help="Genera script CadQuery dall'output WAVE-003")
+    parser.add_argument("--conferma", action="store_true",
+                        help="Scrive i file su disco (richiesto con --sim-to-real)")
     args = parser.parse_args(argv[1:])
 
     orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
 
     if args.health:
         riepilogo = health.riepilogo()
+        riepilogo["circuit_breaker"] = router.stato_circuit_breaker()
+        riepilogo["vss_size"] = vss.dimensione()
         print(json.dumps(riepilogo, indent=2, ensure_ascii=False))
         return 0
 
     testo = " ".join(args.testo) or "Ciao SDQ-1, sei attivo?"
     esecuzione = orch.esegui({"testo": testo})
 
-    # Per richiamare metriche servono almeno alcuni passi LLM
     _registra_metriche(metrics, esecuzione)
 
     if args.metrics:
-        print(metrics.esporta_json())
+        agg = json.loads(metrics.esporta_json())
+        agg["vss_size"] = vss.dimensione()
+        agg["circuit_breaker"] = router.stato_circuit_breaker()
+        print(json.dumps(agg, indent=2, ensure_ascii=False))
         return 0
 
     if args.solo_output:
@@ -147,28 +155,49 @@ def main(argv: list[str]) -> int:
             print(finale or "(nessuna risposta)")
         return 0
 
+    if args.sim_to_real:
+        from .output.cad_bridge import CadBridge
+        finale = (esecuzione.output_finale or {}).get("risposta_finale", "")
+        bridge = CadBridge()
+        esito_cad = bridge.elabora(finale, confermato=args.conferma)
+        if not args.conferma:
+            print("=== Script CadQuery generato (non scritto su disco) ===")
+            print(esito_cad["script"])
+            print("\n[ATTENZIONE] Per scrivere i file usa: --sim-to-real --conferma")
+            print("[ATTENZIONE] Verifica sempre il toolpath prima di avviare la Pocket NC.")
+        else:
+            print(json.dumps(
+                {k: v for k, v in esito_cad.items() if k != "script"},
+                indent=2, ensure_ascii=False, default=str,
+            ))
+        return 0
+
+    risposta_finale = (esecuzione.output_finale or {}).get("risposta_finale")
     risultato = {
-        "esecuzione_id": esecuzione.id,
-        "input": esecuzione.input_iniziale,
+        "esecuzione_id":       esecuzione.id,
+        "input":               esecuzione.input_iniziale,
         "passi": [
             {
-                "agente": p.mittente,
-                "successo": p.successo,
-                "provider": (p.metadata or {}).get("provider"),
+                "agente":     p.mittente,
+                "successo":   p.successo,
+                "provider":   (p.metadata or {}).get("provider"),
                 "latenza_ms": (p.metadata or {}).get("latenza_ms"),
-                "via_api": (p.metadata or {}).get("via_api"),
-                "errore": p.errore,
+                "via_api":    (p.metadata or {}).get("via_api"),
+                "hedged":     (p.metadata or {}).get("hedged", False),
+                "errore":     p.errore,
             }
             for p in esecuzione.passi
         ],
-        "interrotta": esecuzione.interrotta,
-        "motivo_interruzione": esecuzione.motivo_interruzione,
-        "durata_secondi": esecuzione.durata_secondi,
-        "risposta_finale": (esecuzione.output_finale or {}).get("risposta_finale"),
-        "memoria_size": memoria.dimensione(),
-        "vss_size": vss.dimensione(),
-        "persistenza": stato.__class__.__name__,
-        "provider_attivi": router.provider_attivi(),
+        "interrotta":           esecuzione.interrotta,
+        "motivo_interruzione":  esecuzione.motivo_interruzione,
+        "durata_secondi":       esecuzione.durata_secondi,
+        "risposta_finale":      risposta_finale,
+        "vss_size":             vss.dimensione(),
+        "vss_ptr_run":          len(vss.ptr_del_run(esecuzione.id)),
+        "memoria_size":         memoria.dimensione(),
+        "circuit_breaker":      router.stato_circuit_breaker(),
+        "persistenza":          stato.__class__.__name__,
+        "provider_attivi":      router.provider_attivi(),
     }
     print(json.dumps(risultato, indent=2, ensure_ascii=False, default=str))
     return 0
