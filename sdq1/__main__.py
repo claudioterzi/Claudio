@@ -132,9 +132,17 @@ def main(argv: list[str]) -> int:
                         help="Forza stub-only: zero chiamate API, zero spesa")
     parser.add_argument("--economia", action="store_true",
                         help="Solo Gemini (free tier) + DeepSeek (low cost), niente Anthropic/OpenAI")
+    parser.add_argument("--locale", action="store_true",
+                        help="Priorità a Ollama locale (costo zero), fallback Gemini")
     args = parser.parse_args(argv[1:])
 
     orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
+
+    # --locale: priorità Ollama, blocca tutti i cloud provider costosi
+    if args.locale:
+        _cloud_costosi = {"anthropic", "openai", "perplexity", "deepseek"}
+        for name in _cloud_costosi:
+            router._circuit[name] = time.time() + 86400
 
     # --economia: solo Gemini (free) e DeepSeek (cheap), blocca provider costosi
     if args.economia:
@@ -168,6 +176,7 @@ def main(argv: list[str]) -> int:
         riepilogo = health.riepilogo()
         riepilogo["circuit_breaker"] = router.stato_circuit_breaker()
         riepilogo["vss_size"] = vss.dimensione()
+        riepilogo["cache_risposte"] = len(router._resp_cache)
         print(json.dumps(riepilogo, indent=2, ensure_ascii=False))
         return 0
 

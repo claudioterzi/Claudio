@@ -5,11 +5,13 @@ Ottimizzazioni attive:
   B. Hedging          – per nodi critici lancia 2 provider in parallelo
   C. Dynamic Timeout  – timeout diverso per profilo (governa il hedging)
   D. Model Affinity   – vincola i nodi successivi al provider già usato
+  E. Response Cache   – evita chiamate duplicate entro TTL (default 5 min)
 """
 
 from __future__ import annotations
 
 import concurrent.futures
+import hashlib
 import logging
 import queue
 import re
@@ -21,6 +23,7 @@ from .providers import (
     AnthropicProvider,
     DeepSeekProvider,
     GeminiProvider,
+    OllamaProvider,
     OpenAIProvider,
     PerplexityProvider,
     ProviderBase,
@@ -36,6 +39,7 @@ PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
     "deepseek":   (DeepSeekProvider,   "deepseek-chat"),
     "perplexity": (PerplexityProvider, "sonar-pro"),
     "gemini":     (GeminiProvider,     "gemini-2.5-flash"),
+    "ollama":     (OllamaProvider,     "llama3.2"),
     "stub":       (StubProvider,       "stub-model"),
 }
 
@@ -72,13 +76,41 @@ class LLMRouter:
     # B: attesa prima di lanciare il provider secondario
     HEDGE_WAIT_S: float = 3.0
 
+    # E: TTL cache risposte (secondi)
+    CACHE_TTL_S: float = 300.0
+
     def __init__(self, opts_globali: dict[str, Any], regole: list[RegolaRouter]):
         self.opts = opts_globali
         self.regole = {r.profilo: r for r in regole}
         if "default" not in self.regole:
             raise ValueError("Manca la regola 'default' nel router")
         self._cache: dict[tuple[str, str], ProviderBase] = {}
-        self._circuit: dict[str, float] = {}  # A: provider_name -> expiry timestamp
+        self._circuit: dict[str, float] = {}      # A: provider_name -> expiry timestamp
+        self._resp_cache: dict[str, tuple[RispostaProvider, float]] = {}  # E: response cache
+
+    # ------------------------------------------------------------------ #
+    # E. Response Cache                                                    #
+    # ------------------------------------------------------------------ #
+
+    @staticmethod
+    def _cache_key(sistema: str, utente: str, profilo: str) -> str:
+        raw = f"{profilo}|{sistema[:200]}|{utente[:400]}"
+        return hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+    def _leggi_cache(self, key: str) -> RispostaProvider | None:
+        entry = self._resp_cache.get(key)
+        if entry is None:
+            return None
+        risposta, ts = entry
+        if time.time() - ts > self.CACHE_TTL_S:
+            del self._resp_cache[key]
+            return None
+        log.debug("Cache hit: %s", key)
+        return risposta
+
+    def _scrivi_cache(self, key: str, risposta: RispostaProvider) -> None:
+        if risposta.via_api and risposta.testo:
+            self._resp_cache[key] = (risposta, time.time())
 
     # ------------------------------------------------------------------ #
     # A. Circuit Breaker                                                   #
@@ -231,8 +263,18 @@ class LLMRouter:
         hedging: bool = False,
         provider_vincolo: str | None = None,  # D: Model Affinity
         budget_tentativi: int = 1,            # Test-Time Compute: retry con prompt arricchito
+        cache: bool = True,                   # E: Response Cache
     ) -> EsitoChiamata:
         regola = self.regole.get(profilo) or self.regole["default"]
+
+        # E. Response Cache: restituisce risposta cached se disponibile
+        ckey = self._cache_key(sistema, utente, profilo)
+        if cache and not provider_vincolo:
+            cached = self._leggi_cache(ckey)
+            if cached is not None:
+                cached.metadata["cached"] = True
+                return EsitoChiamata(risposta=cached, provider_usati=["cache"],
+                                     profilo=profilo)
 
         # D. Model Affinity: sposta il provider vincolato in testa alla cascata
         cascata = list(regola.cascata)
@@ -276,7 +318,9 @@ class LLMRouter:
                     r2 = prov.completa(sistema, utente_arricchito)
                     if not self._risposta_debole(r2.testo):
                         r2.metadata["test_time_compute"] = True
+                        self._scrivi_cache(ckey, r2)
                         return EsitoChiamata(risposta=r2, provider_usati=tentati, profilo=profilo)
+                self._scrivi_cache(ckey, r)
                 return EsitoChiamata(risposta=r, provider_usati=tentati, profilo=profilo)
             if self._e_rate_limit(r.errore):
                 self._apri_circuit(nome, r.errore or "")
