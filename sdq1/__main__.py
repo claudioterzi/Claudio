@@ -130,14 +130,21 @@ def main(argv: list[str]) -> int:
                         help="Mostra stato SAR salvato su disco")
     parser.add_argument("--no-api", action="store_true",
                         help="Forza stub-only: zero chiamate API, zero spesa")
+    parser.add_argument("--economia", action="store_true",
+                        help="Solo Gemini (free tier) + DeepSeek (low cost), niente Anthropic/OpenAI")
     args = parser.parse_args(argv[1:])
 
     orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
 
+    # --economia: solo Gemini (free) e DeepSeek (cheap), blocca provider costosi
+    if args.economia:
+        _costosi = {"anthropic", "openai", "perplexity"}
+        for name in _costosi:
+            router._circuit[name] = time.time() + 86400
+
     # --no-api: disabilita tutti i provider reali, solo stub
     if args.no_api:
         from .llm.router import PROVIDER_REGISTRY
-        from .llm.providers.stub_provider import StubProvider
         router._cache.clear()
         for name in list(PROVIDER_REGISTRY):
             if name != "stub":
