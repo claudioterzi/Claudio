@@ -39,10 +39,11 @@ router:
         gemini: "gemini-2.5-flash"
         deepseek: "deepseek-chat"
     - profilo: "ragionamento"
-      cascata: ["anthropic", "openai", "deepseek", "stub"]
+      cascata: ["anthropic", "openai", "gemini", "deepseek", "stub"]
       modelli:
         anthropic: "claude-fable-5"
         openai: "gpt-4o"
+        gemini: "gemini-2.5-flash"
         deepseek: "deepseek-reasoner"
     - profilo: "veloce"
       cascata: ["anthropic", "gemini", "openai", "stub"]
@@ -74,7 +75,7 @@ agenti_attivi:
   - id: "DECOMP-005"
     ruolo: "analista_intenti"
     casella: 1
-    modello: "claude-sonnet-4-6"
+    modello: "claude-haiku-4-5-20251001"
     critico: false
   - id: "MEMO-002"
     ruolo: "custode"
@@ -94,7 +95,7 @@ agenti_attivi:
   - id: "WAVE-003"
     ruolo: "messaggero"
     casella: 12
-    modello: "claude-sonnet-4-6"
+    modello: "claude-haiku-4-5-20251001"
     critico: false
 
 orchestratore:
