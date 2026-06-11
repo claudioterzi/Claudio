@@ -142,6 +142,14 @@ def main(argv: list[str]) -> int:
                         help="Avvia monitor continuo dei nodi (blocca il processo)")
     parser.add_argument("--intervallo", type=float, default=120.0,
                         help="Secondi tra i ping del watchdog (default: 120)")
+    parser.add_argument("--contatto", action="store_true",
+                        help="Registra un contatto reale in output/contatti.jsonl (criterio H2)")
+    parser.add_argument("--tipo", default="",
+                        help="Tipo contatto: lettore, cliente, uso, condivisione, ...")
+    parser.add_argument("--nota", default="",
+                        help="Descrizione del contatto")
+    parser.add_argument("--verifica", default="",
+                        help="Come è verificabile (link, nome, messaggio, ecc.)")
     parser.add_argument("--economia", action="store_true",
                         help="Solo Gemini (free tier) + DeepSeek (low cost), niente Anthropic/OpenAI")
     parser.add_argument("--locale", action="store_true",
@@ -158,6 +166,27 @@ def main(argv: list[str]) -> int:
         except KeyboardInterrupt:
             wd.ferma()
             print("\nWatchdog fermato.")
+        return 0
+
+    if args.contatto:
+        _contatti = Path("output/contatti.jsonl")
+        _contatti.parent.mkdir(parents=True, exist_ok=True)
+        if not args.nota or not args.verifica:
+            print("Uso: sdq1 --contatto --tipo <tipo> --nota <descrizione> --verifica <come_verificabile>")
+            print("Esempio: sdq1 --contatto --tipo lettore --nota 'Marco ha letto il README' --verifica 'github star claudioterzi/Claudio'")
+            return 1
+        voce = {
+            "data": time.strftime("%Y-%m-%d"),
+            "ora": time.strftime("%H:%M:%S"),
+            "tipo": args.tipo or "generico",
+            "nota": args.nota,
+            "verifica": args.verifica,
+        }
+        with _contatti.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(voce, ensure_ascii=False) + "\n")
+        totale = sum(1 for _ in _contatti.read_text(encoding="utf-8").splitlines() if _)
+        print(json.dumps({"registrato": voce, "totale_contatti": totale}, indent=2, ensure_ascii=False))
+        print(f"\n[H2] Contatori aggiornati: {totale} contatto/i verificabile/i.")
         return 0
 
     if args.lista_backup:
@@ -224,6 +253,11 @@ def main(argv: list[str]) -> int:
         riepilogo["circuit_breaker_azioni"] = azioni_cb
         riepilogo["vss_size"] = vss.dimensione()
         riepilogo["cache_risposte"] = len(router._resp_cache)
+        _cf = Path("output/contatti.jsonl")
+        riepilogo["h2_contatti_verificabili"] = (
+            sum(1 for _ in _cf.read_text(encoding="utf-8").splitlines() if _)
+            if _cf.exists() else 0
+        )
         print(json.dumps(riepilogo, indent=2, ensure_ascii=False))
         return 0
 
