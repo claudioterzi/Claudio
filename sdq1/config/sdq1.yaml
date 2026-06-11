@@ -6,7 +6,7 @@
 sistema:
   nome: "SDQ-1"
   fase: 2
-  versione: "1.4.0"
+  versione: "1.5.0"
   ambiente: "sviluppo"
 
 redis:
