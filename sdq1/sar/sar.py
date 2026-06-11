@@ -18,6 +18,7 @@ from .tensioni import MappaTeensioni, Polo, Tensione
 from .ciclo import CicloAutoriflessione, EsitoCiclo
 from .memoria_evolutiva import MemoriaEvolutiva, PatternRicorrente
 from .coerenza import IndiceCoerenza
+from .persistence import PersistenzaSAR
 from ..memory.vss import VectorStateStore
 
 
@@ -80,12 +81,19 @@ class ScacchieraAutoRiflessiva:
         llm_fn: LLMFn | None = None,
         vss: VectorStateStore | None = None,
         soggetto: str = "Claudio",
+        persistenza: bool = True,
     ):
         self._llm = llm_fn
+        self.soggetto = soggetto
         self.mappa = MappaTeensioni()
         self.memoria = MemoriaEvolutiva(vss=vss, soggetto=soggetto)
         self.coerenza = IndiceCoerenza()
         self._report_history: list[ReportSAR] = []
+        self._persistenza: PersistenzaSAR | None = (
+            PersistenzaSAR(soggetto=soggetto) if persistenza else None
+        )
+        if self._persistenza:
+            self._persistenza.applica_stato(self.mappa, self.memoria, self.coerenza)
 
     # ------------------------------------------------------------------ #
     # Livello 1 — Osservazione                                            #
@@ -97,6 +105,8 @@ class ScacchieraAutoRiflessiva:
         self.mappa.registra(testo, tag=tag, intensita=intensita)
         categoria = tag[0] if tag else "stato_emotivo"
         self.memoria.registra(testo, categoria=categoria, intensita=intensita, tag=tag)
+        if self._persistenza:
+            self._persistenza.salva_stato(self.mappa, self.memoria, self.coerenza)
 
     # ------------------------------------------------------------------ #
     # Livello 3 + 7 + 8 — Ciclo completo per una tensione                #
@@ -152,6 +162,9 @@ class ScacchieraAutoRiflessiva:
         ]
 
         self._report_history.append(report)
+        if self._persistenza:
+            self._persistenza.salva_stato(self.mappa, self.memoria, self.coerenza)
+            self._persistenza.salva_report(report.to_dict())
         return report.to_dict()
 
     # ------------------------------------------------------------------ #
