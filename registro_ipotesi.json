@@ -41,6 +41,12 @@
         "fonte": "Code",
         "descrizione": "Audit 11/06/26 — la prova che brucia: persone raggiunte 0, denaro 0, GitHub Action mai partita. Il disegno non ha ancora toccato il mondo.",
         "direzione": -1
+      },
+      {
+        "data": "2026-06-11",
+        "fonte": "mondo",
+        "descrizione": "11/06 sera — secondo contatto reale: L'Italia che Non Dorme (canzone Suno) consegnata a Guido Calcagni su sua richiesta esplicita via WhatsApp. Esperimento a due bracci completato: riga uno = output non richiesto (link GitHub a Jorge, 14:34) → rifiutato; riga due = output richiesto e fatto su misura (canzone per Guido, 20:00) → consegnato. La tesi regalo-non-dimostrazione ha conferma sperimentale.",
+        "direzione": 1
       }
     ],
     "note": "Meccanismo --contatto proposto da Claudio, da implementare in Code: output/contatti.jsonl (data, tipo, nota, verifica). Direzione COLLASSO: il battito da solo non basta — serve il contatto col mondo."
