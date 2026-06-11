@@ -48,3 +48,9 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+
+# Credenziali e segreti
+.env
+.env.*
+*.key
+secrets/
