@@ -61,6 +61,12 @@ router:
         perplexity: "sonar-pro"
         openai: "gpt-4o"
         anthropic: "claude-fable-5"
+    - profilo: "economia"
+      timeout_s: 45
+      cascata: ["gemini", "deepseek", "stub"]
+      modelli:
+        gemini: "gemini-2.5-flash"
+        deepseek: "deepseek-chat"
 
 caselle_attive:
   - 0    # Analisi Semantica         -> RAFFA-001
