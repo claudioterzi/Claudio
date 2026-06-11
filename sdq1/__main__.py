@@ -37,6 +37,8 @@ def _carica_dotenv() -> None:
 
 _carica_dotenv()
 
+import threading
+
 from .agents import costruisci_agenti, implementazioni
 from .config import carica_config
 from .llm.client import ClaudeClient
@@ -130,13 +132,39 @@ def main(argv: list[str]) -> int:
                         help="Mostra stato SAR salvato su disco")
     parser.add_argument("--no-api", action="store_true",
                         help="Forza stub-only: zero chiamate API, zero spesa")
+    parser.add_argument("--backup", action="store_true",
+                        help="Salva snapshot completo dello stato in output/backups/")
+    parser.add_argument("--restore", metavar="FILE",
+                        help="Ripristina backup da FILE")
+    parser.add_argument("--lista-backup", action="store_true",
+                        help="Elenca i backup disponibili")
     parser.add_argument("--economia", action="store_true",
                         help="Solo Gemini (free tier) + DeepSeek (low cost), niente Anthropic/OpenAI")
     parser.add_argument("--locale", action="store_true",
                         help="Priorità a Ollama locale (costo zero), fallback Gemini")
     args = parser.parse_args(argv[1:])
 
+    if args.lista_backup:
+        from .backup import lista_backup
+        bk = lista_backup()
+        if not bk:
+            print("Nessun backup trovato in output/backups/")
+        else:
+            print(json.dumps(bk, indent=2, ensure_ascii=False))
+        return 0
+
+    if args.restore:
+        from .backup import ripristina_backup
+        esito = ripristina_backup(args.restore)
+        print(json.dumps(esito, indent=2, ensure_ascii=False))
+        return 0
+
     orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
+
+    # Startup: aggiorna circuit breaker in base allo stato reale dei provider
+    threading.Thread(
+        target=health.aggiorna_circuit_breaker, daemon=True
+    ).start()
 
     # --locale: priorità Ollama, blocca tutti i cloud provider costosi
     if args.locale:
@@ -174,10 +202,23 @@ def main(argv: list[str]) -> int:
 
     if args.health:
         riepilogo = health.riepilogo()
+        # Aggiorna anche il circuit breaker con i risultati del ping
+        azioni_cb = health.aggiorna_circuit_breaker()
         riepilogo["circuit_breaker"] = router.stato_circuit_breaker()
+        riepilogo["circuit_breaker_azioni"] = azioni_cb
         riepilogo["vss_size"] = vss.dimensione()
         riepilogo["cache_risposte"] = len(router._resp_cache)
         print(json.dumps(riepilogo, indent=2, ensure_ascii=False))
+        return 0
+
+    if args.backup:
+        from .backup import crea_backup
+        etichetta = "_".join(args.testo) if args.testo else ""
+        dest = crea_backup(
+            memoria=memoria, vss=vss, router=router,
+            config=carica_config(), etichetta=etichetta,
+        )
+        print(json.dumps({"backup": str(dest), "ok": True}, indent=2))
         return 0
 
     testo = " ".join(args.testo) or "Ciao SDQ-1, sei attivo?"
