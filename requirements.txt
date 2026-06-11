@@ -1,9 +1,18 @@
 # LGAI - Life Game AI System
-# Nessuna dipendenza esterna richiesta per versione base!
-# Python 3.7+ è sufficiente
+# Python 3.7+ sufficiente per il core LGAI.
 
-# Opzionali per future features:
-# requests>=2.28.0          # Per Notion API integration
-# python-dateutil>=2.8.2    # Per date parsing avanzato
-# numpy>=1.21.0             # Per analytics avanzati
-# matplotlib>=3.5.0         # Per grafici
+# SDQ-1 (Sistema Di Quadranti, Fase 1+2)
+pyyaml>=6.0
+
+# SDQ-1 multi-provider LLM (tutti opzionali: fallback automatico a stub)
+anthropic>=0.39.0          # Claude (ANTHROPIC_API_KEY)
+openai>=1.50.0             # OpenAI / DeepSeek / Perplexity (compat-API)
+google-genai>=1.0.0        # Gemini (GOOGLE_API_KEY)
+redis>=5.0.0               # Persistenza orchestratore (fallback in-memory)
+
+# Feature opzionali (non richieste per il core):
+# sentence-transformers>=2.2.0   # Embedding MiniLM (sostituisce n-gram TF nel VSS)
+# qdrant-client>=1.7.0           # Vector DB in produzione (sostituisce VSS in-memory)
+# cadquery>=2.4.0                # Sim-to-Real bridge; richiede: conda install -c cadquery cadquery
+# requests>=2.28.0               # Notion API
+# python-dateutil>=2.8.2         # Date parsing avanzato
