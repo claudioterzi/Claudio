@@ -56,3 +56,4 @@ temp/
 .env.*
 *.key
 secrets/
+!output/memorie/
