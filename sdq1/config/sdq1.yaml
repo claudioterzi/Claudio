@@ -32,6 +32,7 @@ modello:
 router:
   regole:
     - profilo: "default"
+      timeout_s: 45        # C: timeout max per questo profilo
       cascata: ["anthropic", "openai", "gemini", "deepseek", "stub"]
       modelli:
         anthropic: "claude-fable-5"
@@ -39,6 +40,7 @@ router:
         gemini: "gemini-2.5-flash"
         deepseek: "deepseek-chat"
     - profilo: "ragionamento"
+      timeout_s: 90        # C: nodi critici hanno più tempo
       cascata: ["anthropic", "openai", "gemini", "deepseek", "stub"]
       modelli:
         anthropic: "claude-fable-5"
@@ -46,12 +48,14 @@ router:
         gemini: "gemini-2.5-flash"
         deepseek: "deepseek-reasoner"
     - profilo: "veloce"
+      timeout_s: 15        # C: decomposizione / sintesi rapida
       cascata: ["anthropic", "gemini", "openai", "stub"]
       modelli:
         anthropic: "claude-haiku-4-5-20251001"
         gemini: "gemini-2.5-flash"
         openai: "gpt-4o-mini"
     - profilo: "ricerca"
+      timeout_s: 60        # C: ricerca web può essere lenta
       cascata: ["perplexity", "openai", "anthropic", "stub"]
       modelli:
         perplexity: "sonar-pro"

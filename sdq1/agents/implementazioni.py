@@ -4,6 +4,10 @@ Tutti gli agenti usano `ClaudeClient` (API reale se chiave presente,
 fallback stub deterministico altrimenti). MEMO-002 usa la memoria
 vettoriale condivisa via `set_contesto_runtime`. SENTIN-004 applica
 filtri pattern + validazione LLM opzionale.
+
+Ottimizzazioni attive:
+  B. Hedging          – agenti critici passano hedging=True al client
+  D. Model Affinity   – payload["provider_vincolo"] viene propagato
 """
 
 from __future__ import annotations
@@ -25,6 +29,23 @@ class AgenteSDQ(AgenteBase):
         self.llm = llm
         self.ruolo = cfg.ruolo
 
+    def _vincolo(self, messaggio: MessaggioAgente) -> str | None:
+        """D: legge provider_vincolo dal payload per l'affinità di modello."""
+        return messaggio.payload.get("provider_vincolo")
+
+    def _metadata_risposta(self, risposta) -> dict[str, Any]:
+        return {
+            "via_api":          risposta.via_api,
+            "provider":         risposta.provider,
+            "modello":          risposta.modello,
+            "latenza_ms":       risposta.metadata.get("latenza_ms"),
+            "input_tokens":     risposta.metadata.get("input_tokens"),
+            "output_tokens":    risposta.metadata.get("output_tokens"),
+            "profilo":          risposta.metadata.get("profilo"),
+            "provider_tentati": risposta.metadata.get("provider_tentati"),
+            "hedged":           risposta.metadata.get("hedged", False),
+        }
+
 
 # ---------- RAFFA-001: Analisi Semantica ----------
 
@@ -44,24 +65,16 @@ class RaffaArchitetto(AgenteSDQ):
             "parole": len(testo.split()),
             "ha_domanda": "?" in testo,
         }
-        risposta = self.llm.completa(self.SISTEMA, testo)
+        risposta = self.llm.completa(
+            self.SISTEMA, testo,
+            hedging=self.critico,
+            provider_vincolo=self._vincolo(messaggio),
+        )
         return RispostaAgente(
             mittente=self.id,
             successo=True,
-            output={
-                "analisi_semantica": analisi_base,
-                "interpretazione": risposta.testo,
-            },
-            metadata={
-                "via_api": risposta.via_api,
-                "provider": risposta.provider,
-                "modello": risposta.modello,
-                "latenza_ms": risposta.metadata.get("latenza_ms"),
-                "input_tokens": risposta.metadata.get("input_tokens"),
-                "output_tokens": risposta.metadata.get("output_tokens"),
-                "profilo": risposta.metadata.get("profilo"),
-                "provider_tentati": risposta.metadata.get("provider_tentati"),
-            },
+            output={"analisi_semantica": analisi_base, "interpretazione": risposta.testo},
+            metadata=self._metadata_risposta(risposta),
         )
 
 
@@ -75,8 +88,11 @@ class DecompAnalista(AgenteSDQ):
 
     def elabora(self, messaggio: MessaggioAgente) -> RispostaAgente:
         testo = messaggio.payload.get("testo", "")
-        risposta = self.llm.completa(self.SISTEMA, testo)
-        # parse semplice
+        risposta = self.llm.completa(
+            self.SISTEMA, testo,
+            hedging=self.critico,
+            provider_vincolo=self._vincolo(messaggio),
+        )
         intenti = [
             riga.strip(" -•*").lstrip("0123456789. ").strip()
             for riga in risposta.testo.splitlines()
@@ -86,16 +102,7 @@ class DecompAnalista(AgenteSDQ):
             mittente=self.id,
             successo=True,
             output={"intenti": intenti[:5] or [testo]},
-            metadata={
-                "via_api": risposta.via_api,
-                "provider": risposta.provider,
-                "modello": risposta.modello,
-                "latenza_ms": risposta.metadata.get("latenza_ms"),
-                "input_tokens": risposta.metadata.get("input_tokens"),
-                "output_tokens": risposta.metadata.get("output_tokens"),
-                "profilo": risposta.metadata.get("profilo"),
-                "provider_tentati": risposta.metadata.get("provider_tentati"),
-            },
+            metadata=self._metadata_risposta(risposta),
         )
 
 
@@ -113,7 +120,6 @@ class MemoCustode(AgenteSDQ):
             {"testo": r.ricordo.testo, "similarita": round(r.similarita, 3)}
             for r in risultati
         ]
-        # registra il nuovo input come ricordo (con limite di crescita)
         if testo and self.memoria.dimensione() < 1000:
             self.memoria.aggiungi(testo, metadata={"origine": "input_utente"})
         return RispostaAgente(
@@ -168,21 +174,16 @@ class GenCompositore(AgenteSDQ):
             f"INTENTI: {p.get('intenti', [])}\n"
             f"CONTESTO: {p.get('contesto_recuperato', [])}\n"
         )
-        risposta = self.llm.completa(self.SISTEMA, prompt)
+        risposta = self.llm.completa(
+            self.SISTEMA, prompt,
+            hedging=self.critico,
+            provider_vincolo=self._vincolo(messaggio),
+        )
         return RispostaAgente(
             mittente=self.id,
             successo=bool(risposta.testo),
             output={"risposta_bozza": risposta.testo},
-            metadata={
-                "via_api": risposta.via_api,
-                "provider": risposta.provider,
-                "modello": risposta.modello,
-                "latenza_ms": risposta.metadata.get("latenza_ms"),
-                "input_tokens": risposta.metadata.get("input_tokens"),
-                "output_tokens": risposta.metadata.get("output_tokens"),
-                "profilo": risposta.metadata.get("profilo"),
-                "provider_tentati": risposta.metadata.get("provider_tentati"),
-            },
+            metadata=self._metadata_risposta(risposta),
         )
 
 
@@ -200,7 +201,11 @@ class WaveMessaggero(AgenteSDQ):
             return RispostaAgente(
                 self.id, True, {"risposta_finale": "", "stile_applicato": False}
             )
-        risposta = self.llm.completa(self.SISTEMA, bozza)
+        risposta = self.llm.completa(
+            self.SISTEMA, bozza,
+            hedging=self.critico,
+            provider_vincolo=self._vincolo(messaggio),
+        )
         return RispostaAgente(
             mittente=self.id,
             successo=True,
@@ -214,7 +219,6 @@ class WaveMessaggero(AgenteSDQ):
 
 # ---------- Registro: factory che ricevono dipendenze runtime ----------
 
-# Dipendenze condivise iniettate da costruisci_agenti_con_dipendenze
 _RUNTIME: dict[str, Any] = {}
 
 
