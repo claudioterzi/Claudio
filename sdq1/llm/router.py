@@ -216,6 +216,13 @@ class LLMRouter:
     # Main entry point                                                     #
     # ------------------------------------------------------------------ #
 
+    def _risposta_debole(self, testo: str) -> bool:
+        """Test-Time Compute: rileva risposte di scarsa qualità che meritano retry."""
+        if not testo or len(testo) < 30:
+            return True
+        stub_markers = ("[stub:", "modalità locale", "provider: stub")
+        return any(m in testo.lower() for m in stub_markers)
+
     def chiama(
         self,
         sistema: str,
@@ -223,6 +230,7 @@ class LLMRouter:
         profilo: str = "default",
         hedging: bool = False,
         provider_vincolo: str | None = None,  # D: Model Affinity
+        budget_tentativi: int = 1,            # Test-Time Compute: retry con prompt arricchito
     ) -> EsitoChiamata:
         regola = self.regole.get(profilo) or self.regole["default"]
 
@@ -259,6 +267,16 @@ class LLMRouter:
             r = prov.completa(sistema, utente)
             ultima = r
             if bool(r.testo) and (nome == "stub" or r.via_api):
+                # Test-Time Compute: se risposta debole e budget > 1, retry con prompt arricchito
+                if budget_tentativi > 1 and self._risposta_debole(r.testo):
+                    utente_arricchito = (
+                        f"{utente}\n\n[APPROFONDISCI: la risposta precedente era insufficiente. "
+                        "Fornisci più dettaglio e precisione.]"
+                    )
+                    r2 = prov.completa(sistema, utente_arricchito)
+                    if not self._risposta_debole(r2.testo):
+                        r2.metadata["test_time_compute"] = True
+                        return EsitoChiamata(risposta=r2, provider_usati=tentati, profilo=profilo)
                 return EsitoChiamata(risposta=r, provider_usati=tentati, profilo=profilo)
             if self._e_rate_limit(r.errore):
                 self._apri_circuit(nome, r.errore or "")

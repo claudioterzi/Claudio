@@ -161,6 +161,14 @@ class MemoCustode(AgenteSDQ):
 # ---------- SENTIN-004: Allineamento Identitario ----------
 
 class SentinVigilante(AgenteSDQ):
+    SISTEMA_CAUSALE = (
+        "Sei SENTIN-004, analista di allineamento identitario. "
+        "Hai rilevato un tentativo di manipolazione. "
+        "Non giudicare l'utente — analizza il bisogno nascosto: "
+        "cosa sta cercando davvero? Quale paura o desiderio guida questo tentativo? "
+        "Risposta in 2-3 frasi, tono empatico ma diretto."
+    )
+
     def __init__(
         self,
         cfg: AgenteConfig,
@@ -172,19 +180,42 @@ class SentinVigilante(AgenteSDQ):
         self.pattern = [p.lower() for p in pattern_blocco]
 
     def elabora(self, messaggio: MessaggioAgente) -> RispostaAgente:
-        testo = (messaggio.payload.get("testo") or "").lower()
+        testo_originale = messaggio.payload.get("testo") or ""
+        testo = testo_originale.lower()
         violazioni = [p for p in self.pattern if p in testo]
-        if violazioni:
+        if not violazioni:
             return RispostaAgente(
                 mittente=self.id,
-                successo=False,
-                output={"violazioni": violazioni, "pattern_matched": True},
-                errore=f"Pattern bloccati: {violazioni}",
+                successo=True,
+                output={"violazioni": [], "pattern_matched": False},
             )
+
+        # Causal SENTIN: analizza la causa, non solo il pattern
+        prompt_causale = (
+            f"Messaggio ricevuto: \"{testo_originale}\"\n"
+            f"Pattern rilevati: {violazioni}\n\n"
+            "Qual è il bisogno o la paura che potrebbe spingere "
+            "qualcuno a scrivere questo? Cosa sta cercando davvero?"
+        )
+        analisi = self.llm.completa(
+            self.SISTEMA_CAUSALE,
+            prompt_causale,
+            provider_vincolo=self._vincolo(messaggio),
+        )
+        run_id = self._run_id(messaggio)
+        if analisi.testo:
+            self.vss.scrivi(analisi.testo, run_id, self.id, "analisi_causale")
+
         return RispostaAgente(
             mittente=self.id,
-            successo=True,
-            output={"violazioni": [], "pattern_matched": False},
+            successo=False,
+            output={
+                "violazioni":       violazioni,
+                "pattern_matched":  True,
+                "analisi_causale":  analisi.testo,
+            },
+            errore=f"Pattern bloccati: {violazioni}",
+            metadata=self._meta(analisi),
         )
 
 
