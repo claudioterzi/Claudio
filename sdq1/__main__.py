@@ -138,11 +138,27 @@ def main(argv: list[str]) -> int:
                         help="Ripristina backup da FILE")
     parser.add_argument("--lista-backup", action="store_true",
                         help="Elenca i backup disponibili")
+    parser.add_argument("--watchdog", action="store_true",
+                        help="Avvia monitor continuo dei nodi (blocca il processo)")
+    parser.add_argument("--intervallo", type=float, default=120.0,
+                        help="Secondi tra i ping del watchdog (default: 120)")
     parser.add_argument("--economia", action="store_true",
                         help="Solo Gemini (free tier) + DeepSeek (low cost), niente Anthropic/OpenAI")
     parser.add_argument("--locale", action="store_true",
                         help="Priorità a Ollama locale (costo zero), fallback Gemini")
     args = parser.parse_args(argv[1:])
+
+    if args.watchdog:
+        from .watchdog import Watchdog
+        wd = Watchdog(health, router, intervallo_s=args.intervallo)
+        print(f"Watchdog avviato — ping ogni {args.intervallo}s — log: output/health_log.jsonl")
+        print("Ctrl+C per fermare.")
+        try:
+            wd.avvia()
+        except KeyboardInterrupt:
+            wd.ferma()
+            print("\nWatchdog fermato.")
+        return 0
 
     if args.lista_backup:
         from .backup import lista_backup
