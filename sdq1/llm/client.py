@@ -24,14 +24,13 @@ class RispostaLLM:
 class ClaudeClient:
     """Compat wrapper. Usa il router; il 'modello' diventa hint per profilo."""
 
-    # Mapping modello-hint -> profilo router
     PROFILI_PER_MODELLO = {
-        "claude-fable-5":           "ragionamento",
-        "claude-opus-4-8":          "ragionamento",
-        "claude-opus-4-7":          "ragionamento",   # retrocompat
-        "claude-sonnet-4-6":        "default",
+        "claude-fable-5":            "ragionamento",
+        "claude-opus-4-8":           "ragionamento",
+        "claude-opus-4-7":           "ragionamento",
+        "claude-sonnet-4-6":         "default",
         "claude-haiku-4-5-20251001": "veloce",
-        "claude-haiku-4-5":         "veloce",
+        "claude-haiku-4-5":          "veloce",
     }
 
     def __init__(self, router: LLMRouter, modello_hint: str | None = None):
@@ -47,8 +46,19 @@ class ClaudeClient:
     def disponibile(self) -> bool:
         return any(self.router.provider_attivi().values())
 
-    def completa(self, sistema: str, utente: str) -> RispostaLLM:
-        esito = self.router.chiama(sistema, utente, profilo=self.profilo)
+    def completa(
+        self,
+        sistema: str,
+        utente: str,
+        hedging: bool = False,
+        provider_vincolo: str | None = None,
+    ) -> RispostaLLM:
+        esito = self.router.chiama(
+            sistema, utente,
+            profilo=self.profilo,
+            hedging=hedging,
+            provider_vincolo=provider_vincolo,
+        )
         r = esito.risposta
         return RispostaLLM(
             testo=r.testo,
@@ -61,5 +71,6 @@ class ClaudeClient:
                 "provider_tentati": esito.provider_usati,
                 "profilo": esito.profilo,
                 "errore": r.errore,
+                "hedged": esito.hedged,
             },
         )

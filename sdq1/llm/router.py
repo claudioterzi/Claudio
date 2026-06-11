@@ -1,8 +1,19 @@
-"""LLMRouter: seleziona il provider con strategie configurabili."""
+"""LLMRouter: seleziona il provider con strategie configurabili.
+
+Ottimizzazioni attive:
+  A. Circuit Breaker  – salta provider in rate-limit per Retry-After secondi
+  B. Hedging          – per nodi critici lancia 2 provider in parallelo
+  C. Dynamic Timeout  – timeout diverso per profilo (governa il hedging)
+  D. Model Affinity   – vincola i nodi successivi al provider già usato
+"""
 
 from __future__ import annotations
 
+import concurrent.futures
 import logging
+import queue
+import re
+import time
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -19,25 +30,27 @@ from .providers import (
 
 log = logging.getLogger(__name__)
 
-
-# Mapping provider_name -> (classe, modello_default)
 PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
-    "anthropic": (AnthropicProvider, "claude-fable-5"),
-    "openai": (OpenAIProvider, "gpt-4o-mini"),
-    "deepseek": (DeepSeekProvider, "deepseek-chat"),
+    "anthropic":  (AnthropicProvider,  "claude-fable-5"),
+    "openai":     (OpenAIProvider,     "gpt-4o-mini"),
+    "deepseek":   (DeepSeekProvider,   "deepseek-chat"),
     "perplexity": (PerplexityProvider, "sonar-pro"),
-    "gemini": (GeminiProvider, "gemini-2.5-flash"),
-    "stub": (StubProvider, "stub-model"),
+    "gemini":     (GeminiProvider,     "gemini-2.5-flash"),
+    "stub":       (StubProvider,       "stub-model"),
 }
+
+_RETRY_AFTER_RE = re.compile(r"retry.after[^\d]*(\d+)", re.IGNORECASE)
+_RATE_PATTERNS = frozenset({
+    "429", "rate limit", "quota exceeded", "too many requests", "resource_exhausted"
+})
 
 
 @dataclass
 class RegolaRouter:
-    """Definisce come scegliere un provider per un dato 'profilo'."""
-
-    profilo: str            # es. "veloce", "ragionamento", "ricerca", "default"
-    cascata: list[str]      # es. ["anthropic", "openai", "stub"]
-    modelli: dict[str, str] = field(default_factory=dict)  # override per provider
+    profilo: str
+    cascata: list[str]
+    modelli: dict[str, str] = field(default_factory=dict)
+    timeout_s: float | None = None   # C: timeout per questo profilo
 
 
 @dataclass
@@ -45,10 +58,19 @@ class EsitoChiamata:
     risposta: RispostaProvider
     provider_usati: list[str]
     profilo: str
+    hedged: bool = False
 
 
 class LLMRouter:
-    """Costruisce provider dalla config e li seleziona via cascata."""
+    # C: timeout di default per profilo (secondi)
+    _TIMEOUT_DEFAULT: dict[str, float] = {
+        "veloce":       15.0,
+        "default":      45.0,
+        "ragionamento": 90.0,
+        "ricerca":      60.0,
+    }
+    # B: attesa prima di lanciare il provider secondario
+    HEDGE_WAIT_S: float = 3.0
 
     def __init__(self, opts_globali: dict[str, Any], regole: list[RegolaRouter]):
         self.opts = opts_globali
@@ -56,67 +78,215 @@ class LLMRouter:
         if "default" not in self.regole:
             raise ValueError("Manca la regola 'default' nel router")
         self._cache: dict[tuple[str, str], ProviderBase] = {}
+        self._circuit: dict[str, float] = {}  # A: provider_name -> expiry timestamp
 
-    def _ottieni(self, provider_name: str, modello: str) -> ProviderBase:
-        chiave = (provider_name, modello)
-        if chiave in self._cache:
-            return self._cache[chiave]
-        if provider_name not in PROVIDER_REGISTRY:
-            raise KeyError(f"Provider sconosciuto: {provider_name}")
-        cls, _ = PROVIDER_REGISTRY[provider_name]
-        prov = cls(modello=modello, api_key=None, **self.opts)
-        self._cache[chiave] = prov
-        return prov
+    # ------------------------------------------------------------------ #
+    # A. Circuit Breaker                                                   #
+    # ------------------------------------------------------------------ #
 
-    def _modello_per(self, regola: RegolaRouter, provider_name: str) -> str:
-        if provider_name in regola.modelli:
-            return regola.modelli[provider_name]
-        return PROVIDER_REGISTRY[provider_name][1]
+    def _circuit_aperto(self, nome: str) -> bool:
+        exp = self._circuit.get(nome)
+        if exp is None:
+            return False
+        if time.time() > exp:
+            del self._circuit[nome]
+            log.info("Circuit Breaker: %s ripristinato", nome)
+            return False
+        return True
 
-    def chiama(self, sistema: str, utente: str, profilo: str = "default") -> EsitoChiamata:
+    def _apri_circuit(self, nome: str, errore: str) -> None:
+        m = _RETRY_AFTER_RE.search(errore)
+        delay = int(m.group(1)) if m else 60
+        delay = max(10, min(delay, 3600))
+        self._circuit[nome] = time.time() + delay
+        log.warning("Circuit Breaker: %s aperto per %ds", nome, delay)
+
+    @staticmethod
+    def _e_rate_limit(errore: str | None) -> bool:
+        if not errore:
+            return False
+        low = errore.lower()
+        return any(k in low for k in _RATE_PATTERNS)
+
+    # ------------------------------------------------------------------ #
+    # Provider cache                                                       #
+    # ------------------------------------------------------------------ #
+
+    def _ottieni(self, nome: str, modello: str) -> ProviderBase:
+        key = (nome, modello)
+        if key not in self._cache:
+            if nome not in PROVIDER_REGISTRY:
+                raise KeyError(f"Provider sconosciuto: {nome}")
+            cls, _ = PROVIDER_REGISTRY[nome]
+            self._cache[key] = cls(modello=modello, api_key=None, **self.opts)
+        return self._cache[key]
+
+    def _modello_per(self, regola: RegolaRouter, nome: str) -> str:
+        return regola.modelli.get(nome, PROVIDER_REGISTRY[nome][1])
+
+    # ------------------------------------------------------------------ #
+    # C. Dynamic timeout                                                   #
+    # ------------------------------------------------------------------ #
+
+    def _timeout_s(self, regola: RegolaRouter) -> float:
+        if regola.timeout_s is not None:
+            return regola.timeout_s
+        return self._TIMEOUT_DEFAULT.get(
+            regola.profilo, float(self.opts.get("timeout_secondi", 60))
+        )
+
+    # ------------------------------------------------------------------ #
+    # B. Hedging                                                           #
+    # ------------------------------------------------------------------ #
+
+    def _chiama_con_hedging(
+        self,
+        sistema: str,
+        utente: str,
+        regola: RegolaRouter,
+        cascata_eff: list[str],
+    ) -> EsitoChiamata:
+        """Lancia primario; dopo HEDGE_WAIT_S avvia secondario; vince il primo."""
+        primario = cascata_eff[0]
+        secondario = cascata_eff[1] if len(cascata_eff) > 1 else None
+        risultati: queue.Queue[tuple[str, RispostaProvider]] = queue.Queue()
+        tentati: list[str] = [primario]
+
+        def _esegui(nome: str) -> None:
+            modello = self._modello_per(regola, nome)
+            try:
+                prov = self._ottieni(nome, modello)
+                r = prov.completa(sistema, utente)
+            except Exception as exc:  # noqa: BLE001
+                r = RispostaProvider(
+                    testo="", provider=nome, modello=modello,
+                    via_api=False, latenza_ms=0, errore=str(exc),
+                )
+            risultati.put((nome, r))
+
+        executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+        try:
+            executor.submit(_esegui, primario)
+
+            # Attendi HEDGE_WAIT_S: se il primario risponde bene, usalo subito
+            try:
+                nome, r = risultati.get(timeout=self.HEDGE_WAIT_S)
+                if r.via_api and r.testo:
+                    return EsitoChiamata(
+                        risposta=r, provider_usati=tentati, profilo=regola.profilo
+                    )
+                if self._e_rate_limit(r.errore):
+                    self._apri_circuit(nome, r.errore or "")
+            except queue.Empty:
+                log.debug(
+                    "Hedging: %s lento (>%.1fs), lancio %s",
+                    primario, self.HEDGE_WAIT_S, secondario,
+                )
+
+            # Lancia il secondario se disponibile e circuit chiuso
+            if secondario and not self._circuit_aperto(secondario):
+                tentati.append(secondario)
+                executor.submit(_esegui, secondario)
+
+            # Accetta il primo risultato valido entro il timeout del profilo
+            scadenza = time.time() + self._timeout_s(regola)
+            while time.time() < scadenza:
+                rimasto = scadenza - time.time()
+                try:
+                    nome, r = risultati.get(timeout=min(rimasto, 2.0))
+                    if r.via_api and r.testo:
+                        return EsitoChiamata(
+                            risposta=r, provider_usati=tentati,
+                            profilo=regola.profilo, hedged=True,
+                        )
+                    if self._e_rate_limit(r.errore):
+                        self._apri_circuit(nome, r.errore or "")
+                except queue.Empty:
+                    continue
+        finally:
+            executor.shutdown(wait=False)
+
+        # Nessun provider ha risposto: fallback stub
+        stub = self._ottieni("stub", "stub-model")
+        r = stub.completa(sistema, utente)
+        tentati.append("stub")
+        return EsitoChiamata(risposta=r, provider_usati=tentati, profilo=regola.profilo)
+
+    # ------------------------------------------------------------------ #
+    # Main entry point                                                     #
+    # ------------------------------------------------------------------ #
+
+    def chiama(
+        self,
+        sistema: str,
+        utente: str,
+        profilo: str = "default",
+        hedging: bool = False,
+        provider_vincolo: str | None = None,  # D: Model Affinity
+    ) -> EsitoChiamata:
         regola = self.regole.get(profilo) or self.regole["default"]
+
+        # D. Model Affinity: sposta il provider vincolato in testa alla cascata
+        cascata = list(regola.cascata)
+        if provider_vincolo and provider_vincolo in cascata and cascata[0] != provider_vincolo:
+            cascata.remove(provider_vincolo)
+            cascata.insert(0, provider_vincolo)
+            log.debug("Affinity: %s → testa cascata per profilo %s", provider_vincolo, profilo)
+
+        # A. Filtra provider con circuit aperto (se tutti aperti, riprova comunque)
+        cascata_eff = [p for p in cascata if not self._circuit_aperto(p)] or cascata
+
+        # B. Hedging per agenti critici (almeno 2 provider reali disponibili)
+        if hedging:
+            disponibili = [
+                p for p in cascata_eff
+                if p != "stub"
+                and self._ottieni(p, self._modello_per(regola, p)).disponibile
+            ]
+            if len(disponibili) >= 2:
+                return self._chiama_con_hedging(sistema, utente, regola, disponibili)
+
+        # Cascata sequenziale standard
         tentati: list[str] = []
         ultima: RispostaProvider | None = None
-        for provider_name in regola.cascata:
-            modello = self._modello_per(regola, provider_name)
-            prov = self._ottieni(provider_name, modello)
-            tentati.append(provider_name)
+        for nome in cascata_eff:
+            modello = self._modello_per(regola, nome)
+            prov = self._ottieni(nome, modello)
+            tentati.append(nome)
             if not prov.disponibile:
-                log.debug("Router: %s non disponibile, prossimo", provider_name)
+                log.debug("Router: %s non disponibile", nome)
                 continue
-            risposta = prov.completa(sistema, utente)
-            ultima = risposta
-            # 'stub' è esplicitamente l'ultima risorsa: si accetta sempre.
-            # Per gli altri, si accetta solo se ha prodotto testo via API.
-            successo = bool(risposta.testo) and (
-                provider_name == "stub" or risposta.via_api
-            )
-            if successo:
-                return EsitoChiamata(
-                    risposta=risposta, provider_usati=tentati, profilo=profilo
-                )
-            log.debug(
-                "Router: %s ha risposto vuoto o errore (%s), prossimo",
-                provider_name,
-                risposta.errore,
-            )
+            r = prov.completa(sistema, utente)
+            ultima = r
+            if bool(r.testo) and (nome == "stub" or r.via_api):
+                return EsitoChiamata(risposta=r, provider_usati=tentati, profilo=profilo)
+            if self._e_rate_limit(r.errore):
+                self._apri_circuit(nome, r.errore or "")
+            log.debug("Router: %s fallito (%s)", nome, r.errore)
+
         if ultima is None:
-            # Nessun provider disponibile: usa stub esplicito
             stub = self._ottieni("stub", "stub-model")
             ultima = stub.completa(sistema, utente)
             tentati.append("stub")
         return EsitoChiamata(risposta=ultima, provider_usati=tentati, profilo=profilo)
 
     def provider_attivi(self) -> dict[str, bool]:
-        """Verifica quali provider sono utilizzabili (cred + SDK)."""
         risultato: dict[str, bool] = {}
-        for name, (cls, modello_default) in PROVIDER_REGISTRY.items():
+        for name, (_, modello_default) in PROVIDER_REGISTRY.items():
             try:
                 prov = self._ottieni(name, modello_default)
                 risultato[name] = prov.disponibile
             except Exception:  # noqa: BLE001
                 risultato[name] = False
         return risultato
+
+    def stato_circuit_breaker(self) -> dict[str, Any]:
+        """A. Stato corrente dei circuit breaker."""
+        ora = time.time()
+        return {
+            n: {"aperto": exp > ora, "ripristino_tra_s": max(0, round(exp - ora, 1))}
+            for n, exp in self._circuit.items()
+        }
 
 
 def crea_router_da_config(opts_globali: dict[str, Any], regole_raw: list[dict]) -> LLMRouter:
@@ -125,6 +295,7 @@ def crea_router_da_config(opts_globali: dict[str, Any], regole_raw: list[dict]) 
             profilo=r["profilo"],
             cascata=r["cascata"],
             modelli=r.get("modelli", {}),
+            timeout_s=r.get("timeout_s"),  # C: dynamic timeout
         )
         for r in regole_raw
     ]

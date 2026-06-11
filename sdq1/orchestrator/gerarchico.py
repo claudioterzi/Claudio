@@ -1,4 +1,9 @@
-"""Orchestratore gerarchico con persistenza opzionale."""
+"""Orchestratore gerarchico con persistenza opzionale.
+
+Ottimizzazione D (Model Affinity): dopo il primo nodo LLM con risposta
+reale, il provider usato viene iniettato nel contesto come
+'provider_vincolo' e tutti i nodi successivi lo ricevono nel payload.
+"""
 
 from __future__ import annotations
 
@@ -82,6 +87,14 @@ class OrchestratoreGerarchico:
                 continue
 
             contesto.update(risposta.output)
+
+            # D. Model Affinity: vincola i nodi successivi al primo provider reale usato
+            if "provider_vincolo" not in contesto:
+                p = (risposta.metadata or {}).get("provider")
+                if p and p != "stub":
+                    contesto["provider_vincolo"] = p
+                    log.debug("Affinity: provider vincolato a '%s' per questo run", p)
+
             self._persisti(esecuzione, contesto, stato="running")
 
         esecuzione.output_finale = contesto
