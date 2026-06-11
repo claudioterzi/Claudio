@@ -124,6 +124,8 @@ def main(argv: list[str]) -> int:
                         help="Genera script CadQuery dall'output WAVE-003")
     parser.add_argument("--conferma", action="store_true",
                         help="Scrive i file su disco (richiesto con --sim-to-real)")
+    parser.add_argument("--sar", metavar="TENSIONE",
+                        help="Ciclo SAR sulla tensione indicata, es. 'Controllo ↔ Fiducia'")
     args = parser.parse_args(argv[1:])
 
     orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
@@ -153,6 +155,18 @@ def main(argv: list[str]) -> int:
         else:
             finale = (esecuzione.output_finale or {}).get("risposta_finale", "")
             print(finale or "(nessuna risposta)")
+        return 0
+
+    if args.sar:
+        from .sar import ScacchieraAutoRiflessiva
+
+        def _llm(sistema: str, utente: str) -> str:
+            return router.chiama(sistema, utente, profilo="default").risposta.testo
+
+        sar = ScacchieraAutoRiflessiva(llm_fn=_llm, vss=vss, soggetto="Claudio")
+        sar.osserva(testo, tag=["input"])
+        report = sar.ciclo_completo(args.sar)
+        print(json.dumps(report, indent=2, ensure_ascii=False, default=str))
         return 0
 
     if args.sim_to_real:
