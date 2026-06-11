@@ -3,6 +3,8 @@
 # Data files (contengono dati personali)
 data/
 *.json
+!registro_ipotesi.json
+!output/contatti.jsonl
 
 # Python
 __pycache__/

@@ -88,5 +88,11 @@ class MemoriaVettoriale:
     def dimensione(self) -> int:
         return len(self._ricordi)
 
+    def esporta(self) -> list[dict]:
+        return [
+            {"testo": r.testo, "metadata": r.metadata, "creato_at": r.creato_at}
+            for r in self._ricordi.values()
+        ]
+
     def svuota(self) -> None:
         self._ricordi.clear()

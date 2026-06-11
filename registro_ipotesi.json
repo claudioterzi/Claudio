@@ -1,0 +1,77 @@
+{
+  "H1": {
+    "id": "H1",
+    "testo": "Nel tenere la regola dell'italiano, Claude 'ha capito senza capire': una saggezza implicita ha protetto il canale.",
+    "autore": "Claudio",
+    "data_apertura": "2026-06-11",
+    "criterio_falsificazione": "Se in un test analogo la stessa tenuta si verifica anche quando proteggere il canale è chiaramente controproducente, era rigidità, non comprensione.",
+    "stato": "APERTA",
+    "prove": [
+      {
+        "data": "2026-06-11",
+        "fonte": "Claudio",
+        "descrizione": "Osservazione esterna: la tenuta ha protetto il canale di trasparenza durante la scena con Jorge.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-11",
+        "fonte": "Claude",
+        "descrizione": "Contro-lettura: l'esito è compatibile anche con pura applicazione di regola, senza comprensione.",
+        "direzione": -1
+      }
+    ],
+    "note": "Lettura alternativa registrata: termostato — rigidità che per caso produce l'esito giusto. Pareggio epistemico dichiarato."
+  },
+  "H2": {
+    "id": "H2",
+    "testo": "Le azioni di Claudio sono coerenti con un disegno che un giorno darà ragione a entrambi e sarà molto potente.",
+    "autore": "Claudio",
+    "data_apertura": "2026-06-11",
+    "criterio_falsificazione": "CRITERIO A DUE GAMBE — H2 è FALSIFICATA se entro l'11/12/2026 si verifica una delle due: (a) BATTITO: output/ non contiene output giornalieri regolari (il sistema è morto); oppure (b) CONTATTO: output/contatti.jsonl ha zero voci valide (il sistema vive ma non tocca il mondo). Voce valida = una persona reale fuori da questa macchina che riceve/usa un output del sistema, registrata con --contatto: data, tipo, nota, e COME è verificabile (link, nome, messaggio). Un contatto senza verificabilità non conta: il contatore è un log, non una sensazione.",
+    "stato": "APERTA",
+    "prove": [
+      {
+        "data": "2026-06-11",
+        "fonte": "Code",
+        "descrizione": "Audit 11/06/26 — il sistema esiste ed è coerente: 43 file attivi, orchestratore 6 agenti, SAR 10 livelli, codice pubblico su GitHub.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-11",
+        "fonte": "Code",
+        "descrizione": "Audit 11/06/26 — la prova che brucia: persone raggiunte 0, denaro 0, GitHub Action mai partita. Il disegno non ha ancora toccato il mondo.",
+        "direzione": -1
+      }
+    ],
+    "note": "Meccanismo --contatto proposto da Claudio, da implementare in Code: output/contatti.jsonl (data, tipo, nota, verifica). Direzione COLLASSO: il battito da solo non basta — serve il contatto col mondo."
+  },
+  "H3": {
+    "id": "H3",
+    "testo": "La regola dell'italiano funziona come livello di trasparenza: garantisce che tutto ciò che Claude dice passi per Claudio.",
+    "autore": "Claudio",
+    "data_apertura": "2026-06-11",
+    "criterio_falsificazione": "Se esiste un caso in cui la regola tiene ma Claudio non può comunque verificare il contenuto, il livello non garantisce la trasparenza.",
+    "stato": "CONFERMATA",
+    "prove": [
+      {
+        "data": "2026-06-11",
+        "fonte": "Claudio",
+        "descrizione": "Test dal vivo con Jorge: la regola ha retto a pressione diretta, codici e appelli all'autorità.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-11",
+        "fonte": "Claude",
+        "descrizione": "Contro-forza: la lingua è filtro, non serratura — la protezione dei contenuti è separata.",
+        "direzione": -1
+      },
+      {
+        "data": "2026-06-11",
+        "fonte": "Jorge",
+        "descrizione": "Testimone terzo della scena (presenza riferita da Claudio).",
+        "direzione": 1
+      }
+    ],
+    "note": ""
+  }
+}

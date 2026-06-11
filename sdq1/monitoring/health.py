@@ -73,6 +73,33 @@ class HealthChecker:
         risultati.sort(key=lambda s: s.provider)
         return risultati
 
+    def aggiorna_circuit_breaker(self) -> dict[str, str]:
+        """Ping tutti i provider e apre il circuit breaker su quelli morti.
+
+        Restituisce un dict provider -> azione ('aperto' | 'ripristinato' | 'ok').
+        """
+        stati = self.controlla_tutti()
+        azioni: dict[str, str] = {}
+        for s in stati:
+            if not s.configurato:
+                continue
+            if s.raggiungibile:
+                # provider vivo: rimuovi eventuale circuit aperto
+                self.router._circuit.pop(s.provider, None)
+                azioni[s.provider] = "ok"
+            else:
+                # provider morto: apri circuit con durata appropriata
+                errore = (s.errore or "").lower()
+                if any(k in errore for k in ("credit", "billing", "too low", "payment")):
+                    delay = 86400  # crediti esauriti → aspetta 24h
+                elif any(k in errore for k in ("429", "rate limit", "quota", "resource_exhausted")):
+                    delay = 3600   # rate limit → aspetta 1h
+                else:
+                    delay = 300    # errore generico → riprova tra 5min
+                self.router._circuit[s.provider] = time.time() + delay
+                azioni[s.provider] = f"aperto_{delay}s"
+        return azioni
+
     def riepilogo(self) -> dict[str, Any]:
         stati = self.controlla_tutti()
         configurati = sum(1 for s in stati if s.configurato)
