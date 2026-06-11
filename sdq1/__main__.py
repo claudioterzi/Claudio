@@ -126,9 +126,36 @@ def main(argv: list[str]) -> int:
                         help="Scrive i file su disco (richiesto con --sim-to-real)")
     parser.add_argument("--sar", metavar="TENSIONE",
                         help="Ciclo SAR sulla tensione indicata, es. 'Controllo ↔ Fiducia'")
+    parser.add_argument("--sar-stato", action="store_true",
+                        help="Mostra stato SAR salvato su disco")
+    parser.add_argument("--no-api", action="store_true",
+                        help="Forza stub-only: zero chiamate API, zero spesa")
     args = parser.parse_args(argv[1:])
 
     orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
+
+    # --no-api: disabilita tutti i provider reali, solo stub
+    if args.no_api:
+        from .llm.router import PROVIDER_REGISTRY
+        from .llm.providers.stub_provider import StubProvider
+        router._cache.clear()
+        for name in list(PROVIDER_REGISTRY):
+            if name != "stub":
+                router._circuit[name] = time.time() + 86400  # aperto per 24h
+
+    if args.sar_stato:
+        from .sar import PersistenzaSAR, report_stato
+        p = PersistenzaSAR(soggetto="Claudio")
+        info = p.info()
+        if not info["esiste"]:
+            print("Nessuno stato SAR salvato. Usa --sar per avviare il primo ciclo.")
+        else:
+            from .sar import ScacchieraAutoRiflessiva
+            sar_tmp = ScacchieraAutoRiflessiva(llm_fn=None, vss=vss, soggetto="Claudio")
+            print(report_stato(sar_tmp.stato(), soggetto="Claudio"))
+            print(f"File: {info['file_stato']}")
+            print(f"Report salvati: {info['report']}")
+        return 0
 
     if args.health:
         riepilogo = health.riepilogo()
@@ -158,15 +185,19 @@ def main(argv: list[str]) -> int:
         return 0
 
     if args.sar:
-        from .sar import ScacchieraAutoRiflessiva
+        from .sar import ScacchieraAutoRiflessiva, report_ciclo
 
         def _llm(sistema: str, utente: str) -> str:
             return router.chiama(sistema, utente, profilo="default").risposta.testo
 
         sar = ScacchieraAutoRiflessiva(llm_fn=_llm, vss=vss, soggetto="Claudio")
-        sar.osserva(testo, tag=["input"])
+        if testo:
+            sar.osserva(testo, tag=["input"])
         report = sar.ciclo_completo(args.sar)
-        print(json.dumps(report, indent=2, ensure_ascii=False, default=str))
+        print(report_ciclo(report, soggetto="Claudio"))
+        azione = sar.genera_azione(report.get("sintesi", ""))
+        print("AZIONE CONCRETA (Livello 9)\n" + "─" * 60)
+        print(azione)
         return 0
 
     if args.sim_to_real:
