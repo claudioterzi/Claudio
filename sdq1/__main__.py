@@ -37,6 +37,8 @@ def _carica_dotenv() -> None:
 
 _carica_dotenv()
 
+import threading
+
 from .agents import costruisci_agenti, implementazioni
 from .config import carica_config
 from .llm.client import ClaudeClient
@@ -130,14 +132,100 @@ def main(argv: list[str]) -> int:
                         help="Mostra stato SAR salvato su disco")
     parser.add_argument("--no-api", action="store_true",
                         help="Forza stub-only: zero chiamate API, zero spesa")
+    parser.add_argument("--backup", action="store_true",
+                        help="Salva snapshot completo dello stato in output/backups/")
+    parser.add_argument("--restore", metavar="FILE",
+                        help="Ripristina backup da FILE")
+    parser.add_argument("--lista-backup", action="store_true",
+                        help="Elenca i backup disponibili")
+    parser.add_argument("--watchdog", action="store_true",
+                        help="Avvia monitor continuo dei nodi (blocca il processo)")
+    parser.add_argument("--intervallo", type=float, default=120.0,
+                        help="Secondi tra i ping del watchdog (default: 120)")
+    parser.add_argument("--contatto", action="store_true",
+                        help="Registra un contatto reale in output/contatti.jsonl (criterio H2)")
+    parser.add_argument("--tipo", default="",
+                        help="Tipo contatto: lettore, cliente, uso, condivisione, ...")
+    parser.add_argument("--nota", default="",
+                        help="Descrizione del contatto")
+    parser.add_argument("--verifica", default="",
+                        help="Come è verificabile (link, nome, messaggio, ecc.)")
+    parser.add_argument("--economia", action="store_true",
+                        help="Solo Gemini (free tier) + DeepSeek (low cost), niente Anthropic/OpenAI")
+    parser.add_argument("--locale", action="store_true",
+                        help="Priorità a Ollama locale (costo zero), fallback Gemini")
     args = parser.parse_args(argv[1:])
 
+    if args.watchdog:
+        from .watchdog import Watchdog
+        wd = Watchdog(health, router, intervallo_s=args.intervallo)
+        print(f"Watchdog avviato — ping ogni {args.intervallo}s — log: output/health_log.jsonl")
+        print("Ctrl+C per fermare.")
+        try:
+            wd.avvia()
+        except KeyboardInterrupt:
+            wd.ferma()
+            print("\nWatchdog fermato.")
+        return 0
+
+    if args.contatto:
+        _contatti = Path("output/contatti.jsonl")
+        _contatti.parent.mkdir(parents=True, exist_ok=True)
+        if not args.nota or not args.verifica:
+            print("Uso: sdq1 --contatto --tipo <tipo> --nota <descrizione> --verifica <come_verificabile>")
+            print("Esempio: sdq1 --contatto --tipo lettore --nota 'Marco ha letto il README' --verifica 'github star claudioterzi/Claudio'")
+            return 1
+        voce = {
+            "data": time.strftime("%Y-%m-%d"),
+            "ora": time.strftime("%H:%M:%S"),
+            "tipo": args.tipo or "generico",
+            "nota": args.nota,
+            "verifica": args.verifica,
+        }
+        with _contatti.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(voce, ensure_ascii=False) + "\n")
+        totale = sum(1 for _ in _contatti.read_text(encoding="utf-8").splitlines() if _)
+        print(json.dumps({"registrato": voce, "totale_contatti": totale}, indent=2, ensure_ascii=False))
+        print(f"\n[H2] Contatori aggiornati: {totale} contatto/i verificabile/i.")
+        return 0
+
+    if args.lista_backup:
+        from .backup import lista_backup
+        bk = lista_backup()
+        if not bk:
+            print("Nessun backup trovato in output/backups/")
+        else:
+            print(json.dumps(bk, indent=2, ensure_ascii=False))
+        return 0
+
+    if args.restore:
+        from .backup import ripristina_backup
+        esito = ripristina_backup(args.restore)
+        print(json.dumps(esito, indent=2, ensure_ascii=False))
+        return 0
+
     orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
+
+    # Startup: aggiorna circuit breaker in base allo stato reale dei provider
+    threading.Thread(
+        target=health.aggiorna_circuit_breaker, daemon=True
+    ).start()
+
+    # --locale: priorità Ollama, blocca tutti i cloud provider costosi
+    if args.locale:
+        _cloud_costosi = {"anthropic", "openai", "perplexity", "deepseek"}
+        for name in _cloud_costosi:
+            router._circuit[name] = time.time() + 86400
+
+    # --economia: solo Gemini (free) e DeepSeek (cheap), blocca provider costosi
+    if args.economia:
+        _costosi = {"anthropic", "openai", "perplexity"}
+        for name in _costosi:
+            router._circuit[name] = time.time() + 86400
 
     # --no-api: disabilita tutti i provider reali, solo stub
     if args.no_api:
         from .llm.router import PROVIDER_REGISTRY
-        from .llm.providers.stub_provider import StubProvider
         router._cache.clear()
         for name in list(PROVIDER_REGISTRY):
             if name != "stub":
@@ -159,9 +247,28 @@ def main(argv: list[str]) -> int:
 
     if args.health:
         riepilogo = health.riepilogo()
+        # Aggiorna anche il circuit breaker con i risultati del ping
+        azioni_cb = health.aggiorna_circuit_breaker()
         riepilogo["circuit_breaker"] = router.stato_circuit_breaker()
+        riepilogo["circuit_breaker_azioni"] = azioni_cb
         riepilogo["vss_size"] = vss.dimensione()
+        riepilogo["cache_risposte"] = len(router._resp_cache)
+        _cf = Path("output/contatti.jsonl")
+        riepilogo["h2_contatti_verificabili"] = (
+            sum(1 for _ in _cf.read_text(encoding="utf-8").splitlines() if _)
+            if _cf.exists() else 0
+        )
         print(json.dumps(riepilogo, indent=2, ensure_ascii=False))
+        return 0
+
+    if args.backup:
+        from .backup import crea_backup
+        etichetta = "_".join(args.testo) if args.testo else ""
+        dest = crea_backup(
+            memoria=memoria, vss=vss, router=router,
+            config=carica_config(), etichetta=etichetta,
+        )
+        print(json.dumps({"backup": str(dest), "ok": True}, indent=2))
         return 0
 
     testo = " ".join(args.testo) or "Ciao SDQ-1, sei attivo?"
