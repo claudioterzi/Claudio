@@ -67,6 +67,12 @@ router:
       modelli:
         gemini: "gemini-2.5-flash"
         deepseek: "deepseek-chat"
+    - profilo: "locale"
+      timeout_s: 120       # modelli locali possono essere più lenti
+      cascata: ["ollama", "gemini", "stub"]
+      modelli:
+        ollama: "llama3.2"
+        gemini: "gemini-2.5-flash"
 
 caselle_attive:
   - 0    # Analisi Semantica         -> RAFFA-001

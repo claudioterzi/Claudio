@@ -3,6 +3,7 @@ from .stub_provider import StubProvider
 from .anthropic_provider import AnthropicProvider
 from .openai_provider import OpenAIProvider, DeepSeekProvider, PerplexityProvider
 from .gemini_provider import GeminiProvider
+from .ollama_provider import OllamaProvider
 
 __all__ = [
     "ProviderBase",
@@ -13,4 +14,5 @@ __all__ = [
     "DeepSeekProvider",
     "PerplexityProvider",
     "GeminiProvider",
+    "OllamaProvider",
 ]
