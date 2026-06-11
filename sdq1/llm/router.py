@@ -45,7 +45,8 @@ PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
 
 _RETRY_AFTER_RE = re.compile(r"retry.after[^\d]*(\d+)", re.IGNORECASE)
 _RATE_PATTERNS = frozenset({
-    "429", "rate limit", "quota exceeded", "too many requests", "resource_exhausted"
+    "429", "rate limit", "quota exceeded", "too many requests", "resource_exhausted",
+    "credit balance is too low", "billing", "insufficient_quota",
 })
 
 

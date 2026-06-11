@@ -90,3 +90,6 @@ class VectorStateStore:
     def ptr_del_run(self, run_id: str) -> list[str]:
         """Elenca tutti i pointer appartenenti a un run."""
         return [p for p in self._idx if p.startswith(f"{run_id}:")]
+
+    def esporta(self) -> list[dict]:
+        return [{"ptr": ptr, "testo": testo} for ptr, testo in self._idx.items()]
