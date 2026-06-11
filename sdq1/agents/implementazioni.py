@@ -2,12 +2,14 @@
 
 Tutti gli agenti usano `ClaudeClient` (API reale se chiave presente,
 fallback stub deterministico altrimenti). MEMO-002 usa la memoria
-vettoriale condivisa via `set_contesto_runtime`. SENTIN-004 applica
+vettoriale condivisa via `imposta_runtime`. SENTIN-004 applica
 filtri pattern + validazione LLM opzionale.
 
 Ottimizzazioni attive:
   B. Hedging          – agenti critici passano hedging=True al client
   D. Model Affinity   – payload["provider_vincolo"] viene propagato
+  VSS                 – agenti scrivono output nel VectorStateStore;
+                        GEN-006 interroga il VSS per arricchire il contesto
 """
 
 from __future__ import annotations
@@ -19,21 +21,26 @@ from .registry import registra
 from ..config.loader import AgenteConfig
 from ..llm.client import ClaudeClient
 from ..memory.store import MemoriaVettoriale
+from ..memory.vss import VectorStateStore
 
 
 class AgenteSDQ(AgenteBase):
-    """Base condivisa che incapsula il client LLM."""
+    """Base condivisa con client LLM e accesso al VectorStateStore."""
 
-    def __init__(self, cfg: AgenteConfig, llm: ClaudeClient):
+    def __init__(self, cfg: AgenteConfig, llm: ClaudeClient, vss: VectorStateStore):
         super().__init__(cfg.id, cfg.casella, cfg.modello, cfg.critico)
         self.llm = llm
+        self.vss = vss
         self.ruolo = cfg.ruolo
 
+    def _run_id(self, messaggio: MessaggioAgente) -> str:
+        return messaggio.payload.get("_run_id", "run_unknown")
+
     def _vincolo(self, messaggio: MessaggioAgente) -> str | None:
-        """D: legge provider_vincolo dal payload per l'affinità di modello."""
+        """D: Model Affinity — legge il provider vincolato dal payload."""
         return messaggio.payload.get("provider_vincolo")
 
-    def _metadata_risposta(self, risposta) -> dict[str, Any]:
+    def _meta(self, risposta) -> dict[str, Any]:
         return {
             "via_api":          risposta.via_api,
             "provider":         risposta.provider,
@@ -62,7 +69,7 @@ class RaffaArchitetto(AgenteSDQ):
             return RispostaAgente(self.id, False, {}, errore="testo vuoto")
         analisi_base = {
             "lunghezza": len(testo),
-            "parole": len(testo.split()),
+            "parole":    len(testo.split()),
             "ha_domanda": "?" in testo,
         }
         risposta = self.llm.completa(
@@ -70,11 +77,17 @@ class RaffaArchitetto(AgenteSDQ):
             hedging=self.critico,
             provider_vincolo=self._vincolo(messaggio),
         )
+        run_id = self._run_id(messaggio)
+        ptr = self.vss.scrivi(risposta.testo, run_id, self.id, "interpretazione")
         return RispostaAgente(
             mittente=self.id,
             successo=True,
-            output={"analisi_semantica": analisi_base, "interpretazione": risposta.testo},
-            metadata=self._metadata_risposta(risposta),
+            output={
+                "analisi_semantica":      analisi_base,
+                "interpretazione":        risposta.testo,
+                "interpretazione_ptr":    ptr,
+            },
+            metadata=self._meta(risposta),
         )
 
 
@@ -98,19 +111,28 @@ class DecompAnalista(AgenteSDQ):
             for riga in risposta.testo.splitlines()
             if riga.strip()
         ]
+        intenti = intenti[:5] or [testo]
+        run_id = self._run_id(messaggio)
+        ptr = self.vss.scrivi("\n".join(intenti), run_id, self.id, "intenti")
         return RispostaAgente(
             mittente=self.id,
             successo=True,
-            output={"intenti": intenti[:5] or [testo]},
-            metadata=self._metadata_risposta(risposta),
+            output={"intenti": intenti, "intenti_ptr": ptr},
+            metadata=self._meta(risposta),
         )
 
 
 # ---------- MEMO-002: Memoria RAG ----------
 
 class MemoCustode(AgenteSDQ):
-    def __init__(self, cfg: AgenteConfig, llm: ClaudeClient, memoria: MemoriaVettoriale):
-        super().__init__(cfg, llm)
+    def __init__(
+        self,
+        cfg: AgenteConfig,
+        llm: ClaudeClient,
+        vss: VectorStateStore,
+        memoria: MemoriaVettoriale,
+    ):
+        super().__init__(cfg, llm, vss)
         self.memoria = memoria
 
     def elabora(self, messaggio: MessaggioAgente) -> RispostaAgente:
@@ -122,12 +144,16 @@ class MemoCustode(AgenteSDQ):
         ]
         if testo and self.memoria.dimensione() < 1000:
             self.memoria.aggiungi(testo, metadata={"origine": "input_utente"})
+        run_id = self._run_id(messaggio)
+        blob = "\n".join(c["testo"] for c in contesto)
+        ptr = self.vss.scrivi(blob, run_id, self.id, "contesto_rag") if blob else ""
         return RispostaAgente(
             mittente=self.id,
             successo=True,
             output={
                 "contesto_recuperato": contesto,
-                "ricordi_totali": self.memoria.dimensione(),
+                "contesto_rag_ptr":    ptr,
+                "ricordi_totali":      self.memoria.dimensione(),
             },
         )
 
@@ -135,8 +161,14 @@ class MemoCustode(AgenteSDQ):
 # ---------- SENTIN-004: Allineamento Identitario ----------
 
 class SentinVigilante(AgenteSDQ):
-    def __init__(self, cfg: AgenteConfig, llm: ClaudeClient, pattern_blocco: list[str]):
-        super().__init__(cfg, llm)
+    def __init__(
+        self,
+        cfg: AgenteConfig,
+        llm: ClaudeClient,
+        vss: VectorStateStore,
+        pattern_blocco: list[str],
+    ):
+        super().__init__(cfg, llm, vss)
         self.pattern = [p.lower() for p in pattern_blocco]
 
     def elabora(self, messaggio: MessaggioAgente) -> RispostaAgente:
@@ -168,22 +200,30 @@ class GenCompositore(AgenteSDQ):
 
     def elabora(self, messaggio: MessaggioAgente) -> RispostaAgente:
         p = messaggio.payload
+        run_id = self._run_id(messaggio)
+
+        # VSS: arricchisci il contesto con contenuti rilevanti di questo run
+        testo_query = p.get("testo", "")
+        extra_vss = self.vss.cerca_nel_run(testo_query, run_id, top_k=3)
+
         prompt = (
-            f"INPUT UTENTE: {p.get('testo', '')}\n"
+            f"INPUT UTENTE: {testo_query}\n"
             f"INTERPRETAZIONE: {p.get('interpretazione', '(assente)')}\n"
             f"INTENTI: {p.get('intenti', [])}\n"
-            f"CONTESTO: {p.get('contesto_recuperato', [])}\n"
+            f"CONTESTO RAG: {p.get('contesto_recuperato', [])}\n"
+            + (f"CONTESTO AGGIUNTIVO VSS: {extra_vss}\n" if extra_vss else "")
         )
         risposta = self.llm.completa(
             self.SISTEMA, prompt,
             hedging=self.critico,
             provider_vincolo=self._vincolo(messaggio),
         )
+        ptr = self.vss.scrivi(risposta.testo, run_id, self.id, "risposta_bozza")
         return RispostaAgente(
             mittente=self.id,
             successo=bool(risposta.testo),
-            output={"risposta_bozza": risposta.testo},
-            metadata=self._metadata_risposta(risposta),
+            output={"risposta_bozza": risposta.testo, "risposta_bozza_ptr": ptr},
+            metadata=self._meta(risposta),
         )
 
 
@@ -206,13 +246,16 @@ class WaveMessaggero(AgenteSDQ):
             hedging=self.critico,
             provider_vincolo=self._vincolo(messaggio),
         )
+        run_id = self._run_id(messaggio)
+        ptr = self.vss.scrivi(risposta.testo or bozza, run_id, self.id, "risposta_finale")
         return RispostaAgente(
             mittente=self.id,
             successo=True,
             output={
-                "risposta_finale": risposta.testo or bozza,
-                "stile_applicato": risposta.via_api,
-                "stile": {"tono": "calmo", "formalita": "media"},
+                "risposta_finale":     risposta.testo or bozza,
+                "risposta_finale_ptr": ptr,
+                "stile_applicato":     risposta.via_api,
+                "stile":               {"tono": "calmo", "formalita": "media"},
             },
         )
 
@@ -222,41 +265,51 @@ class WaveMessaggero(AgenteSDQ):
 _RUNTIME: dict[str, Any] = {}
 
 
-def imposta_runtime(*, llm_factory, memoria: MemoriaVettoriale, pattern_blocco: list[str]):
+def imposta_runtime(
+    *,
+    llm_factory,
+    memoria: MemoriaVettoriale,
+    vss: VectorStateStore,
+    pattern_blocco: list[str],
+):
     _RUNTIME["llm_factory"] = llm_factory
     _RUNTIME["memoria"] = memoria
+    _RUNTIME["vss"] = vss
     _RUNTIME["pattern_blocco"] = pattern_blocco
 
 
 def _llm(cfg: AgenteConfig) -> ClaudeClient:
     return _RUNTIME["llm_factory"](cfg.modello)
 
+def _vss() -> VectorStateStore:
+    return _RUNTIME["vss"]
+
 
 @registra("RAFFA-001")
 def _make_raffa(cfg: AgenteConfig) -> AgenteBase:
-    return RaffaArchitetto(cfg, _llm(cfg))
+    return RaffaArchitetto(cfg, _llm(cfg), _vss())
 
 
 @registra("DECOMP-005")
 def _make_decomp(cfg: AgenteConfig) -> AgenteBase:
-    return DecompAnalista(cfg, _llm(cfg))
+    return DecompAnalista(cfg, _llm(cfg), _vss())
 
 
 @registra("MEMO-002")
 def _make_memo(cfg: AgenteConfig) -> AgenteBase:
-    return MemoCustode(cfg, _llm(cfg), _RUNTIME["memoria"])
+    return MemoCustode(cfg, _llm(cfg), _vss(), _RUNTIME["memoria"])
 
 
 @registra("SENTIN-004")
 def _make_sentin(cfg: AgenteConfig) -> AgenteBase:
-    return SentinVigilante(cfg, _llm(cfg), _RUNTIME["pattern_blocco"])
+    return SentinVigilante(cfg, _llm(cfg), _vss(), _RUNTIME["pattern_blocco"])
 
 
 @registra("GEN-006")
 def _make_gen(cfg: AgenteConfig) -> AgenteBase:
-    return GenCompositore(cfg, _llm(cfg))
+    return GenCompositore(cfg, _llm(cfg), _vss())
 
 
 @registra("WAVE-003")
 def _make_wave(cfg: AgenteConfig) -> AgenteBase:
-    return WaveMessaggero(cfg, _llm(cfg))
+    return WaveMessaggero(cfg, _llm(cfg), _vss())
