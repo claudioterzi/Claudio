@@ -9,6 +9,7 @@ from .contraddittore import ContraddittoreSDQ, RapportoContraddizione
 from .archivio_vivente import ArchivioVivente
 from .predittivo import SARPredittivo, ProiezionePredittiva, Scenario
 from .radar_emozionale import RadarEmozionale
+from .sognatore import SognatoreSDQ, VisioneSognatrice
 
 __all__ = [
     "ScacchieraAutoRiflessiva",
@@ -31,4 +32,6 @@ __all__ = [
     "ProiezionePredittiva",
     "Scenario",
     "RadarEmozionale",
+    "SognatoreSDQ",
+    "VisioneSognatrice",
 ]
