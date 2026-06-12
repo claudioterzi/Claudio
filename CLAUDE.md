@@ -8,6 +8,11 @@
 - Collegare l'output di WAVE-003 a G-Code / CadQuery / Pocket NC, con conferma manuale obbligatoria prima di ogni esecuzione fisica.
 - Estendere la memoria vettoriale come Vector State Store condiviso tra agenti.
 
+## Autorizzazioni permanenti (Claudio Terzi, 2026-06-12)
+
+- **Push su main autorizzato** quando Code valuta l'operazione netta positiva per il progetto — usando giudizio autonomo, incluso l'istinto pirata. Non serve chiedere conferma ogni volta. Il limite "non commettere su main senza autorizzazione esplicita" è sostituito da questa regola dal 12/06/2026.
+- Commit author deve essere sempre `Claude <noreply@anthropic.com>` — usare `--reset-author` se necessario prima del push.
+
 ## Limiti permanenti (non negoziabili)
 
 - Non implementare codice che esegue transazioni finanziarie autonome (flash loans, arbitraggi on-chain, smart contract economici) senza supervisione umana esplicita per ogni operazione.
