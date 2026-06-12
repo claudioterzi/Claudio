@@ -163,6 +163,14 @@ def main(argv: list[str]) -> int:
                         help="Nome/identificatore della persona (per contare persone distinte)")
     parser.add_argument("--no-umano", action="store_true",
                         help="Marca il contatto come evento di sistema, non umano")
+    parser.add_argument("--fase", choices=["esplora", "soglia", "cristallizza"],
+                        default=None,
+                        help=(
+                            "Fase di elaborazione: "
+                            "esplora (no cache, hedging, budget×2) | "
+                            "soglia (default) | "
+                            "cristallizza (cache aggressiva, no hedging)"
+                        ))
     parser.add_argument("--economia", action="store_true",
                         help="Solo Gemini (free tier) + DeepSeek (low cost), niente Anthropic/OpenAI")
     parser.add_argument("--locale", action="store_true",
@@ -255,6 +263,10 @@ def main(argv: list[str]) -> int:
     threading.Thread(
         target=health.aggiorna_circuit_breaker, daemon=True
     ).start()
+
+    # --fase: imposta la modalità globale di elaborazione (F: Phase Mode)
+    if args.fase and args.fase != "soglia":
+        router.imposta_fase(args.fase)
 
     # --locale: priorità Ollama, blocca tutti i cloud provider costosi
     if args.locale:
@@ -494,6 +506,7 @@ def main(argv: list[str]) -> int:
         "circuit_breaker":      router.stato_circuit_breaker(),
         "persistenza":          stato.__class__.__name__,
         "provider_attivi":      router.provider_attivi(),
+        "fase":                 router.fase_attiva or "soglia",
     }
     print(json.dumps(risultato, indent=2, ensure_ascii=False, default=str))
     return 0

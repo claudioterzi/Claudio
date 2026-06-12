@@ -6,6 +6,7 @@ Ottimizzazioni attive:
   C. Dynamic Timeout  – timeout diverso per profilo (governa il hedging)
   D. Model Affinity   – vincola i nodi successivi al provider già usato
   E. Response Cache   – evita chiamate duplicate entro TTL (default 5 min)
+  F. Phase Mode       – esplora/soglia/cristallizza cambiano il comportamento globale
 """
 
 from __future__ import annotations
@@ -17,7 +18,9 @@ import queue
 import re
 import time
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Literal
+
+FaseElaborazione = Literal["esplora", "soglia", "cristallizza"]
 
 from .providers import (
     AnthropicProvider,
@@ -88,6 +91,27 @@ class LLMRouter:
         self._cache: dict[tuple[str, str], ProviderBase] = {}
         self._circuit: dict[str, float] = {}      # A: provider_name -> expiry timestamp
         self._resp_cache: dict[str, tuple[RispostaProvider, float]] = {}  # E: response cache
+        self.fase_attiva: FaseElaborazione | None = None  # F: Phase Mode
+
+    # ------------------------------------------------------------------ #
+    # F. Phase Mode                                                        #
+    # ------------------------------------------------------------------ #
+
+    def imposta_fase(self, fase: FaseElaborazione) -> None:
+        """F: imposta la fase globale di elaborazione.
+
+        esplora      – no cache, hedging attivo, budget_tentativi=2
+                       (massima esplorazione, risposta più ricca)
+        soglia       – comportamento di default (nessuna modifica)
+        cristallizza – cache aggressiva, no hedging, budget=1
+                       (velocità e coerenza, evita variabilità)
+        """
+        if fase not in ("esplora", "soglia", "cristallizza"):
+            raise ValueError(
+                f"Fase sconosciuta: '{fase}'. Valori validi: esplora | soglia | cristallizza"
+            )
+        self.fase_attiva = fase
+        log.info("F. Phase Mode attivo: %s", fase)
 
     # ------------------------------------------------------------------ #
     # E. Response Cache                                                    #
@@ -266,6 +290,17 @@ class LLMRouter:
         budget_tentativi: int = 1,            # Test-Time Compute: retry con prompt arricchito
         cache: bool = True,                   # E: Response Cache
     ) -> EsitoChiamata:
+        # F. Phase Mode: applica preset basati sulla fase globale attiva
+        if self.fase_attiva == "esplora":
+            cache = False
+            hedging = True
+            budget_tentativi = max(budget_tentativi, 2)
+        elif self.fase_attiva == "cristallizza":
+            cache = True
+            hedging = False
+            budget_tentativi = 1
+        # "soglia" o None = comportamento di default, nessuna modifica
+
         regola = self.regole.get(profilo) or self.regole["default"]
 
         # E. Response Cache: restituisce risposta cached se disponibile
