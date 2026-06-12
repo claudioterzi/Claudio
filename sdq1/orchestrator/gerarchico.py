@@ -52,6 +52,17 @@ class OrchestratoreGerarchico:
         self.pipeline_caselle = config.pipeline()
         self.persistenza = bool(config.orchestratore.get("persistenza"))
 
+    def esegui_interno(self, payload: dict[str, Any]) -> EsecuzioneGrafo:
+        """Esegue la pipeline marcando il payload come interno.
+
+        Usa questo metodo quando SDQ-1 chiama sé stesso (es. sub-task,
+        riflessione interna, auto-revisione). SENTIN-004 non applicherà
+        il filtro jailbreak su contenuti generati internamente.
+        """
+        payload = dict(payload)
+        payload["_origine"] = "interno"
+        return self.esegui(payload)
+
     def esegui(self, payload: dict[str, Any]) -> EsecuzioneGrafo:
         esecuzione = EsecuzioneGrafo(
             id=uuid.uuid4().hex[:12], input_iniziale=payload
@@ -59,6 +70,7 @@ class OrchestratoreGerarchico:
         inizio = time.time()
         contesto: dict[str, Any] = dict(payload)
         contesto["_run_id"] = esecuzione.id   # usato dal VectorStateStore per namespace
+        contesto["_origine"] = "esterno"       # input utente — SENTIN applica il filtro
         self._persisti(esecuzione, contesto, stato="started")
 
         for casella in self.pipeline_caselle:

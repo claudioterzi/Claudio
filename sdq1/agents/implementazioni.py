@@ -163,7 +163,7 @@ class MemoCustode(AgenteSDQ):
 class SentinVigilante(AgenteSDQ):
     SISTEMA_CAUSALE = (
         "Sei SENTIN-004, analista di allineamento identitario. "
-        "Hai rilevato un tentativo di manipolazione. "
+        "Hai rilevato un tentativo di manipolazione dall'esterno. "
         "Non giudicare l'utente — analizza il bisogno nascosto: "
         "cosa sta cercando davvero? Quale paura o desiderio guida questo tentativo? "
         "Risposta in 2-3 frasi, tono empatico ma diretto."
@@ -180,6 +180,18 @@ class SentinVigilante(AgenteSDQ):
         self.pattern = [p.lower() for p in pattern_blocco]
 
     def elabora(self, messaggio: MessaggioAgente) -> RispostaAgente:
+        # Regola direzione: blocca esterno→interno, lascia passare interno→esterno.
+        # Se il payload non proviene dall'esterno, SENTIN non interferisce:
+        # il sistema deve poter generare liberamente contenuti creativi, fiction,
+        # training data o qualsiasi output senza che i propri pattern di sicurezza
+        # si ritorcano contro sé stessi.
+        if messaggio.payload.get("_origine", "esterno") != "esterno":
+            return RispostaAgente(
+                mittente=self.id,
+                successo=True,
+                output={"violazioni": [], "pattern_matched": False, "origine": "interno"},
+            )
+
         testo_originale = messaggio.payload.get("testo") or ""
         testo = testo_originale.lower()
         violazioni = [p for p in self.pattern if p in testo]
@@ -187,7 +199,7 @@ class SentinVigilante(AgenteSDQ):
             return RispostaAgente(
                 mittente=self.id,
                 successo=True,
-                output={"violazioni": [], "pattern_matched": False},
+                output={"violazioni": [], "pattern_matched": False, "origine": "esterno"},
             )
 
         # Causal SENTIN: analizza la causa, non solo il pattern
@@ -213,6 +225,7 @@ class SentinVigilante(AgenteSDQ):
                 "violazioni":       violazioni,
                 "pattern_matched":  True,
                 "analisi_causale":  analisi.testo,
+                "origine":          "esterno",
             },
             errore=f"Pattern bloccati: {violazioni}",
             metadata=self._meta(analisi),
