@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDQ-1 Creative Studio — Catalogo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06060f;
+    --bg2: #0d0d1a;
+    --glass: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.08);
+    --purple: #7c3aed;
+    --pink: #db2777;
+    --cyan: #06b6d4;
+    --gold: #f59e0b;
+    --white: #f1f5f9;
+    --muted: rgba(241,245,249,0.55);
+    --grad: linear-gradient(135deg, #7c3aed, #db2777);
+    --grad2: linear-gradient(135deg, #06b6d4, #7c3aed);
+    --grad3: linear-gradient(135deg, #f59e0b, #db2777);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── ANIMATED BG ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(219,39,119,0.14) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 60% 30%, rgba(6,182,212,0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgba(6,6,15,0.8);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 16px 0;
+  }
+  nav .inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 1.4rem;
+    background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo span { color: var(--cyan); -webkit-text-fill-color: var(--cyan); }
+  nav a {
+    color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+    transition: color .2s;
+  }
+  nav a:hover { color: var(--white); }
+  .nav-links { display: flex; gap: 32px; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 120px 0 80px;
+    text-align: center;
+    position: relative;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 100px; padding: 6px 16px; font-size: 0.8rem;
+    color: #a78bfa; margin-bottom: 28px;
+    animation: fadeDown 0.6s ease;
+  }
+  .badge::before { content: '●'; color: #7c3aed; animation: pulse 2s infinite; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:none} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
+  @keyframes scaleIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:none} }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+    animation: fadeUp 0.7s ease 0.1s both;
+  }
+  .grad-text {
+    background: var(--grad); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .grad-text2 {
+    background: var(--grad2); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.2rem; color: var(--muted); max-width: 560px;
+    margin: 0 auto 48px; animation: fadeUp 0.7s ease 0.2s both;
+  }
+
+  .hero-cta {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp 0.7s ease 0.3s both;
+  }
+  .btn-primary {
+    background: var(--grad); color: white; border: none;
+    padding: 14px 32px; border-radius: 12px; font-weight: 600; font-size: 1rem;
+    cursor: pointer; text-decoration: none; display: inline-block;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 0 30px rgba(124,58,237,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(124,58,237,0.5); }
+
+  .btn-ghost {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    color: var(--white); padding: 14px 32px; border-radius: 12px;
+    font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none;
+    display: inline-block; backdrop-filter: blur(10px);
+    transition: background .2s, border-color .2s;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+
+  /* ── STATS ── */
+  .stats {
+    display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;
+    padding: 48px 0; border-top: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 100px;
+    animation: fadeUp 0.7s ease 0.4s both;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.4rem; font-weight: 800;
+    background: var(--grad); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text;
+    display: block;
+  }
+  .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+
+  /* ── SECTION HEADER ── */
+  .section { padding: 80px 0; }
+  .section-header { text-align: center; margin-bottom: 56px; }
+  .section-tag {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--cyan); margin-bottom: 12px; display: block;
+  }
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 700;
+    letter-spacing: -0.02em; margin-bottom: 16px;
+  }
+  .section-desc { color: var(--muted); font-size: 1.05rem; max-width: 520px; margin: 0 auto; }
+
+  /* ── CATEGORY GRID ── */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+  }
+
+  .cat-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 32px;
+    backdrop-filter: blur(12px);
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+    animation: scaleIn 0.5s ease both;
+  }
+  .cat-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(124,58,237,0.35);
+    box-shadow: 0 20px 60px rgba(124,58,237,0.12);
+  }
+
+  .cat-icon-wrap {
+    width: 56px; height: 56px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; margin-bottom: 20px;
+    position: relative;
+  }
+  .cat-icon-wrap.purple { background: rgba(124,58,237,0.15); }
+  .cat-icon-wrap.pink   { background: rgba(219,39,119,0.15); }
+  .cat-icon-wrap.cyan   { background: rgba(6,182,212,0.15); }
+  .cat-icon-wrap.gold   { background: rgba(245,158,11,0.15); }
+  .cat-icon-wrap.green  { background: rgba(16,185,129,0.15); }
+  .cat-icon-wrap.blue   { background: rgba(59,130,246,0.15); }
+  .cat-icon-wrap.rose   { background: rgba(244,63,94,0.15); }
+
+  .cat-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;
+  }
+  .cat-card .cat-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+
+  .service-list { list-style: none; }
+  .service-list li {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.88rem;
+  }
+  .service-list li:last-child { border-bottom: none; }
+  .service-name { color: var(--white); flex: 1; }
+  .service-price {
+    font-weight: 700; font-size: 0.85rem;
+    background: var(--grad); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text;
+    white-space: nowrap; margin-left: 12px;
+  }
+
+  /* ── BUNDLES ── */
+  .bundles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 16px;
+  }
+
+  .bundle-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+    transition: transform .25s, box-shadow .25s;
+  }
+  .bundle-card:hover { transform: translateY(-6px); box-shadow: 0 24px 70px rgba(124,58,237,0.15); }
+
+  .bundle-card.featured {
+    border-color: rgba(124,58,237,0.5);
+    box-shadow: 0 0 0 1px rgba(124,58,237,0.2), 0 20px 60px rgba(124,58,237,0.2);
+  }
+  .bundle-card.featured::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(219,39,119,0.05));
+    pointer-events: none;
+  }
+
+  .featured-badge {
+    position: absolute; top: 20px; right: 20px;
+    background: var(--grad); color: white;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase; padding: 4px 12px; border-radius: 100px;
+  }
+
+  .bundle-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.3rem; font-weight: 700; margin-bottom: 6px;
+  }
+  .bundle-desc { color: var(--muted); font-size: 0.88rem; margin-bottom: 24px; }
+
+  .bundle-price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+  .bundle-price {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.8rem; font-weight: 800;
+    background: var(--grad); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .bundle-original {
+    color: var(--muted); font-size: 1rem;
+    text-decoration: line-through;
+  }
+  .bundle-saving {
+    font-size: 0.8rem; color: #10b981; font-weight: 600; margin-bottom: 24px;
+  }
+
+  .bundle-items { list-style: none; margin-bottom: 28px; }
+  .bundle-items li {
+    padding: 6px 0; font-size: 0.88rem; color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .bundle-items li::before { content: '✦'; color: var(--purple); font-size: 0.6rem; flex-shrink: 0; }
+
+  /* ── PAYMENT ── */
+  .payment-section { padding: 80px 0; }
+  .payment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    max-width: 900px; margin: 0 auto;
+  }
+
+  .payment-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    backdrop-filter: blur(12px);
+    text-align: center;
+    transition: border-color .2s, transform .2s;
+  }
+  .payment-card:hover { border-color: rgba(124,58,237,0.3); transform: translateY(-4px); }
+
+  .payment-icon { font-size: 2.2rem; margin-bottom: 12px; display: block; }
+  .payment-method { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; }
+  .payment-address {
+    font-family: monospace; font-size: 0.72rem; color: var(--muted);
+    word-break: break-all; background: rgba(0,0,0,0.3);
+    padding: 8px 10px; border-radius: 8px; margin-top: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* ── HOW IT WORKS ── */
+  .steps { display: flex; gap: 0; flex-wrap: wrap; max-width: 900px; margin: 0 auto; }
+  .step {
+    flex: 1; min-width: 200px;
+    padding: 32px 24px; text-align: center; position: relative;
+  }
+  .step:not(:last-child)::after {
+    content: '→';
+    position: absolute; right: 0; top: 50%;
+    transform: translateY(-50%);
+    color: var(--purple); font-size: 1.2rem;
+  }
+  .step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--grad); display: flex; align-items: center;
+    justify-content: center; font-weight: 800; font-size: 1rem;
+    margin: 0 auto 16px;
+  }
+  .step h4 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+  .step p { font-size: 0.85rem; color: var(--muted); }
+
+  /* ── CTA ── */
+  .cta-section {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(124,58,237,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-section h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 20px; }
+  .cta-section p { color: var(--muted); margin-bottom: 40px; font-size: 1.1rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--glass-border);
+    padding: 40px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  footer strong { color: var(--white); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(124,58,237,0.3), rgba(219,39,119,0.3), transparent);
+    margin: 0;
+  }
+
+  /* ── GLOW ORBS ── */
+  .orb {
+    position: fixed; border-radius: 50%;
+    filter: blur(80px); pointer-events: none; z-index: 0;
+    opacity: 0.15;
+  }
+  .orb1 { width: 400px; height: 400px; background: var(--purple); top: -100px; left: -100px; }
+  .orb2 { width: 300px; height: 300px; background: var(--pink); bottom: 100px; right: -80px; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 3px; }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .steps { flex-direction: column; }
+    .step::after { display: none; }
+    .stats { gap: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="inner">
+    <div class="logo">SDQ<span>-1</span> Studio</div>
+    <div class="nav-links">
+      <a href="#servizi">Servizi</a>
+      <a href="#bundle">Bundle</a>
+      <a href="#come">Come funziona</a>
+      <a href="#pagamento">Pagamento</a>
+      <a href="#contatto">Contatto</a>
+    </div>
+    <a href="#contatto" class="btn-primary" style="padding:10px 22px;font-size:0.9rem;">Ordina ora</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="badge">Sistema multi-agente AI · Bruxelles · 2026</div>
+    <h1>
+      Contenuti creati<br>
+      da <span class="grad-text">intelligenza artificiale</span><br>
+      <span class="grad-text2">reale</span>
+    </h1>
+    <p class="hero-sub">
+      Canzoni, immagini, video, testi, traduzioni — generati da SDQ-1,
+      un sistema multi-agente con 6 AI specializzate. Consegna in 24h.
+    </p>
+    <div class="hero-cta">
+      <a href="#contatto" class="btn-primary">Inizia ora →</a>
+      <a href="#servizi" class="btn-ghost">Vedi il catalogo</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="container">
+  <div class="stats">
+    <div class="stat-item">
+      <span class="stat-num">6</span>
+      <div class="stat-label">Agenti AI specializzati</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">5</span>
+      <div class="stat-label">Provider LLM attivi</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">40+</span>
+      <div class="stat-label">Prodotti nel catalogo</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">24h</span>
+      <div class="stat-label">Consegna garantita</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">11</span>
+      <div class="stat-label">Lingue disponibili</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SERVIZI -->
+<section class="section" id="servizi">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Catalogo completo</span>
+      <h2>Cosa puoi ordinare</h2>
+      <p class="section-desc">Ogni prodotto è generato da un sistema multi-agente. Tu descrivi, noi produciamo.</p>
+    </div>
+
+    <div class="cat-grid">
+
+      <!-- MUSICA -->
+      <div class="cat-card">
+        <div class="cat-icon-wrap purple">🎵</div>
+        <h3>Musica</h3>
+        <p class="cat-desc">Testi strutturati + audio via Suno/Udio. Dal testo finito all'mp3 in meno di un'ora.</p>
+        <ul class="service-list">
+          <li><span class="service-name">Testo canzone completo</span><span class="service-price">€25</span></li>
+          <li><span class="service-name">Canzone completa con audio</span><span class="service-price">€45</span></li>
+          <li><span class="service-name">Inno personalizzato</span><span class="service-price">€60</span></li>
+          <li><span class="service-name">Album concetto (5 canzoni)</span><span class="service-price">€180</span></li>
+        </ul>
+      </div>
+
+      <!-- IMMAGINI -->
+      <div class="cat-card">
+        <div class="cat-icon-wrap pink">🎨</div>
+        <h3>Immagini</h3>
+        <p class="cat-desc">Alta risoluzione via DALL-E 3. Fotorealistico, acquerello, fumetto, minimalista e altro.</p>
+        <ul class="service-list">
+          <li><span class="service-name">Illustrazione singola</span><span class="service-price">€15</span></li>
+          <li><span class="service-name">Serie coordinata (5 img)</span><span class="service-price">€55</span></li>
+          <li><span class="service-name">Cover libro / album</span><span class="service-price">€30</span></li>
+          <li><span class="service-name">Feed Instagram (9 post)</span><span class="service-price">€70</span></li>
+          <li><span class="service-name">Logo concept (3 varianti)</span><span class="service-price">€40</span></li>
+        </ul>
+      </div>
+
+      <!-- VIDEO -->
+      <div class="cat-card">
+        <div class="cat-icon-wrap cyan">🎬</div>
+        <h3>Video</h3>
+        <p class="cat-desc">Script + storyboard pronti per Sora, Runway o CapCut. Ogni scena con prompt AI incluso.</p>
+        <ul class="service-list">
+          <li><span class="service-name">Script Reel 30–60s</span><span class="service-price">€20</span></li>
+          <li><span class="service-name">Script YouTube 2–5min</span><span class="service-price">€50</span></li>
+          <li><span class="service-name">Spot pubblicitario</span><span class="service-price">€35</span></li>
+          <li><span class="service-name">Pitch video startup</span><span class="service-price">€80</span></li>
+          <li><span class="service-name">Serie 5 TikTok</span><span class="service-price">€70</span></li>
+        </ul>
+      </div>
+
+      <!-- PAROLA -->
+      <div class="cat-card">
+        <div class="cat-icon-wrap gold">✍️</div>
+        <h3>Parola</h3>
+        <p class="cat-desc">Articoli, email, discorsi, storie, ebook. Nella tua voce, nel tuo tono.</p>
+        <ul class="service-list">
+          <li><span class="service-name">Articolo blog (800–1500p)</span><span class="service-price">€25</span></li>
+          <li><span class="service-name">5 post LinkedIn</span><span class="service-price">€40</span></li>
+          <li><span class="service-name">Sequenza 3 email vendita</span><span class="service-price">€35</span></li>
+          <li><span class="service-name">Discorso / speech</span><span class="service-price">€50</span></li>
+          <li><span class="service-name">Storia breve originale</span><span class="service-price">€35</span></li>
+          <li><span class="service-name">Ebook (outline + 5 cap.)</span><span class="service-price">€250</span></li>
+        </ul>
+      </div>
+
+      <!-- TRADUZIONI -->
+      <div class="cat-card">
+        <div class="cat-icon-wrap green">🌍</div>
+        <h3>Traduzioni</h3>
+        <p class="cat-desc">11 lingue. Preserva stile, registro e tono — non è Google Translate.</p>
+        <ul class="service-list">
+          <li><span class="service-name">Testo fino a 500 parole</span><span class="service-price">€15</span></li>
+          <li><span class="service-name">Testo 500–2000 parole</span><span class="service-price">€35</span></li>
+          <li><span class="service-name">Documento legale</span><span class="service-price">€60</span></li>
+          <li><span class="service-name">Localizzazione sito web</span><span class="service-price">€80</span></li>
+          <li><span class="service-name">Sottotitoli video (10min)</span><span class="service-price">€30</span></li>
+        </ul>
+      </div>
+
+      <!-- STRATEGIA -->
+      <div class="cat-card">
+        <div class="cat-icon-wrap blue">🧠</div>
+        <h3>Strategia</h3>
+        <p class="cat-desc">Analisi profonda con il framework SAR a 10 livelli. Non opinioni — struttura.</p>
+        <ul class="service-list">
+          <li><span class="service-name">Analisi SWOT completa</span><span class="service-price">€35</span></li>
+          <li><span class="service-name">Business plan 1 pagina</span><span class="service-price">€50</span></li>
+          <li><span class="service-name">Ricerca 5 competitor</span><span class="service-price">€65</span></li>
+          <li><span class="service-name">Roadmap 6/12 mesi</span><span class="service-price">€55</span></li>
+          <li><span class="service-name">Nome + payoff (10 proposte)</span><span class="service-price">€40</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BUNDLE -->
+<section class="section" id="bundle">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Risparmia combinando</span>
+      <h2>Pacchetti</h2>
+      <p class="section-desc">Tre bundle pensati per chi vuole partire subito con tutto il necessario.</p>
+    </div>
+
+    <div class="bundles-grid">
+
+      <div class="bundle-card">
+        <div class="bundle-name">Starter Creator</div>
+        <p class="bundle-desc">Per chi vuole testare il sistema con musica e social.</p>
+        <div class="bundle-price-row">
+          <div class="bundle-price">€95</div>
+          <div class="bundle-original">€130</div>
+        </div>
+        <div class="bundle-saving">Risparmi €35 · 27% di sconto</div>
+        <ul class="bundle-items">
+          <li>1 canzone completa con audio</li>
+          <li>5 immagini coordinate</li>
+          <li>5 post LinkedIn</li>
+        </ul>
+        <a href="#contatto" class="btn-ghost" style="width:100%;text-align:center;display:block;">Ordina</a>
+      </div>
+
+      <div class="bundle-card featured">
+        <div class="featured-badge">Più scelto</div>
+        <div class="bundle-name">Brand Kit</div>
+        <p class="bundle-desc">Identità completa: visual, testi, email pronte.</p>
+        <div class="bundle-price-row">
+          <div class="bundle-price">€140</div>
+          <div class="bundle-original">€195</div>
+        </div>
+        <div class="bundle-saving">Risparmi €55 · 28% di sconto</div>
+        <ul class="bundle-items">
+          <li>Logo concept (3 varianti)</li>
+          <li>9 immagini feed Instagram</li>
+          <li>Biografia professionale</li>
+          <li>Sequenza 3 email vendita</li>
+        </ul>
+        <a href="#contatto" class="btn-primary" style="width:100%;text-align:center;display:block;">Ordina</a>
+      </div>
+
+      <div class="bundle-card">
+        <div class="bundle-name">Launch Pack</div>
+        <p class="bundle-desc">Tutto il necessario per lanciare un progetto o prodotto.</p>
+        <div class="bundle-price-row">
+          <div class="bundle-price">€185</div>
+          <div class="bundle-original">€240</div>
+        </div>
+        <div class="bundle-saving">Risparmi €55 · 23% di sconto</div>
+        <ul class="bundle-items">
+          <li>Script YouTube (2–5min)</li>
+          <li>5 script TikTok coordinati</li>
+          <li>5 post LinkedIn</li>
+          <li>Analisi SWOT completa</li>
+        </ul>
+        <a href="#contatto" class="btn-ghost" style="width:100%;text-align:center;display:block;">Ordina</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COME FUNZIONA -->
+<section class="section" id="come">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Processo</span>
+      <h2>Come funziona</h2>
+      <p class="section-desc">Dalla richiesta alla consegna in meno di 24 ore.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Descrivimi cosa vuoi</h4>
+        <p>WhatsApp o email. Anche un'idea grezza funziona.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Preventivo in 2 ore</h4>
+        <p>Confermo il prezzo e i tempi. Nessuna sorpresa.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>SDQ-1 produce</h4>
+        <p>Il sistema multi-agente lavora. Tu non fai nulla.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h4>Ricevi e paghi</h4>
+        <p>Prima vedi il risultato. Poi paghi se sei soddisfatto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PAGAMENTO -->
+<section class="payment-section" id="pagamento">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Metodi accettati</span>
+      <h2>Pagamento</h2>
+      <p class="section-desc">Crypto, Revolut, PayPal. Pagamento alla consegna — prima vedi, poi paghi.</p>
+    </div>
+
+    <div class="payment-grid">
+      <div class="payment-card">
+        <span class="payment-icon">₿</span>
+        <div class="payment-method">Bitcoin</div>
+        <div style="color:var(--muted);font-size:0.82rem;margin-bottom:8px">Zero commissioni, anonimo, globale</div>
+        <div class="payment-address">bc1qfrdu5jgz7scncmk293qqcup80565fjt0nvt4vs</div>
+      </div>
+
+      <div class="payment-card">
+        <span class="payment-icon">⚡</span>
+        <div class="payment-method">Revolut</div>
+        <div style="color:var(--muted);font-size:0.82rem;margin-bottom:8px">Istantaneo, gratuito in Europa</div>
+        <div class="payment-address">@claudioterzi</div>
+      </div>
+
+      <div class="payment-card">
+        <span class="payment-icon">🅿️</span>
+        <div class="payment-method">PayPal</div>
+        <div style="color:var(--muted);font-size:0.82rem;margin-bottom:8px">Protetto, accettato ovunque</div>
+        <div class="payment-address">Claudioterzi@hotmail.com</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta-section" id="contatto">
+  <div class="container">
+    <span class="section-tag">Pronto a iniziare?</span>
+    <h2>Prima richiesta <span class="grad-text">gratis</span></h2>
+    <p>Mandami un messaggio. Descrivi cosa vuoi. Vedi il risultato prima di pagare.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <a href="mailto:terziclaudio@gmail.com?subject=SDQ-1%20Richiesta" class="btn-primary">
+        ✉️ &nbsp;terziclaudio@gmail.com
+      </a>
+      <a href="https://github.com/claudioterzi/Claudio" class="btn-ghost" target="_blank">
+        ⌥ &nbsp;GitHub open source
+      </a>
+    </div>
+    <p style="margin-top:28px;font-size:0.82rem;color:var(--muted)">
+      Risposta entro 2 ore · Consegna in 24h · Pagamento alla consegna
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>
+      <strong>SDQ-1 Creative Studio</strong> — Sistema multi-agente AI · Bruxelles, 2026<br>
+      <span style="font-size:0.78rem">
+        Codice open source su
+        <a href="https://github.com/claudioterzi/Claudio" style="color:var(--purple);text-decoration:none">github.com/claudioterzi/Claudio</a>
+        · Licenza AGPL-3.0
+      </span>
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // Animate cards on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationDelay = (i * 0.08) + 's';
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.cat-card, .bundle-card, .payment-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+
+  document.querySelectorAll('.visible').forEach(el => {
+    el.style.opacity = '1';
+    el.style.transform = 'none';
+  });
+
+  // Copy address on click
+  document.querySelectorAll('.payment-address').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.title = 'Clicca per copiare';
+    el.addEventListener('click', () => {
+      navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+        const orig = el.textContent;
+        el.textContent = '✓ Copiato!';
+        setTimeout(() => el.textContent = orig, 1500);
+      });
+    });
+  });
+
+  // Fix animation visibility bug
+  const fixVisibility = () => {
+    document.querySelectorAll('.cat-card, .bundle-card, .payment-card').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      }
+    });
+  };
+  window.addEventListener('scroll', fixVisibility);
+  setTimeout(fixVisibility, 100);
+</script>
+
+</body>
+</html>
