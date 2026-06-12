@@ -185,6 +185,12 @@ def main(argv: list[str]) -> int:
                         help="Formato video: reel | youtube | tiktok | spot | pitch")
     parser.add_argument("--da", default="it", help="Lingua sorgente (per traduzione)")
     parser.add_argument("--a", default="en", help="Lingua destinazione (per traduzione)")
+    parser.add_argument("--modello-target", default="Claude / GPT-4",
+                        help="Modello AI per cui ottimizzare il prompt")
+    parser.add_argument("--strumenti", nargs="*", metavar="TOOL",
+                        help="Tool disponibili per l'agente (es. search_web send_email)")
+    parser.add_argument("--autonomia", default="semi-autonomo",
+                        help="Livello autonomia agente: supervisionato | semi-autonomo | completamente_autonomo")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -362,8 +368,30 @@ def main(argv: list[str]) -> int:
             risultato = gen.traduci(testo=args.tema, da=args.da, a=args.a)
             print(risultato["traduzione"])
 
+        elif tipo == "prompt":
+            from .generators import GeneratorePromptEngineering
+            gen = GeneratorePromptEngineering(llm_fn=_llm_testo)
+            risultato = gen.prompt_ottimizzato(
+                task=args.tema,
+                modello_target=args.modello_target,
+                tono=args.stile or "professionale",
+            )
+            print(risultato["testo_completo"])
+
+        elif tipo == "agente":
+            from .generators import GeneratorePromptEngineering
+            gen = GeneratorePromptEngineering(llm_fn=_llm_testo)
+            nome = args.genere or "Agente-001"
+            risultato = gen.specifica_agente(
+                nome=nome,
+                missione=args.tema,
+                strumenti=args.strumenti,
+                autonomia=args.autonomia,
+            )
+            print(risultato["specifica_completa"])
+
         else:
-            print(f"Tipo non riconosciuto: {tipo}. Usa: canzone | immagine | video | traduzione")
+            print(f"Tipo non riconosciuto: {tipo}. Usa: canzone | immagine | video | traduzione | prompt | agente")
             return 1
         return 0
 
