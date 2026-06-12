@@ -167,6 +167,10 @@ def main(argv: list[str]) -> int:
                         help="Solo Gemini (free tier) + DeepSeek (low cost), niente Anthropic/OpenAI")
     parser.add_argument("--locale", action="store_true",
                         help="Priorità a Ollama locale (costo zero), fallback Gemini")
+    parser.add_argument("--simula", action="store_true",
+                        help="Esegui simulazioni parallele degli scenari futuri")
+    parser.add_argument("--scenari", nargs="*", metavar="ID",
+                        help="ID scenari da simulare (default: tutti). Es: ALPHA BETA GAMMA")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -297,6 +301,26 @@ def main(argv: list[str]) -> int:
             config=carica_config(), etichetta=etichetta,
         )
         print(json.dumps({"backup": str(dest), "ok": True}, indent=2))
+        return 0
+
+    if args.simula:
+        from .futures import SimulatoreScenari, SCENARI_DEFAULT
+        filtro = set(args.scenari) if args.scenari else None
+        scenari_sel = [s for s in SCENARI_DEFAULT if filtro is None or s.id in filtro]
+        if not scenari_sel:
+            print(f"Nessuno scenario trovato. Disponibili: {[s.id for s in SCENARI_DEFAULT]}")
+            return 1
+
+        def _llm_fn(sistema: str, utente: str):
+            esito = router.chiama(sistema, utente, profilo="default")
+            return esito.risposta.testo, esito.risposta.provider, int(esito.risposta.latenza_ms or 0)
+
+        print(f"Avvio simulazioni parallele: {[s.id for s in scenari_sel]} …")
+        sim = SimulatoreScenari(llm_fn=_llm_fn)
+        risultati = sim.simula_parallelo(scenari_sel)
+        print(SimulatoreScenari.stampa_report(risultati))
+        dest = sim.salva_report(risultati)
+        print(f"\nReport salvato: {dest}")
         return 0
 
     testo = " ".join(args.testo) or "Ciao SDQ-1, sei attivo?"
