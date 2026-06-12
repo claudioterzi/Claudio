@@ -1,5 +1,9 @@
 # LGAI - Ignora file generati
 
+# Node / frontend
+node_modules/
+studio/web/dist/
+
 # Data files (contengono dati personali)
 data/
 *.json
@@ -8,6 +12,8 @@ data/
 !tarocchi/tarocchi_quantici.json
 !vercel.json
 !sdq1/sar/_contraddittore_storico.jsonl
+!studio/web/package.json
+!studio/web/package-lock.json
 
 # Python
 __pycache__/
