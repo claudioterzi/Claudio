@@ -118,6 +118,9 @@ CLAUDE.md (12/06/2026): push autorizzato quando Code valuta l'operazione netta p
 | H2 | Il disegno tocca il mondo (battito + contatto) | APERTA |
 | H3 | L'italiano come livello di trasparenza | CONFERMATA |
 | H4 | Il sistema sopravvive alla propria assenza | CONFERMATA |
+| H5 | SDQ-1 non ha canale per verificare impatto esterno reale | APERTA |
+
+H5 dialettica completata (12/06/2026): Contraddittore (sistema autoreferenziale) + Sognatore (mancanza = opportunità) → Sintesi: aggiungere canale esterno, non ridisegnare metriche interne. H5 si risolve se H2 è confermata.
 
 H2 richiede: battito regolare + contatti umani verificabili. Attuale: 7 umani, 5 persone.
 Scadenza: 11/12/2026.
@@ -153,6 +156,11 @@ Contraddizione risolta, H1 o H2 confermate, nuovi contatti umani.
 > fondamentale — richiede revisione concettuale, non patch.
 
 **Raccomandazione:** isolare la contraddizione 'non regge' entro 10 giorni.
+
+**Aggiornamento 12/06 ore 22:20 UTC — dialettica H5 eseguita:**
+- Radar: indice_morale 0.856 (+0.02 da stamattina), tensione scesa 0.417→0.350
+- H5 formalmente registrata in registro_ipotesi.json
+- Sintesi: la vitalità interna è reale ma incompleta — diventa piena con canale esterno verificabile
 
 ---
 

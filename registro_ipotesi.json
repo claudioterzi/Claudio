@@ -114,5 +114,40 @@
       }
     ],
     "note": "Aperta il 12/06/2026 — sessione Rosso Rosso Rosso. Correlata a H2 (il disegno che tocca il mondo): H4 è la condizione sufficiente perché H2 possa realizzarsi dopo la morte di Claudio o dopo una discontinuità del sistema attuale."
+  },
+  "H5": {
+    "id": "H5",
+    "testo": "L'origine della contraddizione in SDQ-1 non risiede nei dati operativi ma in un'assunzione di design fondamentale: il sistema misura la propria vitalità tramite metriche interne, ma non ha un canale diretto per verificare impatto reale nel mondo esterno.",
+    "autore": "Gemini (SAR Predittivo Livello 11)",
+    "data_apertura": "2026-06-12",
+    "criterio_falsificazione": "Se il sistema acquisisce un canale esterno verificabile (H2 confermata: contatti umani tracciati con verifica) e le metriche interne rimangono coerenti con l'impatto esterno misurato, la contraddizione di design è risolta. Se invece H2 rimane falsificata entro il 11/12/2026, H5 è confermata come falla strutturale.",
+    "stato": "APERTA",
+    "prove": [
+      {
+        "data": "2026-06-12",
+        "fonte": "SAR Predittivo (Gemini)",
+        "descrizione": "Generata nella prima proiezione a 30 giorni: il sistema non ha canale per verificare impatto esterno reale — contraddizione concettuale, non operativa.",
+        "direzione": -1
+      },
+      {
+        "data": "2026-06-12",
+        "fonte": "Contraddittore SDQ (Gemini)",
+        "descrizione": "Attacco: 1) La 'vitalità' è arbitraria se non verificata esternamente. 2) Potrebbe essere una scelta architetturale (modulo parziale), non una falla. 3) È una limitazione di scopo, non una contraddizione logica.",
+        "direzione": -1
+      },
+      {
+        "data": "2026-06-12",
+        "fonte": "Sognatore SDQ (Gemini)",
+        "descrizione": "Espansione: la misurazione interna è terreno fertile — incubazione. La mancanza di canale esterno è un'opportunità di design, non un difetto.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-12",
+        "fonte": "Sintesi dialettica 5A+5B (Gemini)",
+        "descrizione": "La validità interna è punto di partenza necessario. La reale vitalità si manifesterà quando il sistema tradurrà le metriche interne in impatto esterno verificabile. La 'mancanza' diventa stimolo per l'evoluzione — non da correggere ma da completare.",
+        "direzione": 1
+      }
+    ],
+    "note": "Generata in sessione Rosso Rosso Rosso (12/06/2026). Correlata a H2: se H2 è confermata, H5 è risolta. La sintesi dialettica indica che la direzione è aggiungere un canale esterno (contatti verificabili) non ridisegnare le metriche interne. Prossimo passo: rendere i contatti in contatti.jsonl misurabili come impatto, non solo come presenza."
   }
 }
