@@ -333,7 +333,7 @@ def main(argv: list[str]) -> int:
             return router.chiama(sistema, utente, profilo="default").risposta.testo
 
         if tipo == "canzone":
-            from .generators import GeneratoreCanzoni
+            from studio.generators import GeneratoreCanzoni
             gen = GeneratoreCanzoni(llm_fn=_llm_testo)
             risultato = gen.genera(
                 tema=args.tema,
@@ -349,13 +349,13 @@ def main(argv: list[str]) -> int:
             print(risultato["istruzioni_suno"])
 
         elif tipo == "immagine":
-            from .generators import GeneratoreImmagini
+            from studio.generators import GeneratoreImmagini
             gen = GeneratoreImmagini()
             risultato = gen.genera(descrizione=args.tema, stile=args.stile)
             print(json.dumps(risultato, indent=2, ensure_ascii=False))
 
         elif tipo == "video":
-            from .generators import GeneratoreVideoScript
+            from studio.generators import GeneratoreVideoScript
             gen = GeneratoreVideoScript(llm_fn=_llm_testo)
             risultato = gen.genera_script(concept=args.tema, formato=args.formato)
             print(risultato["script"])
@@ -363,13 +363,13 @@ def main(argv: list[str]) -> int:
             print(risultato["istruzioni_produzione_ai"])
 
         elif tipo == "traduzione":
-            from .generators import GeneratoreTraduzioni
+            from studio.generators import GeneratoreTraduzioni
             gen = GeneratoreTraduzioni(llm_fn=_llm_testo)
             risultato = gen.traduci(testo=args.tema, da=args.da, a=args.a)
             print(risultato["traduzione"])
 
         elif tipo == "prompt":
-            from .generators import GeneratorePromptEngineering
+            from studio.generators import GeneratorePromptEngineering
             gen = GeneratorePromptEngineering(llm_fn=_llm_testo)
             risultato = gen.prompt_ottimizzato(
                 task=args.tema,
@@ -379,7 +379,7 @@ def main(argv: list[str]) -> int:
             print(risultato["testo_completo"])
 
         elif tipo == "agente":
-            from .generators import GeneratorePromptEngineering
+            from studio.generators import GeneratorePromptEngineering
             gen = GeneratorePromptEngineering(llm_fn=_llm_testo)
             nome = args.genere or "Agente-001"
             risultato = gen.specifica_agente(
