@@ -37,6 +37,14 @@ hai bisogno di una **licenza commerciale**.
 
 Oppure contattami direttamente su WhatsApp per una risposta più rapida.
 
+### Pagamento
+
+| Metodo | Dettagli |
+|--------|----------|
+| **Bitcoin** | `bc1qfrdu5jgz7scncmk293qqcup80565fjt0nvt4vs` |
+| **Revolut** | `@claudioterzi` |
+| **PayPal** | `Claudioterzi@hotmail.com` |
+
 ---
 
 ## Servizi su misura (modello Guido)

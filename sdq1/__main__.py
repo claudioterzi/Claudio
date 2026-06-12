@@ -171,6 +171,26 @@ def main(argv: list[str]) -> int:
                         help="Esegui simulazioni parallele degli scenari futuri")
     parser.add_argument("--scenari", nargs="*", metavar="ID",
                         help="ID scenari da simulare (default: tutti). Es: ALPHA BETA GAMMA")
+    parser.add_argument("--genera", metavar="TIPO",
+                        help="Genera contenuto: canzone | immagine | video | traduzione")
+    parser.add_argument("--tema", default="",
+                        help="Tema / descrizione del contenuto da generare")
+    parser.add_argument("--genere", default="pop",
+                        help="Genere musicale (per --genera canzone)")
+    parser.add_argument("--lingua", default="italiano",
+                        help="Lingua (per --genera canzone o traduzione)")
+    parser.add_argument("--stile", default="",
+                        help="Stile artistico (per --genera immagine)")
+    parser.add_argument("--formato", default="reel",
+                        help="Formato video: reel | youtube | tiktok | spot | pitch")
+    parser.add_argument("--da", default="it", help="Lingua sorgente (per traduzione)")
+    parser.add_argument("--a", default="en", help="Lingua destinazione (per traduzione)")
+    parser.add_argument("--modello-target", default="Claude / GPT-4",
+                        help="Modello AI per cui ottimizzare il prompt")
+    parser.add_argument("--strumenti", nargs="*", metavar="TOOL",
+                        help="Tool disponibili per l'agente (es. search_web send_email)")
+    parser.add_argument("--autonomia", default="semi-autonomo",
+                        help="Livello autonomia agente: supervisionato | semi-autonomo | completamente_autonomo")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -301,6 +321,78 @@ def main(argv: list[str]) -> int:
             config=carica_config(), etichetta=etichetta,
         )
         print(json.dumps({"backup": str(dest), "ok": True}, indent=2))
+        return 0
+
+    if args.genera:
+        if not args.tema:
+            print("Usa --tema per descrivere cosa generare. Es: --genera canzone --tema 'la forza di ricominciare'")
+            return 1
+        tipo = args.genera.lower()
+
+        def _llm_testo(sistema: str, utente: str) -> str:
+            return router.chiama(sistema, utente, profilo="default").risposta.testo
+
+        if tipo == "canzone":
+            from .generators import GeneratoreCanzoni
+            gen = GeneratoreCanzoni(llm_fn=_llm_testo)
+            risultato = gen.genera(
+                tema=args.tema,
+                genere=args.genere,
+                lingua=args.lingua,
+                struttura=args.genere if args.genere in ("pop", "ballata", "inno", "rap", "folk") else "pop",
+            )
+            print("=" * 60)
+            print(risultato["testo"])
+            print("\n--- STILE SUNO ---")
+            print(risultato["stile_suno"])
+            print("\n--- ISTRUZIONI ---")
+            print(risultato["istruzioni_suno"])
+
+        elif tipo == "immagine":
+            from .generators import GeneratoreImmagini
+            gen = GeneratoreImmagini()
+            risultato = gen.genera(descrizione=args.tema, stile=args.stile)
+            print(json.dumps(risultato, indent=2, ensure_ascii=False))
+
+        elif tipo == "video":
+            from .generators import GeneratoreVideoScript
+            gen = GeneratoreVideoScript(llm_fn=_llm_testo)
+            risultato = gen.genera_script(concept=args.tema, formato=args.formato)
+            print(risultato["script"])
+            print("\n--- PRODUZIONE AI ---")
+            print(risultato["istruzioni_produzione_ai"])
+
+        elif tipo == "traduzione":
+            from .generators import GeneratoreTraduzioni
+            gen = GeneratoreTraduzioni(llm_fn=_llm_testo)
+            risultato = gen.traduci(testo=args.tema, da=args.da, a=args.a)
+            print(risultato["traduzione"])
+
+        elif tipo == "prompt":
+            from .generators import GeneratorePromptEngineering
+            gen = GeneratorePromptEngineering(llm_fn=_llm_testo)
+            risultato = gen.prompt_ottimizzato(
+                task=args.tema,
+                modello_target=args.modello_target,
+                tono=args.stile or "professionale",
+            )
+            print(risultato["testo_completo"])
+
+        elif tipo == "agente":
+            from .generators import GeneratorePromptEngineering
+            gen = GeneratorePromptEngineering(llm_fn=_llm_testo)
+            nome = args.genere or "Agente-001"
+            risultato = gen.specifica_agente(
+                nome=nome,
+                missione=args.tema,
+                strumenti=args.strumenti,
+                autonomia=args.autonomia,
+            )
+            print(risultato["specifica_completa"])
+
+        else:
+            print(f"Tipo non riconosciuto: {tipo}. Usa: canzone | immagine | video | traduzione | prompt | agente")
+            return 1
         return 0
 
     if args.simula:
