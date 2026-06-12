@@ -57,3 +57,4 @@ temp/
 *.key
 secrets/
 !output/memorie/
+!output/memorie/*.json

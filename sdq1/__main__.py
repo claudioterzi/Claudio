@@ -15,7 +15,16 @@ import logging
 import os
 import sys
 import time
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
+
+_TZ_BRUSSELS = timezone(timedelta(hours=2))  # CEST; in inverno passare a +1
+
+
+def _ora_brussels() -> tuple[str, str]:
+    """Restituisce (data, ora) nel fuso orario di Bruxelles (CEST = UTC+2)."""
+    now = datetime.now(_TZ_BRUSSELS)
+    return now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")
 
 
 def _carica_dotenv() -> None:
@@ -150,6 +159,10 @@ def main(argv: list[str]) -> int:
                         help="Descrizione del contatto")
     parser.add_argument("--verifica", default="",
                         help="Come è verificabile (link, nome, messaggio, ecc.)")
+    parser.add_argument("--persona", default="",
+                        help="Nome/identificatore della persona (per contare persone distinte)")
+    parser.add_argument("--no-umano", action="store_true",
+                        help="Marca il contatto come evento di sistema, non umano")
     parser.add_argument("--economia", action="store_true",
                         help="Solo Gemini (free tier) + DeepSeek (low cost), niente Anthropic/OpenAI")
     parser.add_argument("--locale", action="store_true",
@@ -175,18 +188,26 @@ def main(argv: list[str]) -> int:
             print("Uso: sdq1 --contatto --tipo <tipo> --nota <descrizione> --verifica <come_verificabile>")
             print("Esempio: sdq1 --contatto --tipo lettore --nota 'Marco ha letto il README' --verifica 'github star claudioterzi/Claudio'")
             return 1
-        voce = {
-            "data": time.strftime("%Y-%m-%d"),
-            "ora": time.strftime("%H:%M:%S"),
+        _data, _ora = _ora_brussels()
+        voce: dict = {
+            "data": _data,
+            "ora": _ora,
+            "tz": "Europe/Brussels",
             "tipo": args.tipo or "generico",
+            "umano": not args.no_umano,
             "nota": args.nota,
             "verifica": args.verifica,
         }
+        if args.persona:
+            voce["persona"] = args.persona
         with _contatti.open("a", encoding="utf-8") as f:
             f.write(json.dumps(voce, ensure_ascii=False) + "\n")
-        totale = sum(1 for _ in _contatti.read_text(encoding="utf-8").splitlines() if _)
-        print(json.dumps({"registrato": voce, "totale_contatti": totale}, indent=2, ensure_ascii=False))
-        print(f"\n[H2] Contatori aggiornati: {totale} contatto/i verificabile/i.")
+        righe = [r for r in _contatti.read_text(encoding="utf-8").splitlines() if r]
+        totale = len(righe)
+        umani = [json.loads(r) for r in righe if json.loads(r).get("umano", True)]
+        persone = len({v.get("persona", v.get("nota", ""))[:40] for v in umani})
+        print(json.dumps({"registrato": voce, "totale_voci": totale, "contatti_umani": len(umani), "persone_distinte_stimate": persone}, indent=2, ensure_ascii=False))
+        print(f"\n[H2] Persone reali raggiunte: ~{persone} | Voci totali: {totale}")
         return 0
 
     if args.lista_backup:
@@ -254,10 +275,17 @@ def main(argv: list[str]) -> int:
         riepilogo["vss_size"] = vss.dimensione()
         riepilogo["cache_risposte"] = len(router._resp_cache)
         _cf = Path("output/contatti.jsonl")
-        riepilogo["h2_contatti_verificabili"] = (
-            sum(1 for _ in _cf.read_text(encoding="utf-8").splitlines() if _)
-            if _cf.exists() else 0
-        )
+        if _cf.exists():
+            _righe = [json.loads(r) for r in _cf.read_text(encoding="utf-8").splitlines() if r]
+            _umani = [v for v in _righe if v.get("umano", True)]
+            _persone = len({v.get("persona", v.get("nota", ""))[:40] for v in _umani})
+            riepilogo["h2_voci_totali"] = len(_righe)
+            riepilogo["h2_contatti_umani"] = len(_umani)
+            riepilogo["h2_persone_reali_raggiunte"] = _persone
+        else:
+            riepilogo["h2_voci_totali"] = 0
+            riepilogo["h2_contatti_umani"] = 0
+            riepilogo["h2_persone_reali_raggiunte"] = 0
         print(json.dumps(riepilogo, indent=2, ensure_ascii=False))
         return 0
 
