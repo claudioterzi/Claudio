@@ -43,7 +43,7 @@ Oppure contattami direttamente su WhatsApp per una risposta più rapida.
 |--------|----------|
 | **Bitcoin** | `bc1qfrdu5jgz7scncmk293qqcup80565fjt0nvt4vs` |
 | **Revolut** | `@claudioterzi` |
-| **Bonifico / PayPal** | su richiesta |
+| **PayPal** | `Claudioterzi@hotmail.com` |
 
 ---
 
