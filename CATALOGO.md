@@ -89,6 +89,22 @@
 
 ---
 
+## 🍳 CUCINA & CHEF
+
+*Claudio Terzi è anche cuoco. Cucina italiana, francese, belga — corsi online e presenza fisica a Bruxelles.*
+
+| Prodotto | Cosa ricevi | Prezzo |
+|----------|-------------|--------|
+| **Corso di cucina online (1h)** | Sessione live con Claudio: tecnica, ricetta, Q&A | €60 |
+| **Corso tematico** | Cucina italiana / francese / belga — 2h con materiali | €90 |
+| **Menu personalizzato per evento** | Proposta completa: antipasti, primi, secondi, dessert | €45 |
+| **Chef a domicilio** | Cena privata fino a 8 persone — spesa + preparazione | €180 |
+| **Organizzazione evento completa** | Menu + logistica + servizio — preventivo su richiesta | su richiesta |
+
+*Disponibile: Bruxelles (in presenza) · ovunque (online)*
+
+---
+
 ## 🤖 PROMPT ENGINEERING & AGENTI AI
 
 | Prodotto | Cosa ricevi | Prezzo |
