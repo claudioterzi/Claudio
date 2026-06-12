@@ -89,6 +89,22 @@
 
 ---
 
+## 🤖 PROMPT ENGINEERING & AGENTI AI
+
+| Prodotto | Cosa ricevi | Prezzo |
+|----------|-------------|--------|
+| **Prompt ottimizzato** | System prompt + template utente pronti per Claude/GPT/Gemini | €30 |
+| **Sistema prompt completo** | System + few-shot + chain-of-thought + gestione edge case | €60 |
+| **Revisione prompt esistente** | Analisi problemi + versione migliorata + spiegazione modifiche | €25 |
+| **Specifica agente autonomo** | Document completo: missione, tool, loop logic, criteri successo, vincoli sicurezza | €150 |
+| **Agente custom SDQ-1** | Agente implementato e funzionante nel tuo sistema | €300–600 |
+| **Kit agente completo** | Specifica + implementazione + test + documentazione | €500–900 |
+| **Workshop prompt (1h)** | Sessione personalizzata: come promptare il tuo caso d'uso | €80 |
+
+*Compatibile con: Claude, GPT-4o, Gemini, Mistral, LLaMA, Ollama — qualsiasi modello*
+
+---
+
 ## 💻 CODICE & TECH
 
 | Prodotto | Cosa ricevi | Prezzo |
