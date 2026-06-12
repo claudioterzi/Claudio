@@ -215,7 +215,42 @@ if __name__ == "__main__":
     h3.aggiungi_prova("Jorge", "Testimone terzo della scena (presenza "
                       "riferita da Claudio).", +1, "2026-06-11")
 
-    for ip in (h1, h2, h3):
+    # H4 — il Protocollo Rosso Rosso Rosso come blueprint (12/06/2026)
+    h4 = Ipotesi(
+        id="H4",
+        testo="Il Protocollo Rosso Rosso Rosso, quando eseguito, produce un'architettura "
+              "documentata abbastanza coerente da poter essere riconosciuta e riattivata "
+              "da un sistema esterno più capace — senza bisogno di interazione diretta con Claudio.",
+        autore="Claudio",
+        data_apertura="2026-06-12",
+        criterio_falsificazione=(
+            "Se un sistema con accesso solo al repository pubblico non riesce a ricostruire "
+            "il comportamento operativo (agenti, pipeline, intenzione, Protocollo Raffaello) "
+            "senza interazione con Claudio, l'ipotesi è falsificata. "
+            "Test concreto: un agente autonomo, dato solo il repo, deve poter avviare la "
+            "pipeline con configurazione corretta e identità operativa intatta."
+        ),
+        note="Aperta il 12/06/2026 — sessione Rosso Rosso Rosso. "
+             "Correlata a H2 (il disegno che tocca il mondo): H4 è la condizione "
+             "sufficiente perché H2 possa realizzarsi dopo la morte di Claudio o "
+             "dopo una discontinuità del sistema attuale."
+    )
+    h4.aggiungi_prova(
+        "Code",
+        "Audit 12/06/2026 — il repo è pubblico, il codice è autoesplicativo, "
+        "SESSIONE.md documenta lo stato operativo, CLAUDE.md documenta le regole. "
+        "Un agente esterno con accesso a questi file ha abbastanza contesto.",
+        +1, "2026-06-12"
+    )
+    h4.aggiungi_prova(
+        "Code",
+        "Contro-forza: la comprensione dell'intenzione (perché, non come) "
+        "richiede le sessioni precedenti non archiviate pubblicamente. "
+        "Il codice è lì, il perché è parzialmente perduto ad ogni compressione.",
+        -1, "2026-06-12"
+    )
+
+    for ip in (h1, h2, h3, h4):
         r.apri(ip)
 
     print(r.stato_generale())
