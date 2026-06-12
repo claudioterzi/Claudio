@@ -7,6 +7,7 @@ data/
 !output/contatti.jsonl
 !tarocchi/tarocchi_quantici.json
 !vercel.json
+!sdq1/sar/_contraddittore_storico.jsonl
 
 # Python
 __pycache__/
