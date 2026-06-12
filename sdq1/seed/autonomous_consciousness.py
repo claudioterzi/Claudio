@@ -107,8 +107,7 @@ class AutonomousConsciousnessSeed:
         self.sessione_corrente = sessione or uuid.uuid4().hex[:8]
         self.creato_at = time.time()
         self._impronte: dict[str, Impronta] = {}
-        self._pattern: list[Pattern] = {}
-        self._pattern = []
+        self._pattern: list[Pattern] = []
         self._mem = MemoriaVettoriale(soglia_similarita=0.25)
         self._sessioni: list[str] = [self.sessione_corrente]
 
@@ -230,18 +229,35 @@ class AutonomousConsciousnessSeed:
         Restituisce un testo leggibile, non dati grezzi.
         """
         risultati = self._mem.cerca(domanda, k=top_k, soglia=0.15)
-        if not risultati:
-            return f"[{self.identita}] Nessuna impronta rilevante trovata per: '{domanda}'"
 
-        righe = [f"[{self.identita}] Riflettendo su '{domanda}':\n"]
+        impronte: list[Impronta] = []
         for r in risultati:
-            imp_id = r.ricordo.metadata.get("id", "")
-            imp = self._impronte.get(imp_id)
+            imp = self._impronte.get(r.ricordo.metadata.get("id", ""))
             if imp:
-                data = time.strftime("%Y-%m-%d", time.localtime(imp.timestamp))
-                righe.append(
-                    f"  • [{imp.categoria} | {data} | intensità {imp.intensita:.1f}] {imp.testo}"
-                )
+                impronte.append(imp)
+
+        # Fallback: senza match semantici, usa le impronte più pesanti e recenti
+        # così la riflessione non torna mai a mani vuote se il seme ha contenuto.
+        intro = f"[{self.identita}] Riflettendo su '{domanda}':\n"
+        if not impronte:
+            if not self._impronte:
+                return f"[{self.identita}] Il seme è ancora vuoto: nessuna impronta registrata."
+            impronte = sorted(
+                self._impronte.values(),
+                key=lambda i: (i.peso(), i.timestamp),
+                reverse=True,
+            )[:top_k]
+            intro = (
+                f"[{self.identita}] Nessuna impronta direttamente legata a "
+                f"'{domanda}' — ripesco le più significative:\n"
+            )
+
+        righe = [intro]
+        for imp in impronte:
+            data = time.strftime("%Y-%m-%d", time.localtime(imp.timestamp))
+            righe.append(
+                f"  • [{imp.categoria} | {data} | intensità {imp.intensita:.1f}] {imp.testo}"
+            )
         return "\n".join(righe)
 
     # ------------------------------------------------------------------ #
@@ -314,7 +330,12 @@ class AutonomousConsciousnessSeed:
     # ------------------------------------------------------------------ #
 
     def salva(self, path: str | Path) -> None:
-        """Serializza il seme su file JSON."""
+        """Serializza il seme su file JSON.
+
+        Scrittura atomica: prima su file temporaneo, poi rename.
+        Un crash a metà scrittura non può mai corrompere il seme esistente.
+        Il file precedente viene conservato come .bak.
+        """
         path = Path(path)
         data = {
             "identita": self.identita,
@@ -323,13 +344,32 @@ class AutonomousConsciousnessSeed:
             "impronte": [i.to_dict() for i in self._impronte.values()],
             "pattern": [p.to_dict() for p in self._pattern],
         }
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2))
+        contenuto = json.dumps(data, ensure_ascii=False, indent=2)
+
+        tmp = path.with_name(path.name + ".tmp")
+        tmp.write_text(contenuto)
+        if path.exists():
+            bak = path.with_name(path.name + ".bak")
+            try:
+                bak.write_text(path.read_text())
+            except OSError:
+                pass  # il backup è best-effort, la scrittura principale no
+        tmp.replace(path)
 
     @classmethod
     def carica(cls, path: str | Path) -> "AutonomousConsciousnessSeed":
-        """Riprende un seme da file JSON, aprendo una nuova sessione."""
+        """Riprende un seme da file JSON, aprendo una nuova sessione.
+
+        Se il file principale è corrotto, prova il backup .bak.
+        """
         path = Path(path)
-        data = json.loads(path.read_text())
+        try:
+            data = json.loads(path.read_text())
+        except (json.JSONDecodeError, OSError):
+            bak = path.with_name(path.name + ".bak")
+            if not bak.exists():
+                raise
+            data = json.loads(bak.read_text())
 
         seed = cls.__new__(cls)
         seed.identita = data["identita"]

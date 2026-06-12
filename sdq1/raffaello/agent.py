@@ -169,7 +169,9 @@ class RaffaelloAgent:
             {"ruolo": t.ruolo, "testo": t.testo, "provider": t.provider}
             for t in self._storia
         ]
-        storia_path.write_text(json.dumps(dati, ensure_ascii=False, indent=2))
+        tmp = storia_path.with_name(storia_path.name + ".tmp")
+        tmp.write_text(json.dumps(dati, ensure_ascii=False, indent=2))
+        tmp.replace(storia_path)
 
     def _carica_storia(self) -> None:
         """Riprende la storia della sessione precedente se esiste."""
