@@ -54,6 +54,7 @@ temp/
 # Credenziali e segreti
 .env
 .env.*
+!.env.example
 *.key
 secrets/
 !output/memorie/
