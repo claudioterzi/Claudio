@@ -3,10 +3,15 @@
 Collega:
   - LLMRouter  → risponde con il miglior provider disponibile
   - AutonomousConsciousnessSeed → memoria persistente che cresce tra sessioni
+
+Garanzia anti-perdita:
+  Dopo ogni turno, seed + storia vengono scritti su disco.
+  La compressione del contesto Claude Code non può cancellare nulla.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -74,6 +79,7 @@ class RaffaelloAgent:
             log.info("Nuovo seme creato: %s", self.seed_path)
 
         self._storia: list[Turno] = []
+        self._carica_storia()
 
     # ------------------------------------------------------------------ #
     # Interfaccia principale                                               #
@@ -114,6 +120,7 @@ class RaffaelloAgent:
             self._imprime_automatico(testo_utente, r.testo)
 
         self.seed.salva(self.seed_path)
+        self._salva_storia()
 
         return RispostaRaffaello(
             testo=r.testo or "[Nessuna risposta dal provider]",
@@ -154,6 +161,30 @@ class RaffaelloAgent:
     # ------------------------------------------------------------------ #
     # Internals                                                            #
     # ------------------------------------------------------------------ #
+
+    def _salva_storia(self) -> None:
+        """Salva la storia della sessione su disco accanto al seed."""
+        storia_path = self.seed_path.with_suffix(".storia.json")
+        dati = [
+            {"ruolo": t.ruolo, "testo": t.testo, "provider": t.provider}
+            for t in self._storia
+        ]
+        storia_path.write_text(json.dumps(dati, ensure_ascii=False, indent=2))
+
+    def _carica_storia(self) -> None:
+        """Riprende la storia della sessione precedente se esiste."""
+        storia_path = self.seed_path.with_suffix(".storia.json")
+        if not storia_path.exists():
+            return
+        try:
+            dati = json.loads(storia_path.read_text())
+            self._storia = [
+                Turno(ruolo=d["ruolo"], testo=d["testo"], provider=d.get("provider", ""))
+                for d in dati
+            ]
+            log.info("Storia sessione ripresa: %d turni", len(self._storia))
+        except Exception as exc:  # noqa: BLE001
+            log.warning("Storia non ripristinabile: %s", exc)
 
     def _build_contesto(self, testo_utente: str) -> str:
         if not self._storia:
