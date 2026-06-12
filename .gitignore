@@ -5,6 +5,7 @@ data/
 *.json
 !registro_ipotesi.json
 !output/contatti.jsonl
+!sdq1/sar/_contraddittore_storico.jsonl
 
 # Python
 __pycache__/
