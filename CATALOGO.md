@@ -106,7 +106,16 @@
 1. **WhatsApp** — descrivi cosa ti serve, ricevi un preventivo in 2h
 2. **Email** — terziclaudio@gmail.com (soggetto: `SDQ-1 [tipo prodotto]`)
 3. **Consegna**: entro 24h dalla conferma
-4. **Pagamento**: PayPal / Revolut / bonifico, alla consegna
+
+## Pagamento
+
+| Metodo | Dettagli |
+|--------|----------|
+| **Bitcoin** | `bc1qfrdu5jgz7scncmk293qqcup80565fjt0nvt4vs` |
+| **Revolut** | `@claudioterzi` |
+| **PayPal / bonifico** | su richiesta |
+
+Pagamento alla consegna. Nessun anticipo richiesto.
 
 ---
 
