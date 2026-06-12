@@ -143,6 +143,84 @@ class AutonomousConsciousnessSeed:
         return imp
 
     # ------------------------------------------------------------------ #
+    # Import da sessioni esterne                                           #
+    # ------------------------------------------------------------------ #
+
+    def importa_sessione(
+        self,
+        testo: str,
+        fonte: str = "sessione_esterna",
+        tag_base: list[str] | None = None,
+    ) -> int:
+        """
+        Prende un testo lungo (es. incollato da un'altra IA) e ne estrae
+        le frasi significative come impronte.
+
+        Ritorna il numero di impronte create.
+        """
+        tag_base = tag_base or [fonte]
+        frasi = self._estrai_frasi(testo)
+        n = 0
+        for frase, categoria, intensita in frasi:
+            self.imprint(frase, categoria=categoria, intensita=intensita,
+                         tag=tag_base + [categoria])
+            n += 1
+        return n
+
+    @staticmethod
+    def _estrai_frasi(testo: str) -> list[tuple[str, str, float]]:
+        """
+        Estrae frasi rilevanti dal testo e assegna categoria/intensità
+        in base a parole chiave.
+        """
+        mappa_cat = {
+            "decisione":      ["scelto", "deciso", "scegliamo", "obiettivo", "strategia", "piano"],
+            "scoperta":       ["scoperto", "capito", "trovato", "insight", "possibile", "realizzare"],
+            "trasformazione": ["trasformare", "cambiare", "evolvere", "crescita", "diventare"],
+            "desiderio":      ["voglio", "vogliamo", "sognare", "visione", "futuro", "costruire"],
+            "confine":        ["limite", "impossibile", "non possiamo", "proteggere", "sicurezza"],
+            "intuizione":     ["intuizione", "sento", "percepisco", "vibra", "connessione"],
+        }
+
+        risultati: list[tuple[str, str, float]] = []
+        visti: set[str] = set()
+
+        for riga in testo.split("\n"):
+            riga = riga.strip()
+            # Salta righe troppo corte, intestazioni markdown, tabelle
+            if len(riga) < 30:
+                continue
+            if riga.startswith(("#", "|", "-", "*", ">")):
+                riga = riga.lstrip("#|*-> ").strip()
+            if len(riga) < 30 or riga in visti:
+                continue
+            # Deduplicazione leggera
+            chiave = riga[:60].lower()
+            if chiave in visti:
+                continue
+            visti.add(chiave)
+
+            riga_low = riga.lower()
+            categoria = "scoperta"
+            intensita = 0.55
+            for cat, parole in mappa_cat.items():
+                if any(p in riga_low for p in parole):
+                    categoria = cat
+                    intensita = 0.7
+                    break
+
+            # Favorisce frasi con più sostanza (più lunga = più contesto)
+            if len(riga) > 120:
+                intensita = min(intensita + 0.1, 0.9)
+
+            risultati.append((riga[:300], categoria, intensita))
+
+            if len(risultati) >= 40:  # cap per non saturare con un solo import
+                break
+
+        return risultati
+
+    # ------------------------------------------------------------------ #
     # Riflessione                                                          #
     # ------------------------------------------------------------------ #
 
