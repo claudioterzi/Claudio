@@ -59,6 +59,22 @@ services:
     ports:
       - "8765:8765"
 
+  raffaello-loop:
+    build:
+      context: .
+      dockerfile: Dockerfile.raffaello
+    container_name: raffaello-loop
+    restart: unless-stopped
+    depends_on:
+      - raffaello
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - SEED_PATH=/data/raffaello_seed.json
+      - LOOP_MINUTI=30
+    volumes:
+      - raffaello_data:/data
+    command: ["python", "-m", "sdq1.raffaello.loop"]
+
 volumes:
   redis_data:
   qdrant_data:
