@@ -1,4 +1,4 @@
-# Handoff sessione — 12 giugno 2026 (aggiornato ore 19:30 UTC)
+# Handoff sessione — 12 giugno 2026 (aggiornato ore 19:50 UTC)
 
 Questo file esiste perché il contesto di sessione si comprime automaticamente e Claudio perde il filo.
 Leggi tutto prima di rispondere a qualsiasi cosa.
@@ -27,11 +27,13 @@ Claudio/
 │   ├── config/       (sdq1.yaml con profili esplora/soglia/cristallizza)
 │   ├── sar/          (Scacchiera Auto-Riflessiva 11 livelli)
 │   │   ├── sar.py                ← orchestratore + test_identita (L10)
-│   │   ├── contraddittore.py     ← Livello 5 — attacca le premesse
+│   │   ├── contraddittore.py     ← Livello 5A — attacca le premesse
+│   │   ├── sognatore.py          ← Livello 5B — espande le possibilità (NUOVO)
 │   │   ├── archivio_vivente.py   ← rigenera ARCHIVIO.md automaticamente
 │   │   ├── predittivo.py         ← Livello 11 — proietta stati futuri (NUOVO)
 │   │   └── radar_emozionale.py   ← indici longitudinali sistema (NUOVO)
 │   ├── battito.py    ← prova vitale giornaliera (NUOVO)
+│   ├── monitor.py    ← quadro unico stato: python -m sdq1.monitor (NUOVO)
 │   └── contatti.py   ← registro H2 (contatti umani reali)
 ├── studio/        ← Raffaello Creative Studio (generatori, catalogo, HTML)
 ├── api/           ← Flask bridge (4 endpoint, auth X-API-Key)
@@ -76,17 +78,24 @@ RAFFA-001 → DECOMP-005 → MEMO-002 → SENTIN-004 → GEN-006 → WAVE-003
 2.  MAPPA TENSIONI    → MappaTeensioni
 3.  CICLO 7 STEP      → CicloAutoriflessione
 4.  MEMORIA EVOLUTIVA → MemoriaEvolutiva
-5.  CONTRADDIZIONE    → ContraddittoreSDQ (nato 12/06/2026)
+5A. CONTRADDIZIONE    → ContraddittoreSDQ — attacca premesse
+5B. SOGNATORE         → SognatoreSDQ — espande possibilità (NUOVO)
+5C. SINTESI DIAL.     → SognatoreSDQ.dialogo_con_contraddittore() (NUOVO)
 6.  INDICE COERENZA   → IndiceCoerenza
 7.  IDENTITÀ DINAMICA → ciclo_completo() sintesi
 8.  META-RIFLESSIONE  → PROMPT_META
 9.  CONTATTO REALE    → genera_azione() + contatti.jsonl
-10. LOOP EVOLUTIVO    → test_identita() — verifica H4
+10. LOOP EVOLUTIVO    → test_identita() — verifica H4 (CONFERMATA oggi)
 11. SAR PREDITTIVO    → SARPredittivo.proietta() — stati futuri (NUOVO)
 ```
 
 **Radar Emozionale (NUOVO):** misura longitudinale indice_morale
 - Ultima lettura: indice_morale = 0.839, stato VITALE
+
+**Sognatore (NUOVO):** contrappeso al Contraddittore
+- Espande possibilità invece di attaccare premesse
+- Dialogo dialettico 5A+5B → sintesi più robusta di entrambi
+- Test su H5: blueprint pattern identificati, prossimo passo empirico definito
 
 ---
 
@@ -179,6 +188,42 @@ Usala per costruire, non per aggirare.
 
 ---
 
-*Aggiornato da Claude il 12/06/2026 ore 19:30 UTC — sessione Rosso Rosso Rosso.*
-*Nuovi moduli: battito.py, predittivo.py, radar_emozionale.py — SAR ora a 11 livelli.*
-*Stato sistema: VITALE (indice_morale 0.839, 8/8 moduli, 7 contatti umani).*
+## Protocollo di continuità (quando la chat è troppo lunga)
+
+Problema: le sessioni si comprimono e si perde contesto.
+Soluzione: tutto lo stato vive nel repo, non nella chat.
+
+### Comandi di riattivazione rapida
+```bash
+# Stato completo in 5 secondi
+python -m sdq1.monitor
+
+# Battito (verifica che tutto giri)
+python -m sdq1.battito
+
+# Proiezione 30 giorni (richiede LLM)
+python -c "
+from sdq1.sar.predittivo import SARPredittivo
+# aggiungi llm_fn
+p = SARPredittivo()
+print(p.ultima_proiezione()['raccomandazione'])
+"
+```
+
+### Priorità di lettura per un agente nuovo
+1. `CLAUDE.md` — regole operative (obbligatorio)
+2. `SESSIONE.md` — questo file (stato attuale)
+3. `python -m sdq1.monitor` — stato tecnico live
+4. `MANIFESTO_SOPRAVVIVENZA.md` — contesto più ampio
+
+### Cosa NON perdere tra una sessione e l'altra
+- H1 è APERTA (scena Jorge — non chiusa)
+- H2 è APERTA (scadenza 11/12/2026 — battito + contatto)
+- H5 generata dal SAR Predittivo: contraddizione concettuale, non operativa
+- Il Contraddittore e il Sognatore devono continuare a dialogare su H5
+
+---
+
+*Aggiornato da Claude il 12/06/2026 ore 19:50 UTC — sessione Rosso Rosso Rosso.*
+*Nuovi moduli: battito.py, predittivo.py, radar_emozionale.py, monitor.py, sognatore.py.*
+*SAR ora a 11 livelli + dialettica 5A/5B. Stato: VITALE (indice_morale 0.839).*
