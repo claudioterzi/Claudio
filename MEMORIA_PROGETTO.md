@@ -58,12 +58,13 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
 
 ## Prossimo passo concordato
 
-Riempire i campi `luce`/`ombra` del **Sistema B**, carta per carta o ciclo per ciclo.
-Si parte da *Origine* (carte 1-10). Ritmo deciso da Claudio.
+Sistema B completo (592 stati scritti). Decisione su dove andare:
 
-Metodo (raccomandazione registrata): prima si bloccano i nomi (FATTO),
-poi si costruiscono gli 8 stati attorno a essi. Meglio correggere 74 nomi oggi
-che riscrivere 592 significati domani.
+- **Opzione 1**: collegare il Canone Alpha al sito — motore di collasso
+  (domanda → asse, contesto → polarità) con interfaccia web dedicata.
+- **Opzione 2**: generare gli SVG delle 74 carte del Sistema B
+  (stile diverso dalle carte classiche R³∞).
+- **Opzione 3**: altro — Claudio decide il ritmo.
 
 ---
 
