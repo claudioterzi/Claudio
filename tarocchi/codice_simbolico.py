@@ -281,3 +281,24 @@ def cerca_carta(nome: str) -> Carta | None:
 
 def carta_per_indice(indice: int) -> Carta | None:
     return _INDICE_NUM.get(indice)
+
+
+def voce(carta: Carta) -> str:
+    """La voce della carta nelle letture — solo parole, mai coordinate.
+
+    Arcani Maggiori: nome proprio (Il Matto, La Torre, Le Stelle).
+    Arcani Minori: la prima parola chiave — l'essenza senza etichetta.
+
+    Questo è il confine tra il livello-motore (seme/numero) e il livello-lettura.
+    Il motore conosce 'Cinque di Spade'. La lettura dice 'vittoria a caro prezzo'.
+    """
+    if carta.arcano == TipoArcano.MAGGIORE:
+        return carta.nome
+    return carta.parole_chiave[0] if carta.parole_chiave else carta.dominio
+
+
+def eco(carta: Carta) -> str:
+    """L'eco estesa della carta — dominio completo, per letture personali profonde."""
+    if carta.arcano == TipoArcano.MAGGIORE:
+        return f"{carta.nome} — {carta.dominio}"
+    return carta.dominio

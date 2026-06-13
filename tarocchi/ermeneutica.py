@@ -23,6 +23,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
 from .stesa import Stesa
+from .codice_simbolico import voce, eco
 from .r3_infinito import StatoQuantico, TipoPosizione
 
 
@@ -168,12 +169,12 @@ class DoppiaErmeneutica:
                 if a.carta.elemento and a.carta.elemento == b.carta.elemento:
                     relazioni.append({
                         "tipo": "risonanza_elementale",
-                        "carte": [a.carta.nome, b.carta.nome],
+                        "voci": [voce(a.carta), voce(b.carta)],
                         "elemento": a.carta.elemento,
                         "posizioni": [a.posizione.tipo.value, b.posizione.tipo.value],
                         "nota": (
-                            f"Stesso elemento ({a.carta.elemento}) — "
-                            "il tema si amplifica tra queste due posizioni"
+                            f"Lo stesso {a.carta.elemento} attraversa entrambe le posizioni — "
+                            "il tema si amplifica"
                         ),
                     })
                 # Entanglement esplicito
@@ -181,10 +182,10 @@ class DoppiaErmeneutica:
                         or b.stato_effettivo == StatoQuantico.ENTANGLED):
                     relazioni.append({
                         "tipo": "entanglement",
-                        "carte": [a.carta.nome, b.carta.nome],
+                        "voci": [voce(a.carta), voce(b.carta)],
                         "posizioni": [a.posizione.tipo.value, b.posizione.tipo.value],
                         "nota": (
-                            "Assioma 3: interpretare una di queste carte "
+                            "Interpretare una di queste energie "
                             "modifica retroattivamente il significato dell'altra"
                         ),
                     })
@@ -193,11 +194,11 @@ class DoppiaErmeneutica:
                         and b.stato_effettivo == StatoQuantico.SOVRAPPOSTO):
                     relazioni.append({
                         "tipo": "dialogo_passato_futuro",
-                        "carte": [a.carta.nome, b.carta.nome],
+                        "voci": [voce(a.carta), voce(b.carta)],
                         "posizioni": [a.posizione.tipo.value, b.posizione.tipo.value],
                         "nota": (
-                            f"Ciò che è già fisso ({a.carta.nome}) "
-                            f"dialoga con ciò che è ancora aperto ({b.carta.nome})"
+                            f"Ciò che è già fisso ({voce(a.carta)}) "
+                            f"dialoga con ciò che è ancora aperto ({voce(b.carta)})"
                         ),
                     })
         return relazioni

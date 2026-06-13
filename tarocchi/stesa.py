@@ -12,7 +12,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
-from .codice_simbolico import Carta
+from .codice_simbolico import Carta, voce, eco
 from .r3_infinito import (
     StatoQuantico,
     OrientamentoCarta,
@@ -122,7 +122,7 @@ class Stesa:
         for n in self.carte_rovesciate():
             tensioni.append(
                 f"Tensione in {n.posizione.tipo.value}: "
-                f"{n.carta.nome} rovescia — significato differito o interiore"
+                f"{voce(n.carta)} — significato differito o interiore"
             )
 
         _OPPOSTI = {
@@ -139,8 +139,8 @@ class Stesa:
             for f in futuri:
                 if p.carta.elemento and _OPPOSTI.get(p.carta.elemento) == f.carta.elemento:
                     tensioni.append(
-                        f"Tensione elementale: {p.carta.elemento} (Presente) ↔ "
-                        f"{f.carta.elemento} (Futuro) — transizione non lineare"
+                        f"Tensione elementale: {voce(p.carta)} ({p.carta.elemento}, Presente) ↔ "
+                        f"{voce(f.carta)} ({f.carta.elemento}, Futuro) — transizione non lineare"
                     )
 
         return tensioni
@@ -150,10 +150,9 @@ class Stesa:
         risorse = []
         for n in self.nodi:
             if n.posizione.tipo == TipoPosizione.POTENZIALE:
-                kw = ", ".join(n.carta.parole_chiave[:2])
-                risorse.append(f"Risorsa latente ({n.carta.nome}): {kw}")
+                risorse.append(f"Risorsa latente: {eco(n.carta)}")
             elif n.posizione.tipo == TipoPosizione.CONSIGLIO:
-                risorse.append(f"Indicazione strutturale ({n.carta.nome}): {n.carta.dominio}")
+                risorse.append(f"Indicazione strutturale: {eco(n.carta)}")
         return risorse
 
     def distribuzione_stati(self) -> dict[str, int]:
