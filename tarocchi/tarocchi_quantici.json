@@ -1,72 +1,25 @@
 {
-  "manifesto": {
-    "sistema": "Tarocchi Quantici R3inf",
-    "sottotitolo": "Linguaggio Quantico basato sui Tarocchi",
-    "versione": "1.1 — 78 carte complete",
-    "autore": "Claudio Terzi",
-    "data": "2026-06-13",
-    "principio_fondante": "La verita non appartiene ne all uomo ne alla macchina. La verita emerge dalla relazione tra osservatore e simbolo.",
-    "principio_della_doppia_ermeneutica": "Due osservatori. Due modalita di osservazione. Una sola struttura. LetturaStrutturale: osservatore-macchina, stabile, riproducibile. LetturaPersonale: osservatore-umano, unica, contestuale. La macchina conosce Cinque di Spade. La lettura dice: vittoria a caro prezzo.",
-    "natura": "Non e un oracolo. E una grammatica simbolica processabile da due osservatori — macchina e umano — che generano tipi di significato diversi e complementari dalla stessa struttura.",
-    "principio_voce_eco": {
-      "voce": "Il nome della carta nelle letture — solo parole, mai coordinate.",
-      "eco": "L'eco estesa — dominio completo, per letture personali profonde.",
-      "regola": "Arcani Maggiori: voce = nome proprio (Il Matto, La Torre, Le Stelle). Arcani Minori: voce = prima parola chiave (vittoria a caro prezzo, non Cinque di Spade). La macchina sa le coordinate. La lettura parla in lingua.",
-      "esempio": {
-        "carta": "Cinque di Spade",
-        "voce": "vittoria a caro prezzo",
-        "eco": "quando la vittoria non vale quello che e costata"
-      }
-    },
-    "tre_layer": {
-      "layer_1": "Codice Simbolico — il vocabolario (74 carte)",
-      "layer_2": "Grammatica Quantica R3inf — il motore (stati, posizioni, 7 assiomi)",
-      "layer_3": "Doppia Ermeneutica — gli osservatori (macchina struttura, umano significato)"
-    },
-    "api": {
-      "endpoint_mazzo": "GET /api/mazzo — tutte le 74 carte in JSON con voce ed eco",
-      "endpoint_lettura": "POST /api/leggi — genera lettura strutturale + personale da una stesa"
-    }
+  "sistema": "Tarocchi Quantici — R³∞ con Principio della Doppia Ermeneutica",
+  "versione": "1.2.0 — documento totale, 78 carte con voce/eco",
+  "autore": "Claudio Terzi",
+  "data": "2026-06-13",
+  "principio_fondante": "La verità non appartiene né all'uomo né alla macchina. La verità emerge dalla relazione tra osservatore e simbolo.",
+  "principio_voce_eco": {
+    "regola": "Nelle letture mai le coordinate. Arcani Maggiori → nome proprio. Arcani Minori → voce (prima parola chiave). La macchina conosce 'Cinque di Spade'; la lettura dice 'vittoria a caro prezzo'.",
+    "voce": "Il nome della carta nelle letture — solo parole.",
+    "eco": "Il dominio esteso, per letture personali profonde."
   },
   "layer_1_codice_simbolico": {
-    "descrizione": "Vocabolario delle 74 carte. Ogni carta e un nodo semantico stabile con keyword e dominio propri. Condiviso tra osservatore-macchina e osservatore-umano. voce(carta) e il nome umano per le letture; eco(carta) e il dominio esteso.",
+    "descrizione": "Vocabolario delle 78 carte. Stabile, condiviso tra osservatore-macchina e osservatore-umano. Ogni Minore ha parole chiave e dominio unici (non più segnaposto di seme).",
     "totale_carte": 78,
     "arcani_maggiori": 22,
     "arcani_minori": 56,
-    "semi": {
-      "bastoni": {
-        "elemento": "fuoco",
-        "dominio": "azione, passione, creativita"
-      },
-      "coppe": {
-        "elemento": "acqua",
-        "dominio": "emozioni, relazioni, intuizione"
-      },
-      "spade": {
-        "elemento": "aria",
-        "dominio": "mente, verita, conflitto"
-      },
-      "denari": {
-        "elemento": "terra",
-        "dominio": "corpo, risorse, manifestazione"
-      }
-    },
-    "ranghi": {
-      "1": "Asso",
-      "2": "Due",
-      "3": "Tre",
-      "4": "Quattro",
-      "5": "Cinque",
-      "6": "Sei",
-      "7": "Sette",
-      "8": "Otto",
-      "9": "Nove",
-      "10": "Dieci",
-      "11": "Fante",
-      "12": "Cavaliere",
-      "13": "Regina",
-      "14": "Re"
-    },
+    "figure_corte": [
+      "Fante (11)",
+      "Cavaliere (12)",
+      "Regina (13)",
+      "Re (14)"
+    ],
     "carte": [
       {
         "nome": "Il Matto",
@@ -1397,28 +1350,79 @@
     ]
   },
   "layer_2_grammatica_quantica": {
-    "descrizione": "Il motore R3inf. Applica regole di composizione: stati quantici x posizioni x 7 assiomi. Come gli stati modificano le carte. Come le posizioni creano sintassi. Come il collasso avviene.",
-    "stati_quantici": {
-      "sovrapposto": "Significato aperto — carta in stato di potenziale. Non si e ancora fissato.",
-      "collassato": "Significato fisso — la carta ha prodotto un effetto concreto.",
-      "entangled": "Significato correlato — interpretarne una modifica retroattivamente l altra."
-    },
-    "orientamenti": {
-      "diritta": "Energia diretta — significato in forma manifesta.",
-      "rovescia": "Energia interiore o differita — significato in elaborazione."
-    },
-    "posizioni": {
-      "radice": "radice",
-      "passato": "passato",
-      "presente": "presente",
-      "futuro": "futuro",
-      "esito": "esito",
-      "ostacolo": "ostacolo",
-      "potenziale": "potenziale",
-      "consiglio": "consiglio",
-      "ombra": "ombra"
-    },
-    "assiomi_r3inf": [
+    "descrizione": "Sistema R³∞: tre assi (Simbolo × Stato × Posizione) con 7 Assiomi.",
+    "stati_quantici": [
+      {
+        "nome": "SOVRAPPOSTO",
+        "descrizione": "Multipli significati coesistono. Il collasso avviene nell'interpretazione."
+      },
+      {
+        "nome": "COLLASSATO",
+        "descrizione": "Il significato è stato fissato dall'osservazione."
+      },
+      {
+        "nome": "ENTANGLED",
+        "descrizione": "Correlato con un'altra carta: interpretare una modifica l'altra."
+      }
+    ],
+    "orientamenti": [
+      {
+        "nome": "DIRITTA",
+        "descrizione": "Significato primario, fluente."
+      },
+      {
+        "nome": "ROVESCIA",
+        "descrizione": "Significato in tensione: differito, interiore, o in resistenza attiva."
+      }
+    ],
+    "posizioni": [
+      {
+        "nome": "RADICE",
+        "asse": "temporale",
+        "forzatura_stato": "collasso"
+      },
+      {
+        "nome": "PASSATO",
+        "asse": "temporale",
+        "forzatura_stato": "collasso"
+      },
+      {
+        "nome": "PRESENTE",
+        "asse": "temporale",
+        "forzatura_stato": "nessuna"
+      },
+      {
+        "nome": "FUTURO",
+        "asse": "temporale",
+        "forzatura_stato": "sovrapposizione"
+      },
+      {
+        "nome": "ESITO",
+        "asse": "temporale",
+        "forzatura_stato": "sovrapposizione"
+      },
+      {
+        "nome": "OSTACOLO",
+        "asse": "dinamico",
+        "forzatura_stato": "nessuna"
+      },
+      {
+        "nome": "POTENZIALE",
+        "asse": "dinamico",
+        "forzatura_stato": "sovrapposizione"
+      },
+      {
+        "nome": "CONSIGLIO",
+        "asse": "dinamico",
+        "forzatura_stato": "nessuna"
+      },
+      {
+        "nome": "OMBRA",
+        "asse": "dinamico",
+        "forzatura_stato": "nessuna"
+      }
+    ],
+    "assiomi": [
       {
         "numero": 1,
         "nome": "Sovrapposizione Simbolica",
@@ -1457,71 +1461,281 @@
     ]
   },
   "layer_3_doppia_ermeneutica": {
-    "descrizione": "Il Principio della Doppia Ermeneutica. Due osservatori. Due modalita di osservazione. Una sola struttura.",
+    "descrizione": "Due osservatori, due modalità di osservazione, una sola struttura.",
     "osservatore_macchina": {
-      "tipo": "LetturaStrutturale",
-      "caratteristiche": [
-        "Stabile e riproducibile",
-        "La stessa stesa produce sempre la stessa lettura strutturale",
-        "E la mappa oggettiva della configurazione",
-        "Non e piu intuitiva ne piu limitata — e di tipo diverso"
-      ],
-      "output": {
-        "sinossi": "Sintesi strutturale in linguaggio naturale",
-        "assiomi_attivati": "Lista degli assiomi R3inf operativi in questa stesa",
-        "tensioni": "Tensioni strutturali rilevate (Assioma 4 + 7)",
-        "risorse": "Risorse e punti di forza strutturali",
-        "relazioni": "Relazioni inter-carta (Assioma 7) — risonanze, entanglement, dialoghi",
-        "distribuzione_stati": "Conteggio per stato quantico"
-      }
+      "classe": "LetturaStrutturale",
+      "proprieta": "Stabile, riproducibile, deterministica.",
+      "output": [
+        "sinossi",
+        "relazioni",
+        "tensioni",
+        "risorse",
+        "distribuzione_stati",
+        "distribuzione_elementi",
+        "assiomi_attivati"
+      ]
     },
     "osservatore_umano": {
-      "tipo": "LetturaPersonale",
-      "caratteristiche": [
-        "Unica e irripetibile",
-        "Emerge dalla relazione tra la mappa strutturale (macchina) e il contesto personale (umano)",
-        "L'umano non e guidato — e il cartomante. La macchina e il traduttore."
+      "classe": "ContestoPersonale",
+      "campi": [
+        "domanda",
+        "momento_vita",
+        "emozione_prevalente",
+        "aspetto_focus",
+        "disponibilita_collasso"
+      ]
+    },
+    "lettura_personale": {
+      "classe": "LetturaPersonale",
+      "proprieta": "Emerge dalla relazione tra mappa e contesto. Unica, irripetibile.",
+      "output": [
+        "ponte",
+        "punto_di_collasso",
+        "domande_di_riflessione",
+        "integrazione"
+      ]
+    },
+    "principio_fondante": "La verità non appartiene né all'uomo né alla macchina. La verità emerge dalla relazione tra osservatore e simbolo."
+  },
+  "esempio_stesa": {
+    "stesa": {
+      "stesa_id": "1023840d-a2e9-4601-acec-199d79509ddf",
+      "timestamp": "2026-06-13T22:50:25.839393+00:00",
+      "schema": "cinque_carte",
+      "nodi": [
+        {
+          "posizione_numero": 1,
+          "posizione_tipo": "radice",
+          "carta": "Il Matto",
+          "arcano": "maggiore",
+          "seme": null,
+          "stato": "collassato",
+          "stato_effettivo": "collassato",
+          "orientamento": "diritta",
+          "parole_chiave": [
+            "inizio",
+            "libertà",
+            "salto nel vuoto",
+            "ingenuità"
+          ],
+          "elemento": "etere",
+          "dominio": "potenziale puro non ancora formato",
+          "assiomi_attivati": [
+            5
+          ]
+        },
+        {
+          "posizione_numero": 2,
+          "posizione_tipo": "presente",
+          "carta": "La Torre",
+          "arcano": "maggiore",
+          "seme": null,
+          "stato": "sovrapposto",
+          "stato_effettivo": "sovrapposto",
+          "orientamento": "rovescia",
+          "parole_chiave": [
+            "rivelazione",
+            "crollo",
+            "liberazione forzata",
+            "caos"
+          ],
+          "elemento": "fuoco",
+          "dominio": "la struttura che cade — verità che non può essere contenuta",
+          "assiomi_attivati": []
+        },
+        {
+          "posizione_numero": 3,
+          "posizione_tipo": "ostacolo",
+          "carta": "L'Appeso",
+          "arcano": "maggiore",
+          "seme": null,
+          "stato": "entangled",
+          "stato_effettivo": "entangled",
+          "orientamento": "diritta",
+          "parole_chiave": [
+            "sospensione",
+            "sacrificio",
+            "nuova prospettiva",
+            "resa"
+          ],
+          "elemento": "acqua",
+          "dominio": "il dono dell'attesa — vedere il mondo capovolto",
+          "assiomi_attivati": []
+        },
+        {
+          "posizione_numero": 4,
+          "posizione_tipo": "futuro",
+          "carta": "Le Stelle",
+          "arcano": "maggiore",
+          "seme": null,
+          "stato": "sovrapposto",
+          "stato_effettivo": "sovrapposto",
+          "orientamento": "diritta",
+          "parole_chiave": [
+            "speranza",
+            "ispirazione",
+            "guarigione",
+            "apertura"
+          ],
+          "elemento": "aria",
+          "dominio": "guida nel buio — la ferita che diventa dono",
+          "assiomi_attivati": [
+            6
+          ]
+        },
+        {
+          "posizione_numero": 5,
+          "posizione_tipo": "potenziale",
+          "carta": "Il Mondo",
+          "arcano": "maggiore",
+          "seme": null,
+          "stato": "sovrapposto",
+          "stato_effettivo": "sovrapposto",
+          "orientamento": "diritta",
+          "parole_chiave": [
+            "completamento",
+            "integrazione",
+            "totalità",
+            "traguardo"
+          ],
+          "elemento": "terra",
+          "dominio": "il cerchio chiuso — la danza alla fine del viaggio",
+          "assiomi_attivati": [
+            6
+          ]
+        }
+      ]
+    },
+    "lettura_strutturale": {
+      "stesa_id": "1023840d-a2e9-4601-acec-199d79509ddf",
+      "sinossi": "Configurazione di 5 carte. Stato dominante: sovrapposto (3/5) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: etere — tema di potenziale puro e possibilità non ancora formate. 1 tensione strutturale rilevata. 1 risorsa strutturale identificata.",
+      "assiomi_attivati": [
+        3,
+        4,
+        5,
+        6,
+        7
       ],
-      "contesto_personale": {
-        "domanda": "La domanda portata dall'umano — facoltativa",
-        "momento_vita": "Dove si trova nella propria vita",
-        "emozione_prevalente": "Emozione dominante in questo momento",
-        "aspetto_focus": "amore / lavoro / crescita / salute / altro",
-        "disponibilita_collasso": "E pronto a ricevere una risposta definita?"
+      "tensioni": [
+        "Tensione in presente: La Torre — significato differito o interiore"
+      ],
+      "risorse": [
+        "Risorsa latente: Il Mondo — il cerchio chiuso — la danza alla fine del viaggio"
+      ],
+      "relazioni": [
+        {
+          "tipo": "dialogo_passato_futuro",
+          "voci": [
+            "Il Matto",
+            "La Torre"
+          ],
+          "posizioni": [
+            "radice",
+            "presente"
+          ],
+          "nota": "Ciò che è già fisso (Il Matto) dialoga con ciò che è ancora aperto (La Torre)"
+        },
+        {
+          "tipo": "entanglement",
+          "voci": [
+            "Il Matto",
+            "L'Appeso"
+          ],
+          "posizioni": [
+            "radice",
+            "ostacolo"
+          ],
+          "nota": "Interpretare una di queste energie modifica retroattivamente il significato dell'altra"
+        },
+        {
+          "tipo": "dialogo_passato_futuro",
+          "voci": [
+            "Il Matto",
+            "Le Stelle"
+          ],
+          "posizioni": [
+            "radice",
+            "futuro"
+          ],
+          "nota": "Ciò che è già fisso (Il Matto) dialoga con ciò che è ancora aperto (Le Stelle)"
+        },
+        {
+          "tipo": "dialogo_passato_futuro",
+          "voci": [
+            "Il Matto",
+            "Il Mondo"
+          ],
+          "posizioni": [
+            "radice",
+            "potenziale"
+          ],
+          "nota": "Ciò che è già fisso (Il Matto) dialoga con ciò che è ancora aperto (Il Mondo)"
+        },
+        {
+          "tipo": "entanglement",
+          "voci": [
+            "La Torre",
+            "L'Appeso"
+          ],
+          "posizioni": [
+            "presente",
+            "ostacolo"
+          ],
+          "nota": "Interpretare una di queste energie modifica retroattivamente il significato dell'altra"
+        },
+        {
+          "tipo": "entanglement",
+          "voci": [
+            "L'Appeso",
+            "Le Stelle"
+          ],
+          "posizioni": [
+            "ostacolo",
+            "futuro"
+          ],
+          "nota": "Interpretare una di queste energie modifica retroattivamente il significato dell'altra"
+        },
+        {
+          "tipo": "entanglement",
+          "voci": [
+            "L'Appeso",
+            "Il Mondo"
+          ],
+          "posizioni": [
+            "ostacolo",
+            "potenziale"
+          ],
+          "nota": "Interpretare una di queste energie modifica retroattivamente il significato dell'altra"
+        }
+      ],
+      "distribuzione_stati": {
+        "collassato": 1,
+        "sovrapposto": 3,
+        "entangled": 1
       },
-      "output": {
-        "ponte": "Come la struttura incontra il contesto personale",
-        "punto_di_collasso": "Il significato che si e fissato per questo umano",
-        "domande_di_riflessione": "Domande per esplorazione interiore",
-        "integrazione": "Come portare la lettura nella vita"
+      "distribuzione_elementi": {
+        "etere": 1,
+        "fuoco": 1,
+        "acqua": 1,
+        "aria": 1,
+        "terra": 1
       }
     },
-    "principio": "La verita non appartiene ne all uomo ne alla macchina. La verita emerge dalla relazione tra osservatore e simbolo."
-  },
-  "note_tecniche": {
-    "implementazione": "Python 3.10+ — zero dipendenze esterne per il modulo tarocchi",
-    "deploy": "Flask + Vercel (@vercel/python)",
-    "generato_il": "2026-06-13",
-    "esempio_api_leggi": {
-      "url": "POST /api/leggi",
-      "body": {
-        "nodi": [
-          {
-            "carta": "Il Matto",
-            "stato": "sovrapposto",
-            "posizione": "presente",
-            "orientamento": "diritta"
-          }
-        ],
-        "schema": "tre_carte",
-        "contesto": {
-          "domanda": "Cosa sto diventando?",
-          "momento_vita": "transizione professionale",
-          "emozione_prevalente": "incertezza",
-          "aspetto_focus": "crescita",
-          "disponibilita_collasso": true
-        }
-      }
+    "contesto_personale": {
+      "domanda": "Cosa sto diventando attraverso questo cambiamento?",
+      "momento_vita": "periodo di transizione professionale",
+      "emozione_prevalente": "tensione tra paura e desiderio",
+      "aspetto_focus": "crescita"
+    },
+    "lettura_personale": {
+      "ponte": "La tua domanda era: «Cosa sto diventando attraverso questo cambiamento?». La struttura risponde: Configurazione di 5 carte. Stato dominante: sovrapposto (3/5) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: etere — tema di potenziale puro e possibilità non ancora formate. 1 tensione strutturale rilevata. 1 risorsa strutturale identificata. Il tuo focus su 'crescita' incontra una configurazione dominata da etere. In questo momento della tua vita (periodo di transizione professionale), la struttura non ti dice cosa fare — ti mostra cosa c'è.",
+      "punto_di_collasso": "La configurazione è prevalentemente aperta. Il collasso che ti appartiene è: tieni la domanda, non l'ansietà. L'apertura stessa è la risposta di questa stesa.",
+      "domande_di_riflessione": [
+        "Cosa c'è di vero per te in questa tensione: «Tensione in presente: La Torre — significato differito o interiore»?",
+        "Come potresti attivare ciò che la struttura chiama risorsa: «Risorsa latente: Il Mondo — il cerchio chiuso — la danza alla fine del viaggio»?",
+        "Senti 'tensione tra paura e desiderio' in questo momento. Dove la ritrovi in questa configurazione?"
+      ],
+      "integrazione": "La maggior parte della configurazione è ancora aperta. Integrazione significa: portare attenzione, non prendere decisioni. Annota cosa emerge nei prossimi giorni. Il collasso arriverà da solo."
     }
   }
 }
