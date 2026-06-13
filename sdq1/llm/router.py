@@ -6,6 +6,11 @@ Ottimizzazioni attive:
   C. Dynamic Timeout  – timeout diverso per profilo (governa il hedging)
   D. Model Affinity   – vincola i nodi successivi al provider già usato
   E. Response Cache   – evita chiamate duplicate entro TTL (default 5 min)
+
+Commutazione Creativa (--fase):
+  esplora      – esplorazione ampia, provider economici, molte opzioni
+  soglia       – transizione, profilo bilanciato standard
+  cristallizza – impegno finale, provider migliore, hedging attivo
 """
 
 from __future__ import annotations
@@ -19,6 +24,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
+from .specializzazioni import classifica, nodo_per_problema
 from .providers import (
     AnthropicProvider,
     DeepSeekProvider,
@@ -66,6 +72,14 @@ class EsitoChiamata:
     hedged: bool = False
 
 
+# Commutazione Creativa: mappa fase → profilo router
+FASE_PROFILO: dict[str, str] = {
+    "esplora":      "esplora",
+    "soglia":       "soglia",
+    "cristallizza": "cristallizza",
+}
+
+
 class LLMRouter:
     # C: timeout di default per profilo (secondi)
     _TIMEOUT_DEFAULT: dict[str, float] = {
@@ -73,6 +87,9 @@ class LLMRouter:
         "default":      45.0,
         "ragionamento": 90.0,
         "ricerca":      60.0,
+        "esplora":      20.0,
+        "soglia":       45.0,
+        "cristallizza": 90.0,
     }
     # B: attesa prima di lanciare il provider secondario
     HEDGE_WAIT_S: float = 3.0
@@ -261,11 +278,36 @@ class LLMRouter:
         sistema: str,
         utente: str,
         profilo: str = "default",
+        fase: str | None = None,              # Commutazione Creativa (esplora/soglia/cristallizza)
+        problema: str | None = None,          # Routing semantico (codice/ragionamento/ricerca/...)
         hedging: bool = False,
         provider_vincolo: str | None = None,  # D: Model Affinity
         budget_tentativi: int = 1,            # Test-Time Compute: retry con prompt arricchito
         cache: bool = True,                   # E: Response Cache
+        auto_classifica: bool = False,        # classifica automaticamente il testo se problema=None
     ) -> EsitoChiamata:
+        # Routing semantico: classifica automatica se richiesta
+        if problema is None and auto_classifica:
+            problema = classifica(utente)
+            if problema:
+                log.debug("Auto-classificazione: '%s'", problema)
+
+        # Routing semantico: problema sovrascrive provider_vincolo di default
+        if problema is not None and provider_vincolo is None:
+            nodo = nodo_per_problema(problema)
+            if nodo:
+                provider_vincolo = nodo.provider
+                log.debug("Routing semantico: %s → %s", problema, nodo.provider)
+
+        # Commutazione Creativa: fase sovrascrive profilo se specificata
+        if fase is not None:
+            profilo_fase = FASE_PROFILO.get(fase)
+            if profilo_fase:
+                profilo = profilo_fase
+                if fase == "cristallizza":
+                    hedging = True
+            else:
+                log.warning("Fase sconosciuta '%s', uso profilo '%s'", fase, profilo)
         regola = self.regole.get(profilo) or self.regole["default"]
 
         # E. Response Cache: restituisce risposta cached se disponibile

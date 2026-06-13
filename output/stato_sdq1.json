@@ -1,0 +1,33 @@
+{
+  "timestamp": 1781328888.141191,
+  "data": "2026-06-13 05:34 UTC",
+  "battito": {
+    "stato": "NOMINALE",
+    "moduli_ok": 8,
+    "contatti_umani": 0,
+    "data": "2026-06-13"
+  },
+  "radar": {
+    "energia_sistema": 1.0,
+    "vitalita_esterna": 0.859,
+    "tensione_interna": 0.514,
+    "indice_morale": null,
+    "stato": "VITALE"
+  },
+  "ipotesi": {
+    "totale": 5,
+    "aperte": 3,
+    "confermate": 2,
+    "ids_aperte": [
+      "H1",
+      "H2",
+      "H5"
+    ]
+  },
+  "predittivo": {
+    "raccomandazione": "Prioritizzare la risoluzione di 1 'contraddizione_non_regge' entro 10 giorni.",
+    "scenario_probabile": "Il sistema SDQ-1 mantiene lo stato nominale, con una lenta progressione sulle ipotesi e persistenza delle contraddizioni.",
+    "data": "2026-06-13"
+  },
+  "contatti_umani": 8
+}
