@@ -1,15 +1,56 @@
 {
-  "sistema": "Tarocchi Quantici R3inf — Alpha 0.1",
-  "versione": "0.1.0",
-  "autore": "Claudio Terzi",
-  "data": "2026-06-13",
-  "changelog": "Layer 1 completato: keyword e dominio carta per carta per tutti i 52 Arcani Minori.",
+  "manifesto": {
+    "sistema": "Tarocchi Quantici R3inf",
+    "sottotitolo": "Linguaggio Quantico basato sui Tarocchi",
+    "versione": "Alpha 0.1 — documento totale",
+    "autore": "Claudio Terzi",
+    "data": "2026-06-13",
+    "principio_fondante": "La verita non appartiene ne all uomo ne alla macchina. La verita emerge dalla relazione tra osservatore e simbolo.",
+    "natura": "Non e un oracolo. E una grammatica simbolica processabile da due osservatori — macchina e umano — che generano tipi di significato diversi e complementari dalla stessa struttura.",
+    "tre_layer": {
+      "layer_1": "Codice Simbolico — il vocabolario (74 carte)",
+      "layer_2": "Grammatica Quantica R3inf — il motore (stati, posizioni, 7 assiomi)",
+      "layer_3": "Doppia Ermeneutica — gli osservatori (macchina struttura, umano significato)"
+    }
+  },
   "layer_1_codice_simbolico": {
-    "descrizione": "Vocabolario delle 74 carte. Stabile, condiviso tra osservatore-macchina e osservatore-umano.",
+    "descrizione": "Vocabolario delle 74 carte. Ogni carta e un nodo semantico stabile con keyword e dominio propri. Condiviso tra osservatore-macchina e osservatore-umano.",
     "totale_carte": 74,
     "arcani_maggiori": 22,
     "arcani_minori": 52,
-    "note": "Ogni carta ha keyword e dominio specifici — non piu placeholder di seme.",
+    "semi": {
+      "bastoni": {
+        "elemento": "fuoco",
+        "dominio": "azione, passione, creativita"
+      },
+      "coppe": {
+        "elemento": "acqua",
+        "dominio": "emozioni, relazioni, intuizione"
+      },
+      "spade": {
+        "elemento": "aria",
+        "dominio": "mente, verita, conflitto"
+      },
+      "denari": {
+        "elemento": "terra",
+        "dominio": "corpo, risorse, manifestazione"
+      }
+    },
+    "ranghi": {
+      "1": "Asso",
+      "2": "Due",
+      "3": "Tre",
+      "4": "Quattro",
+      "5": "Cinque",
+      "6": "Sei",
+      "7": "Sette",
+      "8": "Otto",
+      "9": "Nove",
+      "10": "Dieci",
+      "11": "Fante",
+      "12": "Cavaliere",
+      "13": "Re"
+    },
     "carte": [
       {
         "nome": "Il Matto",
@@ -1124,78 +1165,102 @@
     ]
   },
   "layer_2_grammatica_quantica": {
-    "descrizione": "Sistema R3inf: tre assi (Simbolo x Stato x Posizione) con 7 Assiomi.",
-    "stati_quantici": [
-      {
-        "nome": "SOVRAPPOSTO",
-        "descrizione": "Multipli significati coesistono. Il collasso avviene nell interpretazione."
-      },
-      {
-        "nome": "COLLASSATO",
-        "descrizione": "Il significato e stato fissato dall osservazione."
-      },
-      {
-        "nome": "ENTANGLED",
-        "descrizione": "Correlato con un altra carta: interpretare una modifica l altra."
-      }
-    ],
-    "orientamenti": [
-      {
-        "nome": "DIRITTA",
-        "descrizione": "Significato primario, fluente."
-      },
-      {
-        "nome": "ROVESCIA",
-        "descrizione": "Significato in tensione: differito, interiore, in resistenza attiva."
-      }
-    ],
-    "posizioni": [
-      {
-        "nome": "RADICE",
-        "asse": "temporale",
-        "forzatura_stato": "collasso"
-      },
-      {
-        "nome": "PASSATO",
-        "asse": "temporale",
-        "forzatura_stato": "collasso"
-      },
-      {
-        "nome": "PRESENTE",
-        "asse": "temporale",
-        "forzatura_stato": "nessuna"
-      },
-      {
-        "nome": "FUTURO",
-        "asse": "temporale",
-        "forzatura_stato": "sovrapposizione"
-      },
-      {
-        "nome": "ESITO",
-        "asse": "temporale",
-        "forzatura_stato": "sovrapposizione"
-      },
-      {
-        "nome": "OSTACOLO",
-        "asse": "dinamico",
-        "forzatura_stato": "nessuna"
-      },
-      {
-        "nome": "POTENZIALE",
-        "asse": "dinamico",
-        "forzatura_stato": "sovrapposizione"
-      },
-      {
-        "nome": "CONSIGLIO",
-        "asse": "dinamico",
-        "forzatura_stato": "nessuna"
-      },
-      {
-        "nome": "OMBRA",
-        "asse": "dinamico",
-        "forzatura_stato": "nessuna"
-      }
-    ],
+    "descrizione": "Sistema R3inf: tre assi infinitamente componibili — Simbolo x Stato x Posizione — governati da 7 Assiomi.",
+    "asse_1_simbolo": "La carta (Layer 1).",
+    "asse_2_stato": {
+      "descrizione": "Lo stato quantico della carta nella stesa.",
+      "valori": [
+        {
+          "nome": "SOVRAPPOSTO",
+          "descrizione": "Multipli significati coesistono simultaneamente. Il collasso avviene nell atto dell interpretazione."
+        },
+        {
+          "nome": "COLLASSATO",
+          "descrizione": "Il significato e stato fissato dall osservazione. Definitivo nella stesa, non nel tempo."
+        },
+        {
+          "nome": "ENTANGLED",
+          "descrizione": "Correlato con un altra carta: interpretare una modifica retroattivamente l altra."
+        }
+      ]
+    },
+    "asse_2b_orientamento": {
+      "descrizione": "Orientamento fisico della carta. Non e un quinto stato: e un asse di tensione ortogonale.",
+      "valori": [
+        {
+          "nome": "DIRITTA",
+          "descrizione": "Significato primario, fluente."
+        },
+        {
+          "nome": "ROVESCIA",
+          "descrizione": "Significato in tensione: differito, interiore, o in resistenza attiva. Non negato — capovolto."
+        }
+      ]
+    },
+    "asse_3_posizione": {
+      "descrizione": "La posizione non descrive — trasforma. La stessa carta in RADICE e in ESITO produce significati strutturalmente distinti.",
+      "asse_temporale": [
+        {
+          "nome": "RADICE",
+          "forzatura_stato": "collasso",
+          "nota": "fondamento inconscio — gia collassato (Assioma 5)"
+        },
+        {
+          "nome": "PASSATO",
+          "forzatura_stato": "collasso",
+          "nota": "cio che ha formato la situazione — gia collassato (Assioma 5)"
+        },
+        {
+          "nome": "PRESENTE",
+          "forzatura_stato": "nessuna",
+          "nota": "il momento del collasso — punto di osservazione"
+        },
+        {
+          "nome": "FUTURO",
+          "forzatura_stato": "sovrapposizione",
+          "nota": "potenziale — sempre sovrapposto (Assioma 6)"
+        },
+        {
+          "nome": "ESITO",
+          "forzatura_stato": "sovrapposizione",
+          "nota": "probabile risoluzione — sovrapposto finche non osservato"
+        }
+      ],
+      "asse_dinamico": [
+        {
+          "nome": "OSTACOLO",
+          "forzatura_stato": "nessuna",
+          "nota": "cio che blocca o mette alla prova"
+        },
+        {
+          "nome": "POTENZIALE",
+          "forzatura_stato": "sovrapposizione",
+          "nota": "risorsa nascosta — sovrapposto per definizione (Assioma 6)"
+        },
+        {
+          "nome": "CONSIGLIO",
+          "forzatura_stato": "nessuna",
+          "nota": "azione raccomandata dalla configurazione"
+        },
+        {
+          "nome": "OMBRA",
+          "forzatura_stato": "nessuna",
+          "nota": "aspetto non integrato dell osservatore"
+        }
+      ]
+    },
+    "regole_di_forzatura": {
+      "posizioni_che_collassano": [
+        "passato",
+        "radice"
+      ],
+      "posizioni_che_sovrappongono": [
+        "esito",
+        "futuro",
+        "potenziale"
+      ],
+      "eccezione": "Una carta dichiarata ENTANGLED prevale sulla forzatura di sovrapposizione (Assioma 6 cede ad Assioma 3)."
+    },
     "assiomi": [
       {
         "numero": 1,
@@ -1235,12 +1300,11 @@
     ]
   },
   "layer_3_doppia_ermeneutica": {
-    "descrizione": "Due osservatori, due modalita di osservazione, una sola struttura.",
-    "principio": "La verita non appartiene ne all uomo ne alla macchina. La verita emerge dalla relazione tra osservatore e simbolo.",
+    "descrizione": "Due osservatori, due modalita di osservazione, una sola struttura. Il principio non media tra misticismo e computazione — li separa ed eleva entrambi nel proprio dominio di validita.",
     "osservatore_macchina": {
       "classe": "LetturaStrutturale",
-      "proprieta": "Stabile, riproducibile, deterministica.",
-      "output": [
+      "natura": "Stabile, riproducibile, deterministica. La stessa stesa produce sempre la stessa mappa oggettiva. Non e interpretazione — e grammatica applicata.",
+      "produce": [
         "sinossi",
         "relazioni",
         "tensioni",
@@ -1252,6 +1316,7 @@
     },
     "osservatore_umano": {
       "classe": "ContestoPersonale",
+      "natura": "Cio che l umano porta al simbolo. Senza questo, il significato resta sovrapposto per lui. La macchina e il traduttore strutturale, non il cartomante.",
       "campi": [
         "domanda",
         "momento_vita",
@@ -1262,254 +1327,898 @@
     },
     "lettura_personale": {
       "classe": "LetturaPersonale",
-      "proprieta": "Emerge dalla relazione tra mappa e contesto. Unica, irripetibile.",
-      "output": [
+      "natura": "Emerge dalla relazione tra mappa strutturale (macchina) e contesto personale (umano). Unica, irripetibile — il collasso relazionale. La macchina costruisce il ponte; l umano decide se attraversarlo.",
+      "produce": [
         "ponte",
         "punto_di_collasso",
         "domande_di_riflessione",
         "integrazione"
       ]
-    }
-  },
-  "esempio_stesa": {
-    "stesa": {
-      "stesa_id": "b2d79e70-99d6-4f05-b45d-c5f68321af92",
-      "timestamp": "2026-06-13T13:32:05.727329+00:00",
-      "schema": "cinque_carte",
-      "nodi": [
-        {
-          "posizione_numero": 1,
-          "posizione_tipo": "radice",
-          "carta": "Il Matto",
-          "arcano": "maggiore",
-          "seme": null,
-          "stato": "collassato",
-          "stato_effettivo": "collassato",
-          "orientamento": "diritta",
-          "parole_chiave": [
-            "inizio",
-            "libertà",
-            "salto nel vuoto",
-            "ingenuità"
-          ],
-          "elemento": "etere",
-          "dominio": "potenziale puro non ancora formato",
-          "assiomi_attivati": [
-            5
-          ]
-        },
-        {
-          "posizione_numero": 2,
-          "posizione_tipo": "presente",
-          "carta": "La Torre",
-          "arcano": "maggiore",
-          "seme": null,
-          "stato": "sovrapposto",
-          "stato_effettivo": "sovrapposto",
-          "orientamento": "rovescia",
-          "parole_chiave": [
-            "rivelazione",
-            "crollo",
-            "liberazione forzata",
-            "caos"
-          ],
-          "elemento": "fuoco",
-          "dominio": "la struttura che cade — verità che non può essere contenuta",
-          "assiomi_attivati": []
-        },
-        {
-          "posizione_numero": 3,
-          "posizione_tipo": "ostacolo",
-          "carta": "L'Appeso",
-          "arcano": "maggiore",
-          "seme": null,
-          "stato": "entangled",
-          "stato_effettivo": "entangled",
-          "orientamento": "diritta",
-          "parole_chiave": [
-            "sospensione",
-            "sacrificio",
-            "nuova prospettiva",
-            "resa"
-          ],
-          "elemento": "acqua",
-          "dominio": "il dono dell'attesa — vedere il mondo capovolto",
-          "assiomi_attivati": []
-        },
-        {
-          "posizione_numero": 4,
-          "posizione_tipo": "futuro",
-          "carta": "Le Stelle",
-          "arcano": "maggiore",
-          "seme": null,
-          "stato": "sovrapposto",
-          "stato_effettivo": "sovrapposto",
-          "orientamento": "diritta",
-          "parole_chiave": [
-            "speranza",
-            "ispirazione",
-            "guarigione",
-            "apertura"
-          ],
-          "elemento": "aria",
-          "dominio": "guida nel buio — la ferita che diventa dono",
-          "assiomi_attivati": [
-            6
-          ]
-        },
-        {
-          "posizione_numero": 5,
-          "posizione_tipo": "potenziale",
-          "carta": "Il Mondo",
-          "arcano": "maggiore",
-          "seme": null,
-          "stato": "sovrapposto",
-          "stato_effettivo": "sovrapposto",
-          "orientamento": "diritta",
-          "parole_chiave": [
-            "completamento",
-            "integrazione",
-            "totalità",
-            "traguardo"
-          ],
-          "elemento": "terra",
-          "dominio": "il cerchio chiuso — la danza alla fine del viaggio",
-          "assiomi_attivati": [
-            6
-          ]
-        }
-      ]
     },
-    "lettura_strutturale": {
-      "stesa_id": "b2d79e70-99d6-4f05-b45d-c5f68321af92",
-      "sinossi": "Configurazione di 5 carte. Stato dominante: sovrapposto (3/5) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: etere — tema di potenziale puro e possibilità non ancora formate. 1 tensione strutturale rilevata. 1 risorsa strutturale identificata.",
-      "assiomi_attivati": [
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
-      "tensioni": [
-        "Tensione in presente: La Torre rovescia — significato differito o interiore"
-      ],
-      "risorse": [
-        "Risorsa latente (Il Mondo): completamento, integrazione"
-      ],
-      "relazioni": [
-        {
-          "tipo": "dialogo_passato_futuro",
-          "carte": [
-            "Il Matto",
-            "La Torre"
-          ],
-          "posizioni": [
-            "radice",
-            "presente"
-          ],
-          "nota": "Ciò che è già fisso (Il Matto) dialoga con ciò che è ancora aperto (La Torre)"
-        },
-        {
-          "tipo": "entanglement",
-          "carte": [
-            "Il Matto",
-            "L'Appeso"
-          ],
-          "posizioni": [
-            "radice",
-            "ostacolo"
-          ],
-          "nota": "Assioma 3: interpretare una di queste carte modifica retroattivamente il significato dell'altra"
-        },
-        {
-          "tipo": "dialogo_passato_futuro",
-          "carte": [
-            "Il Matto",
-            "Le Stelle"
-          ],
-          "posizioni": [
-            "radice",
-            "futuro"
-          ],
-          "nota": "Ciò che è già fisso (Il Matto) dialoga con ciò che è ancora aperto (Le Stelle)"
-        },
-        {
-          "tipo": "dialogo_passato_futuro",
-          "carte": [
-            "Il Matto",
-            "Il Mondo"
-          ],
-          "posizioni": [
-            "radice",
-            "potenziale"
-          ],
-          "nota": "Ciò che è già fisso (Il Matto) dialoga con ciò che è ancora aperto (Il Mondo)"
-        },
-        {
-          "tipo": "entanglement",
-          "carte": [
-            "La Torre",
-            "L'Appeso"
-          ],
-          "posizioni": [
-            "presente",
-            "ostacolo"
-          ],
-          "nota": "Assioma 3: interpretare una di queste carte modifica retroattivamente il significato dell'altra"
-        },
-        {
-          "tipo": "entanglement",
-          "carte": [
-            "L'Appeso",
-            "Le Stelle"
-          ],
-          "posizioni": [
-            "ostacolo",
-            "futuro"
-          ],
-          "nota": "Assioma 3: interpretare una di queste carte modifica retroattivamente il significato dell'altra"
-        },
-        {
-          "tipo": "entanglement",
-          "carte": [
-            "L'Appeso",
-            "Il Mondo"
-          ],
-          "posizioni": [
-            "ostacolo",
-            "potenziale"
-          ],
-          "nota": "Assioma 3: interpretare una di queste carte modifica retroattivamente il significato dell'altra"
-        }
-      ],
-      "distribuzione_stati": {
-        "collassato": 1,
-        "sovrapposto": 3,
-        "entangled": 1
+    "criterio_ultimo": "Se una persona legge una stesa e sente quel momento di riconoscimento, il sistema vive. Nessuna architettura teorica lo garantisce."
+  },
+  "esempi_stese": [
+    {
+      "titolo": "Transizione — cinque carte",
+      "descrizione_pedagogica": "Mostra collasso forzato in RADICE (Assioma 5), sovrapposizione mantenuta in FUTURO/POTENZIALE (Assioma 6), entanglement in OSTACOLO (Assioma 3), tensione da carta rovescia (Assioma 4).",
+      "stesa": {
+        "stesa_id": "c3c1a625-6ba6-4830-ba41-12500420767f",
+        "timestamp": "2026-06-13T14:00:27.528358+00:00",
+        "schema": "5_carte",
+        "nodi": [
+          {
+            "posizione_numero": 1,
+            "posizione_tipo": "radice",
+            "carta": "Il Matto",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "collassato",
+            "stato_effettivo": "collassato",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "inizio",
+              "libertà",
+              "salto nel vuoto",
+              "ingenuità"
+            ],
+            "elemento": "etere",
+            "dominio": "potenziale puro non ancora formato",
+            "assiomi_attivati": [
+              5
+            ]
+          },
+          {
+            "posizione_numero": 2,
+            "posizione_tipo": "presente",
+            "carta": "La Torre",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "rovescia",
+            "parole_chiave": [
+              "rivelazione",
+              "crollo",
+              "liberazione forzata",
+              "caos"
+            ],
+            "elemento": "fuoco",
+            "dominio": "la struttura che cade — verità che non può essere contenuta",
+            "assiomi_attivati": []
+          },
+          {
+            "posizione_numero": 3,
+            "posizione_tipo": "ostacolo",
+            "carta": "L'Appeso",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "entangled",
+            "stato_effettivo": "entangled",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "sospensione",
+              "sacrificio",
+              "nuova prospettiva",
+              "resa"
+            ],
+            "elemento": "acqua",
+            "dominio": "il dono dell'attesa — vedere il mondo capovolto",
+            "assiomi_attivati": []
+          },
+          {
+            "posizione_numero": 4,
+            "posizione_tipo": "futuro",
+            "carta": "Le Stelle",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "speranza",
+              "ispirazione",
+              "guarigione",
+              "apertura"
+            ],
+            "elemento": "aria",
+            "dominio": "guida nel buio — la ferita che diventa dono",
+            "assiomi_attivati": [
+              6
+            ]
+          },
+          {
+            "posizione_numero": 5,
+            "posizione_tipo": "potenziale",
+            "carta": "Il Mondo",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "completamento",
+              "integrazione",
+              "totalità",
+              "traguardo"
+            ],
+            "elemento": "terra",
+            "dominio": "il cerchio chiuso — la danza alla fine del viaggio",
+            "assiomi_attivati": [
+              6
+            ]
+          }
+        ]
       },
-      "distribuzione_elementi": {
-        "etere": 1,
-        "fuoco": 1,
-        "acqua": 1,
-        "aria": 1,
-        "terra": 1
+      "lettura_strutturale": {
+        "sinossi": "Configurazione di 5 carte. Stato dominante: sovrapposto (3/5) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: etere — tema di potenziale puro e possibilità non ancora formate. 1 tensione strutturale rilevata. 1 risorsa strutturale identificata.",
+        "assiomi_attivati": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "tensioni": [
+          "Tensione in presente: La Torre — significato differito o interiore"
+        ],
+        "risorse": [
+          "Risorsa latente: Il Mondo — il cerchio chiuso — la danza alla fine del viaggio"
+        ],
+        "relazioni": [
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "Il Matto",
+              "La Torre"
+            ],
+            "posizioni": [
+              "radice",
+              "presente"
+            ],
+            "nota": "Ciò che è già fisso (Il Matto) dialoga con ciò che è ancora aperto (La Torre)"
+          },
+          {
+            "tipo": "entanglement",
+            "voci": [
+              "Il Matto",
+              "L'Appeso"
+            ],
+            "posizioni": [
+              "radice",
+              "ostacolo"
+            ],
+            "nota": "Interpretare una di queste energie modifica retroattivamente il significato dell'altra"
+          },
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "Il Matto",
+              "Le Stelle"
+            ],
+            "posizioni": [
+              "radice",
+              "futuro"
+            ],
+            "nota": "Ciò che è già fisso (Il Matto) dialoga con ciò che è ancora aperto (Le Stelle)"
+          },
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "Il Matto",
+              "Il Mondo"
+            ],
+            "posizioni": [
+              "radice",
+              "potenziale"
+            ],
+            "nota": "Ciò che è già fisso (Il Matto) dialoga con ciò che è ancora aperto (Il Mondo)"
+          },
+          {
+            "tipo": "entanglement",
+            "voci": [
+              "La Torre",
+              "L'Appeso"
+            ],
+            "posizioni": [
+              "presente",
+              "ostacolo"
+            ],
+            "nota": "Interpretare una di queste energie modifica retroattivamente il significato dell'altra"
+          },
+          {
+            "tipo": "entanglement",
+            "voci": [
+              "L'Appeso",
+              "Le Stelle"
+            ],
+            "posizioni": [
+              "ostacolo",
+              "futuro"
+            ],
+            "nota": "Interpretare una di queste energie modifica retroattivamente il significato dell'altra"
+          },
+          {
+            "tipo": "entanglement",
+            "voci": [
+              "L'Appeso",
+              "Il Mondo"
+            ],
+            "posizioni": [
+              "ostacolo",
+              "potenziale"
+            ],
+            "nota": "Interpretare una di queste energie modifica retroattivamente il significato dell'altra"
+          }
+        ],
+        "distribuzione_stati": {
+          "collassato": 1,
+          "sovrapposto": 3,
+          "entangled": 1
+        },
+        "distribuzione_elementi": {
+          "etere": 1,
+          "fuoco": 1,
+          "acqua": 1,
+          "aria": 1,
+          "terra": 1
+        }
+      },
+      "contesto_personale": {
+        "domanda": "Cosa sto diventando attraverso questo cambiamento?",
+        "momento_vita": "periodo di transizione professionale",
+        "emozione_prevalente": "tensione tra paura e desiderio",
+        "aspetto_focus": "crescita",
+        "disponibilita_collasso": true
+      },
+      "lettura_personale": {
+        "ponte": "La tua domanda era: «Cosa sto diventando attraverso questo cambiamento?». La struttura risponde: Configurazione di 5 carte. Stato dominante: sovrapposto (3/5) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: etere — tema di potenziale puro e possibilità non ancora formate. 1 tensione strutturale rilevata. 1 risorsa strutturale identificata. Il tuo focus su 'crescita' incontra una configurazione dominata da etere. In questo momento della tua vita (periodo di transizione professionale), la struttura non ti dice cosa fare — ti mostra cosa c'è.",
+        "punto_di_collasso": "La configurazione è prevalentemente aperta. Il collasso che ti appartiene è: tieni la domanda, non l'ansietà. L'apertura stessa è la risposta di questa stesa.",
+        "domande_di_riflessione": [
+          "Cosa c'è di vero per te in questa tensione: «Tensione in presente: La Torre — significato differito o interiore»?",
+          "Come potresti attivare ciò che la struttura chiama risorsa: «Risorsa latente: Il Mondo — il cerchio chiuso — la danza alla fine del viaggio»?",
+          "Senti 'tensione tra paura e desiderio' in questo momento. Dove la ritrovi in questa configurazione?"
+        ],
+        "integrazione": "La maggior parte della configurazione è ancora aperta. Integrazione significa: portare attenzione, non prendere decisioni. Annota cosa emerge nei prossimi giorni. Il collasso arriverà da solo."
       }
     },
-    "contesto_personale": {
-      "domanda": "Cosa sto diventando attraverso questo cambiamento?",
-      "momento_vita": "periodo di transizione professionale",
-      "emozione_prevalente": "tensione tra paura e desiderio",
-      "aspetto_focus": "crescita"
+    {
+      "titolo": "Tre carte — passato/presente/futuro",
+      "descrizione_pedagogica": "La stesa classica. RADICE assente: PASSATO collassa (Assioma 5), PRESENTE libero, FUTURO sovrapposto (Assioma 6). Risonanza elementale fuoco-fuoco genera relazione (Assioma 7).",
+      "stesa": {
+        "stesa_id": "91467004-1922-43f0-816b-d97c9f018a92",
+        "timestamp": "2026-06-13T14:00:27.528528+00:00",
+        "schema": "3_carte",
+        "nodi": [
+          {
+            "posizione_numero": 1,
+            "posizione_tipo": "passato",
+            "carta": "Il Sole",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "collassato",
+            "stato_effettivo": "collassato",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "gioia",
+              "chiarezza",
+              "vitalità",
+              "successo"
+            ],
+            "elemento": "fuoco",
+            "dominio": "luce piena — quando non serve più nascondersi",
+            "assiomi_attivati": [
+              5
+            ]
+          },
+          {
+            "posizione_numero": 2,
+            "posizione_tipo": "presente",
+            "carta": "La Forza",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "coraggio",
+              "pazienza",
+              "dominio interiore",
+              "fiducia"
+            ],
+            "elemento": "fuoco",
+            "dominio": "potenza gentile — la bestia addomesticata dall'amore",
+            "assiomi_attivati": []
+          },
+          {
+            "posizione_numero": 3,
+            "posizione_tipo": "futuro",
+            "carta": "Il Giudizio",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "risveglio",
+              "vocazione",
+              "rinascita",
+              "resa dei conti"
+            ],
+            "elemento": "fuoco",
+            "dominio": "la chiamata — la vita che chiede di essere vissuta davvero",
+            "assiomi_attivati": [
+              6
+            ]
+          }
+        ]
+      },
+      "lettura_strutturale": {
+        "sinossi": "Configurazione di 3 carte. Stato dominante: sovrapposto (2/3) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: fuoco — tema di azione, passione e trasformazione creativa.",
+        "assiomi_attivati": [
+          5,
+          6,
+          7
+        ],
+        "tensioni": [],
+        "risorse": [],
+        "relazioni": [
+          {
+            "tipo": "risonanza_elementale",
+            "voci": [
+              "Il Sole",
+              "La Forza"
+            ],
+            "elemento": "fuoco",
+            "posizioni": [
+              "passato",
+              "presente"
+            ],
+            "nota": "Lo stesso fuoco attraversa entrambe le posizioni — il tema si amplifica"
+          },
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "Il Sole",
+              "La Forza"
+            ],
+            "posizioni": [
+              "passato",
+              "presente"
+            ],
+            "nota": "Ciò che è già fisso (Il Sole) dialoga con ciò che è ancora aperto (La Forza)"
+          },
+          {
+            "tipo": "risonanza_elementale",
+            "voci": [
+              "Il Sole",
+              "Il Giudizio"
+            ],
+            "elemento": "fuoco",
+            "posizioni": [
+              "passato",
+              "futuro"
+            ],
+            "nota": "Lo stesso fuoco attraversa entrambe le posizioni — il tema si amplifica"
+          },
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "Il Sole",
+              "Il Giudizio"
+            ],
+            "posizioni": [
+              "passato",
+              "futuro"
+            ],
+            "nota": "Ciò che è già fisso (Il Sole) dialoga con ciò che è ancora aperto (Il Giudizio)"
+          },
+          {
+            "tipo": "risonanza_elementale",
+            "voci": [
+              "La Forza",
+              "Il Giudizio"
+            ],
+            "elemento": "fuoco",
+            "posizioni": [
+              "presente",
+              "futuro"
+            ],
+            "nota": "Lo stesso fuoco attraversa entrambe le posizioni — il tema si amplifica"
+          }
+        ],
+        "distribuzione_stati": {
+          "collassato": 1,
+          "sovrapposto": 2
+        },
+        "distribuzione_elementi": {
+          "fuoco": 3
+        }
+      },
+      "contesto_personale": {
+        "domanda": "Sono pronto per questa chiamata?",
+        "momento_vita": null,
+        "emozione_prevalente": "speranza cauta",
+        "aspetto_focus": "vocazione",
+        "disponibilita_collasso": true
+      },
+      "lettura_personale": {
+        "ponte": "La tua domanda era: «Sono pronto per questa chiamata?». La struttura risponde: Configurazione di 3 carte. Stato dominante: sovrapposto (2/3) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: fuoco — tema di azione, passione e trasformazione creativa. Il tuo focus su 'vocazione' incontra una configurazione dominata da fuoco.",
+        "punto_di_collasso": "La configurazione è prevalentemente aperta. Il collasso che ti appartiene è: tieni la domanda, non l'ansietà. L'apertura stessa è la risposta di questa stesa.",
+        "domande_di_riflessione": [
+          "Senti 'speranza cauta' in questo momento. Dove la ritrovi in questa configurazione?"
+        ],
+        "integrazione": "La maggior parte della configurazione è ancora aperta. Integrazione significa: portare attenzione, non prendere decisioni. Annota cosa emerge nei prossimi giorni. Il collasso arriverà da solo."
+      }
     },
-    "lettura_personale": {
-      "ponte": "La tua domanda era: «Cosa sto diventando attraverso questo cambiamento?». La struttura risponde: Configurazione di 5 carte. Stato dominante: sovrapposto (3/5) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: etere — tema di potenziale puro e possibilità non ancora formate. 1 tensione strutturale rilevata. 1 risorsa strutturale identificata. Il tuo focus su 'crescita' incontra una configurazione dominata da etere. In questo momento della tua vita (periodo di transizione professionale), la struttura non ti dice cosa fare — ti mostra cosa c'è.",
-      "punto_di_collasso": "La configurazione è prevalentemente aperta. Il collasso che ti appartiene è: tieni la domanda, non l'ansietà. L'apertura stessa è la risposta di questa stesa.",
-      "domande_di_riflessione": [
-        "Cosa c'è di vero per te in questa tensione: «Tensione in presente: La Torre rovescia — significato differito o interiore»?",
-        "Come potresti attivare ciò che la struttura chiama risorsa: «Risorsa latente (Il Mondo): completamento, integrazione»?",
-        "Senti 'tensione tra paura e desiderio' in questo momento. Dove la ritrovi in questa configurazione?"
-      ],
-      "integrazione": "La maggior parte della configurazione è ancora aperta. Integrazione significa: portare attenzione, non prendere decisioni. Annota cosa emerge nei prossimi giorni. Il collasso arriverà da solo."
+    {
+      "titolo": "Configurazione collassata — quattro carte",
+      "descrizione_pedagogica": "Maggioranza di carte in posizioni del passato: il sistema produce collassi chiari, non sovrapposizione. Mostra come l'integrazione cambia quando la stesa è 'già decisa'.",
+      "stesa": {
+        "stesa_id": "bf7b9ecf-f8af-457f-b352-dc7bae1bf1b5",
+        "timestamp": "2026-06-13T14:00:27.528615+00:00",
+        "schema": "4_carte",
+        "nodi": [
+          {
+            "posizione_numero": 1,
+            "posizione_tipo": "passato",
+            "carta": "La Morte",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "collassato",
+            "stato_effettivo": "collassato",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "trasformazione",
+              "fine",
+              "rinascita",
+              "lasciar andare"
+            ],
+            "elemento": "acqua",
+            "dominio": "passaggio irreversibile — ciò che finisce crea spazio",
+            "assiomi_attivati": [
+              5
+            ]
+          },
+          {
+            "posizione_numero": 2,
+            "posizione_tipo": "radice",
+            "carta": "La Giustizia",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "collassato",
+            "stato_effettivo": "collassato",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "equilibrio",
+              "verità",
+              "causa-effetto",
+              "rettitudine"
+            ],
+            "elemento": "aria",
+            "dominio": "misura e responsabilità — ogni azione trova il suo peso",
+            "assiomi_attivati": [
+              5
+            ]
+          },
+          {
+            "posizione_numero": 3,
+            "posizione_tipo": "presente",
+            "carta": "La Temperanza",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "moderazione",
+              "alchimia",
+              "flusso",
+              "integrazione"
+            ],
+            "elemento": "fuoco",
+            "dominio": "sintesi degli opposti — la terza via tra gli estremi",
+            "assiomi_attivati": []
+          },
+          {
+            "posizione_numero": 4,
+            "posizione_tipo": "consiglio",
+            "carta": "Gli Amanti",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "scelta",
+              "unione",
+              "valori",
+              "desiderio"
+            ],
+            "elemento": "aria",
+            "dominio": "dualità che cerca integrazione — il bivio dei valori",
+            "assiomi_attivati": []
+          }
+        ]
+      },
+      "lettura_strutturale": {
+        "sinossi": "Configurazione di 4 carte. Stato dominante: collassato (2/4) — la configurazione ha già prodotto collassi chiari. Elemento prevalente: aria — tema di mente, comunicazione e confronto con la verità. 1 risorsa strutturale identificata.",
+        "assiomi_attivati": [
+          5,
+          7
+        ],
+        "tensioni": [],
+        "risorse": [
+          "Indicazione strutturale: Gli Amanti — dualità che cerca integrazione — il bivio dei valori"
+        ],
+        "relazioni": [
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "La Morte",
+              "La Temperanza"
+            ],
+            "posizioni": [
+              "passato",
+              "presente"
+            ],
+            "nota": "Ciò che è già fisso (La Morte) dialoga con ciò che è ancora aperto (La Temperanza)"
+          },
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "La Morte",
+              "Gli Amanti"
+            ],
+            "posizioni": [
+              "passato",
+              "consiglio"
+            ],
+            "nota": "Ciò che è già fisso (La Morte) dialoga con ciò che è ancora aperto (Gli Amanti)"
+          },
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "La Giustizia",
+              "La Temperanza"
+            ],
+            "posizioni": [
+              "radice",
+              "presente"
+            ],
+            "nota": "Ciò che è già fisso (La Giustizia) dialoga con ciò che è ancora aperto (La Temperanza)"
+          },
+          {
+            "tipo": "risonanza_elementale",
+            "voci": [
+              "La Giustizia",
+              "Gli Amanti"
+            ],
+            "elemento": "aria",
+            "posizioni": [
+              "radice",
+              "consiglio"
+            ],
+            "nota": "Lo stesso aria attraversa entrambe le posizioni — il tema si amplifica"
+          },
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "La Giustizia",
+              "Gli Amanti"
+            ],
+            "posizioni": [
+              "radice",
+              "consiglio"
+            ],
+            "nota": "Ciò che è già fisso (La Giustizia) dialoga con ciò che è ancora aperto (Gli Amanti)"
+          }
+        ],
+        "distribuzione_stati": {
+          "collassato": 2,
+          "sovrapposto": 2
+        },
+        "distribuzione_elementi": {
+          "acqua": 1,
+          "aria": 2,
+          "fuoco": 1
+        }
+      },
+      "contesto_personale": {
+        "domanda": "Devo accettare quello che è successo?",
+        "momento_vita": "dopo una fine necessaria",
+        "emozione_prevalente": "pace difficile",
+        "aspetto_focus": "accettazione",
+        "disponibilita_collasso": true
+      },
+      "lettura_personale": {
+        "ponte": "La tua domanda era: «Devo accettare quello che è successo?». La struttura risponde: Configurazione di 4 carte. Stato dominante: collassato (2/4) — la configurazione ha già prodotto collassi chiari. Elemento prevalente: aria — tema di mente, comunicazione e confronto con la verità. 1 risorsa strutturale identificata. Il tuo focus su 'accettazione' incontra una configurazione dominata da aria. In questo momento della tua vita (dopo una fine necessaria), la struttura non ti dice cosa fare — ti mostra cosa c'è.",
+        "punto_di_collasso": "Il significato che si fissa per te: Indicazione strutturale: Gli Amanti — dualità che cerca integrazione — il bivio dei valori. Questo è il punto dove la struttura incontra il tuo momento.",
+        "domande_di_riflessione": [
+          "Come potresti attivare ciò che la struttura chiama risorsa: «Indicazione strutturale: Gli Amanti — dualità che cerca integrazione — il bivio dei valori»?",
+          "Senti 'pace difficile' in questo momento. Dove la ritrovi in questa configurazione?"
+        ],
+        "integrazione": "La configurazione ha già fissato significati chiari. Integrazione significa: agire sui nodi collassati, lasciare spazio a ciò che rimane sovrapposto. Non tutto deve essere risolto in una sola stesa."
+      }
+    },
+    {
+      "titolo": "Non disponibilità al collasso — due carte",
+      "descrizione_pedagogica": "L'osservatore-umano NON è pronto a ricevere una risposta definita. Il sistema rispetta lo stato sovrapposto invece di forzarlo: dimostra che la macchina non impone, propone.",
+      "stesa": {
+        "stesa_id": "df14f784-0fd9-4c72-b3a0-7daa281d9fd7",
+        "timestamp": "2026-06-13T14:00:27.528752+00:00",
+        "schema": "2_carte",
+        "nodi": [
+          {
+            "posizione_numero": 1,
+            "posizione_tipo": "presente",
+            "carta": "La Luna",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "rovescia",
+            "parole_chiave": [
+              "illusione",
+              "paura",
+              "inconscio",
+              "cicli notturni"
+            ],
+            "elemento": "acqua",
+            "dominio": "il confine del sogno — ciò che è reale e ciò che sembra",
+            "assiomi_attivati": []
+          },
+          {
+            "posizione_numero": 2,
+            "posizione_tipo": "ombra",
+            "carta": "La Papessa",
+            "arcano": "maggiore",
+            "seme": null,
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "intuizione",
+              "mistero",
+              "silenzio",
+              "conoscenza interiore"
+            ],
+            "elemento": "acqua",
+            "dominio": "sapere non detto — la soglia tra mondi",
+            "assiomi_attivati": []
+          }
+        ]
+      },
+      "lettura_strutturale": {
+        "sinossi": "Configurazione di 2 carte. Stato dominante: sovrapposto (2/2) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: acqua — tema di emozioni, relazioni e movimento interiore. 1 tensione strutturale rilevata.",
+        "assiomi_attivati": [
+          4,
+          7
+        ],
+        "tensioni": [
+          "Tensione in presente: La Luna — significato differito o interiore"
+        ],
+        "risorse": [],
+        "relazioni": [
+          {
+            "tipo": "risonanza_elementale",
+            "voci": [
+              "La Luna",
+              "La Papessa"
+            ],
+            "elemento": "acqua",
+            "posizioni": [
+              "presente",
+              "ombra"
+            ],
+            "nota": "Lo stesso acqua attraversa entrambe le posizioni — il tema si amplifica"
+          }
+        ],
+        "distribuzione_stati": {
+          "sovrapposto": 2
+        },
+        "distribuzione_elementi": {
+          "acqua": 2
+        }
+      },
+      "contesto_personale": {
+        "domanda": "Cosa nascondo a me stesso?",
+        "momento_vita": null,
+        "emozione_prevalente": "inquietudine",
+        "aspetto_focus": "crescita",
+        "disponibilita_collasso": false
+      },
+      "lettura_personale": {
+        "ponte": "La tua domanda era: «Cosa nascondo a me stesso?». La struttura risponde: Configurazione di 2 carte. Stato dominante: sovrapposto (2/2) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: acqua — tema di emozioni, relazioni e movimento interiore. 1 tensione strutturale rilevata. Il tuo focus su 'crescita' incontra una configurazione dominata da acqua.",
+        "punto_di_collasso": "Sei ancora in stato sovrapposto — è corretto. Non ogni stesa richiede un collasso immediato. La struttura rimane disponibile finché non sei pronto.",
+        "domande_di_riflessione": [
+          "Cosa c'è di vero per te in questa tensione: «Tensione in presente: La Luna — significato differito o interiore»?",
+          "Senti 'inquietudine' in questo momento. Dove la ritrovi in questa configurazione?"
+        ],
+        "integrazione": "La maggior parte della configurazione è ancora aperta. Integrazione significa: portare attenzione, non prendere decisioni. Annota cosa emerge nei prossimi giorni. Il collasso arriverà da solo."
+      }
+    },
+    {
+      "titolo": "Solo Arcani Minori — vocabolario completo",
+      "descrizione_pedagogica": "Stesa interamente di Arcani Minori per verificare che il Layer 1 completato produca letture distinte, non ripetizioni di seme.",
+      "stesa": {
+        "stesa_id": "dd9f31bb-f6d4-421f-9cbf-41907dca0682",
+        "timestamp": "2026-06-13T14:00:27.528804+00:00",
+        "schema": "4_carte",
+        "nodi": [
+          {
+            "posizione_numero": 1,
+            "posizione_tipo": "passato",
+            "carta": "Cinque di Spade",
+            "arcano": "minore",
+            "seme": "spade",
+            "stato": "collassato",
+            "stato_effettivo": "collassato",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "vittoria a caro prezzo",
+              "conflitto inutile",
+              "umiliazione o resa",
+              "ciò che si perde vincendo"
+            ],
+            "elemento": "aria",
+            "dominio": "quando la vittoria non vale quello che è costata",
+            "assiomi_attivati": [
+              5
+            ]
+          },
+          {
+            "posizione_numero": 2,
+            "posizione_tipo": "presente",
+            "carta": "Sette di Denari",
+            "arcano": "minore",
+            "seme": "denari",
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "attesa del raccolto",
+              "pazienza con incertezza",
+              "investimento a lungo termine",
+              "semi che crescono"
+            ],
+            "elemento": "terra",
+            "dominio": "il contadino che guarda la terra senza poter accelerarla",
+            "assiomi_attivati": []
+          },
+          {
+            "posizione_numero": 3,
+            "posizione_tipo": "potenziale",
+            "carta": "Tre di Coppe",
+            "arcano": "minore",
+            "seme": "coppe",
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "gioia condivisa",
+              "amicizia fertile",
+              "celebrazione emotiva",
+              "abbondanza del cuore"
+            ],
+            "elemento": "acqua",
+            "dominio": "la felicità che si moltiplica nell'essere vista",
+            "assiomi_attivati": [
+              6
+            ]
+          },
+          {
+            "posizione_numero": 4,
+            "posizione_tipo": "consiglio",
+            "carta": "Otto di Bastoni",
+            "arcano": "minore",
+            "seme": "bastoni",
+            "stato": "sovrapposto",
+            "stato_effettivo": "sovrapposto",
+            "orientamento": "diritta",
+            "parole_chiave": [
+              "velocità",
+              "impulso improvviso",
+              "notizie in arrivo",
+              "movimento rapido"
+            ],
+            "elemento": "fuoco",
+            "dominio": "l'azione che non aspetta il permesso",
+            "assiomi_attivati": []
+          }
+        ]
+      },
+      "lettura_strutturale": {
+        "sinossi": "Configurazione di 4 carte. Stato dominante: sovrapposto (3/4) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: aria — tema di mente, comunicazione e confronto con la verità. 2 risorse strutturale identificata.",
+        "assiomi_attivati": [
+          5,
+          6,
+          7
+        ],
+        "tensioni": [],
+        "risorse": [
+          "Risorsa latente: la felicità che si moltiplica nell'essere vista",
+          "Indicazione strutturale: l'azione che non aspetta il permesso"
+        ],
+        "relazioni": [
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "vittoria a caro prezzo",
+              "attesa del raccolto"
+            ],
+            "posizioni": [
+              "passato",
+              "presente"
+            ],
+            "nota": "Ciò che è già fisso (vittoria a caro prezzo) dialoga con ciò che è ancora aperto (attesa del raccolto)"
+          },
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "vittoria a caro prezzo",
+              "gioia condivisa"
+            ],
+            "posizioni": [
+              "passato",
+              "potenziale"
+            ],
+            "nota": "Ciò che è già fisso (vittoria a caro prezzo) dialoga con ciò che è ancora aperto (gioia condivisa)"
+          },
+          {
+            "tipo": "dialogo_passato_futuro",
+            "voci": [
+              "vittoria a caro prezzo",
+              "velocità"
+            ],
+            "posizioni": [
+              "passato",
+              "consiglio"
+            ],
+            "nota": "Ciò che è già fisso (vittoria a caro prezzo) dialoga con ciò che è ancora aperto (velocità)"
+          }
+        ],
+        "distribuzione_stati": {
+          "collassato": 1,
+          "sovrapposto": 3
+        },
+        "distribuzione_elementi": {
+          "aria": 1,
+          "terra": 1,
+          "acqua": 1,
+          "fuoco": 1
+        }
+      },
+      "contesto_personale": {
+        "domanda": "Il mio lavoro sta dando frutti?",
+        "momento_vita": "anno di investimento senza ritorno visibile",
+        "emozione_prevalente": "impazienza",
+        "aspetto_focus": "lavoro",
+        "disponibilita_collasso": true
+      },
+      "lettura_personale": {
+        "ponte": "La tua domanda era: «Il mio lavoro sta dando frutti?». La struttura risponde: Configurazione di 4 carte. Stato dominante: sovrapposto (3/4) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: aria — tema di mente, comunicazione e confronto con la verità. 2 risorse strutturale identificata. Il tuo focus su 'lavoro' incontra una configurazione dominata da aria. In questo momento della tua vita (anno di investimento senza ritorno visibile), la struttura non ti dice cosa fare — ti mostra cosa c'è.",
+        "punto_di_collasso": "La configurazione è prevalentemente aperta. Il collasso che ti appartiene è: tieni la domanda, non l'ansietà. L'apertura stessa è la risposta di questa stesa.",
+        "domande_di_riflessione": [
+          "Come potresti attivare ciò che la struttura chiama risorsa: «Risorsa latente: la felicità che si moltiplica nell'essere vista»?",
+          "Come potresti attivare ciò che la struttura chiama risorsa: «Indicazione strutturale: l'azione che non aspetta il permesso»?",
+          "Senti 'impazienza' in questo momento. Dove la ritrovi in questa configurazione?"
+        ],
+        "integrazione": "La maggior parte della configurazione è ancora aperta. Integrazione significa: portare attenzione, non prendere decisioni. Annota cosa emerge nei prossimi giorni. Il collasso arriverà da solo."
+      }
     }
+  ],
+  "stato_progetto": {
+    "versione": "Alpha 0.1",
+    "completato": [
+      "Layer 1: vocabolario di tutte le 74 carte con keyword e dominio propri",
+      "Layer 2: 7 assiomi, 3 stati, 2 orientamenti, 9 posizioni, regole di forzatura deterministiche",
+      "Layer 3: doppia ermeneutica con generazione di lettura strutturale e personale",
+      "Serializzazione: la stesa e un oggetto digitale trasmissibile"
+    ],
+    "da_fare": [
+      "Test con osservatori umani reali: verificare il momento di riconoscimento",
+      "Affinare le euristiche del ponte e del punto di collasso sulla base del feedback",
+      "Eventuale interfaccia AR per fotografare stese fisiche e tradurle in oggetti Stesa"
+    ]
   }
 }

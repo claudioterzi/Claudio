@@ -1,6 +1,9 @@
 # LGAI - Life Game AI System
 # Python 3.7+ sufficiente per il core LGAI.
 
+# Web (Tarocchi Quantici su Vercel)
+flask>=3.0.0
+
 # SDQ-1 (Sistema Di Quadranti, Fase 1+2)
 pyyaml>=6.0
 
