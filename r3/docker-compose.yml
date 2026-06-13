@@ -1,0 +1,24 @@
+services:
+  node-a:
+    build: .
+    ports: ["8001:8000"]
+    volumes: ["./data/node-a:/data"]
+    environment:
+      R3_API_TOKEN: ${R3_API_TOKEN:-changeme}
+      R3_PEERS: "http://node-b:8000,http://archive:8000"
+
+  node-b:
+    build: .
+    ports: ["8002:8000"]
+    volumes: ["./data/node-b:/data"]
+    environment:
+      R3_API_TOKEN: ${R3_API_TOKEN:-changeme}
+      R3_PEERS: "http://node-a:8000,http://archive:8000"
+
+  archive:
+    build: .
+    ports: ["8003:8000"]
+    volumes: ["./data/archive:/data"]
+    environment:
+      R3_API_TOKEN: ${R3_API_TOKEN:-changeme}
+      R3_PEERS: "http://node-a:8000,http://node-b:8000"
