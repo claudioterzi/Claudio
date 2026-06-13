@@ -1,0 +1,1382 @@
+{
+  "meta": {
+    "sistema": "Tarocchi Quantici R3inf",
+    "canone": "Alpha 0.1",
+    "data": "2026-06-13",
+    "stato": "scheletro — campi luce/ombra vuoti, da costruire",
+    "struttura": {
+      "carte": 74,
+      "cicli": 8,
+      "stati_per_carta": 8,
+      "formula": "Carta + Asse (nord/est/sud/ovest) + Polarità (luce/ombra) = Significato"
+    },
+    "cicli": [
+      {
+        "nome": "Origine",
+        "carte": "1-10"
+      },
+      {
+        "nome": "Legame",
+        "carte": "11-20"
+      },
+      {
+        "nome": "Frattura",
+        "carte": "21-30"
+      },
+      {
+        "nome": "Trasformazione",
+        "carte": "31-40"
+      },
+      {
+        "nome": "Potere",
+        "carte": "41-50"
+      },
+      {
+        "nome": "Visione",
+        "carte": "51-60"
+      },
+      {
+        "nome": "Totalità",
+        "carte": "61-70"
+      },
+      {
+        "nome": "Trascendenti",
+        "carte": "71-74"
+      }
+    ]
+  },
+  "carte": [
+    {
+      "id": 1,
+      "nome": "La Scintilla",
+      "simbolo": "✦",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 2,
+      "nome": "L'Orizzonte",
+      "simbolo": "─",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 3,
+      "nome": "Il Richiamo",
+      "simbolo": "◎",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 4,
+      "nome": "La Scelta",
+      "simbolo": "⊕",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 5,
+      "nome": "Il Passo",
+      "simbolo": "›",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 6,
+      "nome": "La Ricerca",
+      "simbolo": "⊙",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 7,
+      "nome": "La Soglia",
+      "simbolo": "⟁",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 8,
+      "nome": "L'Ignoto",
+      "simbolo": "∿",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 9,
+      "nome": "La Vigilia",
+      "simbolo": "◑",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 10,
+      "nome": "Il Varco",
+      "simbolo": "◯",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 11,
+      "nome": "L'Incontro",
+      "simbolo": "⋈",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 12,
+      "nome": "L'Eco",
+      "simbolo": "≋",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 13,
+      "nome": "La Fiducia",
+      "simbolo": "♡",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 14,
+      "nome": "Lo Scambio",
+      "simbolo": "⇄",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 15,
+      "nome": "L'Alleanza",
+      "simbolo": "⋒",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 16,
+      "nome": "Il Desiderio",
+      "simbolo": "♦",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 17,
+      "nome": "L'Attrazione",
+      "simbolo": "⟵",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 18,
+      "nome": "La Promessa",
+      "simbolo": "∞",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 19,
+      "nome": "L'Unione",
+      "simbolo": "●",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 20,
+      "nome": "Il Noi",
+      "simbolo": "⊎",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 21,
+      "nome": "Il Dubbio",
+      "simbolo": "？",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 22,
+      "nome": "La Crepa",
+      "simbolo": "⌇",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 23,
+      "nome": "Il Conflitto",
+      "simbolo": "✕",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 24,
+      "nome": "La Ferita",
+      "simbolo": "⊸",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 25,
+      "nome": "Il Peso",
+      "simbolo": "↓",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 26,
+      "nome": "Il Tradimento",
+      "simbolo": "⊘",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 27,
+      "nome": "La Caduta",
+      "simbolo": "↯",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 28,
+      "nome": "La Perdita",
+      "simbolo": "◌",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 29,
+      "nome": "Il Distacco",
+      "simbolo": "⊣",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 30,
+      "nome": "Il Fondo",
+      "simbolo": "▽",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 31,
+      "nome": "Il Silenzio",
+      "simbolo": "·",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 32,
+      "nome": "L'Attesa",
+      "simbolo": "◔",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 33,
+      "nome": "L'Ombra",
+      "simbolo": "◐",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 34,
+      "nome": "La Verità",
+      "simbolo": "◈",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 35,
+      "nome": "Il Crollo",
+      "simbolo": "▼",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 36,
+      "nome": "Il Fuoco",
+      "simbolo": "△",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 37,
+      "nome": "La Muta",
+      "simbolo": "⇌",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 38,
+      "nome": "La Rinascita",
+      "simbolo": "✿",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 39,
+      "nome": "La Direzione",
+      "simbolo": "→",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 40,
+      "nome": "Il Nuovo Giorno",
+      "simbolo": "◕",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 41,
+      "nome": "L'Impulso",
+      "simbolo": "⤴",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 42,
+      "nome": "L'Azione",
+      "simbolo": "▶",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 43,
+      "nome": "La Disciplina",
+      "simbolo": "═",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 44,
+      "nome": "La Volontà",
+      "simbolo": "⬟",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 45,
+      "nome": "La Costruzione",
+      "simbolo": "▪",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 46,
+      "nome": "La Conquista",
+      "simbolo": "✓",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 47,
+      "nome": "L'Influenza",
+      "simbolo": "≈",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 48,
+      "nome": "La Responsabilità",
+      "simbolo": "⊛",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 49,
+      "nome": "L'Eredità",
+      "simbolo": "⌂",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 50,
+      "nome": "Il Trono",
+      "simbolo": "■",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 51,
+      "nome": "Il Miraggio",
+      "simbolo": "≀",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 52,
+      "nome": "L'Intuizione",
+      "simbolo": "◆",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 53,
+      "nome": "La Domanda",
+      "simbolo": "‽",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 54,
+      "nome": "La Comprensione",
+      "simbolo": "⊚",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 55,
+      "nome": "La Memoria",
+      "simbolo": "≡",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 56,
+      "nome": "Il Simbolo",
+      "simbolo": "⌘",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 57,
+      "nome": "La Connessione",
+      "simbolo": "⋯",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 58,
+      "nome": "La Mappa",
+      "simbolo": "⊞",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 59,
+      "nome": "La Rivelazione",
+      "simbolo": "✶",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 60,
+      "nome": "La Visione",
+      "simbolo": "⊗",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 61,
+      "nome": "Il Cerchio",
+      "simbolo": "○",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 62,
+      "nome": "L'Equilibrio",
+      "simbolo": "⊖",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 63,
+      "nome": "L'Ordine",
+      "simbolo": "⊟",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 64,
+      "nome": "Il Caos",
+      "simbolo": "⁂",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 65,
+      "nome": "La Danza",
+      "simbolo": "↺",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 66,
+      "nome": "Il Tempo",
+      "simbolo": "◴",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 67,
+      "nome": "La Presenza",
+      "simbolo": "◉",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 68,
+      "nome": "L'Accettazione",
+      "simbolo": "∪",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 69,
+      "nome": "Il Compimento",
+      "simbolo": "⊝",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 70,
+      "nome": "Il Mondo",
+      "simbolo": "⊜",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 71,
+      "nome": "L'Osservatore",
+      "simbolo": "⊡",
+      "ciclo": "Trascendenti",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 72,
+      "nome": "La Possibilità",
+      "simbolo": "∾",
+      "ciclo": "Trascendenti",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 73,
+      "nome": "L'Emergenza",
+      "simbolo": "↑",
+      "ciclo": "Trascendenti",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    },
+    {
+      "id": 74,
+      "nome": "L'Infinito",
+      "simbolo": "∞∞",
+      "ciclo": "Trascendenti",
+      "luce": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      },
+      "ombra": {
+        "nord": "",
+        "est": "",
+        "sud": "",
+        "ovest": ""
+      }
+    }
+  ]
+}
