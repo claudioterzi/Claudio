@@ -186,16 +186,16 @@
       "simbolo": "⋈",
       "ciclo": "Legame",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "riconoscimento profondo",
+        "est": "porta che si apre",
+        "sud": "gioia dell'altro",
+        "ovest": "incontri che ti hanno formato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "proiezione sull'altro",
+        "est": "collisione",
+        "sud": "dipendenza immediata",
+        "ovest": "incontri mai elaborati"
       }
     },
     {
@@ -204,16 +204,16 @@
       "simbolo": "≋",
       "ciclo": "Legame",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "risonanza che resta",
+        "est": "conseguenza che fruttifica",
+        "sud": "ricordo che scalda",
+        "ovest": "ciò che hai lasciato negli altri"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "trauma che si ripete",
+        "est": "reazione a catena fuori controllo",
+        "sud": "rimuginio",
+        "ovest": "voci del passato che non tacciono"
       }
     },
     {
@@ -222,16 +222,16 @@
       "simbolo": "♡",
       "ciclo": "Legame",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "sicurezza di base",
+        "est": "affidarsi e agire",
+        "sud": "apertura del cuore",
+        "ovest": "fiducia guadagnata nel tempo"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "ferita del tradimento originario",
+        "est": "ingenuità che espone",
+        "sud": "sospetto",
+        "ovest": "fiducia tradita che pesa ancora"
       }
     },
     {
@@ -240,16 +240,16 @@
       "simbolo": "⇄",
       "ciclo": "Legame",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "reciprocità naturale",
+        "est": "dare e ricevere",
+        "sud": "generosità",
+        "ovest": "debiti onorati"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "transazione mascherata da amore",
+        "est": "baratto interessato",
+        "sud": "calcolo",
+        "ovest": "conti mai chiusi"
       }
     },
     {
@@ -258,16 +258,16 @@
       "simbolo": "⋒",
       "ciclo": "Legame",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "patto che regge",
+        "est": "forza condivisa",
+        "sud": "lealtà",
+        "ovest": "alleanze che ti hanno salvato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "complicità nell'errore",
+        "est": "fronte comune contro qualcuno",
+        "sud": "obbligo che soffoca",
+        "ovest": "alleanze tradite"
       }
     },
     {
@@ -276,16 +276,16 @@
       "simbolo": "♦",
       "ciclo": "Legame",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vita che spinge",
+        "est": "slancio verso ciò che vuoi",
+        "sud": "passione",
+        "ovest": "desideri che ti hanno guidato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fame che non sazia",
+        "est": "compulsione",
+        "sud": "possesso",
+        "ovest": "desideri rinnegati"
       }
     },
     {
@@ -294,16 +294,16 @@
       "simbolo": "⟵",
       "ciclo": "Legame",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "polarità che unisce",
+        "est": "movimento verso l'altro",
+        "sud": "incanto",
+        "ovest": "ciò che ti ha sempre attratto"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "calamita verso ciò che ti ferisce",
+        "est": "perdita di sé nell'altro",
+        "sud": "ossessione",
+        "ovest": "attrazioni fatali ripetute"
       }
     },
     {
@@ -312,16 +312,16 @@
       "simbolo": "∞",
       "ciclo": "Legame",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "impegno che radica",
+        "est": "parola data al futuro",
+        "sud": "speranza condivisa",
+        "ovest": "promesse mantenute"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vincolo che imprigiona",
+        "est": "promessa che non potrai tenere",
+        "sud": "illusione coltivata",
+        "ovest": "promesse infrante"
       }
     },
     {
@@ -330,16 +330,16 @@
       "simbolo": "●",
       "ciclo": "Legame",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fusione che completa",
+        "est": "costruire insieme",
+        "sud": "intimità",
+        "ovest": "unione che ti ha reso più grande"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "perdita dei confini",
+        "est": "fusione che annulla",
+        "sud": "dipendenza",
+        "ovest": "unione che ti ha diminuito"
       }
     },
     {
@@ -348,16 +348,16 @@
       "simbolo": "⊎",
       "ciclo": "Legame",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "appartenenza",
+        "est": "agire come uno",
+        "sud": "calore della comunità",
+        "ovest": "il noi che ti ha cresciuto"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "io dissolto nel gruppo",
+        "est": "branco",
+        "sud": "conformismo",
+        "ovest": "il noi che ti ha imprigionato"
       }
     },
     {
@@ -366,16 +366,16 @@
       "simbolo": "？",
       "ciclo": "Frattura",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "domanda che protegge",
+        "est": "sospensione del giudizio",
+        "sud": "umiltà",
+        "ovest": "certezze giustamente crollate"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "insicurezza radicale",
+        "est": "paralisi dell'indecisione",
+        "sud": "tormento",
+        "ovest": "occasioni perse per esitazione"
       }
     },
     {
@@ -384,16 +384,16 @@
       "simbolo": "⌇",
       "ciclo": "Frattura",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "punto dove entra la luce",
+        "est": "apertura inattesa",
+        "sud": "vulnerabilità che avvicina",
+        "ovest": "fratture che ti hanno aperto"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fragilità nascosta",
+        "est": "rottura che si allarga",
+        "sud": "senso di rottura interiore",
+        "ovest": "crepe ignorate troppo a lungo"
       }
     },
     {
@@ -402,16 +402,16 @@
       "simbolo": "✕",
       "ciclo": "Frattura",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "tensione che genera",
+        "est": "confronto necessario",
+        "sud": "verità che emerge nello scontro",
+        "ovest": "conflitti che hanno chiarito"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "guerra interiore",
+        "est": "distruzione reciproca",
+        "sud": "rancore",
+        "ovest": "conflitti mai risolti"
       }
     },
     {
@@ -420,16 +420,16 @@
       "simbolo": "⊸",
       "ciclo": "Frattura",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "punto da cui nasce la forza",
+        "est": "cicatrice che protegge",
+        "sud": "guarigione",
+        "ovest": "ferite che ti hanno reso saggio"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "trauma che governa",
+        "est": "riapertura continua",
+        "sud": "paralisi",
+        "ovest": "ferite che non hai mai curato"
       }
     },
     {
@@ -438,16 +438,16 @@
       "simbolo": "↓",
       "ciclo": "Frattura",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "responsabilità che radica",
+        "est": "fardello che dà direzione",
+        "sud": "serietà",
+        "ovest": "pesi che ti hanno temprato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "colpa ereditata",
+        "est": "carico che schiaccia",
+        "sud": "oppressione",
+        "ovest": "pesi mai deposti"
       }
     },
     {
@@ -456,16 +456,16 @@
       "simbolo": "⊘",
       "ciclo": "Frattura",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fedeltà a sé contro l'aspettativa altrui",
+        "est": "rottura di un patto falso",
+        "sud": "verità dolorosa detta",
+        "ovest": "tradimenti che ti hanno liberato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "patto spezzato alla radice",
+        "est": "pugnale alle spalle",
+        "sud": "perdita della fiducia",
+        "ovest": "tradimenti che ancora sanguinano"
       }
     },
     {
@@ -474,16 +474,16 @@
       "simbolo": "↯",
       "ciclo": "Frattura",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "discesa che insegna",
+        "est": "lasciarsi cadere con fiducia",
+        "sud": "umiltà del crollo",
+        "ovest": "cadute che ti hanno fatto crescere"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vertigine",
+        "est": "precipizio",
+        "sud": "umiliazione",
+        "ovest": "cadute mai rialzate"
       }
     },
     {
@@ -492,16 +492,16 @@
       "simbolo": "◌",
       "ciclo": "Frattura",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "spazio che si libera",
+        "est": "lasciar andare",
+        "sud": "lutto che onora",
+        "ovest": "perdite che hanno fatto posto"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vuoto incolmabile",
+        "est": "strappo",
+        "sud": "disperazione",
+        "ovest": "perdite mai elaborate"
       }
     },
     {
@@ -510,16 +510,16 @@
       "simbolo": "⊣",
       "ciclo": "Frattura",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "libertà ritrovata",
+        "est": "tagliare ciò che lega",
+        "sud": "serenità della distanza",
+        "ovest": "distacchi necessari compiuti"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "freddezza difensiva",
+        "est": "fuga dalla relazione",
+        "sud": "isolamento",
+        "ovest": "ponti bruciati di cui ti penti"
       }
     },
     {
@@ -528,16 +528,16 @@
       "simbolo": "▽",
       "ciclo": "Frattura",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "terra solida sotto l'abisso",
+        "est": "punto da cui si risale",
+        "sud": "verità nuda",
+        "ovest": "il fondo che ti ha cambiato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "disperazione senza fondo",
+        "est": "resa",
+        "sud": "annientamento",
+        "ovest": "fondo a cui continui a tornare"
       }
     },
     {
@@ -546,16 +546,16 @@
       "simbolo": "·",
       "ciclo": "Trasformazione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "pienezza senza parole",
+        "est": "pausa che prepara",
+        "sud": "pace",
+        "ovest": "ciò che il silenzio ti ha insegnato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vuoto assordante",
+        "est": "inazione",
+        "sud": "solitudine",
+        "ovest": "le cose non dette"
       }
     },
     {
@@ -564,16 +564,16 @@
       "simbolo": "◔",
       "ciclo": "Trasformazione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "seme che lavora nel buio",
+        "est": "tempo che prepara",
+        "sud": "fiducia paziente",
+        "ovest": "attese che hanno fruttato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "stasi",
+        "est": "rinvio infinito",
+        "sud": "logorio dell'aspettare",
+        "ovest": "vita rimandata"
       }
     },
     {
@@ -582,16 +582,16 @@
       "simbolo": "◐",
       "ciclo": "Trasformazione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "ciò che integri di te",
+        "est": "forza nascosta da reclamare",
+        "sud": "autenticità ritrovata",
+        "ovest": "lati oscuri riconosciuti"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "rimosso che governa",
+        "est": "sabotaggio inconscio",
+        "sud": "vergogna",
+        "ovest": "ciò che non hai voluto vedere"
       }
     },
     {
@@ -600,16 +600,16 @@
       "simbolo": "◈",
       "ciclo": "Trasformazione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fondamento reale",
+        "est": "atto di chiarezza",
+        "sud": "sollievo del reale",
+        "ovest": "verità finalmente accettate"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "verità che non sopporti",
+        "est": "rivelazione brutale",
+        "sud": "disillusione",
+        "ovest": "menzogne su cui hai costruito"
       }
     },
     {
@@ -618,16 +618,16 @@
       "simbolo": "▼",
       "ciclo": "Trasformazione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "liberazione dalla struttura falsa",
+        "est": "ciò che cade per far spazio",
+        "sud": "sollievo dopo il crollo",
+        "ovest": "crolli che ti hanno salvato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fondamenta che cedono",
+        "est": "rovina",
+        "sud": "panico",
+        "ovest": "ciò che hai perso nel crollo"
       }
     },
     {
@@ -636,16 +636,16 @@
       "simbolo": "△",
       "ciclo": "Trasformazione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "energia vitale",
+        "est": "trasformazione attiva",
+        "sud": "passione",
+        "ovest": "ciò che il fuoco ha forgiato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "rabbia che consuma",
+        "est": "distruzione incontrollata",
+        "sud": "bruciore",
+        "ovest": "ponti ridotti in cenere"
       }
     },
     {
@@ -654,16 +654,16 @@
       "simbolo": "⇌",
       "ciclo": "Trasformazione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vecchia pelle che cade",
+        "est": "cambiare forma",
+        "sud": "leggerezza del rinnovarsi",
+        "ovest": "versioni di te superate"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "identità che si sgretola",
+        "est": "perdita di sé nel cambiamento",
+        "sud": "disorientamento",
+        "ovest": "vecchie pelli che ti porti dietro"
       }
     },
     {
@@ -672,16 +672,16 @@
       "simbolo": "✿",
       "ciclo": "Trasformazione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vita che ritorna",
+        "est": "nuovo inizio",
+        "sud": "gioia del rinnovamento",
+        "ovest": "rinascite già attraversate"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "falsa rinascita",
+        "est": "ripartenza senza lezione",
+        "sud": "euforia fragile",
+        "ovest": "ricadute nel vecchio"
       }
     },
     {
@@ -690,16 +690,16 @@
       "simbolo": "→",
       "ciclo": "Trasformazione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "bussola interiore",
+        "est": "rotta scelta",
+        "sud": "senso ritrovato",
+        "ovest": "direzioni rivelatesi giuste"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "perdita dell'orientamento",
+        "est": "deriva",
+        "sud": "smarrimento",
+        "ovest": "strade sbagliate prese"
       }
     },
     {
@@ -708,16 +708,16 @@
       "simbolo": "◕",
       "ciclo": "Trasformazione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "rinascita quotidiana",
+        "est": "ricominciare",
+        "sud": "speranza dell'alba",
+        "ovest": "notti superate"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "domani che fa paura",
+        "est": "fuga in avanti dal passato",
+        "sud": "stanchezza di ricominciare",
+        "ovest": "ieri che non passa"
       }
     },
     {
@@ -726,16 +726,16 @@
       "simbolo": "⤴",
       "ciclo": "Potere",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "energia istintiva",
+        "est": "scatto che avvia",
+        "sud": "vitalità",
+        "ovest": "impulsi rivelatisi giusti"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "reazione cieca",
+        "est": "avventatezza",
+        "sud": "irruenza",
+        "ovest": "impulsi di cui ti penti"
       }
     },
     {
@@ -744,16 +744,16 @@
       "simbolo": "▶",
       "ciclo": "Potere",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "potenza che si fa atto",
+        "est": "fare",
+        "sud": "soddisfazione del compiere",
+        "ovest": "azioni che hanno costruito"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "iperattività vuota",
+        "est": "agitazione senza meta",
+        "sud": "fretta",
+        "ovest": "azioni avventate"
       }
     },
     {
@@ -762,16 +762,16 @@
       "simbolo": "═",
       "ciclo": "Potere",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "ordine interiore",
+        "est": "costanza",
+        "sud": "dignità dell'impegno",
+        "ovest": "disciplina che ha dato frutti"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "rigidità",
+        "est": "controllo ossessivo",
+        "sud": "durezza con sé",
+        "ovest": "vita irrigidita dalle regole"
       }
     },
     {
@@ -780,16 +780,16 @@
       "simbolo": "⬟",
       "ciclo": "Potere",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "forza che decide",
+        "est": "perseverare",
+        "sud": "determinazione",
+        "ovest": "volontà che ha vinto"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "ostinazione",
+        "est": "forzare il reale",
+        "sud": "tensione cronica",
+        "ovest": "battaglie inutili vinte a caro prezzo"
       }
     },
     {
@@ -798,16 +798,16 @@
       "simbolo": "▪",
       "ciclo": "Potere",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fondamenta solide",
+        "est": "edificare",
+        "sud": "orgoglio del fatto",
+        "ovest": "ciò che hai costruito e che dura"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "costruire sul falso",
+        "est": "accumulo senza senso",
+        "sud": "attaccamento all'opera",
+        "ovest": "imperi di sabbia"
       }
     },
     {
@@ -816,16 +816,16 @@
       "simbolo": "✓",
       "ciclo": "Potere",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "obiettivo raggiunto con merito",
+        "est": "vincere",
+        "sud": "trionfo",
+        "ovest": "conquiste che ti definiscono"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fame di dominio",
+        "est": "sopraffazione",
+        "sud": "vuoto dopo la vittoria",
+        "ovest": "vittorie che ti hanno isolato"
       }
     },
     {
@@ -834,16 +834,16 @@
       "simbolo": "≈",
       "ciclo": "Potere",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "presenza che ispira",
+        "est": "muovere gli altri verso il bene",
+        "sud": "carisma",
+        "ovest": "il bene seminato negli altri"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "manipolazione",
+        "est": "controllo degli altri",
+        "sud": "seduzione strumentale",
+        "ovest": "danni fatti col tuo ascendente"
       }
     },
     {
@@ -852,16 +852,16 @@
       "simbolo": "⊛",
       "ciclo": "Potere",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "rispondere di sé",
+        "est": "farsi carico",
+        "sud": "maturità",
+        "ovest": "responsabilità onorate"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "colpa schiacciante",
+        "est": "carico di tutti sulle spalle",
+        "sud": "ansia del dovere",
+        "ovest": "responsabilità evitate che pesano"
       }
     },
     {
@@ -870,16 +870,16 @@
       "simbolo": "⌂",
       "ciclo": "Potere",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "ciò che ricevi e custodisci",
+        "est": "trasmettere",
+        "sud": "gratitudine per le radici",
+        "ovest": "doni del passato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fardello dei padri",
+        "est": "ripetere il copione ereditato",
+        "sud": "debito verso chi ti ha preceduto",
+        "ovest": "catene di famiglia"
       }
     },
     {
@@ -888,16 +888,16 @@
       "simbolo": "■",
       "ciclo": "Potere",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "autorità legittima",
+        "est": "governare con giustizia",
+        "sud": "sicurezza del proprio posto",
+        "ovest": "il potere usato bene"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "potere che corrompe",
+        "est": "tirannia",
+        "sud": "solitudine del comando",
+        "ovest": "il trono che ti ha reso cieco"
       }
     },
     {
@@ -906,16 +906,16 @@
       "simbolo": "≀",
       "ciclo": "Visione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "immagine che orienta",
+        "est": "sogno che spinge avanti",
+        "sud": "incanto del desiderio",
+        "ovest": "illusioni che ti hanno mosso"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "inganno dei sensi",
+        "est": "inseguire ciò che non c'è",
+        "sud": "delusione annunciata",
+        "ovest": "miraggi a cui hai creduto"
       }
     },
     {
@@ -924,16 +924,16 @@
       "simbolo": "◆",
       "ciclo": "Visione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "sapere senza spiegazione",
+        "est": "lampo che guida l'azione",
+        "sud": "sentire giusto",
+        "ovest": "intuizioni rivelatesi vere"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "proiezione scambiata per intuito",
+        "est": "salto a conclusioni",
+        "sud": "paura travestita da presentimento",
+        "ovest": "intuizioni ignorate"
       }
     },
     {
@@ -942,16 +942,16 @@
       "simbolo": "‽",
       "ciclo": "Visione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "apertura che cerca",
+        "est": "domandare che fa avanzare",
+        "sud": "curiosità viva",
+        "ovest": "domande giuste finalmente poste"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "tarlo che rode",
+        "est": "interrogarsi senza agire",
+        "sud": "ansia del non sapere",
+        "ovest": "domande mai fatte"
       }
     },
     {
@@ -960,16 +960,16 @@
       "simbolo": "⊚",
       "ciclo": "Visione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "senso che si rivela",
+        "est": "capire e poter agire",
+        "sud": "pace della chiarezza",
+        "ovest": "ciò che finalmente hai capito"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "illusione di aver capito",
+        "est": "analisi che blocca",
+        "sud": "freddezza del comprendere tutto",
+        "ovest": "fraintendimenti che hanno pesato"
       }
     },
     {
@@ -978,16 +978,16 @@
       "simbolo": "≡",
       "ciclo": "Visione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "radice di chi sei",
+        "est": "ricordo che guida",
+        "sud": "tenerezza del passato",
+        "ovest": "memoria che custodisce"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "passato che imprigiona",
+        "est": "ostaggio dei ricordi",
+        "sud": "rimpianto",
+        "ovest": "memoria che distorce"
       }
     },
     {
@@ -996,16 +996,16 @@
       "simbolo": "⌘",
       "ciclo": "Visione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "ponte verso l'invisibile",
+        "est": "immagine che muove",
+        "sud": "significato sentito",
+        "ovest": "simboli che ti hanno parlato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "feticcio",
+        "est": "vivere di segni invece che di cose",
+        "sud": "superstizione",
+        "ovest": "simboli scambiati per realtà"
       }
     },
     {
@@ -1014,16 +1014,16 @@
       "simbolo": "⋯",
       "ciclo": "Visione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "tutto è legato",
+        "est": "tessere relazioni",
+        "sud": "sentirsi parte",
+        "ovest": "legami che ti hanno sostenuto"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vedere nessi che non esistono",
+        "est": "rete che intrappola",
+        "sud": "iperconnessione che svuota",
+        "ovest": "legami che ti hanno trattenuto"
       }
     },
     {
@@ -1032,16 +1032,16 @@
       "simbolo": "⊞",
       "ciclo": "Visione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "schema che orienta",
+        "est": "tracciare la rotta",
+        "sud": "sicurezza di sapere dove sei",
+        "ovest": "mappe che ti hanno guidato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "scambiare la mappa per il territorio",
+        "est": "seguire un piano cieco",
+        "sud": "rigidità del percorso",
+        "ovest": "mappe vecchie che non valgono più"
       }
     },
     {
@@ -1050,16 +1050,16 @@
       "simbolo": "✶",
       "ciclo": "Visione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "velo che cade",
+        "est": "verità che cambia tutto",
+        "sud": "stupore",
+        "ovest": "rivelazioni che ti hanno aperto gli occhi"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "verità che destabilizza",
+        "est": "rivelazione che non puoi gestire",
+        "sud": "shock",
+        "ovest": "ciò che avresti preferito non sapere"
       }
     },
     {
@@ -1068,16 +1068,16 @@
       "simbolo": "⊗",
       "ciclo": "Visione",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vedere ciò che sarà",
+        "est": "immaginare e creare",
+        "sud": "ispirazione",
+        "ovest": "visioni che si sono avverate"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "allucinazione",
+        "est": "inseguire un sogno cieco",
+        "sud": "fanatismo della visione",
+        "ovest": "visioni che ti hanno illuso"
       }
     },
     {
@@ -1086,16 +1086,16 @@
       "simbolo": "○",
       "ciclo": "Totalità",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "totalità che si chiude",
+        "est": "ciclo che si completa",
+        "sud": "senso di interezza",
+        "ovest": "cerchi che si sono chiusi"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "circolo vizioso",
+        "est": "girare senza uscire",
+        "sud": "ripetizione che intrappola",
+        "ovest": "schemi che si ripetono"
       }
     },
     {
@@ -1104,16 +1104,16 @@
       "simbolo": "⊖",
       "ciclo": "Totalità",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "centro stabile",
+        "est": "tenere insieme gli opposti",
+        "sud": "serenità",
+        "ovest": "equilibri faticosamente raggiunti"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "immobilità per paura di cadere",
+        "est": "compromesso che paralizza",
+        "sud": "tiepidezza",
+        "ovest": "equilibri pagati con la rinuncia"
       }
     },
     {
@@ -1122,16 +1122,16 @@
       "simbolo": "⊟",
       "ciclo": "Totalità",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "struttura che regge la vita",
+        "est": "mettere ordine",
+        "sud": "calma dell'organizzato",
+        "ovest": "ordine che ha protetto"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "ossessione del controllo",
+        "est": "imporre ordine al vivente",
+        "sud": "rigidità",
+        "ovest": "ordine che ha soffocato"
       }
     },
     {
@@ -1140,16 +1140,16 @@
       "simbolo": "⁂",
       "ciclo": "Totalità",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fertilità del disordine",
+        "est": "rompere gli schemi",
+        "sud": "libertà dell'imprevisto",
+        "ovest": "caos da cui è nato il nuovo"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "disgregazione",
+        "est": "perdere il controllo",
+        "sud": "angoscia del disordine",
+        "ovest": "caos che ha distrutto"
       }
     },
     {
@@ -1158,16 +1158,16 @@
       "simbolo": "↺",
       "ciclo": "Totalità",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "armonia col movimento della vita",
+        "est": "muoversi col ritmo",
+        "sud": "gioia del corpo",
+        "ovest": "momenti in cui eri in flusso"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "trascinato senza scelta",
+        "est": "agitazione scambiata per vita",
+        "sud": "stordimento",
+        "ovest": "danze a cui non volevi partecipare"
       }
     },
     {
@@ -1176,16 +1176,16 @@
       "simbolo": "◴",
       "ciclo": "Totalità",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "ritmo che matura ogni cosa",
+        "est": "agire al momento giusto",
+        "sud": "presenza nell'ora",
+        "ovest": "il tempo che ha guarito"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "tirannia dell'orologio",
+        "est": "correre contro il tempo",
+        "sud": "ansia del tardi",
+        "ovest": "tempo perso che non torna"
       }
     },
     {
@@ -1194,16 +1194,16 @@
       "simbolo": "◉",
       "ciclo": "Totalità",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "essere qui pienamente",
+        "est": "agire con tutto sé",
+        "sud": "intensità del presente",
+        "ovest": "momenti vissuti davvero"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "assenza a se stessi",
+        "est": "fare senza esserci",
+        "sud": "distrazione cronica",
+        "ovest": "vita guardata da fuori"
       }
     },
     {
@@ -1212,16 +1212,16 @@
       "simbolo": "∪",
       "ciclo": "Totalità",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "pace con ciò che è",
+        "est": "smettere di lottare contro il reale",
+        "sud": "serenità",
+        "ovest": "ciò che hai imparato ad accettare"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "rassegnazione",
+        "est": "resa passiva",
+        "sud": "rinuncia a cambiare",
+        "ovest": "ingiustizie subite e accettate"
       }
     },
     {
@@ -1230,16 +1230,16 @@
       "simbolo": "⊝",
       "ciclo": "Totalità",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "pienezza del realizzato",
+        "est": "portare a termine",
+        "sud": "gratitudine",
+        "ovest": "ciò che hai compiuto"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vuoto dopo la meta",
+        "est": "fine che spaventa",
+        "sud": "nostalgia del cammino",
+        "ovest": "opere finite di cui senti la mancanza"
       }
     },
     {
@@ -1248,16 +1248,16 @@
       "simbolo": "⊜",
       "ciclo": "Totalità",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "interezza ritrovata",
+        "est": "abitare pienamente la vita",
+        "sud": "appartenenza al tutto",
+        "ovest": "il cerchio della tua vita"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "peso del tutto",
+        "est": "perdersi nell'immenso",
+        "sud": "estraneità",
+        "ovest": "il mondo che cambia mentre lo conoscevi"
       }
     },
     {
@@ -1266,16 +1266,16 @@
       "simbolo": "⊡",
       "ciclo": "Trascendenti",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "coscienza che tutto contiene",
+        "est": "scegliere come guardare",
+        "sud": "presenza testimone",
+        "ovest": "il sé che ha sempre osservato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "distacco che non vive",
+        "est": "guardare invece di agire",
+        "sud": "freddezza dello spettatore",
+        "ovest": "vita osservata e mai vissuta"
       }
     },
     {
@@ -1284,16 +1284,16 @@
       "simbolo": "∾",
       "ciclo": "Trascendenti",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "potenziale ancora aperto",
+        "est": "ciò che può accadere",
+        "sud": "speranza pura",
+        "ovest": "le possibilità che eri"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "dispersione nel possibile",
+        "est": "non scegliere mai",
+        "sud": "vertigine delle troppe vie",
+        "ovest": "possibilità lasciate morire"
       }
     },
     {
@@ -1302,16 +1302,16 @@
       "simbolo": "↑",
       "ciclo": "Trascendenti",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "il nuovo che sorge dal tutto",
+        "est": "ciò che nasce dall'insieme",
+        "sud": "stupore del non previsto",
+        "ovest": "ciò che è emerso senza cercarlo"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "ciò che irrompe senza controllo",
+        "est": "urgenza che travolge",
+        "sud": "panico del non previsto",
+        "ovest": "ciò che è emerso e non hai accolto"
       }
     },
     {
@@ -1320,16 +1320,16 @@
       "simbolo": "∞∞",
       "ciclo": "Trascendenti",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "ciò che non finisce",
+        "est": "ogni fine è un inizio",
+        "sud": "pace dell'eterno",
+        "ovest": "i cicli che hai attraversato e che continuano"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vertigine del senza fine",
+        "est": "fuga dall'arrivo",
+        "sud": "angoscia dell'illimitato",
+        "ovest": "ciò che ricomincia sempre uguale"
       }
     }
   ],
@@ -1378,12 +1378,19 @@
   },
   "stato_costruzione": {
     "cicli_completati": [
-      "Origine"
+      "Origine",
+      "Legame",
+      "Frattura",
+      "Trasformazione",
+      "Potere",
+      "Visione",
+      "Totalità",
+      "Trascendenti"
     ],
-    "carte_completate": 10,
+    "carte_completate": 74,
     "carte_totali": 74,
-    "stati_scritti": 80,
+    "stati_scritti": 592,
     "stati_totali": 592,
-    "prossimo_ciclo": "Legame (11-20)"
+    "completo": true
   }
 }
