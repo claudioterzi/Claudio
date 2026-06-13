@@ -1,6 +1,7 @@
-"""Layer 1 — Il Codice Simbolico: vocabolario delle 74 carte del Mazzo Quantico.
+"""Layer 1 — Il Codice Simbolico: vocabolario delle 78 carte del Mazzo Quantico.
 
-74 carte = 22 Arcani Maggiori + 52 Arcani Minori (4 semi × 13 ranghi, senza il Fante).
+78 carte = 22 Arcani Maggiori + 56 Arcani Minori (4 semi × 14 ranghi).
+Figure di corte: Fante (11) · Cavaliere (12) · Regina (13) · Re (14).
 Ogni carta è un nodo semantico stabile: nome, elemento, dominio, parole chiave.
 Il vocabolario è condiviso sia dall'osservatore-macchina che dall'osservatore-umano.
 """
@@ -25,10 +26,10 @@ class Seme(Enum):
 @dataclass(frozen=True)
 class Carta:
     nome: str
-    indice: int                         # 0-73 nel mazzo ridotto a 74 carte
+    indice: int                         # 0-77 nel mazzo completo a 78 carte
     arcano: TipoArcano
     seme: Seme | None                   # None per gli arcani maggiori
-    rango: int | None                   # 1-13 per gli arcani minori (Asso=1, Re=13)
+    rango: int | None                   # 1-14 per gli arcani minori (Asso=1, Regina=13, Re=14)
     parole_chiave: tuple[str, ...] = field(default_factory=tuple)
     elemento: str | None = None         # fuoco / acqua / aria / terra / etere
     dominio: str = ""
@@ -106,14 +107,13 @@ ARCANI_MAGGIORI: list[Carta] = [
 ]
 
 
-# ── Arcani Minori (52 carte, indici 22-73) ────────────────────────────────────
-# 4 semi × 13 ranghi: Asso (1) → Dieci (10) + Fante (11) + Cavallo (12) + Re (13)
-# Il Fante classico è rinominato "Fante" come figura di transizione giovane.
+# ── Arcani Minori (56 carte, indici 22-77) ────────────────────────────────────
+# 4 semi × 14 ranghi: Asso (1) → Dieci (10) + Fante (11) + Cavaliere (12) + Regina (13) + Re (14)
 
 _NOMI_RANGO: dict[int, str] = {
     1: "Asso", 2: "Due", 3: "Tre", 4: "Quattro", 5: "Cinque",
     6: "Sei", 7: "Sette", 8: "Otto", 9: "Nove", 10: "Dieci",
-    11: "Fante", 12: "Cavaliere", 13: "Re",
+    11: "Fante", 12: "Cavaliere", 13: "Regina", 14: "Re",
 }
 
 _SEME_ELEMENTO: dict[Seme, str] = {
@@ -158,7 +158,9 @@ _KW_CARTA: dict[tuple[Seme, int], tuple[tuple[str, ...], str]] = {
                          "la scintilla in un corpo giovane"),
     (Seme.BASTONI, 12): (("azione impetuosa", "avventura", "passione in corsa", "cambiamento rapido"),
                          "il fuoco che non aspetta"),
-    (Seme.BASTONI, 13): (("visione matura", "leadership creativa", "ispirazione condivisa", "autorità del fuoco"),
+    (Seme.BASTONI, 13): (("leadership visionaria", "indipendenza creativa", "carisma naturale", "fiamma che guida"),
+                         "la fiamma che illumina senza bruciare"),
+    (Seme.BASTONI, 14): (("visione matura", "leadership creativa", "ispirazione condivisa", "autorità del fuoco"),
                          "chi trasforma la propria passione in direzione per altri"),
 
     # ── COPPE (acqua) ─────────────────────────────────────────────────────────
@@ -186,7 +188,9 @@ _KW_CARTA: dict[tuple[Seme, int], tuple[tuple[str, ...], str]] = {
                        "la giovinezza del sentimento"),
     (Seme.COPPE, 12): (("romanticismo in movimento", "proposta d'amore", "charme", "offerta emotiva"),
                        "portare sentimento in dono"),
-    (Seme.COPPE, 13): (("maturità emotiva", "saggezza del cuore", "contenimento senza repressione", "equilibrio affettivo"),
+    (Seme.COPPE, 13): (("intuizione materna", "profondità emotiva", "compassione", "saggezza del cuore"),
+                       "chi ama senza perdersi nell'altro"),
+    (Seme.COPPE, 14): (("maturità emotiva", "saggezza del cuore", "contenimento senza repressione", "equilibrio affettivo"),
                        "chi tiene il mare senza esserne travolto"),
 
     # ── SPADE (aria) ──────────────────────────────────────────────────────────
@@ -214,7 +218,9 @@ _KW_CARTA: dict[tuple[Seme, int], tuple[tuple[str, ...], str]] = {
                        "chi vede quello che gli altri non notano"),
     (Seme.SPADE, 12): (("azione rapida", "comunicazione diretta", "assertività", "taglio netto"),
                        "il pensiero che diventa atto senza esitazione"),
-    (Seme.SPADE, 13): (("intelletto sovrano", "giudizio equilibrato", "autorità della mente", "chiarezza di comando"),
+    (Seme.SPADE, 13): (("chiarezza tagliente", "autonomia intellettuale", "onestà coraggiosa", "discernimento"),
+                       "chi vede senza illusioni e parla senza paura"),
+    (Seme.SPADE, 14): (("intelletto sovrano", "giudizio equilibrato", "autorità della mente", "chiarezza di comando"),
                        "chi governa con la ragione senza perdere l'umanità"),
 
     # ── DENARI (terra) ────────────────────────────────────────────────────────
@@ -242,15 +248,17 @@ _KW_CARTA: dict[tuple[Seme, int], tuple[tuple[str, ...], str]] = {
                         "il seme di una competenza futura"),
     (Seme.DENARI, 12): (("affidabilità metodica", "costruzione lenta e solida", "determinazione tranquilla", "fedeltà al compito"),
                         "chi non corre mai ma arriva sempre"),
-    (Seme.DENARI, 13): (("successo materiale maturo", "abbondanza costruita", "imprenditore realizzato", "autorità della terra"),
+    (Seme.DENARI, 13): (("abbondanza pratica", "cura concreta", "generosità radicata", "competenza quotidiana"),
+                        "chi nutre con ciò che ha costruito"),
+    (Seme.DENARI, 14): (("successo materiale maturo", "abbondanza costruita", "imprenditore realizzato", "autorità della terra"),
                         "chi ha trasformato il lavoro in eredità"),
 }
 
 _ARCANI_MINORI: list[Carta] = []
 for _i_seme, _seme in enumerate(Seme):
-    for _rango in range(1, 14):
+    for _rango in range(1, 15):
         _nome = f"{_NOMI_RANGO[_rango]} di {_seme.value.capitalize()}"
-        _indice = 22 + _i_seme * 13 + (_rango - 1)
+        _indice = 22 + _i_seme * 14 + (_rango - 1)
         _kw, _dom = _KW_CARTA[(_seme, _rango)]
         _ARCANI_MINORI.append(Carta(
             nome=_nome,
@@ -264,11 +272,11 @@ for _i_seme, _seme in enumerate(Seme):
         ))
 
 
-# ── Mazzo completo: 22 + 52 = 74 carte ───────────────────────────────────────
+# ── Mazzo completo: 22 + 56 = 78 carte ───────────────────────────────────────
 
 MAZZO: list[Carta] = ARCANI_MAGGIORI + _ARCANI_MINORI
 
-assert len(MAZZO) == 74, f"Mazzo atteso 74 carte, trovate {len(MAZZO)}"
+assert len(MAZZO) == 78, f"Mazzo atteso 78 carte, trovate {len(MAZZO)}"
 
 _INDICE_NOME: dict[str, Carta] = {c.nome.lower(): c for c in MAZZO}
 _INDICE_NUM: dict[int, Carta] = {c.indice: c for c in MAZZO}
