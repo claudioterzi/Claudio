@@ -22,7 +22,10 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
   - `ermeneutica.py` — Layer 3: `DoppiaErmeneutica` (lettura strutturale + personale).
 - **Web**: `tarocchi_web.py` (Flask) + `vercel.json` + `public/index.html` + `public/cards/*.svg` (78 fronti + retro) + `public/opuscolo.html`.
 - **Deploy**: Vercel → https://claudio-ebon.vercel.app
-- **JSON**: `tarocchi/tarocchi_quantici.json` (v1.1, documento totale).
+- **JSON**: `tarocchi/tarocchi_quantici.json` (v1.2.0, documento totale).
+  Contiene: manifesto + principio voce/eco, Layer 1 (78 carte uniche),
+  Layer 2 (stati, orientamenti, posizioni con `asse`+`forzatura_stato`, 7 assiomi),
+  Layer 3, ed **esempio_stesa** completo generato live (lettura strutturale + personale).
 - **Stato**: FUNZIONANTE e online.
 
 ### Sistema B — Canone Alpha 0.1 (74 carte, nuovo linguaggio)
