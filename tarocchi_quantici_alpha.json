@@ -6,16 +6,16 @@
       "simbolo": "✦",
       "ciclo": "Origine",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vocazione che si risveglia",
+        "est": "primo gesto creativo",
+        "sud": "entusiasmo nascente",
+        "ovest": "ricordo di ciò che ti accende"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "potenziale represso",
+        "est": "impulso che brucia invano",
+        "sud": "eccitazione senza radici",
+        "ovest": "rimpianto del fuoco mai acceso"
       }
     },
     {
@@ -24,16 +24,16 @@
       "simbolo": "─",
       "ciclo": "Origine",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "visione che viene da lontano",
+        "est": "meta che chiama in avanti",
+        "sud": "speranza condivisa",
+        "ovest": "prospettiva conquistata"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "miraggio mai raggiunto",
+        "est": "fuga perpetua in avanti",
+        "sud": "insoddisfazione del presente",
+        "ovest": "occasioni viste troppo tardi"
       }
     },
     {
@@ -42,16 +42,16 @@
       "simbolo": "◎",
       "ciclo": "Origine",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "istinto che sa la strada",
+        "est": "chiamata all'azione",
+        "sud": "desiderio di appartenere",
+        "ovest": "voce che torna dal passato"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "sirena che inganna",
+        "est": "obbligo travestito da vocazione",
+        "sud": "bisogno di approvazione",
+        "ovest": "nostalgia che imprigiona"
       }
     },
     {
@@ -60,16 +60,16 @@
       "simbolo": "⊕",
       "ciclo": "Origine",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "fedeltà a ciò che sei",
+        "est": "decisione che apre la via",
+        "sud": "coraggio di preferire",
+        "ovest": "lezione delle scelte passate"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "tradimento di sé",
+        "est": "paralisi del bivio",
+        "sud": "rimpianto di ogni alternativa",
+        "ovest": "scelte rimandate che decidono per te"
       }
     },
     {
@@ -78,16 +78,16 @@
       "simbolo": "›",
       "ciclo": "Origine",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "slancio che nasce dentro",
+        "est": "movimento in avanti",
+        "sud": "fiducia nel terreno",
+        "ovest": "cammino già fatto"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "esitazione paralizzante",
+        "est": "passo nel vuoto",
+        "sud": "paura di cadere",
+        "ovest": "passi tornati indietro"
       }
     },
     {
@@ -96,16 +96,16 @@
       "simbolo": "⊙",
       "ciclo": "Origine",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "sete di senso",
+        "est": "esplorazione attiva",
+        "sud": "domanda che ti tiene vivo",
+        "ovest": "saggezza accumulata cercando"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "vuoto che nulla riempie",
+        "est": "fuga travestita da ricerca",
+        "sud": "insoddisfazione cronica",
+        "ovest": "ricerca che gira in tondo"
       }
     },
     {
@@ -114,16 +114,16 @@
       "simbolo": "⟁",
       "ciclo": "Origine",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "punto di non ritorno accettato",
+        "est": "coraggio di varcare",
+        "sud": "trepidazione del nuovo",
+        "ovest": "ciò che lasci sulla porta"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "blocco sulla porta",
+        "est": "passo che non osi",
+        "sud": "paura della trasformazione",
+        "ovest": "rimpianto di non essere entrato"
       }
     },
     {
@@ -132,16 +132,16 @@
       "simbolo": "∿",
       "ciclo": "Origine",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "mistero che chiama",
+        "est": "salto nel possibile",
+        "sud": "meraviglia",
+        "ovest": "fiducia appresa nell'incerto"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "terrore dell'abisso",
+        "est": "paralisi davanti al buio",
+        "sud": "angoscia dell'incerto",
+        "ovest": "fantasmi di ciò che non è stato"
       }
     },
     {
@@ -150,16 +150,16 @@
       "simbolo": "◑",
       "ciclo": "Origine",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "attesa che matura",
+        "est": "preparazione attenta",
+        "sud": "trepidazione fertile",
+        "ovest": "pazienza appresa"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "insonnia dell'inconscio",
+        "est": "rinvio che logora",
+        "sud": "ansia dell'imminente",
+        "ovest": "notti perse ad aspettare"
       }
     },
     {
@@ -168,16 +168,16 @@
       "simbolo": "◯",
       "ciclo": "Origine",
       "luce": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "apertura che il destino offre",
+        "est": "occasione da cogliere",
+        "sud": "liberazione",
+        "ovest": "porta riconosciuta in tempo"
       },
       "ombra": {
-        "nord": "",
-        "est": "",
-        "sud": "",
-        "ovest": ""
+        "nord": "trappola travestita da uscita",
+        "est": "occasione mancata",
+        "sud": "claustrofobia di chi è bloccato",
+        "ovest": "varchi chiusi alle spalle"
       }
     },
     {
@@ -1375,5 +1375,15 @@
     "La Rinascita": "diventare qualcosa di nuovo",
     "L'Osservatore": "coscienza che osserva",
     "L'Infinito": "ogni fine apre un nuovo orizzonte"
+  },
+  "stato_costruzione": {
+    "cicli_completati": [
+      "Origine"
+    ],
+    "carte_completate": 10,
+    "carte_totali": 74,
+    "stati_scritti": 80,
+    "stati_totali": 592,
+    "prossimo_ciclo": "Legame (11-20)"
   }
 }
