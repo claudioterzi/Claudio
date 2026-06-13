@@ -18,9 +18,9 @@ redis:
   ttl_memoria_secondi: 86400
 
 modello:
-  fornitore: "anthropic"
-  nome: "claude-fable-5"
-  nome_critico: "claude-fable-5"
+  fornitore: "gemini"
+  nome: "gemini-2.5-pro"
+  nome_critico: "gemini-2.5-pro"
   temperatura: 0.7
   max_token: 4096
   timeout_secondi: 60
@@ -32,20 +32,20 @@ modello:
 router:
   regole:
     - profilo: "default"
-      timeout_s: 45        # C: timeout max per questo profilo
-      cascata: ["anthropic", "openai", "gemini", "deepseek", "stub"]
+      timeout_s: 45
+      cascata: ["gemini", "anthropic", "openai", "deepseek", "stub"]
       modelli:
+        gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
         openai: "gpt-4o-mini"
-        gemini: "gemini-2.5-flash"
         deepseek: "deepseek-chat"
     - profilo: "ragionamento"
-      timeout_s: 90        # C: nodi critici hanno più tempo
-      cascata: ["anthropic", "openai", "gemini", "deepseek", "stub"]
+      timeout_s: 90
+      cascata: ["gemini", "deepseek", "anthropic", "openai", "stub"]
       modelli:
+        gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
         openai: "gpt-4o"
-        gemini: "gemini-2.5-flash"
         deepseek: "deepseek-reasoner"
     - profilo: "veloce"
       timeout_s: 15        # C: decomposizione / sintesi rapida
@@ -83,19 +83,25 @@ router:
         deepseek: "deepseek-chat"
         openai: "gpt-4o-mini"
     - profilo: "soglia"
-      timeout_s: 45        # transizione: profilo bilanciato, stesso di default
-      cascata: ["anthropic", "gemini", "openai", "stub"]
+      timeout_s: 45
+      cascata: ["gemini", "anthropic", "openai", "stub"]
       modelli:
+        gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
-        gemini: "gemini-2.5-flash"
         openai: "gpt-4o-mini"
     - profilo: "cristallizza"
-      timeout_s: 90        # impegno finale: provider migliore, hedging attivo
-      cascata: ["anthropic", "openai", "gemini", "stub"]
+      timeout_s: 120       # impegno finale: massima qualità, più tempo
+      cascata: ["gemini", "anthropic", "openai", "stub"]
       modelli:
+        gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
         openai: "gpt-4o"
-        gemini: "gemini-2.5-flash"
+    - profilo: "potente"
+      timeout_s: 120       # profilo massima potenza: Pro + reasoning
+      cascata: ["gemini", "deepseek", "stub"]
+      modelli:
+        gemini: "gemini-2.5-pro"
+        deepseek: "deepseek-reasoner"
 
 caselle_attive:
   - 0    # Analisi Semantica         -> RAFFA-001
@@ -109,32 +115,32 @@ agenti_attivi:
   - id: "RAFFA-001"
     ruolo: "architetto"
     casella: 0
-    modello: "claude-fable-5"
+    modello: "gemini-2.5-pro"
     critico: true
   - id: "DECOMP-005"
     ruolo: "analista_intenti"
     casella: 1
-    modello: "claude-haiku-4-5-20251001"
+    modello: "gemini-2.5-flash"
     critico: false
   - id: "MEMO-002"
     ruolo: "custode"
     casella: 2
-    modello: "claude-sonnet-4-6"
+    modello: "gemini-2.5-flash"
     critico: false
   - id: "SENTIN-004"
     ruolo: "vigilante"
     casella: 4
-    modello: "claude-fable-5"
+    modello: "gemini-2.5-pro"
     critico: true
   - id: "GEN-006"
     ruolo: "compositore"
     casella: 3
-    modello: "claude-fable-5"
+    modello: "gemini-2.5-pro"
     critico: true
   - id: "WAVE-003"
     ruolo: "messaggero"
     casella: 12
-    modello: "claude-haiku-4-5-20251001"
+    modello: "gemini-2.5-flash"
     critico: false
 
 orchestratore:
