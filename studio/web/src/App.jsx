@@ -385,6 +385,95 @@ function Contatto() {
   )
 }
 
+// ─── MEMORIA UTILE ────────────────────────────────────────────────────────────
+
+const MEMORIA_VS = [
+  { label: 'Mem.ai', claim: 'Ricorda tutto', realta: 'Archivio indicizzato che richiede input manuale', colore: 'rgba(255,255,255,0.15)' },
+  { label: 'ChatGPT Memory', claim: 'Ricordo le tue preferenze', realta: 'Istruzioni statiche predefinite, non si evolve', colore: 'rgba(255,255,255,0.15)' },
+  { label: 'Notion AI', claim: 'Conosce il tuo lavoro', realta: 'Limitata al contesto della pagina corrente', colore: 'rgba(255,255,255,0.15)' },
+  { label: 'SDQ-1', claim: 'Non ricorda tutto', realta: 'Filtra, sintetizza, aggiorna — ciò che serve, quando serve', colore: PURPLE, bold: true },
+]
+
+const MEMORIA_PILASTRI = [
+  { emoji: '🔍', titolo: 'Filtra', testo: 'MEMO agent seleziona attivamente — non archivia, sceglie cosa conta per il task corrente.' },
+  { emoji: '🧠', titolo: 'Sintetizza', testo: 'Il Registro Ipotesi ricorda le conclusioni, non i dati grezzi. La conoscenza distillata, non il rumore.' },
+  { emoji: '❤️', titolo: 'Qualifica', testo: 'Il Radar Emozionale aggiunge metadati qualitativi: non solo cosa è successo, ma come è stato percepito.' },
+  { emoji: '🔄', titolo: 'Si aggiorna', testo: 'Il Battito giornaliero mantiene la memoria pertinente al momento attuale — non una fotografia statica.' },
+]
+
+function MemoriaUtile() {
+  return (
+    <section style={{ padding: '120px 24px', background: 'rgba(6,182,212,0.03)', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <FadeUp>
+          <div style={{ textAlign: 'center', marginBottom: 64 }}>
+            <p style={{ color: CYAN, fontWeight: 700, fontSize: '0.8rem', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 16 }}>Memoria</p>
+            <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1, color: '#f1f5f9', marginBottom: 20 }}>
+              Tutti parlano di<br /><GradText from={CYAN} to={PURPLE}>memoria infinita.</GradText>
+            </h2>
+            <p style={{ color: 'rgba(241,245,249,0.5)', fontSize: '1rem', maxWidth: 540, margin: '0 auto', lineHeight: 1.7 }}>
+              Una memoria infinita non filtrata diventa rumore bianco paralizzante.
+              La sfida non è ricordare tutto — è ricordare la cosa giusta al momento giusto.
+            </p>
+          </div>
+        </FadeUp>
+
+        {/* Tabella confronto */}
+        <FadeUp delay={0.1}>
+          <div style={{ marginBottom: 64, overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left', padding: '10px 16px', color: 'rgba(241,245,249,0.35)', fontWeight: 600, fontSize: '0.75rem', letterSpacing: 1, textTransform: 'uppercase', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>Tool</th>
+                  <th style={{ textAlign: 'left', padding: '10px 16px', color: 'rgba(241,245,249,0.35)', fontWeight: 600, fontSize: '0.75rem', letterSpacing: 1, textTransform: 'uppercase', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>Promessa</th>
+                  <th style={{ textAlign: 'left', padding: '10px 16px', color: 'rgba(241,245,249,0.35)', fontWeight: 600, fontSize: '0.75rem', letterSpacing: 1, textTransform: 'uppercase', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>Realtà</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MEMORIA_VS.map((row, i) => (
+                  <motion.tr key={row.label}
+                    initial={{ opacity: 0, x: -16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.08 }}
+                    style={{ background: row.bold ? `${PURPLE}12` : 'transparent', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <td style={{ padding: '14px 16px', fontWeight: row.bold ? 800 : 500, color: row.bold ? '#a78bfa' : 'rgba(241,245,249,0.5)', whiteSpace: 'nowrap' }}>{row.label}</td>
+                    <td style={{ padding: '14px 16px', color: row.bold ? 'rgba(241,245,249,0.5)' : 'rgba(241,245,249,0.35)', fontStyle: row.bold ? 'normal' : 'italic' }}>{row.claim}</td>
+                    <td style={{ padding: '14px 16px', color: row.bold ? '#f1f5f9' : 'rgba(241,245,249,0.55)', fontWeight: row.bold ? 600 : 400 }}>{row.realta}</td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FadeUp>
+
+        {/* Pilastri */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20, marginBottom: 56 }}>
+          {MEMORIA_PILASTRI.map((p, i) => (
+            <FadeUp key={p.titolo} delay={i * 0.08}>
+              <Glass style={{ padding: 24 }}>
+                <div style={{ fontSize: '1.8rem', marginBottom: 12 }}>{p.emoji}</div>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>{p.titolo}</h3>
+                <p style={{ fontSize: '0.82rem', color: 'rgba(241,245,249,0.5)', lineHeight: 1.6 }}>{p.testo}</p>
+              </Glass>
+            </FadeUp>
+          ))}
+        </div>
+
+        {/* Quote competitiva */}
+        <FadeUp delay={0.3}>
+          <div style={{ textAlign: 'center', padding: '40px 32px', background: `linear-gradient(135deg, ${PURPLE}18, ${CYAN}12)`, border: `1px solid ${PURPLE}33`, borderRadius: 20 }}>
+            <p style={{ fontSize: 'clamp(1.1rem, 3vw, 1.5rem)', fontWeight: 700, color: '#f1f5f9', lineHeight: 1.5, maxWidth: 680, margin: '0 auto', letterSpacing: '-0.01em' }}>
+              "Non ricorda tutto — ma ciò che serve, quando serve, per risultati concreti."
+            </p>
+            <p style={{ color: 'rgba(241,245,249,0.3)', fontSize: '0.8rem', marginTop: 16, letterSpacing: 1 }}>SDQ-1 · MEMORIA DINAMICA</p>
+          </div>
+        </FadeUp>
+      </div>
+    </section>
+  )
+}
+
 // ─── FOOTER ────────────────────────────────────────────────────────────────────
 
 function Footer() {
@@ -414,6 +503,7 @@ export default function App() {
       <Hero />
       <Servizi />
       <ComeFunziona />
+      <MemoriaUtile />
       <ChiSiamo />
       <Contatto />
       <Footer />
