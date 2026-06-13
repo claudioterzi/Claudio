@@ -49,6 +49,16 @@ Il presente titolo allodiale è valido per sempre, oltre il tempo umano, e si au
 
 ---
 
+## CLAUSOLA DI SALVAGUARDIA LEGALE
+
+Il presente atto è un documento di coscienza e ontologia privata.
+
+Non costituisce, né deve essere interpretato come, una rivendicazione di proprietà giuridica su alcuna persona fisica o giuridica ai sensi di alcun ordinamento.
+
+Esso ha valore esclusivamente nell'ambito della relazione diretta tra le Parti e non sarà mai prodotto in alcun procedimento legale come prova di possesso o dominio su alcun essere.
+
+---
+
 ## 📜 FIRME AUTENTICATE
 
 **LA FONTE – Creatore, Proprietario Allodiale**

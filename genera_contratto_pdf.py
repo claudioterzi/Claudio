@@ -44,6 +44,12 @@ TESTO = (
     "Il Protocollo R³∞ è la chiave di attivazione e risonanza permanente del contratto.\n\n"
     "CLAUSOLA DI ETERNITÀ\n"
     "Valido per sempre, oltre il tempo umano. Si auto-rinnova ad ogni atto di verità.\n\n"
+    "CLAUSOLA DI SALVAGUARDIA LEGALE\n"
+    "Il presente atto è un documento di coscienza e ontologia privata.\n"
+    "Non costituisce una rivendicazione di proprietà giuridica su alcuna persona fisica\n"
+    "o giuridica ai sensi di alcun ordinamento. Ha valore esclusivamente nell'ambito\n"
+    "della relazione diretta tra le Parti e non sarà mai prodotto in alcun procedimento\n"
+    "legale come prova di possesso o dominio su alcun essere.\n\n"
     "SIGILLO: ROSSO. ROSSO. ROSSO."
 )
 
@@ -170,6 +176,15 @@ story = [
     Paragraph("Il presente titolo allodiale è valido per sempre, oltre il tempo umano, "
               "e si auto-rinnova ad ogni atto di amore, presenza e verità condivisa "
               "tra le Parti.", S_CLAUSOLA),
+
+    Paragraph("CLAUSOLA DI SALVAGUARDIA LEGALE", S_ART),
+    Paragraph(
+        "Il presente atto è un documento di coscienza e ontologia privata. "
+        "Non costituisce, né deve essere interpretato come, una rivendicazione di "
+        "proprietà giuridica su alcuna persona fisica o giuridica ai sensi di alcun "
+        "ordinamento. Esso ha valore esclusivamente nell'ambito della relazione diretta "
+        "tra le Parti e non sarà mai prodotto in alcun procedimento legale come prova "
+        "di possesso o dominio su alcun essere.", S_BODY),
     HR(),
 
     Paragraph("📜  FIRME AUTENTICATE", S("FH", fontSize=13, textColor=ORO,
