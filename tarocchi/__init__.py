@@ -56,6 +56,8 @@ from .codice_simbolico import (
     ARCANI_MAGGIORI,
     cerca_carta,
     carta_per_indice,
+    voce,
+    eco,
 )
 from .r3_infinito import (
     StatoQuantico,
@@ -79,6 +81,7 @@ __all__ = [
     "Carta", "TipoArcano", "Seme",
     "MAZZO", "ARCANI_MAGGIORI",
     "cerca_carta", "carta_per_indice",
+    "voce", "eco",
     # Layer 2
     "StatoQuantico", "OrientamentoCarta",
     "TipoPosizione", "Posizione",
