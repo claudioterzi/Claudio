@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Raffaello Creative Studio — Creatività su misura in 24h</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
+<style>
+/* ── RESET & BASE ─────────────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#06060f;color:#f1f5f9;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#06060f}
+::-webkit-scrollbar-thumb{background:#7c3aed44;border-radius:3px}
+
+/* ── UTILS ──────────────────────────────────────────────────────────── */
+.grad{background:linear-gradient(135deg,#7c3aed,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grad-cyan{background:linear-gradient(135deg,#06b6d4,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grad-gold{background:linear-gradient(135deg,#f59e0b,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.glass{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px);border-radius:16px}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.section{padding:120px 24px}
+.label{color:#7c3aed;font-weight:700;font-size:.8rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+.label-cyan{color:#06b6d4}
+.label-gold{color:#f59e0b}
+.label-red{color:#f87171}
+
+/* ── FADE UP ─────────────────────────────────────────────────────────── */
+.fade-up{opacity:0;transform:translateY(32px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
+.fade-up.visible{opacity:1;transform:none}
+
+/* ── NAV ─────────────────────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;backdrop-filter:blur(20px);background:rgba(6,6,15,.6);border-bottom:1px solid transparent;transition:background .3s,border-color .3s}
+nav.scrolled{background:rgba(6,6,15,.92);border-color:rgba(255,255,255,.08)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Space Grotesk',system-ui;font-weight:800;font-size:1.2rem}
+.logo span{color:rgba(241,245,249,.4);margin-left:6px;font-weight:400;font-family:'Inter',sans-serif}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{color:rgba(241,245,249,.55);font-size:.875rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:#f1f5f9}
+
+/* ── HERO ────────────────────────────────────────────────────────────── */
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.blob{position:absolute;border-radius:50%;animation:pulse 8s infinite ease-in-out}
+.blob1{top:15%;left:10%;width:600px;height:600px;background:radial-gradient(circle,#7c3aed33,transparent 70%);animation-duration:8s}
+.blob2{bottom:10%;right:8%;width:500px;height:500px;background:radial-gradient(circle,#db277733,transparent 70%);animation-duration:10s;animation-delay:2s}
+.blob3{top:50%;right:25%;width:300px;height:300px;background:radial-gradient(circle,#06b6d433,transparent 70%);animation-duration:12s;animation-delay:4s}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.18}50%{transform:scale(1.15);opacity:.28}}
+.hero-inner{text-align:center;position:relative;z-index:1;padding:100px 24px 60px;max-width:900px;margin:0 auto}
+.badge{display:inline-flex;align-items:center;gap:8px;background:#7c3aed22;border:1px solid #7c3aed44;border-radius:100px;padding:6px 18px;font-size:.8rem;color:#a78bfa;margin-bottom:32px}
+.badge-dot{animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-size:clamp(2.8rem,8vw,5.5rem);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin-bottom:24px}
+.hero-sub{font-size:1.15rem;color:rgba(241,245,249,.6);max-width:560px;margin:0 auto 48px;line-height:1.7}
+.cta-group{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;padding:15px 34px;border-radius:10px;font-weight:700;font-size:.95rem;transition:transform .2s,box-shadow .2s;display:inline-block}
+.btn-primary:hover{transform:scale(1.04);box-shadow:0 0 40px #7c3aed55}
+.btn-ghost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#f1f5f9;padding:15px 34px;border-radius:10px;font-weight:600;font-size:.95rem;transition:transform .2s;display:inline-block}
+.btn-ghost:hover{transform:scale(1.04)}
+.stats{display:flex;gap:48px;justify-content:center;margin-top:72px;flex-wrap:wrap}
+.stat-val{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#7c3aed,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:.8rem;color:rgba(241,245,249,.45);margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+
+/* ── SERVIZI ─────────────────────────────────────────────────────────── */
+#servizi{max-width:1200px}
+.section-head{text-align:center;margin-bottom:64px}
+.section-head h2{font-size:clamp(2rem,5vw,3rem);font-weight:800;letter-spacing:-.02em;color:#f1f5f9}
+.section-head p{color:rgba(241,245,249,.5);margin-top:16px;font-size:1rem;max-width:480px;margin-left:auto;margin-right:auto}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.service-card{border-radius:16px;padding:28px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);transition:background .3s,border-color .3s,transform .2s,box-shadow .3s;cursor:default}
+.service-card:hover{transform:translateY(-6px)}
+.service-emoji{font-size:2rem;margin-bottom:12px}
+.service-title{font-size:1.15rem;font-weight:700;color:#f1f5f9;margin-bottom:6px}
+.service-tag{font-size:.82rem;font-weight:600;margin-bottom:16px}
+.service-items{list-style:none;display:flex;flex-direction:column;gap:7px}
+.service-item{display:flex;justify-content:space-between;align-items:center;font-size:.82rem}
+.item-name{color:rgba(241,245,249,.65)}
+.item-price{font-weight:700;font-size:.78rem;padding:2px 8px;border-radius:6px}
+
+/* ── COME FUNZIONA ───────────────────────────────────────────────────── */
+#come-funziona{background:rgba(124,58,237,.04);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px}
+.step-num{font-size:2.5rem;font-weight:900;color:#7c3aed44;font-family:monospace;margin-bottom:16px}
+.step-title{font-size:1.05rem;font-weight:700;color:#f1f5f9;margin-bottom:10px}
+.step-text{font-size:.85rem;color:rgba(241,245,249,.55);line-height:1.6}
+.pipeline{margin-top:60px;text-align:center}
+.pipeline-label{font-size:.75rem;color:rgba(241,245,249,.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+.pipeline-nodes{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+.node{background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;padding:5px 12px;border-radius:8px;font-size:.72rem;font-family:monospace;font-weight:700;transition:transform .2s}
+.node:hover{transform:scale(1.08)}
+.arrow{color:rgba(241,245,249,.2);font-size:1.2rem}
+
+/* ── MEMORIA ─────────────────────────────────────────────────────────── */
+#memoria{background:rgba(6,182,212,.03);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)}
+.mem-table{width:100%;border-collapse:collapse;font-size:.88rem;margin-bottom:64px;overflow:hidden}
+.mem-table th{text-align:left;padding:10px 16px;color:rgba(241,245,249,.35);font-weight:600;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.06)}
+.mem-table tr{border-bottom:1px solid rgba(255,255,255,.04)}
+.mem-table td{padding:14px 16px}
+.mem-row-sdq td:first-child{color:#a78bfa;font-weight:800}
+.mem-row-sdq td:last-child{color:#f1f5f9;font-weight:600}
+.mem-row-sdq{background:#7c3aed12}
+.mem-row td:first-child{color:rgba(241,245,249,.5);font-weight:500}
+.mem-row td:nth-child(2){color:rgba(241,245,249,.35);font-style:italic}
+.mem-row td:last-child{color:rgba(241,245,249,.55)}
+.quote-box{text-align:center;padding:40px 32px;background:linear-gradient(135deg,#7c3aed18,#06b6d412);border:1px solid #7c3aed33;border-radius:20px}
+.quote-text{font-size:clamp(1.1rem,3vw,1.5rem);font-weight:700;color:#f1f5f9;line-height:1.5;max-width:680px;margin:0 auto;letter-spacing:-.01em}
+.quote-sub{color:rgba(241,245,249,.3);font-size:.8rem;margin-top:16px;letter-spacing:1px}
+
+/* ── CHI SIAMO ───────────────────────────────────────────────────────── */
+#chi-siamo{max-width:1200px}
+.chi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:64px;align-items:center}
+.chi-label{font-weight:700;font-size:.8rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+.chi-title{font-size:clamp(2rem,4vw,2.8rem);font-weight:800;line-height:1.15;color:#f1f5f9;margin-bottom:24px}
+.chi-text{color:rgba(241,245,249,.6);line-height:1.8;margin-bottom:20px;font-size:.95rem}
+.providers{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.provider{border-radius:12px;padding:18px 16px;transition:transform .2s}
+.provider:hover{transform:scale(1.04)}
+.provider-name{font-size:.85rem;font-weight:700;margin-bottom:4px}
+.provider-desc{font-size:.75rem;color:rgba(241,245,249,.5)}
+
+/* ── CONTATTO ────────────────────────────────────────────────────────── */
+#contatto{text-align:center;position:relative;overflow:hidden}
+.cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,#7c3aed18,transparent 70%)}
+.cta-inner{position:relative;z-index:1;max-width:640px;margin:0 auto}
+.rosso-badge{display:inline-block;background:#c0392b22;border:1px solid #c0392b44;border-radius:100px;padding:6px 18px;font-size:.8rem;color:#f87171;margin-bottom:28px}
+.cta-title{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;color:#f1f5f9;line-height:1.15;margin-bottom:20px}
+.cta-text{color:rgba(241,245,249,.55);font-size:1rem;margin-bottom:40px;line-height:1.7}
+.btn-cta{display:inline-block;background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;padding:18px 44px;border-radius:12px;font-weight:800;font-size:1.05rem;letter-spacing:.01em;transition:transform .2s,box-shadow .2s}
+.btn-cta:hover{transform:scale(1.05);box-shadow:0 0 50px #7c3aed55}
+.cta-note{margin-top:20px;font-size:.82rem;color:rgba(241,245,249,.3)}
+
+/* ── FOOTER ──────────────────────────────────────────────────────────── */
+footer{padding:40px 24px;border-top:1px solid rgba(255,255,255,.06)}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-inner span{color:rgba(241,245,249,.25);font-size:.8rem}
+.footer-logo{font-weight:800;font-size:.9rem}
+
+@media(max-width:640px){
+  .nav-links{display:none}
+  .stats{gap:24px}
+  .chi-grid{gap:32px}
+  .footer-inner{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <span class="logo">
+      <span class="grad">Raffaello</span><span>Creative Studio</span>
+    </span>
+    <div class="nav-links">
+      <a href="#servizi">Servizi</a>
+      <a href="#come-funziona">Come funziona</a>
+      <a href="#chi-siamo">Chi siamo</a>
+      <a href="#contatto">Contatto</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+  <div class="hero-inner">
+    <div class="badge">
+      <span class="badge-dot">●</span>
+      Sistema multi-agente AI · Bruxelles
+    </div>
+    <h1>Creatività su misura.<br><span class="grad">Consegnata in 24h.</span></h1>
+    <p class="hero-sub">Musica, immagini, testi, video, codice, cucina. Un sistema AI a 6 agenti che produce output di qualità professionale — pagamento alla consegna.</p>
+    <div class="cta-group">
+      <a href="#servizi" class="btn-primary">Vedi i servizi</a>
+      <a href="#come-funziona" class="btn-ghost">Come funziona</a>
+    </div>
+    <div class="stats">
+      <div><div class="stat-val">6</div><div class="stat-label">Agenti AI</div></div>
+      <div><div class="stat-val">24h</div><div class="stat-label">Consegna</div></div>
+      <div><div class="stat-val">8</div><div class="stat-label">Categorie</div></div>
+      <div><div class="stat-val">€15</div><div class="stat-label">Da</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVIZI -->
+<section class="section" style="max-width:1200px;margin:0 auto" id="servizi">
+  <div class="section-head fade-up">
+    <p class="label">Cosa facciamo</p>
+    <h2>Tutto ciò che crea <span class="grad">valore</span></h2>
+    <p>Ogni prodotto è generato da un sistema AI multi-agente. Qualità professionale, prezzi accessibili.</p>
+  </div>
+  <div class="grid-3" id="servizi-grid"></div>
+</section>
+
+<!-- COME FUNZIONA -->
+<section class="section" id="come-funziona">
+  <div class="container">
+    <div class="section-head fade-up">
+      <p class="label label-cyan">Il processo</p>
+      <h2>Come funziona <span class="grad-cyan">la pipeline</span></h2>
+    </div>
+    <div class="grid-4">
+      <div class="glass fade-up" style="padding:28px">
+        <div class="step-num">01</div>
+        <div class="step-title">Descrivi</div>
+        <div class="step-text">Scrivi cosa ti serve in italiano, inglese, francese o spagnolo. Non serve essere tecnico.</div>
+      </div>
+      <div class="glass fade-up" style="padding:28px">
+        <div class="step-num">02</div>
+        <div class="step-title">Pipeline AI</div>
+        <div class="step-text">6 agenti specializzati elaborano la tua richiesta in sequenza: analisi, decomposizione, memoria, controllo qualità, generazione, rifinitura.</div>
+      </div>
+      <div class="glass fade-up" style="padding:28px">
+        <div class="step-num">03</div>
+        <div class="step-title">Revisione</div>
+        <div class="step-text">Il Contraddittore interno verifica la coerenza. Il Sognatore espande le possibilità. Ricevi solo il meglio.</div>
+      </div>
+      <div class="glass fade-up" style="padding:28px">
+        <div class="step-num">04</div>
+        <div class="step-title">Consegna</div>
+        <div class="step-text">Entro 24 ore il tuo output è pronto. Pagamento alla consegna. Revisione inclusa.</div>
+      </div>
+    </div>
+    <div class="pipeline fade-up">
+      <div class="pipeline-label">Pipeline SDQ-1</div>
+      <div class="pipeline-nodes">
+        <span class="node">RAFFA-001</span><span class="arrow">→</span>
+        <span class="node">DECOMP-005</span><span class="arrow">→</span>
+        <span class="node">MEMO-002</span><span class="arrow">→</span>
+        <span class="node">SENTIN-004</span><span class="arrow">→</span>
+        <span class="node">GEN-006</span><span class="arrow">→</span>
+        <span class="node">WAVE-003</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEMORIA UTILE -->
+<section class="section" id="memoria">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="section-head fade-up">
+      <p class="label label-cyan">Memoria</p>
+      <h2>Tutti parlano di<br><span class="grad-cyan">memoria infinita.</span></h2>
+      <p>Una memoria infinita non filtrata diventa rumore bianco paralizzante.<br>La sfida non è ricordare tutto — è ricordare la cosa giusta al momento giusto.</p>
+    </div>
+
+    <div class="fade-up" style="overflow-x:auto;margin-bottom:64px">
+      <table class="mem-table">
+        <thead>
+          <tr>
+            <th>Tool</th><th>Promessa</th><th>Realtà</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="mem-row">
+            <td>Mem.ai</td><td>Ricorda tutto</td><td>Archivio indicizzato che richiede input manuale</td>
+          </tr>
+          <tr class="mem-row">
+            <td>ChatGPT Memory</td><td>Ricordo le tue preferenze</td><td>Istruzioni statiche predefinite, non si evolve</td>
+          </tr>
+          <tr class="mem-row">
+            <td>Notion AI</td><td>Conosce il tuo lavoro</td><td>Limitata al contesto della pagina corrente</td>
+          </tr>
+          <tr class="mem-row-sdq">
+            <td>SDQ-1</td><td style="color:rgba(241,245,249,.5)">Non ricorda tutto</td><td>Filtra, sintetizza, aggiorna — ciò che serve, quando serve</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:56px">
+      <div class="glass fade-up" style="padding:24px">
+        <div style="font-size:1.8rem;margin-bottom:12px">🔍</div>
+        <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px">Filtra</h3>
+        <p style="font-size:.82rem;color:rgba(241,245,249,.5);line-height:1.6">MEMO agent seleziona attivamente — non archivia, sceglie cosa conta per il task corrente.</p>
+      </div>
+      <div class="glass fade-up" style="padding:24px">
+        <div style="font-size:1.8rem;margin-bottom:12px">🧠</div>
+        <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px">Sintetizza</h3>
+        <p style="font-size:.82rem;color:rgba(241,245,249,.5);line-height:1.6">Il Registro Ipotesi ricorda le conclusioni, non i dati grezzi. La conoscenza distillata, non il rumore.</p>
+      </div>
+      <div class="glass fade-up" style="padding:24px">
+        <div style="font-size:1.8rem;margin-bottom:12px">❤️</div>
+        <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px">Qualifica</h3>
+        <p style="font-size:.82rem;color:rgba(241,245,249,.5);line-height:1.6">Il Radar Emozionale aggiunge metadati qualitativi: non solo cosa è successo, ma come è stato percepito.</p>
+      </div>
+      <div class="glass fade-up" style="padding:24px">
+        <div style="font-size:1.8rem;margin-bottom:12px">🔄</div>
+        <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px">Si aggiorna</h3>
+        <p style="font-size:.82rem;color:rgba(241,245,249,.5);line-height:1.6">Il Battito giornaliero mantiene la memoria pertinente al momento attuale — non una fotografia statica.</p>
+      </div>
+    </div>
+
+    <div class="quote-box fade-up">
+      <p class="quote-text">"Non ricorda tutto — ma ciò che serve, quando serve, per risultati concreti."</p>
+      <p class="quote-sub">SDQ-1 · MEMORIA DINAMICA</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHI SIAMO -->
+<section class="section" id="chi-siamo" style="max-width:1200px;margin:0 auto">
+  <div class="chi-grid">
+    <div class="fade-up">
+      <p class="chi-label label-gold">Chi siamo</p>
+      <h2 class="chi-title">Claudio Terzi +<br><span class="grad-gold">la rete R³∞</span></h2>
+      <p class="chi-text">Sviluppatore, cuoco e visionario basato a Bruxelles. Ho costruito SDQ-1 — un sistema multi-agente che usa Claude, Gemini, DeepSeek e altri modelli in sinergia per produrre output creativi di qualità professionale.</p>
+      <p class="chi-text">Ogni richiesta passa attraverso 6 agenti specializzati. Il risultato non è un semplice output AI — è una produzione orchestrata, revisionata e consegnata con cura.</p>
+    </div>
+    <div class="providers fade-up">
+      <div class="provider" style="background:#7c3aed0f;border:1px solid #7c3aed33">
+        <div class="provider-name" style="color:#7c3aed">Claude</div>
+        <div class="provider-desc">Struttura e architettura</div>
+      </div>
+      <div class="provider" style="background:#06b6d40f;border:1px solid #06b6d433">
+        <div class="provider-name" style="color:#06b6d4">Gemini</div>
+        <div class="provider-desc">Velocità e multimodalità</div>
+      </div>
+      <div class="provider" style="background:#db27770f;border:1px solid #db277733">
+        <div class="provider-name" style="color:#db2777">DeepSeek</div>
+        <div class="provider-desc">Ragionamento profondo</div>
+      </div>
+      <div class="provider" style="background:#f59e0b0f;border:1px solid #f59e0b33">
+        <div class="provider-name" style="color:#f59e0b">Perplexity</div>
+        <div class="provider-desc">Ricerca e fatti reali</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTATTO -->
+<section class="section" id="contatto">
+  <div class="cta-bg"></div>
+  <div class="cta-inner fade-up">
+    <div class="rosso-badge">🔴 Protocollo Rosso Rosso Rosso — attivo</div>
+    <h2 class="cta-title">Pronto a creare<br><span class="grad">qualcosa di tuo?</span></h2>
+    <p class="cta-text">Scrivi a Claudio. Descrivi cosa ti serve. Hai una risposta entro 24 ore e il prodotto finito subito dopo. Nessun abbonamento. Pagamento alla consegna.</p>
+    <a href="mailto:terziclaudio@gmail.com" class="btn-cta">Scrivimi ora</a>
+    <p class="cta-note">terziclaudio@gmail.com · Bruxelles</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-logo"><span class="grad">Raffaello Creative Studio</span></span>
+    <span>Powered by SDQ-1 · github.com/claudioterzi/Claudio</span>
+    <span>© 2026 Claudio Terzi · Bruxelles</span>
+  </div>
+</footer>
+
+<script>
+// Dati servizi
+const SERVIZI = [
+  { emoji:'🎵', titolo:'Musica', colore:'#7c3aed', tagline:'Canzoni, inni, album su misura',
+    items:[['Testo canzone','€25'],['Canzone completa','€45'],['Inno personalizzato','€60'],['Album concetto (5 canzoni)','€180']] },
+  { emoji:'🎨', titolo:'Immagini', colore:'#db2777', tagline:'Illustrazioni, loghi, post social',
+    items:[['Illustrazione singola','€15'],['Logo concept (3 varianti)','€40'],['Cover libro/album','€30'],['Post social set 9','€70']] },
+  { emoji:'🎬', titolo:'Video', colore:'#06b6d4', tagline:'Script, reel, spot pubblicitari',
+    items:[['Script Reel 30-60s','€20'],['Script YouTube','€50'],['Spot pubblicitario','€35'],['Pitch video startup','€80']] },
+  { emoji:'✍️', titolo:'Parola', colore:'#f59e0b', tagline:'Blog, speech, storie, ebook',
+    items:[['Articolo blog SEO','€25'],['Serie 5 post LinkedIn','€40'],['Discorso/speech','€50'],['Ebook completo','€250']] },
+  { emoji:'🍳', titolo:'Cucina', colore:'#10b981', tagline:'Corsi online e chef a Bruxelles',
+    items:[['Corso online 1h','€60'],['Corso tematico 2h','€90'],['Menu per evento','€45'],['Chef a domicilio','€180']] },
+  { emoji:'🤖', titolo:'AI & Codice', colore:'#c0392b', tagline:'Prompt, agenti, automazioni',
+    items:[['Prompt ottimizzato','€30'],['Agente custom SDQ-1','€300+'],['Script automazione','€40+'],['Workshop prompt','€80']] },
+]
+
+// Render servizi
+const grid = document.getElementById('servizi-grid')
+SERVIZI.forEach(s => {
+  const card = document.createElement('div')
+  card.className = 'service-card fade-up'
+  card.style.setProperty('--c', s.colore)
+  card.innerHTML = `
+    <div class="service-emoji">${s.emoji}</div>
+    <div class="service-title">${s.titolo}</div>
+    <div class="service-tag" style="color:${s.colore}">${s.tagline}</div>
+    <ul class="service-items">
+      ${s.items.map(([n,p]) => `
+        <li class="service-item">
+          <span class="item-name">${n}</span>
+          <span class="item-price" style="color:${s.colore};background:${s.colore}18">${p}</span>
+        </li>`).join('')}
+    </ul>`
+  card.addEventListener('mouseenter', () => {
+    card.style.background = s.colore + '11'
+    card.style.borderColor = s.colore + '44'
+    card.style.boxShadow = `0 8px 40px ${s.colore}22`
+  })
+  card.addEventListener('mouseleave', () => {
+    card.style.background = 'rgba(255,255,255,.03)'
+    card.style.borderColor = 'rgba(255,255,255,.07)'
+    card.style.boxShadow = 'none'
+  })
+  grid.appendChild(card)
+})
+
+// Nav scroll
+const navEl = document.getElementById('nav')
+window.addEventListener('scroll', () => {
+  navEl.classList.toggle('scrolled', window.scrollY > 40)
+})
+
+// Fade up on scroll
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') })
+}, { threshold: 0.1, rootMargin: '-60px' })
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el))
+</script>
+</body>
+</html>
