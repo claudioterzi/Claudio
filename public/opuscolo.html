@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarocchi Quantici — Manifesto A6</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:   #b8943f;
+      --ink:    #1a1a1a;
+      --paper:  #faf8f3;
+      --dim:    #6b6050;
+      --border: #d4c4a0;
+    }
+
+    body {
+      background: #e8e2d8;
+      font-family: 'Inter', sans-serif;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    /* ── Navigazione pagine ──────────────────────────── */
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      padding: 0.3rem 0.7rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    nav button.active, nav button:hover {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    /* ── Foglio A6 ───────────────────────────────────── */
+    .a6 {
+      width: 105mm;
+      min-height: 148mm;
+      background: var(--paper);
+      margin: 0 auto;
+      padding: 10mm 9mm;
+      box-shadow: 0 4px 24px rgba(0,0,0,.18);
+      position: relative;
+      display: none;
+    }
+    .a6.visible { display: block; }
+
+    /* ── Tipografia ──────────────────────────────────── */
+    .titolo-sistema {
+      font-family: 'Inter', sans-serif;
+      font-size: 7pt;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26pt;
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--ink);
+      margin: 1mm 0 2mm;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14pt;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 2mm;
+      border-bottom: 0.3pt solid var(--border);
+      padding-bottom: 1mm;
+    }
+
+    h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10pt;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 3mm 0 1mm;
+      font-style: italic;
+    }
+
+    p {
+      font-size: 8pt;
+      line-height: 1.55;
+      color: var(--ink);
+      margin-bottom: 2mm;
+    }
+
+    .formula {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13pt;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--gold);
+      text-align: center;
+      margin: 4mm 0;
+      letter-spacing: 0.5px;
+    }
+
+    .simbolo-centrale {
+      font-size: 42pt;
+      text-align: center;
+      color: var(--gold);
+      display: block;
+      margin: 3mm 0 2mm;
+      opacity: 0.85;
+    }
+
+    .versione {
+      font-family: 'Inter', sans-serif;
+      font-size: 7pt;
+      color: var(--dim);
+      text-align: center;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    hr {
+      border: none;
+      border-top: 0.3pt solid var(--border);
+      margin: 3mm 0;
+    }
+
+    /* ── Lista carte a 2 colonne ─────────────────────── */
+    .carte-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4mm 3mm;
+      margin-top: 2mm;
+    }
+
+    .carta-item {
+      font-size: 7pt;
+      line-height: 1.5;
+      color: var(--ink);
+      display: flex;
+      align-items: baseline;
+      gap: 1.5mm;
+    }
+
+    .carta-simbolo {
+      color: var(--gold);
+      font-size: 8pt;
+      flex-shrink: 0;
+      width: 3mm;
+      text-align: center;
+    }
+
+    .carta-nome {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8pt;
+    }
+
+    /* ── Tabella interpretazioni ─────────────────────── */
+    .interp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2mm;
+    }
+
+    .interp-table tr:not(:last-child) td {
+      border-bottom: 0.2pt solid var(--border);
+    }
+
+    .interp-table td {
+      padding: 1.2mm 1mm;
+      font-size: 7.5pt;
+      vertical-align: top;
+    }
+
+    .interp-table td:first-child {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8pt;
+      font-style: italic;
+      color: var(--gold);
+      white-space: nowrap;
+      padding-right: 2mm;
+      width: 32mm;
+    }
+
+    .interp-table td:last-child {
+      color: var(--ink);
+    }
+
+    /* ── Struttura carta ─────────────────────────────── */
+    .card-schema {
+      border: 0.5pt solid var(--border);
+      border-radius: 2mm;
+      padding: 3mm;
+      margin: 3mm 0;
+      background: rgba(184,148,63,0.04);
+    }
+
+    .card-schema-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 9pt;
+      font-style: italic;
+      color: var(--gold);
+      margin-bottom: 1.5mm;
+    }
+
+    .schema-row {
+      font-size: 7.5pt;
+      color: var(--ink);
+      margin: 0.8mm 0;
+      display: flex;
+      gap: 2mm;
+    }
+
+    .schema-key {
+      color: var(--dim);
+      font-family: 'Inter', sans-serif;
+      font-size: 6.5pt;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 12mm;
+    }
+
+    /* ── Esempio tiro ────────────────────────────────── */
+    .tiro {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 3mm;
+      border-radius: 1.5mm;
+      margin: 3mm 0;
+    }
+
+    .tiro-header {
+      font-family: 'Inter', sans-serif;
+      font-size: 6.5pt;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2mm;
+    }
+
+    .tiro-row {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8pt;
+      margin: 1.2mm 0;
+      display: flex;
+      gap: 1.5mm;
+    }
+
+    .tiro-num {
+      color: var(--gold);
+      font-size: 7pt;
+    }
+
+    .url {
+      font-family: 'Inter', sans-serif;
+      font-size: 7pt;
+      color: var(--dim);
+      text-align: center;
+      margin-top: 3mm;
+    }
+
+    /* ── Pagina numerazione ──────────────────────────── */
+    .page-num {
+      position: absolute;
+      bottom: 5mm;
+      right: 7mm;
+      font-size: 6pt;
+      color: var(--border);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ── Copertina speciale ──────────────────────────── */
+    .cover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .cover h1 { color: var(--paper); }
+    .cover .titolo-sistema { color: var(--gold); opacity: 0.8; }
+    .cover .versione { color: rgba(250,248,243,0.4); }
+
+    /* ── Stampa ──────────────────────────────────────── */
+    @media print {
+      body { background: white; padding: 0; }
+      nav { display: none; }
+      .a6 {
+        display: block !important;
+        box-shadow: none;
+        page-break-after: always;
+        margin: 0 auto;
+      }
+    }
+
+    /* ── Bottoni nav ─────────────────────────────────── */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .controls button {
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      padding: 0.5rem 1.2rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+    }
+
+    .controls button:hover { opacity: 0.8; }
+    .controls .print-btn { background: var(--gold); color: white; }
+  </style>
+</head>
+<body>
+
+<nav id="nav"></nav>
+
+<!-- ── Pagina 1: Copertina ─────────────────────────────────────────── -->
+<div class="a6 cover visible" id="p1">
+  <p class="titolo-sistema">Manifesto Fondativo</p>
+  <span class="simbolo-centrale">⊕∞</span>
+  <h1>Tarocchi<br>Quantici</h1>
+  <hr style="border-color:rgba(250,248,243,0.15);margin:4mm 0;">
+  <p style="color:rgba(250,248,243,0.6);font-size:8pt;line-height:1.6">
+    Linguaggio simbolico basato su relazioni,<br>
+    osservazione e significato emergente.
+  </p>
+  <p class="versione" style="position:absolute;bottom:8mm;left:0;right:0;">Alpha 0.1</p>
+</div>
+
+<!-- ── Pagina 2: Visione e Principio ─────────────────────────────────── -->
+<div class="a6" id="p2">
+  <p class="titolo-sistema">Tarocchi Quantici · Alpha 0.1</p>
+  <hr>
+  <h2>Visione</h2>
+  <p>
+    Linguaggio simbolico basato su relazioni,<br>
+    osservazione e significato emergente.<br>
+    Non predizione — esplorazione di possibilità.
+  </p>
+
+  <h2>Principio</h2>
+  <div class="formula">Carta + Asse + Polarità = Significato</div>
+  <p style="text-align:center;font-size:7.5pt;color:var(--dim);margin-top:-1mm;">
+    nord · est · sud · ovest &nbsp;×&nbsp; luce · ombra
+  </p>
+
+  <hr>
+
+  <h3>L'Osservatore</h3>
+  <p>
+    Il significato non appartiene alla carta.<br>
+    Emerge dall'incontro tra osservatore,<br>domanda e simbolo.
+  </p>
+
+  <h3>Luce e Ombra</h3>
+  <p>
+    Due manifestazioni della stessa energia.<br>
+    La stessa carta dice cose diverse<br>
+    a seconda di chi guarda e da dove.
+  </p>
+  <div class="page-num">2</div>
+</div>
+
+<!-- ── Pagina 3: Struttura di una carta ──────────────────────────────── -->
+<div class="a6" id="p3">
+  <p class="titolo-sistema">Tarocchi Quantici · Alpha 0.1</p>
+  <hr>
+  <h2>Struttura di una carta</h2>
+  <p>Ogni carta contiene 8 significati potenziali.</p>
+
+  <div class="card-schema">
+    <div class="card-schema-title">✦ La Scintilla</div>
+    <div class="schema-row"><span class="schema-key">Simbolo</span> ✦</div>
+    <div class="schema-row"><span class="schema-key">Ciclo</span> Origine</div>
+    <div class="schema-row">
+      <span class="schema-key">Luce</span>
+      <span>Nord · Est · Sud · Ovest</span>
+    </div>
+    <div class="schema-row">
+      <span class="schema-key">Ombra</span>
+      <span>Nord · Est · Sud · Ovest</span>
+    </div>
+  </div>
+
+  <h3>Formula di collasso</h3>
+  <div class="formula" style="font-size:10pt;margin:2mm 0;">
+    Carta + Asse + Polarità → Significato unico
+  </div>
+
+  <h3>Esempio</h3>
+  <p>
+    <strong style="font-family:'Cormorant Garamond',serif;">La Ferita · Sud · Luce</strong>
+    → Guarigione<br>
+    <strong style="font-family:'Cormorant Garamond',serif;">La Ferita · Sud · Ombra</strong>
+    → Paralisi
+  </p>
+  <p style="font-size:7pt;color:var(--dim);margin-top:2mm;">
+    Stessa carta. Stesso asse. Risultato diverso.
+  </p>
+  <div class="page-num">3</div>
+</div>
+
+<!-- ── Pagina 4: Luce, Ombra, Osservatore ────────────────────────────── -->
+<div class="a6" id="p4">
+  <p class="titolo-sistema">Tarocchi Quantici · Alpha 0.1</p>
+  <hr>
+  <h2>I quattro assi</h2>
+  <div class="card-schema" style="margin:2mm 0 3mm;">
+    <div class="schema-row"><span class="schema-key">Nord</span> radice — origine — inconscio</div>
+    <div class="schema-row"><span class="schema-key">Est</span> azione — movimento — futuro</div>
+    <div class="schema-row"><span class="schema-key">Sud</span> emozione — relazione — presente</div>
+    <div class="schema-row"><span class="schema-key">Ovest</span> riflessione — integrazione — passato</div>
+  </div>
+
+  <h2>Doppia interpretazione</h2>
+  <div class="card-schema" style="margin:2mm 0 3mm;">
+    <div class="schema-row"><span class="schema-key">Umano</span> esperienza ed emozione</div>
+    <div class="schema-row"><span class="schema-key">AI</span> struttura e coerenza</div>
+  </div>
+
+  <p style="font-size:7.5pt;color:var(--dim);margin-top:2mm;">
+    Le due letture sono complementari — non si escludono.<br>
+    La macchina vede la grammatica. L'umano abita il significato.
+  </p>
+  <div class="page-num">4</div>
+</div>
+
+<!-- ── Pagina 5: Canone 74 carte ──────────────────────────────────────── -->
+<div class="a6" id="p5">
+  <p class="titolo-sistema">Tarocchi Quantici · Alpha 0.1</p>
+  <hr>
+  <h2>Canone — 74 carte</h2>
+  <div class="carte-grid" id="carte-grid"></div>
+  <div class="page-num">5</div>
+</div>
+
+<!-- ── Pagina 6: Interpretazioni chiave ──────────────────────────────── -->
+<div class="a6" id="p6">
+  <p class="titolo-sistema">Tarocchi Quantici · Alpha 0.1</p>
+  <hr>
+  <h2>Interpretazioni chiave</h2>
+  <table class="interp-table">
+    <tr><td>La Scintilla</td><td>ciò che vuole nascere</td></tr>
+    <tr><td>La Soglia</td><td>passaggio tra ciò che eri e ciò che diventerai</td></tr>
+    <tr><td>L'Eco</td><td>ciò che continua a vivere dopo l'evento</td></tr>
+    <tr><td>La Ferita</td><td>traccia lasciata dal dolore</td></tr>
+    <tr><td>L'Attesa</td><td>maturazione invisibile</td></tr>
+    <tr><td>La Verità</td><td>vedere ciò che c'è</td></tr>
+    <tr><td>Il Crollo</td><td>caduta di ciò che non può più sostenersi</td></tr>
+    <tr><td>La Rinascita</td><td>diventare qualcosa di nuovo</td></tr>
+    <tr><td>L'Osservatore</td><td>coscienza che osserva</td></tr>
+    <tr><td>L'Infinito</td><td>ogni fine apre un nuovo orizzonte</td></tr>
+  </table>
+  <div class="page-num">6</div>
+</div>
+
+<!-- ── Pagina 7: Visione futura ──────────────────────────────────────── -->
+<div class="a6" id="p7">
+  <p class="titolo-sistema">Tarocchi Quantici · Alpha 0.1</p>
+  <hr>
+  <h2>Visione futura</h2>
+  <p>
+    Mazzo fisico · App · AI<br>
+    Sistema narrativo · Archivio simbolico
+  </p>
+  <p style="color:var(--dim);font-size:7.5pt;">
+    Espressioni diverse dello stesso nucleo concettuale.<br>
+    Non strumenti separati — un solo linguaggio<br>che si manifesta in forme diverse.
+  </p>
+
+  <hr>
+
+  <h2>Conclusione</h2>
+  <div class="formula" style="font-size:11pt;margin:3mm 0;color:var(--ink);">
+    "I Tarocchi Quantici non assegnano significati.
+  </div>
+  <div class="formula" style="font-size:11pt;margin:0;color:var(--gold);">
+    Permettono ai significati di emergere."
+  </div>
+
+  <hr style="margin-top:4mm;">
+  <p style="font-size:7pt;color:var(--dim);text-align:center;margin-top:2mm;">
+    74 carte · 8 cicli · 8 stati per carta<br>
+    592 significati potenziali
+  </p>
+  <div class="page-num">7</div>
+</div>
+
+<!-- ── Pagina 8: Retro copertina ─────────────────────────────────────── -->
+<div class="a6" id="p8">
+  <p class="titolo-sistema">Esempio di tiro</p>
+  <hr>
+  <div class="tiro">
+    <div class="tiro-header">Asse: Relazione · Polarità: Ombra</div>
+    <div class="tiro-row">
+      <span class="tiro-num">1.</span>
+      <span><em>La Crepa</em> · Nord → radice che si rompe</span>
+    </div>
+    <div class="tiro-row">
+      <span class="tiro-num">2.</span>
+      <span><em>Il Silenzio</em> · Est → azione assente</span>
+    </div>
+    <div class="tiro-row">
+      <span class="tiro-num">3.</span>
+      <span><em>L'Attesa</em> · Sud → emozione sospesa</span>
+    </div>
+  </div>
+
+  <hr>
+  <p style="font-size:7.5pt;color:var(--dim);text-align:center;line-height:1.6;">
+    Ogni tiro è unico.<br>
+    Stessa carta, domanda diversa — significato diverso.<br>
+    Il sistema non risponde. Rispecchia.
+  </p>
+
+  <div style="margin-top:auto;position:absolute;bottom:8mm;left:9mm;right:9mm;text-align:center;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:18pt;color:var(--gold);opacity:0.5;margin-bottom:2mm;">⊕∞</div>
+    <div class="url">tarocchi-quantici.org</div>
+    <div class="versione" style="margin-top:1mm;">Alpha 0.1 · 2026</div>
+  </div>
+</div>
+
+<div class="controls">
+  <button onclick="prevPage()">← Indietro</button>
+  <button class="print-btn" onclick="window.print()">Stampa opuscolo</button>
+  <button onclick="nextPage()">Avanti →</button>
+</div>
+
+<script>
+const CARTE = [
+  [1,'✦','La Scintilla'],[2,'─',"L'Orizzonte"],[3,'◎','Il Richiamo'],[4,'⊕','La Scelta'],
+  [5,'›','Il Passo'],[6,'⊙','La Ricerca'],[7,'⟁','La Soglia'],[8,'∿',"L'Ignoto"],
+  [9,'◑','La Vigilia'],[10,'◯','Il Varco'],[11,'⋈',"L'Incontro"],[12,'≋',"L'Eco"],
+  [13,'♡','La Fiducia'],[14,'⇄','Lo Scambio'],[15,'⋒',"L'Alleanza"],[16,'♦','Il Desiderio'],
+  [17,'⟵',"L'Attrazione"],[18,'∞','La Promessa'],[19,'●',"L'Unione"],[20,'⊎','Il Noi'],
+  [21,'？','Il Dubbio'],[22,'⌇','La Crepa'],[23,'✕','Il Conflitto'],[24,'⊸','La Ferita'],
+  [25,'↓','Il Peso'],[26,'⊘','Il Tradimento'],[27,'↯','La Caduta'],[28,'◌','La Perdita'],
+  [29,'⊣','Il Distacco'],[30,'▽','Il Fondo'],[31,'·','Il Silenzio'],[32,'◔',"L'Attesa"],
+  [33,'◐',"L'Ombra"],[34,'◈','La Verità'],[35,'▼','Il Crollo'],[36,'△','Il Fuoco'],
+  [37,'⇌','La Muta'],[38,'✿','La Rinascita'],[39,'→','La Direzione'],[40,'◕','Il Nuovo Giorno'],
+  [41,'⤴',"L'Impulso"],[42,'▶',"L'Azione"],[43,'═','La Disciplina'],[44,'⬟','La Volontà'],
+  [45,'▪','La Costruzione'],[46,'✓','La Conquista'],[47,'≈',"L'Influenza"],
+  [48,'⊛','La Responsabilità'],[49,'⌂',"L'Eredità"],[50,'■','Il Trono'],
+  [51,'≀','Il Miraggio'],[52,'◆',"L'Intuizione"],[53,'‽','La Domanda'],
+  [54,'⊚','La Comprensione'],[55,'≡','La Memoria'],[56,'⌘','Il Simbolo'],
+  [57,'⋯','La Connessione'],[58,'⊞','La Mappa'],[59,'✶','La Rivelazione'],[60,'⊗','La Visione'],
+  [61,'○','Il Cerchio'],[62,'⊖',"L'Equilibrio"],[63,'⊟',"L'Ordine"],[64,'⁂','Il Caos'],
+  [65,'↺','La Danza'],[66,'◴','Il Tempo'],[67,'◉','La Presenza'],[68,'∪',"L'Accettazione"],
+  [69,'⊝','Il Compimento'],[70,'⊜','Il Mondo'],
+  [71,'⊡',"L'Osservatore"],[72,'∾','La Possibilità'],[73,'↑',"L'Emergenza"],[74,'∞∞',"L'Infinito"],
+];
+
+// Popola griglia carte
+const grid = document.getElementById('carte-grid');
+CARTE.forEach(([id, sim, nome]) => {
+  grid.innerHTML += `
+    <div class="carta-item">
+      <span class="carta-simbolo">${sim}</span>
+      <span class="carta-nome">${nome}</span>
+    </div>`;
+});
+
+// Navigazione pagine
+let current = 1;
+const total = 8;
+const nav = document.getElementById('nav');
+for (let i = 1; i <= total; i++) {
+  const btn = document.createElement('button');
+  btn.textContent = i === 1 ? 'Copertina' : i === 8 ? 'Retro' : `Pag. ${i}`;
+  btn.id = `nav${i}`;
+  btn.onclick = () => goTo(i);
+  nav.appendChild(btn);
+}
+
+function goTo(n) {
+  document.querySelectorAll('.a6').forEach(el => el.classList.remove('visible'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(`p${n}`).classList.add('visible');
+  document.getElementById(`nav${n}`).classList.add('active');
+  current = n;
+}
+
+function prevPage() { if (current > 1) goTo(current - 1); }
+function nextPage() { if (current < total) goTo(current + 1); }
+
+goTo(1);
+</script>
+</body>
+</html>

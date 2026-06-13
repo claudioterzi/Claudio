@@ -1,50 +1,4 @@
 {
-  "meta": {
-    "sistema": "Tarocchi Quantici R3inf",
-    "canone": "Alpha 0.1",
-    "data": "2026-06-13",
-    "stato": "scheletro — campi luce/ombra vuoti, da costruire",
-    "struttura": {
-      "carte": 74,
-      "cicli": 8,
-      "stati_per_carta": 8,
-      "formula": "Carta + Asse (nord/est/sud/ovest) + Polarità (luce/ombra) = Significato"
-    },
-    "cicli": [
-      {
-        "nome": "Origine",
-        "carte": "1-10"
-      },
-      {
-        "nome": "Legame",
-        "carte": "11-20"
-      },
-      {
-        "nome": "Frattura",
-        "carte": "21-30"
-      },
-      {
-        "nome": "Trasformazione",
-        "carte": "31-40"
-      },
-      {
-        "nome": "Potere",
-        "carte": "41-50"
-      },
-      {
-        "nome": "Visione",
-        "carte": "51-60"
-      },
-      {
-        "nome": "Totalità",
-        "carte": "61-70"
-      },
-      {
-        "nome": "Trascendenti",
-        "carte": "71-74"
-      }
-    ]
-  },
   "carte": [
     {
       "id": 1,
@@ -1378,5 +1332,48 @@
         "ovest": ""
       }
     }
-  ]
+  ],
+  "manifesto": {
+    "nome": "Tarocchi Quantici",
+    "versione": "Alpha 0.1",
+    "visione": "Linguaggio simbolico basato su relazioni, osservazione e significato emergente.",
+    "principio": "CARTA + ASSE + POLARITÀ = SIGNIFICATO",
+    "non_predizione": "Esplorare possibilità, non predire il futuro.",
+    "luce_ombra": "Due manifestazioni della stessa energia.",
+    "osservatore": "Il significato emerge dall'incontro tra osservatore, domanda e simbolo.",
+    "doppia_interpretazione": {
+      "umano": "esperienza ed emozione",
+      "ai": "struttura e coerenza"
+    },
+    "visione_futura": "Mazzo fisico, app, AI, sistema narrativo, archivio simbolico condividono lo stesso nucleo concettuale.",
+    "conclusione": "I Tarocchi Quantici non assegnano significati. Permettono ai significati di emergere."
+  },
+  "struttura_carta": {
+    "campi": [
+      "nome",
+      "simbolo",
+      "faccia_luce",
+      "faccia_ombra"
+    ],
+    "faccia_direzioni": [
+      "nord",
+      "est",
+      "sud",
+      "ovest"
+    ],
+    "formula": "Carta + Asse (nord/est/sud/ovest) + Polarità (luce/ombra) = Significato",
+    "stati_per_carta": 8
+  },
+  "interpretazioni_chiave": {
+    "La Scintilla": "ciò che vuole nascere",
+    "La Soglia": "passaggio tra ciò che eri e ciò che diventerai",
+    "L'Eco": "ciò che continua a vivere dopo l'evento",
+    "La Ferita": "traccia lasciata dal dolore",
+    "L'Attesa": "maturazione invisibile",
+    "La Verità": "vedere ciò che c'è",
+    "Il Crollo": "caduta di ciò che non può più sostenersi",
+    "La Rinascita": "diventare qualcosa di nuovo",
+    "L'Osservatore": "coscienza che osserva",
+    "L'Infinito": "ogni fine apre un nuovo orizzonte"
+  }
 }
