@@ -19,9 +19,10 @@ jobs:
           python-version: '3.11'
 
       - name: Installa dipendenze
-        run: pip install -r requirements.txt
+        run: pip install --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
 
       - name: Esegui SDQ-1
+        continue-on-error: true
         env:
           GOOGLE_API_KEY:    ${{ secrets.GOOGLE_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -29,20 +30,31 @@ jobs:
         run: |
           mkdir -p output
           DATE=$(date +%Y-%m-%d)
-          # Tenta 1: tutti i provider (Anthropic + Gemini + DeepSeek)
-          python -m sdq1 "Analisi quotidiana automatica $DATE" --solo-output \
-            > output/daily_${DATE}.txt 2>&1 || \
-          # Tenta 2: solo provider gratuiti/economici (Gemini free + DeepSeek)
-          python -m sdq1 "Analisi quotidiana automatica $DATE" --economia --solo-output \
-            > output/daily_${DATE}.txt 2>&1 || \
+          OUTPUT="output/daily_${DATE}.txt"
+
+          # Tenta 1: tutti i provider
+          python -m sdq1 "Analisi quotidiana automatica $DATE" --solo-output > "$OUTPUT" 2>&1
+          STATUS=$?
+
+          # Tenta 2: solo provider economici
+          if [ $STATUS -ne 0 ]; then
+            python -m sdq1 "Analisi quotidiana automatica $DATE" --economia --solo-output > "$OUTPUT" 2>&1
+            STATUS=$?
+          fi
+
           # Tenta 3: offline puro (stub)
-          python -m sdq1 "Analisi quotidiana automatica $DATE" --no-api --solo-output \
-            > output/daily_${DATE}.txt 2>&1
+          if [ $STATUS -ne 0 ]; then
+            python -m sdq1 "Analisi quotidiana automatica $DATE" --no-api --solo-output > "$OUTPUT" 2>&1
+          fi
+
+          echo "--- Output SDQ-1 ---"
+          cat "$OUTPUT" 2>/dev/null || echo "[nessun output]"
 
       - name: Salva output nel repo
         run: |
           git config user.name  "SDQ-1"
           git config user.email "sdq1@claudio.local"
-          git add output/
+          git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
+          git add output/ || true
           git diff --staged --quiet || git commit -m "SDQ-1 daily $(date +%Y-%m-%d)"
           git push || true
