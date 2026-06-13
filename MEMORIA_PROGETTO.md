@@ -43,8 +43,14 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
   - Esempio: *La Ferita · Sud · Luce* → Guarigione. *La Ferita · Sud · Ombra* → Paralisi.
 - **File**: `tarocchi_quantici_alpha.json` (canone + manifesto + interpretazioni chiave).
 - **Opuscolo A6 stampabile**: `public/opuscolo.html`.
-- **Stato**: SCHELETRO. I 74 nomi e simboli sono fissati. I campi `luce`/`ombra`
-  (592 significati totali = 74 × 8) sono ancora **vuoti**, da costruire.
+- **Stato**: IN COSTRUZIONE. I 74 nomi e simboli sono fissati.
+  Significati `luce`/`ombra` (592 totali = 74 × 8):
+  - ✅ **Origine (1-10)** — 80 stati scritti.
+  - ⬜ Legame (11-20), Frattura (21-30), Trasformazione (31-40),
+    Potere (41-50), Visione (51-60), Totalità (61-70), Trascendenti (71-74).
+  - Convenzione assi: Nord = radice/inconscio · Est = azione/futuro ·
+    Sud = emozione/presente · Ovest = riflessione/passato.
+  - Campo `stato_costruzione` nel JSON traccia il progresso.
 
 ---
 
