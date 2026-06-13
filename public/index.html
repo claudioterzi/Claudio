@@ -197,6 +197,83 @@
       margin: 2.5rem 0;
     }
 
+    /* ── Galleria carte ───────────────────────────────────────────────── */
+    #galleria { margin-top: 1.5rem; }
+    #galleria.hidden { display: none; }
+
+    .galleria-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card-flip {
+      width: 120px;
+      height: 206px;
+      perspective: 800px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(.4,0,.2,1);
+    }
+
+    .card-flip:hover .card-inner,
+    .card-flip.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .card-face img, .card-face object {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+    }
+
+    .card-label {
+      font-size: 0.62rem;
+      color: var(--gold-dim);
+      text-align: center;
+      margin-top: 0.25rem;
+      font-style: italic;
+      line-height: 1.2;
+      max-width: 120px;
+    }
+
+    .btn-galleria {
+      background: transparent;
+      border: 1px solid var(--gold-dim);
+      color: var(--gold-dim);
+      padding: 0.4rem 1rem;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-galleria:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
     /* Reading sections */
     #reading { display: none; }
     #reading.visible { display: block; }
@@ -312,6 +389,17 @@
     <h1>Tarocchi Quantici R³∞</h1>
     <p>Doppia ermeneutica — macchina e umano, un solo simbolo</p>
   </header>
+
+  <!-- Galleria carte -->
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem;">
+    <p class="section-title" style="margin:0">Il mazzo</p>
+    <button class="btn-galleria" onclick="toggleGalleria()">Mostra carte</button>
+  </div>
+  <div id="galleria" class="hidden">
+    <div class="galleria-grid" id="galleria-grid"></div>
+  </div>
+
+  <hr class="divider">
 
   <!-- Slot carte -->
   <p class="section-title">La stesa</p>
@@ -656,6 +744,66 @@ function esc(s) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+// ── Galleria ──────────────────────────────────────────────────────────────────
+
+let galleriaCaricata = false;
+
+function toggleGalleria() {
+  const g = document.getElementById('galleria');
+  const btn = document.querySelector('.btn-galleria');
+  const aperta = !g.classList.contains('hidden');
+
+  if (aperta) {
+    g.classList.add('hidden');
+    btn.textContent = 'Mostra carte';
+    return;
+  }
+
+  g.classList.remove('hidden');
+  btn.textContent = 'Nascondi carte';
+
+  if (!galleriaCaricata && MAZZO.length) {
+    costruisciGalleria();
+    galleriaCaricata = true;
+  }
+}
+
+function slug(nome) {
+  return nome
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/'/g, '')
+    .replace(/[^a-z0-9_]/g, '');
+}
+
+function costruisciGalleria() {
+  const grid = document.getElementById('galleria-grid');
+  grid.innerHTML = '';
+
+  MAZZO.forEach(carta => {
+    const idx = String(carta.indice).padStart(2, '0');
+    const fronteSrc = `/cards/${idx}_${slug(carta.nome)}.svg`;
+    const retroSrc  = '/cards/retro.svg';
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `
+      <div class="card-flip" onclick="this.classList.toggle('flipped')" title="${esc(carta.voce)}">
+        <div class="card-inner">
+          <div class="card-face card-front">
+            <img src="${fronteSrc}" alt="${esc(carta.nome)}" loading="lazy"/>
+          </div>
+          <div class="card-face card-back">
+            <img src="${retroSrc}" alt="retro" loading="lazy"/>
+          </div>
+        </div>
+      </div>
+      <div class="card-label">${esc(carta.voce)}</div>
+    `;
+    grid.appendChild(wrapper);
+  });
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────

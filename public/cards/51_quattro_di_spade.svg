@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 600" width="350" height="600">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#111115"/>
+      <stop offset="100%" stop-color="#0a0a0d"/>
+    </linearGradient>
+    <linearGradient id="elGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- sfondo -->
+  <rect width="350" height="600" fill="url(#bgGrad)"/>
+
+  
+    <!-- bordo esterno -->
+    <rect x="12" y="12" width="326" height="576"
+          rx="10" ry="10"
+          fill="#141418" stroke="#c9a84c" stroke-width="1.8" opacity="0.95"/>
+    <!-- linea interna -->
+    <rect x="19" y="19" width="312" height="562"
+          rx="7" ry="7"
+          fill="none" stroke="#8a6a20" stroke-width="0.8" opacity="0.5"/>
+    <!-- angoli decorativi -->
+    <g stroke="#c9a84c" stroke-width="1.5" fill="none" opacity="0.8">
+      <path d="M22,34 L34,34 L34,22"/>
+      <path d="M328,34 L316,34 L316,22"/>
+      <path d="M22,566 L34,566 L34,578"/>
+      <path d="M328,566 L316,566 L316,578"/>
+    </g>
+    
+    
+
+  <!-- alone elementale -->
+  <ellipse cx="175" cy="155" rx="90" ry="70" fill="#9bd4e0" opacity="0.06"/>
+
+  <!-- simbolo elementale -->
+  <g transform="translate(0, 50)">
+    
+      <circle cx="175" cy="82" r="48" fill="none" stroke="#c9a84c" stroke-width="2.5" opacity="0.9"/>
+      <circle cx="175" cy="82" r="30" fill="none" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
+      <line x1="127" y1="82" x2="223" y2="82" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
+      <line x1="175" y1="34" x2="175" y2="130" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
+    
+  </g>
+
+  <!-- label arcano -->
+  <text x="175" y="40" text-anchor="middle"
+        font-family="Georgia, serif" font-size="9.5" fill="#a89060"
+        letter-spacing="2">ARCANO MINORE  ·  SPADE</text>
+
+  <!-- linea separatrice alta -->
+  <line x1="40" y1="178" x2="310" y2="178" stroke="#8a6a20" stroke-width="0.6" opacity="0.5"/>
+
+  <!-- VOCE — nome nella lettura -->
+  <text x="175" y="212" text-anchor="middle"
+        font-family="Georgia, serif" font-size="18" fill="#f0e6c8"
+        font-style="italic" font-weight="normal" letter-spacing="0.5">
+    riposo necessario
+  </text>
+
+  <!-- elemento -->
+  <text x="175" y="240" text-anchor="middle"
+        font-family="Georgia, serif" font-size="9" fill="#9bd4e0" letter-spacing="3">
+    ARIA
+  </text>
+
+  <!-- linea centrale -->
+  <line x1="60" y1="255" x2="290" y2="255" stroke="#8a6a20" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- ECO -->
+  <text x="175" y="278" text-anchor="middle"
+        font-family="Georgia, serif" font-size="10" fill="#a89060" font-style="italic">
+    <tspan x="175" dy="0em">il guerriero che dorme per tornare più</tspan><tspan x="175" dy="1.25em">forte</tspan>
+  </text>
+
+  <!-- linea bassa -->
+  <line x1="40" y1="388" x2="310" y2="388" stroke="#8a6a20" stroke-width="0.6" opacity="0.4"/>
+
+  <!-- parole chiave -->
+  <text x="175" y="408" text-anchor="middle"
+        font-family="Georgia, serif" font-size="9" fill="#a89060" letter-spacing="1">
+    <tspan x="175" dy="0em">riposo necessario · guarigione</tspan><tspan x="175" dy="1.3em">silenziosa · ritiro strategico</tspan>
+  </text>
+
+  <!-- nome tecnico in basso (piccolo, per la macchina) -->
+  <text x="175" y="574" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#8a6a20" opacity="0.5" letter-spacing="1">
+    QUATTRO DI SPADE
+  </text>
+
+  <!-- indice angolo -->
+  <text x="28" y="48" text-anchor="middle"
+        font-family="Georgia, serif" font-size="11" fill="#c9a84c" opacity="0.7">
+    51
+  </text>
+
+</svg>

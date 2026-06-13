@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 600" width="350" height="600">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#111115"/>
+      <stop offset="100%" stop-color="#0a0a0d"/>
+    </linearGradient>
+    <linearGradient id="elGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- sfondo -->
+  <rect width="350" height="600" fill="url(#bgGrad)"/>
+
+  
+    <!-- bordo esterno -->
+    <rect x="12" y="12" width="326" height="576"
+          rx="10" ry="10"
+          fill="#141418" stroke="#c9a84c" stroke-width="1.8" opacity="0.95"/>
+    <!-- linea interna -->
+    <rect x="19" y="19" width="312" height="562"
+          rx="7" ry="7"
+          fill="none" stroke="#8a6a20" stroke-width="0.8" opacity="0.5"/>
+    <!-- angoli decorativi -->
+    <g stroke="#c9a84c" stroke-width="1.5" fill="none" opacity="0.8">
+      <path d="M22,34 L34,34 L34,22"/>
+      <path d="M328,34 L316,34 L316,22"/>
+      <path d="M22,566 L34,566 L34,578"/>
+      <path d="M328,566 L316,566 L316,578"/>
+    </g>
+    
+    
+
+  <!-- alone elementale -->
+  <ellipse cx="175" cy="155" rx="90" ry="70" fill="#4a9fd4" opacity="0.06"/>
+
+  <!-- simbolo elementale -->
+  <g transform="translate(0, 50)">
+    
+      <path d="M175,30 C195,60 215,80 215,100 C215,122 196,135 175,135 C154,135 135,122 135,100 C135,80 155,60 175,30Z"
+            fill="none" stroke="#c9a84c" stroke-width="2.5" opacity="0.9"/>
+      <path d="M175,55 C188,75 200,88 200,102 C200,115 188,123 175,123 C162,123 150,115 150,102 C150,88 162,75 175,55Z"
+            fill="#c9a84c" opacity="0.2"/>
+    
+  </g>
+
+  <!-- label arcano -->
+  <text x="175" y="40" text-anchor="middle"
+        font-family="Georgia, serif" font-size="9.5" fill="#a89060"
+        letter-spacing="2">ARCANO MINORE  ·  COPPE</text>
+
+  <!-- linea separatrice alta -->
+  <line x1="40" y1="178" x2="310" y2="178" stroke="#8a6a20" stroke-width="0.6" opacity="0.5"/>
+
+  <!-- VOCE — nome nella lettura -->
+  <text x="175" y="212" text-anchor="middle"
+        font-family="Georgia, serif" font-size="18" fill="#f0e6c8"
+        font-style="italic" font-weight="normal" letter-spacing="0.5">
+    gioia condivisa
+  </text>
+
+  <!-- elemento -->
+  <text x="175" y="240" text-anchor="middle"
+        font-family="Georgia, serif" font-size="9" fill="#4a9fd4" letter-spacing="3">
+    ACQUA
+  </text>
+
+  <!-- linea centrale -->
+  <line x1="60" y1="255" x2="290" y2="255" stroke="#8a6a20" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- ECO -->
+  <text x="175" y="278" text-anchor="middle"
+        font-family="Georgia, serif" font-size="10" fill="#a89060" font-style="italic">
+    <tspan x="175" dy="0em">la felicità che si moltiplica</tspan><tspan x="175" dy="1.25em">nell'essere vista</tspan>
+  </text>
+
+  <!-- linea bassa -->
+  <line x1="40" y1="388" x2="310" y2="388" stroke="#8a6a20" stroke-width="0.6" opacity="0.4"/>
+
+  <!-- parole chiave -->
+  <text x="175" y="408" text-anchor="middle"
+        font-family="Georgia, serif" font-size="9" fill="#a89060" letter-spacing="1">
+    <tspan x="175" dy="0em">gioia condivisa · amicizia fertile ·</tspan><tspan x="175" dy="1.3em">celebrazione emotiva</tspan>
+  </text>
+
+  <!-- nome tecnico in basso (piccolo, per la macchina) -->
+  <text x="175" y="574" text-anchor="middle"
+        font-family="monospace" font-size="8" fill="#8a6a20" opacity="0.5" letter-spacing="1">
+    TRE DI COPPE
+  </text>
+
+  <!-- indice angolo -->
+  <text x="28" y="48" text-anchor="middle"
+        font-family="Georgia, serif" font-size="11" fill="#c9a84c" opacity="0.7">
+    37
+  </text>
+
+</svg>
