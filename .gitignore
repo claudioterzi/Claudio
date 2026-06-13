@@ -5,6 +5,7 @@ data/
 *.json
 !registro_ipotesi.json
 !output/contatti.jsonl
+!tarocchi/tarocchi_quantici.json
 
 # Python
 __pycache__/
