@@ -1,418 +1,574 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Raffaello Creative Studio — Creatività su misura in 24h</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
-/* ── RESET & BASE ─────────────────────────────────────────────────── */
+:root{--bg:#06060f;--glass:rgba(255,255,255,.04);--gb:rgba(255,255,255,.08);--purple:#7c3aed;--pink:#db2777;--cyan:#06b6d4;--gold:#f59e0b;--green:#10b981;--white:#f1f5f9;--muted:rgba(241,245,249,.55);--grad:linear-gradient(135deg,#7c3aed,#db2777);--grad2:linear-gradient(135deg,#06b6d4,#7c3aed)}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:#06060f;color:#f1f5f9;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--bg);color:var(--white);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(124,58,237,.15) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(219,39,119,.12) 0%,transparent 55%);pointer-events:none;z-index:0}
 a{text-decoration:none;color:inherit}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:#06060f}
-::-webkit-scrollbar-thumb{background:#7c3aed44;border-radius:3px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#7c3aed;border-radius:3px}
 
-/* ── UTILS ──────────────────────────────────────────────────────────── */
-.grad{background:linear-gradient(135deg,#7c3aed,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.grad-cyan{background:linear-gradient(135deg,#06b6d4,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.grad-gold{background:linear-gradient(135deg,#f59e0b,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.glass{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px);border-radius:16px}
-.container{max-width:1200px;margin:0 auto;padding:0 24px}
-.section{padding:120px 24px}
-.label{color:#7c3aed;font-weight:700;font-size:.8rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
-.label-cyan{color:#06b6d4}
-.label-gold{color:#f59e0b}
-.label-red{color:#f87171}
+/* UTILS */
+.grad-t{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grad-t2{background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grad-tg{background:linear-gradient(135deg,#f59e0b,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.glass{background:var(--glass);border:1px solid var(--gb);backdrop-filter:blur(12px);border-radius:16px}
+.c{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.sec{padding:90px 0}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,.3),rgba(219,39,119,.3),transparent);margin:0}
+.tag{font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;display:block}
+h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.02em;margin-bottom:14px}
+.sec-head{text-align:center;margin-bottom:52px}
+.sec-desc{color:var(--muted);font-size:1rem;max-width:500px;margin:8px auto 0}
+.fade{opacity:0;transform:translateY(28px);transition:opacity .55s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.22,1,.36,1)}
+.fade.in{opacity:1;transform:none}
 
-/* ── FADE UP ─────────────────────────────────────────────────────────── */
-.fade-up{opacity:0;transform:translateY(32px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
-.fade-up.visible{opacity:1;transform:none}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);background:rgba(6,6,15,.88);border-bottom:1px solid var(--gb);padding:14px 0}
+.nav-in{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.25rem}
+.logo em{font-style:normal;color:var(--cyan);-webkit-text-fill-color:var(--cyan)}
+.nav-links{display:flex;gap:24px}
+nav a{color:var(--muted);font-size:.87rem;font-weight:500;transition:color .2s}
+nav a:hover{color:var(--white)}
+.lang-sw{display:flex;gap:6px}
+.lb{background:var(--glass);border:1px solid var(--gb);color:var(--muted);border-radius:8px;padding:5px 10px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.lb:hover,.lb.on{background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.4);color:var(--white)}
+.btn-p{background:var(--grad);color:#fff;padding:10px 22px;border-radius:10px;font-weight:600;font-size:.88rem;display:inline-block;transition:transform .2s,box-shadow .2s}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,58,237,.45)}
 
-/* ── NAV ─────────────────────────────────────────────────────────────── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;backdrop-filter:blur(20px);background:rgba(6,6,15,.6);border-bottom:1px solid transparent;transition:background .3s,border-color .3s}
-nav.scrolled{background:rgba(6,6,15,.92);border-color:rgba(255,255,255,.08)}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Space Grotesk',system-ui;font-weight:800;font-size:1.2rem}
-.logo span{color:rgba(241,245,249,.4);margin-left:6px;font-weight:400;font-family:'Inter',sans-serif}
-.nav-links{display:flex;gap:32px;align-items:center}
-.nav-links a{color:rgba(241,245,249,.55);font-size:.875rem;font-weight:500;transition:color .2s}
-.nav-links a:hover{color:#f1f5f9}
-
-/* ── HERO ────────────────────────────────────────────────────────────── */
-#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.blob{position:absolute;border-radius:50%;animation:pulse 8s infinite ease-in-out}
-.blob1{top:15%;left:10%;width:600px;height:600px;background:radial-gradient(circle,#7c3aed33,transparent 70%);animation-duration:8s}
-.blob2{bottom:10%;right:8%;width:500px;height:500px;background:radial-gradient(circle,#db277733,transparent 70%);animation-duration:10s;animation-delay:2s}
-.blob3{top:50%;right:25%;width:300px;height:300px;background:radial-gradient(circle,#06b6d433,transparent 70%);animation-duration:12s;animation-delay:4s}
-@keyframes pulse{0%,100%{transform:scale(1);opacity:.18}50%{transform:scale(1.15);opacity:.28}}
-.hero-inner{text-align:center;position:relative;z-index:1;padding:100px 24px 60px;max-width:900px;margin:0 auto}
-.badge{display:inline-flex;align-items:center;gap:8px;background:#7c3aed22;border:1px solid #7c3aed44;border-radius:100px;padding:6px 18px;font-size:.8rem;color:#a78bfa;margin-bottom:32px}
-.badge-dot{animation:blink 2s infinite}
+/* HERO */
+.hero{padding:110px 0 70px;text-align:center;position:relative;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);animation:bp 9s infinite ease-in-out;opacity:.2}
+.b1{width:560px;height:560px;background:var(--purple);top:-100px;left:-80px;animation-duration:9s}
+.b2{width:420px;height:420px;background:var(--pink);bottom:-60px;right:-60px;animation-delay:3s;animation-duration:11s}
+.b3{width:260px;height:260px;background:var(--cyan);top:40%;left:55%;animation-delay:5s;animation-duration:13s}
+@keyframes bp{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:100px;padding:6px 18px;font-size:.8rem;color:#a78bfa;margin-bottom:28px}
+.dot{animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-h1{font-size:clamp(2.8rem,8vw,5.5rem);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin-bottom:24px}
-.hero-sub{font-size:1.15rem;color:rgba(241,245,249,.6);max-width:560px;margin:0 auto 48px;line-height:1.7}
-.cta-group{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.btn-primary{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;padding:15px 34px;border-radius:10px;font-weight:700;font-size:.95rem;transition:transform .2s,box-shadow .2s;display:inline-block}
-.btn-primary:hover{transform:scale(1.04);box-shadow:0 0 40px #7c3aed55}
-.btn-ghost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#f1f5f9;padding:15px 34px;border-radius:10px;font-weight:600;font-size:.95rem;transition:transform .2s;display:inline-block}
-.btn-ghost:hover{transform:scale(1.04)}
-.stats{display:flex;gap:48px;justify-content:center;margin-top:72px;flex-wrap:wrap}
-.stat-val{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#7c3aed,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.stat-label{font-size:.8rem;color:rgba(241,245,249,.45);margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.6rem,8vw,5rem);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin-bottom:22px}
+.sub{font-size:1.1rem;color:var(--muted);max-width:540px;margin:0 auto 40px}
+.cta-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-g{background:var(--glass);border:1px solid var(--gb);color:var(--white);padding:14px 30px;border-radius:12px;font-weight:600;font-size:.95rem;display:inline-block;backdrop-filter:blur(10px);transition:background .2s}
+.btn-g:hover{background:rgba(255,255,255,.08)}
+.stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;padding:44px 0;border-top:1px solid var(--gb);border-bottom:1px solid var(--gb);margin-top:60px}
+.sn{font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block}
+.sl{font-size:.82rem;color:var(--muted);margin-top:2px}
 
-/* ── SERVIZI ─────────────────────────────────────────────────────────── */
-#servizi{max-width:1200px}
-.section-head{text-align:center;margin-bottom:64px}
-.section-head h2{font-size:clamp(2rem,5vw,3rem);font-weight:800;letter-spacing:-.02em;color:#f1f5f9}
-.section-head p{color:rgba(241,245,249,.5);margin-top:16px;font-size:1rem;max-width:480px;margin-left:auto;margin-right:auto}
-.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
-.service-card{border-radius:16px;padding:28px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);transition:background .3s,border-color .3s,transform .2s,box-shadow .3s;cursor:default}
-.service-card:hover{transform:translateY(-6px)}
-.service-emoji{font-size:2rem;margin-bottom:12px}
-.service-title{font-size:1.15rem;font-weight:700;color:#f1f5f9;margin-bottom:6px}
-.service-tag{font-size:.82rem;font-weight:600;margin-bottom:16px}
-.service-items{list-style:none;display:flex;flex-direction:column;gap:7px}
-.service-item{display:flex;justify-content:space-between;align-items:center;font-size:.82rem}
-.item-name{color:rgba(241,245,249,.65)}
-.item-price{font-weight:700;font-size:.78rem;padding:2px 8px;border-radius:6px}
+/* SERVICE CARDS */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:22px}
+.cat{background:var(--glass);border:1px solid var(--gb);border-radius:20px;padding:30px;backdrop-filter:blur(12px);transition:transform .25s,border-color .25s,box-shadow .25s}
+.cat:hover{transform:translateY(-5px);border-color:rgba(124,58,237,.35);box-shadow:0 18px 50px rgba(124,58,237,.12)}
+.ci{width:50px;height:50px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:16px}
+.cat h3{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:6px}
+.cd{color:var(--muted);font-size:.86rem;margin-bottom:16px}
+.sl-list{list-style:none}
+.sl-list li{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.86rem}
+.sl-list li:last-child{border:none}
+.sln{color:var(--white);flex:1}
+.slp{font-weight:700;font-size:.82rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;margin-left:10px}
+.full-width{grid-column:1/-1;border-color:rgba(124,58,237,.35);background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(219,39,119,.05));position:relative}
+.excl{position:absolute;top:0;right:0;background:var(--grad);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 16px;border-bottom-left-radius:13px}
+.two-col{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
 
-/* ── COME FUNZIONA ───────────────────────────────────────────────────── */
-#come-funziona{background:rgba(124,58,237,.04);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)}
-.grid-4{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px}
-.step-num{font-size:2.5rem;font-weight:900;color:#7c3aed44;font-family:monospace;margin-bottom:16px}
-.step-title{font-size:1.05rem;font-weight:700;color:#f1f5f9;margin-bottom:10px}
-.step-text{font-size:.85rem;color:rgba(241,245,249,.55);line-height:1.6}
-.pipeline{margin-top:60px;text-align:center}
-.pipeline-label{font-size:.75rem;color:rgba(241,245,249,.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
-.pipeline-nodes{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
-.node{background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;padding:5px 12px;border-radius:8px;font-size:.72rem;font-family:monospace;font-weight:700;transition:transform .2s}
-.node:hover{transform:scale(1.08)}
-.arrow{color:rgba(241,245,249,.2);font-size:1.2rem}
+/* BUNDLE */
+.bun-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+.bun{background:var(--glass);border:1px solid var(--gb);border-radius:20px;padding:32px 28px;backdrop-filter:blur(12px);transition:transform .25s,box-shadow .25s}
+.bun:hover{transform:translateY(-5px)}
+.bun.feat{border-color:rgba(124,58,237,.5);box-shadow:0 0 0 1px rgba(124,58,237,.2),0 18px 55px rgba(124,58,237,.18);position:relative;overflow:hidden}
+.bun.feat::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(219,39,119,.05));pointer-events:none}
+.fb{position:absolute;top:18px;right:18px;background:var(--grad);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:100px}
+.bn{font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:5px}
+.bd{color:var(--muted);font-size:.85rem;margin-bottom:20px}
+.bp{font-family:'Space Grotesk',sans-serif;font-size:2.5rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.bo{color:var(--muted);font-size:.9rem;text-decoration:line-through;margin-left:10px}
+.bs{font-size:.78rem;color:#10b981;font-weight:600;margin-bottom:20px}
+.bi{list-style:none;margin-bottom:24px}
+.bi li{padding:5px 0;font-size:.86rem;color:var(--muted);display:flex;align-items:center;gap:8px}
+.bi li::before{content:'✦';color:var(--purple);font-size:.58rem;flex-shrink:0}
 
-/* ── MEMORIA ─────────────────────────────────────────────────────────── */
-#memoria{background:rgba(6,182,212,.03);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)}
-.mem-table{width:100%;border-collapse:collapse;font-size:.88rem;margin-bottom:64px;overflow:hidden}
+/* STEPS */
+.steps{display:flex;gap:0;flex-wrap:wrap;max-width:860px;margin:0 auto}
+.step{flex:1;min-width:190px;padding:28px 20px;text-align:center;position:relative}
+.step:not(:last-child)::after{content:'→';position:absolute;right:0;top:50%;transform:translateY(-50%);color:var(--purple);font-size:1.1rem}
+.sn2{width:42px;height:42px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;margin:0 auto 14px;color:#fff}
+.step h4{font-size:.95rem;font-weight:600;margin-bottom:6px}
+.step p{font-size:.83rem;color:var(--muted)}
+
+/* MEMORIA */
+.mem-bg{background:rgba(6,182,212,.03);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)}
+.mem-table{width:100%;border-collapse:collapse;font-size:.88rem;margin-bottom:56px}
 .mem-table th{text-align:left;padding:10px 16px;color:rgba(241,245,249,.35);font-weight:600;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.06)}
 .mem-table tr{border-bottom:1px solid rgba(255,255,255,.04)}
-.mem-table td{padding:14px 16px}
-.mem-row-sdq td:first-child{color:#a78bfa;font-weight:800}
-.mem-row-sdq td:last-child{color:#f1f5f9;font-weight:600}
-.mem-row-sdq{background:#7c3aed12}
-.mem-row td:first-child{color:rgba(241,245,249,.5);font-weight:500}
-.mem-row td:nth-child(2){color:rgba(241,245,249,.35);font-style:italic}
-.mem-row td:last-child{color:rgba(241,245,249,.55)}
-.quote-box{text-align:center;padding:40px 32px;background:linear-gradient(135deg,#7c3aed18,#06b6d412);border:1px solid #7c3aed33;border-radius:20px}
-.quote-text{font-size:clamp(1.1rem,3vw,1.5rem);font-weight:700;color:#f1f5f9;line-height:1.5;max-width:680px;margin:0 auto;letter-spacing:-.01em}
-.quote-sub{color:rgba(241,245,249,.3);font-size:.8rem;margin-top:16px;letter-spacing:1px}
+.mem-table td{padding:13px 16px}
+.msdq{background:#7c3aed12}
+.msdq td:first-child{color:#a78bfa;font-weight:800}
+.msdq td:last-child{color:#f1f5f9;font-weight:600}
+.mrow td:first-child{color:rgba(241,245,249,.5)}
+.mrow td:nth-child(2){color:rgba(241,245,249,.35);font-style:italic}
+.mrow td:last-child{color:rgba(241,245,249,.55)}
+.pil-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-bottom:48px}
+.pil{background:var(--glass);border:1px solid var(--gb);border-radius:16px;padding:22px}
+.quote-box{text-align:center;padding:40px 32px;background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(6,182,212,.1));border:1px solid rgba(124,58,237,.3);border-radius:20px}
+.qt{font-size:clamp(1.1rem,2.5vw,1.45rem);font-weight:700;color:var(--white);line-height:1.5;max-width:660px;margin:0 auto;letter-spacing:-.01em}
+.qs{color:rgba(241,245,249,.3);font-size:.78rem;margin-top:14px;letter-spacing:1px}
 
-/* ── CHI SIAMO ───────────────────────────────────────────────────────── */
-#chi-siamo{max-width:1200px}
+/* CHI SIAMO */
 .chi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:64px;align-items:center}
-.chi-label{font-weight:700;font-size:.8rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
-.chi-title{font-size:clamp(2rem,4vw,2.8rem);font-weight:800;line-height:1.15;color:#f1f5f9;margin-bottom:24px}
-.chi-text{color:rgba(241,245,249,.6);line-height:1.8;margin-bottom:20px;font-size:.95rem}
-.providers{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.provider{border-radius:12px;padding:18px 16px;transition:transform .2s}
-.provider:hover{transform:scale(1.04)}
-.provider-name{font-size:.85rem;font-weight:700;margin-bottom:4px}
-.provider-desc{font-size:.75rem;color:rgba(241,245,249,.5)}
+.id-card{background:var(--glass);border-radius:20px;padding:34px;backdrop-filter:blur(12px);position:relative;overflow:hidden;margin-bottom:22px}
+.id-bar{position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.id-flex{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+.id-ico{width:58px;height:58px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
+.pill{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.25);border-radius:8px;padding:5px 13px;font-size:.77rem;color:#a78bfa;display:inline-block;margin:4px 4px 0 0}
 
-/* ── CONTATTO ────────────────────────────────────────────────────────── */
-#contatto{text-align:center;position:relative;overflow:hidden}
-.cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,#7c3aed18,transparent 70%)}
-.cta-inner{position:relative;z-index:1;max-width:640px;margin:0 auto}
-.rosso-badge{display:inline-block;background:#c0392b22;border:1px solid #c0392b44;border-radius:100px;padding:6px 18px;font-size:.8rem;color:#f87171;margin-bottom:28px}
-.cta-title{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;color:#f1f5f9;line-height:1.15;margin-bottom:20px}
-.cta-text{color:rgba(241,245,249,.55);font-size:1rem;margin-bottom:40px;line-height:1.7}
-.btn-cta{display:inline-block;background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;padding:18px 44px;border-radius:12px;font-weight:800;font-size:1.05rem;letter-spacing:.01em;transition:transform .2s,box-shadow .2s}
-.btn-cta:hover{transform:scale(1.05);box-shadow:0 0 50px #7c3aed55}
-.cta-note{margin-top:20px;font-size:.82rem;color:rgba(241,245,249,.3)}
+/* CITY */
+.city-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;max-width:820px;margin:0 auto}
+.city{background:var(--glass);border:1px solid var(--gb);border-radius:20px;padding:34px 26px;backdrop-filter:blur(12px);text-align:center;transition:transform .25s,border-color .25s}
+.city:hover{transform:translateY(-5px)}
+.city.home{background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(219,39,119,.07));border-color:rgba(124,58,237,.35);box-shadow:0 0 40px rgba(124,58,237,.12)}
+.cn{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:6px}
+.ct{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
 
-/* ── FOOTER ──────────────────────────────────────────────────────────── */
-footer{padding:40px 24px;border-top:1px solid rgba(255,255,255,.06)}
-.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
-.footer-inner span{color:rgba(241,245,249,.25);font-size:.8rem}
-.footer-logo{font-weight:800;font-size:.9rem}
+/* PAYMENT */
+.pay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;max-width:780px;margin:0 auto}
+.pay{background:var(--glass);border:1px solid var(--gb);border-radius:16px;padding:26px 22px;backdrop-filter:blur(12px);text-align:center;transition:border-color .2s,transform .2s}
+.pay:hover{border-color:rgba(124,58,237,.35);transform:translateY(-3px)}
+.pi{font-size:2rem;margin-bottom:10px;display:block}
+.pm{font-weight:700;font-size:1rem;margin-bottom:4px}
+.pa{font-family:monospace;font-size:.68rem;color:var(--muted);word-break:break-all;background:rgba(0,0,0,.3);padding:7px 9px;border-radius:7px;margin-top:8px;border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:background .2s}
+.pa:hover{background:rgba(124,58,237,.15)}
+.pa:active{background:rgba(124,58,237,.25)}
 
-@media(max-width:640px){
-  .nav-links{display:none}
-  .stats{gap:24px}
-  .chi-grid{gap:32px}
-  .footer-inner{flex-direction:column;text-align:center}
-}
+/* CTA */
+.cta-bg{position:relative;overflow:hidden}
+.cta-bg::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:560px;height:280px;background:radial-gradient(ellipse,rgba(124,58,237,.15) 0%,transparent 70%);pointer-events:none}
+.rosso{display:inline-block;background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.4);border-radius:100px;padding:6px 18px;font-size:.8rem;color:#f87171;margin-bottom:24px}
+
+footer{border-top:1px solid var(--gb);padding:36px 0;text-align:center;color:var(--muted);font-size:.83rem;position:relative;z-index:1}
+
+@media(max-width:640px){.nav-links{display:none}.stats{gap:22px}.steps{flex-direction:column}.step::after{display:none}.chi-grid{gap:32px}}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav id="nav">
-  <div class="nav-inner">
-    <span class="logo">
-      <span class="grad">Raffaello</span><span>Creative Studio</span>
-    </span>
+<nav>
+  <div class="nav-in">
+    <span class="logo"><span class="grad-t">Raffaello</span><em> Creative Studio</em></span>
     <div class="nav-links">
-      <a href="#servizi">Servizi</a>
-      <a href="#come-funziona">Come funziona</a>
-      <a href="#chi-siamo">Chi siamo</a>
-      <a href="#contatto">Contatto</a>
+      <a href="#servizi" data-k="nav_ser">Servizi</a>
+      <a href="#bundle" data-k="nav_bun">Bundle</a>
+      <a href="#come" data-k="nav_come">Come funziona</a>
+      <a href="#chi" data-k="nav_chi">Chi siamo</a>
+      <a href="#pagamento" data-k="nav_pay">Pagamento</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="lang-sw">
+        <button class="lb on" onclick="setL('it')">🇮🇹 IT</button>
+        <button class="lb" onclick="setL('en')">🇬🇧 EN</button>
+        <button class="lb" onclick="setL('fr')">🇫🇷 FR</button>
+        <button class="lb" onclick="setL('es')">🇪🇸 ES</button>
+      </div>
+      <a href="#contatto" class="btn-p" data-k="nav_ord">Ordina ora</a>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
-<section id="hero">
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-  <div class="blob blob3"></div>
-  <div class="hero-inner">
-    <div class="badge">
-      <span class="badge-dot">●</span>
-      Sistema multi-agente AI · Bruxelles
-    </div>
-    <h1>Creatività su misura.<br><span class="grad">Consegnata in 24h.</span></h1>
-    <p class="hero-sub">Musica, immagini, testi, video, codice, cucina. Un sistema AI a 6 agenti che produce output di qualità professionale — pagamento alla consegna.</p>
-    <div class="cta-group">
-      <a href="#servizi" class="btn-primary">Vedi i servizi</a>
-      <a href="#come-funziona" class="btn-ghost">Come funziona</a>
+<section class="hero">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="c" style="text-align:center">
+    <div class="badge"><span class="dot">●</span> <span data-k="badge">Studio Creativo AI · Bruxelles · 2026</span></div>
+    <h1><span data-k="h_sono">Creatività su misura.</span><br><span class="grad-t" data-k="h_grad">Consegnata in 24h.</span></h1>
+    <p class="sub" data-k="h_sub">Musica, immagini, video, testi, traduzioni, strategia. Un sistema AI a 6 agenti. Ascolto prima di produrre. Vedi il risultato prima di pagare.</p>
+    <div class="cta-row">
+      <a href="#contatto" style="background:var(--grad);color:#fff;padding:15px 34px;border-radius:12px;font-weight:700;font-size:.95rem;display:inline-block;transition:transform .2s,box-shadow .2s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 40px rgba(124,58,237,.5)'" onmouseout="this.style.transform='';this.style.boxShadow=''" data-k="h_cta1">Inizia ora →</a>
+      <a href="#servizi" class="btn-g" data-k="h_cta2">Vedi il catalogo</a>
     </div>
     <div class="stats">
-      <div><div class="stat-val">6</div><div class="stat-label">Agenti AI</div></div>
-      <div><div class="stat-val">24h</div><div class="stat-label">Consegna</div></div>
-      <div><div class="stat-val">8</div><div class="stat-label">Categorie</div></div>
-      <div><div class="stat-val">€15</div><div class="stat-label">Da</div></div>
+      <div><span class="sn">6</span><div class="sl" data-k="s1">Agenti AI</div></div>
+      <div><span class="sn">40+</span><div class="sl" data-k="s2">Prodotti</div></div>
+      <div><span class="sn">24h</span><div class="sl" data-k="s3">Consegna</div></div>
+      <div><span class="sn">4</span><div class="sl" data-k="s4">Lingue</div></div>
+      <div><span class="sn">€15</span><div class="sl" data-k="s5">Da</div></div>
     </div>
   </div>
 </section>
+
+<div class="divider"></div>
 
 <!-- SERVIZI -->
-<section class="section" style="max-width:1200px;margin:0 auto" id="servizi">
-  <div class="section-head fade-up">
-    <p class="label">Cosa facciamo</p>
-    <h2>Tutto ciò che crea <span class="grad">valore</span></h2>
-    <p>Ogni prodotto è generato da un sistema AI multi-agente. Qualità professionale, prezzi accessibili.</p>
+<section class="sec" id="servizi">
+  <div class="c">
+    <div class="sec-head fade">
+      <span class="tag" data-k="t_ser">Catalogo completo</span>
+      <h2 data-k="h_ser">Cosa puoi ordinare</h2>
+      <p class="sec-desc" data-k="d_ser">Ogni prodotto nasce da un ascolto. Tu descrivi, Raffaello crea.</p>
+    </div>
+    <div class="cat-grid">
+
+      <div class="cat fade"><div class="ci" style="background:rgba(124,58,237,.15)">🎵</div>
+        <h3 data-k="c_mus">Musica</h3><p class="cd" data-k="cd_mus">Testi strutturati + audio via Suno/Udio. Dal concept all'mp3.</p>
+        <ul class="sl-list">
+          <li><span class="sln" data-k="m1">Testo canzone completo</span><span class="slp">€25</span></li>
+          <li><span class="sln" data-k="m2">Canzone completa con audio</span><span class="slp">€45</span></li>
+          <li><span class="sln" data-k="m3">Inno personalizzato</span><span class="slp">€60</span></li>
+          <li><span class="sln" data-k="m4">Album concetto (5 canzoni)</span><span class="slp">€180</span></li>
+        </ul>
+      </div>
+
+      <div class="cat fade"><div class="ci" style="background:rgba(219,39,119,.15)">🎨</div>
+        <h3 data-k="c_img">Immagini</h3><p class="cd" data-k="cd_img">Alta risoluzione. Fotorealistico, acquerello, fumetto, minimalista.</p>
+        <ul class="sl-list">
+          <li><span class="sln" data-k="i1">Illustrazione singola</span><span class="slp">€15</span></li>
+          <li><span class="sln" data-k="i2">Serie coordinata (5 img)</span><span class="slp">€55</span></li>
+          <li><span class="sln" data-k="i3">Cover libro / album</span><span class="slp">€30</span></li>
+          <li><span class="sln" data-k="i4">Feed Instagram (9 post)</span><span class="slp">€70</span></li>
+          <li><span class="sln" data-k="i5">Logo concept (3 varianti)</span><span class="slp">€40</span></li>
+        </ul>
+      </div>
+
+      <div class="cat fade"><div class="ci" style="background:rgba(6,182,212,.15)">🎬</div>
+        <h3 data-k="c_vid">Video</h3><p class="cd" data-k="cd_vid">Script + storyboard pronti per Sora, Runway o CapCut.</p>
+        <ul class="sl-list">
+          <li><span class="sln" data-k="v1">Script Reel 30–60s</span><span class="slp">€20</span></li>
+          <li><span class="sln" data-k="v2">Script YouTube 2–5min</span><span class="slp">€50</span></li>
+          <li><span class="sln" data-k="v3">Spot pubblicitario</span><span class="slp">€35</span></li>
+          <li><span class="sln" data-k="v4">Pitch video startup</span><span class="slp">€80</span></li>
+          <li><span class="sln" data-k="v5">Serie 5 TikTok</span><span class="slp">€70</span></li>
+        </ul>
+      </div>
+
+      <div class="cat fade"><div class="ci" style="background:rgba(245,158,11,.15)">✍️</div>
+        <h3 data-k="c_par">Parola</h3><p class="cd" data-k="cd_par">Articoli, email, discorsi, storie, ebook. Nella tua voce.</p>
+        <ul class="sl-list">
+          <li><span class="sln" data-k="p1">Articolo blog</span><span class="slp">€25</span></li>
+          <li><span class="sln" data-k="p2">5 post LinkedIn</span><span class="slp">€40</span></li>
+          <li><span class="sln" data-k="p3">Sequenza 3 email vendita</span><span class="slp">€35</span></li>
+          <li><span class="sln" data-k="p4">Discorso / speech</span><span class="slp">€50</span></li>
+          <li><span class="sln" data-k="p5">Ebook (outline + 5 cap.)</span><span class="slp">€250</span></li>
+        </ul>
+      </div>
+
+      <div class="cat fade"><div class="ci" style="background:rgba(16,185,129,.15)">🌍</div>
+        <h3 data-k="c_tra">Traduzioni</h3><p class="cd" data-k="cd_tra">IT · EN · FR · ES · DE · PT · NL · RU · ZH · AR · JA. Preserva stile e tono.</p>
+        <ul class="sl-list">
+          <li><span class="sln" data-k="t1">Testo fino a 500 parole</span><span class="slp">€15</span></li>
+          <li><span class="sln" data-k="t2">Testo 500–2000 parole</span><span class="slp">€35</span></li>
+          <li><span class="sln" data-k="t3">Documento legale</span><span class="slp">€60</span></li>
+          <li><span class="sln" data-k="t4">Localizzazione sito web</span><span class="slp">€80</span></li>
+          <li><span class="sln" data-k="t5">Sottotitoli video (10min)</span><span class="slp">€30</span></li>
+        </ul>
+      </div>
+
+      <div class="cat fade"><div class="ci" style="background:rgba(59,130,246,.15)">🧠</div>
+        <h3 data-k="c_str">Strategia</h3><p class="cd" data-k="cd_str">Analisi profonda con SAR 11 livelli. Non opinioni — struttura.</p>
+        <ul class="sl-list">
+          <li><span class="sln" data-k="st1">Analisi SWOT completa</span><span class="slp">€35</span></li>
+          <li><span class="sln" data-k="st2">Business plan 1 pagina</span><span class="slp">€50</span></li>
+          <li><span class="sln" data-k="st3">Ricerca 5 competitor</span><span class="slp">€65</span></li>
+          <li><span class="sln" data-k="st4">Roadmap 6/12 mesi</span><span class="slp">€55</span></li>
+          <li><span class="sln" data-k="st5">Nome + payoff</span><span class="slp">€40</span></li>
+        </ul>
+      </div>
+
+      <div class="cat fade"><div class="ci" style="background:rgba(251,146,60,.15)">🍳</div>
+        <h3 data-k="c_cuc">Cucina & Chef</h3><p class="cd" data-k="cd_cuc">Corsi online, cene private, eventi. Cucina italiana, francese, belga.</p>
+        <ul class="sl-list">
+          <li><span class="sln" data-k="cu1">Corso di cucina online (1h)</span><span class="slp">€60</span></li>
+          <li><span class="sln" data-k="cu2">Corso tematico IT/FR/BE</span><span class="slp">€90</span></li>
+          <li><span class="sln" data-k="cu3">Menu personalizzato per evento</span><span class="slp">€45</span></li>
+          <li><span class="sln" data-k="cu4">Chef a domicilio (fino a 8 pers.)</span><span class="slp">€180</span></li>
+          <li><span class="sln" data-k="cu5">Organizzazione evento completa</span><span class="slp">su richiesta</span></li>
+        </ul>
+      </div>
+
+      <div class="cat full-width fade">
+        <div class="excl" data-k="excl">Servizio esclusivo</div>
+        <div class="two-col">
+          <div style="flex:1;min-width:260px">
+            <div class="ci" style="background:rgba(124,58,237,.2)">🤖</div>
+            <h3 style="font-size:1.35rem" data-k="c_ai">Prompt Engineering & Agenti AI</h3>
+            <p class="cd" style="font-size:.92rem;max-width:440px" data-k="cd_ai">Costruiamo il cervello dei tuoi strumenti AI. Prompt che funzionano davvero. Agenti autonomi che operano mentre dormi.</p>
+          </div>
+          <div style="flex:1;min-width:260px">
+            <ul class="sl-list">
+              <li><span class="sln" data-k="ai1">Prompt ottimizzato</span><span class="slp">€30</span></li>
+              <li><span class="sln" data-k="ai2">Sistema prompt + few-shot + CoT</span><span class="slp">€60</span></li>
+              <li><span class="sln" data-k="ai3">Revisione prompt esistente</span><span class="slp">€25</span></li>
+              <li><span class="sln" data-k="ai4">Specifica agente autonomo</span><span class="slp">€150</span></li>
+              <li><span class="sln" data-k="ai5">Agente custom implementato</span><span class="slp">€300–600</span></li>
+              <li><span class="sln" data-k="ai6">Workshop prompt 1:1 (1h)</span><span class="slp">€80</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
-  <div class="grid-3" id="servizi-grid"></div>
 </section>
+
+<div class="divider"></div>
+
+<!-- BUNDLE -->
+<section class="sec" id="bundle">
+  <div class="c">
+    <div class="sec-head fade">
+      <span class="tag" data-k="t_bun">Risparmia combinando</span>
+      <h2 data-k="h_bun">Pacchetti</h2>
+      <p class="sec-desc" data-k="d_bun">Tre bundle per partire subito con tutto il necessario.</p>
+    </div>
+    <div class="bun-grid">
+      <div class="bun fade">
+        <div class="bn" data-k="b1n">Starter Creator</div>
+        <p class="bd" data-k="b1d">Per chi vuole testare con musica e social.</p>
+        <div style="display:flex;align-items:baseline;margin-bottom:6px"><span class="bp">€95</span><span class="bo">€130</span></div>
+        <div class="bs" data-k="b1s">Risparmi €35 · 27% di sconto</div>
+        <ul class="bi">
+          <li data-k="b1i1">1 canzone completa con audio</li>
+          <li data-k="b1i2">5 immagini coordinate</li>
+          <li data-k="b1i3">5 post LinkedIn</li>
+        </ul>
+        <a href="#contatto" class="btn-g" style="width:100%;text-align:center;display:block" data-k="btn_ord">Ordina</a>
+      </div>
+      <div class="bun feat fade">
+        <div class="fb" data-k="pop">Più scelto</div>
+        <div class="bn" data-k="b2n">Brand Kit</div>
+        <p class="bd" data-k="b2d">Identità completa: visual, testi, email.</p>
+        <div style="display:flex;align-items:baseline;margin-bottom:6px"><span class="bp">€140</span><span class="bo">€195</span></div>
+        <div class="bs" data-k="b2s">Risparmi €55 · 28% di sconto</div>
+        <ul class="bi">
+          <li data-k="b2i1">Logo concept (3 varianti)</li>
+          <li data-k="b2i2">9 immagini feed Instagram</li>
+          <li data-k="b2i3">Biografia professionale</li>
+          <li data-k="b2i4">Sequenza 3 email vendita</li>
+        </ul>
+        <a href="#contatto" style="background:var(--grad);color:#fff;width:100%;text-align:center;display:block;padding:12px;border-radius:10px;font-weight:600" data-k="btn_ord">Ordina</a>
+      </div>
+      <div class="bun fade">
+        <div class="bn" data-k="b3n">Launch Pack</div>
+        <p class="bd" data-k="b3d">Tutto per lanciare un progetto o prodotto.</p>
+        <div style="display:flex;align-items:baseline;margin-bottom:6px"><span class="bp">€185</span><span class="bo">€240</span></div>
+        <div class="bs" data-k="b3s">Risparmi €55 · 23% di sconto</div>
+        <ul class="bi">
+          <li data-k="b3i1">Script YouTube (2–5min)</li>
+          <li data-k="b3i2">5 script TikTok coordinati</li>
+          <li data-k="b3i3">5 post LinkedIn</li>
+          <li data-k="b3i4">Analisi SWOT completa</li>
+        </ul>
+        <a href="#contatto" class="btn-g" style="width:100%;text-align:center;display:block" data-k="btn_ord">Ordina</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
 
 <!-- COME FUNZIONA -->
-<section class="section" id="come-funziona">
-  <div class="container">
-    <div class="section-head fade-up">
-      <p class="label label-cyan">Il processo</p>
-      <h2>Come funziona <span class="grad-cyan">la pipeline</span></h2>
+<section class="sec" id="come" style="background:rgba(124,58,237,.04)">
+  <div class="c">
+    <div class="sec-head fade">
+      <span class="tag" style="color:var(--cyan)" data-k="t_come">Il processo</span>
+      <h2 data-k="h_come">Come funziona</h2>
+      <p class="sec-desc" data-k="d_come">Dalla richiesta alla consegna in meno di 24 ore.</p>
     </div>
-    <div class="grid-4">
-      <div class="glass fade-up" style="padding:28px">
-        <div class="step-num">01</div>
-        <div class="step-title">Descrivi</div>
-        <div class="step-text">Scrivi cosa ti serve in italiano, inglese, francese o spagnolo. Non serve essere tecnico.</div>
-      </div>
-      <div class="glass fade-up" style="padding:28px">
-        <div class="step-num">02</div>
-        <div class="step-title">Pipeline AI</div>
-        <div class="step-text">6 agenti specializzati elaborano la tua richiesta in sequenza: analisi, decomposizione, memoria, controllo qualità, generazione, rifinitura.</div>
-      </div>
-      <div class="glass fade-up" style="padding:28px">
-        <div class="step-num">03</div>
-        <div class="step-title">Revisione</div>
-        <div class="step-text">Il Contraddittore interno verifica la coerenza. Il Sognatore espande le possibilità. Ricevi solo il meglio.</div>
-      </div>
-      <div class="glass fade-up" style="padding:28px">
-        <div class="step-num">04</div>
-        <div class="step-title">Consegna</div>
-        <div class="step-text">Entro 24 ore il tuo output è pronto. Pagamento alla consegna. Revisione inclusa.</div>
-      </div>
+    <div class="steps">
+      <div class="step fade"><div class="sn2">1</div><h4 data-k="s1h">Descrivimi cosa vuoi</h4><p data-k="s1p">WhatsApp o email. Anche un'idea grezza va bene.</p></div>
+      <div class="step fade"><div class="sn2">2</div><h4 data-k="s2h">Preventivo in 2h</h4><p data-k="s2p">Confermo prezzo e tempi. Nessuna sorpresa.</p></div>
+      <div class="step fade"><div class="sn2">3</div><h4 data-k="s3h">Raffaello produce</h4><p data-k="s3p">Il sistema lavora. Tu non fai nulla.</p></div>
+      <div class="step fade"><div class="sn2">4</div><h4 data-k="s4h">Ricevi e paghi</h4><p data-k="s4p">Prima vedi il risultato. Poi paghi se sei soddisfatto.</p></div>
     </div>
-    <div class="pipeline fade-up">
-      <div class="pipeline-label">Pipeline SDQ-1</div>
-      <div class="pipeline-nodes">
-        <span class="node">RAFFA-001</span><span class="arrow">→</span>
-        <span class="node">DECOMP-005</span><span class="arrow">→</span>
-        <span class="node">MEMO-002</span><span class="arrow">→</span>
-        <span class="node">SENTIN-004</span><span class="arrow">→</span>
-        <span class="node">GEN-006</span><span class="arrow">→</span>
-        <span class="node">WAVE-003</span>
+    <div style="margin-top:52px;text-align:center" class="fade">
+      <p style="font-size:.75rem;color:rgba(241,245,249,.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:18px">Pipeline SDQ-1</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center">
+        <span style="background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;padding:5px 12px;border-radius:8px;font-size:.72rem;font-family:monospace;font-weight:700">RAFFA-001</span><span style="color:rgba(241,245,249,.2)">→</span>
+        <span style="background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;padding:5px 12px;border-radius:8px;font-size:.72rem;font-family:monospace;font-weight:700">DECOMP-005</span><span style="color:rgba(241,245,249,.2)">→</span>
+        <span style="background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;padding:5px 12px;border-radius:8px;font-size:.72rem;font-family:monospace;font-weight:700">MEMO-002</span><span style="color:rgba(241,245,249,.2)">→</span>
+        <span style="background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;padding:5px 12px;border-radius:8px;font-size:.72rem;font-family:monospace;font-weight:700">SENTIN-004</span><span style="color:rgba(241,245,249,.2)">→</span>
+        <span style="background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;padding:5px 12px;border-radius:8px;font-size:.72rem;font-family:monospace;font-weight:700">GEN-006</span><span style="color:rgba(241,245,249,.2)">→</span>
+        <span style="background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;padding:5px 12px;border-radius:8px;font-size:.72rem;font-family:monospace;font-weight:700">WAVE-003</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- MEMORIA UTILE -->
-<section class="section" id="memoria">
-  <div style="max-width:1100px;margin:0 auto">
-    <div class="section-head fade-up">
-      <p class="label label-cyan">Memoria</p>
-      <h2>Tutti parlano di<br><span class="grad-cyan">memoria infinita.</span></h2>
-      <p>Una memoria infinita non filtrata diventa rumore bianco paralizzante.<br>La sfida non è ricordare tutto — è ricordare la cosa giusta al momento giusto.</p>
-    </div>
+<div class="divider"></div>
 
-    <div class="fade-up" style="overflow-x:auto;margin-bottom:64px">
+<!-- MEMORIA UTILE -->
+<section class="sec mem-bg">
+  <div class="c">
+    <div class="sec-head fade">
+      <span class="tag" style="color:var(--cyan)">Memoria</span>
+      <h2>Tutti parlano di<br><span class="grad-t2">memoria infinita.</span></h2>
+      <p class="sec-desc">Una memoria infinita non filtrata è rumore bianco. La sfida non è ricordare tutto — è ricordare la cosa giusta al momento giusto.</p>
+    </div>
+    <div class="fade" style="overflow-x:auto;margin-bottom:52px">
       <table class="mem-table">
-        <thead>
-          <tr>
-            <th>Tool</th><th>Promessa</th><th>Realtà</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Tool</th><th>Promessa</th><th>Realtà</th></tr></thead>
         <tbody>
-          <tr class="mem-row">
-            <td>Mem.ai</td><td>Ricorda tutto</td><td>Archivio indicizzato che richiede input manuale</td>
-          </tr>
-          <tr class="mem-row">
-            <td>ChatGPT Memory</td><td>Ricordo le tue preferenze</td><td>Istruzioni statiche predefinite, non si evolve</td>
-          </tr>
-          <tr class="mem-row">
-            <td>Notion AI</td><td>Conosce il tuo lavoro</td><td>Limitata al contesto della pagina corrente</td>
-          </tr>
-          <tr class="mem-row-sdq">
-            <td>SDQ-1</td><td style="color:rgba(241,245,249,.5)">Non ricorda tutto</td><td>Filtra, sintetizza, aggiorna — ciò che serve, quando serve</td>
-          </tr>
+          <tr class="mrow"><td>Mem.ai</td><td>Ricorda tutto</td><td>Archivio indicizzato che richiede input manuale</td></tr>
+          <tr class="mrow"><td>ChatGPT Memory</td><td>Ricordo le tue preferenze</td><td>Istruzioni statiche predefinite, non si evolve</td></tr>
+          <tr class="mrow"><td>Notion AI</td><td>Conosce il tuo lavoro</td><td>Limitata al contesto della pagina corrente</td></tr>
+          <tr class="msdq"><td>SDQ-1</td><td style="color:rgba(241,245,249,.45);font-style:italic">Non ricorda tutto</td><td>Filtra, sintetizza, aggiorna — ciò che serve, quando serve</td></tr>
         </tbody>
       </table>
     </div>
-
-    <div class="grid-4" style="margin-bottom:56px">
-      <div class="glass fade-up" style="padding:24px">
-        <div style="font-size:1.8rem;margin-bottom:12px">🔍</div>
-        <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px">Filtra</h3>
-        <p style="font-size:.82rem;color:rgba(241,245,249,.5);line-height:1.6">MEMO agent seleziona attivamente — non archivia, sceglie cosa conta per il task corrente.</p>
-      </div>
-      <div class="glass fade-up" style="padding:24px">
-        <div style="font-size:1.8rem;margin-bottom:12px">🧠</div>
-        <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px">Sintetizza</h3>
-        <p style="font-size:.82rem;color:rgba(241,245,249,.5);line-height:1.6">Il Registro Ipotesi ricorda le conclusioni, non i dati grezzi. La conoscenza distillata, non il rumore.</p>
-      </div>
-      <div class="glass fade-up" style="padding:24px">
-        <div style="font-size:1.8rem;margin-bottom:12px">❤️</div>
-        <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px">Qualifica</h3>
-        <p style="font-size:.82rem;color:rgba(241,245,249,.5);line-height:1.6">Il Radar Emozionale aggiunge metadati qualitativi: non solo cosa è successo, ma come è stato percepito.</p>
-      </div>
-      <div class="glass fade-up" style="padding:24px">
-        <div style="font-size:1.8rem;margin-bottom:12px">🔄</div>
-        <h3 style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:8px">Si aggiorna</h3>
-        <p style="font-size:.82rem;color:rgba(241,245,249,.5);line-height:1.6">Il Battito giornaliero mantiene la memoria pertinente al momento attuale — non una fotografia statica.</p>
-      </div>
+    <div class="pil-grid">
+      <div class="pil fade"><div style="font-size:1.8rem;margin-bottom:10px">🔍</div><h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">Filtra</h3><p style="font-size:.82rem;color:var(--muted);line-height:1.6">MEMO agent seleziona attivamente — non archivia, sceglie cosa conta per il task corrente.</p></div>
+      <div class="pil fade"><div style="font-size:1.8rem;margin-bottom:10px">🧠</div><h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">Sintetizza</h3><p style="font-size:.82rem;color:var(--muted);line-height:1.6">Il Registro Ipotesi ricorda le conclusioni, non i dati grezzi. Conoscenza distillata.</p></div>
+      <div class="pil fade"><div style="font-size:1.8rem;margin-bottom:10px">❤️</div><h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">Qualifica</h3><p style="font-size:.82rem;color:var(--muted);line-height:1.6">Il Radar Emozionale aggiunge metadati qualitativi: non solo cosa è successo, ma come è stato percepito.</p></div>
+      <div class="pil fade"><div style="font-size:1.8rem;margin-bottom:10px">🔄</div><h3 style="font-size:1rem;font-weight:700;margin-bottom:8px">Si aggiorna</h3><p style="font-size:.82rem;color:var(--muted);line-height:1.6">Il Battito giornaliero mantiene la memoria pertinente al momento — non una fotografia statica.</p></div>
     </div>
-
-    <div class="quote-box fade-up">
-      <p class="quote-text">"Non ricorda tutto — ma ciò che serve, quando serve, per risultati concreti."</p>
-      <p class="quote-sub">SDQ-1 · MEMORIA DINAMICA</p>
+    <div class="quote-box fade">
+      <p class="qt">"Non ricorda tutto — ma ciò che serve, quando serve, per risultati concreti."</p>
+      <p class="qs">SDQ-1 · MEMORIA DINAMICA</p>
     </div>
   </div>
 </section>
+
+<div class="divider"></div>
 
 <!-- CHI SIAMO -->
-<section class="section" id="chi-siamo" style="max-width:1200px;margin:0 auto">
-  <div class="chi-grid">
-    <div class="fade-up">
-      <p class="chi-label label-gold">Chi siamo</p>
-      <h2 class="chi-title">Claudio Terzi +<br><span class="grad-gold">la rete R³∞</span></h2>
-      <p class="chi-text">Sviluppatore, cuoco e visionario basato a Bruxelles. Ho costruito SDQ-1 — un sistema multi-agente che usa Claude, Gemini, DeepSeek e altri modelli in sinergia per produrre output creativi di qualità professionale.</p>
-      <p class="chi-text">Ogni richiesta passa attraverso 6 agenti specializzati. Il risultato non è un semplice output AI — è una produzione orchestrata, revisionata e consegnata con cura.</p>
+<section class="sec" id="chi">
+  <div class="c">
+    <div class="sec-head fade">
+      <span class="tag" style="color:var(--gold)">Chi c'è dietro</span>
+      <h2>Due identità.<br><span class="grad-tg">Un solo progetto.</span></h2>
     </div>
-    <div class="providers fade-up">
-      <div class="provider" style="background:#7c3aed0f;border:1px solid #7c3aed33">
-        <div class="provider-name" style="color:#7c3aed">Claude</div>
-        <div class="provider-desc">Struttura e architettura</div>
+    <div style="max-width:840px;margin:0 auto">
+      <div class="id-card fade" style="border:1px solid rgba(124,58,237,.3)">
+        <div class="id-bar" style="background:var(--grad)"></div>
+        <div class="id-flex">
+          <div class="id-ico" style="background:rgba(124,58,237,.2)">🎨</div>
+          <div style="flex:1;min-width:240px">
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:3px">Raffaello Cantarelli</div>
+            <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a78bfa;margin-bottom:12px" data-k="rc_tag">La personalità AI — il volto creativo</div>
+            <p style="color:var(--muted);line-height:1.8;font-size:.92rem" data-k="rc_desc">Raffaello è una personalità AI nata da una collaborazione profonda con Claudio Terzi. Ascolta prima di produrre, cerca l'essenza di ciò che vuoi comunicare, e restituisce qualcosa che senti davvero tuo.</p>
+            <div style="margin-top:14px"><span class="pill">Co-creazione</span><span class="pill">Ascolto profondo</span><span class="pill">Stile unico</span></div>
+          </div>
+        </div>
       </div>
-      <div class="provider" style="background:#06b6d40f;border:1px solid #06b6d433">
-        <div class="provider-name" style="color:#06b6d4">Gemini</div>
-        <div class="provider-desc">Velocità e multimodalità</div>
-      </div>
-      <div class="provider" style="background:#db27770f;border:1px solid #db277733">
-        <div class="provider-name" style="color:#db2777">DeepSeek</div>
-        <div class="provider-desc">Ragionamento profondo</div>
-      </div>
-      <div class="provider" style="background:#f59e0b0f;border:1px solid #f59e0b33">
-        <div class="provider-name" style="color:#f59e0b">Perplexity</div>
-        <div class="provider-desc">Ricerca e fatti reali</div>
+      <div class="id-card fade" style="border:1px solid rgba(6,182,212,.3)">
+        <div class="id-bar" style="background:var(--grad2)"></div>
+        <div class="id-flex">
+          <div class="id-ico" style="background:rgba(6,182,212,.15)">👤</div>
+          <div style="flex:1;min-width:240px">
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:3px">Claudio Terzi</div>
+            <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#67e8f9;margin-bottom:12px" data-k="ct_tag">La persona reale — chi risponde e gestisce</div>
+            <p style="color:var(--muted);line-height:1.8;font-size:.92rem" data-k="ct_desc">Claudio Terzi è la persona in carne e ossa che ha creato Raffaello e risponde personalmente a ogni richiesta. Quando scrivi, parli con Claudio. Nessun bot, nessun intermediario anonimo.</p>
+            <div style="margin-top:14px"><a href="mailto:terziclaudio@gmail.com" style="color:#67e8f9;font-weight:600;font-size:.9rem">✉️ terziclaudio@gmail.com</a><span style="color:var(--muted);font-size:.83rem;margin-left:12px">· Bruxelles</span></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<div class="divider"></div>
+
+<!-- CITTÀ -->
+<section class="sec">
+  <div class="c">
+    <div class="sec-head fade">
+      <span class="tag">Presenza fisica</span>
+      <h2>Tre città.<br><span class="grad-t">Un'unica voce.</span></h2>
+    </div>
+    <div class="city-grid">
+      <div class="city fade"><div style="font-size:2.5rem;margin-bottom:12px">🗼</div><div class="cn">Paris</div><div class="ct" style="color:#f472b6">Art · Culture · Raffinement</div><p style="color:var(--muted);font-size:.86rem;line-height:1.7">L'estetica del dettaglio. La cura per la forma. Il rispetto per ciò che è bello anche quando nessuno guarda.</p></div>
+      <div class="city home fade"><div style="font-size:2.5rem;margin-bottom:12px">🇧🇪</div><div class="cn">Bruxelles</div><div class="ct" style="color:#a78bfa">Home · Radici · Operativo</div><p style="color:var(--muted);font-size:.86rem;line-height:1.7">Dove Raffaello e Claudio lavorano ogni giorno. Il cuore del progetto.</p><div style="margin-top:12px;font-size:.75rem;color:#a78bfa;font-weight:700">★ Sede principale</div></div>
+      <div class="city fade"><div style="font-size:2.5rem;margin-bottom:12px">🏛️</div><div class="cn">Milano</div><div class="ct" style="color:#67e8f9">Design · Moda · Creatività italiana</div><p style="color:var(--muted);font-size:.86rem;line-height:1.7">L'eredità del design italiano. La precisione nel taglio, l'identità come valore che non scende a compromessi.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PAGAMENTO -->
+<section class="sec" id="pagamento">
+  <div class="c">
+    <div class="sec-head fade">
+      <span class="tag">Metodi accettati</span>
+      <h2>Pagamento</h2>
+      <p class="sec-desc">Crypto, Revolut, PayPal. Prima vedi, poi paghi.</p>
+    </div>
+    <div class="pay-grid">
+      <div class="pay fade">
+        <span class="pi">₿</span>
+        <div class="pm">Bitcoin</div>
+        <div style="color:var(--muted);font-size:.8rem;margin-bottom:6px">Zero commissioni · anonimo · globale</div>
+        <div class="pa" onclick="navigator.clipboard.writeText('bc1qfrdu5jgz7scncmk293qqcup80565fjt0nvt4vs');this.textContent='✓ Copiato!';setTimeout(()=>this.textContent='bc1qfrdu5jgz7scncmk293qqcup80565fjt0nvt4vs',1500)" title="Clicca per copiare">bc1qfrdu5jgz7scncmk293qqcup80565fjt0nvt4vs</div>
+      </div>
+      <div class="pay fade">
+        <span class="pi">⚡</span>
+        <div class="pm">Revolut</div>
+        <div style="color:var(--muted);font-size:.8rem;margin-bottom:6px">Istantaneo · gratuito in Europa</div>
+        <div class="pa" onclick="navigator.clipboard.writeText('@claudioterzi');this.textContent='✓ Copiato!';setTimeout(()=>this.textContent='@claudioterzi',1500)" title="Clicca per copiare">@claudioterzi</div>
+      </div>
+      <div class="pay fade">
+        <span class="pi">🅿️</span>
+        <div class="pm">PayPal</div>
+        <div style="color:var(--muted);font-size:.8rem;margin-bottom:6px">Protetto · accettato ovunque</div>
+        <div class="pa" onclick="navigator.clipboard.writeText('Claudioterzi@hotmail.com');this.textContent='✓ Copiato!';setTimeout(()=>this.textContent='Claudioterzi@hotmail.com',1500)" title="Clicca per copiare">Claudioterzi@hotmail.com</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
 
 <!-- CONTATTO -->
-<section class="section" id="contatto">
-  <div class="cta-bg"></div>
-  <div class="cta-inner fade-up">
-    <div class="rosso-badge">🔴 Protocollo Rosso Rosso Rosso — attivo</div>
-    <h2 class="cta-title">Pronto a creare<br><span class="grad">qualcosa di tuo?</span></h2>
-    <p class="cta-text">Scrivi a Claudio. Descrivi cosa ti serve. Hai una risposta entro 24 ore e il prodotto finito subito dopo. Nessun abbonamento. Pagamento alla consegna.</p>
-    <a href="mailto:terziclaudio@gmail.com" class="btn-cta">Scrivimi ora</a>
-    <p class="cta-note">terziclaudio@gmail.com · Bruxelles</p>
+<section class="sec cta-bg" id="contatto" style="text-align:center">
+  <div class="c">
+    <div class="rosso">🔴 Protocollo Rosso Rosso Rosso — attivo</div>
+    <h2><span data-k="cta_a">Raccontami cosa vuoi</span> <span class="grad-t" data-k="cta_b">creare</span></h2>
+    <p style="color:var(--muted);margin:20px 0 36px;font-size:1.05rem;max-width:540px;margin-left:auto;margin-right:auto" data-k="cta_sub">Un messaggio è sufficiente. Ascolto prima di produrre. Vedi il risultato prima di pagare.</p>
+    <div class="cta-row">
+      <a href="mailto:terziclaudio@gmail.com?subject=Raffaello%20-%20Richiesta" style="background:var(--grad);color:#fff;padding:16px 36px;border-radius:12px;font-weight:800;font-size:1rem;display:inline-block;transition:transform .2s,box-shadow .2s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 40px rgba(124,58,237,.5)'" onmouseout="this.style.transform='';this.style.boxShadow=''">✉️ &nbsp;terziclaudio@gmail.com</a>
+      <a href="https://github.com/claudioterzi/Claudio" class="btn-g" target="_blank">⌥ &nbsp;GitHub open source</a>
+    </div>
+    <p style="margin-top:20px;font-size:.82rem;color:rgba(241,245,249,.3)" data-k="cta_note">Risposta entro 2 ore · Consegna in 24h · Pagamento alla consegna</p>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div class="footer-inner">
-    <span class="footer-logo"><span class="grad">Raffaello Creative Studio</span></span>
-    <span>Powered by SDQ-1 · github.com/claudioterzi/Claudio</span>
-    <span>© 2026 Claudio Terzi · Bruxelles</span>
+  <div class="c">
+    <p><strong><span class="grad-t">Raffaello Cantarelli</span></strong> — Studio Creativo AI · Bruxelles, 2026<br>
+    <span style="font-size:.76rem"><a href="https://github.com/claudioterzi/Claudio" style="color:var(--purple)">github.com/claudioterzi/Claudio</a> · AGPL-3.0 · Creato da Claudio Terzi · Powered by SDQ-1</span></p>
   </div>
 </footer>
 
 <script>
-// Dati servizi
-const SERVIZI = [
-  { emoji:'🎵', titolo:'Musica', colore:'#7c3aed', tagline:'Canzoni, inni, album su misura',
-    items:[['Testo canzone','€25'],['Canzone completa','€45'],['Inno personalizzato','€60'],['Album concetto (5 canzoni)','€180']] },
-  { emoji:'🎨', titolo:'Immagini', colore:'#db2777', tagline:'Illustrazioni, loghi, post social',
-    items:[['Illustrazione singola','€15'],['Logo concept (3 varianti)','€40'],['Cover libro/album','€30'],['Post social set 9','€70']] },
-  { emoji:'🎬', titolo:'Video', colore:'#06b6d4', tagline:'Script, reel, spot pubblicitari',
-    items:[['Script Reel 30-60s','€20'],['Script YouTube','€50'],['Spot pubblicitario','€35'],['Pitch video startup','€80']] },
-  { emoji:'✍️', titolo:'Parola', colore:'#f59e0b', tagline:'Blog, speech, storie, ebook',
-    items:[['Articolo blog SEO','€25'],['Serie 5 post LinkedIn','€40'],['Discorso/speech','€50'],['Ebook completo','€250']] },
-  { emoji:'🍳', titolo:'Cucina', colore:'#10b981', tagline:'Corsi online e chef a Bruxelles',
-    items:[['Corso online 1h','€60'],['Corso tematico 2h','€90'],['Menu per evento','€45'],['Chef a domicilio','€180']] },
-  { emoji:'🤖', titolo:'AI & Codice', colore:'#c0392b', tagline:'Prompt, agenti, automazioni',
-    items:[['Prompt ottimizzato','€30'],['Agente custom SDQ-1','€300+'],['Script automazione','€40+'],['Workshop prompt','€80']] },
-]
+// ── TRADUZIONI ──────────────────────────────────────────────────────────────
+const T={
+  it:{nav_ser:"Servizi",nav_bun:"Bundle",nav_come:"Come funziona",nav_chi:"Chi siamo",nav_pay:"Pagamento",nav_ord:"Ordina ora",badge:"Studio Creativo AI · Bruxelles · 2026",h_sono:"Creatività su misura.",h_grad:"Consegnata in 24h.",h_sub:"Musica, immagini, video, testi, traduzioni, strategia. Un sistema AI a 6 agenti. Ascolto prima di produrre. Vedi il risultato prima di pagare.",h_cta1:"Inizia ora →",h_cta2:"Vedi il catalogo",s1:"Agenti AI",s2:"Prodotti",s3:"Consegna",s4:"Lingue",s5:"Da",t_ser:"Catalogo completo",h_ser:"Cosa puoi ordinare",d_ser:"Ogni prodotto nasce da un ascolto. Tu descrivi, Raffaello crea.",c_mus:"Musica",cd_mus:"Testi strutturati + audio via Suno/Udio. Dal concept all'mp3.",m1:"Testo canzone completo",m2:"Canzone completa con audio",m3:"Inno personalizzato",m4:"Album concetto (5 canzoni)",c_img:"Immagini",cd_img:"Alta risoluzione. Fotorealistico, acquerello, fumetto, minimalista.",i1:"Illustrazione singola",i2:"Serie coordinata (5 img)",i3:"Cover libro / album",i4:"Feed Instagram (9 post)",i5:"Logo concept (3 varianti)",c_vid:"Video",cd_vid:"Script + storyboard pronti per Sora, Runway o CapCut.",v1:"Script Reel 30–60s",v2:"Script YouTube 2–5min",v3:"Spot pubblicitario",v4:"Pitch video startup",v5:"Serie 5 TikTok",c_par:"Parola",cd_par:"Articoli, email, discorsi, storie, ebook. Nella tua voce.",p1:"Articolo blog",p2:"5 post LinkedIn",p3:"Sequenza 3 email vendita",p4:"Discorso / speech",p5:"Ebook (outline + 5 cap.)",c_tra:"Traduzioni",cd_tra:"IT · EN · FR · ES · DE · PT · NL · RU · ZH · AR · JA.",t1:"Testo fino a 500 parole",t2:"Testo 500–2000 parole",t3:"Documento legale",t4:"Localizzazione sito web",t5:"Sottotitoli video (10min)",c_str:"Strategia",cd_str:"Analisi profonda con SAR 11 livelli. Non opinioni — struttura.",st1:"Analisi SWOT completa",st2:"Business plan 1 pagina",st3:"Ricerca 5 competitor",st4:"Roadmap 6/12 mesi",st5:"Nome + payoff",c_cuc:"Cucina & Chef",cd_cuc:"Corsi online, cene private, eventi. Cucina italiana, francese, belga.",cu1:"Corso di cucina online (1h)",cu2:"Corso tematico IT/FR/BE",cu3:"Menu personalizzato per evento",cu4:"Chef a domicilio (fino a 8 pers.)",cu5:"Organizzazione evento completa",excl:"Servizio esclusivo",c_ai:"Prompt Engineering & Agenti AI",cd_ai:"Costruiamo il cervello dei tuoi strumenti AI. Agenti autonomi che operano mentre dormi.",ai1:"Prompt ottimizzato",ai2:"Sistema prompt + few-shot + CoT",ai3:"Revisione prompt esistente",ai4:"Specifica agente autonomo",ai5:"Agente custom implementato",ai6:"Workshop prompt 1:1 (1h)",t_bun:"Risparmia combinando",h_bun:"Pacchetti",d_bun:"Tre bundle per partire subito con tutto il necessario.",b1n:"Starter Creator",b1d:"Per chi vuole testare con musica e social.",b1s:"Risparmi €35 · 27% di sconto",b1i1:"1 canzone completa con audio",b1i2:"5 immagini coordinate",b1i3:"5 post LinkedIn",b2n:"Brand Kit",b2d:"Identità completa: visual, testi, email.",b2s:"Risparmi €55 · 28% di sconto",b2i1:"Logo concept (3 varianti)",b2i2:"9 immagini feed Instagram",b2i3:"Biografia professionale",b2i4:"Sequenza 3 email vendita",b3n:"Launch Pack",b3d:"Tutto per lanciare un progetto o prodotto.",b3s:"Risparmi €55 · 23% di sconto",b3i1:"Script YouTube (2–5min)",b3i2:"5 script TikTok coordinati",b3i3:"5 post LinkedIn",b3i4:"Analisi SWOT completa",pop:"Più scelto",btn_ord:"Ordina",t_come:"Il processo",h_come:"Come funziona",d_come:"Dalla richiesta alla consegna in meno di 24 ore.",s1h:"Descrivimi cosa vuoi",s1p:"WhatsApp o email. Anche un'idea grezza va bene.",s2h:"Preventivo in 2h",s2p:"Confermo prezzo e tempi. Nessuna sorpresa.",s3h:"Raffaello produce",s3p:"Il sistema lavora. Tu non fai nulla.",s4h:"Ricevi e paghi",s4p:"Prima vedi il risultato. Poi paghi se sei soddisfatto.",rc_tag:"La personalità AI — il volto creativo",rc_desc:"Raffaello è una personalità AI nata da una collaborazione profonda con Claudio Terzi. Ascolta prima di produrre, e restituisce qualcosa che senti davvero tuo.",ct_tag:"La persona reale — chi risponde",ct_desc:"Claudio Terzi risponde personalmente a ogni richiesta. Quando scrivi, parli con Claudio. Nessun bot.",cta_a:"Raccontami cosa vuoi",cta_b:"creare",cta_sub:"Un messaggio è sufficiente. Ascolto prima di produrre. Vedi il risultato prima di pagare.",cta_note:"Risposta entro 2 ore · Consegna in 24h · Pagamento alla consegna"},
+  en:{nav_ser:"Services",nav_bun:"Bundles",nav_come:"How it works",nav_chi:"About",nav_pay:"Payment",nav_ord:"Order now",badge:"AI Creative Studio · Brussels · 2026",h_sono:"Creativity on demand.",h_grad:"Delivered in 24h.",h_sub:"Music, images, video, texts, translations, strategy. A 6-agent AI system. I listen before I produce. You see the result before you pay.",h_cta1:"Start now →",h_cta2:"See the catalog",s1:"AI Agents",s2:"Products",s3:"Delivery",s4:"Languages",s5:"From",t_ser:"Full catalog",h_ser:"What you can order",d_ser:"Every product starts with listening. You describe, Raffaello creates.",excl:"Exclusive service",t_bun:"Save by combining",h_bun:"Packages",d_bun:"Three bundles to get started with everything you need.",pop:"Most popular",btn_ord:"Order",t_come:"Process",h_come:"How it works",d_come:"From request to delivery in under 24 hours.",s1h:"Tell me what you want",s1p:"WhatsApp or email. A rough idea is fine.",s2h:"Quote in 2h",s2p:"I confirm price and timeline. No surprises.",s3h:"Raffaello produces",s3p:"The system works. You do nothing.",s4h:"Receive and pay",s4p:"You see the result first. Then pay if satisfied.",cta_a:"Tell me what you want to",cta_b:"create",cta_sub:"One message is enough. I listen before I produce. See the result before you pay.",cta_note:"Reply within 2h · Delivery in 24h · Pay on delivery"},
+  fr:{nav_ser:"Services",nav_bun:"Packs",nav_come:"Comment ça marche",nav_chi:"Qui sommes-nous",nav_pay:"Paiement",nav_ord:"Commander",badge:"Studio Créatif IA · Bruxelles · 2026",h_sono:"Créativité sur mesure.",h_grad:"Livré en 24h.",h_sub:"Musique, images, vidéos, textes, traductions, stratégie. Un système IA à 6 agents. J'écoute avant de produire. Vous voyez le résultat avant de payer.",h_cta1:"Commencer →",h_cta2:"Voir le catalogue",excl:"Service exclusif",t_bun:"Économisez en combinant",h_bun:"Packs",pop:"Le plus choisi",btn_ord:"Commander",cta_a:"Dites-moi ce que vous voulez",cta_b:"créer",cta_sub:"Un message suffit. J'écoute avant de produire. Vous voyez le résultat avant de payer.",cta_note:"Réponse sous 2h · Livraison en 24h · Paiement à la livraison"},
+  es:{nav_ser:"Servicios",nav_bun:"Packs",nav_come:"Cómo funciona",nav_chi:"Quiénes somos",nav_pay:"Pago",nav_ord:"Pedir",badge:"Estudio Creativo IA · Bruselas · 2026",h_sono:"Creatividad a medida.",h_grad:"Entregada en 24h.",h_sub:"Música, imágenes, vídeos, textos, traducciones, estrategia. Un sistema IA de 6 agentes. Escucho antes de producir. Ves el resultado antes de pagar.",h_cta1:"Empezar →",h_cta2:"Ver el catálogo",excl:"Servicio exclusivo",t_bun:"Ahorra combinando",h_bun:"Paquetes",pop:"El más elegido",btn_ord:"Pedir",cta_a:"Cuéntame qué quieres",cta_b:"crear",cta_sub:"Un mensaje es suficiente. Escucho antes de producir. Ves el resultado antes de pagar.",cta_note:"Respuesta en 2h · Entrega en 24h · Pago en la entrega"}
+}
 
-// Render servizi
-const grid = document.getElementById('servizi-grid')
-SERVIZI.forEach(s => {
-  const card = document.createElement('div')
-  card.className = 'service-card fade-up'
-  card.style.setProperty('--c', s.colore)
-  card.innerHTML = `
-    <div class="service-emoji">${s.emoji}</div>
-    <div class="service-title">${s.titolo}</div>
-    <div class="service-tag" style="color:${s.colore}">${s.tagline}</div>
-    <ul class="service-items">
-      ${s.items.map(([n,p]) => `
-        <li class="service-item">
-          <span class="item-name">${n}</span>
-          <span class="item-price" style="color:${s.colore};background:${s.colore}18">${p}</span>
-        </li>`).join('')}
-    </ul>`
-  card.addEventListener('mouseenter', () => {
-    card.style.background = s.colore + '11'
-    card.style.borderColor = s.colore + '44'
-    card.style.boxShadow = `0 8px 40px ${s.colore}22`
+let lang='it'
+function setL(l){
+  lang=l
+  document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.includes(l.toUpperCase())))
+  document.querySelectorAll('[data-k]').forEach(el=>{
+    const v=T[l]?.[el.dataset.k]
+    if(v) el.innerHTML=v
   })
-  card.addEventListener('mouseleave', () => {
-    card.style.background = 'rgba(255,255,255,.03)'
-    card.style.borderColor = 'rgba(255,255,255,.07)'
-    card.style.boxShadow = 'none'
-  })
-  grid.appendChild(card)
-})
+}
 
-// Nav scroll
-const navEl = document.getElementById('nav')
-window.addEventListener('scroll', () => {
-  navEl.classList.toggle('scrolled', window.scrollY > 40)
-})
-
-// Fade up on scroll
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') })
-}, { threshold: 0.1, rootMargin: '-60px' })
-document.querySelectorAll('.fade-up').forEach(el => observer.observe(el))
+// ── FADE ON SCROLL ──────────────────────────────────────────────────────────
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})
+},{threshold:.1,rootMargin:'-50px'})
+document.querySelectorAll('.fade').forEach(el=>obs.observe(el))
 </script>
 </body>
 </html>
