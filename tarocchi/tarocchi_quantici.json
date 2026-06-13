@@ -1,13 +1,15 @@
 {
-  "sistema": "Tarocchi Quantici — R3inf con Principio della Doppia Ermeneutica",
-  "versione": "1.0.0",
+  "sistema": "Tarocchi Quantici R3inf — Alpha 0.1",
+  "versione": "0.1.0",
   "autore": "Claudio Terzi",
   "data": "2026-06-13",
+  "changelog": "Layer 1 completato: keyword e dominio carta per carta per tutti i 52 Arcani Minori.",
   "layer_1_codice_simbolico": {
     "descrizione": "Vocabolario delle 74 carte. Stabile, condiviso tra osservatore-macchina e osservatore-umano.",
     "totale_carte": 74,
     "arcani_maggiori": 22,
     "arcani_minori": 52,
+    "note": "Ogni carta ha keyword e dominio specifici — non piu placeholder di seme.",
     "carte": [
       {
         "nome": "Il Matto",
@@ -346,13 +348,13 @@
         "seme": "bastoni",
         "rango": 1,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "scintilla originaria",
+          "impulso creativo",
+          "seme di volontà",
+          "potenziale non ancora formato"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "il fuoco prima che diventi fiamma"
       },
       {
         "nome": "Due di Bastoni",
@@ -361,13 +363,13 @@
         "seme": "bastoni",
         "rango": 2,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "pianificazione",
+          "scelta coraggiosa",
+          "visione dell'orizzonte",
+          "espansione iniziale"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "la volontà che guarda oltre il muro"
       },
       {
         "nome": "Tre di Bastoni",
@@ -376,13 +378,13 @@
         "seme": "bastoni",
         "rango": 3,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "impresa avviata",
+          "attesa dei frutti",
+          "visione a lungo termine",
+          "spedizione"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "ciò che è stato lanciato e non si può più riprendere"
       },
       {
         "nome": "Quattro di Bastoni",
@@ -391,13 +393,13 @@
         "seme": "bastoni",
         "rango": 4,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "celebrazione",
+          "radici conquistate",
+          "comunità",
+          "stabilità gioiosa"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "il campo dopo la vittoria — riposo meritato"
       },
       {
         "nome": "Cinque di Bastoni",
@@ -406,13 +408,13 @@
         "seme": "bastoni",
         "rango": 5,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "conflitto aperto",
+          "competizione creativa",
+          "caos fertile",
+          "lotta di idee"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "il disordine che precede una nuova forma"
       },
       {
         "nome": "Sei di Bastoni",
@@ -421,13 +423,13 @@
         "seme": "bastoni",
         "rango": 6,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "vittoria riconosciuta",
+          "ritorno trionfante",
+          "leadership meritata",
+          "stima pubblica"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "il momento in cui il mondo vede quello che hai fatto"
       },
       {
         "nome": "Sette di Bastoni",
@@ -436,13 +438,13 @@
         "seme": "bastoni",
         "rango": 7,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "difesa della posizione",
+          "pressione esterna",
+          "resistenza solitaria",
+          "perseveranza"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "tenere il terreno quando tutto spinge a cedere"
       },
       {
         "nome": "Otto di Bastoni",
@@ -451,13 +453,13 @@
         "seme": "bastoni",
         "rango": 8,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "velocità",
+          "impulso improvviso",
+          "notizie in arrivo",
+          "movimento rapido"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "l'azione che non aspetta il permesso"
       },
       {
         "nome": "Nove di Bastoni",
@@ -466,13 +468,13 @@
         "seme": "bastoni",
         "rango": 9,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "resilienza",
+          "stanchezza con guardia alta",
+          "cicatrici come saggezza",
+          "vigilia"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "il guerriero che non si fida ancora della pace"
       },
       {
         "nome": "Dieci di Bastoni",
@@ -481,13 +483,13 @@
         "seme": "bastoni",
         "rango": 10,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "peso del successo",
+          "responsabilità eccessive",
+          "oppressione autoimposta",
+          "completamento faticoso"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "portare ciò che si è costruito fino in fondo"
       },
       {
         "nome": "Fante di Bastoni",
@@ -496,13 +498,13 @@
         "seme": "bastoni",
         "rango": 11,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "messaggero entusiasta",
+          "nuovo progetto",
+          "curiosità creativa",
+          "apprendimento ardente"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "la scintilla in un corpo giovane"
       },
       {
         "nome": "Cavaliere di Bastoni",
@@ -511,13 +513,13 @@
         "seme": "bastoni",
         "rango": 12,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "azione impetuosa",
+          "avventura",
+          "passione in corsa",
+          "cambiamento rapido"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "il fuoco che non aspetta"
       },
       {
         "nome": "Re di Bastoni",
@@ -526,13 +528,13 @@
         "seme": "bastoni",
         "rango": 13,
         "parole_chiave": [
-          "energia",
-          "iniziativa",
-          "entusiasmo",
-          "creatività"
+          "visione matura",
+          "leadership creativa",
+          "ispirazione condivisa",
+          "autorità del fuoco"
         ],
         "elemento": "fuoco",
-        "dominio": "azione, passione e creatività"
+        "dominio": "chi trasforma la propria passione in direzione per altri"
       },
       {
         "nome": "Asso di Coppe",
@@ -541,13 +543,13 @@
         "seme": "coppe",
         "rango": 1,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "amore nascente",
+          "cuore aperto",
+          "dono emotivo",
+          "sorgente del sentimento"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "il cuore prima che sappia di amare"
       },
       {
         "nome": "Due di Coppe",
@@ -556,13 +558,13 @@
         "seme": "coppe",
         "rango": 2,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "unione reciproca",
+          "connessione profonda",
+          "scambio d'anima",
+          "attrazione"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "due acque che si riconoscono"
       },
       {
         "nome": "Tre di Coppe",
@@ -571,13 +573,13 @@
         "seme": "coppe",
         "rango": 3,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "gioia condivisa",
+          "amicizia fertile",
+          "celebrazione emotiva",
+          "abbondanza del cuore"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "la felicità che si moltiplica nell'essere vista"
       },
       {
         "nome": "Quattro di Coppe",
@@ -586,13 +588,13 @@
         "seme": "coppe",
         "rango": 4,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "noia emotiva",
+          "opportunità inosservata",
+          "ritiro interiore",
+          "contemplazione"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "l'emozione che si stanca di sé stessa"
       },
       {
         "nome": "Cinque di Coppe",
@@ -601,13 +603,13 @@
         "seme": "coppe",
         "rango": 5,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "perdita e rimpianto",
+          "lutto elaborato",
+          "ciò che rimane",
+          "il bicchiere pieno accanto al vuoto"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "saper contare ciò che è ancora in piedi"
       },
       {
         "nome": "Sei di Coppe",
@@ -616,13 +618,13 @@
         "seme": "coppe",
         "rango": 6,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "nostalgia",
+          "innocenza del passato",
+          "ricordi come dono",
+          "radici emotive"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "tornare a qualcosa che non esiste più ma che nutre ancora"
       },
       {
         "nome": "Sette di Coppe",
@@ -631,13 +633,13 @@
         "seme": "coppe",
         "rango": 7,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "illusioni multiple",
+          "sogni da discernere",
+          "scelta nel vago",
+          "tentazione della fantasia"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "il pericolo di innamorarsi dell'idea invece che della realtà"
       },
       {
         "nome": "Otto di Coppe",
@@ -646,13 +648,13 @@
         "seme": "coppe",
         "rango": 8,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "abbandono del noto",
+          "ricerca di significato",
+          "allontanamento consapevole",
+          "partenza interiore"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "lasciare ciò che non è più abbastanza"
       },
       {
         "nome": "Nove di Coppe",
@@ -661,13 +663,13 @@
         "seme": "coppe",
         "rango": 9,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "desiderio realizzato",
+          "soddisfazione profonda",
+          "benessere guadagnato",
+          "abbondanza emotiva"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "il momento in cui si ha quello che si voleva"
       },
       {
         "nome": "Dieci di Coppe",
@@ -676,13 +678,13 @@
         "seme": "coppe",
         "rango": 10,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "armonia familiare",
+          "felicità condivisa",
+          "completamento emotivo",
+          "radici e cielo insieme"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "il cerchio emotivo che si chiude"
       },
       {
         "nome": "Fante di Coppe",
@@ -691,13 +693,13 @@
         "seme": "coppe",
         "rango": 11,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "sensibilità aperta",
+          "messaggio del cuore",
+          "intuizione nascente",
+          "creatività romantica"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "la giovinezza del sentimento"
       },
       {
         "nome": "Cavaliere di Coppe",
@@ -706,13 +708,13 @@
         "seme": "coppe",
         "rango": 12,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "romanticismo in movimento",
+          "proposta d'amore",
+          "charme",
+          "offerta emotiva"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "portare sentimento in dono"
       },
       {
         "nome": "Re di Coppe",
@@ -721,13 +723,13 @@
         "seme": "coppe",
         "rango": 13,
         "parole_chiave": [
-          "sentimento",
-          "connessione",
-          "intuizione",
-          "compassione"
+          "maturità emotiva",
+          "saggezza del cuore",
+          "contenimento senza repressione",
+          "equilibrio affettivo"
         ],
         "elemento": "acqua",
-        "dominio": "emozioni, relazioni e intuizione"
+        "dominio": "chi tiene il mare senza esserne travolto"
       },
       {
         "nome": "Asso di Spade",
@@ -736,13 +738,13 @@
         "seme": "spade",
         "rango": 1,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "verità tagliente",
+          "chiarezza assoluta",
+          "decisione netta",
+          "forza della mente"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "il pensiero prima che diventi parola"
       },
       {
         "nome": "Due di Spade",
@@ -751,13 +753,13 @@
         "seme": "spade",
         "rango": 2,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "stallo decisionale",
+          "tregua momentanea",
+          "equilibrio precario",
+          "scelta evitata"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "il momento in cui sappiamo ma non diciamo"
       },
       {
         "nome": "Tre di Spade",
@@ -766,13 +768,13 @@
         "seme": "spade",
         "rango": 3,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "dolore onesto",
+          "ferita del cuore",
+          "separazione",
+          "tradimento riconosciuto"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "la verità che fa male perché è vera"
       },
       {
         "nome": "Quattro di Spade",
@@ -781,13 +783,13 @@
         "seme": "spade",
         "rango": 4,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "riposo necessario",
+          "guarigione silenziosa",
+          "ritiro strategico",
+          "pausa prima dell'azione"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "il guerriero che dorme per tornare più forte"
       },
       {
         "nome": "Cinque di Spade",
@@ -796,13 +798,13 @@
         "seme": "spade",
         "rango": 5,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "vittoria a caro prezzo",
+          "conflitto inutile",
+          "umiliazione o resa",
+          "ciò che si perde vincendo"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "quando la vittoria non vale quello che è costata"
       },
       {
         "nome": "Sei di Spade",
@@ -811,13 +813,13 @@
         "seme": "spade",
         "rango": 6,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "transizione verso la calma",
+          "viaggio mentale",
+          "allontanamento dal conflitto",
+          "passaggio"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "lasciare le acque agitate per acque più calme"
       },
       {
         "nome": "Sette di Spade",
@@ -826,13 +828,13 @@
         "seme": "spade",
         "rango": 7,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "astuzia",
+          "strategia solitaria",
+          "azione non dichiarata",
+          "furbizia o inganno"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "muoversi dove gli altri non guardano"
       },
       {
         "nome": "Otto di Spade",
@@ -841,13 +843,13 @@
         "seme": "spade",
         "rango": 8,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "prigionia mentale",
+          "limitazione percepita",
+          "confusione che blocca",
+          "paralisi per paura"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "la gabbia che si può aprire ma non si apre"
       },
       {
         "nome": "Nove di Spade",
@@ -856,13 +858,13 @@
         "seme": "spade",
         "rango": 9,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "ansia notturna",
+          "pensieri che non tacciono",
+          "crisi interiore",
+          "timore del peggio"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "la mente che si tormenta da sola nel buio"
       },
       {
         "nome": "Dieci di Spade",
@@ -871,13 +873,13 @@
         "seme": "spade",
         "rango": 10,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "fine definitiva",
+          "crollo totale",
+          "trasformazione radicale",
+          "il fondo come punto di svolta"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "quando non si può andare più in basso — e quindi si risale"
       },
       {
         "nome": "Fante di Spade",
@@ -886,13 +888,13 @@
         "seme": "spade",
         "rango": 11,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "mente acuta",
+          "osservazione vigile",
+          "apprendimento critico",
+          "curiosità intellettuale"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "chi vede quello che gli altri non notano"
       },
       {
         "nome": "Cavaliere di Spade",
@@ -901,13 +903,13 @@
         "seme": "spade",
         "rango": 12,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "azione rapida",
+          "comunicazione diretta",
+          "assertività",
+          "taglio netto"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "il pensiero che diventa atto senza esitazione"
       },
       {
         "nome": "Re di Spade",
@@ -916,13 +918,13 @@
         "seme": "spade",
         "rango": 13,
         "parole_chiave": [
-          "chiarezza",
-          "decisione",
-          "conflitto",
-          "analisi"
+          "intelletto sovrano",
+          "giudizio equilibrato",
+          "autorità della mente",
+          "chiarezza di comando"
         ],
         "elemento": "aria",
-        "dominio": "mente, verità e conflitto"
+        "dominio": "chi governa con la ragione senza perdere l'umanità"
       },
       {
         "nome": "Asso di Denari",
@@ -931,13 +933,13 @@
         "seme": "denari",
         "rango": 1,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "seme materiale",
+          "opportunità concreta",
+          "primo investimento",
+          "dono della terra"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "il potenziale che si può toccare con mano"
       },
       {
         "nome": "Due di Denari",
@@ -946,13 +948,13 @@
         "seme": "denari",
         "rango": 2,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "equilibrio in movimento",
+          "adattamento al flusso",
+          "gestione di più cose",
+          "danza delle priorità"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "tenere in aria due pesi senza farne cadere nessuno"
       },
       {
         "nome": "Tre di Denari",
@@ -961,13 +963,13 @@
         "seme": "denari",
         "rango": 3,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "competenza riconosciuta",
+          "lavoro collaborativo",
+          "artigianato",
+          "costruzione condivisa"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "quando il talento incontra il progetto e la squadra"
       },
       {
         "nome": "Quattro di Denari",
@@ -976,13 +978,13 @@
         "seme": "denari",
         "rango": 4,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "possesso difensivo",
+          "stabilità controllata",
+          "attaccamento al guadagno",
+          "avarizia o prudenza"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "la paura di perdere ciò che si ha"
       },
       {
         "nome": "Cinque di Denari",
@@ -991,13 +993,13 @@
         "seme": "denari",
         "rango": 5,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "perdita materiale",
+          "povertà",
+          "esclusione",
+          "crisi che insegna il valore"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "stare fuori dal calore sapendo che esiste"
       },
       {
         "nome": "Sei di Denari",
@@ -1006,13 +1008,13 @@
         "seme": "denari",
         "rango": 6,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "generosità o controllo",
+          "dono con potere",
+          "squilibrio redistribuito",
+          "carità e dipendenza"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "chi dà decide anche chi riceve"
       },
       {
         "nome": "Sette di Denari",
@@ -1021,13 +1023,13 @@
         "seme": "denari",
         "rango": 7,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "attesa del raccolto",
+          "pazienza con incertezza",
+          "investimento a lungo termine",
+          "semi che crescono"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "il contadino che guarda la terra senza poter accelerarla"
       },
       {
         "nome": "Otto di Denari",
@@ -1036,13 +1038,13 @@
         "seme": "denari",
         "rango": 8,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "dedizione al mestiere",
+          "apprendistato serio",
+          "eccellenza artigianale",
+          "pratica ripetuta"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "fare bene una cosa mille volte finché diventa arte"
       },
       {
         "nome": "Nove di Denari",
@@ -1051,13 +1053,13 @@
         "seme": "denari",
         "rango": 9,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "abbondanza autonoma",
+          "lusso guadagnato",
+          "indipendenza materiale",
+          "frutto del proprio lavoro"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "godere di ciò che si è costruito da soli"
       },
       {
         "nome": "Dieci di Denari",
@@ -1066,13 +1068,13 @@
         "seme": "denari",
         "rango": 10,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "eredità e continuità",
+          "prosperità familiare",
+          "ricchezza che dura",
+          "radici materiali solide"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "il patrimonio che sopravvive a chi lo ha creato"
       },
       {
         "nome": "Fante di Denari",
@@ -1081,13 +1083,13 @@
         "seme": "denari",
         "rango": 11,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "studio pratico",
+          "opportunità in arrivo",
+          "apprendimento concreto",
+          "giovane dedicato"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "il seme di una competenza futura"
       },
       {
         "nome": "Cavaliere di Denari",
@@ -1096,13 +1098,13 @@
         "seme": "denari",
         "rango": 12,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "affidabilità metodica",
+          "costruzione lenta e solida",
+          "determinazione tranquilla",
+          "fedeltà al compito"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "chi non corre mai ma arriva sempre"
       },
       {
         "nome": "Re di Denari",
@@ -1111,13 +1113,13 @@
         "seme": "denari",
         "rango": 13,
         "parole_chiave": [
-          "concretezza",
-          "risorse",
-          "pazienza",
-          "manifestazione"
+          "successo materiale maturo",
+          "abbondanza costruita",
+          "imprenditore realizzato",
+          "autorità della terra"
         ],
         "elemento": "terra",
-        "dominio": "corpo, risorse e manifestazione"
+        "dominio": "chi ha trasformato il lavoro in eredità"
       }
     ]
   },
@@ -1144,7 +1146,7 @@
       },
       {
         "nome": "ROVESCIA",
-        "descrizione": "Significato in tensione: differito, interiore, o in resistenza attiva."
+        "descrizione": "Significato in tensione: differito, interiore, in resistenza attiva."
       }
     ],
     "posizioni": [
@@ -1234,6 +1236,7 @@
   },
   "layer_3_doppia_ermeneutica": {
     "descrizione": "Due osservatori, due modalita di osservazione, una sola struttura.",
+    "principio": "La verita non appartiene ne all uomo ne alla macchina. La verita emerge dalla relazione tra osservatore e simbolo.",
     "osservatore_macchina": {
       "classe": "LetturaStrutturale",
       "proprieta": "Stabile, riproducibile, deterministica.",
@@ -1266,13 +1269,12 @@
         "domande_di_riflessione",
         "integrazione"
       ]
-    },
-    "principio_fondante": "La verita non appartiene ne all uomo ne alla macchina. La verita emerge dalla relazione tra osservatore e simbolo."
+    }
   },
   "esempio_stesa": {
     "stesa": {
-      "stesa_id": "8e4ca33d-a04f-490f-a947-0dcbf7075a7c",
-      "timestamp": "2026-06-13T13:26:27.050800+00:00",
+      "stesa_id": "b2d79e70-99d6-4f05-b45d-c5f68321af92",
+      "timestamp": "2026-06-13T13:32:05.727329+00:00",
       "schema": "cinque_carte",
       "nodi": [
         {
@@ -1379,7 +1381,7 @@
       ]
     },
     "lettura_strutturale": {
-      "stesa_id": "8e4ca33d-a04f-490f-a947-0dcbf7075a7c",
+      "stesa_id": "b2d79e70-99d6-4f05-b45d-c5f68321af92",
       "sinossi": "Configurazione di 5 carte. Stato dominante: sovrapposto (3/5) — la configurazione è ancora aperta — il significato non si è fissato. Elemento prevalente: etere — tema di potenziale puro e possibilità non ancora formate. 1 tensione strutturale rilevata. 1 risorsa strutturale identificata.",
       "assiomi_attivati": [
         3,
