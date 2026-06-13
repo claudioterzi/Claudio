@@ -6,6 +6,7 @@ data/
 !registro_ipotesi.json
 !output/contatti.jsonl
 !tarocchi/tarocchi_quantici.json
+!vercel.json
 
 # Python
 __pycache__/

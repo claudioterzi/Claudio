@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarocchi Quantici R³∞</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0c0c0e;
+      --surface:  #141418;
+      --border:   #2a2a32;
+      --gold:     #c9a84c;
+      --gold-dim: #8a6f2e;
+      --text:     #e8e4d8;
+      --text-dim: #7a7468;
+      --red:      #8b1c1c;
+      --radius:   8px;
+      --font:     'Georgia', 'Times New Roman', serif;
+      --mono:     'Courier New', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; }
+
+    /* Header */
+    header { text-align: center; margin-bottom: 3rem; }
+    header h1 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: normal;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+    }
+    header p {
+      margin-top: 0.5rem;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* Section titles */
+    .section-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 1rem;
+    }
+
+    /* Card slots */
+    #slots { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+
+    .slot {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+    }
+    .slot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .slot-num {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    .slot-remove {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0 4px;
+    }
+    .slot-remove:hover { color: var(--text); }
+
+    .slot-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .slot-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+    label {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.3rem;
+    }
+
+    select, input[type="text"], textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.9rem;
+      padding: 0.45rem 0.6rem;
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%237a7468' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.7rem center;
+      padding-right: 2rem;
+    }
+    select:focus, input:focus, textarea:focus { border-color: var(--gold-dim); }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+    input[type="checkbox"] { accent-color: var(--gold-dim); }
+
+    /* Voce preview */
+    .voce-preview {
+      font-size: 0.8rem;
+      color: var(--gold);
+      margin-top: 0.3rem;
+      min-height: 1rem;
+      font-style: italic;
+    }
+
+    /* Add slot button */
+    #btn-add {
+      width: 100%;
+      background: none;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--text-dim);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      padding: 0.75rem;
+      transition: all 0.15s;
+    }
+    #btn-add:hover:not(:disabled) { border-color: var(--gold-dim); color: var(--gold); }
+    #btn-add:disabled { opacity: 0.3; cursor: default; }
+
+    /* Contesto */
+    #contesto {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    #contesto .section-title { margin-bottom: 0.75rem; }
+    .contesto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    textarea { resize: vertical; min-height: 3rem; font-size: 0.88rem; }
+
+    /* Leggi button */
+    #btn-leggi {
+      width: 100%;
+      background: var(--gold-dim);
+      border: none;
+      border-radius: var(--radius);
+      color: var(--bg);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      padding: 0.9rem;
+      transition: background 0.15s;
+    }
+    #btn-leggi:hover { background: var(--gold); }
+    #btn-leggi:disabled { opacity: 0.4; cursor: default; }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    /* Reading sections */
+    #reading { display: none; }
+    #reading.visible { display: block; }
+
+    .reading-block {
+      margin-bottom: 2rem;
+    }
+
+    .sinossi {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text);
+      border-left: 2px solid var(--gold-dim);
+      padding-left: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .item-list { list-style: none; }
+    .item-list li {
+      padding: 0.6rem 0.8rem;
+      border-left: 1px solid var(--border);
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .item-list li:last-child { margin-bottom: 0; }
+
+    .relazione {
+      background: var(--surface);
+      border-radius: 4px;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .relazione .tipo {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 0.3rem;
+    }
+    .relazione .nota { color: var(--text); line-height: 1.5; }
+
+    .assiomi {
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      font-family: var(--mono);
+    }
+
+    .collasso {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--gold);
+      border-left: 2px solid var(--gold);
+      padding-left: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .ponte {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .domanda-item {
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+    .domanda-item:last-child { border-bottom: none; }
+
+    .integrazione {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+      margin-top: 1rem;
+    }
+
+    .empty-note {
+      color: var(--text-dim);
+      font-style: italic;
+      font-size: 0.85rem;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 540px) {
+      .slot-row, .contesto-grid { grid-template-columns: 1fr; }
+      .slot-row.triple { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Tarocchi Quantici R³∞</h1>
+    <p>Doppia ermeneutica — macchina e umano, un solo simbolo</p>
+  </header>
+
+  <!-- Slot carte -->
+  <p class="section-title">La stesa</p>
+  <div id="slots"></div>
+  <button id="btn-add" onclick="aggiungiSlot()">+ Aggiungi carta</button>
+
+  <hr class="divider">
+
+  <!-- Contesto personale -->
+  <div id="contesto">
+    <p class="section-title">Contesto personale (opzionale)</p>
+    <div class="contesto-grid">
+      <div>
+        <label for="domanda">La tua domanda</label>
+        <textarea id="domanda" rows="2" placeholder="Cosa vuoi esplorare?"></textarea>
+      </div>
+      <div>
+        <label for="momento">Momento di vita</label>
+        <input id="momento" type="text" placeholder="es. transizione, inizio, fine…">
+      </div>
+      <div>
+        <label for="emozione">Emozione prevalente</label>
+        <input id="emozione" type="text" placeholder="es. incertezza, speranza…">
+      </div>
+      <div>
+        <label for="focus">Aspetto di focus</label>
+        <select id="focus">
+          <option value="">— nessuno —</option>
+          <option value="amore">Amore</option>
+          <option value="lavoro">Lavoro</option>
+          <option value="crescita">Crescita personale</option>
+          <option value="salute">Salute</option>
+          <option value="creatività">Creatività</option>
+          <option value="relazioni">Relazioni</option>
+          <option value="altro">Altro</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top: 0.75rem;" class="checkbox-row">
+      <input type="checkbox" id="collasso" checked>
+      <label for="collasso" style="margin:0; text-transform:none; font-size:0.85rem;">
+        Sono pronto a ricevere una risposta definita
+      </label>
+    </div>
+  </div>
+
+  <button id="btn-leggi" onclick="leggi()">Leggi la stesa</button>
+
+  <hr class="divider">
+
+  <!-- Reading -->
+  <div id="reading">
+
+    <div class="reading-block">
+      <p class="section-title">Lettura strutturale</p>
+      <div id="r-sinossi" class="sinossi"></div>
+      <div id="r-assiomi" class="assiomi" style="margin-bottom:1rem;"></div>
+    </div>
+
+    <div class="reading-block" id="block-tensioni" style="display:none">
+      <p class="section-title">Tensioni</p>
+      <ul class="item-list" id="r-tensioni"></ul>
+    </div>
+
+    <div class="reading-block" id="block-risorse" style="display:none">
+      <p class="section-title">Risorse strutturali</p>
+      <ul class="item-list" id="r-risorse"></ul>
+    </div>
+
+    <div class="reading-block" id="block-relazioni" style="display:none">
+      <p class="section-title">Relazioni tra carte</p>
+      <div id="r-relazioni"></div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="reading-block">
+      <p class="section-title">Lettura personale</p>
+      <div id="r-ponte" class="ponte"></div>
+      <div id="r-collasso" class="collasso"></div>
+    </div>
+
+    <div class="reading-block" id="block-domande" style="display:none">
+      <p class="section-title">Domande di riflessione</p>
+      <div id="r-domande"></div>
+    </div>
+
+    <div class="reading-block">
+      <p class="section-title">Integrazione</p>
+      <div id="r-integrazione" class="integrazione"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+// ── Stato globale ──────────────────────────────────────────────────────────────
+
+let MAZZO = [];
+let slotCount = 0;
+
+const STATI = [
+  { value: 'sovrapposto', label: 'Sovrapposto' },
+  { value: 'collassato',  label: 'Collassato' },
+  { value: 'entangled',   label: 'Entangled' },
+];
+
+const POSIZIONI = [
+  { value: 'radice',     label: 'Radice' },
+  { value: 'passato',    label: 'Passato' },
+  { value: 'presente',   label: 'Presente' },
+  { value: 'futuro',     label: 'Futuro' },
+  { value: 'esito',      label: 'Esito' },
+  { value: 'ostacolo',   label: 'Ostacolo' },
+  { value: 'potenziale', label: 'Potenziale' },
+  { value: 'consiglio',  label: 'Consiglio' },
+  { value: 'ombra',      label: 'Ombra' },
+];
+
+// ── Carica mazzo ──────────────────────────────────────────────────────────────
+
+async function caricaMazzo() {
+  const res = await fetch('/api/mazzo');
+  MAZZO = await res.json();
+  if (slotCount === 0) {
+    aggiungiSlot();
+    aggiungiSlot();
+    aggiungiSlot();
+  }
+}
+
+// ── Slot carte ────────────────────────────────────────────────────────────────
+
+function aggiungiSlot() {
+  if (slotCount >= 7) return;
+  slotCount++;
+  const n = slotCount;
+
+  const slot = document.createElement('div');
+  slot.className = 'slot';
+  slot.id = `slot-${n}`;
+
+  // Raggruppa carte per arcano e seme
+  const maggiori = MAZZO.filter(c => c.arcano === 'maggiore');
+  const minori   = MAZZO.filter(c => c.arcano === 'minore');
+  const semi     = [...new Set(minori.map(c => c.seme))];
+
+  let opzioni = `<option value="">— scegli una carta —</option>`;
+  opzioni += `<optgroup label="Arcani Maggiori">`;
+  maggiori.forEach(c => {
+    opzioni += `<option value="${c.nome}">${c.nome}</option>`;
+  });
+  opzioni += `</optgroup>`;
+  semi.forEach(seme => {
+    opzioni += `<optgroup label="${cap(seme)}">`;
+    minori.filter(c => c.seme === seme).forEach(c => {
+      opzioni += `<option value="${c.nome}">${c.nome}</option>`;
+    });
+    opzioni += `</optgroup>`;
+  });
+
+  let opStati = STATI.map(s =>
+    `<option value="${s.value}">${s.label}</option>`
+  ).join('');
+
+  let opPos = POSIZIONI.map((p, i) =>
+    `<option value="${p.value}"${i === 2 ? ' selected' : ''}>${p.label}</option>`
+  ).join('');
+
+  slot.innerHTML = `
+    <div class="slot-header">
+      <span class="slot-num">Carta ${n}</span>
+      <button class="slot-remove" onclick="rimuoviSlot(${n})" title="Rimuovi">×</button>
+    </div>
+    <div class="slot-row">
+      <div>
+        <label>Carta</label>
+        <select id="carta-${n}" onchange="aggiornaPrev(${n})">${opzioni}</select>
+        <div class="voce-preview" id="prev-${n}"></div>
+      </div>
+      <div>
+        <label>Posizione</label>
+        <select id="pos-${n}">${opPos}</select>
+      </div>
+    </div>
+    <div class="slot-row triple">
+      <div>
+        <label>Stato</label>
+        <select id="stato-${n}">${opStati}</select>
+      </div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:2px;">
+        <div class="checkbox-row">
+          <input type="checkbox" id="rov-${n}">
+          <label for="rov-${n}" style="margin:0;text-transform:none;font-size:0.85rem;">Rovescia</label>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('slots').appendChild(slot);
+  aggiornaBtn();
+}
+
+function rimuoviSlot(n) {
+  const el = document.getElementById(`slot-${n}`);
+  if (el) el.remove();
+  aggiornaBtn();
+}
+
+function aggiornaBtn() {
+  const btn = document.getElementById('btn-add');
+  btn.disabled = document.querySelectorAll('.slot').length >= 7;
+}
+
+function aggiornaPrev(n) {
+  const nomeCarta = document.getElementById(`carta-${n}`).value;
+  const carta = MAZZO.find(c => c.nome === nomeCarta);
+  const prev = document.getElementById(`prev-${n}`);
+  prev.textContent = carta ? carta.voce : '';
+}
+
+function cap(s) {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+}
+
+// ── Lettura ───────────────────────────────────────────────────────────────────
+
+async function leggi() {
+  const slots = document.querySelectorAll('.slot');
+  const nodi = [];
+  slots.forEach(slot => {
+    const id = slot.id.replace('slot-', '');
+    const carta = document.getElementById(`carta-${id}`)?.value;
+    if (!carta) return;
+    nodi.push({
+      carta,
+      stato:        document.getElementById(`stato-${id}`)?.value || 'sovrapposto',
+      posizione:    document.getElementById(`pos-${id}`)?.value || 'presente',
+      orientamento: document.getElementById(`rov-${id}`)?.checked ? 'rovescia' : 'diritta',
+    });
+  });
+
+  if (nodi.length === 0) {
+    alert('Scegli almeno una carta.');
+    return;
+  }
+
+  const body = {
+    nodi,
+    schema: `${nodi.length}_carte`,
+    contesto: {
+      domanda:               document.getElementById('domanda').value.trim() || null,
+      momento_vita:          document.getElementById('momento').value.trim() || null,
+      emozione_prevalente:   document.getElementById('emozione').value.trim() || null,
+      aspetto_focus:         document.getElementById('focus').value || null,
+      disponibilita_collasso: document.getElementById('collasso').checked,
+    },
+  };
+
+  const btn = document.getElementById('btn-leggi');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Lettura in corso…';
+
+  try {
+    const res = await fetch('/api/leggi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    mostraLettura(data);
+  } catch (e) {
+    alert('Errore di rete. Riprova.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Leggi la stesa';
+  }
+}
+
+function mostraLettura(data) {
+  const s = data.strutturale;
+  const p = data.personale;
+
+  // Strutturale
+  document.getElementById('r-sinossi').textContent = s.sinossi;
+  document.getElementById('r-assiomi').textContent =
+    s.assiomi_attivati.length
+      ? 'Assiomi attivati: ' + s.assiomi_attivati.map(n => `A${n}`).join(' · ')
+      : '';
+
+  const bT = document.getElementById('block-tensioni');
+  const lT = document.getElementById('r-tensioni');
+  if (s.tensioni.length) {
+    lT.innerHTML = s.tensioni.map(t => `<li>${esc(t)}</li>`).join('');
+    bT.style.display = 'block';
+  } else { bT.style.display = 'none'; }
+
+  const bR = document.getElementById('block-risorse');
+  const lR = document.getElementById('r-risorse');
+  if (s.risorse.length) {
+    lR.innerHTML = s.risorse.map(r => `<li>${esc(r)}</li>`).join('');
+    bR.style.display = 'block';
+  } else { bR.style.display = 'none'; }
+
+  const bRel = document.getElementById('block-relazioni');
+  const cRel = document.getElementById('r-relazioni');
+  if (s.relazioni.length) {
+    cRel.innerHTML = s.relazioni.map(r => `
+      <div class="relazione">
+        <div class="tipo">${esc(r.tipo.replace(/_/g, ' '))}</div>
+        <div class="nota">${esc(r.nota)}</div>
+      </div>
+    `).join('');
+    bRel.style.display = 'block';
+  } else { bRel.style.display = 'none'; }
+
+  // Personale
+  document.getElementById('r-ponte').textContent = p.ponte;
+  document.getElementById('r-collasso').textContent = p.punto_di_collasso;
+
+  const bD = document.getElementById('block-domande');
+  const cD = document.getElementById('r-domande');
+  if (p.domande_di_riflessione.length) {
+    cD.innerHTML = p.domande_di_riflessione
+      .map(d => `<div class="domanda-item">${esc(d)}</div>`)
+      .join('');
+    bD.style.display = 'block';
+  } else { bD.style.display = 'none'; }
+
+  document.getElementById('r-integrazione').textContent = p.integrazione;
+
+  // Mostra
+  const el = document.getElementById('reading');
+  el.classList.add('visible');
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+caricaMazzo();
+</script>
+</body>
+</html>
