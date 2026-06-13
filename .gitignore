@@ -67,3 +67,4 @@ temp/
 secrets/
 !output/memorie/
 !output/memorie/*.json
+!output/stato_sdq1.json
