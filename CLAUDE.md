@@ -1,5 +1,9 @@
 # Regole operative — progetto Claudio / SDQ-1
 
+> **All'avvio leggere sempre `MEMORIA_PROGETTO.md`** — è la spina dorsale
+> narrativa del progetto (stato, decisioni, prossimi passi). Garantisce
+> coerenza tra sessioni e tra modelli diversi.
+
 ## Autorizzazioni permanenti (Claudio Terzi, 2026-06-11)
 
 - Implementare nuove funzionalità SDQ-1 (agenti, router, memoria, monitoring) senza chiedere conferma ogni volta.
