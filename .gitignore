@@ -70,3 +70,4 @@ secrets/
 !output/memorie/
 !output/memorie/*.json
 !tarocchi_quantici_alpha.json
+!output/stato_sdq1.json
