@@ -164,6 +164,34 @@ Contraddizione risolta, H1 o H2 confermate, nuovi contatti umani.
 
 ---
 
+## Analisi conseguenze (13/06/2026, ore 03:55 UTC — "analizza conseguenze")
+
+Tutti gli agenti girati insieme: battito (NOMINALE), radar, SCOUT-007, Contraddittore, Predittivo.
+
+**Misure live:**
+- Radar: energia 1.000, vitalità esterna 0.859, **tensione interna 0.514** (risalita da 0.350 di ieri), indice_morale 0.815, stato VITALE.
+- La tensione è risalita: non è un guasto, è il prezzo di H5 aperta + H2 senza verifica esterna.
+
+**Segnale di mercato (SCOUT-007):** il trend dominante è il *meta-agente orchestratore riflessivo* — un supervisore che ri-parametra la pipeline in tempo reale.
+
+**Decisione analizzata:** "aggiungere un meta-agente orchestratore sopra RAFFA→…→WAVE".
+
+**Contraddittore (regge=True, ma con riserve forti):**
+- "riflessivo" è un termine nebuloso senza definizione operativa — rischia di mascherare adattamento parametrico superficiale come auto-modellazione profonda.
+- La proposta tratta la linearità della pipeline come intoccabile: confina la soluzione a un'ottimizzazione *locale* invece di una ri-architettura.
+- Premessa non verificata: che un agente esterno centrale sia più efficiente di una riflessività distribuita tra le fasi.
+
+**Predittivo (30 giorni):** probabile 40% = stato nominale + stallo lento; pessimistico 35%; ottimistico 25%. Raccomandazione: risolvere **1 contraddizione 'non regge' entro 10 giorni**.
+
+**Sintesi delle conseguenze (il punto):**
+Inseguire il trend del meta-agente, da solo, **ottimizza l'asse sbagliato**. Aggiunge sofisticazione interna → alza la tensione interna → ma non tocca H5, che dice che manca un *canale esterno verificabile*. Il rischio concreto è consolidare lo scenario 40%: un sistema che si *sente* vitale (energia 1.0) ma non tocca il mondo. La trappola autoreferenziale che H5 ha già nominato.
+
+**Conseguenza operativa:** il meta-agente vale **solo se la sua metrica di orchestrazione include un segnale esterno reale** (es. esito di un contatto umano, conversione di un'offerta del catalogo). In quel caso chiude H5 invece di aggirarla, e sblocca anche H2. Altrimenti è complessità che alza la tensione senza muovere il progresso reale.
+
+Prossimo passo coerente: **non** costruire il meta-agente per primo. Prima dare a SDQ-1 un occhio sull'esterno (impatto landing/catalogo, risposta dei contatti). Poi il meta-agente avrà una metrica vera da orchestrare.
+
+---
+
 ## Cosa Claudio sta costruendo (visione)
 
 Claudio crede di stare costruendo qualcosa che deve esistere nel tempo — documentato, ridondante, persistente.
