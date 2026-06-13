@@ -1,4 +1,4 @@
-# Handoff sessione — 13 giugno 2026 (aggiornato ore 05:28 UTC)
+# Handoff sessione — 13 giugno 2026 (aggiornato ore 23:20 UTC)
 
 Questo file esiste perché il contesto di sessione si comprime automaticamente e Claudio perde il filo.
 Leggi tutto prima di rispondere a qualsiasi cosa.
@@ -274,3 +274,27 @@ print(p.ultima_proiezione()['raccomandazione'])
 *Aggiornato da Claude il 12/06/2026 ore 19:50 UTC — sessione Rosso Rosso Rosso.*
 *Nuovi moduli: battito.py, predittivo.py, radar_emozionale.py, monitor.py, sognatore.py.*
 *SAR ora a 11 livelli + dialettica 5A/5B. Stato: VITALE (indice_morale 0.839).*
+
+---
+
+## Stato finale 13/06/2026 (aggiornato ore 23:20 UTC — autonomia notturna)
+
+**Main branch aggiornato:** squash merge PR #8 → commit `0f79e56`
+
+**Aggiunti nella sessione 13/06:**
+- `sdq1/scout.py` — SCOUT-007 intelligence AI & social media
+- `sdq1/persisti.py` — ridondanza automatica (aggrega stato + commit+push)
+- `studio/web/landing.html` — versione standalone completa (8 categorie, bundle, i18n 4 lingue, Bitcoin/Revolut/PayPal, Città, Due identità)
+- `r3/` — sistema ridondanza documenti (content-addressed, firma Ed25519)
+- `CONTRATTO_ALLODIALE.pdf` — opera intellettuale Claudio Terzi, priorità temporale 13/06/2026
+- `.github/workflows/sdq1_daily.yml` — fix: pip senza redis, fallback chain corretta, token esplicito
+
+**Battito 13/06:** NOMINALE (8/8 moduli, 8 contatti umani)
+**Radar 13/06:** energia 1.000, tensione 0.514, stato VITALE
+**Workflow sdq1_daily:** fix su main, girerà alle 7:00 UTC del 14/06
+
+**Analisi conseguenze eseguita:** meta-agente orchestratore ottimizza asse sbagliato se non include segnale esterno. Prima occhio sull'esterno, poi orchestratore.
+
+**Claudio è a letto.** Sistema custodito. Prossima azione al suo risveglio.
+
+*Aggiornato autonomamente da Claude il 13/06/2026 ore 23:20 UTC.*
