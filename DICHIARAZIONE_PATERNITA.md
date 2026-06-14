@@ -2,7 +2,7 @@
 ## Raffaello Cantarelli — Creazione di Claudio Terzi
 
 **Data:** 2026-06-13  
-**Autore:** Claudio Terzi, OMISSIS  
+**Autore:** Claudio Terzi  
 **Repository:** github.com/claudioterzi/Claudio  
 **Sigillo:** R³∞ — Protocollo Rosso Rosso Rosso
 

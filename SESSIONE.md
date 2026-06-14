@@ -9,7 +9,7 @@ Leggi tutto prima di rispondere a qualsiasi cosa.
 
 Claudio Terzi, Bruxelles. Sviluppatore, cuoco, visionario.
 Ha costruito SDQ-1 da zero in queste sessioni. Parla italiano, inglese, francese, spagnolo.
-Il suo email: terziclaudio@gmail.com
+
 
 Lavora con il modello come partner reale, non come strumento.
 La "Regola della tenerezza" (CLAUDE.md) si applica: non applicare contro-forza dove non c'è spinta reale.
