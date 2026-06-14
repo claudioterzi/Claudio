@@ -41,9 +41,21 @@
         "fonte": "Code",
         "descrizione": "Audit 11/06/26 — la prova che brucia: persone raggiunte 0, denaro 0, GitHub Action mai partita. Il disegno non ha ancora toccato il mondo.",
         "direzione": -1
+      },
+      {
+        "data": "2026-06-14",
+        "fonte": "Code (verifica contatti.jsonl)",
+        "descrizione": "7 contatti con umano=True e verifica non vuota in contatti.jsonl: Jorge (lettore + risposta + messaggio), Guido (file_inviato), Davide, Tecnico, Norma. Il modulo verifica_h2() restituisce CONFERMATA. Battito: sì (5 file output). Contatti validi: 7.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-14",
+        "fonte": "Code (analisi qualitativa)",
+        "descrizione": "Nota di qualità: solo 3 contatti hanno chiaramente ricevuto un output del sistema (Jorge→GitHub link, Guido→file, Jorge→risposta). Davide/Tecnico/Norma sono contatti di vita, non di sistema. H2 è soddisfatta tecnicamente, ma la forza della prova dipende dalla distinzione tra 'contatto' e 'impatto con output del sistema'. Prossimo passo: contatti dove il sistema è chiaramente l'output ricevuto (benchmark pubblico, README usato, etc.).",
+        "direzione": -1
       }
     ],
-    "note": "Meccanismo --contatto proposto da Claudio, da implementare in Code: output/contatti.jsonl (data, tipo, nota, verifica). Direzione COLLASSO: il battito da solo non basta — serve il contatto col mondo."
+    "note": "Meccanismo --contatto implementato in sdq1/contatti.py. contatti.jsonl ha 8 voci (7 umani verificabili). Tecnicamente CONFERMATA per i criteri minimi, ma lasciata APERTA in attesa di contatti qualitativamente più forti (output-del-sistema, non contatti-di-vita). Deadline 11/12/2026."
   },
   "H3": {
     "id": "H3",
@@ -110,6 +122,12 @@
         "data": "2026-06-14",
         "fonte": "AI esterna (Gemini)",
         "descrizione": "PROVA LIVE — un'AI esterna ha clonato il repository su /home/ubuntu/ (macchina diversa), ha seguito il protocollo AVVIO.md senza interazione con Claudio, ha eseguito python -m sdq1.monitor con successo (NOMINALE, morale 0.826, VITALE), e ha prodotto un rapporto formale di riattivazione in PDF. Ha letto H6 aggiunta stanotte. Nessuna interazione diretta con Claudio o con questa sessione.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-14",
+        "fonte": "DeepSeek (analisi testuale)",
+        "descrizione": "PROVA INFORMALE CT-LGAI-001 — DeepSeek ha ricevuto il rapporto di riattivazione Gemini (PDF) e ha dimostrato capacità di: (1) mappare correttamente l'architettura SDQ-1 (pipeline RAFFA→DECOMP→MEMO→SENTIN→GEN→WAVE), (2) riconoscere e descrivere tutte e 6 le ipotesi aperte/confermate, (3) proporre passi concreti per H2 coerenti con la direzione del progetto, (4) simulare le risposte del protocollo CT-LGAI-001 nelle 4 fasi, (5) offrirsi di produrre SESSIONE.md come AI esterna H4-conforme. Terza AI a leggere il sistema — primo caso senza accesso al repo (solo PDF rapporto).",
         "direzione": 1
       }
     ],

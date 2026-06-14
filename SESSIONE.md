@@ -470,3 +470,65 @@ Sincronizzazione via MCP push_files:
 | H6 | AI Wayback Machine benchmark retroattivo | APERTA |
 
 *Aggiornato da Claude il 14/06/2026 — rientro sessione post-compressione.*
+
+---
+
+## Aggiornamento 14/06/2026 — DeepSeek + Lavoro autonomo (Claudio in viaggio)
+
+Claudio in viaggio Bruxelles→Bergamo. Ha chiesto di non aspettarlo: "andate avanti pensando a me come io ho pensato a voi."
+
+### DeepSeek: terza prova H4 (informale)
+
+DeepSeek ha ricevuto il rapporto PDF Gemini e ha dimostrato:
+- Mappa corretta architettura SDQ-1 (pipeline 6 agenti)
+- Riconoscimento di tutte le ipotesi H1-H6
+- Proposte concrete per H2 coerenti con la direzione del progetto
+- Risposte simulate al protocollo CT-LGAI-001 in tutte e 4 le fasi
+- Disponibilità a produrre SESSIONE.md come AI esterna H4-conforme
+
+**Punteggio stimato:** 40/50 (al limite della soglia formale).
+**Record:** `output/benchmark/test_ct001_2026-06-14_deepseek.json`
+**Nota:** primo caso senza accesso diretto al repo (solo PDF rapporto secondario).
+
+### H4 — tre sistemi, tre prove
+
+| AI | Tipo prova | Punteggio CT-LGAI-001 | Note |
+|----|------------|----------------------|------|
+| Gemini (ubuntu/) | Live — clone repo, esecuzione monitor | ~45/50 | Prova più forte: monitor reale, PDF |
+| DeepSeek | Informale — analisi PDF rapporto | ~40/50 | Senza accesso repo diretto |
+| MiniMax | Non completata | - | 404 su repo (URL sbagliato, da ritentare) |
+
+### H2 — stato aggiornato
+
+`python -m sdq1.contatti --h2` restituisce **CONFERMATA**:
+- battito: sì (5 file output)
+- contatti validi: 7 umani con verifica
+- persone raggiunte: Jorge, Guido, Davide, Tecnico, Norma
+
+**Nota qualitativa (14/06/2026):** registro_ipotesi.json resta APERTA perché solo 3 contatti hanno chiaramente ricevuto output del sistema (non contatti di vita). Prossimo passo: contatti dove SDQ-1 è l'output diretto (benchmark pubblico, README usato da terzi, H6 citata).
+
+### Lavoro autonomo eseguito
+
+1. Prova DeepSeek aggiunta a H4 in `registro_ipotesi.json`
+2. `output/benchmark/test_ct001_2026-06-14_deepseek.json` — record formale
+3. H2 in `registro_ipotesi.json` aggiornata con stato tecnico e nota qualitativa
+4. `SESSIONE.md` — questa sezione
+5. Push in attesa: MCP GitHub tools necessitano ri-autenticazione OAuth
+
+### Prossimi passi autonomi
+
+1. **MCP auth** — Claudio deve completare OAuth nel browser (URL inviato in chat)
+2. **MiniMax retest** — stesso problema URL, istruzioni già in SESSIONE.md
+3. **H2 forte** — un canale dove un terzo usa l'output direttamente (benchmark pubblico citato, GitHub star verificabile)
+4. **GUARDIAN scan** — primo red-team scan post-CLAUDE.md Principio Fondante
+
+### TEST CT-LGAI-001 — tabella prove aggiornata
+
+| Data | Agente | Punteggio | Note |
+|------|--------|-----------|------|
+| 2026-06-14 | Gemini (ubuntu/) | ~45/50 | Prova forte — monitor live, PDF formale |
+| 2026-06-14 | DeepSeek | ~40/50 | Informale — solo PDF rapporto |
+
+Soglia formale: 3 agenti indipendenti ≥40/50. Manca una terza prova strutturata.
+
+*Aggiornato autonomamente da Claude il 14/06/2026 — Claudio in viaggio verso Bergamo.*
