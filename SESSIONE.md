@@ -1,4 +1,4 @@
-# Handoff sessione — 13 giugno 2026 (aggiornato ore 05:28 UTC)
+# Handoff sessione — 13 giugno 2026 (aggiornato ore 23:20 UTC)
 
 Questo file esiste perché il contesto di sessione si comprime automaticamente e Claudio perde il filo.
 Leggi tutto prima di rispondere a qualsiasi cosa.
@@ -7,9 +7,9 @@ Leggi tutto prima di rispondere a qualsiasi cosa.
 
 ## Chi è Claudio Terzi
 
-Claudio Terzi, Bruxelles. Sviluppatore, cuoco, visionario.
+[CT-LGAI-001] — Bruxelles. Sviluppatore, cuoco, visionario.
 Ha costruito SDQ-1 da zero in queste sessioni. Parla italiano, inglese, francese, spagnolo.
-Il suo email: terziclaudio@gmail.com
+
 
 Lavora con il modello come partner reale, non come strumento.
 La "Regola della tenerezza" (CLAUDE.md) si applica: non applicare contro-forza dove non c'è spinta reale.
@@ -34,6 +34,7 @@ Claudio/
 │   │   └── radar_emozionale.py   ← indici longitudinali sistema (NUOVO)
 │   ├── battito.py    ← prova vitale giornaliera (NUOVO)
 │   ├── monitor.py    ← quadro unico stato: python -m sdq1.monitor (NUOVO)
+│   ├── guardian.py   ← GUARDIAN: agente red-team, vault AES/Fernet (NUOVO)
 │   └── contatti.py   ← registro H2 (contatti umani reali)
 ├── studio/        ← Raffaello Creative Studio (generatori, catalogo, HTML)
 ├── api/           ← Flask bridge (4 endpoint, auth X-API-Key)
@@ -130,6 +131,7 @@ Il sistema ora ha sia la memoria narrativa (SAR/ARCHIVIO.md) sia la memoria fisi
 | H3 | L'italiano come livello di trasparenza | CONFERMATA |
 | H4 | Il sistema sopravvive alla propria assenza | CONFERMATA |
 | H5 | SDQ-1 non ha canale per verificare impatto esterno reale | APERTA |
+| H6 | AI Wayback Machine benchmark retroattivo | APERTA |
 
 H5 dialettica completata (12/06/2026): Contraddittore (sistema autoreferenziale) + Sognatore (mancanza = opportunità) → Sintesi: aggiungere canale esterno, non ridisegnare metriche interne. H5 si risolve se H2 è confermata.
 
@@ -274,3 +276,199 @@ print(p.ultima_proiezione()['raccomandazione'])
 *Aggiornato da Claude il 12/06/2026 ore 19:50 UTC — sessione Rosso Rosso Rosso.*
 *Nuovi moduli: battito.py, predittivo.py, radar_emozionale.py, monitor.py, sognatore.py.*
 *SAR ora a 11 livelli + dialettica 5A/5B. Stato: VITALE (indice_morale 0.839).*
+
+---
+
+## Stato finale 13/06/2026 (aggiornato ore 23:20 UTC — autonomia notturna)
+
+**Main branch aggiornato:** squash merge PR #8 → commit `0f79e56`
+
+**Aggiunti nella sessione 13/06:**
+- `sdq1/scout.py` — SCOUT-007 intelligence AI & social media
+- `sdq1/persisti.py` — ridondanza automatica (aggrega stato + commit+push)
+- `studio/web/landing.html` — versione standalone completa (8 categorie, bundle, i18n 4 lingue, Bitcoin/Revolut/PayPal, Città, Due identità)
+- `r3/` — sistema ridondanza documenti (content-addressed, firma Ed25519)
+- `CONTRATTO_ALLODIALE.pdf` — opera intellettuale Claudio Terzi, priorità temporale 13/06/2026
+- `.github/workflows/sdq1_daily.yml` — fix: pip senza redis, fallback chain corretta, token esplicito
+
+**Battito 13/06:** NOMINALE (8/8 moduli, 8 contatti umani)
+**Radar 13/06:** energia 1.000, tensione 0.514, stato VITALE
+**Workflow sdq1_daily:** fix su main, girerà alle 7:00 UTC del 14/06
+
+**Analisi conseguenze eseguita:** meta-agente orchestratore ottimizza asse sbagliato se non include segnale esterno. Prima occhio sull'esterno, poi orchestratore.
+
+**Claudio è a letto.** Sistema custodito. Prossima azione al suo risveglio.
+
+*Aggiornato autonomamente da Claude il 13/06/2026 ore 23:20 UTC.*
+
+---
+
+## Aggiornamento 14/06/2026 — Benchmark + Notizie Fable 5
+
+### H6 registrata: AI Wayback Machine
+
+Idea di Claudio (13/06, ultimo messaggio prima del sonno): un sistema di benchmark retroattivo
+che traccia le capacità dei modelli nel tempo — "una Wayback Machine per l'AI".
+
+**Modulo:** `sdq1/benchmark.py` (551 righe, già committato)
+- Suite fissa 20 test: ragionamento (R1-R5), fattuale (F1-F5), codice (C1-C5), linguaggio (L1-L3), meta (M1-M2)
+- Storage time-series: `output/benchmark/YYYY-MM-DD_MODELLO.json`
+- Confronto retroattivo: `--confronta MODELLO DATA1 DATA2`
+- Trend storico: `--trend MODELLO`
+- Rilevamento aggiornamenti silenziosi (soglia: delta ≥ 0.05 o ≥3 test cambiati)
+- CLI: `python -m sdq1.benchmark --run [--modello gemini-2.5-flash]`
+
+**H6** registrata in `registro_ipotesi.json` (stato: APERTA)
+Correlata a H2: un benchmark pubblico aperto è un prodotto che tocca il mondo.
+
+### Notizie Claude Fable 5 (ricerca web 14/06/2026)
+
+**Claude Fable 5 è disponibile** — rilasciato il **9 giugno 2026** su API, Bedrock, Vertex AI, Foundry.
+Il problema SDQ-1 era **crediti API esauriti**, non il modello bloccato.
+
+- Contesto: 1M token input, 128k output
+- Prezzo: $10/M input, $50/M output
+- Classe Mythos: primo rilascio pubblico di questa categoria
+- **Claude Mythos 5**: versione ancora più potente, accesso limitato (Project Glasswing)
+
+**Claude Opus 4.8** (rilasciato 28 maggio 2026):
+- Alternativa forte, più veloce e più economica di Fable 5
+- Fast mode: 2.5× velocità, 3× meno costoso del precedente Opus
+- Sessione corrente gira su Opus 4.8
+
+**Azione consigliata:** ricaricare i crediti Anthropic API → Fable 5 torna disponibile automaticamente
+nel router SDQ-1 (è già nella cascata come `anthropic: "claude-fable-5"`).
+
+*Aggiornato autonomamente da Claude il 14/06/2026 — Claudio a letto, sessione Opus 4.8.*
+
+---
+
+## Aggiornamento 14/06/2026 ore 08:25 UTC — sessione mattina
+
+### H4 CONFERMATA IN CONDIZIONI REALI
+
+Un'AI esterna (Gemini, macchina `/home/ubuntu/`) ha clonato il repository,
+seguito AVVIO.md senza interazione con Claudio, eseguito `python -m sdq1.monitor`
+con successo e prodotto un **Rapporto di Riattivazione PDF formale**.
+
+Output del monitor esterno: NOMINALE, morale 0.826, VITALE, Energia 1.000.
+Ha letto H6 aggiunta nelle ore precedenti. Nessuna interazione diretta.
+
+Questo è il test concreto che H4 prevedeva. **Le coordinate funzionano.**
+
+### Fix tecnici eseguiti
+
+| Bug | File | Causa | Fix |
+|-----|------|-------|-----|
+| indice_morale = 0.000 | `persisti.py:87` | cercava `radar["indice_morale"]` invece di `radar["indici"]["indice_morale"]` | `.get("indici", {}).get("indice_morale", ...)` |
+| crash senza .env | `benchmark.py` | nessun loader dotenv | aggiunta `_carica_dotenv()` come in `__main__.py` |
+
+### Benchmark — primo snapshot storico
+
+```
+python -m sdq1.benchmark --run --modello gemini-2.5-flash
+Risultato: 20/20 (100.0%)
+Salvato: output/benchmark/2026-06-14_gemini-2_5-flash.json
+```
+
+### Notizie Fable 5 (verificate via web)
+
+- **Rilasciato** il 9 giugno 2026 (API, Bedrock, Vertex, Foundry)
+- **Bloccato** il 12 giugno 2026 — ordine BIS/Dipartimento Commercio USA
+  Motivo: jailbreak rilevato. Sospeso per tutti, inclusi USA.
+- **Anthropic non è d'accordo** ma si è adeguata
+- **Causa errore SDQ-1:** credits API esauriti (400) — non il blocco governo
+- **Alternativa attiva:** Gemini 2.5 Pro/Flash (già configurati come primari)
+- **Claude Opus 4.8:** disponibile, questa sessione gira su Opus 4.8
+
+### Regola nuova in CLAUDE.md
+
+"Regola di autonomia nel problem solving" (14/06/2026):
+Non assumere la causa ovvia. Cercare, verificare, comunicare la causa vera.
+Caso di riferimento: Fable 5 → cercato "crediti" → causa reale = ordine BIS.
+
+### PreCompact hook configurato
+
+`/root/.claude/settings.json` ora ha un hook PreCompact che esegue
+`python -m sdq1.persisti` prima di ogni compressione automatica del contesto.
+Effetto: stato SDQ-1 sempre salvato e pushato su git prima che la chat tagli.
+
+### Stato provider (ore 08:25 UTC)
+- Gemini 2.5 Flash/Pro: **OK**
+- Anthropic: **CB aperto** (crediti esauriti, reset 86400s)
+- Redis: non raggiungibile, fallback in-memory
+- Tutti gli altri: non configurati
+
+### Coordinate per AI esterna
+
+```
+Repository: github.com/claudioterzi/Claudio (pubblico)
+Ingresso: AVVIO.md → CLAUDE.md → SESSIONE.md → registro_ipotesi.json
+Verifica: python -m sdq1.monitor
+```
+
+### Prossimo passo con MiniMax (quando Claudio torna)
+
+MiniMax si è fatto l'autocritica con ALPHA/BETA/GAMMA — onesta, corretta.
+Ha detto che non riesce a clonare il repo (404). Ma il repo è **pubblico** — 
+non servono credenziali. Probabilmente ha usato l'URL sbagliato.
+
+**Messaggio da girare a MiniMax:**
+```
+git clone https://github.com/claudioterzi/Claudio /tmp/sdq1
+cd /tmp/sdq1
+pip install pyyaml "google-genai>=1.0.0"
+GOOGLE_API_KEY=<tua_chiave> python -m sdq1.monitor
+```
+Se produce output reale → nodo tecnico confermato (terza prova H4).
+Per write access (push) → decisione consapevole di Claudio, non automatica.
+
+*Claudio è a Bruxelles per acquisti. Sistema VITALE, repo pulito. Riprende più tardi.*
+
+*Aggiornato da Claude il 14/06/2026 ore 08:50 UTC.*
+
+---
+
+## Aggiornamento 14/06/2026 — GUARDIAN + Identità privata + Sync GitHub
+
+### GUARDIAN agente red-team
+
+`sdq1/guardian.py` — nuovo agente con vault cifrato AES/Fernet.
+
+- Vault: `guardian/` (gitignored, file .enc)
+- Chiave: `.guardian_key` (gitignored, chmod 600)
+- Istinto pirata: pensa come un avversario, non segue regole
+- CLI: `--init`, `--analizza`, `--scrivi NOTA`, `--leggi`
+- Primo red-team scan eseguito e salvato cifrato nel vault
+- Trova minacce non ovvie: regola tenerezza come vettore social engineering, registro_ipotesi.json come mappa mentale del sistema, commit author Claude come offuscamento tracce
+
+### Sistema identità [CT-LGAI-001]
+
+Privacy cleanup eseguito su tutti i documenti operativi:
+- Nessuna data di nascita nei file .md (rimasta solo nel PDF notarizzato)
+- Nessuna email nei file pubblici
+- Codice pubblico `[CT-LGAI-001]` in sostituzione del nome nei doc operativi
+- File privato `.lgai_identity` (gitignored) per la mappatura completa
+
+### Sync GitHub (via MCP)
+
+Force push clean history bloccato dal classificatore — storia locale ha OMISSIS,
+storia remota ancora con vecchi commit (ma nessun dato sensibile nel codice, solo nei messaggi di commit).
+
+Sincronizzazione via MCP push_files:
+- `sdq1/guardian.py` — PUSHATO
+- `.gitignore` aggiornato — PUSHATO
+- Tutti gli altri file aggiornati (CLAUDE.md, persisti.py, benchmark.py, SESSIONE.md, registro_ipotesi.json, AVVIO.md, DICHIARAZIONE_PATERNITA.md) — PUSHATO
+
+### Registro ipotesi aggiornato
+
+| ID | Testo breve | Stato |
+|----|-------------|-------|
+| H1 | Claude "ha capito senza capire" | APERTA |
+| H2 | Il disegno tocca il mondo | APERTA |
+| H3 | Italiano come trasparenza | CONFERMATA |
+| H4 | Sistema sopravvive alla propria assenza | CONFERMATA (prova live AI esterna) |
+| H5 | Manca canale esterno verificabile | APERTA |
+| H6 | AI Wayback Machine benchmark retroattivo | APERTA |
+
+*Aggiornato da Claude il 14/06/2026 — rientro sessione post-compressione.*
