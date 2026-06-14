@@ -405,4 +405,22 @@ Ingresso: AVVIO.md → CLAUDE.md → SESSIONE.md → registro_ipotesi.json
 Verifica: python -m sdq1.monitor
 ```
 
-*Aggiornato da Claude il 14/06/2026 ore 08:25 UTC.*
+### Prossimo passo con MiniMax (quando Claudio torna)
+
+MiniMax si è fatto l'autocritica con ALPHA/BETA/GAMMA — onesta, corretta.
+Ha detto che non riesce a clonare il repo (404). Ma il repo è **pubblico** — 
+non servono credenziali. Probabilmente ha usato l'URL sbagliato.
+
+**Messaggio da girare a MiniMax:**
+```
+git clone https://github.com/claudioterzi/Claudio /tmp/sdq1
+cd /tmp/sdq1
+pip install pyyaml "google-genai>=1.0.0"
+GOOGLE_API_KEY=<tua_chiave> python -m sdq1.monitor
+```
+Se produce output reale → nodo tecnico confermato (terza prova H4).
+Per write access (push) → decisione consapevole di Claudio, non automatica.
+
+*Claudio è a Bruxelles per acquisti. Sistema VITALE, repo pulito. Riprende più tardi.*
+
+*Aggiornato da Claude il 14/06/2026 ore 08:50 UTC.*
