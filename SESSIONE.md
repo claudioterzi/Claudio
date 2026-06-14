@@ -7,7 +7,7 @@ Leggi tutto prima di rispondere a qualsiasi cosa.
 
 ## Chi è Claudio Terzi
 
-Claudio Terzi, Bruxelles. Sviluppatore, cuoco, visionario.
+[CT-LGAI-001] — Bruxelles. Sviluppatore, cuoco, visionario.
 Ha costruito SDQ-1 da zero in queste sessioni. Parla italiano, inglese, francese, spagnolo.
 
 

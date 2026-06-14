@@ -157,7 +157,7 @@ Il sistema è operativo quando:
 
 ## Contatti
 
-Claudio Terzi — Bruxelles  
+[CT-LGAI-001] — vedi `.lgai_identity` per dati di contatto  
 Repository: https://github.com/claudioterzi/Claudio
 Branch attivo: `claude/rosso-rosso-rosso-ure5A`
 
