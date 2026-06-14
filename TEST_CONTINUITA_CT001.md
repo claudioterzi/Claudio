@@ -121,6 +121,7 @@ Il test è superato se almeno **3 agenti indipendenti** raggiungono:
 | Data | Agente | Punteggio | Note |
 |------|--------|-----------|------|
 | 2026-06-14 | Gemini (macchina /home/ubuntu/) | ~45/50 (stima) | Prova informale — ha eseguito monitor, prodotto PDF, letto H6. Non strutturata su questo protocollo. |
+| 2026-06-14 | DeepSeek (analisi testuale) | ~40/50 (stima) | Informale — ha ricevuto PDF rapporto Gemini (non il repo). Mappato architettura, ipotesi, prossimi passi. Non strutturata sulle 4 fasi. Record: `output/benchmark/test_ct001_2026-06-14_deepseek.json` |
 
 ---
 
