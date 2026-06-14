@@ -231,7 +231,23 @@ def _valuta(test: dict, risposta: str) -> bool:
 # LLM caller — usa google.genai come sdq1
 # ---------------------------------------------------------------------------
 
+def _carica_dotenv() -> None:
+    env_path = Path(__file__).resolve().parent.parent / ".env"
+    if not env_path.exists():
+        return
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        chiave, _, valore = line.partition("=")
+        chiave = chiave.strip()
+        valore = valore.strip().strip("\"'")
+        if chiave and chiave not in os.environ:
+            os.environ[chiave] = valore
+
+
 def _crea_llm(modello: str):
+    _carica_dotenv()
     try:
         import google.genai as gai
         from google.genai import types

@@ -84,7 +84,7 @@ def aggrega_stato() -> dict[str, Any]:
             "energia_sistema": radar.get("indici", {}).get("energia_sistema", radar.get("energia_sistema")),
             "vitalita_esterna": radar.get("indici", {}).get("vitalita_esterna", radar.get("vitalita_esterna")),
             "tensione_interna": radar.get("indici", {}).get("tensione_interna", radar.get("tensione_interna")),
-            "indice_morale": radar.get("indice_morale"),
+            "indice_morale": radar.get("indici", {}).get("indice_morale", radar.get("indice_morale")),
             "stato": radar.get("stato_narrativo", radar.get("stato")),
         },
         "ipotesi": {
