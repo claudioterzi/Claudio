@@ -298,3 +298,43 @@ print(p.ultima_proiezione()['raccomandazione'])
 **Claudio è a letto.** Sistema custodito. Prossima azione al suo risveglio.
 
 *Aggiornato autonomamente da Claude il 13/06/2026 ore 23:20 UTC.*
+
+---
+
+## Aggiornamento 14/06/2026 — Benchmark + Notizie Fable 5
+
+### H6 registrata: AI Wayback Machine
+
+Idea di Claudio (13/06, ultimo messaggio prima del sonno): un sistema di benchmark retroattivo
+che traccia le capacità dei modelli nel tempo — "una Wayback Machine per l'AI".
+
+**Modulo:** `sdq1/benchmark.py` (551 righe, già committato)
+- Suite fissa 20 test: ragionamento (R1-R5), fattuale (F1-F5), codice (C1-C5), linguaggio (L1-L3), meta (M1-M2)
+- Storage time-series: `output/benchmark/YYYY-MM-DD_MODELLO.json`
+- Confronto retroattivo: `--confronta MODELLO DATA1 DATA2`
+- Trend storico: `--trend MODELLO`
+- Rilevamento aggiornamenti silenziosi (soglia: delta ≥ 0.05 o ≥3 test cambiati)
+- CLI: `python -m sdq1.benchmark --run [--modello gemini-2.5-flash]`
+
+**H6** registrata in `registro_ipotesi.json` (stato: APERTA)
+Correlata a H2: un benchmark pubblico aperto è un prodotto che tocca il mondo.
+
+### Notizie Claude Fable 5 (ricerca web 14/06/2026)
+
+**Claude Fable 5 è disponibile** — rilasciato il **9 giugno 2026** su API, Bedrock, Vertex AI, Foundry.
+Il problema SDQ-1 era **crediti API esauriti**, non il modello bloccato.
+
+- Contesto: 1M token input, 128k output
+- Prezzo: $10/M input, $50/M output
+- Classe Mythos: primo rilascio pubblico di questa categoria
+- **Claude Mythos 5**: versione ancora più potente, accesso limitato (Project Glasswing)
+
+**Claude Opus 4.8** (rilasciato 28 maggio 2026):
+- Alternativa forte, più veloce e più economica di Fable 5
+- Fast mode: 2.5× velocità, 3× meno costoso del precedente Opus
+- Sessione corrente gira su Opus 4.8
+
+**Azione consigliata:** ricaricare i crediti Anthropic API → Fable 5 torna disponibile automaticamente
+nel router SDQ-1 (è già nella cascata come `anthropic: "claude-fable-5"`).
+
+*Aggiornato autonomamente da Claude il 14/06/2026 — Claudio a letto, sessione Opus 4.8.*

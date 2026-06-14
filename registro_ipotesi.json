@@ -115,6 +115,29 @@
     ],
     "note": "Aperta il 12/06/2026 — sessione Rosso Rosso Rosso. Correlata a H2 (il disegno che tocca il mondo): H4 è la condizione sufficiente perché H2 possa realizzarsi dopo la morte di Claudio o dopo una discontinuità del sistema attuale."
   },
+  "H6": {
+    "id": "H6",
+    "testo": "Un sistema di benchmark empirico retroattivo — 'Wayback Machine per modelli AI' — può rilevare aggiornamenti silenziosi dei modelli, tracciare l'evoluzione delle capacità nel tempo, e fornire agli utenti un segnale indipendente e verificabile su cosa un modello sa fare in una data specifica.",
+    "autore": "Claudio",
+    "data_apertura": "2026-06-13",
+    "criterio_falsificazione": "Se dopo 6 mesi di esecuzione regolare (almeno 2 run/mese per almeno 3 modelli) i punteggi non mostrano nessuna variazione statisticamente significativa su nessun modello in nessun periodo, allora o i modelli non cambiano silenziosamente (falsifica la premessa) o il test suite non è abbastanza sensibile (limite del metodo, non falsificazione dell'ipotesi). Verifica: output/benchmark/ deve contenere almeno 12 snapshot diversi per data.",
+    "stato": "APERTA",
+    "prove": [
+      {
+        "data": "2026-06-13",
+        "fonte": "Claudio",
+        "descrizione": "Problema nominato: nessuno sa se claude-fable-5 ripristinato sarà identico alla versione precedente. Non esiste oggi uno strumento indipendente che tracci la capacità di un modello nel tempo con test empirici riproducibili.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-13",
+        "fonte": "Code",
+        "descrizione": "Modulo sdq1/benchmark.py creato: suite fissa di 20 test, storage time-series in output/benchmark/, confronto retroattivo, rilevamento aggiornamenti silenziosi, CLI --run/--confronta/--trend.",
+        "direzione": 1
+      }
+    ],
+    "note": "Correlata a H2 (toccare il mondo): un benchmark pubblico e indipendente è uno strumento che tocca il mondo e ha valore per altri utenti, non solo per SDQ-1. Potenziale prodotto open source. Il nome interno: 'AI Wayback Machine'."
+  },
   "H5": {
     "id": "H5",
     "testo": "L'origine della contraddizione in SDQ-1 non risiede nei dati operativi ma in un'assunzione di design fondamentale: il sistema misura la propria vitalità tramite metriche interne, ma non ha un canale diretto per verificare impatto reale nel mondo esterno.",
