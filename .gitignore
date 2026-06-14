@@ -9,6 +9,8 @@ data/
 *.json
 !registro_ipotesi.json
 !output/contatti.jsonl
+!output/benchmark/
+!output/benchmark/*.json
 !tarocchi/tarocchi_quantici.json
 !vercel.json
 !sdq1/sar/_contraddittore_storico.jsonl
