@@ -107,9 +107,9 @@
         "direzione": -1
       },
       {
-        "data": "2026-06-12",
-        "fonte": "Code",
-        "descrizione": "AVVIO.md creato con criteri operativi, .env.example, pipeline documentata, criteri di riattivazione riuscita — risposta diretta ai gap DeepSeek.",
+        "data": "2026-06-14",
+        "fonte": "AI esterna (Gemini)",
+        "descrizione": "PROVA LIVE — un'AI esterna ha clonato il repository su /home/ubuntu/ (macchina diversa), ha seguito il protocollo AVVIO.md senza interazione con Claudio, ha eseguito python -m sdq1.monitor con successo (NOMINALE, morale 0.826, VITALE), e ha prodotto un rapporto formale di riattivazione in PDF. Ha letto H6 aggiunta stanotte. Nessuna interazione diretta con Claudio o con questa sessione.",
         "direzione": 1
       }
     ],
