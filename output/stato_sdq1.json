@@ -1,26 +1,27 @@
 {
-  "timestamp": 1781392801.0347257,
-  "data": "2026-06-13 23:20 UTC",
+  "timestamp": 1781405255.5611467,
+  "data": "2026-06-14 02:47 UTC",
   "battito": {
     "stato": "NOMINALE",
     "moduli_ok": 8,
     "contatti_umani": 0,
-    "data": "2026-06-13"
+    "data": "2026-06-14"
   },
   "radar": {
     "energia_sistema": 1.0,
     "vitalita_esterna": 0.859,
-    "tensione_interna": 0.514,
-    "indice_morale": null,
+    "tensione_interna": 0.521,
+    "indice_morale": 0.813,
     "stato": "VITALE"
   },
   "ipotesi": {
-    "totale": 5,
-    "aperte": 3,
+    "totale": 6,
+    "aperte": 4,
     "confermate": 2,
     "ids_aperte": [
       "H1",
       "H2",
+      "H6",
       "H5"
     ]
   },
