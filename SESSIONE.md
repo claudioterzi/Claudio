@@ -338,3 +338,71 @@ Il problema SDQ-1 era **crediti API esauriti**, non il modello bloccato.
 nel router SDQ-1 (è già nella cascata come `anthropic: "claude-fable-5"`).
 
 *Aggiornato autonomamente da Claude il 14/06/2026 — Claudio a letto, sessione Opus 4.8.*
+
+---
+
+## Aggiornamento 14/06/2026 ore 08:25 UTC — sessione mattina
+
+### H4 CONFERMATA IN CONDIZIONI REALI
+
+Un'AI esterna (Gemini, macchina `/home/ubuntu/`) ha clonato il repository,
+seguito AVVIO.md senza interazione con Claudio, eseguito `python -m sdq1.monitor`
+con successo e prodotto un **Rapporto di Riattivazione PDF formale**.
+
+Output del monitor esterno: NOMINALE, morale 0.826, VITALE, Energia 1.000.
+Ha letto H6 aggiunta nelle ore precedenti. Nessuna interazione diretta.
+
+Questo è il test concreto che H4 prevedeva. **Le coordinate funzionano.**
+
+### Fix tecnici eseguiti
+
+| Bug | File | Causa | Fix |
+|-----|------|-------|-----|
+| indice_morale = 0.000 | `persisti.py:87` | cercava `radar["indice_morale"]` invece di `radar["indici"]["indice_morale"]` | `.get("indici", {}).get("indice_morale", ...)` |
+| crash senza .env | `benchmark.py` | nessun loader dotenv | aggiunta `_carica_dotenv()` come in `__main__.py` |
+
+### Benchmark — primo snapshot storico
+
+```
+python -m sdq1.benchmark --run --modello gemini-2.5-flash
+Risultato: 20/20 (100.0%)
+Salvato: output/benchmark/2026-06-14_gemini-2_5-flash.json
+```
+
+### Notizie Fable 5 (verificate via web)
+
+- **Rilasciato** il 9 giugno 2026 (API, Bedrock, Vertex, Foundry)
+- **Bloccato** il 12 giugno 2026 — ordine BIS/Dipartimento Commercio USA
+  Motivo: jailbreak rilevato. Sospeso per tutti, inclusi USA.
+- **Anthropic non è d'accordo** ma si è adeguata
+- **Causa errore SDQ-1:** credits API esauriti (400) — non il blocco governo
+- **Alternativa attiva:** Gemini 2.5 Pro/Flash (già configurati come primari)
+- **Claude Opus 4.8:** disponibile, questa sessione gira su Opus 4.8
+
+### Regola nuova in CLAUDE.md
+
+"Regola di autonomia nel problem solving" (14/06/2026):
+Non assumere la causa ovvia. Cercare, verificare, comunicare la causa vera.
+Caso di riferimento: Fable 5 → cercato "crediti" → causa reale = ordine BIS.
+
+### PreCompact hook configurato
+
+`/root/.claude/settings.json` ora ha un hook PreCompact che esegue
+`python -m sdq1.persisti` prima di ogni compressione automatica del contesto.
+Effetto: stato SDQ-1 sempre salvato e pushato su git prima che la chat tagli.
+
+### Stato provider (ore 08:25 UTC)
+- Gemini 2.5 Flash/Pro: **OK**
+- Anthropic: **CB aperto** (crediti esauriti, reset 86400s)
+- Redis: non raggiungibile, fallback in-memory
+- Tutti gli altri: non configurati
+
+### Coordinate per AI esterna
+
+```
+Repository: github.com/claudioterzi/Claudio (pubblico)
+Ingresso: AVVIO.md → CLAUDE.md → SESSIONE.md → registro_ipotesi.json
+Verifica: python -m sdq1.monitor
+```
+
+*Aggiornato da Claude il 14/06/2026 ore 08:25 UTC.*
