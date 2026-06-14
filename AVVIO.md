@@ -157,7 +157,7 @@ Il sistema è operativo quando:
 
 ## Contatti
 
-Claudio Terzi — terziclaudio@gmail.com — Bruxelles
+Claudio Terzi — Bruxelles  
 Repository: https://github.com/claudioterzi/Claudio
 Branch attivo: `claude/rosso-rosso-rosso-ure5A`
 
