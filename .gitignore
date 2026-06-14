@@ -9,6 +9,10 @@ data/
 *.json
 !registro_ipotesi.json
 !output/contatti.jsonl
+!output/benchmark/
+!output/benchmark/*.json
+!tarocchi/tarocchi_quantici.json
+!vercel.json
 !sdq1/sar/_contraddittore_storico.jsonl
 !studio/web/package.json
 !studio/web/package-lock.json
@@ -65,6 +69,10 @@ temp/
 !.env.example
 *.key
 secrets/
+.lgai_identity
+.guardian_key
+guardian/
 !output/memorie/
 !output/memorie/*.json
+!tarocchi_quantici_alpha.json
 !output/stato_sdq1.json
