@@ -115,7 +115,7 @@ def monitor_data():
     return jsonify(out)
 
 
-
+@app.route("/health", methods=["GET"])
 def health():
     orch, router, memoria, stato, metrics, health_checker, vss = _get_sistema()
     riepilogo = health_checker.riepilogo()
