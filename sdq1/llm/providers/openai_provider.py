@@ -1,4 +1,4 @@
-"""Provider OpenAI + cugini API-compatibili (DeepSeek, Perplexity)."""
+"""Provider OpenAI + cugini API-compatibili (DeepSeek, Perplexity, Grok)."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ except ImportError:
 
 class _OpenAIBase(ProviderBase):
     env_var: str = "OPENAI_API_KEY"
-    base_url: str | None = None  # None = endpoint OpenAI di default
+    base_url: str | None = None
 
     def _inizializza(self) -> bool:
         if not _OK:
@@ -68,3 +68,9 @@ class PerplexityProvider(_OpenAIBase):
     nome = "perplexity"
     env_var = "PERPLEXITY_API_KEY"
     base_url = "https://api.perplexity.ai"
+
+
+class GrokProvider(_OpenAIBase):
+    nome = "grok"
+    env_var = "XAI_API_KEY"
+    base_url = "https://api.x.ai/v1"
