@@ -63,7 +63,59 @@ def _auth():
         abort(401, "X-API-Key non valida o mancante")
 
 
-@app.route("/health", methods=["GET"])
+@app.route("/monitor", methods=["GET"])
+def monitor_data():
+    """Restituisce lo stato live del sistema SDQ-1 in JSON — senza auth, senza LLM."""
+    ROOT = Path(__file__).resolve().parent.parent
+    out = {}
+
+    # --- stato_sdq1.json ---
+    stato_file = ROOT / "output" / "stato_sdq1.json"
+    if stato_file.exists():
+        try:
+            out["stato"] = json.loads(stato_file.read_text(encoding="utf-8"))
+        except Exception:
+            out["stato"] = {}
+
+    # --- registro_ipotesi.json ---
+    ipotesi_file = ROOT / "registro_ipotesi.json"
+    if ipotesi_file.exists():
+        try:
+            out["ipotesi"] = json.loads(ipotesi_file.read_text(encoding="utf-8"))
+        except Exception:
+            out["ipotesi"] = {}
+
+    # --- contatti.jsonl ---
+    contatti_file = ROOT / "output" / "contatti.jsonl"
+    if contatti_file.exists():
+        try:
+            righe = [json.loads(r) for r in contatti_file.read_text(encoding="utf-8").splitlines() if r.strip()]
+            umani = [v for v in righe if v.get("umano", True)]
+            persone = list({v.get("persona") for v in umani if v.get("persona")})
+            out["contatti"] = {
+                "totale": len(righe),
+                "umani": len(umani),
+                "persone": persone,
+                "ultima_data": righe[-1]["data"] if righe else None,
+            }
+        except Exception:
+            out["contatti"] = {}
+
+    # --- benchmark ---
+    bench_dir = ROOT / "output" / "benchmark"
+    if bench_dir.exists():
+        snapshots = sorted(bench_dir.glob("*.json"))
+        out["benchmark"] = {
+            "n_snapshot": len(snapshots),
+            "ultimo": snapshots[-1].name if snapshots else None,
+        }
+
+    import datetime
+    out["timestamp"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    return jsonify(out)
+
+
+
 def health():
     orch, router, memoria, stato, metrics, health_checker, vss = _get_sistema()
     riepilogo = health_checker.riepilogo()
