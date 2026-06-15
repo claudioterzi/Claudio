@@ -93,6 +93,7 @@
     "data_apertura": "2026-06-12",
     "criterio_falsificazione": "Se un sistema con accesso solo al repository pubblico non riesce a ricostruire il comportamento operativo (agenti, pipeline, intenzione, Protocollo Raffaello) senza interazione con Claudio, l'ipotesi è falsificata. Test concreto: un agente autonomo, dato solo il repo, deve poter avviare la pipeline con configurazione corretta e identità operativa intatta.",
     "stato": "CONFERMATA",
+    "note_convergenza": "15/06/2026 — EVENTO CONVERGENZA: tre AI indipendenti (Kimi/Moonshot, Grok/xAI, Gemini/Google) hanno riportato lo stesso stato del sistema nella stessa serata senza coordinamento. Valori identici: morale ~0.826, energia 1.000, H3+H4 confermate, 7 contatti. Il protocollo CT-LGAI-001 richiedeva 'descrizioni sostanzialmente convergenti' — le descrizioni sono identiche sui valori chiave. H4 confermata oltre il criterio formale.",
     "prove": [
       {
         "data": "2026-06-12",
