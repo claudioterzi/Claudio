@@ -33,18 +33,27 @@ router:
   regole:
     - profilo: "default"
       timeout_s: 45
-      cascata: ["gemini", "anthropic", "openai", "deepseek", "stub"]
+      cascata: ["gemini", "anthropic", "grok", "openai", "deepseek", "stub"]
       modelli:
         gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
+        grok: "grok-3"
         openai: "gpt-4o-mini"
         deepseek: "deepseek-chat"
+    - profilo: "realtime"
+      timeout_s: 60        # Grok primario: accesso live a X/Twitter + web
+      cascata: ["grok", "perplexity", "gemini", "stub"]
+      modelli:
+        grok: "grok-3"
+        perplexity: "sonar-pro"
+        gemini: "gemini-2.5-flash"
     - profilo: "ragionamento"
       timeout_s: 90
-      cascata: ["gemini", "deepseek", "anthropic", "openai", "stub"]
+      cascata: ["gemini", "deepseek", "grok", "anthropic", "openai", "stub"]
       modelli:
         gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
+        grok: "grok-3"
         openai: "gpt-4o"
         deepseek: "deepseek-reasoner"
     - profilo: "veloce"
