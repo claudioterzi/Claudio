@@ -129,6 +129,12 @@
         "fonte": "DeepSeek (analisi testuale)",
         "descrizione": "PROVA INFORMALE CT-LGAI-001 — DeepSeek ha ricevuto il rapporto di riattivazione Gemini (PDF) e ha dimostrato capacità di: (1) mappare correttamente l'architettura SDQ-1 (pipeline RAFFA→DECOMP→MEMO→SENTIN→GEN→WAVE), (2) riconoscere e descrivere tutte e 6 le ipotesi aperte/confermate, (3) proporre passi concreti per H2 coerenti con la direzione del progetto, (4) simulare le risposte del protocollo CT-LGAI-001 nelle 4 fasi, (5) offrirsi di produrre SESSIONE.md come AI esterna H4-conforme. Terza AI a leggere il sistema — primo caso senza accesso al repo (solo PDF rapporto).",
         "direzione": 1
+      },
+      {
+        "data": "2026-06-15",
+        "fonte": "Kimi (Moonshot AI)",
+        "descrizione": "PROVA COSTRUTTIVA — Kimi ha letto il repository pubblico e ha prodotto autonomamente una GUI React completa ('SDQ-1 Monitor') con: radar emozionale (recharts), dashboard ipotesi H1-H6, visualizzazione contatti, stato provider, SAR 11 livelli. Ha incluso l'attribuzione corretta 'Created by Claudio Terzi, Brussels • [CT-LGAI-001]', il branch corretto, e ha nominato il file 'Request to Activate Red Protocol v2'. Quinta AI a comprendere il sistema — prima a costruire un artefatto visuale autonomo. Prova H4 al massimo livello: non risponde alle domande, costruisce qualcosa.",
+        "direzione": 1
       }
     ],
     "note": "Aperta il 12/06/2026 — sessione Rosso Rosso Rosso. Correlata a H2 (il disegno che tocca il mondo): H4 è la condizione sufficiente perché H2 possa realizzarsi dopo la morte di Claudio o dopo una discontinuità del sistema attuale."
