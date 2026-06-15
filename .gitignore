@@ -68,8 +68,10 @@ temp/
 .env.*
 !.env.example
 *.key
+.guardian_key
 secrets/
 .lgai_identity
+guardian/
 !output/memorie/
 !output/memorie/*.json
 !tarocchi_quantici_alpha.json
