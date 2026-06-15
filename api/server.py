@@ -9,6 +9,8 @@ Endpoint:
     GET  /monitor      — stato live JSON senza auth
     GET  /futures      — lista scenari disponibili
     POST /futures/run  — esegui scenari in parallelo
+    GET  /nas          — schema hardware DS223
+    POST /nas          — agente esperto DS223 {domanda, guida}
 
 Auth:
     Header: X-API-Key <chiave>
@@ -191,6 +193,46 @@ def futures_run():
         "report_salvato": str(dest),
         "scenari": [r.to_dict() for r in risultati],
     })
+
+
+_nas_oracle = None
+
+
+def _get_nas():
+    global _nas_oracle
+    if _nas_oracle is None:
+        from sdq1.nas import NASOracle
+        orch, router, *_ = _get_sistema()
+
+        def _llm_fn(system: str, prompt: str) -> str:
+            esito = router.chiama(system, prompt, profilo="default")
+            return esito.risposta.testo
+
+        _nas_oracle = NASOracle(llm_fn=_llm_fn)
+    return _nas_oracle
+
+
+@app.route("/nas", methods=["GET", "POST"])
+def nas():
+    """Agente esperto Synology DS223 — GET /nas per schema, POST /nas con {domanda} per risposta."""
+    if request.method == "GET":
+        from sdq1.nas import NASOracle
+        oracle = NASOracle()
+        return jsonify({"schema": oracle.schema_hardware(), "agente": "NAS-008"})
+
+    body = request.get_json(force=True, silent=True) or {}
+    domanda = body.get("domanda", "").strip()
+    guida = body.get("guida", False)
+
+    oracle = _get_nas()
+    t0 = time.monotonic()
+    if guida or not domanda:
+        risposta = oracle.guida_installazione()
+    else:
+        risposta = oracle.rispondi(domanda)
+    durata_ms = int((time.monotonic() - t0) * 1000)
+
+    return jsonify({"risposta": risposta, "durata_ms": durata_ms, "agente": "NAS-008"})
 
 
 if __name__ == "__main__":
