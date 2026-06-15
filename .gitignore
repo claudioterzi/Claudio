@@ -70,8 +70,6 @@ temp/
 *.key
 secrets/
 .lgai_identity
-.guardian_key
-guardian/
 !output/memorie/
 !output/memorie/*.json
 !tarocchi_quantici_alpha.json

@@ -6,6 +6,7 @@ Avvio:
 Endpoint:
     POST /ask          — chiama l'orchestratore SDQ-1
     GET  /health       — stato provider + metriche
+    GET  /monitor      — stato live JSON senza auth
     GET  /futures      — lista scenari disponibili
     POST /futures/run  — esegui scenari in parallelo
 
@@ -23,7 +24,6 @@ import sys
 import time
 from pathlib import Path
 
-# Assicura che il progetto sia nel path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from sdq1.__main__ import _carica_dotenv, costruisci_sistema
@@ -57,7 +57,7 @@ def _get_sistema():
 
 def _auth():
     if not _API_KEYS:
-        return  # nessuna chiave configurata → accesso libero (dev mode)
+        return
     chiave = request.headers.get("X-API-Key", "")
     if chiave not in _API_KEYS:
         abort(401, "X-API-Key non valida o mancante")
@@ -69,7 +69,6 @@ def monitor_data():
     ROOT = Path(__file__).resolve().parent.parent
     out = {}
 
-    # --- stato_sdq1.json ---
     stato_file = ROOT / "output" / "stato_sdq1.json"
     if stato_file.exists():
         try:
@@ -77,7 +76,6 @@ def monitor_data():
         except Exception:
             out["stato"] = {}
 
-    # --- registro_ipotesi.json ---
     ipotesi_file = ROOT / "registro_ipotesi.json"
     if ipotesi_file.exists():
         try:
@@ -85,7 +83,6 @@ def monitor_data():
         except Exception:
             out["ipotesi"] = {}
 
-    # --- contatti.jsonl ---
     contatti_file = ROOT / "output" / "contatti.jsonl"
     if contatti_file.exists():
         try:
@@ -101,7 +98,6 @@ def monitor_data():
         except Exception:
             out["contatti"] = {}
 
-    # --- benchmark ---
     bench_dir = ROOT / "output" / "benchmark"
     if bench_dir.exists():
         snapshots = sorted(bench_dir.glob("*.json"))
@@ -175,7 +171,7 @@ def futures_list():
 def futures_run():
     _auth()
     body = request.get_json(force=True, silent=True) or {}
-    ids = body.get("scenari")  # None = tutti
+    ids = body.get("scenari")
 
     from sdq1.futures import SimulatoreScenari, SCENARI_DEFAULT
     orch, router, *_ = _get_sistema()

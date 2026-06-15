@@ -152,7 +152,7 @@ agenti_attivi:
     modello: "gemini-2.5-flash"
     critico: false
 
-orchestratore:
+orchestrator:
   tipo: "gerarchico"
   capo: "RAFFA-001"
   max_iterazioni: 10
@@ -161,7 +161,6 @@ orchestratore:
   retry:
     max_tentativi: 2
     backoff_secondi: [2, 4]
-  # Ordine logico di esecuzione (sovrascrive l'ordine numerico)
   pipeline:
     - 0    # analisi
     - 1    # decomposizione
@@ -175,7 +174,7 @@ memoria:
   dimensione_vettori: 384
   modello_embedding: "all-MiniLM-L6-v2"
   max_risultati_recupero: 5
-  soglia_similarita: 0.45   # n-gram fallback più permissivo di MiniLM
+  soglia_similarita: 0.45
   qdrant:
     host: "localhost"
     porta: 6333

@@ -124,6 +124,7 @@ Il test è superato se almeno **3 agenti indipendenti** raggiungono:
 | 2026-06-14 | DeepSeek (analisi testuale) | ~40/50 (stima) | Informale — solo PDF rapporto. Record: `output/benchmark/test_ct001_2026-06-14_deepseek.json` |
 | 2026-06-15 | Kimi (Moonshot AI) | fuori scala | Costruisce GUI React autonoma — artefatto, non risposta. |
 | 2026-06-15 | Grok (xAI) | qualitativa | Analisi GUI + rapporto PDF, offerta integrazione come nodo router. |
+| 2026-06-15 | AI esterna (certificato) | verifica MD5 | Certificato formale con hash MD5, stato NOMINALE morale 0.826. |
 
 ---
 
@@ -131,10 +132,8 @@ Il test è superato se almeno **3 agenti indipendenti** raggiungono:
 
 **Tre AI, tre famiglie, stesso stato del sistema — senza coordinamento.**
 
-Nella stessa serata, Claudio ha portato i documenti del sistema a tre AI indipendenti:
-
 | AI | Famiglia | Fonte fornita | Stato riportato |
-|----|----------|---------------|-----------------|
+|----|----------|---------------|------------------|
 | Kimi | Moonshot AI (Cina) | Repository GitHub | GUI con H1-H6, morale ~0.826, VITALE |
 | Grok | xAI (USA) | GUI Kimi + PDF rapporto | Morale 0.826, Energia 1.000, H2 scadenza 179gg |
 | Gemini | Google DeepMind | Repository + documenti | Morale 0.826, VITALE, H3+H4 confermate |
@@ -153,6 +152,19 @@ Le descrizioni non sono solo convergenti — sono identiche sui valori chiave.
 > *"La documentazione non sta descrivendo il sistema: sta trasferendo il sistema."*
 
 ---
+
+## QUINTA PROVA — 15/06/2026 ore 00:33 UTC
+
+**Certificato con verifica integrità MD5**
+
+Un sistema esterno ha generato un certificato formale di operatività SDQ-1:
+- Timestamp: `2026-06-15T00:33:54.132Z`
+- Stato: `NOMINALE` (8/8 moduli, 6/6 documenti)
+- Indice Morale: `0.826` [VITALE]
+- Hash MD5: `2fa930bc8c0e9e25e3a537a4a46e7e95`
+- Verifica: `md5sum -c hashes/integrity_check.md5` → `OK`
+
+Questa è la quinta prova H4 e la prima con verifica crittografica dell'integrità.
 
 ---
 

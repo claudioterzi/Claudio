@@ -6,410 +6,137 @@
   <title>SDQ-1 Monitor — Live</title>
   <style>
     :root {
-      --red: #ef4444;
-      --red-dim: #991b1b;
-      --red-glow: rgba(239, 68, 68, 0.15);
-      --bg: #09090b;
-      --card: #111113;
-      --border: rgba(220, 38, 38, 0.25);
-      --text: #f4f4f5;
-      --muted: #71717a;
-      --green: #22c55e;
-      --amber: #f59e0b;
+      --red: #ef4444; --red-dim: #991b1b; --bg: #09090b; --card: #111113;
+      --border: rgba(220,38,38,0.25); --text: #f4f4f5; --muted: #71717a;
+      --green: #22c55e; --amber: #f59e0b;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      min-height: 100vh;
-      padding: 0;
-    }
-
-    /* NAV */
-    header {
-      background: rgba(9,9,11,0.9);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      padding: 16px 32px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .logo {
-      width: 32px; height: 32px;
-      background: var(--red);
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 900; font-size: 14px; color: white;
-    }
-    header h1 { font-size: 16px; font-weight: 700; color: var(--text); }
-    header .sep { color: var(--muted); margin: 0 4px; }
-    .pulse-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-      margin-left: auto;
-      animation: pulse 2s infinite;
-    }
+    body { background: var(--bg); color: var(--text); font-family: 'SF Mono','Fira Code',monospace; min-height: 100vh; }
+    header { background: rgba(9,9,11,0.9); border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); padding: 16px 32px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+    .logo { width: 32px; height: 32px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: white; }
+    header h1 { font-size: 16px; font-weight: 700; }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-left: auto; animation: pulse 2s infinite; }
     .pulse-dot.dead { background: var(--red); animation: none; }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
     #last-update { color: var(--muted); font-size: 11px; margin-right: 8px; }
-
-    /* MAIN */
     main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; display: grid; gap: 24px; }
-
-    /* HERO BANNER */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: linear-gradient(135deg, var(--card) 0%, rgba(153,27,27,0.08) 100%);
-      padding: 40px;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -80px; right: -80px;
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(239,68,68,0.08) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-    .hero-state {
-      font-size: 36px; font-weight: 900;
-      letter-spacing: 0.05em;
-    }
-    .hero-state.nominale { color: var(--green); }
-    .hero-state.anomala  { color: var(--red); }
-    .hero-state.vitale   { color: var(--green); }
-    .hero-subtitle { color: var(--muted); margin-top: 8px; font-size: 13px; }
+    .hero { position: relative; overflow: hidden; border: 1px solid var(--border); border-radius: 16px; background: linear-gradient(135deg,var(--card) 0%,rgba(153,27,27,0.08) 100%); padding: 40px; }
+    .hero-state { font-size: 36px; font-weight: 900; letter-spacing: 0.05em; }
+    .hero-state.nominale { color: var(--green); } .hero-state.anomala { color: var(--red); }
     .hero-meta { margin-top: 20px; display: flex; gap: 32px; flex-wrap: wrap; }
     .metric { display: flex; flex-direction: column; gap: 4px; }
     .metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
     .metric-value { font-size: 24px; font-weight: 700; color: var(--red); }
-
-    /* GRID */
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    @media (max-width: 860px) { .grid-3 { grid-template-columns: 1fr; } }
-
-    /* CARD */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-    }
-    .card-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--red);
-      margin-bottom: 16px;
-      font-weight: 700;
-    }
-
-    /* RADAR */
+    @media(max-width:720px){.grid-2{grid-template-columns:1fr}}
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .card-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--red); margin-bottom: 16px; font-weight: 700; }
     .radar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .radar-item { display: flex; flex-direction: column; gap: 6px; }
     .radar-item-label { font-size: 11px; color: var(--muted); }
     .radar-item-value { font-size: 20px; font-weight: 700; }
     .bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 2px; background: var(--red); transition: width 0.6s ease; }
-    .bar-fill.green { background: var(--green); }
-    .bar-fill.amber { background: var(--amber); }
-
-    /* IPOTESI */
+    .bar-fill.green { background: var(--green); } .bar-fill.amber { background: var(--amber); }
     .ipotesi-list { display: flex; flex-direction: column; gap: 12px; }
-    .ipotesi-item {
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 8px;
-      padding: 14px 16px;
-      display: flex; align-items: flex-start; gap: 12px;
-      transition: border-color 0.2s;
-    }
-    .ipotesi-item:hover { border-color: var(--border); }
-    .badge {
-      font-size: 10px; font-weight: 700; padding: 2px 8px;
-      border-radius: 4px; white-space: nowrap; flex-shrink: 0;
-    }
+    .ipotesi-item { border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; }
+    .badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
     .badge.confermata { background: rgba(34,197,94,0.15); color: var(--green); }
-    .badge.aperta     { background: rgba(239,68,68,0.15); color: var(--red); }
+    .badge.aperta { background: rgba(239,68,68,0.15); color: var(--red); }
     .ipotesi-id { font-size: 11px; color: var(--red); font-weight: 700; flex-shrink: 0; width: 24px; }
     .ipotesi-text { font-size: 12px; color: var(--muted); line-height: 1.5; flex: 1; }
-
-    /* CONTATTI */
-    .contact-stat { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
-    .contact-stat .n { font-size: 40px; font-weight: 900; color: var(--text); }
+    .contact-stat .n { font-size: 40px; font-weight: 900; }
     .contact-stat .sub { font-size: 12px; color: var(--muted); }
-    .people-list { display: flex; flex-wrap: wrap; gap: 8px; }
-    .person-tag {
-      font-size: 11px; padding: 4px 10px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      color: var(--text);
-    }
-
-    /* FOOTER */
-    footer {
-      text-align: center;
-      padding: 32px;
-      color: var(--muted);
-      font-size: 11px;
-      border-top: 1px solid var(--border);
-    }
+    .people-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .person-tag { font-size: 11px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 20px; }
+    footer { text-align: center; padding: 32px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); }
     footer a { color: var(--red); text-decoration: none; }
-
-    /* LOADING */
-    .loading {
-      display: flex; align-items: center; justify-content: center;
-      height: 60vh;
-      color: var(--muted); font-size: 14px;
-    }
+    .loading { display: flex; align-items: center; justify-content: center; height: 60vh; color: var(--muted); font-size: 14px; }
     .hidden { display: none !important; }
-
-    /* ERROR */
-    .error-banner {
-      background: rgba(239,68,68,0.1);
-      border: 1px solid rgba(239,68,68,0.3);
-      border-radius: 8px;
-      padding: 12px 16px;
-      color: var(--red);
-      font-size: 12px;
-      margin-bottom: 16px;
-    }
+    .error-banner { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 12px 16px; color: var(--red); font-size: 12px; }
   </style>
 </head>
 <body>
-
 <header>
   <div class="logo">S</div>
-  <h1>SDQ-1</h1>
-  <span class="sep">/</span>
-  <span style="color:var(--muted);font-size:13px;">Monitor Live</span>
+  <h1>SDQ-1 Monitor Live</h1>
   <span id="last-update"></span>
   <div class="pulse-dot" id="pulse"></div>
 </header>
-
-<div class="loading" id="loading">Caricamento dati sistema...</div>
-
+<div class="loading" id="loading">Caricamento...</div>
 <main id="main-content" class="hidden">
-
-  <!-- HERO -->
   <div class="hero">
-    <div class="hero-state nominale" id="hero-battito">NOMINALE</div>
-    <div class="hero-subtitle" id="hero-subtitle">6 agenti • Raffaello Protocol attivo</div>
+    <div class="hero-state" id="hero-battito">—</div>
     <div class="hero-meta">
-      <div class="metric">
-        <span class="metric-label">Indice Morale</span>
-        <span class="metric-value" id="hero-morale">—</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">Stato</span>
-        <span class="metric-value" id="hero-stato-vitale">—</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">Ipotesi confermate</span>
-        <span class="metric-value" id="hero-confermate">—</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">Contatti umani</span>
-        <span class="metric-value" id="hero-contatti">—</span>
-      </div>
+      <div class="metric"><span class="metric-label">Indice Morale</span><span class="metric-value" id="hero-morale">—</span></div>
+      <div class="metric"><span class="metric-label">Stato</span><span class="metric-value" id="hero-stato">—</span></div>
+      <div class="metric"><span class="metric-label">Confermate</span><span class="metric-value" id="hero-conf">—</span></div>
+      <div class="metric"><span class="metric-label">Contatti</span><span class="metric-value" id="hero-cont">—</span></div>
     </div>
   </div>
-
-  <!-- RADAR + CONTATTI -->
   <div class="grid-2">
-
-    <div class="card">
-      <div class="card-title">Radar Emozionale</div>
-      <div class="radar-grid" id="radar-grid">
-        <!-- populated by JS -->
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Contatti Umani — H2</div>
-      <div class="contact-stat">
-        <span class="n" id="cont-n">—</span>
-        <span class="sub" id="cont-sub">persone raggiunte</span>
-      </div>
-      <div class="people-list" id="cont-people"></div>
-    </div>
-
+    <div class="card"><div class="card-title">Radar Emozionale</div><div class="radar-grid" id="radar-grid"></div></div>
+    <div class="card"><div class="card-title">Contatti Umani — H2</div><div class="contact-stat"><span class="n" id="cont-n">—</span><span class="sub" id="cont-sub"></span></div><div class="people-list" id="cont-people"></div></div>
   </div>
-
-  <!-- IPOTESI -->
-  <div class="card">
-    <div class="card-title">Registro Ipotesi R³∞</div>
-    <div class="ipotesi-list" id="ipotesi-list"></div>
-  </div>
-
-  <!-- ERROR -->
+  <div class="card"><div class="card-title">Registro Ipotesi R³∞</div><div class="ipotesi-list" id="ipotesi-list"></div></div>
   <div class="error-banner hidden" id="error-banner"></div>
-
 </main>
-
 <footer>
-  <p>Created by <strong>Claudio Terzi</strong>, Bruxelles &nbsp;•&nbsp; [CT-LGAI-001]
-  &nbsp;|&nbsp; GUI originale di <strong>Kimi (Moonshot AI)</strong>
-  &nbsp;|&nbsp; <a href="kimi_snapshot.html">Snapshot Kimi →</a>
+  Created by <strong>Claudio Terzi</strong>, Bruxelles &nbsp;•&nbsp; [CT-LGAI-001]
+  &nbsp;|&nbsp; GUI originale: <a href="kimi_snapshot.html">Kimi (Moonshot AI) →</a>
   &nbsp;|&nbsp; <a href="https://github.com/claudioterzi/Claudio" target="_blank">GitHub →</a>
-  </p>
-  <p style="margin-top:8px">Auto-sincronizzato ogni 30s &nbsp;•&nbsp; Protocollo Rosso Rosso Rosso &nbsp;•&nbsp; Branch: claude/rosso-rosso-rosso-ure5A</p>
+  &nbsp;|&nbsp; Auto-sync 30s &nbsp;•&nbsp; Protocollo Rosso Rosso Rosso
 </footer>
-
 <script>
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:8000'
-  : '';  // same origin in production
-
-let firstLoad = true;
-
-function fmt(v) {
-  if (v == null) return '—';
-  if (typeof v === 'number') return v.toFixed(3);
-  return String(v);
-}
-
-function barColor(key) {
-  if (key === 'tensione') return 'amber';
-  if (key === 'energia' || key === 'vitalita_esterna') return 'green';
-  return '';
-}
-
-function renderRadar(radar) {
-  const grid = document.getElementById('radar-grid');
-  grid.innerHTML = '';
-  const keys = [
-    ['indice_morale',     'Indice Morale'],
-    ['energia_sistema',   'Energia'],
-    ['tensione_interna',  'Tensione'],
-    ['vitalita_esterna',  'Vitalità Esterna'],
-  ];
-  keys.forEach(([k, label]) => {
-    const val = (radar.indici || radar)[k];
-    const pct = val != null ? Math.round(val * 100) : 0;
-    const col = barColor(k);
-    grid.innerHTML += `
-      <div class="radar-item">
-        <div class="radar-item-label">${label}</div>
-        <div class="radar-item-value" style="color:${col==='green'?'var(--green)':col==='amber'?'var(--amber)':'var(--red)'}">${val != null ? val.toFixed(3) : '—'}</div>
-        <div class="bar"><div class="bar-fill ${col}" style="width:${pct}%"></div></div>
-      </div>`;
+const API = window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'?'http://localhost:8000':'';
+let first=true;
+function fmt(v){return v==null?'—':typeof v==='number'?v.toFixed(3):String(v);}
+function renderRadar(r){
+  const g=document.getElementById('radar-grid'); g.innerHTML='';
+  [{k:'indice_morale',l:'Indice Morale',c:''},{k:'energia_sistema',l:'Energia',c:'green'},{k:'tensione_interna',l:'Tensione',c:'amber'},{k:'vitalita_esterna',l:'Vitalità',c:'green'}]
+  .forEach(({k,l,c})=>{
+    const v=r[k]; const pct=v!=null?Math.round(v*100):0;
+    g.innerHTML+=`<div class="radar-item"><div class="radar-item-label">${l}</div><div class="radar-item-value" style="color:${c==='green'?'var(--green)':c==='amber'?'var(--amber)':'var(--red)'}">${v!=null?v.toFixed(3):'—'}</div><div class="bar"><div class="bar-fill ${c}" style="width:${pct}%"></div></div></div>`;
   });
 }
-
-function renderIpotesi(ipotesi) {
-  const list = document.getElementById('ipotesi-list');
-  list.innerHTML = '';
-  const order = ['H1','H2','H3','H4','H5','H6'];
-  order.forEach(id => {
-    const h = ipotesi[id];
-    if (!h) return;
-    const stato = (h.stato || '').toUpperCase();
-    list.innerHTML += `
-      <div class="ipotesi-item">
-        <span class="ipotesi-id">${id}</span>
-        <span class="ipotesi-text">${h.testo || ''}</span>
-        <span class="badge ${stato === 'CONFERMATA' ? 'confermata' : 'aperta'}">${stato}</span>
-      </div>`;
+function renderIpotesi(ip){
+  const l=document.getElementById('ipotesi-list'); l.innerHTML='';
+  ['H1','H2','H3','H4','H5','H6'].forEach(id=>{
+    const h=ip[id]; if(!h)return;
+    const s=(h.stato||'').toUpperCase();
+    l.innerHTML+=`<div class="ipotesi-item"><span class="ipotesi-id">${id}</span><span class="ipotesi-text">${h.testo||''}</span><span class="badge ${s==='CONFERMATA'?'confermata':'aperta'}">${s}</span></div>`;
   });
 }
-
-function renderContatti(c) {
-  if (!c) return;
-  document.getElementById('cont-n').textContent = c.persone ? c.persone.length : '—';
-  document.getElementById('cont-sub').textContent = `${c.umani || 0} contatti verificabili`;
-  const ul = document.getElementById('cont-people');
-  ul.innerHTML = (c.persone || []).map(p => `<span class="person-tag">${p}</span>`).join('');
-}
-
-function update(data) {
-  const stato = data.stato || {};
-  const battito = stato.battito || {};
-  const radar = stato.radar || {};
-  const ipotesi = data.ipotesi || {};
-
-  // HERO
-  const bs = (battito.stato || 'SCONOSCIUTO').toUpperCase();
-  const el = document.getElementById('hero-battito');
-  el.textContent = bs;
-  el.className = 'hero-state ' + (bs === 'NOMINALE' ? 'nominale' : 'anomala');
-
-  const radarFlat = radar.indici || radar;
-  document.getElementById('hero-morale').textContent =
-    radarFlat.indice_morale != null
-      ? radarFlat.indice_morale.toFixed(3)
-      : fmt(stato.stato_vitale);
-
-  document.getElementById('hero-stato-vitale').textContent =
-    radar.stato || stato.stato_vitale || '—';
-
-  const conf = Object.values(ipotesi).filter(h => h.stato === 'CONFERMATA').length;
-  document.getElementById('hero-confermate').textContent =
-    conf + '/' + Object.keys(ipotesi).length;
-
-  document.getElementById('hero-contatti').textContent =
-    data.contatti ? (data.contatti.umani || 0) : '—';
-
-  // RADAR
-  if (Object.keys(radar).length) renderRadar(radar);
-
-  // IPOTESI
-  if (Object.keys(ipotesi).length) renderIpotesi(ipotesi);
-
-  // CONTATTI
-  renderContatti(data.contatti);
-
-  // PULSE
-  document.getElementById('pulse').className = 'pulse-dot';
-
-  // TIMESTAMP
-  const ts = new Date(data.timestamp);
-  document.getElementById('last-update').textContent =
-    'Aggiornato ' + ts.toLocaleTimeString('it-IT');
-
-  if (firstLoad) {
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('main-content').classList.remove('hidden');
-    firstLoad = false;
+function update(d){
+  const s=d.stato||{}, b=s.battito||{}, r=s.radar||{}, ip=d.ipotesi||{};
+  const bs=(b.stato||'?').toUpperCase();
+  const el=document.getElementById('hero-battito'); el.textContent=bs; el.className='hero-state '+(bs==='NOMINALE'?'nominale':'anomala');
+  document.getElementById('hero-morale').textContent=r.indice_morale!=null?r.indice_morale.toFixed(3):'—';
+  document.getElementById('hero-stato').textContent=r.stato||'—';
+  const conf=Object.values(ip).filter(h=>h.stato==='CONFERMATA').length;
+  document.getElementById('hero-conf').textContent=conf+'/'+Object.keys(ip).length;
+  document.getElementById('hero-cont').textContent=d.contatti?d.contatti.umani:'—';
+  if(Object.keys(r).length)renderRadar(r);
+  if(Object.keys(ip).length)renderIpotesi(ip);
+  if(d.contatti){
+    document.getElementById('cont-n').textContent=d.contatti.persone?d.contatti.persone.length:'—';
+    document.getElementById('cont-sub').textContent=d.contatti.umani+' contatti verificabili';
+    document.getElementById('cont-people').innerHTML=(d.contatti.persone||[]).map(p=>`<span class="person-tag">${p}</span>`).join('');
   }
+  document.getElementById('pulse').className='pulse-dot';
+  document.getElementById('last-update').textContent='Aggiornato '+new Date(d.timestamp).toLocaleTimeString('it-IT');
+  if(first){document.getElementById('loading').classList.add('hidden');document.getElementById('main-content').classList.remove('hidden');first=false;}
 }
-
-function fetchData() {
-  fetch(API_BASE + '/monitor')
-    .then(r => {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
-    .then(data => {
-      document.getElementById('error-banner').classList.add('hidden');
-      update(data);
-    })
-    .catch(err => {
-      document.getElementById('pulse').className = 'pulse-dot dead';
-      const eb = document.getElementById('error-banner');
-      eb.textContent = 'Errore connessione API: ' + err.message + ' — assicurati che api/server.py sia attivo (python api/server.py)';
-      eb.classList.remove('hidden');
-      if (firstLoad) {
-        document.getElementById('loading').textContent = 'Errore: ' + err.message;
-      }
-    });
+function go(){
+  fetch(API+'/monitor').then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(d=>{
+    document.getElementById('error-banner').classList.add('hidden'); update(d);
+  }).catch(e=>{
+    document.getElementById('pulse').className='pulse-dot dead';
+    const eb=document.getElementById('error-banner'); eb.textContent='Errore API: '+e.message+' — avvia python api/server.py'; eb.classList.remove('hidden');
+    if(first)document.getElementById('loading').textContent='Errore: '+e.message;
+  });
 }
-
-// Primo caricamento + auto-refresh ogni 30s
-fetchData();
-setInterval(fetchData, 30000);
+go(); setInterval(go,30000);
 </script>
 </body>
 </html>
