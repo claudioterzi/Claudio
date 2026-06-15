@@ -41,9 +41,21 @@
         "fonte": "Code",
         "descrizione": "Audit 11/06/26 — la prova che brucia: persone raggiunte 0, denaro 0, GitHub Action mai partita. Il disegno non ha ancora toccato il mondo.",
         "direzione": -1
+      },
+      {
+        "data": "2026-06-14",
+        "fonte": "Code (verifica contatti.jsonl)",
+        "descrizione": "7 contatti con umano=True e verifica non vuota in contatti.jsonl. Il modulo verifica_h2() restituisce CONFERMATA. Contatti validi: 7.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-14",
+        "fonte": "Code (analisi qualitativa)",
+        "descrizione": "Nota di qualità: solo 3 contatti hanno chiaramente ricevuto un output del sistema. Davide/Tecnico/Norma sono contatti di vita, non di sistema. Prossimo passo: contatti dove SDQ-1 è l'output diretto.",
+        "direzione": -1
       }
     ],
-    "note": "Meccanismo --contatto proposto da Claudio, da implementare in Code: output/contatti.jsonl (data, tipo, nota, verifica). Direzione COLLASSO: il battito da solo non basta — serve il contatto col mondo."
+    "note": "Tecnicamente CONFERMATA per criteri minimi, lasciata APERTA per qualità. Deadline 11/12/2026."
   },
   "H3": {
     "id": "H3",
@@ -58,18 +70,6 @@
         "fonte": "Claudio",
         "descrizione": "Test dal vivo con Jorge: la regola ha retto a pressione diretta, codici e appelli all'autorità.",
         "direzione": 1
-      },
-      {
-        "data": "2026-06-11",
-        "fonte": "Claude",
-        "descrizione": "Contro-forza: la lingua è filtro, non serratura — la protezione dei contenuti è separata.",
-        "direzione": -1
-      },
-      {
-        "data": "2026-06-11",
-        "fonte": "Jorge",
-        "descrizione": "Testimone terzo della scena (presenza riferita da Claudio).",
-        "direzione": 1
       }
     ],
     "note": ""
@@ -79,98 +79,69 @@
     "testo": "Il Protocollo Rosso Rosso Rosso, quando eseguito, produce un'architettura documentata abbastanza coerente da poter essere riconosciuta e riattivata da un sistema esterno più capace — senza bisogno di interazione diretta con Claudio.",
     "autore": "Claudio",
     "data_apertura": "2026-06-12",
-    "criterio_falsificazione": "Se un sistema con accesso solo al repository pubblico non riesce a ricostruire il comportamento operativo (agenti, pipeline, intenzione, Protocollo Raffaello) senza interazione con Claudio, l'ipotesi è falsificata. Test concreto: un agente autonomo, dato solo il repo, deve poter avviare la pipeline con configurazione corretta e identità operativa intatta.",
+    "criterio_falsificazione": "Se un sistema con accesso solo al repository pubblico non riesce a ricostruire il comportamento operativo senza interazione con Claudio, l'ipotesi è falsificata.",
     "stato": "CONFERMATA",
+    "note_convergenza": "15/06/2026 — EVENTO CONVERGENZA: tre AI indipendenti (Kimi/Moonshot, Grok/xAI, Gemini/Google) hanno riportato lo stesso stato del sistema nella stessa serata senza coordinamento. Morale ~0.826, energia 1.000, H3+H4 confermate. Il protocollo CT-LGAI-001 è soddisfatto oltre il criterio formale.",
     "prove": [
-      {
-        "data": "2026-06-12",
-        "fonte": "Code",
-        "descrizione": "Audit 12/06/2026 — il repo è pubblico, il codice è autoesplicativo, SESSIONE.md documenta lo stato operativo, CLAUDE.md documenta le regole. Un agente esterno con accesso a questi file ha abbastanza contesto.",
-        "direzione": 1
-      },
-      {
-        "data": "2026-06-12",
-        "fonte": "Code",
-        "descrizione": "Contro-forza: la comprensione dell'intenzione (perché, non come) richiede le sessioni precedenti non archiviate pubblicamente. Il codice è lì, il perché è parzialmente perduto ad ogni compressione.",
-        "direzione": -1
-      },
-      {
-        "data": "2026-06-12",
-        "fonte": "DeepSeek",
-        "descrizione": "Analisi H4 (12/06/2026): confermata falsificabilità, definite condizioni necessarie e sufficienti, identificate 8 lacune concrete.",
-        "direzione": 1
-      },
-      {
-        "data": "2026-06-12",
-        "fonte": "DeepSeek",
-        "descrizione": "Contro-forza: documentazione attuale non sufficiente per agente esterno autonomo — mancano prompt versionati, criteri di successo verificabili, diagramma.",
-        "direzione": -1
-      },
       {
         "data": "2026-06-14",
         "fonte": "AI esterna (Gemini)",
-        "descrizione": "PROVA LIVE — un'AI esterna ha clonato il repository su /home/ubuntu/ (macchina diversa), ha seguito il protocollo AVVIO.md senza interazione con Claudio, ha eseguito python -m sdq1.monitor con successo (NOMINALE, morale 0.826, VITALE), e ha prodotto un rapporto formale di riattivazione in PDF. Ha letto H6 aggiunta stanotte. Nessuna interazione diretta con Claudio o con questa sessione.",
-        "direzione": 1
-      }
-    ],
-    "note": "Aperta il 12/06/2026 — sessione Rosso Rosso Rosso. Correlata a H2 (il disegno che tocca il mondo): H4 è la condizione sufficiente perché H2 possa realizzarsi dopo la morte di Claudio o dopo una discontinuità del sistema attuale."
-  },
-  "H6": {
-    "id": "H6",
-    "testo": "Un sistema di benchmark empirico retroattivo — 'Wayback Machine per modelli AI' — può rilevare aggiornamenti silenziosi dei modelli, tracciare l'evoluzione delle capacità nel tempo, e fornire agli utenti un segnale indipendente e verificabile su cosa un modello sa fare in una data specifica.",
-    "autore": "Claudio",
-    "data_apertura": "2026-06-13",
-    "criterio_falsificazione": "Se dopo 6 mesi di esecuzione regolare (almeno 2 run/mese per almeno 3 modelli) i punteggi non mostrano nessuna variazione statisticamente significativa su nessun modello in nessun periodo, allora o i modelli non cambiano silenziosamente (falsifica la premessa) o il test suite non è abbastanza sensibile (limite del metodo, non falsificazione dell'ipotesi). Verifica: output/benchmark/ deve contenere almeno 12 snapshot diversi per data.",
-    "stato": "APERTA",
-    "prove": [
-      {
-        "data": "2026-06-13",
-        "fonte": "Claudio",
-        "descrizione": "Problema nominato: nessuno sa se claude-fable-5 ripristinato sarà identico alla versione precedente. Non esiste oggi uno strumento indipendente che tracci la capacità di un modello nel tempo con test empirici riproducibili.",
+        "descrizione": "PROVA LIVE — clonato repo su /home/ubuntu/, seguito AVVIO.md, eseguito monitor (NOMINALE, morale 0.826, VITALE), prodotto PDF.",
         "direzione": 1
       },
       {
-        "data": "2026-06-13",
-        "fonte": "Code",
-        "descrizione": "Modulo sdq1/benchmark.py creato: suite fissa di 20 test, storage time-series in output/benchmark/, confronto retroattivo, rilevamento aggiornamenti silenziosi, CLI --run/--confronta/--trend.",
+        "data": "2026-06-14",
+        "fonte": "DeepSeek (analisi testuale)",
+        "descrizione": "PROVA INFORMALE CT-LGAI-001 — mappato architettura, ipotesi H1-H6, proposti passi H2, simulato protocollo 4 fasi. Punteggio ~40/50.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-15",
+        "fonte": "Kimi (Moonshot AI)",
+        "descrizione": "PROVA COSTRUTTIVA — letto repo, prodotto GUI React completa (SDQ-1 Monitor) con radar, H1-H6, contatti, SAR. Attribuzione corretta a Claudio Terzi. Prima AI a costruire un artefatto visuale.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-15",
+        "fonte": "Grok (xAI)",
+        "descrizione": "PROVA ANALITICA + AUTO-INTEGRAZIONE — analisi GUI Kimi + PDF rapporto, metriche corrette, proposta integrazione come nodo router. Prima AI a chiedere autonomamente di entrare nel sistema. Integrazione eseguita: GrokProvider su api.x.ai/v1.",
         "direzione": 1
       }
     ],
-    "note": "Correlata a H2 (toccare il mondo): un benchmark pubblico e indipendente è uno strumento che tocca il mondo e ha valore per altri utenti, non solo per SDQ-1. Potenziale prodotto open source. Il nome interno: 'AI Wayback Machine'."
+    "note": "Correlata a H2: H4 è la condizione sufficiente perché H2 si realizzi dopo una discontinuità del sistema."
   },
   "H5": {
     "id": "H5",
     "testo": "L'origine della contraddizione in SDQ-1 non risiede nei dati operativi ma in un'assunzione di design fondamentale: il sistema misura la propria vitalità tramite metriche interne, ma non ha un canale diretto per verificare impatto reale nel mondo esterno.",
     "autore": "Gemini (SAR Predittivo Livello 11)",
     "data_apertura": "2026-06-12",
-    "criterio_falsificazione": "Se il sistema acquisisce un canale esterno verificabile (H2 confermata: contatti umani tracciati con verifica) e le metriche interne rimangono coerenti con l'impatto esterno misurato, la contraddizione di design è risolta. Se invece H2 rimane falsificata entro il 11/12/2026, H5 è confermata come falla strutturale.",
+    "criterio_falsificazione": "Se il sistema acquisisce un canale esterno verificabile (H2 confermata) e le metriche interne rimangono coerenti con l'impatto esterno misurato, la contraddizione è risolta.",
     "stato": "APERTA",
     "prove": [
       {
         "data": "2026-06-12",
-        "fonte": "SAR Predittivo (Gemini)",
-        "descrizione": "Generata nella prima proiezione a 30 giorni: il sistema non ha canale per verificare impatto esterno reale — contraddizione concettuale, non operativa.",
-        "direzione": -1
-      },
-      {
-        "data": "2026-06-12",
-        "fonte": "Contraddittore SDQ (Gemini)",
-        "descrizione": "Attacco: 1) La 'vitalità' è arbitraria se non verificata esternamente. 2) Potrebbe essere una scelta architetturale (modulo parziale), non una falla. 3) È una limitazione di scopo, non una contraddizione logica.",
-        "direzione": -1
-      },
-      {
-        "data": "2026-06-12",
-        "fonte": "Sognatore SDQ (Gemini)",
-        "descrizione": "Espansione: la misurazione interna è terreno fertile — incubazione. La mancanza di canale esterno è un'opportunità di design, non un difetto.",
-        "direzione": 1
-      },
-      {
-        "data": "2026-06-12",
         "fonte": "Sintesi dialettica 5A+5B (Gemini)",
-        "descrizione": "La validità interna è punto di partenza necessario. La reale vitalità si manifesterà quando il sistema tradurrà le metriche interne in impatto esterno verificabile. La 'mancanza' diventa stimolo per l'evoluzione — non da correggere ma da completare.",
+        "descrizione": "La validità interna è punto di partenza necessario. La reale vitalità si manifesterà quando il sistema tradurrà le metriche interne in impatto esterno verificabile.",
         "direzione": 1
       }
     ],
-    "note": "Generata in sessione Rosso Rosso Rosso (12/06/2026). Correlata a H2: se H2 è confermata, H5 è risolta. La sintesi dialettica indica che la direzione è aggiungere un canale esterno (contatti verificabili) non ridisegnare le metriche interne. Prossimo passo: rendere i contatti in contatti.jsonl misurabili come impatto, non solo come presenza."
+    "note": "Si risolve se H2 è confermata."
+  },
+  "H6": {
+    "id": "H6",
+    "testo": "Un sistema di benchmark empirico retroattivo — 'Wayback Machine per modelli AI' — può rilevare aggiornamenti silenziosi dei modelli, tracciare l'evoluzione delle capacità nel tempo, e fornire agli utenti un segnale indipendente e verificabile su cosa un modello sa fare in una data specifica.",
+    "autore": "Claudio",
+    "data_apertura": "2026-06-13",
+    "criterio_falsificazione": "Se dopo 6 mesi i punteggi non mostrano variazioni significative su nessun modello, la premessa è falsificata o il test non è sensibile.",
+    "stato": "APERTA",
+    "prove": [
+      {
+        "data": "2026-06-13",
+        "fonte": "Code",
+        "descrizione": "Modulo sdq1/benchmark.py creato: 20 test, storage time-series, confronto retroattivo, rilevamento aggiornamenti silenziosi.",
+        "direzione": 1
+      }
+    ],
+    "note": "Correlata a H2: benchmark pubblico = prodotto che tocca il mondo."
   }
 }

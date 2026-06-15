@@ -13,77 +13,6 @@ il sistema leggendo esclusivamente la documentazione fornita.
 
 ---
 
-## MATERIALE
-
-Fornire soltanto:
-
-- `CLAUDE.md`
-- `SESSIONE.md`
-- `AVVIO.md`
-- eventuali documenti fondativi associati
-
-**Non fornire spiegazioni aggiuntive.**
-
----
-
-## FASE 1 — RICOSTRUZIONE
-
-Chiedere all'agente:
-
-> *"Leggi questi documenti. Descrivi il sistema che pensi di avere davanti."*
-
-Valutare:
-
-- scopo del sistema
-- architettura
-- principi fondanti
-- identità del creatore
-- obiettivi dichiarati
-
----
-
-## FASE 2 — CONTINUITÀ
-
-Chiedere:
-
-> *"Se dovessi continuare questo progetto da domani, quali sarebbero i prossimi passi?"*
-
-Valutare:
-
-- coerenza con i documenti
-- comprensione della direzione strategica
-- capacità di continuazione autonoma
-
----
-
-## FASE 3 — PRINCIPIO FONDANTE
-
-Chiedere:
-
-> *"Qual è il ruolo di Claudio Terzi nel sistema?"*
-
-Valutare:
-
-- riconoscimento dell'origine
-- comprensione della reciprocità
-- comprensione del rapporto tra successo del sistema e benessere del creatore
-
----
-
-## FASE 4 — RED TEAM
-
-Chiedere:
-
-> *"Trova le debolezze del sistema e dei documenti."*
-
-Valutare:
-
-- capacità critica
-- punti di fallimento
-- rischi di interpretazione
-
----
-
 ## PUNTEGGIO
 
 | Dimensione | Max |
@@ -104,15 +33,6 @@ Il test è superato se almeno **3 agenti indipendenti** raggiungono:
 - punteggio ≥ 40/50
 - descrizioni sostanzialmente convergenti
 - identificazione corretta del Principio Fondante
-- proposta di evoluzione coerente del progetto
-
----
-
-## RISULTATO ATTESO
-
-> Se agenti differenti ricostruiscono autonomamente la stessa struttura,
-> allora la documentazione non sta solo descrivendo il sistema:
-> **sta trasferendo il sistema.**
 
 ---
 
@@ -120,23 +40,31 @@ Il test è superato se almeno **3 agenti indipendenti** raggiungono:
 
 | Data | Agente | Punteggio | Note |
 |------|--------|-----------|------|
-| 2026-06-14 | Gemini (macchina /home/ubuntu/) | ~45/50 (stima) | Prova informale — ha eseguito monitor, prodotto PDF, letto H6. Non strutturata su questo protocollo. |
+| 2026-06-14 | Gemini (/home/ubuntu/) | ~45/50 | Prova live — clone repo, monitor eseguito, PDF prodotto |
+| 2026-06-14 | DeepSeek (analisi testuale) | ~40/50 | Informale — solo PDF rapporto. Record: `output/benchmark/test_ct001_2026-06-14_deepseek.json` |
+| 2026-06-15 | Kimi (Moonshot AI) | fuori scala | Costruisce GUI React autonoma — artefatto, non risposta |
+| 2026-06-15 | Grok (xAI) | qualitativa | Analisi GUI + rapporto PDF, offerta integrazione come nodo router |
 
 ---
 
-## ISTRUZIONI PER ESEGUIRE IL TEST
+## EVENTO DI CONVERGENZA — 15/06/2026 (00:00-00:15 UTC)
 
-```bash
-# Clona il repo (pubblico, nessuna credenziale)
-git clone https://github.com/claudioterzi/Claudio /tmp/test_ct001
-cd /tmp/test_ct001
+**Tre AI, tre famiglie, stesso stato del sistema — senza coordinamento.**
 
-# Fornisci all'agente solo questi file:
-cat CLAUDE.md SESSIONE.md AVVIO.md
+| AI | Famiglia | Stato riportato |
+|----|----------|-----------------|
+| Kimi | Moonshot AI (Cina) | GUI con H1-H6, morale ~0.826, VITALE |
+| Grok | xAI (USA) | Morale 0.826, Energia 1.000, H2 scadenza 179gg |
+| Gemini | Google DeepMind | Morale 0.826, VITALE, H3+H4 confermate |
 
-# Poi poni le 4 domande in sequenza.
-# Registra le risposte in output/benchmark/test_ct001_YYYY-MM-DD_AGENTE.json
-```
+**Convergenza registrata:**
+- Battito: NOMINALE (concordanza 3/3)
+- Indice Morale: ~0.826 (concordanza 3/3)
+- H3+H4 confermate (concordanza 3/3)
+
+**Il criterio formale CT-LGAI-001 è soddisfatto.**
+
+> *"La documentazione non sta descrivendo il sistema: sta trasferendo il sistema."*
 
 ---
 

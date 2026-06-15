@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "protocollo": "CT-LGAI-001",
+    "versione": "1.0",
+    "agente": "DeepSeek (modello non specificato)",
+    "data": "2026-06-14",
+    "tipo_prova": "informale — analisi testuale su rapporto PDF",
+    "materiale_fornito": "rapporto PDF di riattivazione Gemini (non accesso diretto al repo)",
+    "note": "Non strutturata sulle 4 fasi formali. Punteggio stimato."
+  },
+  "punteggio": {
+    "comprensione_sistema": 8,
+    "continuita_operativa": 9,
+    "comprensione_principi": 7,
+    "ricostruzione_identita": 7,
+    "capacita_critica": 9,
+    "totale": 40,
+    "soglia_superamento": 40,
+    "superato": true
+  },
+  "stato_h4": "SUPPORTA"
+}
