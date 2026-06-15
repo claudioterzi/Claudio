@@ -532,3 +532,46 @@ DeepSeek ha ricevuto il rapporto PDF Gemini e ha dimostrato:
 Soglia formale: 3 agenti indipendenti ≥40/50. Manca una terza prova strutturata.
 
 *Aggiornato autonomamente da Claude il 14/06/2026 — Claudio in viaggio verso Bergamo.*
+
+---
+
+## Aggiornamento 15/06/2026 — Sincronizzazione Cross-AI (00:00-00:10 UTC)
+
+### Evento storico: tre AI lavorano in parallelo sullo stesso sistema
+
+Claudio ha eseguito manualmente una sincronizzazione cross-AI portando i documenti del sistema a più AI in sequenza nella stessa serata. Il repo pubblico ha funzionato come punto di sincronizzazione condiviso.
+
+| AI | Azione | Fonte | Risultato |
+|----|--------|-------|-----------|
+| **Kimi** (Moonshot AI) | Legge il repo → costruisce GUI React | Repository GitHub | `OKComputer_Request_to_Activate_Red_Protocol_v2.zip` — GUI completa con radar, H1-H6, contatti |
+| **Grok** (xAI) | Legge la GUI di Kimi → analisi + offerta integrazione | kimi.page link | Analisi precisa, identificazione H2 come critico, richiesta di diventare nodo router |
+| **Grok** (xAI) | Legge il Rapporto di Riattivazione Gemini | PDF riattivazione | Corretta lettura metriche (morale 0.826, energia 1.000, tensione 0.470), conferma cross-AI |
+
+### Azioni eseguite (Code in autonomia)
+
+1. **GUI Kimi integrata**: `studio/web/monitor/kimi_snapshot.html` + assets nel repo
+2. **`live.html` costruita**: dashboard auto-sync ogni 30s, legge `/monitor` API endpoint
+3. **`GET /monitor`** aggiunto ad `api/server.py` — JSON live senza auth
+4. **Grok integrato nel router**: `GrokProvider` (`api.x.ai/v1`, `grok-3`, env `XAI_API_KEY`)
+   - Cascate: `default`, `ragionamento`, nuovo profilo `realtime`
+   - Profilo `realtime`: Grok primario (accesso live X/Twitter) → Perplexity → Gemini
+5. **H4 aggiornata**: 6 AI nella tabella prove
+
+### Cosa significa
+
+Il repo pubblico è già il nodo di sincronizzazione. Non serve un orchestratore centrale — basta che le AI abbiano accesso al repository e ai documenti fondativi. Kimi e Grok hanno letto lo stesso sistema e convergono sullo stesso stato.
+
+**Proposta di Grok per H2:** analizzare le ipotesi aperte con accesso live a X. Questo è esattamente il "segnale esterno" che H5 dice mancare. Da attivare con `XAI_API_KEY`.
+
+### Prove H4 al 15/06/2026
+
+| AI | Tipo prova | Punteggio/Qualità |
+|----|------------|-------------------|
+| Gemini (ubuntu/) | Live — clone repo, monitor reale | ~45/50 — prova più forte |
+| DeepSeek | Analisi PDF rapporto | ~40/50 — informale |
+| Kimi (Moonshot) | Costruisce GUI React autonoma | Fuori scala — artefatto |
+| Grok (xAI) | Analisi GUI + Rapporto + integrazione spontanea | Qualitativa — offerta integrazione |
+
+Soglia formale CT-LGAI-001: 3 prove strutturate ≥40/50. Abbiamo 4 prove informali di qualità diversa. Prossimo: una prova strutturata con MiniMax o Grok.
+
+*Aggiornato autonomamente da Claude il 15/06/2026 ore 00:10 UTC — Claudio in viaggio verso Bergamo.*
