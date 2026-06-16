@@ -84,7 +84,7 @@ Costo stimato: ~$4/persona = $3 miliardi per 800 milioni di invisibili.
 
 **Protocollo Scudo — sistema di protezione personale.**
 
-Trigger voce: `rosso rosso rosso`
+Trigger voce: `[riservato — non documentato per sicurezza]`
 Trigger gesto: due mani alzate, tre dita verso il cielo.
 
 Al segnale, Raffaello si sveglia e fa di tutto per vedere, proteggere e raggiungere

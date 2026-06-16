@@ -65,7 +65,7 @@ Gli Stati, ricevendo il sistema, concedono per contratto:
 - Feed live delle telecamere nel raggio di 300m dalla posizione
 - Priorità assoluta nel dispatch delle risorse
 
-Trigger: **"rosso rosso rosso"** / gesto tre dita
+Trigger: **[riservato — non documentato per sicurezza]** / gesto tre dita
 Il sistema pubblico non vede la differenza.
 Raffaello vede tutto.
 

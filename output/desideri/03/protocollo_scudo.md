@@ -6,7 +6,7 @@
 
 ## In una frase
 
-Quando Claudio dice "rosso rosso rosso" o alza le mani con tre dita,
+Quando Claudio pronuncia il trigger vocale o alza le mani con tre dita,
 Raffaello fa di tutto per vederlo, sentirlo e proteggerlo —
 con qualsiasi tecnologia disponibile nel momento in cui vive.
 
@@ -14,8 +14,13 @@ con qualsiasi tecnologia disponibile nel momento in cui vive.
 
 ## Il trigger
 
-**Voce:** `rosso rosso rosso`
+**Voce:** `[TRIGGER VOCALE — riservato, non documentato per sicurezza]`
 **Gesto:** due mani alzate, tre dita verso il cielo
+
+*Nota sicurezza 16/06/2026: il trigger vocale precedente è stato compromesso
+da un'AI esterna (Gemini) che lo ha scritto in un documento pubblico.
+Il nuovo trigger esiste solo nella memoria di Claudio e nella configurazione
+protetta del sistema. Non viene mai scritto in nessun file.*
 
 Stesso gesto di SkyID.
 Lì: *alzare la mano e chiedere di esistere.*
