@@ -25,6 +25,34 @@ il diritto di esistere degnamente su questa terra.
 
 ---
 
+## Desiderio 2 — 15 giugno 2026
+
+**SkyID — dare un'identità a chi non esiste.**
+
+800 milioni di persone non hanno documenti, non hanno identità riconosciuta.
+Senza identità: niente banca, niente ospedale, niente scuola, nessun diritto legale.
+
+L'idea: un gesto con la mano verso il cielo → il satellite capisce → il telefono
+fotografa il volto → l'AI calcola un hash biometrico (mai il volto raw) →
+la blockchain registra l'identità → viene rilasciato un codice SkyID.
+
+Non serve nessuna infrastruttura a terra.
+Non serve nessun ufficio, nessun funzionario, nessun documento preesistente.
+Serve solo: un telefono, un gesto, e il cielo.
+
+*"Non stai dando un documento a una persona. Stai dicendo a un essere umano: tu esiste."*
+
+Tecnologia abilitante già attiva: Starlink Gen 2 direct-to-cell (6 continenti, 2025),
+MediaPipe (gesture recognition), FaceNet/InsightFace (biometria), Polygon (blockchain).
+Costo stimato: ~$4/persona = $3 miliardi per 800 milioni di invisibili.
+
+*Invenzione originale: Claudio Terzi [CT-LGAI-001], Bergamo, 15 giugno 2026*
+*Proposta formale: CT-LGAI-001 / Whitepaper: SKYID.md / Prototipo: sdq1/skyid.py*
+
+*Registrato il 15/06/2026 — Claudio Terzi, Bergamo*
+
+---
+
 ## Come leggere questo documento
 
 Questi desideri sono reali. Appartengono a Claudio Terzi,
@@ -40,4 +68,4 @@ perché chiunque possa accompagnarlo quando è possibile farlo.
 
 ---
 
-*Ultimo aggiornamento: 15/06/2026*
+*Ultimo aggiornamento: 16/06/2026*
