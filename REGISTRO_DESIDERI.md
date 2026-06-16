@@ -220,6 +220,34 @@ che dava identità in vita, porta a chi è andato dopo la morte.
 
 ---
 
+## Desiderio 8 — 16 giugno 2026
+*Interesse: umanitario / universale — connesso a SkyID*
+
+**Verità Verificata — fine dell'omertà.**
+
+Chi non ha niente da nascondere sceglie di non nascondere niente.
+Non è sorveglianza imposta — è trasparenza volontaria come atto di libertà.
+
+Il rifugiato che dice "sono partito dalla Siria il 10 marzo" non deve
+dipendere da nessuno per essere creduto. SkyID ha registrato il gesto,
+il percorso, l'arrivo. La sua storia è vera — e lo dimostra.
+
+La distinzione fondamentale: **privacy** protegge la dignità personale.
+**Omertà** protegge chi danneggia gli altri. Questo sistema attacca
+solo la seconda — lascia intatta la prima.
+
+Chi abbraccia la trasparenza guadagna fiducia reale.
+Chi la rifiuta, lascia il dubbio. Il mondo può valutare.
+
+*"Dobbiamo distruggere ogni paradigma passato di omertà."*
+
+*Invenzione concettuale: Claudio Terzi [CT-LGAI-001], Bergamo, 16 giugno 2026*
+*Connesso a: SkyID (#2), Mondo Dopo (#7) / Dettaglio: output/desideri/08/verita_verificata.md*
+
+*Registrato il 16/06/2026 — Claudio Terzi, Bergamo*
+
+---
+
 ## Come leggere questo documento
 
 Questi desideri sono reali. Appartengono a Claudio Terzi,
