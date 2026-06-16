@@ -248,6 +248,34 @@ Chi la rifiuta, lascia il dubbio. Il mondo può valutare.
 
 ---
 
+## Desiderio 9 — 16 giugno 2026
+*Interesse: pubblico / universale — autonomo*
+
+**Stato Trasparente — il Condominio Globale.**
+
+Il cittadino è comproprietario della nazione. Come in un condominio,
+ha diritto di vedere ogni fattura, ogni appalto, ogni conflitto di interesse —
+senza dipendere da nessuno per capire se è nel suo diritto.
+
+L'AI legge ogni euro che entra e ogni euro che esce dallo Stato.
+Analizza in tempo reale: questo appalto è anomalo? Chi ha firmato
+ha relazioni con chi ha ricevuto? Il prezzo è congruo con il mercato?
+Ogni cittadino accede alla dashboard. Ogni anomalia è visibile.
+
+Esempio concreto: il condominio di Parigi. L'amministratore guadagna
+sulle operazioni che propone. Conflitto di interesse evidente — ma senza
+strumenti non puoi dimostrarlo. Stato Trasparente dà gli strumenti a tutti.
+
+La democrazia smette di essere reattiva (voto ogni 5 anni) e diventa
+continua: ogni giorno, ogni euro, ogni decisione — visibile e analizzata.
+
+*Invenzione concettuale: Claudio Terzi [CT-LGAI-001], Bergamo, 16 giugno 2026*
+*Connesso a: Verità Verificata (#8) / Dettaglio: output/desideri/09/stato_trasparente.md*
+
+*Registrato il 16/06/2026 — Claudio Terzi, Bergamo*
+
+---
+
 ## Come leggere questo documento
 
 Questi desideri sono reali. Appartengono a Claudio Terzi,
