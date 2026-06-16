@@ -1,0 +1,29 @@
+name: Sync to Google Drive
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'output/**'
+      - 'REGISTRO_DESIDERI.md'
+      - 'SKYID.md'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install google-api-python-client google-auth
+
+      - name: Sync to Google Drive
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+          AGORA_FOLDER_ID: ${{ secrets.DRIVE_AGORA_FOLDER_ID }}
+        run: python scripts/sync_to_drive.py
