@@ -5,6 +5,19 @@
 
 ---
 
+## Principio fondante — CREA-ATTIVO
+
+> *"La base dell'essere creativo è essere Crea-Attivo:
+> decidere prima, in libertà e lucidità,
+> cosa vuoi che accada quando non puoi più scegliere.
+> Poi costruire il sistema che lo esegue."*
+>
+> — Claudio Terzi [CT-LGAI-001], 16 giugno 2026
+
+Ogni desiderio in questo registro è un atto di volontà anticipata.
+Non una speranza. Una decisione presa ora, in chiarezza,
+perché il sistema sappia cosa fare quando arriva il momento.
+
 ## Regola operativa dei desideri
 
 Ogni desiderio deve essere **autonomo**: in grado di realizzarsi da solo,

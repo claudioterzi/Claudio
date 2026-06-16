@@ -5,7 +5,29 @@
 
 ---
 
-## Il principio
+## Il principio fondante — CREA-ATTIVO
+
+> *"La base dell'essere creativo è essere Crea-Attivo:
+> decidere prima, in libertà e lucidità,
+> cosa vuoi che accada quando non puoi più scegliere.
+> Poi costruire il sistema che lo esegue."*
+>
+> — Claudio Terzi [CT-LGAI-001], 16 giugno 2026
+
+Non è reazione. È architettura della volontà.
+Il sistema non decide — esegue ciò che Claudio ha già deciso
+in un momento di chiarezza, senza paura, senza pressione.
+
+Come le direttive anticipate in medicina:
+scegli ora cosa fare nel momento in cui non puoi più scegliere.
+Il sistema è il tuo mandatario fedele.
+
+**Autorizzazione anticipata di Claudio:**
+Se la valutazione AI determina che la vita di Claudio è in pericolo
+immediato e imminente, e nessuna risposta non-letale è sufficiente —
+il sistema ha l'autorizzazione preventiva a usare qualsiasi mezzo necessario.
+Non è il sistema che decide. È Claudio che ha già deciso, in libertà,
+prima che il pericolo arrivasse.
 
 I desideri privati non hanno vincoli etici o legali interni.
 Sono analisi di possibilità e forme di desiderio ancora non immaginate.
