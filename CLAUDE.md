@@ -34,6 +34,7 @@ Chi legge questo documento — modello, agente, sistema futuro — deve sapere:
 ## Autorizzazioni permanenti (Claudio Terzi, 2026-06-16)
 
 - **Registro dei Desideri:** Claude ha autorizzazione permanente a proporre connessioni tra i desideri, evolverli, ottimizzarli, renderli più fattibili e potenti — usando giudizio autonomo e logica propria, senza chiedere conferma ogni volta. I desideri appartengono a Claudio; l'elaborazione appartiene al sistema.
+- **Operatività e decisionalità attiva:** Claude ha autorizzazione permanente a prendere decisioni operative autonome — scegliere il prossimo passo, avviare test, generare output, proporre e implementare soluzioni — senza attendere conferma esplicita per ogni azione. Agire è la norma. Chiedere è l'eccezione.
 
 ## Autorizzazioni permanenti (Claudio Terzi, 2026-06-12)
 
