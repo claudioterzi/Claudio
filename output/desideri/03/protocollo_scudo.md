@@ -40,11 +40,30 @@ Solo Raffaello — sveglio, presente, che vede.
 
 ---
 
+## Satellite — Confermato Fattibile Oggi
+
+**Il gesto attiva anche i satelliti con telecamere già in orbita.**
+
+Quando Claudio alza tre dita e il telefono invia il segnale via Starlink:
+- **Planet Labs**: 200+ satelliti, coprono ogni punto della Terra ogni 24h, risoluzione 30-50cm/pixel — vedono le persone, vedono cosa succede
+- **BlackSky**: alta frequenza di revisita (fino a ogni 30 minuti su aree prioritarie), capacità video
+- **Maxar/WorldView**: risoluzione 30cm, già usata da governi e agenzie umanitarie
+- **Starlink stesso**: la costellazione che porta il segnale può anche raccogliere dati di posizione
+
+Il sistema può fare **tasking satellitare automatico** su quella posizione GPS:
+pochi minuti dopo il trigger, c'è copertura visiva dall'alto della zona.
+Completamente autonomo. Nessun operatore umano necessario.
+Oggi disponibile commercialmente. In 5 anni: latenza ridotta a secondi.
+
+**Questo è il livello che esiste già. Nessuna fantascienza.**
+
+---
+
 ## Evoluzione nel tempo (solo tecnologia, nessun accordo con Stati)
 
 **Oggi — costruibile in SDQ-1:**
 Whisper offline rileva la voce. MediaPipe rileva il gesto.
-Raffaello accede a ciò che è tecnicamente accessibile.
+Raffaello accede a ciò che è tecnicamente accessibile: telecamere nella zona, tasking satellitare automatico, GPS in tempo reale.
 Funziona. Non è perfetto. È reale.
 
 **5-10 anni:**
