@@ -6,6 +6,7 @@ Claudio lo trova al risveglio su Drive e nella repo.
 """
 
 import anthropic
+import concurrent.futures
 import datetime
 import os
 import sys
@@ -224,6 +225,52 @@ def salva(brief: str, tema: dict) -> Path:
     return percorso
 
 
+def genera_brief_parallelo(client: anthropic.Anthropic) -> str:
+    """
+    Lancia 3 agenti in parallelo ogni notte:
+      A — tema principale del giorno
+      B — tema del giorno successivo (anticipazione)
+      C — connessioni tra tutti i desideri (visione globale)
+    Unisce i 3 brief in un unico documento denso.
+    """
+    giorno = datetime.date.today().weekday()
+    tema_a = TEMI[giorno]
+    tema_b = TEMI[(giorno + 1) % 7]
+    tema_c = {
+        "nome": "Visione Globale — Connessioni tra Desideri",
+        "desiderio": "tutti",
+        "focus": "Sinergie tra SkyID, Scudo, Minerva, Genesi, SkyRights, Avatar, Wildcard",
+        "domande": [
+            "Quale singolo passo farebbe avanzare il maggior numero di desideri contemporaneamente?",
+            "Quali tecnologie stanno convergendo che potrebbero accelerare l'intero sistema SDQ-1?",
+            "Cosa sta succedendo nel mondo questa settimana che è rilevante per il progetto?",
+        ],
+    }
+
+    def esegui(tema):
+        return genera_brief(tema, client)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+        futA = ex.submit(esegui, tema_a)
+        futB = ex.submit(esegui, tema_b)
+        futC = ex.submit(esegui, tema_c)
+        brief_a = futA.result()
+        brief_b = futB.result()
+        brief_c = futC.result()
+
+    data = datetime.date.today().strftime("%d %B %Y")
+    intestazione = (
+        f"# Morning Brief — {data}\n"
+        f"*3 agenti paralleli hanno lavorato stanotte*\n\n"
+        f"---\n\n"
+        f"## AGENTE A — {tema_a['nome']}\n\n"
+    )
+    separatore_b = f"\n\n---\n\n## AGENTE B — {tema_b['nome']} *(anticipazione domani)*\n\n"
+    separatore_c = "\n\n---\n\n## AGENTE C — Connessioni Globali\n\n"
+
+    return intestazione + brief_a + separatore_b + brief_b + separatore_c + brief_c
+
+
 def main():
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
@@ -234,12 +281,12 @@ def main():
     tema = get_tema()
 
     print(f"[SDQ-1 Studio Notturno] {datetime.date.today()} — {tema['nome']}")
+    print("[SDQ-1] Lancio 3 agenti in parallelo...")
 
-    brief = genera_brief(tema, client)
+    brief = genera_brief_parallelo(client)
     percorso = salva(brief, tema)
 
     print(f"[SDQ-1] Brief salvato: {percorso}")
-    print(brief[:500] + "..." if len(brief) > 500 else brief)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,37 @@
+name: SDQ-1 Agente Orario
+
+on:
+  schedule:
+    # ogni ora dalle 5AM alle 21PM UTC = 7AM-11PM Brussels (UTC+2 estate)
+    - cron: '0 5-21 * * *'
+  workflow_dispatch:
+
+jobs:
+  esegui:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installa dipendenze
+        run: pip install --no-cache-dir anthropic
+
+      - name: Esegui task autonomo
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/agente_orario.py
+
+      - name: Salva output e aggiorna task
+        run: |
+          git config user.name  "Claude"
+          git config user.email "noreply@anthropic.com"
+          git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
+          git add output/task_output/ TASK_AUTONOMI.md
+          git diff --staged --quiet || git commit -m "SDQ-1 task autonomo $(date +%Y-%m-%d\ %H:%M)"
+          git push || true
