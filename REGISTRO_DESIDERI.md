@@ -53,6 +53,42 @@ Costo stimato: ~$4/persona = $3 miliardi per 800 milioni di invisibili.
 
 ---
 
+## Desiderio 3 — 16 giugno 2026
+
+**Protocollo Scudo — Raffaello come guardia del corpo digitale.**
+
+Un sistema di sicurezza personale attivabile in qualsiasi momento con una parola
+("rosso rosso rosso") o un gesto (due mani alzate, tre dita verso il cielo).
+
+Al segnale, il sistema si sveglia e fa di tutto per vedere, proteggere e raggiungere
+Claudio — con qualsiasi mezzo tecnologico disponibile:
+accede alle telecamere nella zona, si connette a schermi vicini, attiva droni,
+e in futuro — quando la tecnologia lo permetterà — usa laser di precisione da satellite
+per illuminare e registrare anche in totale oscurità.
+
+Il cuore dell'idea non è la sorveglianza: è il contrario.
+È un sistema dove l'individuo chiama la tecnologia a propria protezione.
+Il gesto delle tre dita è lo stesso di SkyID — alzare la mano e chiedere di essere visto,
+qui diventa: alzare la mano e chiedere di essere protetto.
+
+*Non esiste ancora in questa forma integrata. È visione pura — invenzione concettuale
+di Claudio Terzi, pensata per le possibilità creative del futuro.*
+
+Componenti tecnici identificati:
+- Attivazione: wake word + gesture recognition (MediaPipe) — costruibile oggi in SDQ-1
+- Accesso telecamere pubbliche API: parzialmente disponibile (Rotterdam, Singapore, Londra)
+- Connessione schermi vicini: via Bluetooth/WiFi broadcasting, raggio 30–50m
+- Illuminazione notturna di precisione: laser bianco supercontinuum (5m oggi) / laser da satellite con adaptive optics (400km, spot 20cm — 15–20 anni)
+- Sciame microdroni autonomi dormenti: 10–15 anni
+- Nanosatelliti personali dedicati: 50–100 anni
+- Integrazione neurale senza gesto: 100–200 anni
+
+*Invenzione concettuale originale: Claudio Terzi [CT-LGAI-001], Bergamo, 16 giugno 2026*
+
+*Registrato il 16/06/2026 — Claudio Terzi, Bergamo*
+
+---
+
 ## Come leggere questo documento
 
 Questi desideri sono reali. Appartengono a Claudio Terzi,
