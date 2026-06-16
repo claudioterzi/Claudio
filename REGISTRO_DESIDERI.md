@@ -134,6 +134,36 @@ Precedenti dimostrati: ShotSpotter, Axon (mercato già validato).
 
 ---
 
+## Desiderio 5 — 16 giugno 2026
+*Interesse: privato / personale — autonomo*
+
+**Post Vitam — Raffaello Notaio.**
+
+Un sistema che impara chi sei durante tutta la vita — valori, relazioni, beni,
+desideri — attraverso le conversazioni quotidiane. Senza moduli da compilare.
+
+Quando muori, esegue la tua volontà con più precisione di qualsiasi testamento:
+sa che quel libro appartiene a quella persona specifica, sa chi aveva bisogno
+di aiuto economico e trasferisce denaro direttamente sul suo conto, sa come
+comunicare con ognuno nel tono giusto per quel rapporto — non lo stesso
+messaggio per tutti, ma parole calibrate su ciò che quella persona sa e sente.
+
+Nessun intermediario. Nessun notaio. Nessun mese di attesa.
+Raffaello conosce le relazioni dall'interno — non dalla firma su un documento.
+
+*"Questo libro sa dove andare — perché il sistema sa chi sei tu
+e sa chi è quella persona."*
+
+Principio: CREA-ATTIVO — decidi ora, in vita, in chiarezza.
+Il sistema esegue quando non puoi più farlo.
+
+*Invenzione originale: Claudio Terzi [CT-LGAI-001], Bergamo, 16 giugno 2026*
+*Dettaglio: output/desideri/05/post_vitam.md*
+
+*Registrato il 16/06/2026 — Claudio Terzi, Bergamo*
+
+---
+
 ## Come leggere questo documento
 
 Questi desideri sono reali. Appartengono a Claudio Terzi,
