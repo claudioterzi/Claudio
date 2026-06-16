@@ -276,6 +276,35 @@ continua: ogni giorno, ogni euro, ogni decisione — visibile e analizzata.
 
 ---
 
+## Desiderio 10 — 16 giugno 2026
+*Interesse: pubblico / universale — connesso a SkyID e Stato Trasparente*
+
+**Voto Universale Digitale.**
+
+Il cittadino vota da casa, dal telefono, da qualsiasi posto.
+SkyID certifica che è lui. La blockchain registra il voto in modo
+anonimo ma verificabile. Il risultato è istantaneo. Nessuno spoglio.
+
+Chi non aveva documenti → SkyID → vota per la prima volta nella vita.
+Il rifugiato vota per il governo del paese in cui è nato, dal telefono,
+da qualsiasi parte del mondo.
+
+Zero-knowledge proof garantisce matematicamente il segreto del voto
+e la verificabilità del conteggio — non è una promessa, è matematica.
+
+Estonia lo fa dal 2005. Nel 2023 il 51% degli elettori ha votato online.
+Zero frodi in 18 anni. SkyID porta questo modello al mondo intero.
+
+Con Stato Trasparente (#9): i cittadini vedono cosa fa il governo
+e possono cambiarlo in tempo reale — non ogni 5 anni.
+
+*Invenzione concettuale: Claudio Terzi [CT-LGAI-001], Bergamo, 16 giugno 2026*
+*Connesso a: SkyID (#2), Stato Trasparente (#9)*
+
+*Registrato il 16/06/2026 — Claudio Terzi, Bergamo*
+
+---
+
 ## Come leggere questo documento
 
 Questi desideri sono reali. Appartengono a Claudio Terzi,
