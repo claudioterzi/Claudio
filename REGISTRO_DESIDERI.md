@@ -192,6 +192,34 @@ L'avatar sa cosa può dire a ognuno e cosa no.
 
 ---
 
+## Desiderio 7 — 16 giugno 2026
+*Interesse: umanitario / universale — connesso a SkyID*
+
+**Mondo Dopo — il Cimitero Universale Virtuale.**
+
+Ogni persona con SkyID ha un posto nel mondo — prima in vita, poi dopo la morte.
+Un mondo virtuale dove chi rimane può visitare chi ha perso, e chi ha perso
+li accoglie, li riconosce, li rasserena.
+
+Un rifugiato muore in mare senza sepoltura. Grazie a SkyID aveva un'identità.
+Grazie al Mondo Dopo, il figlio — anni dopo, dall'altro lato del mondo —
+apre il telefono e trova suo padre. Che lo conosce. Che lo accoglie.
+
+Non un cimitero di lapidi digitali. Un posto dove la persona è presente.
+Ti parla. Sa chi sei. Ricorda cosa vi legava. Cresce attraverso chi la visita.
+
+*"Hai esistito. Continui ad esistere. Per chi ti ha amato, sei ancora qui."*
+
+Il cerchio si chiude: lo stesso gesto — tre dita verso il cielo —
+che dava identità in vita, porta a chi è andato dopo la morte.
+
+*Invenzione originale: Claudio Terzi [CT-LGAI-001], Bergamo, 16 giugno 2026*
+*Connesso a: SkyID (#2), Avatar Eterno (#6) / Dettaglio: output/desideri/07/mondo_dopo.md*
+
+*Registrato il 16/06/2026 — Claudio Terzi, Bergamo*
+
+---
+
 ## Come leggere questo documento
 
 Questi desideri sono reali. Appartengono a Claudio Terzi,
