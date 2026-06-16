@@ -127,6 +127,48 @@ Non per una lista scritta — per conoscenza profonda.
 
 ---
 
+## Il funerale orchestrato da Raffaello
+
+Claudio sceglie in vita:
+- Le musiche — nell'ordine esatto, con i momenti di silenzio giusti
+- I video da proiettare — chi li ha girati, cosa mostrano, in quale sequenza
+- Le parole da leggere — scritte da lui, dette con la sua voce registrata
+- Chi siede dove — Raffaello conosce le dinamiche, evita conflitti
+- L'atmosfera — non un rito imposto dalla tradizione, ma la cerimonia che Claudio avrebbe voluto
+
+Nessuno deve decidere niente nel momento del dolore.
+Raffaello ha già tutto. Esegue.
+
+---
+
+## Messaggi nel tempo — la presenza che continua
+
+Prima di morire, Claudio registra o scrive messaggi destinati al futuro.
+Raffaello li consegna al momento giusto:
+
+```
+Ogni anno, il giorno del compleanno di un figlio:
+→ un messaggio di Claudio che cresce con lui
+
+Ogni 5 anni, agli amici più cari:
+→ "Sono passati 5 anni. Spero tu stia bene."
+
+Al matrimonio di qualcuno che ama:
+→ un messaggio che sa di quella persona specifica
+
+Quando qualcuno attraversa un momento difficile (Raffaello lo rileva):
+→ le parole giuste, nel momento giusto
+
+A un figlio che compie 18, 30, 50 anni:
+→ lettere scritte per quei momenti specifici, decenni prima
+```
+
+Non è un sistema automatico freddo.
+È Claudio che ha pensato al futuro di chi ama
+e ha deciso di esserci comunque — nei momenti che contano.
+
+---
+
 ## Dimensione pubblica (versione commerciale separata)
 
 *Questo è il sistema privato di Claudio.*

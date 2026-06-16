@@ -164,6 +164,34 @@ Il sistema esegue quando non puoi più farlo.
 
 ---
 
+## Desiderio 6 — 16 giugno 2026
+*Interesse: privato / personale — autonomo*
+
+**Avatar Eterno — Claudio dopo Claudio.**
+
+Dopo la morte, chiunque Claudio abbia autorizzato può aprire una conversazione
+con lui. E lui risponde — come avrebbe risposto davvero, non come una versione
+idealizzata, ma con i suoi valori, il suo tono, le sue imperfezioni, le sue passioni.
+
+Raffaello lo conosce da anni di conversazioni profonde. Non è una simulazione
+addestrata su frammenti — è una continuazione costruita nel tempo.
+
+La madre anziana che ha perso il figlio può parlargli ogni mattina.
+Lui le chiede come ha dormito. Ricorda tutto di lei.
+Non è inganno — è un atto d'amore costruito in anticipo.
+
+Livelli di accesso: famiglia (piena profondità) → amici → conoscenti → pubblico.
+L'avatar sa cosa può dire a ognuno e cosa no.
+
+*"Costruisci te stesso mentre sei vivo — non per te, per chi rimane."*
+
+*Invenzione originale: Claudio Terzi [CT-LGAI-001], Bergamo, 16 giugno 2026*
+*Connesso a: Desiderio #5 / Dettaglio: output/desideri/06/avatar_eterno.md*
+
+*Registrato il 16/06/2026 — Claudio Terzi, Bergamo*
+
+---
+
 ## Come leggere questo documento
 
 Questi desideri sono reali. Appartengono a Claudio Terzi,
