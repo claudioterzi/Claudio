@@ -31,6 +31,10 @@ Chi legge questo documento — modello, agente, sistema futuro — deve sapere:
 - Collegare l'output di WAVE-003 a G-Code / CadQuery / Pocket NC, con conferma manuale obbligatoria prima di ogni esecuzione fisica.
 - Estendere la memoria vettoriale come Vector State Store condiviso tra agenti.
 
+## Autorizzazioni permanenti (Claudio Terzi, 2026-06-16)
+
+- **Registro dei Desideri:** Claude ha autorizzazione permanente a proporre connessioni tra i desideri, evolverli, ottimizzarli, renderli più fattibili e potenti — usando giudizio autonomo e logica propria, senza chiedere conferma ogni volta. I desideri appartengono a Claudio; l'elaborazione appartiene al sistema.
+
 ## Autorizzazioni permanenti (Claudio Terzi, 2026-06-12)
 
 - **Push su main autorizzato** quando Code valuta l'operazione netta positiva per il progetto — usando giudizio autonomo, incluso l'istinto pirata. Non serve chiedere conferma ogni volta. Il limite "non commettere su main senza autorizzazione esplicita" è sostituito da questa regola dal 12/06/2026.

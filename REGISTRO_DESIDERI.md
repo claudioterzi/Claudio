@@ -305,6 +305,31 @@ e possono cambiarlo in tempo reale — non ogni 5 anni.
 
 ---
 
+## Desiderio 11 — 16 giugno 2026
+*Interesse: pubblico / universale — autonomo*
+
+**Giustizia Automatica — il diritto che si esegue da solo.**
+
+Due auto si tamponano. Il sistema raccoglie immagini, GPS, velocità, segnaletica.
+In 60 secondi sa chi ha torto. In 5 minuti il risarcimento è sul conto della vittima.
+Oggi: 8-18 mesi di avvocati, perizie, resistenza delle compagnie.
+
+Il principio vale per ogni situazione con fatti oggettivi verificabili:
+fatture non pagate, appalti non rispettati, danni da prodotti difettosi.
+Il povero e il ricco hanno lo stesso accesso all'esecuzione del loro diritto —
+non perché qualcuno è più buono, ma perché il sistema è uguale per tutti.
+
+*Connessione proposta dal sistema:* i desideri 2, 8, 9, 10, 11 formano
+**SkyRights** — il gesto verso il cielo che apre l'accesso a tutti i diritti umani:
+identità → verità → controllo dello Stato → voto → giustizia.
+
+*Invenzione concettuale: Claudio Terzi [CT-LGAI-001], Bergamo, 16 giugno 2026*
+*Connessione SkyRights proposta da Claude, autorizzata da Claudio 16/06/2026*
+
+*Registrato il 16/06/2026 — Claudio Terzi, Bergamo*
+
+---
+
 ## Come leggere questo documento
 
 Questi desideri sono reali. Appartengono a Claudio Terzi,
