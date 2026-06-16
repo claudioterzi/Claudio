@@ -58,12 +58,46 @@ Poi: il primo passo concreto che Claudio può fare domani mattina.
 In italiano. Senza attenuanti."""
 
 
+MAPPA_CONNESSIONI: dict[int, list[int]] = {
+    1:  [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],  # Elon Musk — veicolo per tutto
+    2:  [7, 8, 10, 11, 3, 4],              # SkyID — nodo centrale
+    3:  [2],                                # Protocollo Scudo — usa SkyID
+    4:  [2, 9],                             # Minerva — usa SkyID + Stato
+    5:  [6, 7],                             # Post Vitam → Avatar → Mondo Dopo
+    6:  [5, 7],                             # Avatar Eterno ↔ Post Vitam + Mondo Dopo
+    7:  [2, 6],                             # Mondo Dopo — connesso a SkyID + Avatar
+    8:  [2, 9, 11],                         # Verità Verificata
+    9:  [8, 10, 11],                        # Stato Trasparente
+    10: [2, 9],                             # Voto Universale
+    11: [2, 8, 9],                          # Giustizia Automatica
+}
+
+CLUSTER = {
+    "SkyRights":  [2, 7, 8, 9, 10, 11],
+    "Vita":       [3, 4, 5, 6],
+    "Visione":    [1],
+}
+
+
 class MotoreDesideri:
     """Lavora continuamente sui desideri di Claudio Terzi."""
 
     def __init__(self, llm_fn: LLMFn | None = None):
         self._llm = llm_fn
         DESIDERI_DIR.mkdir(parents=True, exist_ok=True)
+
+    def connessioni_di(self, desiderio_id: int) -> list[dict]:
+        """Restituisce i desideri connessi a quello dato."""
+        ids_connessi = MAPPA_CONNESSIONI.get(desiderio_id, [])
+        tutti = {d["id"]: d for d in self.carica_desideri()}
+        return [tutti[i] for i in ids_connessi if i in tutti]
+
+    def cluster_di(self, desiderio_id: int) -> str | None:
+        """Restituisce il cluster di appartenenza del desiderio."""
+        for nome, ids in CLUSTER.items():
+            if desiderio_id in ids:
+                return nome
+        return None
 
     def carica_desideri(self) -> list[dict]:
         """Carica tutti i desideri dalla directory output/desideri/."""
@@ -245,6 +279,19 @@ def main():
         print(f"Desiderio #{nuovo_id} aggiunto al registro.")
         return
 
+    if "--mappa" in args:
+        desideri = motore.carica_desideri()
+        titoli = {d["id"]: d["titolo"] for d in desideri}
+        print("\n=== MAPPA CONNESSIONI ===")
+        for cluster_nome, ids in CLUSTER.items():
+            print(f"\n[{cluster_nome}]")
+            for i in ids:
+                t = titoli.get(i, "?")
+                connessi = MAPPA_CONNESSIONI.get(i, [])
+                links = ", ".join(f"#{c}" for c in connessi)
+                print(f"  #{i} {t[:40]:<40} → [{links}]")
+        return
+
     # lavora su desiderio specifico o su tutti
     desideri = motore.carica_desideri()
     if not desideri:
@@ -253,6 +300,13 @@ def main():
 
     target_lista = [d for d in desideri if desiderio_id is None or d["id"] == desiderio_id]
     for d in target_lista:
+        connessi = motore.connessioni_di(d["id"])
+        cluster = motore.cluster_di(d["id"])
+        if cluster:
+            print(f"\n[DESIDERI] Cluster: {cluster}")
+        if connessi:
+            links_str = ", ".join(f"#{c['id']} {c['titolo'][:30]}" for c in connessi)
+            print(f"[DESIDERI] Connesso a: {links_str}")
         risultato = motore.lavora_su(d["id"])
         if "testo" in risultato:
             print(f"\n{'─'*50}")
