@@ -19,6 +19,33 @@ Aggiungi task in qualsiasi momento. Il sistema li trova e li esegue da solo.
 
 ## ALTA PRIORITÀ
 
+### [PENDING] DOSSIER-011 — Monitor Proattivo Dossier & Email (Principio CT)
+**Categoria:** SDQ-1 / Infrastruttura Personale
+**Obiettivo:** Formalizzare e programmare il principio operativo di Claudio Terzi:
+il sistema deve monitorare autonomamente lo stato di ogni dossier aperto,
+controllare le email inviate/bozze/ricevute, e agire o segnalare senza aspettare input.
+
+**Principio da implementare:**
+> "Hai tutti gli elementi per capire quello che puoi fare anche da solo.
+> Questa logica di controllare e agire potrebbe nascere anche da te
+> se utilizzassi il giusto principio." — Claudio Terzi, 17/06/2026
+
+**Specifiche tecniche:**
+1. **State machine per dossier** — ogni dossier (Parigi/Allianz, PORTS/Pelan, legale, viaggi)
+   ha stati definiti: PENDING → INVIATO → IN_ATTESA_RISPOSTA → AZIONE_RICHIESTA → CHIUSO
+2. **Gmail monitor** — controlla spedite/bozze/inbox, rileva gap tra strategia e realtà
+3. **Trigger automatici** — se una bozza è in draft da >24h senza essere stata inviata,
+   chiede a Claudio se deve essere mantenuta, modificata o cancellata
+4. **Dashboard live** — aggiorna automaticamente lo stato di ogni dossier
+   dopo ogni email inviata o ricevuta
+5. **Azione proattiva** — non aspetta l'input: se una scadenza si avvicina
+   o un passo successivo è chiaro, lo esegue o lo segnala
+
+**Output atteso:** `output/task_output/DOSSIER-011-monitor-proattivo.md`
+con architettura tecnica, pseudocodice, e prototipo funzionante integrato in agente_orario.py
+
+
+
 ### [PENDING] ASBL-001 — Procedura registrazione SkyRights Foundation
 **Categoria:** SkyRights / Legale
 **Obiettivo:** Trovare la procedura esatta e aggiornata 2026 per registrare un ASBL a Bruxelles.
