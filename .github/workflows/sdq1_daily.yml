@@ -13,6 +13,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -22,7 +24,6 @@ jobs:
         run: pip install --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
 
       - name: Esegui SDQ-1
-        continue-on-error: true
         env:
           GOOGLE_API_KEY:    ${{ secrets.GOOGLE_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -38,23 +39,40 @@ jobs:
 
           # Tenta 2: solo provider economici
           if [ $STATUS -ne 0 ]; then
+            echo "[daily] Tentativo 1 fallito, provo modalità economia..."
             python -m sdq1 "Analisi quotidiana automatica $DATE" --economia --solo-output > "$OUTPUT" 2>&1
             STATUS=$?
           fi
 
           # Tenta 3: offline puro (stub)
           if [ $STATUS -ne 0 ]; then
+            echo "[daily] Tentativo 2 fallito, provo modalità offline..."
             python -m sdq1 "Analisi quotidiana automatica $DATE" --no-api --solo-output > "$OUTPUT" 2>&1
+            STATUS=$?
           fi
 
-          echo "--- Output SDQ-1 ---"
+          echo "--- Output SDQ-1 (exit $STATUS) ---"
           cat "$OUTPUT" 2>/dev/null || echo "[nessun output]"
 
+          # Fail esplicitamente se anche lo stub fallisce
+          exit $STATUS
+
       - name: Salva output nel repo
+        if: always()
         run: |
           git config user.name  "SDQ-1"
           git config user.email "sdq1@claudio.local"
           git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
-          git add output/ || true
-          git diff --staged --quiet || git commit -m "SDQ-1 daily $(date +%Y-%m-%d)"
-          git push || true
+          git add output/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "Nessun output da salvare"
+            exit 0
+          fi
+          git commit -m "SDQ-1 daily $(date +%Y-%m-%d)"
+          # Push con retry (gestisce race condition con altri workflow)
+          for attempt in 1 2 3; do
+            git push && break
+            echo "[daily] Push fallito (tentativo $attempt/3), attendo..."
+            sleep $((attempt * 4))
+            git pull --rebase origin main || true
+          done

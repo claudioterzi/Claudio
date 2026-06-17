@@ -7,6 +7,7 @@ reale, il provider usato viene iniettato nel contesto come
 
 from __future__ import annotations
 
+import concurrent.futures
 import logging
 import time
 import uuid
@@ -122,9 +123,17 @@ class OrchestratoreGerarchico:
         ultima: RispostaAgente | None = None
         for i in range(tentativi):
             try:
-                ultima = agente.elabora(messaggio)
+                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
+                    fut = ex.submit(agente.elabora, messaggio)
+                    ultima = fut.result(timeout=self.timeout)
                 if ultima.successo:
                     return ultima
+            except concurrent.futures.TimeoutError:
+                ultima = RispostaAgente(
+                    mittente=agente.id, successo=False, output={},
+                    errore=f"Timeout {self.timeout}s superato per {agente.id}",
+                )
+                log.warning("Timeout %ds per agente %s", self.timeout, agente.id)
             except Exception as exc:  # noqa: BLE001
                 ultima = RispostaAgente(
                     mittente=agente.id, successo=False, output={}, errore=str(exc)

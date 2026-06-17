@@ -1,0 +1,48 @@
+name: Studio Notturno SDQ-1
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # 00:00 UTC = 2:00 Brussels CEST
+  workflow_dispatch:
+
+jobs:
+  studio:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installa dipendenze
+        run: pip install --no-cache-dir anthropic "google-genai>=1.0.0"
+
+      - name: Esegui studio notturno
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_API_KEY:    ${{ secrets.GOOGLE_API_KEY }}
+        run: python scripts/studio_notturno.py
+
+      - name: Commit e push brief
+        run: |
+          git config user.name  "SDQ-1 Studio Notturno"
+          git config user.email "sdq1@claudio.local"
+          git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
+          git add output/morning_brief/
+          if git diff --staged --quiet; then
+            echo "[studio_notturno] Nessun brief da salvare"
+            exit 0
+          fi
+          git commit -m "studio_notturno: brief $(date +%Y-%m-%d)"
+          for attempt in 1 2 3; do
+            git push && break
+            echo "[studio_notturno] Push fallito (tentativo $attempt/3)"
+            sleep $((attempt * 4))
+            git pull --rebase origin main || true
+          done

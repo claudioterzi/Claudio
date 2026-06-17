@@ -1,0 +1,50 @@
+name: Agente Orario SDQ-1
+
+on:
+  schedule:
+    # Ogni ora dalle 5:00 alle 21:00 UTC = 7:00-23:00 Brussels CEST
+    - cron: '0 5-21 * * *'
+  workflow_dispatch:
+
+jobs:
+  agente:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installa dipendenze
+        run: pip install --no-cache-dir anthropic "google-genai>=1.0.0"
+
+      - name: Esegui agente orario
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_API_KEY:    ${{ secrets.GOOGLE_API_KEY }}
+        run: python scripts/agente_orario.py
+
+      - name: Commit e push output
+        run: |
+          git config user.name  "SDQ-1 Agente Orario"
+          git config user.email "sdq1@claudio.local"
+          git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
+          git add output/task_output/ TASK_AUTONOMI.md 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "[agente_orario] Nessun task completato questa ora"
+            exit 0
+          fi
+          git commit -m "agente_orario: $(date +%Y-%m-%d_%H:%M) UTC"
+          # Push con retry (gestisce race condition con altri workflow)
+          for attempt in 1 2 3; do
+            git push && break
+            echo "[agente_orario] Push fallito (tentativo $attempt/3)"
+            sleep $((attempt * 4))
+            git pull --rebase origin main || true
+          done
