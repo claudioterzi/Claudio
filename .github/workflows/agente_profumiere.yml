@@ -1,0 +1,30 @@
+name: Agente Profumiere — Studio Quotidiano
+
+on:
+  workflow_dispatch:   # avviabile manualmente
+  schedule:
+    - cron: '0 4 * * *'   # ogni mattina alle 6:00 Brussels (dopo studio_notturno)
+
+jobs:
+  studio:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Studio profumiere del giorno
+        run: python scripts/agente_profumiere.py
+
+      - name: Commit formula e clone del giorno
+        run: |
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git add progetti/aura50/ricette/ progetti/aura50/celebri/ output/profumiere/
+          git diff --staged --quiet || git commit -m "profumiere: studio $(date +%Y-%m-%d)"
+
+      - name: Push
+        run: git push origin HEAD
