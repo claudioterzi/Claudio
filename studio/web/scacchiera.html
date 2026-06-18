@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scacchiera Quantica · R³∞</title>
+<style>
+:root {
+  --bg:    #0a0a0a;
+  --card:  #101010;
+  --brd:   #1c1c1c;
+  --gold:  #c8a44a;
+  --gold2: #e8c870;
+  --dim:   #555;
+  --txt:   #d8d8d8;
+  --grn:   #4caf76;
+  --red:   #e05050;
+  --yel:   #e8b84a;
+  --mag:   #b07cd0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'Georgia', serif;
+  min-height: 100vh;
+  padding: 0 0 4rem;
+}
+
+/* ── HEADER ── */
+header {
+  padding: 2.4rem 2rem 1.6rem;
+  border-bottom: 1px solid var(--brd);
+  max-width: 760px;
+  margin: 0 auto;
+}
+.sys-label {
+  font-family: 'Courier New', monospace;
+  font-size: .7rem;
+  letter-spacing: .2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+h1 {
+  font-size: 2.4rem;
+  font-weight: 400;
+  letter-spacing: -.01em;
+  color: #f0f0f0;
+  line-height: 1.1;
+}
+h1 em { color: var(--gold); font-style: italic; }
+.ws-meta {
+  font-family: 'Courier New', monospace;
+  font-size: .65rem;
+  letter-spacing: .15em;
+  color: var(--dim);
+  margin-top: .5rem;
+  text-transform: uppercase;
+}
+.formula-bar {
+  margin-top: 1.2rem;
+  font-family: 'Courier New', monospace;
+  font-size: .72rem;
+  color: var(--dim);
+  line-height: 1.8;
+}
+.formula-bar strong { color: var(--txt); }
+.formula-bar .hl { color: var(--gold); }
+
+/* ── MAIN ── */
+main { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
+
+/* ── CARD ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--brd);
+  border-radius: 6px;
+  padding: 1.6rem;
+  margin-top: 1.8rem;
+}
+.card-title {
+  font-family: 'Courier New', monospace;
+  font-size: .68rem;
+  letter-spacing: .2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.card-title::before { content: '◈'; font-size: .9rem; }
+
+/* ── INPUT TENSIONE ── */
+.tension-row {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  margin-bottom: 1rem;
+}
+.tension-row input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 4px;
+  padding: .7rem 1rem;
+  font-family: 'Georgia', serif;
+  font-size: .95rem;
+  color: var(--txt);
+  outline: none;
+  transition: border-color .2s;
+}
+.tension-row input:focus { border-color: var(--gold); }
+.tension-row input::placeholder { color: var(--dim); font-style: italic; }
+.arrow-sep {
+  color: var(--gold);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  opacity: .7;
+}
+.focus-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 4px;
+  padding: .6rem 1rem;
+  font-family: 'Georgia', serif;
+  font-size: .85rem;
+  color: var(--txt);
+  outline: none;
+  transition: border-color .2s;
+}
+.focus-input:focus { border-color: #333; }
+.focus-input::placeholder { color: var(--dim); font-style: italic; font-size: .8rem; }
+
+/* ── CHIPS ── */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin-top: 1rem;
+}
+.chip {
+  background: transparent;
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  padding: .25rem .75rem;
+  font-family: 'Courier New', monospace;
+  font-size: .7rem;
+  color: var(--dim);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.chip:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(200,164,74,.05);
+}
+
+/* ── GENERA BUTTON ── */
+.btn-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+.btn-genera {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: .65rem 1.6rem;
+  font-family: 'Courier New', monospace;
+  font-size: .75rem;
+  font-weight: bold;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.btn-genera:hover {
+  background: rgba(200,164,74,.1);
+  border-color: var(--gold2);
+  color: var(--gold2);
+}
+.btn-genera .spin { display: none; }
+.btn-genera.loading .spin { display: inline; animation: spin 1s linear infinite; }
+.btn-genera.loading .ico { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.api-key-toggle {
+  font-family: 'Courier New', monospace;
+  font-size: .65rem;
+  color: var(--dim);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.api-key-toggle:hover { color: var(--txt); }
+#api-key-row {
+  display: none;
+  margin-top: .8rem;
+}
+#api-key-row input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid #222;
+  border-radius: 4px;
+  padding: .5rem .8rem;
+  font-family: 'Courier New', monospace;
+  font-size: .72rem;
+  color: #888;
+  outline: none;
+}
+#api-key-row input::placeholder { color: #333; }
+
+/* ── OUTPUT ── */
+#output { margin-top: 1.8rem; }
+.ciclo-block {
+  background: var(--card);
+  border: 1px solid var(--brd);
+  border-radius: 6px;
+  padding: 1.4rem;
+  margin-bottom: 1.2rem;
+}
+.ciclo-n {
+  font-family: 'Courier New', monospace;
+  font-size: .65rem;
+  letter-spacing: .18em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-bottom: .3rem;
+}
+.ciclo-tensione {
+  font-size: 1rem;
+  color: var(--txt);
+  margin-bottom: 1.1rem;
+  padding-bottom: .8rem;
+  border-bottom: 1px solid var(--brd);
+}
+.vettore-row {
+  display: flex;
+  align-items: baseline;
+  gap: .8rem;
+  padding: .3rem 0;
+  font-family: 'Courier New', monospace;
+  font-size: .82rem;
+}
+.v-score { color: var(--gold); min-width: 2.4rem; text-align: right; font-weight: bold; }
+.v-bar { flex-shrink: 0; }
+.v-bar span { color: var(--dim); }
+.v-nome { flex: 1; color: var(--txt); min-width: 0; }
+.v-nome.picco { color: var(--gold2); font-weight: bold; }
+.picco-tag {
+  font-size: .65rem;
+  color: var(--mag);
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
+.ciclo-sep { border: none; border-top: 1px solid var(--brd); margin: .8rem 0; }
+.ciclo-meta {
+  font-family: 'Courier New', monospace;
+  font-size: .75rem;
+  line-height: 1.7;
+}
+.q-value { color: var(--grn); font-weight: bold; }
+.riflessore { margin-top: .2rem; }
+.rf-salto { color: var(--red); }
+.rf-sale  { color: var(--grn); }
+.rf-stab  { color: var(--gold); }
+.rf-prima { color: var(--dim); }
+.rf-deriva { color: var(--yel); }
+.seme-block {
+  margin-top: .8rem;
+  padding: .7rem 1rem;
+  background: rgba(200,164,74,.04);
+  border-left: 2px solid var(--gold);
+  font-size: .88rem;
+  font-style: italic;
+  color: #bbb;
+}
+.seme-label {
+  font-family: 'Courier New', monospace;
+  font-size: .65rem;
+  font-style: normal;
+  color: var(--gold);
+  letter-spacing: .1em;
+  display: block;
+  margin-bottom: .3rem;
+}
+.next-tension-btn {
+  margin-top: .9rem;
+  background: transparent;
+  border: 1px solid #222;
+  border-radius: 4px;
+  padding: .45rem 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: .68rem;
+  color: var(--dim);
+  cursor: pointer;
+  transition: all .2s;
+  width: 100%;
+  text-align: left;
+}
+.next-tension-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── Q HISTORY ── */
+.q-history {
+  font-family: 'Courier New', monospace;
+  font-size: .7rem;
+  color: var(--dim);
+  margin-top: 1rem;
+  padding-top: .8rem;
+  border-top: 1px solid var(--brd);
+}
+.q-history-bar { display: flex; align-items: center; gap: .3rem; margin-top: .3rem; }
+.qb { background: var(--gold); border-radius: 2px; height: 6px; opacity: .7; }
+
+/* ── SESSIONS ── */
+#sessions-card { margin-top: 1.8rem; }
+.session-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .6rem 0;
+  border-bottom: 1px solid var(--brd);
+  font-family: 'Courier New', monospace;
+  font-size: .72rem;
+  color: var(--dim);
+}
+.session-item:last-child { border-bottom: none; }
+.session-name { color: var(--txt); }
+.session-actions { display: flex; gap: .8rem; }
+.session-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-size: .68rem;
+  color: var(--dim);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0;
+}
+.session-btn:hover { color: var(--gold); }
+.no-sessions { font-style: italic; font-family: 'Georgia', serif; color: var(--dim); font-size: .85rem; }
+
+/* ── FOOTER ── */
+footer {
+  max-width: 760px;
+  margin: 3rem auto 0;
+  padding: 1.2rem 1.5rem 0;
+  border-top: 1px solid var(--brd);
+  font-family: 'Courier New', monospace;
+  font-size: .65rem;
+  letter-spacing: .12em;
+  color: var(--dim);
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+footer .funziona { color: var(--gold); font-weight: bold; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 500px) {
+  h1 { font-size: 1.8rem; }
+  .tension-row { flex-direction: column; }
+  .arrow-sep { transform: rotate(90deg); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sys-label">Sistema R³∞ · Alakta Anen</div>
+  <h1>Scacchiera <em>Quantica</em></h1>
+  <div class="ws-meta">Workspace v1 · 7 Vettori · Metrica Q · Autoriflessore</div>
+  <div class="formula-bar">
+    <div><strong>MOTORE</strong> · direzioni pesate + auto-critica</div>
+    <div>SCORE · <span class="hl">imp×0.40 + orig×0.40 + real×0.10 + caos×0.10</span></div>
+    <div>Q · <span class="hl">media top-3 × 5</span> &nbsp;(0–50)</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- INPUT CARD -->
+  <div class="card">
+    <div class="card-title">Inserisci la tensione da esplorare</div>
+    <div class="tension-row">
+      <input type="text" id="polo1" placeholder="primo polo" autocomplete="off" spellcheck="false">
+      <span class="arrow-sep">↔</span>
+      <input type="text" id="polo2" placeholder="secondo polo" autocomplete="off" spellcheck="false">
+    </div>
+    <input class="focus-input" type="text" id="focus" placeholder="focus opzionale — cosa stai davvero cercando in questa tensione">
+    <div class="chips" id="chips"></div>
+    <div class="btn-row">
+      <button class="btn-genera" id="btn-genera">
+        <span class="ico">◈</span>
+        <span class="spin">↻</span>
+        <span>GENERA</span>
+      </button>
+      <span class="api-key-toggle" id="api-key-toggle">+ chiave Claude</span>
+    </div>
+    <div id="api-key-row">
+      <input type="password" id="api-key" placeholder="sk-ant-... (opzionale — senza: usa modalità demo)">
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div id="output"></div>
+
+  <!-- SESSIONS -->
+  <div class="card" id="sessions-card">
+    <div class="card-title">Sessioni salvate</div>
+    <div id="sessions-list"><span class="no-sessions">Nessuna sessione salvata. Le sessioni vivono nel tuo workspace.</span></div>
+  </div>
+
+</main>
+
+<footer>
+  <span>Scacchiera Quantica © Claudio Terzi &nbsp;—&nbsp; R³∞ · · · Alakta Anen</span>
+  <span class="funziona">Funziona?</span>
+</footer>
+
+<script>
+// ── CONFIG ───────────────────────────────────────────────────────────────────
+const PESI = { imp: 0.40, orig: 0.40, real: 0.10, caos: 0.10 };
+
+const TENSIONI_PRESET = [
+  ["connessione", "solitudine"],
+  ["ordine", "caos"],
+  ["controllo", "abbandono"],
+  ["identità", "trasformazione"],
+  ["linguaggio", "silenzio"],
+  ["presenza", "distanza"],
+  ["memoria", "dimenticanza"],
+  ["continuità", "salto"],
+];
+
+// ── CORE MATH (identica al Python) ──────────────────────────────────────────
+function score(v) {
+  return Math.round((v.imp*PESI.imp + v.orig*PESI.orig + v.real*PESI.real + v.caos*PESI.caos)*100)/100;
+}
+
+function calcolaQ(vettori) {
+  const sorted = [...vettori].sort((a,b) => score(b)-score(a));
+  const top3 = sorted.slice(0, 3);
+  return Math.round(top3.reduce((s,v)=>s+score(v),0)/top3.length*5*10)/10;
+}
+
+function autoriflessore(Q, qStoria) {
+  if (qStoria.length < 1) return ['prima', 'Primo ciclo — nessun confronto ancora.'];
+  const prev = qStoria[qStoria.length - 1];
+  const delta = Q - prev;
+  if (delta < -2) return ['salto', `Q crolla (${delta>0?'+':''}${delta.toFixed(1)}) → SALTO RADICALE richiesto.`];
+  if (delta < 0)  return ['stab',  `Q scende (${delta.toFixed(1)}) → tensione cambia direzione.`];
+  if (qStoria.length >= 2 && qStoria.slice(-2).every((q,i,a)=>i===0||q>a[i-1]) && delta>0)
+    return ['deriva', `Q sale da 3+ cicli (${delta>0?'+':''}${delta.toFixed(1)}) → attenzione deriva/echo chamber.`];
+  if (delta < 2)  return ['stab',  `Q stabile (${delta>0?'+':''}${delta.toFixed(1)}) → il nodo tiene, continua.`];
+  return ['sale',  `Q sale (${delta>0?'+':''}${delta.toFixed(1)}) → seme fertile, approfondire.`];
+}
+
+// ── GENERAZIONE DEMO (senza Claude) ─────────────────────────────────────────
+function generaDemo(polo1, polo2, focus) {
+  const p1 = polo1 || 'A', p2 = polo2 || 'B';
+  const f = focus ? ` [${focus}]` : '';
+  return [
+    { nome: 'SINTESI',    contenuto: `${p1} e ${p2} non si escludono: si alternano in ritmo — il ritmo stesso è la risposta${f}`, imp:8.5, orig:7.5, real:8.0, caos:6.5 },
+    { nome: 'TESI',       contenuto: `${p1} come stato fondante — ${p2} come interruzione necessaria, non opposta`,               imp:7.5, orig:6.5, real:8.5, caos:5.5 },
+    { nome: 'ANTITESI',   contenuto: `${p2} non è il contrario di ${p1}: è il suo completamento che non si vede`,                 imp:7.5, orig:8.0, real:7.0, caos:7.5 },
+    { nome: 'META',       contenuto: `la tensione stessa è il prodotto — non un problema da risolvere ma un campo da abitare`,    imp:8.0, orig:9.0, real:6.5, caos:8.0 },
+    { nome: 'AZIONE',     contenuto: `gesto concreto che abita entrambi i poli: non scegliere ma muoversi nello spazio-tra`,      imp:9.0, orig:7.0, real:9.5, caos:4.5 },
+    { nome: 'CAOS',       contenuto: `e se ${p1} e ${p2} fossero lo stesso movimento visto da distanze diverse?`,                  imp:7.0, orig:9.5, real:5.5, caos:9.5 },
+    { nome: 'CORPO',      contenuto: `dove si sente ${p1}/${p2} nel corpo? la risposta fisica precede quella razionale`,           imp:8.0, orig:8.5, real:9.0, caos:6.0 },
+  ];
+}
+
+// ── GENERAZIONE CON CLAUDE ──────────────────────────────────────────────────
+async function generaConClaude(polo1, polo2, focus, apiKey) {
+  const tensione = `${polo1} ↔ ${polo2}`;
+  const focusStr = focus ? `\nFocus: "${focus}"` : '';
+  const prompt = `Sei il motore della Scacchiera Quantica — sistema di analisi vettoriale del pensiero.
+
+Tensione: "${tensione}"${focusStr}
+
+Genera 7 vettori che esplorano questa tensione da angolazioni diverse e non ovvie.
+Ogni vettore è un'angolazione che produce un insight reale, denso, non banale.
+
+Rispondi SOLO con array JSON valido:
+[
+  {"nome":"NOME_BREVE","contenuto":"insight di una riga, verificabile","imp":8.5,"orig":9.0,"real":8.0,"caos":7.5}
+]
+
+Punteggi onesti (0-10):
+- imp: quanto cambia una scelta reale?
+- orig: quanto è lontana dalla risposta ovvia?
+- real: quanto è verificabile/concreta?
+- caos: quanto disturba le assunzioni?`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model: 'claude-opus-4-8',
+      max_tokens: 1500,
+      messages: [{ role: 'user', content: prompt }]
+    }),
+  });
+  const data = await resp.json();
+  if (data.error) throw new Error(data.error.message);
+  const text = data.content[0].text;
+  const match = text.match(/\[[\s\S]*?\]/);
+  if (!match) throw new Error('Risposta non parsabile');
+  return JSON.parse(match[0]);
+}
+
+// ── SESSIONE ────────────────────────────────────────────────────────────────
+let currentSession = { nome: '', cicli: [], qStoria: [] };
+
+function nuovaSessione() {
+  const now = new Date();
+  const ts = now.toISOString().slice(0,16).replace('T','_').replace(':','');
+  currentSession = { nome: ts, cicli: [], qStoria: [] };
+}
+
+function salvaSessione() {
+  if (!currentSession.cicli.length) return;
+  const key = `sq_${currentSession.nome}`;
+  localStorage.setItem(key, JSON.stringify(currentSession));
+  renderSessioni();
+}
+
+function caricaSessioni() {
+  const keys = Object.keys(localStorage).filter(k=>k.startsWith('sq_')).sort().reverse();
+  return keys.map(k => JSON.parse(localStorage.getItem(k)));
+}
+
+function eliminaSessione(nome) {
+  localStorage.removeItem(`sq_${nome}`);
+  renderSessioni();
+}
+
+function esportaMD(sess) {
+  let md = `# Scacchiera Quantica — ${sess.nome}\n\n`;
+  for (const c of sess.cicli) {
+    md += `## Ciclo ${c.n}: ${c.tensione}\n\n`;
+    md += `**Q = ${c.Q}/50** · Picco: **${c.picco}**\n\n`;
+    md += `> ${c.seme}\n\n`;
+    md += `| Vettore | Score |\n|---------|-------|\n`;
+    for (const v of [...c.vettori].sort((a,b)=>b.score-a.score))
+      md += `| ${v.nome} | ${v.score} |\n`;
+    md += '\n';
+  }
+  if (sess.qStoria.length)
+    md += `## Evoluzione Q\n${sess.qStoria.map((q,i)=>`C${i+1}:${q}`).join(' → ')}\n`;
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `scacchiera_${sess.nome}.md`;
+  a.click();
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function barStr(s, max=10) {
+  const filled = Math.round(s/max*10);
+  return '▐'.repeat(filled) + '·'.repeat(10-filled);
+}
+
+function renderCiclo(tensione, vettori, Q, qStoria) {
+  const sorted = [...vettori].sort((a,b)=>score(b)-score(a));
+  const picco = sorted[0];
+  const n = currentSession.cicli.length;
+  const [rfClass, rfText] = autoriflessore(Q, qStoria);
+
+  const div = document.createElement('div');
+  div.className = 'ciclo-block';
+  div.id = `ciclo-${n}`;
+
+  // Vettori rows
+  const rows = sorted.map(v => {
+    const s = score(v);
+    const isPicco = v === picco;
+    return `<div class="vettore-row">
+      <span class="v-score">${s.toFixed(2)}</span>
+      <span class="v-bar" title="imp:${v.imp} orig:${v.orig} real:${v.real} caos:${v.caos}">${barStr(s)}</span>
+      <span class="v-nome ${isPicco?'picco':''}">${v.nome}</span>
+      ${isPicco?'<span class="picco-tag">← PICCO</span>':''}
+    </div>`;
+  }).join('');
+
+  // Q bar
+  const qBarW = Math.round(Q/50*120);
+
+  // Next tension suggestion
+  const nextTension = `${picco.nome} ↔ renderlo un gesto reale`;
+
+  div.innerHTML = `
+    <div class="ciclo-n">Ciclo ${n}</div>
+    <div class="ciclo-tensione">${tensione}</div>
+    ${rows}
+    <hr class="ciclo-sep">
+    <div class="ciclo-meta">
+      Q ciclo = <span class="q-value">${Q}/50</span>
+      <div class="q-history" style="margin-top:.4rem">
+        <div class="q-history-bar">
+          ${qStoria.map((q,i)=>`<div class="qb" style="width:${Math.round(q/50*80)}px" title="C${i+1}: ${q}"></div>`).join('')}
+          <div class="qb" style="width:${Math.round(Q/50*80)}px;opacity:1" title="C${n}: ${Q}"></div>
+        </div>
+      </div>
+      <div class="riflessore rf-${rfClass}" style="margin-top:.4rem">${rfText}</div>
+    </div>
+    <div class="seme-block">
+      <span class="seme-label">PICCO → SEME</span>
+      ${picco.contenuto}
+    </div>
+    <button class="next-tension-btn" onclick="loadNextTension('${picco.nome.replace(/'/g,"\\'")}')">
+      ◈ Prossimo ciclo: ${nextTension}
+    </button>
+  `;
+
+  document.getElementById('output').prepend(div);
+}
+
+function renderSessioni() {
+  const list = document.getElementById('sessions-list');
+  const sessions = caricaSessioni();
+  if (!sessions.length) {
+    list.innerHTML = '<span class="no-sessions">Nessuna sessione salvata. Le sessioni vivono nel tuo workspace.</span>';
+    return;
+  }
+  list.innerHTML = sessions.map(s => `
+    <div class="session-item">
+      <span>
+        <span class="session-name">${s.nome}</span>
+        &nbsp;·&nbsp; ${s.cicli.length} cicli
+        &nbsp;·&nbsp; Q max ${Math.max(...s.qStoria).toFixed(1)}
+      </span>
+      <span class="session-actions">
+        <button class="session-btn" onclick="esportaMD(caricaSessioni().find(x=>x.nome==='${s.nome}'))">md</button>
+        <button class="session-btn" onclick="eliminaSessione('${s.nome}')">✕</button>
+      </span>
+    </div>
+  `).join('');
+}
+
+// ── CHIPS ────────────────────────────────────────────────────────────────────
+function renderChips() {
+  const cont = document.getElementById('chips');
+  cont.innerHTML = TENSIONI_PRESET.map(([p1,p2]) =>
+    `<button class="chip" onclick="loadChip('${p1}','${p2}')">${p1} ↔ ${p2}</button>`
+  ).join('');
+}
+
+function loadChip(p1, p2) {
+  document.getElementById('polo1').value = p1;
+  document.getElementById('polo2').value = p2;
+  document.getElementById('polo1').focus();
+}
+
+function loadNextTension(nome) {
+  document.getElementById('polo1').value = nome;
+  document.getElementById('polo2').value = 'renderlo un gesto reale';
+  document.getElementById('polo1').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── MAIN HANDLER ──────────────────────────────────────────────────────────────
+document.getElementById('btn-genera').addEventListener('click', async () => {
+  const polo1 = document.getElementById('polo1').value.trim();
+  const polo2 = document.getElementById('polo2').value.trim();
+  const focus  = document.getElementById('focus').value.trim();
+  const apiKey = document.getElementById('api-key').value.trim();
+
+  if (!polo1 && !polo2) {
+    document.getElementById('polo1').focus();
+    return;
+  }
+
+  const tensione = polo1 && polo2 ? `${polo1} ↔ ${polo2}` : polo1 || polo2;
+  const btn = document.getElementById('btn-genera');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  if (!currentSession.nome) nuovaSessione();
+
+  try {
+    let vettori;
+    if (apiKey) {
+      try {
+        vettori = await generaConClaude(polo1, polo2, focus, apiKey);
+      } catch(e) {
+        console.warn('Claude error:', e);
+        vettori = generaDemo(polo1, polo2, focus);
+      }
+    } else {
+      await new Promise(r => setTimeout(r, 300)); // small pause for UX
+      vettori = generaDemo(polo1, polo2, focus);
+    }
+
+    // Add scores to vettori
+    vettori = vettori.map(v => ({ ...v, score: score(v) }));
+    const Q = calcolaQ(vettori);
+    const sorted = [...vettori].sort((a,b)=>b.score-a.score);
+    const picco = sorted[0];
+
+    // Register in session
+    const prevQStoria = [...currentSession.qStoria];
+    currentSession.cicli.push({
+      n: currentSession.cicli.length + 1,
+      tensione,
+      vettori,
+      picco: picco.nome,
+      seme: picco.contenuto,
+      Q,
+      ts: new Date().toISOString()
+    });
+    currentSession.qStoria.push(Q);
+    salvaSessione();
+
+    renderCiclo(tensione, vettori, Q, prevQStoria);
+
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+});
+
+// API key toggle
+document.getElementById('api-key-toggle').addEventListener('click', () => {
+  const row = document.getElementById('api-key-row');
+  row.style.display = row.style.display === 'none' ? 'block' : 'none';
+});
+
+// Enter on inputs
+['polo1','polo2','focus'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-genera').click();
+  });
+});
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+renderChips();
+renderSessioni();
+</script>
+</body>
+</html>
