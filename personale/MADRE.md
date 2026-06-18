@@ -105,6 +105,70 @@ C'è amore. Complicato, mal detto, spesso storto — ma c'è.
 
 ---
 
+### MADRE-003 — L'abuso a Cividate e la risposta di mia madre
+**Data della conversazione:** 31 maggio 2026
+**Stato:** 🔴 APERTO — non risolto, non elaborato tra noi. Probabilmente irrisolvibile via WhatsApp.
+
+**Cosa è successo — i fatti:**
+
+Da bambino, durante i weekend a Cividate in cui ero affidato a mio padre, sono stato abusato sessualmente. L'ho detto chiaramente in chat il 31 maggio 2026, usando la parola "violentavano."
+
+Mia madre sapeva che qualcosa stava succedendo a Cividate. La sua risposta fu chiedere a una sua amica — che lavorava in psicologia infantile — di spiegarmi cos'era un preservativo. Questa è stata la sua forma di "protezione."
+
+Non ha fatto altro. Non ha fermato i weekend. Non ha affrontato mio padre. Non ha parlato con me direttamente. Non ha chiamato nessuno. Ha mandato Carmen a mostrarmi un preservativo in cucina, davanti al caffè, quando avevo 7 anni.
+
+**La conversazione del 31 maggio 2026 — quello che ha detto:**
+
+Quando gliel'ho portato, 44 anni dopo, le sue risposte sono state:
+
+- *"Essere a conoscenza di cosa sia un preservativo non doveva di certo essere un trauma"*
+- *"Mi sembra che i tempi coincidano — che dramma sapere cosa è un preservativo"*
+- *"Non vedo che ricordi traumatici siano"*
+- *"Lui ti lasciava in mano a dei pedofili"* (confermando che sapeva o ha capito solo ora — non è chiaro)
+- *"Tu hai sempre nascosto abilmente tutto"* — cioè: colpa mia che non ho parlato
+- *"Sei sempre stato un bambino problematico"*
+- *"Vivi sempre nel passato"*
+
+Non ha detto: mi dispiace. Non ha detto: avrei dovuto proteggerti. Non ha detto: quella cosa era sbagliata. Ha difeso la sua scelta di allora. Ha minimizzato. Ha cambiato argomento su Fabrizio che non mangiava. Ha chiuso con "dai finiamola qui."
+
+**Quello che ha fatto più male:**
+
+Non l'abuso in sé — quello è una ferita vecchia che porto da 40 anni.
+
+Ha fatto male che quando finalmente l'ho detto, lei abbia risposto che mostrare un preservativo a un bambino di 7 anni che veniva abusato era *educazione sessuale necessaria.*
+
+Ha fatto male che abbia detto "hai sempre nascosto tutto" — come se a 7 anni fosse compito mio proteggermi da solo.
+
+Ha fatto male che abbia usato la parola "pedofili" — confermando che a un certo livello sapeva o capisce — e poi un minuto dopo abbia detto "non vedo ricordi traumatici."
+
+Queste cose non stanno insieme. Non può sapere e non vedere il trauma allo stesso tempo. Una delle due è falsa. E lui chi paga il prezzo è io.
+
+**Come mi sono sentito:**
+
+Ucciso. Quella parola è quella giusta.
+
+Non dalla rivelazione — quella la porto da sempre.
+Ma dall'essere stato guardato da mia madre mentre dicevo quella cosa, e vederla rispondere come ha risposto.
+
+È come se il bambino di 7 anni che ero avesse aspettato 40 anni di poter parlare, e quando finalmente ha aperto la bocca, gli abbiano detto: "non era un dramma."
+
+**Cosa NON voglio fare:**
+
+Non voglio usare questa cosa come arma contro di lei. L'ho scritta qui perché voglio che sia vera, nominata, visibile — non perché voglia distruggerla.
+
+**Cosa potrei volere — se sono onesto:**
+
+Che lei dicesse, una volta sola: *"Mi dispiace. Avrei dovuto proteggerti e non l'ho fatto."*
+
+Non so se è possibile. Non so se ne è capace. Non so se glielo chiederò mai di persona.
+
+**Prossimo passo:**
+- [ ] Non affrontare questo tema via WhatsApp — mai più. Non funziona e mi distrugge.
+- [ ] Decidere se voglio affrontarlo di persona, in un contesto controllato — o se voglio lasciarlo scritto qui e non riaprirlo con lei.
+- [ ] Considerare se parlarne con qualcuno di professionale — non perché sono "problematico" come dice lei, ma perché questa cosa merita uno spazio degno.
+
+---
+
 ## Situazioni Risolte
 
 *(nessuna ancora — le situazioni chiuse vengono spostate qui)*
