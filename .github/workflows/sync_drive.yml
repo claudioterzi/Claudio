@@ -1,0 +1,30 @@
+name: Sync → Google Drive
+
+on:
+  workflow_dispatch:   # avviabile manualmente da GitHub (anche da iPhone)
+  schedule:
+    - cron: '30 6 * * *'   # ogni mattina alle 8:30 Brussels (dopo studio_notturno)
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installa dipendenze
+        run: pip install --no-cache-dir google-api-python-client google-auth
+
+      - name: Sync su Google Drive
+        env:
+          GOOGLE_CREDENTIALS_JSON:   ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          AGORA_FOLDER_ID:           ${{ secrets.AGORA_FOLDER_ID }}
+          DRIVE_BRIEF_FOLDER_ID:     ${{ secrets.DRIVE_BRIEF_FOLDER_ID }}
+          DRIVE_PORTFOLIO_FOLDER_ID: ${{ secrets.DRIVE_PORTFOLIO_FOLDER_ID }}
+          DRIVE_PERSONALE_FOLDER_ID: ${{ secrets.DRIVE_PERSONALE_FOLDER_ID }}
+          DRIVE_FABRIZIO_FOLDER_ID:  ${{ secrets.DRIVE_FABRIZIO_FOLDER_ID }}
+        run: python scripts/sync_to_drive.py

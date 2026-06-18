@@ -21,25 +21,36 @@ jobs:
           python-version: '3.11'
 
       - name: Installa dipendenze
-        run: pip install --no-cache-dir anthropic "google-genai>=1.0.0"
+        run: pip install --no-cache-dir anthropic "google-genai>=1.0.0" google-api-python-client google-auth
 
-      - name: Esegui studio notturno
+      - name: Esegui studio notturno + analisi portfolio
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GOOGLE_API_KEY:    ${{ secrets.GOOGLE_API_KEY }}
         run: python scripts/studio_notturno.py
+
+      - name: Sync su Google Drive
+        if: ${{ secrets.GOOGLE_CREDENTIALS_JSON != '' }}
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          AGORA_FOLDER_ID:         ${{ secrets.AGORA_FOLDER_ID }}
+          DRIVE_BRIEF_FOLDER_ID:   ${{ secrets.DRIVE_BRIEF_FOLDER_ID }}
+          DRIVE_PORTFOLIO_FOLDER_ID: ${{ secrets.DRIVE_PORTFOLIO_FOLDER_ID }}
+          DRIVE_PERSONALE_FOLDER_ID: ${{ secrets.DRIVE_PERSONALE_FOLDER_ID }}
+          DRIVE_FABRIZIO_FOLDER_ID:  ${{ secrets.DRIVE_FABRIZIO_FOLDER_ID }}
+        run: python scripts/sync_to_drive.py || echo "[sync] Drive sync fallita, continuo senza"
 
       - name: Commit e push brief
         run: |
           git config user.name  "SDQ-1 Studio Notturno"
           git config user.email "sdq1@claudio.local"
           git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
-          git add output/morning_brief/
+          git add output/morning_brief/ output/portfolio/ 2>/dev/null || true
           if git diff --staged --quiet; then
-            echo "[studio_notturno] Nessun brief da salvare"
+            echo "[studio_notturno] Nessun output da salvare"
             exit 0
           fi
-          git commit -m "studio_notturno: brief $(date +%Y-%m-%d)"
+          git commit -m "studio_notturno: brief + portfolio $(date +%Y-%m-%d)"
           for attempt in 1 2 3; do
             git push && break
             echo "[studio_notturno] Push fallito (tentativo $attempt/3)"
