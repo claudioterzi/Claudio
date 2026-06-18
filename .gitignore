@@ -76,3 +76,10 @@ guardian/
 !output/memorie/*.json
 !tarocchi_quantici_alpha.json
 !output/stato_sdq1.json
+
+# Dati personali — solo Google Drive, mai GitHub
+personale/
+portfolio/
+output/portfolio/
+output/morning_brief/
+diary/

@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 MEMORIA = ROOT / "MEMORIA_PROGETTO.md"
 TASK_FILE = ROOT / "TASK_AUTONOMI.md"
 OUTPUT_DIR = ROOT / "output" / "morning_brief"
+sys.path.insert(0, str(ROOT / "scripts"))
 
 _TZ_BRUSSELS = timezone(timedelta(hours=2))  # CEST
 
@@ -34,9 +35,18 @@ def leggi_file(path: Path, limite: int = 3000) -> str:
     return path.read_text(encoding="utf-8")[:limite]
 
 
+def leggi_portfolio_summary() -> str:
+    try:
+        from analisi_portfolio import get_portfolio_summary_for_brief
+        return get_portfolio_summary_for_brief()
+    except Exception as e:
+        return f"*Portfolio: non disponibile ({e})*"
+
+
 def costruisci_prompt_studio() -> str:
     memoria = leggi_file(MEMORIA, limite=3000)
     task_list = leggi_file(TASK_FILE, limite=2500)
+    portfolio_summary = leggi_portfolio_summary()
     data = data_oggi()
 
     return f"""Sei lo Studio Notturno del sistema SDQ-1 di Claudio Terzi (Bruxelles).
@@ -48,6 +58,9 @@ MEMORIA PROGETTO (estratto recente):
 TASK CORRENTI:
 {task_list if task_list else '[file non trovato]'}
 
+PORTFOLIO CRYPTO (snapshot corrente):
+{portfolio_summary}
+
 Genera un Morning Brief strutturato che includa:
 
 ## 1. BUONGIORNO, CLAUDIO
@@ -58,17 +71,24 @@ Per ogni dossier attivo (PORTS/Pelan, Allianz/Parigi, SkyRights, ecc.):
 - Stato attuale in una riga
 - Prossima azione urgente
 
-## 3. AGENDA DEL GIORNO
+## 3. PORTFOLIO CRYPTO — AGGIORNAMENTO
+Usando i dati forniti sopra, riassumi:
+- Valore totale e variazione dal giorno precedente
+- Top 3 posizioni
+- Rendimento staking mensile stimato
+- Una nota rapida su eventuali movimenti di mercato significativi
+
+## 4. AGENDA DEL GIORNO
 Le 3-5 cose più importanti da fare oggi, in ordine di priorità.
 
-## 4. TASK IN ESECUZIONE AUTOMATICA
+## 5. TASK IN ESECUZIONE AUTOMATICA
 Quali task l'Agente Orario eseguirà oggi (dalla lista ALTA PRIORITÀ PENDING).
 
-## 5. INSIGHT NOTTURNO
+## 6. INSIGHT NOTTURNO
 Un'analisi, connessione o opportunità che il sistema ha elaborato stanotte.
 Qualcosa di non ovvio, pratico, utile per Claudio.
 
-## 6. AGENDA PROSSIMI 7 GIORNI
+## 7. AGENDA PROSSIMI 7 GIORNI
 Scadenze, eventi, milestone importanti della settimana.
 
 Il brief inizia con:
@@ -117,8 +137,20 @@ def chiama_llm(prompt: str) -> tuple[str, str]:
     return brief, "stub"
 
 
+def aggiorna_portfolio() -> None:
+    """Esegue l'analisi portfolio prima di generare il brief."""
+    try:
+        from analisi_portfolio import run_analysis
+        report_path = run_analysis()
+        print(f"[studio_notturno] Portfolio aggiornato: {report_path}")
+    except Exception as e:
+        print(f"[studio_notturno] Portfolio analysis fallita: {e}", file=sys.stderr)
+
+
 def main() -> int:
     print(f"[studio_notturno] Avvio — {ora_brussels()}")
+
+    aggiorna_portfolio()
 
     prompt = costruisci_prompt_studio()
     t0 = time.time()

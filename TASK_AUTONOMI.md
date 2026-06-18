@@ -11,6 +11,7 @@ ogni ora (7AM–11PM Brussels):
   agente_orario.py → prende task ALTA priorità → esegue → salva output → commit
 ogni notte (2AM Brussels):
   studio_notturno.py → studia tema del giorno → morning brief → commit
+  analisi_portfolio.py → aggiorna prezzi crypto → salva report in output/portfolio/
 ```
 
 Aggiungi task in qualsiasi momento. Il sistema li trova e li esegue da solo.
@@ -37,6 +38,7 @@ Aggiungi task in qualsiasi momento. Il sistema li trova e li esegue da solo.
 
 ## COMPLETATI
 
+- **[COMPLETATO] PORTFOLIO-012** — Sistema analisi portfolio crypto Revolut (35 posizioni, staking, raccomandazioni) → [output](output/portfolio/portfolio_2026-06-18.md) *(2026-06-18)*
 - **[COMPLETATO] DOSSIER-011** — Monitor Proattivo Dossier & Email (Principio CT) → [output](output/task_output/DOSSIER-011-monitor-proattivo.md) *(2026-06-18)*
 - **[COMPLETATO] ASBL-001** — Procedura registrazione SkyRights Foundation → [output](output/task_output/ASBL-001-procedura-registrazione.md) *(2026-06-18)*
 - **[COMPLETATO] MAXAR-002** — Test API developers.maxar.com → [output](output/task_output/MAXAR-002-api-test-guide.md) *(2026-06-18)*
