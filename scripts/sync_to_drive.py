@@ -33,6 +33,7 @@ SUBFOLDER_IDS = {
     "morning_brief": os.environ.get("DRIVE_BRIEF_FOLDER_ID", ""),     # Morning Brief
     "portfolio":     os.environ.get("DRIVE_PORTFOLIO_FOLDER_ID", ""), # Portfolio
     "personale":     os.environ.get("DRIVE_PERSONALE_FOLDER_ID", ""), # Personale — PRIVATO
+    "fabrizio":      os.environ.get("DRIVE_FABRIZIO_FOLDER_ID", ""),  # Io e Fabri — cassetta lettere
 }
 
 # File statici da sincronizzare sempre: (path locale, folder_drive)
@@ -45,6 +46,12 @@ SYNC_MAP_STATIC = [
     ("SKYID.md",                                      "root"),
     ("portfolio/holdings.json",                       "portfolio"),
     ("personale/MADRE.md",                            "personale"),
+    ("fabrizio/COME_FUNZIONA.md",                     "fabrizio"),
+]
+
+# Cartelle da sincronizzare interamente — incluse le lettere
+SYNC_DIRS_LETTERS = [
+    ("fabrizio/lettere", "fabrizio"),
 ]
 
 # Cartelle da sincronizzare interamente (tutti i file .md e .json al loro interno)
@@ -121,6 +128,7 @@ def resolve_folder_id(service, folder_key: str) -> str:
         "morning_brief": "Morning Brief",
         "portfolio":     "Portfolio",
         "personale":     "Personale",
+        "fabrizio":      "Io e Fabri",
     }
     folder_name = name_map.get(folder_key, folder_key)
     new_id = get_or_create_folder(service, folder_name, DRIVE_FOLDER_ID)
@@ -143,7 +151,7 @@ def main():
             parent_id = resolve_folder_id(service, folder_key)
         upload_or_update(service, str(local_abs), parent_id)
 
-    # Cartelle intere
+    # Cartelle intere (output)
     for dir_rel, folder_key in SYNC_DIRS:
         dir_abs = repo_root / dir_rel
         if not dir_abs.exists():
@@ -151,6 +159,16 @@ def main():
         parent_id = resolve_folder_id(service, folder_key)
         for f in sorted(list(dir_abs.glob("*.md")) + list(dir_abs.glob("*.json"))):
             upload_or_update(service, str(f), parent_id)
+
+    # Lettere Fabrizio — sottocartella "lettere/" dentro "Io e Fabri"
+    for dir_rel, folder_key in SYNC_DIRS_LETTERS:
+        dir_abs = repo_root / dir_rel
+        if not dir_abs.exists():
+            continue
+        parent_folder_id = resolve_folder_id(service, folder_key)
+        lettere_folder_id = get_or_create_folder(service, "lettere", parent_folder_id)
+        for f in sorted(dir_abs.glob("*.md")):
+            upload_or_update(service, str(f), lettere_folder_id)
 
     print("Sincronizzazione completata.")
 
