@@ -4,7 +4,7 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-06-13
+> Ultimo aggiornamento: 2026-06-18
 
 ---
 
@@ -56,7 +56,65 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
 
 ---
 
-## Prossimo passo concordato
+## SDQ-1 — Sistema Autonomo (aggiunto 2026-06-18)
+
+Claudio ha un secondo sistema parallelo ai Tarocchi: **SDQ-1**, un'orchestrazione
+multi-agente automatica su GitHub Actions. Repo: `claudioterzi/Claudio` (pubblico).
+Branch di sviluppo attuale: `claude/rosso-rosso-rosso-ure5A`.
+
+### Componenti SDQ-1 (tutti in `scripts/`)
+
+| Script | Funzione | Quando gira |
+|--------|----------|-------------|
+| `studio_notturno.py` | Morning brief + analisi portfolio | 2:30 Brussels (GH Actions) |
+| `analisi_portfolio.py` | CoinGecko API, 35 posizioni crypto, staking yield | dentro studio_notturno |
+| `sync_to_drive.py` | Sync output → Google Drive (4 cartelle) | 8:30 Brussels (GH Actions) |
+| `agente_profumiere.py` | Formula profumo al giorno + clone di 12 fragranze celebri | 6:00 Brussels (GH Actions) |
+| `scacchiera_quantica.py` | Motore vettoriale R³∞ — modalità demo/chat/CLI | manuale + integrabile |
+| `setup_drive_folders.py` | Crea cartelle Drive (da eseguire una volta sul PC) | manuale sul PC |
+
+### Output dirs
+- `output/morning_brief/` — brief giornalieri (in git)
+- `output/portfolio/` — analisi crypto (.gitignore, solo Drive)
+- `output/profumiere/` — studio profumiere quotidiano (in git)
+- `output/scacchiera/` — sessioni scacchiera JSON+MD (in git)
+- `personale/` — MADRE.md e dati privati (.gitignore, solo Drive)
+- `fabrizio/` — casella lettere Claudio↔Fabrizio (.gitignore, solo Drive)
+- `portfolio/holdings.json` — 35 posizioni crypto (.gitignore, solo Drive)
+
+### Google Drive — PENDENTE
+- Root folder: `1-pJYRwoZ0uYCtyoLoBjNvSe2s_kNoMlm` (Agorà Digitale)
+- Secrets necessari su GitHub: `GOOGLE_CREDENTIALS_JSON`, `AGORA_FOLDER_ID`,
+  `DRIVE_BRIEF_FOLDER_ID`, `DRIVE_PORTFOLIO_FOLDER_ID`,
+  `DRIVE_PERSONALE_FOLDER_ID`, `DRIVE_FABRIZIO_FOLDER_ID`
+- Script setup: `python scripts/setup_drive_folders.py /path/service-account.json`
+- **STATO: in attesa che Claudio esegua il setup dal PC**
+
+### Dossier attivi (personale)
+- **Allianz Direct** — sinistro n° 2026 50007694, appartamento 28t Rue Guersant 75017 Paris
+  - PV firmato expert Remy NGUYEN: totale riconosciuto €16.024,38 (VAN €17.339,50)
+  - Multiassistance: fiche de travaux con prezzi N/D (contestata)
+  - Prossimo: ricevere devis Patrick Boisseau (artigiano) sabato 21/06
+  - Inviare devis a sinistres@allianzdir... con rif. 2026 50007694
+- **Pelan** (dossier separato, huissier Hinoux, RG 22/08190)
+
+### AURA-50 / Terzi Parfums
+- Master: `progetti/aura50/AURA50_MASTER.md` (158 essenze, formula CLAUDIO-001)
+- Formula CLAUDIO-001 "Mistero Corporeo": 10 ingredienti, MIS+SEN registri
+- Ordine De Hekserij: `progetti/aura50/ordine_de_hekserij.md` (pronto da ordinare)
+- Agente profumiere: genera 1 formula/giorno + studia 1 clone celebre tra 12 (Rush, Ambre d'Argent, BR540, ecc.)
+- H2 (verità): prima riga in `progetti/aura50/contatti.jsonl` = progetto vivo
+
+### Scacchiera Quantica — R³∞ · Alakta Anen
+- Python: `scripts/scacchiera_quantica.py` (demo/chat/CLI, generazione Claude)
+- HTML workspace: `studio/web/scacchiera.html` (UI identica al design PDF)
+- Formula: score = imp×0.40 + orig×0.40 + real×0.10 + caos×0.10 · Q = media top3 × 5 (0-50)
+- Tensioni preset: 8 (connessione↔solitudine, ordine↔caos, ecc.)
+- Chat mode: polo1 ↔ polo2 + focus opzionale + Claude auto-genera vettori
+
+---
+
+## Prossimo passo concordato (tarocchi)
 
 Sistema B completo (592 stati scritti). Decisione su dove andare:
 

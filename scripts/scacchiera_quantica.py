@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-scacchiera_quantica.py — SDQ-1 · Claudio Terzi + Claude, 2026
+scacchiera_quantica.py — SISTEMA R³∞ · ALAKTA ANEN
+SDQ-1 · Claudio Terzi + Claude, 2026
 Motore di pensiero vettoriale. Matematica onesta, niente magia.
 Il CODICE = meccanica deterministica. Il CONTENUTO = ragionamento.
 
 Modalità:
   python scacchiera_quantica.py              # demo cicli hardcoded
-  python scacchiera_quantica.py --chat       # REPL interattivo
+  python scacchiera_quantica.py --chat       # REPL interattivo (split polo1↔polo2)
   python scacchiera_quantica.py -t "..."     # singolo ciclo + generazione auto
   python scacchiera_quantica.py -t "..." -n  # singolo ciclo senza Claude
 """
@@ -22,6 +23,18 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SESSIONI_DIR = ROOT / "output" / "scacchiera"
+
+# ── TENSIONI PRESET (da Workspace v1) ───────────────────────────────────────
+TENSIONI_PRESET = [
+    ("connessione",  "solitudine"),
+    ("ordine",       "caos"),
+    ("controllo",    "abbandono"),
+    ("identità",     "trasformazione"),
+    ("linguaggio",   "silenzio"),
+    ("presenza",     "distanza"),
+    ("memoria",      "dimenticanza"),
+    ("continuità",   "salto"),
+]
 
 # ── PESI ────────────────────────────────────────────────────────────────────
 PESI = {"imp": 0.40, "orig": 0.40, "real": 0.10, "caos": 0.10}
@@ -245,10 +258,53 @@ def genera_vettori_manuale() -> list[Vettore]:
 
 
 # ── CHAT LOOP ───────────────────────────────────────────────────────────────
+def _leggi_tensione(tensione_auto: str | None) -> str | None:
+    """Chiede polo1 ↔ polo2 (o numero preset, o tensione libera)."""
+    W = 66
+    print(f"\n{C['DIM']}{'─'*W}{C['R']}")
+
+    # Mostra preset numerati
+    print(f"  {C['DIM']}Tensioni rapide:{C['R']}")
+    for i, (p1, p2) in enumerate(TENSIONI_PRESET, 1):
+        print(f"  {C['DIM']}[{i}]{C['R']} {p1} ↔ {p2}")
+
+    if tensione_auto:
+        print(f"\n  {C['DIM']}Suggerita:{C['R']} {tensione_auto}")
+
+    print()
+    polo1 = input(f"  {C['B']}polo 1{C['R']} (o numero 1-{len(TENSIONI_PRESET)}, o 'q'/'e'): ").strip()
+
+    if polo1.lower() == 'q':
+        return 'q'
+    if polo1.lower() == 'e':
+        return 'e'
+    if polo1.isdigit():
+        idx = int(polo1) - 1
+        if 0 <= idx < len(TENSIONI_PRESET):
+            p1, p2 = TENSIONI_PRESET[idx]
+            print(f"  {C['DIM']}→{C['R']} {p1} ↔ {p2}")
+            focus = input(f"  focus {C['DIM']}(opzionale){C['R']}: ").strip()
+            t = f"{p1} ↔ {p2}"
+            return f"{t}  [{focus}]" if focus else t
+    if not polo1 and tensione_auto:
+        return tensione_auto
+
+    polo2 = input(f"  {C['B']}polo 2{C['R']}: ").strip()
+    focus = input(f"  focus {C['DIM']}(opzionale){C['R']}: ").strip()
+    if polo1 and polo2:
+        t = f"{polo1} ↔ {polo2}"
+    elif polo1:
+        t = polo1
+    else:
+        return None
+    return f"{t}  [{focus}]" if focus else t
+
+
 def chat_loop(use_claude: bool = True):
     W = 66
     print(f"\n{C['B']}{C['CYA']}{'═'*W}")
-    print(f"  SCACCHIERA QUANTICA  —  {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"  SISTEMA R³∞ · ALAKTA ANEN  —  Scacchiera Quantica")
+    print(f"  {datetime.now().strftime('%Y-%m-%d %H:%M')}  ·  WORKSPACE v1")
     print(f"{'═'*W}{C['R']}")
     nome_sessione = datetime.now().strftime("%Y-%m-%d_%H%M")
     sessione = Sessione(nome_sessione)
@@ -256,14 +312,11 @@ def chat_loop(use_claude: bool = True):
     tensione_auto = None
 
     while True:
-        print()
-        if tensione_auto:
-            print(f"{C['DIM']}Tensione suggerita:{C['R']} {tensione_auto}")
-        raw = input(f"{C['B']}TENSIONE{C['R']} (Invio=usa suggerita, 'q'=esci, 'e'=esporta): ").strip()
+        cmd = _leggi_tensione(tensione_auto)
 
-        if raw.lower() == "q":
+        if cmd == 'q' or cmd is None:
             break
-        if raw.lower() == "e":
+        if cmd == 'e':
             p1 = sessione.salva()
             p2 = sessione.esporta_md()
             print(f"  Salvato: {p1}")
@@ -272,9 +325,7 @@ def chat_loop(use_claude: bool = True):
                 print(f"\n{C['B']}Evoluzione Q:{C['R']}\n{sessione.q_bar()}")
             continue
 
-        tensione = raw if raw else tensione_auto
-        if not tensione:
-            tensione = input("  Inserisci una tensione: ").strip()
+        tensione = cmd
         if not tensione:
             continue
 
