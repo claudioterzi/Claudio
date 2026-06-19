@@ -84,13 +84,30 @@ Branch di sviluppo attuale: `claude/rosso-rosso-rosso-ure5A`.
 - `fabrizio/` — casella lettere Claudio↔Fabrizio (.gitignore, solo Drive)
 - `portfolio/holdings.json` — 35 posizioni crypto (.gitignore, solo Drive)
 
-### Google Drive — PENDENTE
-- Root folder: `1-pJYRwoZ0uYCtyoLoBjNvSe2s_kNoMlm` (Agorà Digitale)
-- Secrets necessari su GitHub: `GOOGLE_CREDENTIALS_JSON`, `AGORA_FOLDER_ID`,
-  `DRIVE_BRIEF_FOLDER_ID`, `DRIVE_PORTFOLIO_FOLDER_ID`,
-  `DRIVE_PERSONALE_FOLDER_ID`, `DRIVE_FABRIZIO_FOLDER_ID`
-- Script setup: `python scripts/setup_drive_folders.py /path/service-account.json`
-- **STATO: in attesa che Claudio esegua il setup dal PC**
+### Google Drive — CONFIGURATO (2026-06-19)
+
+Cartelle Drive create e IDs hardcodati in `sync_to_drive.py`.
+File personali già caricati via MCP.
+
+| Cartella Drive | ID | Contenuto |
+|---|---|---|
+| Agorà Digitale — SDQ-1 (root) | `1-pJYRwoZ0uYCtyoLoBjNvSe2s_kNoMlm` | radice |
+| Brief Mattutini — SDQ-1 | `1nuL-2lu8gQMziHptzpMQ4NutBJLAw3Vj` | morning brief |
+| Portfolio — SDQ-1 | `17Gs7ZrYYmRNect-huQ4YYiBuQdN4N5R1` | crypto portfolio |
+| PERSONALE | `1iC__qD1gJ4ZzTG8ad6gj8my4P6jDxtHB` | MADRE.md, ALLIANZ_SINISTRE.md |
+| Io e Fabri — Casella Lettere | `1ifyqeh7gU0qlugF1LBuZL6-p7-QH2BKH` | lettere Claudio↔Fabrizio |
+| lettere (sottocartella) | `1pAy_JWYvi252n-wR7jH5KVHH0dr8MECb` | 2026-06-18_claudio.md ✓ |
+
+**File personali già su Drive:** MADRE.md ✓ · ALLIANZ_SINISTRE.md ✓ · COME_FUNZIONA.md ✓ · 2026-06-18_claudio.md ✓
+
+**Unico secret ancora mancante su GitHub:**
+- `GOOGLE_CREDENTIALS_JSON` — JSON del service account Google
+  Senza questo, il workflow `sync_drive.yml` non può autenticarsi.
+  Gli IDs delle cartelle sono già nel codice — non servono altri secrets.
+
+**Come aggiungere il secret:**
+1. Vai su GitHub → repo claudioterzi/Claudio → Settings → Secrets → Actions
+2. New secret: nome `GOOGLE_CREDENTIALS_JSON`, valore = contenuto JSON del service account
 
 ### Dossier attivi (personale)
 - **Allianz Direct** — sinistro n° 2026 50007694, appartamento 28t Rue Guersant 75017 Paris

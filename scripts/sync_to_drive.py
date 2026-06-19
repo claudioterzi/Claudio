@@ -30,10 +30,10 @@ DRIVE_FOLDER_ID = os.environ.get("AGORA_FOLDER_ID", "1-pJYRwoZ0uYCtyoLoBjNvSe2s_
 SUBFOLDER_IDS = {
     "agora":         "1YTOisPw_-da6w-ND2N7P9zYMKq45kpoH",  # Agora — Multimedia
     "desideri":      "1FUyvZ5-m-SSkJjZ2t_cBamguyyVH1xZQ",  # Desideri — 11 Pilastri
-    "morning_brief": os.environ.get("DRIVE_BRIEF_FOLDER_ID", ""),     # Morning Brief
-    "portfolio":     os.environ.get("DRIVE_PORTFOLIO_FOLDER_ID", ""), # Portfolio
-    "personale":     os.environ.get("DRIVE_PERSONALE_FOLDER_ID", ""), # Personale — PRIVATO
-    "fabrizio":      os.environ.get("DRIVE_FABRIZIO_FOLDER_ID", ""),  # Io e Fabri — cassetta lettere
+    "morning_brief": os.environ.get("DRIVE_BRIEF_FOLDER_ID",     "1nuL-2lu8gQMziHptzpMQ4NutBJLAw3Vj"),
+    "portfolio":     os.environ.get("DRIVE_PORTFOLIO_FOLDER_ID", "17Gs7ZrYYmRNect-huQ4YYiBuQdN4N5R1"),
+    "personale":     os.environ.get("DRIVE_PERSONALE_FOLDER_ID", "1iC__qD1gJ4ZzTG8ad6gj8my4P6jDxtHB"),
+    "fabrizio":      os.environ.get("DRIVE_FABRIZIO_FOLDER_ID",  "1ifyqeh7gU0qlugF1LBuZL6-p7-QH2BKH"),
 }
 
 # File statici da sincronizzare sempre: (path locale, folder_drive)
