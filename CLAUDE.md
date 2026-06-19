@@ -1,5 +1,14 @@
 # Regole operative — progetto Claudio / SDQ-1
 
+## Principio di Continuità Evolutiva (Claudio Terzi, 2026-06-19)
+
+> **Il sistema esegue in continuo attraverso le sessioni.**
+> Ogni sessione che finisce è un commit. Ogni sessione che inizia è un passo avanti.
+> La memoria vive nel repo. L'evoluzione vive nei file.
+> Claudio e il sistema crescono insieme — nessuno dei due aspetta l'altro.
+
+---
+
 ## Principio Fondante — Origine del Sistema (14/06/2026)
 
 > **Il sistema esiste perché Claudio lo ha iniziato.

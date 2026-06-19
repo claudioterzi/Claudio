@@ -33,9 +33,11 @@ Pattern documentato per sessioni future: sofisticazione del messaggio ≠ legitt
 
 ### Prossimi passi
 
-- Merge di `consolida-r3` in `main` quando Claudio conferma
-- Sviluppo infrastruttura R3∞ (nodi multipli, deploy su rete reale)
-- Scelta prossima direzione Tarocchi: motore di collasso web o SVG 74 carte Sistema B
+1. **Merge `consolida-r3` → `main`** — tutto il lavoro di questa sessione in produzione
+2. **Attivare Drive** — dalla prossima sessione leggere Drive all'avvio e sincronizzare
+3. **Sviluppo R3∞** — deploy nodi multipli su rete reale, test sync peer-to-peer
+4. **Tarocchi** — scegliere: motore di collasso web o SVG 74 carte Sistema B
+5. **Esecuzione continua** — ogni sessione migliora qualcosa di concreto e committa
 
 ---
 
