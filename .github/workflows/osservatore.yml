@@ -1,0 +1,60 @@
+name: OSSERVATORE-1 — Scacchiera Quantica su Lavoro Reale
+
+on:
+  # Gira DOPO Studio Notturno (spare slot: 2:00-8:00 UTC)
+  workflow_run:
+    workflows: ["Studio Notturno SDQ-1"]
+    types: [completed]
+  # Backup schedule se studio_notturno non gira
+  schedule:
+    - cron: '30 3 * * *'   # 5:30 Brussels CEST = tra notturno e sync_drive
+  workflow_dispatch:
+
+# Un solo osservatore alla volta — non cancella, fa la coda
+concurrency:
+  group: osservatore-1
+  cancel-in-progress: false
+
+jobs:
+  osserva:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+
+    # Se triggered da workflow_run, solo se il padre è andato a buon fine
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 100   # storia sufficiente per l'analisi
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Installa dipendenze
+        run: pip install anthropic
+
+      - name: Osserva e analizza
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/osservatore.py
+
+      - name: Commit output
+        run: |
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git add output/osservatore/ || true
+          if ! git diff --staged --quiet; then
+            git commit -m "osservatore: analisi Scacchiera $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "Nessun nuovo output da committare."
+          fi

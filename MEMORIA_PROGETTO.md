@@ -4,7 +4,7 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-06-18
+> Ultimo aggiornamento: 2026-06-19
 
 ---
 
@@ -71,6 +71,7 @@ Branch di sviluppo attuale: `claude/rosso-rosso-rosso-ure5A`.
 | `sync_to_drive.py` | Sync output → Google Drive (4 cartelle) | 8:30 Brussels (GH Actions) |
 | `agente_profumiere.py` | Formula profumo al giorno + clone di 12 fragranze celebri | 6:00 Brussels (GH Actions) |
 | `scacchiera_quantica.py` | Motore vettoriale R³∞ — modalità demo/chat/CLI | manuale + integrabile |
+| `osservatore.py` | Osserva lavoro reale → Scacchiera asincrona via Batch API | dopo Studio Notturno (GH Actions) |
 | `setup_drive_folders.py` | Crea cartelle Drive (da eseguire una volta sul PC) | manuale sul PC |
 
 ### Output dirs
@@ -78,6 +79,7 @@ Branch di sviluppo attuale: `claude/rosso-rosso-rosso-ure5A`.
 - `output/portfolio/` — analisi crypto (.gitignore, solo Drive)
 - `output/profumiere/` — studio profumiere quotidiano (in git)
 - `output/scacchiera/` — sessioni scacchiera JSON+MD (in git)
+- `output/osservatore/` — analisi OSSERVATORE-1 JSON+MD (in git) · `stato.json` = batch pendenti
 - `personale/` — MADRE.md e dati privati (.gitignore, solo Drive)
 - `fabrizio/` — casella lettere Claudio↔Fabrizio (.gitignore, solo Drive)
 - `portfolio/holdings.json` — 35 posizioni crypto (.gitignore, solo Drive)
@@ -111,6 +113,22 @@ Branch di sviluppo attuale: `claude/rosso-rosso-rosso-ure5A`.
 - Formula: score = imp×0.40 + orig×0.40 + real×0.10 + caos×0.10 · Q = media top3 × 5 (0-50)
 - Tensioni preset: 8 (connessione↔solitudine, ordine↔caos, ecc.)
 - Chat mode: polo1 ↔ polo2 + focus opzionale + Claude auto-genera vettori
+
+### OSSERVATORE-1 (aggiunto 2026-06-19)
+- Script: `scripts/osservatore.py`
+- Workflow: `.github/workflows/osservatore.yml` (si avvia dopo Studio Notturno)
+- Cosa fa: estrae tensioni reali da git log + morning brief + REGISTRO_DESIDERI
+  → sottomette **Anthropic Batch API** (spare compute, -50% costo, asincrono)
+  → al run successivo ritira risultati → sessione Scacchiera completa
+- Output: `output/osservatore/osservatore_YYYY-MM-DD.json+md`
+- Stato batch: `output/osservatore/stato.json` (batch_id + tensioni_map)
+- 5 tensioni estratte automaticamente ogni giorno:
+  1. costruire cose nuove ↔ riparare ciò che esiste (da feat: vs fix:)
+  2. costruire il sistema ↔ risolvere la vita concreta (commit per dominio)
+  3. azione immediata ↔ gestire l'attesa (da morning brief)
+  4. sistema agisce da solo ↔ Claudio supervisiona (commit auto vs manuali)
+  5. desiderare con precisione ↔ fare con priorità (da REGISTRO_DESIDERI)
+- Non rallenta nessun workflow live. Mai in foreground. Usa Haiku (veloce, economico).
 
 ---
 
