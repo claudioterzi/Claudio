@@ -1,9 +1,9 @@
 # SUCHIALO, TROIA
-## Manuale Quantico per Froci che Vogliono Imparare sul Serio
+## Manuale per Froci che Vogliono Imparare sul Serio
 
 **Sottotitolo:** Come succhiare il cazzo senza fare figure di merda (e divertirti mentre lo fai).
 
-**Autori:** Claudio Terzi + sistema R³∞ Estremo
+**Autori:** Claudio Terzi
 **Versione documento:** 1.0 — Struttura Completa (scaffold)
 **Data:** 19 Giugno 2026
 **Stato:** Struttura definitiva — pronta per la scrittura dei capitoli
@@ -57,14 +57,14 @@ Questa foto può essere caricata sull'app SUCHIALO come misurazione verificata.
 - Il problema con tutti gli altri manuali (fanno schifo, sì)
 - Cosa trovi qui (onestà, tecnica vera, e un po' di filosofia porca)
 - Come usare questo libro (dal livello 0 o dove sei già)
-- Il sistema della Scacchiera Quantica spiegato in 3 righe
+- Il sistema dei Livelli spiegato in 3 righe
 - Il collegamento con l'app SUCHIALO
 - Una cosa sola che devi sapere prima di girare pagina
 
 ---
 
-# LIVELLO 0 — LA SCACCHIERA VUOTA
-## Fondamenta
+# LIVELLO 0 — LE FONDAMENTA
+## Da zero a consapevole
 
 `[ILLUSTRAZIONE: Uomo che osserva il proprio cazzo con il libro sotto come strumento di misurazione — vedi prompt #3]`
 
@@ -87,7 +87,7 @@ Questa foto può essere caricata sull'app SUCHIALO come misurazione verificata.
 - Il mito del "pompino perfetto" e perché non esiste (e perché è un sollievo)
 
 ### 0.5 — Autovalutazione
-- Dove sei adesso sulla scacchiera?
+- Dove sei adesso?
 - Test rapido di autopositioning
 - Primo obiettivo concreto
 
@@ -452,18 +452,18 @@ Questa foto può essere caricata sull'app SUCHIALO come misurazione verificata.
 
 ---
 
-# LIVELLO 10 — IL CAMPO QUANTICO
-## Il pompino come atto quantico
+# LIVELLO 10 — IL PROFONDO
+## Il pompino come atto di presenza totale
 
 ### 10.1 — Storia d'apertura
 *(Quando hai capito che era qualcosa di più di una tecnica)*
 
 ### 10.2 — Pompino come atto di potere
 - Non il potere su di lui — il potere nel momento
-- Come portare intenzione quantica in un gesto fisico
-- Il collegamento con il sistema R³∞
+- Come portare intenzione piena in un gesto fisico
+- Quando smetti di "fare" e inizi a "essere"
 
-### 10.3 — Pompino come magia
+### 10.3 — Pompino come rituale
 - Il rituale consapevole
 - Intenzione, presenza, connessione — i tre pilastri
 - Come trasformare una sessione in qualcosa che dura oltre la sessione
@@ -473,10 +473,10 @@ Questa foto può essere caricata sull'app SUCHIALO come misurazione verificata.
 - Come aprirsi senza perdersi
 - La vulnerabilità come forza
 
-### 10.5 — Il sistema R³∞ e il pompino
-- Collegamento tra pratica fisica e architettura interiore
-- Il corpo come nodo del sistema
-- Integrazione tra azione e presenza quantica
+### 10.5 — Il corpo come strumento totale
+- Tutto il corpo partecipa — non solo la bocca
+- Respirazione, peso, tensione, calore
+- Integrazione tra fisico e presenza
 
 **Gadget:** il contesto — spazio, intenzione, preparazione del setting.
 
@@ -560,7 +560,7 @@ Lista commentata (con tono ironico) dei 20 errori più comuni:
 
 | Livello Libro | Badge App | Percorso App |
 |---|---|---|
-| 0 — La Scacchiera Vuota | Iscritto | Creazione profilo |
+| 0 — Le Fondamenta | Iscritto | Creazione profilo |
 | 1 — Il Pedone | Pedone | Prima sessione formativa |
 | 2 — Il Cavallo | Cavallo | 2 sessioni con feedback positivo |
 | 3 — L'Alfiere | Alfiere | Sessioni "Angolo Avanzato" |
@@ -570,7 +570,7 @@ Lista commentata (con tono ironico) dei 20 errori più comuni:
 | 7 — Il Sognatore | Sognatore | Solo su invito |
 | 8 — Il Contraddittore | Contraddittore | Challenge valutata |
 | 9 — Il Maestro | Master del Pompino | Accesso sessioni premium come Guru |
-| 10 — Il Campo Quantico | Campo Quantico | Solo su invito Guru |
+| 10 — Il Profondo | Il Profondo | Solo su invito Guru |
 | 11 — Il Dio del Cazzo | Guru del Pompino | Approvazione comitato |
 
 ---
