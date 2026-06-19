@@ -159,7 +159,7 @@ curl -H "Authorization: Bearer changeme" http://localhost:8003/sync/hashes
 
 **Repository:** [github.com/claudioterzi/Claudio](https://github.com/claudioterzi/Claudio)  
 **Branch:** `claude/rosso-rosso-rosso-ure5A`  
-**Autore:** Claudio Terzi
+**Autore:** Claudio Terzi — terziclaudio@gmail.com
 
 ---
 
