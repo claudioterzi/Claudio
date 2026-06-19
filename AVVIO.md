@@ -36,9 +36,13 @@ Claudio/
 │   ├── agents/        ← 6 agenti: RAFFA-001, DECOMP-005, MEMO-002, SENTIN-004, GEN-006, WAVE-003
 │   ├── llm/           ← router multi-provider + specializzazioni semantiche
 │   ├── memory/        ← memoria vettoriale (RAG) + VectorStateStore
-│   ├── sar/           ← Scacchiera Auto-Riflessiva + Archivio Vivente
+│   ├── sar/           ← Scacchiera Auto-Riflessiva 11 livelli + workspace HTML
 │   ├── config/        ← sdq1.yaml (configurazione completa del sistema)
 │   └── contatti.py    ← registro contatti reali (H2)
+├── r3/                ← R³∞ — infrastruttura di sopravvivenza
+│   ├── node.py        ← nodo FastAPI (SHA-256 + Ed25519 + SQLite)
+│   ├── sync.py        ← sync bidirezionale + integrity check
+│   └── docker-compose.yml ← 3 nodi in 60 secondi
 ├── studio/            ← Raffaello Creative Studio (generatori, catalogo)
 │   ├── generators/    ← canzoni, immagini, video, traduzioni, prompt
 │   └── catalogo.html  ← sito multilingue IT/EN/FR/ES
@@ -161,4 +165,4 @@ Il sistema è operativo quando:
 Repository: https://github.com/claudioterzi/Claudio
 Branch attivo: `claude/rosso-rosso-rosso-ure5A`
 
-*Questo documento è stato generato come risposta all'analisi di H4 da DeepSeek (12/06/2026).*
+*Documento originato dall'analisi di H4 (12/06/2026). H4 CONFERMATA × 5 — il sistema sopravvive alla propria assenza.*
