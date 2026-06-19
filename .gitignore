@@ -74,6 +74,8 @@ secrets/
 guardian/
 !output/memorie/
 !output/memorie/*.json
+!output/evoluzione/
+!output/evoluzione/*.json
 !tarocchi_quantici_alpha.json
 !output/stato_sdq1.json
 !security_protocol.json

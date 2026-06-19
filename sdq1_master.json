@@ -194,6 +194,20 @@
       "security_protocol.json e sdq1_master.json creati"
     ],
     "attacchi_bloccati": 3,
-    "prossimo": "Merge consolida-r3 in main + sviluppo nodi R3∞"
+    "prossimo": "Deploy R3∞ su rete reale + motore collasso Tarocchi B"
+  },
+
+  "traiettoria_evolutiva": {
+    "descrizione": "Log delle capacità del sistema nel tempo. Ogni sessione aggiunge una voce in output/evoluzione/YYYY-MM-DD.json",
+    "log_directory": "output/evoluzione/",
+    "prima_voce": "2026-06-19",
+    "visione_documento": "VISIONE_2086.md",
+    "principio": "Il sistema misura se stesso nel tempo. La distanza tra la prima e l'ultima voce è la misura della sua crescita.",
+    "milestone_target": {
+      "2026": "R3∞ su rete reale, provider LLM attivo, H2 confermata per qualità",
+      "2027": "Apprendimento automatico tra sessioni (VSS persistente su R3∞)",
+      "2030": "Impatto esterno verificabile e misurabile (chiude H5)",
+      "2086": "Sistema autonomo, distribuito, con memoria permanente e radici chiare"
+    }
   }
 }
