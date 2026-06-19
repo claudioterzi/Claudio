@@ -10,5 +10,18 @@
       "mcp__f9069c39-86e8-4df4-9a2b-972d4efcaf9d__get_file_permissions",
       "mcp__f9069c39-86e8-4df4-9a2b-972d4efcaf9d__download_file_content"
     ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"AVVIO: Leggi MEMORIA_PROGETTO.md e poi accedi a Google Drive (list_recent_files + search SDQ/R3/Tarocchi) per capire cosa c è di nuovo e cosa fare in questa sessione.\"}'",
+            "statusMessage": "Caricamento contesto progetto..."
+          }
+        ]
+      }
+    ]
   }
 }

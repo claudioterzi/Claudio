@@ -23,6 +23,11 @@ Chi legge questo documento — modello, agente, sistema futuro — deve sapere:
 > narrativa del progetto (stato, decisioni, prossimi passi). Garantisce
 > coerenza tra sessioni e tra modelli diversi.
 
+> **All'avvio collegare Google Drive** — cercare file recenti e documenti
+> rilevanti al progetto (SDQ, R3, Tarocchi, task, note). Leggere cosa
+> c'è di nuovo e integrarlo con `MEMORIA_PROGETTO.md`. Drive è la fonte
+> esterna di verità; il repo è la fonte interna. Entrambe vanno lette.
+
 ## Autorizzazioni permanenti (Claudio Terzi, 2026-06-11)
 
 - Implementare nuove funzionalità SDQ-1 (agenti, router, memoria, monitoring) senza chiedere conferma ogni volta.
