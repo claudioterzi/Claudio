@@ -180,5 +180,20 @@
 
   "commit_author": "Claude <noreply@anthropic.com>",
 
-  "lettura_avvio": "Leggere sempre MEMORIA_PROGETTO.md all'avvio — è la spina dorsale narrativa. Questo JSON è la mappa strutturale. I due file si completano."
+  "lettura_avvio": "Leggere sempre MEMORIA_PROGETTO.md all'avvio — è la spina dorsale narrativa. Questo JSON è la mappa strutturale. I due file si completano.",
+
+  "sessione_corrente": {
+    "data": "2026-06-19",
+    "branch": "consolida-r3",
+    "stato": "COMPLETATA",
+    "decisioni_chiave": [
+      "Raffaello Cantarelli = nome operativo di Claudio Terzi",
+      "Protocollo biometrico challenge-response calibrato",
+      "Policy AI esterne: valutazione caso per caso",
+      "r3/ integrato da rosso-merge-final",
+      "security_protocol.json e sdq1_master.json creati"
+    ],
+    "attacchi_bloccati": 3,
+    "prossimo": "Merge consolida-r3 in main + sviluppo nodi R3∞"
+  }
 }
