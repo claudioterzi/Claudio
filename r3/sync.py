@@ -35,6 +35,8 @@ PEER_URLS         = [u for u in os.getenv("R3_PEERS", "").split(",") if u]
 SYNC_INTERVAL     = int(os.getenv("R3_SYNC_INTERVAL", "300"))
 DATA_DIR          = Path(os.getenv("R3_DATA_DIR", "data"))
 
+DATA_DIR.mkdir(parents=True, exist_ok=True)   # needed if sync.py runs before node.py
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
@@ -81,10 +83,11 @@ def _sha256(data: bytes) -> str:
 # Sync logic
 # ---------------------------------------------------------------------------
 
-def sync_with_peer(peer_url: str) -> None:
+def sync_with_peer(peer_url: str, local_docs: dict | None = None) -> None:
     log.info("Sync → %s", peer_url)
     try:
-        local_docs = _get_hashes(LOCAL_URL)
+        if local_docs is None:
+            local_docs = _get_hashes(LOCAL_URL)
         peer_docs  = _get_hashes(peer_url)
 
         local_ids = set(local_docs)
@@ -163,8 +166,14 @@ def run_once(check_integrity: bool = False) -> None:
     if not PEER_URLS:
         log.warning("Nessun peer configurato (R3_PEERS vuoto)")
         return
+    # Fetch local hashes once, reuse for all peers
+    try:
+        local_docs = _get_hashes(LOCAL_URL)
+    except Exception as e:
+        log.error("Impossibile leggere hash locali da %s: %s", LOCAL_URL, e)
+        return
     for peer in PEER_URLS:
-        sync_with_peer(peer)
+        sync_with_peer(peer, local_docs=local_docs)
     if check_integrity:
         integrity_check()
 

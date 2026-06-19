@@ -5,6 +5,7 @@ Sync e integrity check delegati a sync.py esterno.
 """
 
 import hashlib
+import hmac
 import logging
 import os
 import sqlite3
@@ -66,6 +67,8 @@ VERIFY_KEY_HEX = SIGNING_KEY.verify_key.encode(nacl.encoding.HexEncoder).decode(
 def _conn() -> sqlite3.Connection:
     c = sqlite3.connect(str(DB_PATH))
     c.row_factory = sqlite3.Row
+    c.execute("PRAGMA journal_mode=WAL")   # safe concurrent reads + writes
+    c.execute("PRAGMA foreign_keys=ON")
     return c
 
 def _init_db() -> None:
@@ -113,7 +116,10 @@ def _audit(event: str, detail: str = "") -> None:
         )
 
 def _check_token(authorization: Optional[str]) -> None:
-    if authorization != f"Bearer {API_TOKEN}":
+    expected = f"Bearer {API_TOKEN}"
+    provided = authorization or ""
+    # compare_digest prevents timing attacks
+    if not hmac.compare_digest(provided.encode(), expected.encode()):
         raise HTTPException(status_code=401, detail="Token non valido")
 
 # ---------------------------------------------------------------------------
@@ -161,17 +167,20 @@ async def upload(
 
     dest = _doc_path(doc_id)
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(data)
+
+    # Atomic write: tmp file → rename prevents partial-write corruption
+    tmp = dest.with_suffix(".tmp")
+    tmp.write_bytes(data)
+    tmp.rename(dest)
 
     with _conn() as db:
-        if not db.execute("SELECT 1 FROM documents WHERE id = ?", (doc_id,)).fetchone():
-            db.execute(
-                """INSERT INTO documents
-                   (id, filename, sha256, signature, size, uploaded_at, deleted)
-                   VALUES (?, ?, ?, ?, ?, ?, 0)""",
-                (doc_id, file.filename or doc_id, doc_id, sig,
-                 len(data), datetime.now(timezone.utc).isoformat()),
-            )
+        db.execute(
+            """INSERT OR IGNORE INTO documents
+               (id, filename, sha256, signature, size, uploaded_at, deleted)
+               VALUES (?, ?, ?, ?, ?, ?, 0)""",
+            (doc_id, file.filename or doc_id, doc_id, sig,
+             len(data), datetime.now(timezone.utc).isoformat()),
+        )
 
     _audit("upload", f"id={doc_id} file={file.filename} size={len(data)}")
     log.info("Stored  id=%s  file=%s", doc_id, file.filename)
@@ -243,7 +252,9 @@ async def sync_receive(
 
     sig = _sign(data)
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(data)
+    tmp = dest.with_suffix(".tmp")
+    tmp.write_bytes(data)
+    tmp.rename(dest)
 
     with _conn() as db:
         db.execute(
