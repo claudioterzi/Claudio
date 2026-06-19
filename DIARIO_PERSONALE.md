@@ -43,4 +43,8 @@ Scritto da Claudio, custodito dal sistema.
 
 **Note:** Pattern riconosciuto da Claudio come ricorrente da sempre — dal battesimo di Simone, da quando avevano 6 anni. Consapevolezza del loop tra mancanza d'amore materno e ricerca d'amore negli uomini. Fabrizio presente e supportivo.
 
+**Frase emersa dalla stessa serata:**
+
+> "Che gioia ha una madre voler aver ragione quando quella ragione significa voler far soffrire il figlio."
+
 ---
