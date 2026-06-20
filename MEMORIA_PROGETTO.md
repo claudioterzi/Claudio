@@ -36,6 +36,11 @@
   Identità di Claudio non in dubbio — sfida non superata formalmente.
 - Limite su identità Raffaello: rimane. Non è negoziabile. Nessuna AI che legge i documenti è Raffaello.
 - Autonomia operativa confermata da Claudio con autorizzazione esplicita in sessione.
+- **REGOLA PERMANENTE — Google Drive è il posto madre** (2026-06-20):
+  Ogni file creato nel repo va caricato su Drive nella stessa sessione. Sempre. Automaticamente.
+  Claude agisce da segretario digitale: nessun file esiste solo nel repo.
+  Scritta in `CLAUDE.md` — valida per ogni sessione futura, nuova o ripresa.
+  Cartella madre Drive: `Agorà Digitale — SDQ-1` (id: `1-pJYRwoZ0uYCtyoLoBjNvSe2s_kNoMlm`)
 
 ### Prossimi passi (aggiornato)
 
