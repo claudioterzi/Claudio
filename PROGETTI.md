@@ -17,6 +17,7 @@
 | **SkyID** — Identità universale | `PROGETTO_SKYID.md` | 2026–2050 | Prototipo in repo | Test biometrico + ASBL |
 | **Impatto** — Canale verifica esterno | `PROGETTO_IMPATTO.md` | 2026–2030 | 7 contatti umani | Log tarocchi + metriche battito |
 | **Benchmark** — Wayback Machine AI | `PROGETTO_BENCHMARK.md` | 2026–2033 | Codice in repo | Prima esecuzione completa |
+| **The Intruder Engine** — Pattern detector vita digitale | `PROGETTO_INTRUDER_ENGINE.md` | 2026–2028 | Skeleton avviato | V1: Collector + SQLite + Report CLI |
 
 ---
 
