@@ -46,7 +46,7 @@ con architettura tecnica, pseudocodice, e prototipo funzionante integrato in age
 
 
 
-### [PENDING] ASBL-001 — Procedura registrazione SkyRights Foundation
+### [DONE 2026-06-20 UTC] ASBL-001 — Procedura registrazione SkyRights Foundation
 **Categoria:** SkyRights / Legale
 **Obiettivo:** Trovare la procedura esatta e aggiornata 2026 per registrare un ASBL a Bruxelles.
 Includere: moduli necessari, costo, tempi, dove depositare lo statuto.
@@ -66,7 +66,7 @@ Includere: codice Python funzionante per la prima chiamata.
 Education & Research. Criteri, modulo, tempi di risposta tipici.
 **Output atteso:** `output/task_output/PLANET-003-accesso-ricerca.md`
 
-### [PENDING] EU-FUNDING-004 — Fondi EU per tech umanitaria 2026-2027
+### [DONE 2026-06-20 UTC] EU-FUNDING-004 — Fondi EU per tech umanitaria 2026-2027
 **Categoria:** SkyRights / Funding
 **Obiettivo:** Trovare le call aperte in EU (Horizon Europe, ECHO, EU4Health, Digital Europe)
 che finanziano tecnologia per persone senza documenti / rifugiati / identità digitale.
@@ -121,7 +121,8 @@ Docker, backup automatico repo, mirror Drive, VPN Tailscale per accesso remoto.
 
 ## COMPLETATI
 
-*(i task completati appariranno qui con link all'output)*
+- [ASBL-001] [Procedura registrazione SkyRights Foundation](output/task_output/ASBL-001-procedura-registrazione.md) — 2026-06-20
+- [EU-FUNDING-004] [Fondi EU tech umanitaria 2026-2027](output/task_output/EU-FUNDING-004-call-aperte.md) — 2026-06-20
 
 ---
 
