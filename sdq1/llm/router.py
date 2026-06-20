@@ -29,6 +29,7 @@ from .providers import (
     AnthropicProvider,
     DeepSeekProvider,
     GeminiProvider,
+    GrokProvider,
     OllamaProvider,
     OpenAIProvider,
     PerplexityProvider,
@@ -45,6 +46,7 @@ PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
     "deepseek":   (DeepSeekProvider,   "deepseek-chat"),
     "perplexity": (PerplexityProvider, "sonar-pro"),
     "gemini":     (GeminiProvider,     "gemini-2.5-flash"),
+    "grok":       (GrokProvider,       "grok-3"),
     "ollama":     (OllamaProvider,     "llama3.2"),
     "stub":       (StubProvider,       "stub-model"),
 }
