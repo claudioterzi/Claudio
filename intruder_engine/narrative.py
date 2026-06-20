@@ -6,9 +6,12 @@ LLM principale: Claude (claude-sonnet-4-6). Fallback: template locale.
 
 from __future__ import annotations
 
+import logging
 import os
 from typing import Any
 
+
+logger = logging.getLogger(__name__)
 
 _SYSTEM_PROMPT = """\
 Sei The Intruder Engine. Il tuo ruolo è osservare, non interpretare.
@@ -56,4 +59,5 @@ def generate_narrative(
         )
         return response.content[0].text
     except Exception:
+        logger.debug("LLM narrative fallback attivato", exc_info=True)
         return _template_fallback(traces, absences)

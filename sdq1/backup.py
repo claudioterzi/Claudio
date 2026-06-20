@@ -11,11 +11,13 @@ Salva in output/backups/backup_YYYY-MM-DD_HH-MM-SS.json:
 from __future__ import annotations
 
 import json
+import logging
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+logger = logging.getLogger(__name__)
 
 _BACKUP_DIR = Path("output/backups")
 _SAR_DIR = Path.home() / ".sdq1" / "sar"
@@ -29,14 +31,14 @@ def _leggi_sar() -> dict[str, Any]:
             try:
                 sar_data[f.name] = json.loads(f.read_text(encoding="utf-8"))
             except Exception:
-                pass
+                logger.debug("Lettura SAR fallita: %s", f.name, exc_info=True)
         for f in _SAR_DIR.glob("*.jsonl"):
             try:
                 sar_data[f.name] = [
                     json.loads(riga) for riga in f.read_text(encoding="utf-8").splitlines() if riga
                 ]
             except Exception:
-                pass
+                logger.debug("Lettura SAR jsonl fallita: %s", f.name, exc_info=True)
     return sar_data
 
 
@@ -74,20 +76,20 @@ def crea_backup(
                 for e in memoria.esporta()
             ]
         except Exception:
-            pass
+            logger.debug("Esportazione memoria fallita", exc_info=True)
 
     if vss is not None:
         try:
             snapshot["vss"] = vss.esporta()
         except Exception:
-            pass
+            logger.debug("Esportazione VSS fallita", exc_info=True)
 
     if router is not None:
         try:
             snapshot["provider_attivi"] = router.provider_attivi()
             snapshot["circuit_breaker"] = router.stato_circuit_breaker()
         except Exception:
-            pass
+            logger.debug("Stato router non disponibile per backup", exc_info=True)
 
     if config is not None:
         try:
@@ -97,7 +99,7 @@ def crea_backup(
                 "router_profili": [r["profilo"] for r in config.router.get("regole", [])],
             }
         except Exception:
-            pass
+            logger.debug("Serializzazione config fallita", exc_info=True)
 
     dest.write_text(json.dumps(snapshot, indent=2, ensure_ascii=False, default=str),
                     encoding="utf-8")
@@ -120,7 +122,7 @@ def lista_backup() -> list[dict[str, Any]]:
                 "dimensione_kb": round(f.stat().st_size / 1024, 1),
             })
         except Exception:
-            pass
+            logger.debug("Lettura metadati backup fallita: %s", f.name, exc_info=True)
     return result
 
 

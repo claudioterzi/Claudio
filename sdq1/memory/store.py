@@ -7,12 +7,16 @@ la ricerca usa batch matrix multiply JIT-compilato (più veloce su store grandi)
 
 from __future__ import annotations
 
+import logging
 import math
+import threading
 import time
 import uuid
 from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 try:
     from sdq1.core.jax_engine import (
@@ -74,6 +78,7 @@ class MemoriaVettoriale:
         self._jax_matrix = None
         self._jax_ids: list[str] = []      # ordine righe della matrice
         self._jax_dirty: bool = True
+        self._lock = threading.Lock()
 
     def aggiungi(self, testo: str, metadata: dict[str, Any] | None = None) -> str:
         rid = uuid.uuid4().hex[:12]
@@ -105,8 +110,9 @@ class MemoriaVettoriale:
 
         # Backend JAX: attivo sopra soglia se disponibile
         if JAX_AVAILABLE and len(self._ricordi) >= JAX_THRESHOLD:
-            if self._jax_dirty:
-                self._rebuild_jax()
+            with self._lock:
+                if self._jax_dirty:
+                    self._rebuild_jax()
             qv = counter_to_vec(dict(_vettore(query)), self._jax_vocab)
             scores = _cosine_batch(qv, self._jax_matrix)
             scores_list = scores.tolist()
