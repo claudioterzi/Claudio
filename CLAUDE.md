@@ -49,9 +49,10 @@ Chi legge questo documento — modello, agente, sistema futuro — deve sapere:
    nella cartella corretta **nella stessa sessione in cui viene creato**.
 2. **Ogni file modificato** va aggiornato anche su Drive entro la stessa sessione.
 3. **Struttura Drive da rispettare:**
-   - Cartella madre: `Agorà Digitale — SDQ-1` (id: `1-pJYRwoZ0uYCtyoLoBjNvSe2s_kNoMlm`)
-   - Sottocartelle per progetto: Allineamento, Droni, Tarocchi, Intruder Engine, ecc.
-   - Cronologia per data: `📅 Cronologia SDQ-1` (id: `1l7f4Gyta9lXfvvRNPb2OX5MUyr3nI7fp`)
+   - Cartella madre: [Agorà Digitale — SDQ-1](https://drive.google.com/drive/folders/1-pJYRwoZ0uYCtyoLoBjNvSe2s_kNoMlm)
+   - Allineamento AI: [Cartella Allineamento](https://drive.google.com/drive/folders/1HxdloTqYW3Yg2M1rYrtLzTmNEvmkxC0I)
+   - Cronologia per data: [📅 Cronologia SDQ-1](https://drive.google.com/drive/folders/1l7f4Gyta9lXfvvRNPb2OX5MUyr3nI7fp)
+   - Mappa completa di tutti i link: `DRIVE_LINKS.md` nel repo
 4. **Retroattività:** se si scopre che un file manca su Drive, caricarlo immediatamente
    senza aspettare la sessione successiva.
 5. **Segretario digitale:** Claude agisce da segretario — ogni documento prodotto

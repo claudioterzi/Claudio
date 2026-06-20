@@ -39,19 +39,21 @@ Leggere solo questi tre paragrafi da `CLAUDE.md`:
 | `MEMORIA_PROGETTO.md` | Stato attuale, decisioni recenti, prossimi passi |
 | `PROGETTI.md` | Lista di tutti i progetti con stato e priorità |
 | `TASK_AUTONOMI.md` | Task che il sistema esegue da solo ogni ora |
+| `DRIVE_LINKS.md` | Tutti i link Google Drive cliccabili |
 
 ### Livello 2 — I singoli progetti (30-60 minuti, leggi solo quelli che ti servono)
 
-| Progetto | File | In una riga |
+| Progetto | File repo | Drive |
 |---|---|---|
-| Sistema SDQ-1 (core) | `AVVIO.md` | Gli agenti, il router, la pipeline |
-| Raffaello | `PROGETTO_RAFFAELLO.md` | L'agente companion |
-| Tarocchi | `PROGETTO_TAROCCHI.md` | Due sistemi simbolici (A=online, B=completo) |
-| SkyID | `PROGETTO_SKYID.md` | Identità digitale per chi non ha documenti |
-| R3∞ | `PROGETTO_R3.md` | Rete distribuita peer-to-peer |
-| The Intruder Engine | `PROGETTO_INTRUDER_ENGINE.md` | Pattern detector della vita digitale *(nuovo)* |
-| Benchmark | `PROGETTO_BENCHMARK.md` | Wayback Machine dell'AI |
-| Droni | `droni/README.md` | Drone hardware + normativa EASA per Sistema Minerva |
+| Sistema SDQ-1 (core) | `AVVIO.md` | [Sistema Autonomo 24/7](https://docs.google.com/document/d/1aISHRYAJIp7qEgFbw2jpv9mQlw_g6MHpoUbgSoJ_-e0/edit) |
+| Raffaello | `PROGETTO_RAFFAELLO.md` | — |
+| Tarocchi | `PROGETTO_TAROCCHI.md` | — |
+| SkyID | `PROGETTO_SKYID.md` | — |
+| R3∞ | `PROGETTO_R3.md` | — |
+| The Intruder Engine | `PROGETTO_INTRUDER_ENGINE.md` | — |
+| Benchmark | `PROGETTO_BENCHMARK.md` | — |
+| Droni | `droni/README.md` | [Indice](https://docs.google.com/document/d/1y0h-pcflbvfExB8YeS8xu7VK2SeDMB6SYW1FlUeJRdE/edit) · [Catalogo](https://docs.google.com/document/d/1VQzaF-eXxZ54ZiwpTvCW8uTzYHzekJOZ3drAXa3Fc9o/edit) · [EASA](https://docs.google.com/document/d/1LMFcKcG3_o4XQQlu610fMw9Y3CNSn8rAjFURkG3nIoU/edit) |
+| Allineamento AI | `allineamento/` | [Cartella Drive](https://drive.google.com/drive/folders/1HxdloTqYW3Yg2M1rYrtLzTmNEvmkxC0I) · [ORCHESTRA](https://docs.google.com/document/d/1ADzRT0gLAStC5Mj8XenERFBdKCFT02QujZruqeZlmHM/edit) |
 
 ### Livello 3 — Il codice (per chi vuole capire la tecnica)
 
@@ -68,7 +70,18 @@ droni/             ← catalogo hardware + normativa
 r3/                ← nodo rete distribuita
 lgai_core/         ← core identitario (LGAI)
 tarocchi/          ← sistemi simbolici A e B
+allineamento/      ← file di allineamento per ogni AI provider
 ```
+
+### Drive — Link rapidi
+
+| Risorsa | Link |
+|---|---|
+| 📁 Agorà Digitale (radice) | [Apri](https://drive.google.com/drive/folders/1-pJYRwoZ0uYCtyoLoBjNvSe2s_kNoMlm) |
+| 📄 Questo file su Drive | [Apri](https://docs.google.com/document/d/1-FLujjrNqE7mvi4LK1KPl7XBt94YOQRu_1mD-r-7mns/edit) |
+| 📁 Allineamento AI | [Apri](https://drive.google.com/drive/folders/1HxdloTqYW3Yg2M1rYrtLzTmNEvmkxC0I) |
+| 📁 Cronologia per data | [Apri](https://drive.google.com/drive/folders/1l7f4Gyta9lXfvvRNPb2OX5MUyr3nI7fp) |
+| 📄 Tutti i link Drive | `DRIVE_LINKS.md` nel repo |
 
 ---
 
