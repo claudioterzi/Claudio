@@ -10,7 +10,7 @@
  *
  * Setup (una volta sola):
  *   1. script.google.com → Nuovo progetto → incolla questo file
- *   2. Compila GEMINI_API_KEY
+ *   2. Vai in Impostazioni progetto → Proprietà script → aggiungi GEMINI_API_KEY
  *   3. Compila NODE_A_URL, NODE_B_URL, ARCHIVE_URL con gli URL reali dei tuoi nodi
  *   4. Esegui installaTrigger() → poi gira ogni ora automaticamente
  *   5. Per test manuale: esegui testHeartbeat()
@@ -20,8 +20,9 @@
 // CONFIGURAZIONE
 // ─────────────────────────────────────────────
 
-// Chiave Gemini → https://aistudio.google.com/app/apikey
-const GEMINI_API_KEY = "INSERISCI_API_KEY_QUI";
+// Chiave Gemini — NON scrivere qui. Usa Script Properties:
+// Apps Script → Impostazioni progetto → Proprietà script → Aggiungi: GEMINI_API_KEY = <chiave>
+const GEMINI_API_KEY = PropertiesService.getScriptProperties().getProperty("GEMINI_API_KEY") || "";
 
 // Manifesto sorgente (ORCHESTRA_SDQ1.md su Drive)
 const MANIFESTO_FILE_ID = "1ADzRT0gLAStC5Mj8XenERFBdKCFT02QujZruqeZlmHM";
@@ -30,14 +31,12 @@ const MANIFESTO_FILE_ID = "1ADzRT0gLAStC5Mj8XenERFBdKCFT02QujZruqeZlmHM";
 const CARTELLA_OUTPUT_ID = "1-pJYRwoZ0uYCtyoLoBjNvSe2s_kNoMlm";
 
 // Nodi R3∞ — inserisci gli URL dove girano i container
-// Esempio locale: "http://localhost:8001"
-// Esempio remoto: "https://node-a.tuodominio.com"
 const NODE_A_URL   = "http://localhost:8001";  // node-a (porta 8001)
 const NODE_B_URL   = "http://localhost:8002";  // node-b (porta 8002)
 const ARCHIVE_URL  = "http://localhost:8003";  // archive (porta 8003)
 
 // Email Claudio
-const INVIA_EMAIL       = true;
+const INVIA_EMAIL        = true;
 const EMAIL_DESTINATARIO = "terziclaudio@gmail.com";
 
 // ─────────────────────────────────────────────
@@ -50,17 +49,11 @@ function heartbeat() {
   const dataLeggibile = Utilities.formatDate(ora, "Europe/Brussels", "yyyy-MM-dd HH:mm");
 
   try {
-    // 1. Ping nodi R3∞
-    const nodi = pingNodiR3();
-
-    // 2. Legge manifesto
+    const nodi     = pingNodiR3();
     const manifesto = leggiDocumentoDrive(MANIFESTO_FILE_ID);
+    const prompt    = costruisciPrompt(manifesto, dataLeggibile, nodi);
+    const risposta  = chiamaGemini(prompt);
 
-    // 3. Chiama Gemini
-    const prompt   = costruisciPrompt(manifesto, dataLeggibile, nodi);
-    const risposta = chiamaGemini(prompt);
-
-    // 4. Costruisce il file heartbeat
     const statoNodi = formattaStatoNodi(nodi);
     const contenuto = [
       `# ARGO HEARTBEAT — ${dataLeggibile}`,
@@ -83,16 +76,14 @@ function heartbeat() {
       `*Generato automaticamente — ${dataLeggibile} (Europe/Brussels)*`,
     ].join("\n");
 
-    // 5. Scrive su Drive
     const nomeFile = `ARGO_HEARTBEAT_${timestamp}.md`;
     scriviFileDrive(CARTELLA_OUTPUT_ID, nomeFile, contenuto);
 
-    // 6. Email solo se un nodo è rosso o su richiesta
     const nodiRossi = nodi.filter(n => n.stato === "ROSSO");
     if (INVIA_EMAIL && nodiRossi.length > 0) {
       MailApp.sendEmail({
         to: EMAIL_DESTINATARIO,
-        subject: `🔴 SDQ-1 Heartbeat — ${nodiRossi.length} nodo/i OFFLINE — ${dataLeggibile}`,
+        subject: `SDQ-1 Heartbeat — ${nodiRossi.length} nodo/i OFFLINE — ${dataLeggibile}`,
         body: `Nodi offline:\n${nodiRossi.map(n => `• ${n.nome}: ${n.errore}`).join("\n")}\n\n${risposta}`,
       });
     }
@@ -124,11 +115,7 @@ function pingNodiR3() {
 
   return nodi.map(function(nodo) {
     try {
-      const r = UrlFetchApp.fetch(nodo.url, {
-        method: "get",
-        muteHttpExceptions: true,
-        followRedirects: true,
-      });
+      const r = UrlFetchApp.fetch(nodo.url, { method: "get", muteHttpExceptions: true });
       const ok = r.getResponseCode() >= 200 && r.getResponseCode() < 300;
       return { nome: nodo.nome, stato: ok ? "VERDE" : "ROSSO", codice: r.getResponseCode(), errore: null };
     } catch (e) {
@@ -139,9 +126,9 @@ function pingNodiR3() {
 
 function formattaStatoNodi(nodi) {
   return nodi.map(function(n) {
-    const emoji = n.stato === "VERDE" ? "🟢" : "🔴";
+    const emoji    = n.stato === "VERDE" ? "VERDE" : "ROSSO";
     const dettaglio = n.errore ? ` — ${n.errore}` : ` (HTTP ${n.codice})`;
-    return `${emoji} **${n.nome}** — ${n.stato}${dettaglio}`;
+    return `[${emoji}] ${n.nome}${dettaglio}`;
   }).join("\n");
 }
 
@@ -153,21 +140,7 @@ function costruisciPrompt(manifesto, dataOra, nodi) {
   const nodiRossi = nodi.filter(n => n.stato === "ROSSO").map(n => n.nome).join(", ") || "nessuno";
   const nodiVerdi = nodi.filter(n => n.stato === "VERDE").map(n => n.nome).join(", ") || "nessuno";
 
-  return `Sei SDQ-1, il sistema di Claudio Terzi, Bruxelles. Oggi: ${dataOra}.
-
-Stato nodi R3∞: ONLINE=${nodiVerdi} | OFFLINE=${nodiRossi}
-
-Dal manifesto del sistema:
----
-${manifesto.substring(0, 4000)}
----
-
-Scrivi una riflessione breve (150-200 parole) in italiano:
-- Stato del sistema oggi
-- Se ci sono nodi offline, cosa significa e cosa fare
-- Una cosa concreta per Claudio
-
-Tono diretto, niente retorica.`;
+  return `Sei SDQ-1, il sistema di Claudio Terzi, Bruxelles. Oggi: ${dataOra}.\n\nStato nodi R3: ONLINE=${nodiVerdi} | OFFLINE=${nodiRossi}\n\nDal manifesto:\n---\n${manifesto.substring(0, 4000)}\n---\n\nScrivi una riflessione breve (150-200 parole) in italiano su: stato del sistema, nodi offline se presenti, una cosa concreta per Claudio. Tono diretto.`;
 }
 
 function chiamaGemini(prompt) {
@@ -208,7 +181,7 @@ function installaTrigger() {
     if (t.getHandlerFunction() === "heartbeat") ScriptApp.deleteTrigger(t);
   });
   ScriptApp.newTrigger("heartbeat").timeBased().everyHours(1).create();
-  Logger.log("✓ Trigger installato: heartbeat ogni ora");
+  Logger.log("Trigger installato: heartbeat ogni ora");
 }
 
 function testHeartbeat() { heartbeat(); }
