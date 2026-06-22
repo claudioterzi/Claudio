@@ -193,6 +193,8 @@ def main(argv: list[str]) -> int:
                         help="Livello autonomia agente: supervisionato | semi-autonomo | completamente_autonomo")
     parser.add_argument("--autoevoluzione", action="store_true",
                         help="Analisi interna: il sistema si valuta e propone evoluzioni concrete")
+    parser.add_argument("--diagnostica", action="store_true",
+                        help="Diagnostica tecnica: metriche reali, problemi, raccomandazioni (no LLM)")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -330,6 +332,21 @@ def main(argv: list[str]) -> int:
         out_file.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         print(json.dumps(report, indent=2, ensure_ascii=False))
         print(f"\n[AUTOEVOLUZIONE] Report salvato: {out_file}")
+        return 0
+
+    if args.diagnostica:
+        from .diagnostica import esegui_diagnostica, salva_report
+        _data, _ora = _ora_brussels()
+        diag = esegui_diagnostica(
+            health_riepilogo=health.riepilogo(),
+            metrics_aggregati=metrics.aggregati(),
+            vss_size=vss.dimensione(),
+            tipo_persistenza=type(stato).__name__,
+            provider_attivi=router.provider_attivi(),
+        )
+        out = salva_report(diag)
+        print(diag.stampa())
+        print(f"\n[DIAGNOSTICA] Report salvato: {out}")
         return 0
 
     if args.sar_stato:
