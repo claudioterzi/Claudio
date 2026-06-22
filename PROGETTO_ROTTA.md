@@ -43,6 +43,44 @@ Bergamo Orio al Serio → Bruxelles South Charleroi
 
 ---
 
+## Airbnb — Gestione ospiti al rientro
+
+> Il rientro del 23 giugno non è libero: c'è l'appartamento da gestire come host.
+> Prima di attaccare qualsiasi dossier operativo, queste sono le priorità fisiche.
+
+### Checklist host al rientro
+
+- [ ] Pulizie appartamento
+- [ ] Consegna chiave agli ospiti (o coordinate di accesso)
+- [ ] Messaggi di benvenuto / coordinamento ai clienti
+- [ ] Verificare stato appartamento
+
+### Dove dormi
+
+Mentre gli ospiti occupano l'appartamento principale:
+- **Stanzetta di servizio** — lavatrice disponibile, no bagno privato
+- **Durata stimata:** max 2–3 giorni
+- Appena gli ospiti fanno checkout → rientro nel tuo spazio normale
+
+### Date critiche — calendario Airbnb
+
+| Evento | Data | Ora | Note |
+|---|---|---|---|
+| Check-in ospiti attuali | *(da calendario)* | | |
+| Check-out ospiti attuali | *(da calendario)* | | → da qui sei libero |
+| Prossimo check-in | *(da calendario)* | | |
+
+**Per collegare il calendario Airbnb:**
+1. Vai su Airbnb → Annunci → il tuo annuncio → Disponibilità → Collegamento calendario
+2. Copia il link iCal (formato `.ics`)
+3. Su Google Calendar → Aggiungi calendario → Da URL → incolla il link
+4. Il feed si aggiorna automaticamente e appare qui nel calendario
+
+> Una volta collegato: tutte le date check-in/check-out sono visibili in Google Calendar
+> e possiamo costruire la timeline operativa precisa attorno ad esse.
+
+---
+
 ## All'arrivo a Bruxelles — la rotta operativa
 
 Tornato a casa, questi sono i dossier pronti da attaccare. Tutta la
@@ -80,9 +118,13 @@ documentazione di supporto è già su Drive (vedi `DRIVE_LINKS.md`).
 | Boarding pass | ✅ fatto |
 | Viaggio | ⏳ 23 giugno |
 | Transfer CRL→Bruxelles | ⬜ da prenotare |
-| Dossier operativi | 📋 pronti, documentati su Drive |
+| **Airbnb calendario collegato** | ⬜ iCal URL da aggiungere a Google Calendar |
+| Pulizie + chiave + messaggi clienti | ⬜ al rientro (priorità 0) |
+| Stanzetta: max 2-3 giorni | ⏳ finché ospiti non fanno checkout |
+| Dossier operativi (ASBL, ARGO, ecc.) | 📋 pronti — partono dopo il checkout |
 
 **Prossimo passo immediato:** prenotare il transfer Charleroi→Bruxelles.
+**Prossimo passo sistema:** aggiungere il link iCal Airbnb a Google Calendar per sbloccare le date esatte.
 
 ---
 
