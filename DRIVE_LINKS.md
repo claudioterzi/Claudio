@@ -62,7 +62,7 @@ Tutti nella cartella [2026-06-20](https://drive.google.com/drive/folders/1GoGTTa
 |---|---|
 | 📄 **ARGO HEARTBEAT — argo_heartbeat.gs** | [Apri](https://drive.google.com/file/d/19EjNB9ykLSCoalTu_S3uOyLfrl8TrWJY/view) |
 | 📄 **MEMORIA_PROGETTO — SDQ-1** *(aggiornato 2026-06-21)* | [Apri](https://docs.google.com/document/d/1NXpzoZ7HlL1R-N157m9PBzUn8fVB6LFz8T37i2yJuww/edit) |
-| 📄 **PROGETTO ROTTA** *(viaggio 23/06 + operatività rientro)* | [Apri](https://docs.google.com/document/d/1cGzHJvbhaQOMWzBQuaoj9rHbSBh3zguj_J_pspLMBGM/edit) |
+| 📄 **PROGETTO ROTTA** *(viaggio 23/06 + operatività rientro + Airbnb)* | [Apri](https://docs.google.com/document/d/1IjtHxv7nHoXREAeJsRmTX0uUMrPDwq4LpJFzfbCDg1U/edit) |
 
 ---
 
