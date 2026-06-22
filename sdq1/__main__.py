@@ -197,6 +197,8 @@ def main(argv: list[str]) -> int:
                         help="Diagnostica tecnica: metriche reali, problemi, raccomandazioni (no LLM)")
     parser.add_argument("--argo", action="store_true",
                         help="ARGO Heartbeat: ping nodi R3, riflessione Gemini, salva in output/argo_heartbeats/")
+    parser.add_argument("--argo-multi", action="store_true",
+                        help="ARGO Multi: chiama in parallelo tutti i provider attivi, coro di voci AI")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -336,12 +338,22 @@ def main(argv: list[str]) -> int:
         print(f"\n[AUTOEVOLUZIONE] Report salvato: {out_file}")
         return 0
 
+    if args.argo_multi:
+        from .argo import esegui_multi as argo_multi
+        esito = argo_multi(router)
+        print(f"[ARGO MULTI] {esito['timestamp']}")
+        print(f"[ARGO MULTI] Provider: {esito['provider_ok']}/{esito['provider_chiamati']} risposto")
+        print(f"[ARGO MULTI] File: {esito['file']}")
+        print()
+        for r in esito["risposte"]:
+            icona = "✅" if r["ok"] else "❌"
+            print(f"  {icona} {r['provider']:<12} {r['latenza_ms']:.0f}ms  {r['preview'] or r.get('errore','')[:60]}")
+        return 0
+
     if args.argo:
         from .argo import esegui as argo_esegui
-        _argo_router = router
         def _argo_llm(sistema: str, utente: str) -> str:
-            from .llm.router import LLMRouter
-            esito = _argo_router.chiama(sistema, utente, profilo="default")
+            esito = router.chiama(sistema, utente, profilo="default")
             return esito.risposta.testo
         esito_argo = argo_esegui(_argo_llm)
         print(f"[ARGO] {esito_argo['timestamp']}")
