@@ -4,7 +4,37 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-06-20
+> Ultimo aggiornamento: 2026-06-21
+
+---
+
+## Sessione 2026-06-21 — branch `claude/suspicious-prompt-injection-22whsc`
+
+### Cosa è successo
+
+- **Drive sincronizzato retroattivamente**: 11 task output della sessione 2026-06-20 erano mancanti su Drive. Caricati tutti nella cartella [2026-06-20](https://drive.google.com/drive/folders/1GoGTTaohyXMU5PbjwzG9vWYuU2Xz0gJd).
+- **ARGO Heartbeat su Drive**: script `argo_heartbeat.gs` caricato nella cartella principale Agorà Digitale. [Link diretto](https://drive.google.com/file/d/19EjNB9ykLSCoalTu_S3uOyLfrl8TrWJY/view)
+- **Cartella 2026-06-21 creata** in Cronologia con "Cosa Leggere" della giornata. [Link](https://drive.google.com/drive/folders/1-eqD8KYGEcVQCKtusdanYlK1ox3PAYLp)
+- **DRIVE_LINKS.md aggiornato**: tutti i 13 nuovi link aggiunti. Pushato.
+- **Verifica sistema 13/13 operativi** (eseguita nella sessione precedente, risultato confermato):
+  SDQ-1 Pipeline · Gemini REST · Memoria Vettoriale · EternalBackupAgent · Rilevatore Intruso · Intruder Engine · Tarocchi A · Tarocchi B · R3 config · Task output 11/11 · Allineamento AI · ARGO Heartbeat · .env configurato
+
+### Stato Drive (aggiornato 2026-06-21)
+
+Task output su Drive — tutti presenti:
+- DOSSIER-011, ASBL-001, EU-FUNDING-004, MAXAR-002, PLANET-003
+- SKYID-005, GENESI-006, MINERVA-007, SKYID-008, AVATAR-009, NAS-010
+
+### Prossimi passi immediati
+
+1. **Volo 23 giugno** — scaricare boarding pass Ryanair H549QQ (BGY→CRL 14:00). URGENTE.
+2. **ARGO Heartbeat** — attivare manualmente in Google Apps Script:
+   - script.google.com → Nuovo progetto → incolla `argo_heartbeat.gs`
+   - Script Properties → `GEMINI_API_KEY = [chiave da .env]`
+   - Esegui `installaTrigger()` → esegui `testHeartbeat()` per verificare
+3. **ASBL SkyRights Foundation** — procedura in ASBL-001 su Drive, ~200€, 3-5 settimane
+4. **Planet Labs E&R** — fare domanda di accesso (guida in PLANET-003)
+5. **Tarocchi** — decisione pendente: Opzione 1 (web collasso) o Opzione 2 (SVG 74 carte)
 
 ---
 
