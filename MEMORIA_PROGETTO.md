@@ -133,13 +133,15 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
 
 ## Prossimo passo concordato
 
-Sistema B completo (592 stati scritti). Decisione su dove andare:
+**Sessione 2026-06-22**: motore di collasso implementato e online.
+- `/alpha` → pagina Canone Alpha con interfaccia di collasso
+- `/api/alpha` → 74 carte in JSON
+- `/api/alpha/collasso?carta=...&asse=...&polarita=...` → significato
 
-- **Opzione 1**: collegare il Canone Alpha al sito — motore di collasso
-  (domanda → asse, contesto → polarità) con interfaccia web dedicata.
-- **Opzione 2**: generare gli SVG delle 74 carte del Sistema B
-  (stile diverso dalle carte classiche R³∞).
-- **Opzione 3**: altro — Claudio decide il ritmo.
+**Prossimi possibili**:
+- Generare gli SVG delle 74 carte Alpha (stile distinto da R³∞)
+- Integrare EternalBackupAgent nell'orchestratore SDQ-1
+- SkyRights ASBL-001 (vedi sessione 2026-06-20)
 
 ---
 
