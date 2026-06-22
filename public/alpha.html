@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarocchi Quantici — Canone Alpha</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0c0c0e;
+      --surface:  #141418;
+      --border:   #2a2a32;
+      --gold:     #c9a84c;
+      --gold-dim: #8a6f2e;
+      --text:     #e8e4d8;
+      --text-dim: #7a7468;
+      --radius:   8px;
+      --font:     'Georgia', 'Times New Roman', serif;
+      --mono:     'Courier New', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .container { max-width: 680px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 3rem; }
+    header h1 {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: normal;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+    }
+    header p {
+      margin-top: 0.5rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+    }
+    header .formula {
+      display: inline-block;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      color: var(--gold-dim);
+      font-family: var(--mono);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.9rem;
+      border-radius: 3px;
+    }
+
+    .nav-link {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .nav-link:hover { color: var(--gold-dim); }
+
+    .section-title {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 1rem;
+    }
+
+    /* Selettore principale */
+    .selettore {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .griglia {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.35rem;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.9rem;
+      padding: 0.45rem 0.6rem;
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%237a7468' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.7rem center;
+      padding-right: 2rem;
+    }
+    select:focus, input:focus { border-color: var(--gold-dim); }
+
+    .simbolo-preview {
+      font-size: 1.8rem;
+      text-align: center;
+      color: var(--gold);
+      min-height: 2.4rem;
+      line-height: 1;
+      margin-top: 0.2rem;
+    }
+    .ciclo-preview {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-align: center;
+      letter-spacing: 0.1em;
+      margin-top: 0.2rem;
+    }
+
+    .btn-collassa {
+      width: 100%;
+      background: var(--gold-dim);
+      border: none;
+      border-radius: var(--radius);
+      color: var(--bg);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      padding: 0.85rem;
+      transition: background 0.15s;
+    }
+    .btn-collassa:hover:not(:disabled) { background: var(--gold); }
+    .btn-collassa:disabled { opacity: 0.4; cursor: default; }
+
+    /* Risultato */
+    #risultato { display: none; }
+    #risultato.visible { display: block; }
+
+    .collasso-box {
+      background: var(--surface);
+      border: 1px solid var(--gold-dim);
+      border-radius: var(--radius);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .collasso-carta {
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+    .collasso-simbolo {
+      font-size: 3rem;
+      color: var(--gold);
+      margin: 0.75rem 0;
+      line-height: 1;
+    }
+    .collasso-formula {
+      font-size: 0.72rem;
+      font-family: var(--mono);
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+    }
+    .collasso-significato {
+      font-size: 1.5rem;
+      line-height: 1.5;
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    /* Assi della carta */
+    .assi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+    .asse-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.8rem 1rem;
+    }
+    .asse-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 0.3rem;
+      font-family: var(--mono);
+    }
+    .asse-testo {
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .asse-item.active {
+      border-color: var(--gold-dim);
+      background: var(--surface);
+    }
+    .asse-item.active .asse-label { color: var(--gold); }
+    .asse-item.active .asse-testo { color: var(--gold); }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    /* Cicli navigazione */
+    #cicli { margin-top: 0.5rem; }
+    .ciclo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .ciclo-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .ciclo-tag:hover, .ciclo-tag.active {
+      border-color: var(--gold-dim);
+      color: var(--gold-dim);
+    }
+    .cicli-lista {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .carte-lista {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.5rem;
+    }
+    .carta-mini {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.6rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .carta-mini:hover {
+      border-color: var(--gold-dim);
+    }
+    .carta-mini .simbolo { font-size: 1.1rem; color: var(--gold-dim); flex-shrink: 0; }
+    .carta-mini .nome { font-size: 0.85rem; color: var(--text); line-height: 1.2; }
+
+    @media (max-width: 540px) {
+      .griglia { grid-template-columns: 1fr; }
+      .assi-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Canone Alpha</h1>
+    <p>74 carte · 8 cicli · linguaggio simbolico originale</p>
+    <div class="formula">CARTA + ASSE + POLARITÀ = SIGNIFICATO</div>
+    <br>
+    <a href="/" class="nav-link">← Tarocchi Quantici R³∞</a>
+  </header>
+
+  <!-- Selettore collasso -->
+  <p class="section-title">Motore di collasso</p>
+  <div class="selettore">
+    <div class="griglia">
+      <div>
+        <label>Carta</label>
+        <select id="sel-carta" onchange="aggiornaPrev()">
+          <option value="">— scegli —</option>
+        </select>
+        <div class="simbolo-preview" id="prev-simbolo"></div>
+        <div class="ciclo-preview" id="prev-ciclo"></div>
+      </div>
+      <div>
+        <label>Asse</label>
+        <select id="sel-asse">
+          <option value="nord">Nord — radice · inconscio</option>
+          <option value="est">Est — azione · futuro</option>
+          <option value="sud" selected>Sud — emozione · presente</option>
+          <option value="ovest">Ovest — riflessione · passato</option>
+        </select>
+      </div>
+      <div>
+        <label>Polarità</label>
+        <select id="sel-polarita">
+          <option value="luce">Luce — manifestazione costruttiva</option>
+          <option value="ombra">Ombra — manifestazione d'ombra</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-collassa" onclick="collassa()">Collassa il significato</button>
+  </div>
+
+  <!-- Risultato collasso -->
+  <div id="risultato">
+    <div class="collasso-box">
+      <div class="collasso-carta" id="r-carta"></div>
+      <div class="collasso-simbolo" id="r-simbolo"></div>
+      <div class="collasso-formula" id="r-formula"></div>
+      <div class="collasso-significato" id="r-significato"></div>
+    </div>
+
+    <p class="section-title">Tutti gli 8 stati di questa carta</p>
+    <div style="margin-bottom: 0.75rem;">
+      <button class="ciclo-tag active" id="tab-luce" onclick="mostraFaccia('luce')">Luce</button>
+      <button class="ciclo-tag" id="tab-ombra" onclick="mostraFaccia('ombra')">Ombra</button>
+    </div>
+    <div class="assi-grid" id="r-assi"></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Naviga per cicli -->
+  <p class="section-title">Sfoglia per ciclo</p>
+  <div id="cicli">
+    <div class="cicli-lista" id="cicli-lista"></div>
+    <div class="carte-lista" id="carte-lista"></div>
+  </div>
+
+</div>
+
+<script>
+let CARTE = [];
+let cartaAttiva = null;
+let facciaAttiva = 'luce';
+
+async function init() {
+  const res = await fetch('/api/alpha');
+  CARTE = await res.json();
+
+  // Popola select carta
+  const sel = document.getElementById('sel-carta');
+  CARTE.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.nome;
+    opt.textContent = `${c.simbolo}  ${c.nome}`;
+    sel.appendChild(opt);
+  });
+
+  // Costruisci cicli
+  costruisciCicli();
+}
+
+function aggiornaPrev() {
+  const nome = document.getElementById('sel-carta').value;
+  const c = CARTE.find(x => x.nome === nome);
+  document.getElementById('prev-simbolo').textContent = c ? c.simbolo : '';
+  document.getElementById('prev-ciclo').textContent = c ? c.ciclo : '';
+}
+
+async function collassa() {
+  const nome     = document.getElementById('sel-carta').value;
+  const asse     = document.getElementById('sel-asse').value;
+  const polarita = document.getElementById('sel-polarita').value;
+
+  if (!nome) { alert('Scegli una carta.'); return; }
+
+  const url = `/api/alpha/collasso?carta=${encodeURIComponent(nome)}&asse=${asse}&polarita=${polarita}`;
+  const res = await fetch(url);
+  const data = await res.json();
+
+  if (data.errore) { alert(data.errore); return; }
+
+  cartaAttiva = CARTE.find(c => c.nome === data.carta);
+  facciaAttiva = polarita;
+
+  document.getElementById('r-carta').textContent = data.carta;
+  document.getElementById('r-simbolo').textContent = data.simbolo;
+  document.getElementById('r-formula').textContent = data.formula;
+  document.getElementById('r-significato').textContent = data.significato;
+
+  aggiornaAssi(asse, polarita);
+
+  const el = document.getElementById('risultato');
+  el.classList.add('visible');
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function aggiornaAssi(asseAttivo, polAttiva) {
+  if (!cartaAttiva) return;
+  const faccia = cartaAttiva[polAttiva];
+  const assi = ['nord', 'est', 'sud', 'ovest'];
+  const contenitore = document.getElementById('r-assi');
+  contenitore.innerHTML = assi.map(a => `
+    <div class="asse-item${a === asseAttivo ? ' active' : ''}">
+      <div class="asse-label">${a.charAt(0).toUpperCase() + a.slice(1)}</div>
+      <div class="asse-testo">${esc(faccia[a])}</div>
+    </div>
+  `).join('');
+
+  // Aggiorna tab
+  document.getElementById('tab-luce').className = 'ciclo-tag' + (polAttiva === 'luce' ? ' active' : '');
+  document.getElementById('tab-ombra').className = 'ciclo-tag' + (polAttiva === 'ombra' ? ' active' : '');
+  facciaAttiva = polAttiva;
+}
+
+function mostraFaccia(pol) {
+  if (!cartaAttiva) return;
+  const asseAttivo = document.getElementById('sel-asse').value;
+  aggiornaAssi(asseAttivo, pol);
+}
+
+// ── Navigazione cicli ───────────────────────────────────────────────────────
+
+const CICLI_ORDINE = ['Origine','Legame','Frattura','Trasformazione','Potere','Visione','Totalità','Trascendenti'];
+let cicloAttivo = 'Origine';
+
+function costruisciCicli() {
+  const lista = document.getElementById('cicli-lista');
+  CICLI_ORDINE.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'ciclo-tag' + (c === cicloAttivo ? ' active' : '');
+    btn.id = `ciclo-${c}`;
+    btn.textContent = c;
+    btn.onclick = () => selezionaCiclo(c);
+    lista.appendChild(btn);
+  });
+  aggiornaCarte();
+}
+
+function selezionaCiclo(ciclo) {
+  document.getElementById(`ciclo-${cicloAttivo}`).classList.remove('active');
+  cicloAttivo = ciclo;
+  document.getElementById(`ciclo-${cicloAttivo}`).classList.add('active');
+  aggiornaCarte();
+}
+
+function aggiornaCarte() {
+  const contenitore = document.getElementById('carte-lista');
+  const filtrate = CARTE.filter(c => c.ciclo === cicloAttivo);
+  contenitore.innerHTML = filtrate.map(c => `
+    <div class="carta-mini" onclick="selezionaCarta('${esc(c.nome)}')">
+      <span class="simbolo">${c.simbolo}</span>
+      <span class="nome">${esc(c.nome)}</span>
+    </div>
+  `).join('');
+}
+
+function selezionaCarta(nome) {
+  const sel = document.getElementById('sel-carta');
+  sel.value = nome;
+  aggiornaPrev();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+init();
+</script>
+</body>
+</html>
