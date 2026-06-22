@@ -191,6 +191,8 @@ def main(argv: list[str]) -> int:
                         help="Tool disponibili per l'agente (es. search_web send_email)")
     parser.add_argument("--autonomia", default="semi-autonomo",
                         help="Livello autonomia agente: supervisionato | semi-autonomo | completamente_autonomo")
+    parser.add_argument("--autoevoluzione", action="store_true",
+                        help="Analisi interna: il sistema si valuta e propone evoluzioni concrete")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -275,6 +277,60 @@ def main(argv: list[str]) -> int:
         for name in list(PROVIDER_REGISTRY):
             if name != "stub":
                 router._circuit[name] = time.time() + 86400  # aperto per 24h
+
+    if args.autoevoluzione:
+        _data, _ora = _ora_brussels()
+        health_raw = health.riepilogo()
+        metrics_raw = metrics.aggregati()
+        provider_up = [d["provider"] for d in health_raw.get("dettagli", []) if d.get("raggiungibile")]
+        provider_down = [d["provider"] for d in health_raw.get("dettagli", []) if not d.get("raggiungibile")]
+        prompt_autoeval = (
+            f"AUTOEVOLUZIONE SDQ-1 — {_data} {_ora} Brussels\n\n"
+            f"Sei il sistema SDQ-1. Analizza te stesso come ingegnere, non come poeta.\n\n"
+            f"STATO REALE:\n"
+            f"- Provider attivi: {provider_up}\n"
+            f"- Provider non configurati: {provider_down}\n"
+            f"- Latenza media pipeline: {metrics_raw.get('latenza_media_ms', 'N/A')} ms\n"
+            f"- Tasso successo: {metrics_raw.get('tasso_successo', 'N/A')}\n"
+            f"- Chiamate totali: {metrics_raw.get('chiamate_totali', 0)}\n"
+            f"- VSS size: {vss.dimensione()}\n"
+            f"- Persistenza: InMemory (Redis non installato — stato perso a ogni riavvio)\n\n"
+            f"ARCHITETTURA:\n"
+            f"- Pipeline 6 agenti: RAFFA-001 → DECOMP-005 → MEMO-002 → SENTIN-004 → GEN-006 → WAVE-003\n"
+            f"- RAFFA/GEN/SENTIN usano gemini-2.5-pro; DECOMP/MEMO usano gemini-2.5-flash\n"
+            f"- WAVE-003 raffina con flash ma i metadata non erano propagati (bug corretto oggi)\n"
+            f"- ARGO Heartbeat: non attivo (manca attivazione manuale su script.google.com)\n"
+            f"- SAR: funziona ma calibrato per riflessione umana, non analisi tecnica\n\n"
+            f"Rispondi con ESATTAMENTE questo formato JSON (nient'altro, solo JSON):\n"
+            f'{{"evoluzioni": [{{"id": "EVO-001", "titolo": "...", "problema": "...", "soluzione": "...", "impatto": "...", "effort": "alto|medio|basso"}}], "priorita": ["EVO-001"], "nota": "..."}}\n\n'
+            f"Proponi 3-5 evoluzioni concrete e implementabili. Nessuna filosofia, nessuna metafora."
+        )
+        import re as _re
+        esecuzione = orch.esegui_interno({"testo": prompt_autoeval})
+        risposta_raw = esecuzione.output_finale.get("risposta_finale", "")
+        output_dir = Path("output/autoevoluzione")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        ts = _data.replace("-", "") + "_" + _ora.replace(":", "")
+        out_file = output_dir / f"evo_{ts}.json"
+        report: dict = {
+            "timestamp": f"{_data}T{_ora}",
+            "durata_secondi": esecuzione.durata_secondi,
+            "provider_attivi": provider_up,
+            "metrics": {k: metrics_raw.get(k) for k in ("chiamate_totali", "tasso_successo", "latenza_media_ms")},
+            "analisi_raw": risposta_raw,
+        }
+        m = _re.search(r'\{[\s\S]*?"evoluzioni"[\s\S]*?\}(?=\s*$|\s*\n)', risposta_raw)
+        if not m:
+            m = _re.search(r'\{[\s\S]*?"evoluzioni"[\s\S]*\}', risposta_raw)
+        if m:
+            try:
+                report["evoluzioni"] = json.loads(m.group())
+            except json.JSONDecodeError:
+                pass
+        out_file.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(json.dumps(report, indent=2, ensure_ascii=False))
+        print(f"\n[AUTOEVOLUZIONE] Report salvato: {out_file}")
+        return 0
 
     if args.sar_stato:
         from .sar import PersistenzaSAR, report_stato
