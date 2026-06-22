@@ -195,6 +195,8 @@ def main(argv: list[str]) -> int:
                         help="Analisi interna: il sistema si valuta e propone evoluzioni concrete")
     parser.add_argument("--diagnostica", action="store_true",
                         help="Diagnostica tecnica: metriche reali, problemi, raccomandazioni (no LLM)")
+    parser.add_argument("--argo", action="store_true",
+                        help="ARGO Heartbeat: ping nodi R3, riflessione Gemini, salva in output/argo_heartbeats/")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -332,6 +334,21 @@ def main(argv: list[str]) -> int:
         out_file.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         print(json.dumps(report, indent=2, ensure_ascii=False))
         print(f"\n[AUTOEVOLUZIONE] Report salvato: {out_file}")
+        return 0
+
+    if args.argo:
+        from .argo import esegui as argo_esegui
+        _argo_router = router
+        def _argo_llm(sistema: str, utente: str) -> str:
+            from .llm.router import LLMRouter
+            esito = _argo_router.chiama(sistema, utente, profilo="default")
+            return esito.risposta.testo
+        esito_argo = argo_esegui(_argo_llm)
+        print(f"[ARGO] {esito_argo['timestamp']}")
+        print(f"[ARGO] Nodi: {esito_argo['nodi_online']} VERDE / {esito_argo['nodi_offline']} ROSSO")
+        print(f"[ARGO] File: {esito_argo['file']}")
+        print()
+        print(esito_argo["risposta"])
         return 0
 
     if args.diagnostica:
