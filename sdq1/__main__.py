@@ -199,6 +199,12 @@ def main(argv: list[str]) -> int:
                         help="ARGO Heartbeat: ping nodi R3, riflessione Gemini, salva in output/argo_heartbeats/")
     parser.add_argument("--argo-multi", action="store_true",
                         help="ARGO Multi: chiama in parallelo tutti i provider attivi, coro di voci AI")
+    parser.add_argument("--scacchiera", action="store_true",
+                        help="Scacchiera Quantica: autoriflessione algoritmica (no LLM), 3 cicli × 10 livelli")
+    parser.add_argument("--scacchiera-cicli", type=int, default=3, metavar="N",
+                        help="Numero cicli Scacchiera Quantica (default: 3)")
+    parser.add_argument("--scacchiera-livelli", type=int, default=10, metavar="N",
+                        help="Livelli per ciclo Scacchiera Quantica (default: 10)")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -361,6 +367,17 @@ def main(argv: list[str]) -> int:
         print(f"[ARGO] File: {esito_argo['file']}")
         print()
         print(esito_argo["risposta"])
+        return 0
+
+    if args.scacchiera:
+        from .sar.scacchiera_quantica import AutoriflessoreV3, stampa as sq_stampa
+        print(f"[SCACCHIERA] Avvio — {args.scacchiera_cicli} cicli × {args.scacchiera_livelli} livelli")
+        ar = AutoriflessoreV3()
+        risultati = ar.esegui(cicli=args.scacchiera_cicli, livelli=args.scacchiera_livelli)
+        sq_stampa(risultati)
+        m = risultati["meta"]
+        print(f"[SCACCHIERA] Nodi: {m['nodi_totali_esplorati']} | Score max: {m['score_globale_max']}"
+              f" | Salti: {m['salti_totali']} | Tempo: {risultati['tempo']}s")
         return 0
 
     if args.diagnostica:
