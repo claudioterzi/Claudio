@@ -3,7 +3,7 @@ name: SDQ-1 Studio Notturno
 on:
   schedule:
     - cron: '0 0 * * *'   # 00:00 UTC = 02:00 AM Brussels (UTC+2 estate)
-  workflow_dispatch:        # avviabile manualmente da GitHub anche da iPhone
+  workflow_dispatch:
 
 jobs:
   studia:
@@ -12,25 +12,23 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - name: Checkout
+        run: |
+          git clone --branch "${{ github.ref_name }}" \
+            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" .
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
 
       - name: Installa dipendenze
-        run: pip install --no-cache-dir anthropic
+        run: python3 -m pip install --no-cache-dir anthropic
 
       - name: Studio Notturno
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/studio_notturno.py
+        run: python3 scripts/studio_notturno.py
 
       - name: Salva Morning Brief nel repo
         run: |
-          git config user.name  "Claude"
-          git config user.email "noreply@anthropic.com"
-          git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
           git add output/morning_brief/
           git diff --staged --quiet || git commit -m "morning brief $(date +%Y-%m-%d)"
           git push || true
