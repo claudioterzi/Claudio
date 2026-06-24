@@ -70,7 +70,24 @@ def _emoji_livello(livello: str) -> str:
     return {"VERDE": "🟢", "GIALLO": "🟡", "ARANCIONE": "🟠", "ROSSO": "🔴"}.get(livello, "⚪")
 
 
-def briefing_mattutino() -> bool:
+def notifica_progresso(titolo: str, corpo: str = "", *, emoji: str = "🔧") -> bool:
+    """Aggiornamento live durante un task — titolo breve + dettaglio opzionale."""
+    ora = datetime.now(_TZ).strftime("%H:%M:%S")
+    testo = f"{emoji} <b>{titolo}</b>  <i>[{ora}]</i>"
+    if corpo:
+        testo += f"\n{corpo}"
+    return invia(testo)
+
+
+def notifica_completato(titolo: str, risultati: list[str]) -> bool:
+    """Notifica di completamento task con lista risultati."""
+    ora = datetime.now(_TZ).strftime("%H:%M:%S")
+    righe = [f"✅ <b>{titolo}</b>  <i>[{ora}]</i>"]
+    for r in risultati:
+        righe.append(f"  {r}")
+    return invia("\n".join(righe))
+
+
     """Costruisce e invia il briefing completo del mattino."""
     ora = datetime.now(_TZ).strftime("%Y-%m-%d %H:%M")
     righe = [f"<b>☀️ SDQ-1 — Briefing {ora}</b>"]
