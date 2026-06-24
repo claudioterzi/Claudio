@@ -205,6 +205,12 @@ def main(argv: list[str]) -> int:
                         help="Numero cicli Scacchiera Quantica (default: 3)")
     parser.add_argument("--scacchiera-livelli", type=int, default=10, metavar="N",
                         help="Livelli per ciclo Scacchiera Quantica (default: 10)")
+    parser.add_argument("--agenti", action="store_true",
+                        help="Ciclo valutazione 7 agenti SDQ-1 (no LLM): CoerenzaKeeper, Intelligence, Guardian, Memory, Coordinator, Future, Milestone")
+    parser.add_argument("--agenti-autonomo", action="store_true",
+                        help="Avvia loop autonomo agenti (ogni ora, blocca il processo)")
+    parser.add_argument("--agenti-intervallo", type=int, default=3600, metavar="S",
+                        help="Secondi tra cicli autonomi (default: 3600)")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -378,6 +384,25 @@ def main(argv: list[str]) -> int:
         m = risultati["meta"]
         print(f"[SCACCHIERA] Nodi: {m['nodi_totali_esplorati']} | Score max: {m['score_globale_max']}"
               f" | Salti: {m['salti_totali']} | Tempo: {risultati['tempo']}s")
+        return 0
+
+    if args.agenti or args.agenti_autonomo:
+        from .sar.agenti_autonomi import SistemaAgenti
+        sistema = SistemaAgenti()
+        print(sistema.attivazione())
+        if args.agenti_autonomo:
+            print(f"[AGENTI] Loop autonomo — intervallo: {args.agenti_intervallo}s — Ctrl+C per fermare")
+            sistema.ciclo_autonomo(intervallo_s=args.agenti_intervallo)
+        else:
+            report = sistema.ciclo_valutazione()
+            sq = report.get("scacchiera", {})
+            print(f"\n[AGENTI] Ciclo completato — {report['ts']}")
+            for nome, dati in report["agenti"].items():
+                stato_agente = dati.get("stato", dati.get("livello_allerta", dati.get("id", "OK")))
+                print(f"  {nome:<16} {stato_agente}")
+            if sq:
+                print(f"\n[SCACCHIERA] Score: {sq['score_medio']} | Dir: {sq['direzione_dominante']} | Salti: {sq['salti']}")
+            print(f"[AGENTI] Memoria: output/agenti_stato.json")
         return 0
 
     if args.diagnostica:
