@@ -103,6 +103,15 @@ def crea_backup(
 
     dest.write_text(json.dumps(snapshot, indent=2, ensure_ascii=False, default=str),
                     encoding="utf-8")
+    try:
+        from sdq1.notifiche import notifica_completato
+        notifica_completato("Backup completato", [
+            f"📁 {dest.name}",
+            f"SAR: {len(snapshot['sar'])} file | Memoria: {len(snapshot['memoria'])} voci",
+            f"Dimensione: {round(dest.stat().st_size / 1024, 1)} KB",
+        ])
+    except Exception:
+        pass
     return dest
 
 
