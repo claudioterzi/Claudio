@@ -497,7 +497,19 @@ class SistemaAgenti:
 
         report["agenti"]["coerenza"]    = self.coerenza.check_periodico(self.mem)
         report["agenti"]["intelligence"] = self.intelligence.ciclo_apprendimento(self.mem)
-        report["agenti"]["guardian"]    = self.guardian.scansione(contesto_arricchito, self.mem)
+        guardian_result = self.guardian.scansione(contesto_arricchito, self.mem)
+        report["agenti"]["guardian"] = guardian_result
+        # Alert immediato su Telegram se Guardian non è VERDE
+        livello_guardian = guardian_result.get("livello_allerta", "VERDE")
+        if livello_guardian not in ("VERDE", "GIALLO"):
+            try:
+                from sdq1.notifiche import alert_guardian
+                motivazione = guardian_result.get("motivazione", "")
+                dettagli = guardian_result.get("minacce_attive", [])
+                alert_guardian(livello_guardian, motivazione, dettagli)
+            except Exception:
+                pass
+
         report["agenti"]["memory"]      = self.memory.snapshot(self.mem, "CICLO_VALUTAZIONE")
         report["agenti"]["coordinator"] = self.coordinator.report_sistema(self.mem)
         report["agenti"]["future"]      = self.future.analisi(self.mem)

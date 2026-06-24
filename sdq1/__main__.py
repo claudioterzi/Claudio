@@ -227,6 +227,8 @@ def main(argv: list[str]) -> int:
                         help="Invia messaggio di test su Telegram (verifica connessione bot)")
     parser.add_argument("--notifica-briefing", action="store_true",
                         help="Invia briefing mattutino completo su Telegram")
+    parser.add_argument("--telegram-comandi", action="store_true",
+                        help="Legge ed esegue comandi Telegram in coda (/scan /status /agenti /push)")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -476,14 +478,17 @@ def main(argv: list[str]) -> int:
             print(f"[AGENTI] Memoria: output/agenti_stato.json")
         return 0
 
-    if args.notifica_test or args.notifica_briefing:
-        from .notifiche import test_connessione, briefing_mattutino
+    if args.notifica_test or args.notifica_briefing or args.telegram_comandi:
+        from .notifiche import test_connessione, briefing_mattutino, esegui_comandi
         if args.notifica_test:
             ok = test_connessione()
             print(f"[TELEGRAM] Test: {'OK ✅' if ok else 'FALLITO ❌'}")
-        else:
+        elif args.notifica_briefing:
             ok = briefing_mattutino()
             print(f"[TELEGRAM] Briefing: {'Inviato ✅' if ok else 'Fallito ❌'}")
+        else:
+            n = esegui_comandi()
+            print(f"[TELEGRAM] Comandi eseguiti: {n}")
         return 0
 
     if args.diagnostica:
