@@ -13,25 +13,23 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - name: Checkout
+        run: |
+          git clone --branch "${{ github.ref_name }}" \
+            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" .
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
 
       - name: Installa dipendenze
-        run: pip install --no-cache-dir anthropic
+        run: python3 -m pip install --no-cache-dir anthropic
 
       - name: Esegui task autonomo
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/agente_orario.py
+        run: python3 scripts/agente_orario.py
 
       - name: Salva output e aggiorna task
         run: |
-          git config user.name  "Claude"
-          git config user.email "noreply@anthropic.com"
-          git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
           git add output/task_output/ TASK_AUTONOMI.md
           git diff --staged --quiet || git commit -m "SDQ-1 task autonomo $(date +%Y-%m-%d\ %H:%M)"
           git push || true

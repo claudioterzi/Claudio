@@ -3,7 +3,7 @@ name: SDQ-1 Daily Run
 on:
   schedule:
     - cron: '0 6 * * *'   # 08:00 CET (06:00 UTC) ogni giorno
-  workflow_dispatch:        # avviabile manualmente da GitHub / iPhone
+  workflow_dispatch:
 
 jobs:
   run:
@@ -19,49 +19,50 @@ jobs:
       DEEPSEEK_API_KEY:   ${{ secrets.DEEPSEEK_API_KEY }}
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - name: Checkout
+        run: |
+          git clone --branch "${{ github.ref_name }}" \
+            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" .
+          git config user.name "SDQ-1 Autonomo"
+          git config user.email "sdq1@claudio.local"
 
       - name: Installa dipendenze
         run: |
-          pip install --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
+          python3 -m pip install --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
           sudo apt-get install -y ripgrep
+
+      # ── 0. Controlla comandi Telegram in coda
+      - name: Comandi Telegram
+        continue-on-error: true
+        run: |
+          mkdir -p output
+          python3 -m sdq1 --telegram-comandi
 
       # ── 1. Ciclo 7 agenti (notifica automatica se guardian non VERDE)
       - name: Agenti autonomi
         continue-on-error: true
         run: |
           mkdir -p output
-          python -m sdq1 --agenti
+          python3 -m sdq1 --agenti
 
       # ── 2. Scanner sicurezza + qualità
       - name: Scanner
         continue-on-error: true
-        run: python -m sdq1 --scan
+        run: python3 -m sdq1 --scan
 
       # ── 3. Snapshot completo + push
       - name: Snapshot e push
         continue-on-error: true
-        run: |
-          git config user.name  "SDQ-1 Autonomo"
-          git config user.email "sdq1@claudio.local"
-          git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
-          python -m sdq1 --snapshot --push
+        run: python3 -m sdq1 --snapshot --push
 
       # ── 4. Briefing mattutino su Telegram
       - name: Briefing Telegram
         continue-on-error: true
-        run: python -m sdq1 --notifica-briefing
+        run: python3 -m sdq1 --notifica-briefing
 
       # ── 5. Salva tutti gli output (scan_report, agenti_stato, ecc.)
       - name: Commit output
         run: |
-          git config user.name  "SDQ-1 Autonomo"
-          git config user.email "sdq1@claudio.local"
-          git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
           git add output/ || true
           git diff --staged --quiet || git commit -m "chore(daily): agenti + scanner + snapshot $(date +%Y-%m-%d)"
           git push || true
