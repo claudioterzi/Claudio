@@ -441,6 +441,12 @@ def main(argv: list[str]) -> int:
               + (f" — MANCANTI: {c['file_mancanti']}" if c['file_mancanti'] else ""))
         print(f"[SNAPSHOT] Agenti: {'OK' if a['ok'] else 'ERRORE'}"
               + (f" | Guardian: {a.get('guardian_allerta')} | Score: {a.get('scacchiera_score')}" if a['ok'] else f" — {a.get('errore')}"))
+        sc = snap.get("scanner", {})
+        if sc.get("score_sistema") is not None:
+            print(f"[SNAPSHOT] Scanner: {sc['score_sistema']}/100"
+                  f" | Sicurezza: {'OK' if sc['sicurezza_ok'] else 'ALLERTA'}"
+                  f" [{sc['sicurezza_livello']}]"
+                  f" | Qualità: {sc['qualita_score']}/100")
         print(f"[SNAPSHOT] Salvato: {dest}")
         if args.push:
             ok = push_snapshot(dest)

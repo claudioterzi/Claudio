@@ -1,80 +1,41 @@
 {
-  "ts": "2026-06-24T09:59:01.688276",
-  "score_sistema": 17,
+  "ts": "2026-06-24T10:59:59.465890",
+  "score_sistema": 87,
   "sicurezza": {
     "agente": "CODE_SCANNER",
     "modulo": "sicurezza",
     "livello": "VERDE",
     "livello_raw": "VERDE",
-    "trovati": [
+    "score": 100,
+    "trovati": [],
+    "falsi_positivi_noti": [
       {
-        "tipo": "api_key_generica",
-        "severità": "ALTA",
-        "file": "output/task_output/PLANET-003-accesso-ricerca.md",
-        "riga": 88,
-        "preview": "PLANET_API_KEY = \"IL_TUO_API_KEY_QUI\""
-      },
-      {
-        "tipo": "api_key_generica",
-        "severità": "ALTA",
-        "file": "output/task_output/MAXAR-002-api-test-guide.md",
-        "riga": 46,
-        "preview": "MAXAR_API_KEY = \"IL_TUO_API_KEY_QUI\""
-      },
-      {
-        "tipo": "eval_exec",
-        "severità": "ALTA",
-        "file": "sdq1/output/cad_bridge.py",
-        "riga": 153,
-        "preview": "                exec(compile(script, str(script_path), \"exec\"),  # noqa: S102"
-      },
-      {
-        "tipo": "debug_print_secrets",
-        "severità": "MEDIA",
-        "file": "notion_publish.py",
-        "riga": 49,
-        "preview": "        print(f\"Errore token Notion: {resp.status_code} {resp.text}\")"
-      },
-      {
-        "tipo": "debug_print_secrets",
-        "severità": "MEDIA",
-        "file": "notion_publish.py",
-        "riga": 274,
-        "preview": "        print(\"Manca NOTION_TOKEN. Esporta la variabile o usa --token secret_xxx…"
-      },
-      {
-        "tipo": "debug_print_secrets",
-        "severità": "MEDIA",
-        "file": "genera_contratto_pdf.py",
-        "riga": 297,
-        "preview": "print(f\"Ed25519 pubkey: {r3_pub}\")"
+        "tipo": "subprocess_shell_true",
+        "file": "sdq1/snapshot.py",
+        "riga": 52
       }
     ],
-    "conteggio_per_tipo": {
-      "api_key_generica": 2,
-      "eval_exec": 1,
-      "debug_print_secrets": 4
-    },
     "pattern_scansionati": 14,
-    "ok": false,
-    "tempo_s": 0.361
+    "ok": true,
+    "tempo_s": 0.128
   },
   "qualita": {
     "agente": "CODE_SCANNER",
     "modulo": "qualità",
-    "score_salute": 42,
-    "score_debito": 828,
+    "score_salute": 67,
+    "score_debito": 163,
+    "debito_per_1k_righe": 16.5,
     "problemi_critici": [
       {
         "tipo": "except_silente",
-        "peso": 5,
+        "peso": 8,
         "file": "sdq1/nas.py",
         "riga": 322,
         "testo": "        except (EOFError, KeyboardInterrupt):"
       },
       {
         "tipo": "except_silente",
-        "peso": 5,
+        "peso": 8,
         "file": "sdq1/scout.py",
         "riga": 267,
         "testo": "            except (ValueError, TypeError, AttributeError):"
@@ -83,32 +44,33 @@
     "moduli_peggiori": [
       {
         "file": "sdq1/scout.py",
-        "debito": 53
+        "debito": 34
       },
       {
         "file": "sdq1/skyid.py",
-        "debito": 48
+        "debito": 31
       },
       {
-        "file": "sdq1/sar/scacchiera_quantica.py",
-        "debito": 45
+        "file": "sdq1/nas.py",
+        "debito": 21
       },
       {
-        "file": "sdq1/sar/agenti_autonomi.py",
-        "debito": 42
+        "file": "sdq1/desideri.py",
+        "debito": 15
       },
       {
-        "file": "sdq1/benchmark.py",
-        "debito": 41
+        "file": "sdq1/guardian.py",
+        "debito": 13
       }
     ],
-    "pattern_analizzati": 12,
+    "pattern_analizzati": 11,
     "file_py_analizzati": 71,
-    "tempo_s": 0.116
+    "tempo_s": 0.086
   },
   "dipendenze": {
     "agente": "CODE_SCANNER",
     "modulo": "dipendenze",
+    "n_moduli": 29,
     "import_interni": {
       "memory.vss": [
         "from .store import MemoriaVettoriale, RisultatoRicerca"
@@ -117,21 +79,13 @@
         "from .store import MemoriaVettoriale, Ricordo, RisultatoRice",
         "from .vss import VectorStateStore"
       ],
-      "persistence.__init__": [
-        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
+      "llm.router": [
+        "from .providers import (",
+        "from .specializzazioni import classifica, nodo_per_problema"
       ],
-      "monitoring.health": [
-        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
-      ],
-      "monitoring.metrics": [
-        "from ..persistence.store import StatoStore"
-      ],
-      "monitoring.__init__": [
-        "from .health import HealthChecker, StatoSalute",
-        "from .metrics import MetricsCollector, MetricaChiamata"
-      ],
-      "config.__init__": [
-        "from .loader import SDQ1Config, AgenteConfig, carica_config"
+      "llm.__init__": [
+        "from .client import ClaudeClient",
+        "from .router import LLMRouter, RegolaRouter, crea_router_da_"
       ],
       "__main__": [
         "from .agents import costruisci_agenti, implementazioni",
@@ -143,6 +97,52 @@
         "from .monitoring import HealthChecker, MetricsCollector",
         "from .orchestrator.gerarchico import OrchestratoreGerarchico",
         "from .persistence.store import crea_store"
+      ],
+      "llm.providers.stub_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.ollama_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.gemini_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.__init__": [
+        "from .anthropic_provider import AnthropicProvider",
+        "from .base import ProviderBase, RispostaProvider",
+        "from .gemini_provider import GeminiProvider",
+        "from .ollama_provider import OllamaProvider",
+        "from .openai_provider import OpenAIProvider, DeepSeekProvide",
+        "from .stub_provider import StubProvider"
+      ],
+      "llm.providers.anthropic_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.openai_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.client": [
+        "from .router import LLMRouter"
+      ],
+      "monitoring.health": [
+        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
+      ],
+      "monitoring.metrics": [
+        "from ..persistence.store import StatoStore"
+      ],
+      "futures.__init__": [
+        "from .scenari import SCENARI_DEFAULT",
+        "from .simulatore import SimulatoreScenari, RisultatoScenario"
+      ],
+      "monitoring.__init__": [
+        "from .health import HealthChecker, StatoSalute",
+        "from .metrics import MetricsCollector, MetricaChiamata"
+      ],
+      "futures.simulatore": [
+        "from .scenari import Scenario"
+      ],
+      "config.__init__": [
+        "from .loader import SDQ1Config, AgenteConfig, carica_config"
       ],
       "agents.registry": [
         "from ..config.loader import AgenteConfig, SDQ1Config",
@@ -156,64 +156,28 @@
         "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
         "from .registry import registra"
       ],
-      "llm.router": [
-        "from .providers import (",
-        "from .specializzazioni import classifica, nodo_per_problema"
+      "agents.__init__": [
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import costruisci_agenti, registra"
       ],
-      "llm.__init__": [
-        "from .client import ClaudeClient",
-        "from .router import LLMRouter, RegolaRouter, crea_router_da_"
+      "persistence.__init__": [
+        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
       ],
-      "llm.providers.stub_provider": [
-        "from .base import ProviderBase"
+      "orchestrator.gerarchico": [
+        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
+        "from ..config.loader import SDQ1Config",
+        "from ..persistence.store import StatoStore"
       ],
-      "llm.providers.ollama_provider": [
-        "from .base import ProviderBase"
-      ],
-      "llm.providers.gemini_provider": [
-        "from .base import ProviderBase"
-      ],
-      "llm.client": [
-        "from .router import LLMRouter"
-      ],
-      "llm.providers.__init__": [
-        "from .anthropic_provider import AnthropicProvider",
-        "from .base import ProviderBase, RispostaProvider",
-        "from .gemini_provider import GeminiProvider",
-        "from .ollama_provider import OllamaProvider",
-        "from .openai_provider import OpenAIProvider, DeepSeekProvide",
-        "from .stub_provider import StubProvider"
-      ],
-      "futures.__init__": [
-        "from .scenari import SCENARI_DEFAULT",
-        "from .simulatore import SimulatoreScenari, RisultatoScenario"
-      ],
-      "llm.providers.anthropic_provider": [
-        "from .base import ProviderBase"
-      ],
-      "futures.simulatore": [
-        "from .scenari import Scenario"
-      ],
-      "llm.providers.openai_provider": [
-        "from .base import ProviderBase"
+      "sar.ciclo": [
+        "from .tensioni import Tensione"
       ],
       "sar.persistence": [
         "from .coerenza import IndiceCoerenza, CoppiaCoerenza",
         "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
         "from .tensioni import MappaTeensioni, Polo, Tensione, Osserv"
       ],
-      "sar.memoria_evolutiva": [
-        "from ..memory.vss import VectorStateStore"
-      ],
-      "agents.__init__": [
-        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
-        "from .registry import costruisci_agenti, registra"
-      ],
       "sar.agenti_autonomi": [
         "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
-      ],
-      "sar.ciclo": [
-        "from .tensioni import Tensione"
       ],
       "sar.__init__": [
         "from .archivio_vivente import ArchivioVivente",
@@ -229,11 +193,6 @@
         "from .sognatore import SognatoreSDQ, VisioneSognatrice",
         "from .tensioni import MappaTeensioni, Tensione, Polo, Osserv"
       ],
-      "orchestrator.gerarchico": [
-        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
-        "from ..config.loader import SDQ1Config",
-        "from ..persistence.store import StatoStore"
-      ],
       "sar.sar": [
         "from ..memory.vss import VectorStateStore",
         "from .ciclo import CicloAutoriflessione, EsitoCiclo",
@@ -241,81 +200,33 @@
         "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
         "from .persistence import PersistenzaSAR",
         "from .tensioni import MappaTeensioni, Polo, Tensione"
-      ]
-    },
-    "dipendenze_esterne": {
-      "agents.eternal_backup_agent": [
-        "asyncio"
-      ],
-      "benchmark": [
-        "argparse",
-        "statistics"
-      ],
-      "agents.base": [
-        "abc"
-      ],
-      "skyid": [
-        "uuid"
-      ],
-      "memory.store": [
-        "math",
-        "uuid"
-      ],
-      "__main__": [
-        "argparse"
-      ],
-      "output.cad_bridge": [
-        "textwrap"
-      ],
-      "llm.router": [
-        "queue"
-      ],
-      "guardian": [
-        "argparse"
-      ],
-      "orchestrator.gerarchico": [
-        "uuid"
-      ],
-      "monitoring.metrics": [
-        "uuid"
-      ],
-      "sar.radar_emozionale": [
-        "math"
       ],
       "sar.memoria_evolutiva": [
-        "uuid"
-      ],
-      "llm.providers.base": [
-        "abc"
-      ],
-      "sar.tensioni": [
-        "uuid"
-      ],
-      "persistence.store": [
-        "abc"
+        "from ..memory.vss import VectorStateStore"
       ]
     },
+    "dipendenze_esterne": {},
+    "pacchetti_esterni": [],
     "circolari_sospette": [],
-    "n_moduli": 29,
-    "tempo_s": 0.03
+    "tempo_s": 0.029
   },
   "metriche": {
     "agente": "CODE_SCANNER",
     "modulo": "metriche",
     "file_analizzati": 71,
-    "totale_righe": 12070,
-    "totale_funzioni": 473,
+    "totale_righe": 12152,
+    "totale_funzioni": 476,
     "totale_classi": 107,
     "top5_per_dimensione": [
       {
         "file": "sdq1/__main__.py",
-        "righe_totali": 708,
-        "righe_codice": 634,
+        "righe_totali": 714,
+        "righe_codice": 640,
         "commenti": 5,
         "vuote": 69,
         "funzioni": 10,
         "classi": 0,
-        "complessita": 12.0
+        "complessita": 12.2
       },
       {
         "file": "sdq1/benchmark.py",
@@ -329,21 +240,21 @@
       },
       {
         "file": "sdq1/sar/agenti_autonomi.py",
-        "righe_totali": 527,
-        "righe_codice": 410,
-        "commenti": 30,
-        "vuote": 87,
+        "righe_totali": 538,
+        "righe_codice": 419,
+        "commenti": 31,
+        "vuote": 88,
         "funzioni": 29,
         "classi": 8,
         "complessita": 2.1
       },
       {
         "file": "sdq1/sar/code_scanner.py",
-        "righe_totali": 469,
-        "righe_codice": 365,
-        "commenti": 36,
-        "vuote": 68,
-        "funzioni": 9,
+        "righe_totali": 524,
+        "righe_codice": 415,
+        "commenti": 35,
+        "vuote": 74,
+        "funzioni": 11,
         "classi": 1,
         "complessita": 6.9
       },
@@ -369,13 +280,13 @@
         "complessita": 1.0
       },
       "sdq1/__main__.py": {
-        "righe_totali": 708,
-        "righe_codice": 634,
+        "righe_totali": 714,
+        "righe_codice": 640,
         "commenti": 5,
         "vuote": 69,
         "funzioni": 10,
         "classi": 0,
-        "complessita": 12.0
+        "complessita": 12.2
       },
       "sdq1/agents/__init__.py": {
         "righe_totali": 10,
@@ -801,10 +712,10 @@
         "complessita": 1.0
       },
       "sdq1/sar/agenti_autonomi.py": {
-        "righe_totali": 527,
-        "righe_codice": 410,
-        "commenti": 30,
-        "vuote": 87,
+        "righe_totali": 538,
+        "righe_codice": 419,
+        "commenti": 31,
+        "vuote": 88,
         "funzioni": 29,
         "classi": 8,
         "complessita": 2.1
@@ -828,11 +739,11 @@
         "complessita": 2.2
       },
       "sdq1/sar/code_scanner.py": {
-        "righe_totali": 469,
-        "righe_codice": 365,
-        "commenti": 36,
-        "vuote": 68,
-        "funzioni": 9,
+        "righe_totali": 524,
+        "righe_codice": 415,
+        "commenti": 35,
+        "vuote": 74,
+        "funzioni": 11,
         "classi": 1,
         "complessita": 6.9
       },
@@ -963,13 +874,13 @@
         "complessita": 3.0
       },
       "sdq1/snapshot.py": {
-        "righe_totali": 189,
-        "righe_codice": 159,
+        "righe_totali": 199,
+        "righe_codice": 167,
         "commenti": 0,
-        "vuote": 30,
-        "funzioni": 9,
+        "vuote": 32,
+        "funzioni": 10,
         "classi": 0,
-        "complessita": 2.7
+        "complessita": 2.6
       },
       "sdq1/tests/__init__.py": {
         "righe_totali": 0,
@@ -999,7 +910,7 @@
         "complessita": 2.8
       }
     },
-    "tempo_s": 0.034
+    "tempo_s": 0.033
   },
-  "tempo_totale_s": 0.542
+  "tempo_totale_s": 0.276
 }

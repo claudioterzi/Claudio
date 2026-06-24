@@ -49,7 +49,7 @@ FILE_CHIAVE = [
 def _sh(cmd: str) -> str:
     """Esegue comando shell, restituisce stdout (stringa pulita)."""
     try:
-        return subprocess.check_output(cmd, shell=True, text=True, stderr=subprocess.DEVNULL).strip()
+        return subprocess.check_output(cmd, shell=True, text=True, stderr=subprocess.DEVNULL).strip()  # nosec — git commands only
     except subprocess.CalledProcessError:
         return ""
 
@@ -130,6 +130,15 @@ def _stato_output() -> dict[str, Any]:
     return stato
 
 
+def _scan_summary() -> dict[str, Any]:
+    """Summary rapido del CodeScanner — score sicurezza + qualità."""
+    try:
+        from sdq1.sar.code_scanner import CodeScanner
+        return CodeScanner().summary()
+    except Exception as e:
+        return {"ok": False, "errore": str(e)}
+
+
 def crea_snapshot() -> dict[str, Any]:
     """Genera il JSON snapshot completo."""
     now = datetime.now(_TZ)
@@ -138,11 +147,12 @@ def crea_snapshot() -> dict[str, Any]:
             "timestamp":  time.time(),
             "data_ora":   now.strftime("%Y-%m-%d %H:%M:%S"),
             "tz":         "Europe/Brussels",
-            "versione":   "1.0.0",
+            "versione":   "1.1.0",
         },
         "git":       _git_info(),
         "codice":    _integrità_codice(),
         "agenti":    _stato_agenti(),
+        "scanner":   _scan_summary(),
         "output":    _stato_output(),
     }
 

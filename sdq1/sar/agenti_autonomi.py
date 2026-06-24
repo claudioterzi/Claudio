@@ -478,15 +478,26 @@ class SistemaAgenti:
         return msg
 
     def ciclo_valutazione(self, contesto: Optional[Dict] = None) -> Dict:
-        """Valutazione completa — attiva tutti i 7 agenti."""
+        """Valutazione completa — attiva tutti i 7 agenti + CodeScanner."""
         report: Dict[str, Any] = {
             "ts":     _ts(),
             "agenti": {},
         }
 
+        # CodeScanner pre-guardian: arricchisce il contesto con vulnerabilità codice
+        contesto_arricchito = dict(contesto or {})
+        try:
+            from sdq1.sar.code_scanner import CodeScanner
+            _scanner = CodeScanner()
+            _scan_summary = _scanner.summary()
+            contesto_arricchito.update(_scanner.risultato_guardian())
+            report["scanner"] = _scan_summary
+        except Exception:
+            report["scanner"] = {"ok": False, "errore": "scanner non disponibile"}
+
         report["agenti"]["coerenza"]    = self.coerenza.check_periodico(self.mem)
         report["agenti"]["intelligence"] = self.intelligence.ciclo_apprendimento(self.mem)
-        report["agenti"]["guardian"]    = self.guardian.scansione(contesto or {}, self.mem)
+        report["agenti"]["guardian"]    = self.guardian.scansione(contesto_arricchito, self.mem)
         report["agenti"]["memory"]      = self.memory.snapshot(self.mem, "CICLO_VALUTAZIONE")
         report["agenti"]["coordinator"] = self.coordinator.report_sistema(self.mem)
         report["agenti"]["future"]      = self.future.analisi(self.mem)
