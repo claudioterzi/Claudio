@@ -29,7 +29,13 @@ jobs:
         run: |
           pip install --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
           sudo apt-get install -y ripgrep
+      # ── 0. Controlla comandi Telegram in coda
+      - name: Comandi Telegram
+        continue-on-error: true
+        run: python -m sdq1 --telegram-comandi
 
+
+      
       # ── 1. Ciclo 7 agenti (notifica automatica se guardian non VERDE)
       - name: Agenti autonomi
         continue-on-error: true
