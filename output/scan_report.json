@@ -1,6 +1,6 @@
 {
-  "ts": "2026-06-24T10:59:59.465890",
-  "score_sistema": 87,
+  "ts": "2026-06-24T11:18:21.905390",
+  "score_sistema": 93,
   "sicurezza": {
     "agente": "CODE_SCANNER",
     "modulo": "sicurezza",
@@ -17,55 +17,40 @@
     ],
     "pattern_scansionati": 14,
     "ok": true,
-    "tempo_s": 0.128
+    "tempo_s": 0.12
   },
   "qualita": {
     "agente": "CODE_SCANNER",
     "modulo": "qualità",
-    "score_salute": 67,
-    "score_debito": 163,
-    "debito_per_1k_righe": 16.5,
-    "problemi_critici": [
-      {
-        "tipo": "except_silente",
-        "peso": 8,
-        "file": "sdq1/nas.py",
-        "riga": 322,
-        "testo": "        except (EOFError, KeyboardInterrupt):"
-      },
-      {
-        "tipo": "except_silente",
-        "peso": 8,
-        "file": "sdq1/scout.py",
-        "riga": 267,
-        "testo": "            except (ValueError, TypeError, AttributeError):"
-      }
-    ],
+    "score_salute": 82,
+    "score_debito": 90,
+    "debito_per_1k_righe": 9.1,
+    "problemi_critici": [],
     "moduli_peggiori": [
-      {
-        "file": "sdq1/scout.py",
-        "debito": 34
-      },
-      {
-        "file": "sdq1/skyid.py",
-        "debito": 31
-      },
-      {
-        "file": "sdq1/nas.py",
-        "debito": 21
-      },
       {
         "file": "sdq1/desideri.py",
         "debito": 15
       },
       {
+        "file": "sdq1/nas.py",
+        "debito": 13
+      },
+      {
         "file": "sdq1/guardian.py",
         "debito": 13
+      },
+      {
+        "file": "sdq1/persisti.py",
+        "debito": 10
+      },
+      {
+        "file": "sdq1/llm/specializzazioni.py",
+        "debito": 7
       }
     ],
     "pattern_analizzati": 11,
     "file_py_analizzati": 71,
-    "tempo_s": 0.086
+    "tempo_s": 0.08
   },
   "dipendenze": {
     "agente": "CODE_SCANNER",
@@ -79,14 +64,6 @@
         "from .store import MemoriaVettoriale, Ricordo, RisultatoRice",
         "from .vss import VectorStateStore"
       ],
-      "llm.router": [
-        "from .providers import (",
-        "from .specializzazioni import classifica, nodo_per_problema"
-      ],
-      "llm.__init__": [
-        "from .client import ClaudeClient",
-        "from .router import LLMRouter, RegolaRouter, crea_router_da_"
-      ],
       "__main__": [
         "from .agents import costruisci_agenti, implementazioni",
         "from .config import carica_config",
@@ -97,6 +74,14 @@
         "from .monitoring import HealthChecker, MetricsCollector",
         "from .orchestrator.gerarchico import OrchestratoreGerarchico",
         "from .persistence.store import crea_store"
+      ],
+      "llm.router": [
+        "from .providers import (",
+        "from .specializzazioni import classifica, nodo_per_problema"
+      ],
+      "llm.__init__": [
+        "from .client import ClaudeClient",
+        "from .router import LLMRouter, RegolaRouter, crea_router_da_"
       ],
       "llm.providers.stub_provider": [
         "from .base import ProviderBase"
@@ -124,60 +109,28 @@
       "llm.client": [
         "from .router import LLMRouter"
       ],
+      "futures.__init__": [
+        "from .scenari import SCENARI_DEFAULT",
+        "from .simulatore import SimulatoreScenari, RisultatoScenario"
+      ],
+      "futures.simulatore": [
+        "from .scenari import Scenario"
+      ],
       "monitoring.health": [
         "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
       ],
       "monitoring.metrics": [
         "from ..persistence.store import StatoStore"
       ],
-      "futures.__init__": [
-        "from .scenari import SCENARI_DEFAULT",
-        "from .simulatore import SimulatoreScenari, RisultatoScenario"
-      ],
       "monitoring.__init__": [
         "from .health import HealthChecker, StatoSalute",
         "from .metrics import MetricsCollector, MetricaChiamata"
       ],
-      "futures.simulatore": [
-        "from .scenari import Scenario"
+      "sar.memoria_evolutiva": [
+        "from ..memory.vss import VectorStateStore"
       ],
       "config.__init__": [
         "from .loader import SDQ1Config, AgenteConfig, carica_config"
-      ],
-      "agents.registry": [
-        "from ..config.loader import AgenteConfig, SDQ1Config",
-        "from .base import AgenteBase"
-      ],
-      "agents.implementazioni": [
-        "from ..config.loader import AgenteConfig",
-        "from ..llm.client import ClaudeClient",
-        "from ..memory.store import MemoriaVettoriale",
-        "from ..memory.vss import VectorStateStore",
-        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
-        "from .registry import registra"
-      ],
-      "agents.__init__": [
-        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
-        "from .registry import costruisci_agenti, registra"
-      ],
-      "persistence.__init__": [
-        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
-      ],
-      "orchestrator.gerarchico": [
-        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
-        "from ..config.loader import SDQ1Config",
-        "from ..persistence.store import StatoStore"
-      ],
-      "sar.ciclo": [
-        "from .tensioni import Tensione"
-      ],
-      "sar.persistence": [
-        "from .coerenza import IndiceCoerenza, CoppiaCoerenza",
-        "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
-        "from .tensioni import MappaTeensioni, Polo, Tensione, Osserv"
-      ],
-      "sar.agenti_autonomi": [
-        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
       ],
       "sar.__init__": [
         "from .archivio_vivente import ArchivioVivente",
@@ -193,6 +146,10 @@
         "from .sognatore import SognatoreSDQ, VisioneSognatrice",
         "from .tensioni import MappaTeensioni, Tensione, Polo, Osserv"
       ],
+      "agents.registry": [
+        "from ..config.loader import AgenteConfig, SDQ1Config",
+        "from .base import AgenteBase"
+      ],
       "sar.sar": [
         "from ..memory.vss import VectorStateStore",
         "from .ciclo import CicloAutoriflessione, EsitoCiclo",
@@ -201,14 +158,42 @@
         "from .persistence import PersistenzaSAR",
         "from .tensioni import MappaTeensioni, Polo, Tensione"
       ],
-      "sar.memoria_evolutiva": [
-        "from ..memory.vss import VectorStateStore"
+      "sar.ciclo": [
+        "from .tensioni import Tensione"
+      ],
+      "sar.persistence": [
+        "from .coerenza import IndiceCoerenza, CoppiaCoerenza",
+        "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
+        "from .tensioni import MappaTeensioni, Polo, Tensione, Osserv"
+      ],
+      "orchestrator.gerarchico": [
+        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
+        "from ..config.loader import SDQ1Config",
+        "from ..persistence.store import StatoStore"
+      ],
+      "agents.implementazioni": [
+        "from ..config.loader import AgenteConfig",
+        "from ..llm.client import ClaudeClient",
+        "from ..memory.store import MemoriaVettoriale",
+        "from ..memory.vss import VectorStateStore",
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import registra"
+      ],
+      "agents.__init__": [
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import costruisci_agenti, registra"
+      ],
+      "sar.agenti_autonomi": [
+        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
+      ],
+      "persistence.__init__": [
+        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
       ]
     },
     "dipendenze_esterne": {},
     "pacchetti_esterni": [],
     "circolari_sospette": [],
-    "tempo_s": 0.029
+    "tempo_s": 0.027
   },
   "metriche": {
     "agente": "CODE_SCANNER",
@@ -910,7 +895,7 @@
         "complessita": 2.8
       }
     },
-    "tempo_s": 0.033
+    "tempo_s": 0.027
   },
-  "tempo_totale_s": 0.276
+  "tempo_totale_s": 0.254
 }

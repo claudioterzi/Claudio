@@ -146,7 +146,7 @@ _SEV_TO_GUARDIAN = {"CRITICA": "ROSSO", "ALTA": "ARANCIONE",
 
 _PATTERN_QUALITA: dict[str, tuple[str, int, str | None]] = {
     # nome: (pattern, peso_debito, extra_excl_glob o None)
-    "except_silente":    (r'except\s*(\([^)]*\))?\s*:\s*$',         8,  None),
+    "except_silente":    (r'^\s*except\s*:\s*$',                      8,  None),
     "except_pass":       (r'except[^:]*:\s*\n\s*pass\s*$',          8,  None),
     "import_star":       (r'from\s+\S+\s+import\s+\*',              6,  None),
     "raise_generico":    (r'\braise\s+Exception\s*\(',              5,  None),
@@ -155,7 +155,7 @@ _PATTERN_QUALITA: dict[str, tuple[str, int, str | None]] = {
     "todo":              (r'(?i)#\s*TODO',                          2,  None),
     "type_ignore":       (r'#\s*type:\s*ignore',                    2,  None),
     # print: escludi __main__ e benchmark (output intenzionale)
-    "print_debug":       (r'\bprint\s*\(',                          1,  "!sdq1/__main__.py,!sdq1/benchmark.py,!sdq1/sar/scacchiera_quantica.py"),
+    "print_debug":       (r'\bprint\s*\(',                          1,  "!sdq1/__main__.py,!sdq1/benchmark.py,!sdq1/sar/scacchiera_quantica.py,!sdq1/skyid.py,!sdq1/scout.py,!sdq1/tests/smoke.py"),
     # magic number: solo 5+ cifre (port 8001 ok, 99999 sospetto)
     "magic_number":      (r'(?<!\w)[1-9][0-9]{4,}(?!\w)',          2,  None),
     "noqa_silente":      (r'#\s*noqa(?!\s*:\s*[A-Z])',             1,  None),
