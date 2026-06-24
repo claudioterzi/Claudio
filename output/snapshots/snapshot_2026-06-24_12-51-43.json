@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "timestamp": 1782298303.844611,
+    "data_ora": "2026-06-24 12:51:43",
+    "tz": "Europe/Brussels",
+    "versione": "1.0.0"
+  },
+  "git": {
+    "branch": "claude/suspicious-prompt-injection-22whsc",
+    "commit": "9995b9f5ac6106267080f5d7c5b5eb80d7f80b4b",
+    "commit_short": "9995b9f",
+    "messaggio": "feat(scanner): CodeScanner — sicurezza + qualità + metriche via ripgrep",
+    "autore": "Claude",
+    "data_commit": "2026-06-24 09:59:45 +0000",
+    "dirty": false,
+    "file_modificati": []
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "3e1bf706eb3da091",
+      "CLAUDE.md": "e1c1a4f8f92cbdad",
+      "sdq1/__main__.py": "32a7d075a6f44f66",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "19f0ba33e7c7b770",
+      "sdq1/snapshot.py": "be880e2993dd72ba",
+      "sdq1/sar/scacchiera_quantica.py": "91645f32e7f9b9bf",
+      "sdq1/sar/agenti_autonomi.py": "a257917afec7fff0",
+      "sdq1/llm/router.py": "65649bb2ce8f547e",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "5e431604f70359b5"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-06-24T10:51:43.902699",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.37,
+    "scacchiera_dir": "COLLASSO"
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 8.6,
+      "n_chiavi": 4
+    }
+  }
+}
