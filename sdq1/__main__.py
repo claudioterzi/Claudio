@@ -223,6 +223,10 @@ def main(argv: list[str]) -> int:
                         help="Solo analisi qualità: debito tecnico, code smell, pattern fragili")
     parser.add_argument("--scan-metriche", action="store_true",
                         help="Solo metriche codice: righe, funzioni, classi, complessità")
+    parser.add_argument("--notifica-test", action="store_true",
+                        help="Invia messaggio di test su Telegram (verifica connessione bot)")
+    parser.add_argument("--notifica-briefing", action="store_true",
+                        help="Invia briefing mattutino completo su Telegram")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -470,6 +474,16 @@ def main(argv: list[str]) -> int:
             if sq:
                 print(f"\n[SCACCHIERA] Score: {sq['score_medio']} | Dir: {sq['direzione_dominante']} | Salti: {sq['salti']}")
             print(f"[AGENTI] Memoria: output/agenti_stato.json")
+        return 0
+
+    if args.notifica_test or args.notifica_briefing:
+        from .notifiche import test_connessione, briefing_mattutino
+        if args.notifica_test:
+            ok = test_connessione()
+            print(f"[TELEGRAM] Test: {'OK ✅' if ok else 'FALLITO ❌'}")
+        else:
+            ok = briefing_mattutino()
+            print(f"[TELEGRAM] Briefing: {'Inviato ✅' if ok else 'Fallito ❌'}")
         return 0
 
     if args.diagnostica:

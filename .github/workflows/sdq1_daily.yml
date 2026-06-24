@@ -2,8 +2,8 @@ name: SDQ-1 Daily Run
 
 on:
   schedule:
-    - cron: '0 7 * * *'   # ogni giorno alle 7:00 UTC (9:00 Italia)
-  workflow_dispatch:        # avviabile manualmente da GitHub (anche da iPhone)
+    - cron: '0 6 * * *'   # 08:00 CET (06:00 UTC) ogni giorno
+  workflow_dispatch:        # avviabile manualmente da GitHub / iPhone
 
 jobs:
   run:
@@ -21,7 +21,11 @@ jobs:
       - name: Installa dipendenze
         run: pip install --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
 
-      - name: Esegui SDQ-1
+      - name: Installa ripgrep
+        run: sudo apt-get install -y ripgrep
+
+      # ── 1. Ciclo 7 agenti + Scacchiera Quantica
+      - name: Agenti autonomi
         continue-on-error: true
         env:
           GOOGLE_API_KEY:    ${{ secrets.GOOGLE_API_KEY }}
@@ -29,32 +33,29 @@ jobs:
           DEEPSEEK_API_KEY:  ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
           mkdir -p output
-          DATE=$(date +%Y-%m-%d)
-          OUTPUT="output/daily_${DATE}.txt"
+          python -m sdq1 --agenti
 
-          # Tenta 1: tutti i provider
-          python -m sdq1 "Analisi quotidiana automatica $DATE" --solo-output > "$OUTPUT" 2>&1
-          STATUS=$?
+      # ── 2. Snapshot completo (git + codice + agenti + scanner)
+      - name: Snapshot
+        continue-on-error: true
+        run: python -m sdq1 --snapshot
 
-          # Tenta 2: solo provider economici
-          if [ $STATUS -ne 0 ]; then
-            python -m sdq1 "Analisi quotidiana automatica $DATE" --economia --solo-output > "$OUTPUT" 2>&1
-            STATUS=$?
-          fi
+      # ── 3. Briefing Telegram
+      - name: Briefing Telegram
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          GOOGLE_API_KEY:     ${{ secrets.GOOGLE_API_KEY }}
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m sdq1 --notifica-briefing
 
-          # Tenta 3: offline puro (stub)
-          if [ $STATUS -ne 0 ]; then
-            python -m sdq1 "Analisi quotidiana automatica $DATE" --no-api --solo-output > "$OUTPUT" 2>&1
-          fi
-
-          echo "--- Output SDQ-1 ---"
-          cat "$OUTPUT" 2>/dev/null || echo "[nessun output]"
-
-      - name: Salva output nel repo
+      # ── 4. Salva tutto nel repo
+      - name: Commit e push output
         run: |
-          git config user.name  "SDQ-1"
+          git config user.name  "SDQ-1 Autonomo"
           git config user.email "sdq1@claudio.local"
           git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
           git add output/ || true
-          git diff --staged --quiet || git commit -m "SDQ-1 daily $(date +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "chore(daily): agenti + snapshot $(date +%Y-%m-%d)"
           git push || true
