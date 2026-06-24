@@ -211,6 +211,10 @@ def main(argv: list[str]) -> int:
                         help="Avvia loop autonomo agenti (ogni ora, blocca il processo)")
     parser.add_argument("--agenti-intervallo", type=int, default=3600, metavar="S",
                         help="Secondi tra cicli autonomi (default: 3600)")
+    parser.add_argument("--snapshot", action="store_true",
+                        help="Snapshot completo: git + codice + agenti + output — salva in output/snapshots/")
+    parser.add_argument("--push", action="store_true",
+                        help="Con --snapshot: commit + push del file snapshot su GitHub")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -384,6 +388,24 @@ def main(argv: list[str]) -> int:
         m = risultati["meta"]
         print(f"[SCACCHIERA] Nodi: {m['nodi_totali_esplorati']} | Score max: {m['score_globale_max']}"
               f" | Salti: {m['salti_totali']} | Tempo: {risultati['tempo']}s")
+        return 0
+
+    if args.snapshot:
+        from .snapshot import crea_snapshot, salva_snapshot, push_snapshot
+        snap = crea_snapshot()
+        dest = salva_snapshot(snap)
+        g = snap["git"]
+        c = snap["codice"]
+        a = snap["agenti"]
+        print(f"[SNAPSHOT] {snap['meta']['data_ora']} — {g['commit_short']} {g['branch']}")
+        print(f"[SNAPSHOT] Codice: {c['file_presenti']}/{len(c['file'])} file integri"
+              + (f" — MANCANTI: {c['file_mancanti']}" if c['file_mancanti'] else ""))
+        print(f"[SNAPSHOT] Agenti: {'OK' if a['ok'] else 'ERRORE'}"
+              + (f" | Guardian: {a.get('guardian_allerta')} | Score: {a.get('scacchiera_score')}" if a['ok'] else f" — {a.get('errore')}"))
+        print(f"[SNAPSHOT] Salvato: {dest}")
+        if args.push:
+            ok = push_snapshot(dest)
+            print(f"[SNAPSHOT] Push GitHub: {'OK' if ok else 'FALLITO'}")
         return 0
 
     if args.agenti or args.agenti_autonomo:
