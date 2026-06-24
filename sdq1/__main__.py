@@ -229,6 +229,8 @@ def main(argv: list[str]) -> int:
                         help="Invia briefing mattutino completo su Telegram")
     parser.add_argument("--telegram-comandi", action="store_true",
                         help="Legge ed esegue comandi Telegram in coda (/scan /status /agenti /push)")
+    parser.add_argument("--agenda", action="store_true",
+                        help="Mostra agenda personale e Pronto Rota (legge output/agenda.json)")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -476,6 +478,17 @@ def main(argv: list[str]) -> int:
             if sq:
                 print(f"\n[SCACCHIERA] Score: {sq['score_medio']} | Dir: {sq['direzione_dominante']} | Salti: {sq['salti']}")
             print(f"[AGENTI] Memoria: output/agenti_stato.json")
+        return 0
+
+    if args.agenda:
+        from .agenda import carica, prossimi_viaggi, riepilogo_briefing
+        agenda = carica()
+        print(f"Ultima sync: {agenda.get('ultima_sync', 'mai')}")
+        viaggi = prossimi_viaggi(giorni=7)
+        print(f"Viaggi (7gg): {len(viaggi)}")
+        rota = [r for r in agenda.get("pronto_rota", []) if not r.get("fatto")]
+        print(f"Pronto Rota: {len(rota)} item da fare\n")
+        print(riepilogo_briefing() or "(agenda vuota)")
         return 0
 
     if args.notifica_test or args.notifica_briefing or args.telegram_comandi:

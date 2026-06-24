@@ -174,6 +174,15 @@ def briefing_mattutino() -> bool:
     except Exception:
         pass
 
+    # ── AGENDA + PRONTO ROTA
+    try:
+        from sdq1.agenda import riepilogo_briefing
+        sezione_agenda = riepilogo_briefing()
+        if sezione_agenda:
+            righe.append(sezione_agenda)
+    except Exception:
+        pass
+
     # ── DESIDERI
     try:
         p = Path("output/stato_sdq1.json")

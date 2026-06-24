@@ -78,6 +78,7 @@ guardian/
 !output/evoluzione/*.json
 !tarocchi_quantici_alpha.json
 !output/stato_sdq1.json
+!output/agenda.json
 !output/snapshots/
 !output/snapshots/*.json
 !output/scan_report.json
