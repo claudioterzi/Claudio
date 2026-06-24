@@ -1,0 +1,1005 @@
+{
+  "ts": "2026-06-24T09:59:01.688276",
+  "score_sistema": 17,
+  "sicurezza": {
+    "agente": "CODE_SCANNER",
+    "modulo": "sicurezza",
+    "livello": "VERDE",
+    "livello_raw": "VERDE",
+    "trovati": [
+      {
+        "tipo": "api_key_generica",
+        "severità": "ALTA",
+        "file": "output/task_output/PLANET-003-accesso-ricerca.md",
+        "riga": 88,
+        "preview": "PLANET_API_KEY = \"IL_TUO_API_KEY_QUI\""
+      },
+      {
+        "tipo": "api_key_generica",
+        "severità": "ALTA",
+        "file": "output/task_output/MAXAR-002-api-test-guide.md",
+        "riga": 46,
+        "preview": "MAXAR_API_KEY = \"IL_TUO_API_KEY_QUI\""
+      },
+      {
+        "tipo": "eval_exec",
+        "severità": "ALTA",
+        "file": "sdq1/output/cad_bridge.py",
+        "riga": 153,
+        "preview": "                exec(compile(script, str(script_path), \"exec\"),  # noqa: S102"
+      },
+      {
+        "tipo": "debug_print_secrets",
+        "severità": "MEDIA",
+        "file": "notion_publish.py",
+        "riga": 49,
+        "preview": "        print(f\"Errore token Notion: {resp.status_code} {resp.text}\")"
+      },
+      {
+        "tipo": "debug_print_secrets",
+        "severità": "MEDIA",
+        "file": "notion_publish.py",
+        "riga": 274,
+        "preview": "        print(\"Manca NOTION_TOKEN. Esporta la variabile o usa --token secret_xxx…"
+      },
+      {
+        "tipo": "debug_print_secrets",
+        "severità": "MEDIA",
+        "file": "genera_contratto_pdf.py",
+        "riga": 297,
+        "preview": "print(f\"Ed25519 pubkey: {r3_pub}\")"
+      }
+    ],
+    "conteggio_per_tipo": {
+      "api_key_generica": 2,
+      "eval_exec": 1,
+      "debug_print_secrets": 4
+    },
+    "pattern_scansionati": 14,
+    "ok": false,
+    "tempo_s": 0.361
+  },
+  "qualita": {
+    "agente": "CODE_SCANNER",
+    "modulo": "qualità",
+    "score_salute": 42,
+    "score_debito": 828,
+    "problemi_critici": [
+      {
+        "tipo": "except_silente",
+        "peso": 5,
+        "file": "sdq1/nas.py",
+        "riga": 322,
+        "testo": "        except (EOFError, KeyboardInterrupt):"
+      },
+      {
+        "tipo": "except_silente",
+        "peso": 5,
+        "file": "sdq1/scout.py",
+        "riga": 267,
+        "testo": "            except (ValueError, TypeError, AttributeError):"
+      }
+    ],
+    "moduli_peggiori": [
+      {
+        "file": "sdq1/scout.py",
+        "debito": 53
+      },
+      {
+        "file": "sdq1/skyid.py",
+        "debito": 48
+      },
+      {
+        "file": "sdq1/sar/scacchiera_quantica.py",
+        "debito": 45
+      },
+      {
+        "file": "sdq1/sar/agenti_autonomi.py",
+        "debito": 42
+      },
+      {
+        "file": "sdq1/benchmark.py",
+        "debito": 41
+      }
+    ],
+    "pattern_analizzati": 12,
+    "file_py_analizzati": 71,
+    "tempo_s": 0.116
+  },
+  "dipendenze": {
+    "agente": "CODE_SCANNER",
+    "modulo": "dipendenze",
+    "import_interni": {
+      "memory.vss": [
+        "from .store import MemoriaVettoriale, RisultatoRicerca"
+      ],
+      "memory.__init__": [
+        "from .store import MemoriaVettoriale, Ricordo, RisultatoRice",
+        "from .vss import VectorStateStore"
+      ],
+      "persistence.__init__": [
+        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
+      ],
+      "monitoring.health": [
+        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
+      ],
+      "monitoring.metrics": [
+        "from ..persistence.store import StatoStore"
+      ],
+      "monitoring.__init__": [
+        "from .health import HealthChecker, StatoSalute",
+        "from .metrics import MetricsCollector, MetricaChiamata"
+      ],
+      "config.__init__": [
+        "from .loader import SDQ1Config, AgenteConfig, carica_config"
+      ],
+      "__main__": [
+        "from .agents import costruisci_agenti, implementazioni",
+        "from .config import carica_config",
+        "from .llm.client import ClaudeClient",
+        "from .llm.router import crea_router_da_config",
+        "from .memory.store import MemoriaVettoriale",
+        "from .memory.vss import VectorStateStore",
+        "from .monitoring import HealthChecker, MetricsCollector",
+        "from .orchestrator.gerarchico import OrchestratoreGerarchico",
+        "from .persistence.store import crea_store"
+      ],
+      "agents.registry": [
+        "from ..config.loader import AgenteConfig, SDQ1Config",
+        "from .base import AgenteBase"
+      ],
+      "agents.implementazioni": [
+        "from ..config.loader import AgenteConfig",
+        "from ..llm.client import ClaudeClient",
+        "from ..memory.store import MemoriaVettoriale",
+        "from ..memory.vss import VectorStateStore",
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import registra"
+      ],
+      "llm.router": [
+        "from .providers import (",
+        "from .specializzazioni import classifica, nodo_per_problema"
+      ],
+      "llm.__init__": [
+        "from .client import ClaudeClient",
+        "from .router import LLMRouter, RegolaRouter, crea_router_da_"
+      ],
+      "llm.providers.stub_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.ollama_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.gemini_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.client": [
+        "from .router import LLMRouter"
+      ],
+      "llm.providers.__init__": [
+        "from .anthropic_provider import AnthropicProvider",
+        "from .base import ProviderBase, RispostaProvider",
+        "from .gemini_provider import GeminiProvider",
+        "from .ollama_provider import OllamaProvider",
+        "from .openai_provider import OpenAIProvider, DeepSeekProvide",
+        "from .stub_provider import StubProvider"
+      ],
+      "futures.__init__": [
+        "from .scenari import SCENARI_DEFAULT",
+        "from .simulatore import SimulatoreScenari, RisultatoScenario"
+      ],
+      "llm.providers.anthropic_provider": [
+        "from .base import ProviderBase"
+      ],
+      "futures.simulatore": [
+        "from .scenari import Scenario"
+      ],
+      "llm.providers.openai_provider": [
+        "from .base import ProviderBase"
+      ],
+      "sar.persistence": [
+        "from .coerenza import IndiceCoerenza, CoppiaCoerenza",
+        "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
+        "from .tensioni import MappaTeensioni, Polo, Tensione, Osserv"
+      ],
+      "sar.memoria_evolutiva": [
+        "from ..memory.vss import VectorStateStore"
+      ],
+      "agents.__init__": [
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import costruisci_agenti, registra"
+      ],
+      "sar.agenti_autonomi": [
+        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
+      ],
+      "sar.ciclo": [
+        "from .tensioni import Tensione"
+      ],
+      "sar.__init__": [
+        "from .archivio_vivente import ArchivioVivente",
+        "from .ciclo import CicloAutoriflessione, EsitoCiclo",
+        "from .coerenza import IndiceCoerenza",
+        "from .contraddittore import ContraddittoreSDQ, RapportoContr",
+        "from .memoria_evolutiva import MemoriaEvolutiva",
+        "from .persistence import PersistenzaSAR",
+        "from .predittivo import SARPredittivo, ProiezionePredittiva,",
+        "from .radar_emozionale import RadarEmozionale",
+        "from .report_testo import report_ciclo, report_stato",
+        "from .sar import ScacchieraAutoRiflessiva, ReportSAR",
+        "from .sognatore import SognatoreSDQ, VisioneSognatrice",
+        "from .tensioni import MappaTeensioni, Tensione, Polo, Osserv"
+      ],
+      "orchestrator.gerarchico": [
+        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
+        "from ..config.loader import SDQ1Config",
+        "from ..persistence.store import StatoStore"
+      ],
+      "sar.sar": [
+        "from ..memory.vss import VectorStateStore",
+        "from .ciclo import CicloAutoriflessione, EsitoCiclo",
+        "from .coerenza import IndiceCoerenza",
+        "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
+        "from .persistence import PersistenzaSAR",
+        "from .tensioni import MappaTeensioni, Polo, Tensione"
+      ]
+    },
+    "dipendenze_esterne": {
+      "agents.eternal_backup_agent": [
+        "asyncio"
+      ],
+      "benchmark": [
+        "argparse",
+        "statistics"
+      ],
+      "agents.base": [
+        "abc"
+      ],
+      "skyid": [
+        "uuid"
+      ],
+      "memory.store": [
+        "math",
+        "uuid"
+      ],
+      "__main__": [
+        "argparse"
+      ],
+      "output.cad_bridge": [
+        "textwrap"
+      ],
+      "llm.router": [
+        "queue"
+      ],
+      "guardian": [
+        "argparse"
+      ],
+      "orchestrator.gerarchico": [
+        "uuid"
+      ],
+      "monitoring.metrics": [
+        "uuid"
+      ],
+      "sar.radar_emozionale": [
+        "math"
+      ],
+      "sar.memoria_evolutiva": [
+        "uuid"
+      ],
+      "llm.providers.base": [
+        "abc"
+      ],
+      "sar.tensioni": [
+        "uuid"
+      ],
+      "persistence.store": [
+        "abc"
+      ]
+    },
+    "circolari_sospette": [],
+    "n_moduli": 29,
+    "tempo_s": 0.03
+  },
+  "metriche": {
+    "agente": "CODE_SCANNER",
+    "modulo": "metriche",
+    "file_analizzati": 71,
+    "totale_righe": 12070,
+    "totale_funzioni": 473,
+    "totale_classi": 107,
+    "top5_per_dimensione": [
+      {
+        "file": "sdq1/__main__.py",
+        "righe_totali": 708,
+        "righe_codice": 634,
+        "commenti": 5,
+        "vuote": 69,
+        "funzioni": 10,
+        "classi": 0,
+        "complessita": 12.0
+      },
+      {
+        "file": "sdq1/benchmark.py",
+        "righe_totali": 567,
+        "righe_codice": 476,
+        "commenti": 30,
+        "vuote": 61,
+        "funzioni": 14,
+        "classi": 0,
+        "complessita": 6.8
+      },
+      {
+        "file": "sdq1/sar/agenti_autonomi.py",
+        "righe_totali": 527,
+        "righe_codice": 410,
+        "commenti": 30,
+        "vuote": 87,
+        "funzioni": 29,
+        "classi": 8,
+        "complessita": 2.1
+      },
+      {
+        "file": "sdq1/sar/code_scanner.py",
+        "righe_totali": 469,
+        "righe_codice": 365,
+        "commenti": 36,
+        "vuote": 68,
+        "funzioni": 9,
+        "classi": 1,
+        "complessita": 6.9
+      },
+      {
+        "file": "sdq1/scout.py",
+        "righe_totali": 438,
+        "righe_codice": 345,
+        "commenti": 16,
+        "vuote": 77,
+        "funzioni": 19,
+        "classi": 3,
+        "complessita": 3.4
+      }
+    ],
+    "per_file": {
+      "sdq1/__init__.py": {
+        "righe_totali": 7,
+        "righe_codice": 6,
+        "commenti": 0,
+        "vuote": 1,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/__main__.py": {
+        "righe_totali": 708,
+        "righe_codice": 634,
+        "commenti": 5,
+        "vuote": 69,
+        "funzioni": 10,
+        "classi": 0,
+        "complessita": 12.0
+      },
+      "sdq1/agents/__init__.py": {
+        "righe_totali": 10,
+        "righe_codice": 9,
+        "commenti": 0,
+        "vuote": 1,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/agents/base.py": {
+        "righe_totali": 42,
+        "righe_codice": 31,
+        "commenti": 0,
+        "vuote": 11,
+        "funzioni": 3,
+        "classi": 3,
+        "complessita": 1.0
+      },
+      "sdq1/agents/eternal_backup_agent.py": {
+        "righe_totali": 297,
+        "righe_codice": 242,
+        "commenti": 2,
+        "vuote": 53,
+        "funzioni": 6,
+        "classi": 4,
+        "complessita": 5.3
+      },
+      "sdq1/agents/implementazioni.py": {
+        "righe_totali": 388,
+        "righe_codice": 303,
+        "commenti": 21,
+        "vuote": 64,
+        "funzioni": 21,
+        "classi": 7,
+        "complessita": 1.9
+      },
+      "sdq1/agents/registry.py": {
+        "righe_totali": 34,
+        "righe_codice": 23,
+        "commenti": 0,
+        "vuote": 11,
+        "funzioni": 3,
+        "classi": 0,
+        "complessita": 1.7
+      },
+      "sdq1/argo.py": {
+        "righe_totali": 283,
+        "righe_codice": 237,
+        "commenti": 4,
+        "vuote": 42,
+        "funzioni": 7,
+        "classi": 2,
+        "complessita": 5.1
+      },
+      "sdq1/backup.py": {
+        "righe_totali": 158,
+        "righe_codice": 135,
+        "commenti": 1,
+        "vuote": 22,
+        "funzioni": 4,
+        "classi": 0,
+        "complessita": 7.2
+      },
+      "sdq1/battito.py": {
+        "righe_totali": 124,
+        "righe_codice": 101,
+        "commenti": 0,
+        "vuote": 23,
+        "funzioni": 5,
+        "classi": 0,
+        "complessita": 2.8
+      },
+      "sdq1/benchmark.py": {
+        "righe_totali": 567,
+        "righe_codice": 476,
+        "commenti": 30,
+        "vuote": 61,
+        "funzioni": 14,
+        "classi": 0,
+        "complessita": 6.8
+      },
+      "sdq1/config/__init__.py": {
+        "righe_totali": 3,
+        "righe_codice": 2,
+        "commenti": 0,
+        "vuote": 1,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/config/loader.py": {
+        "righe_totali": 98,
+        "righe_codice": 79,
+        "commenti": 0,
+        "vuote": 19,
+        "funzioni": 4,
+        "classi": 2,
+        "complessita": 4.5
+      },
+      "sdq1/contatti.py": {
+        "righe_totali": 169,
+        "righe_codice": 145,
+        "commenti": 0,
+        "vuote": 24,
+        "funzioni": 4,
+        "classi": 0,
+        "complessita": 7.5
+      },
+      "sdq1/core/__init__.py": {
+        "righe_totali": 0,
+        "righe_codice": 0,
+        "commenti": 0,
+        "vuote": 0,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/core/jax_engine.py": {
+        "righe_totali": 125,
+        "righe_codice": 99,
+        "commenti": 8,
+        "vuote": 18,
+        "funzioni": 7,
+        "classi": 0,
+        "complessita": 3.0
+      },
+      "sdq1/desideri.py": {
+        "righe_totali": 318,
+        "righe_codice": 252,
+        "commenti": 1,
+        "vuote": 65,
+        "funzioni": 10,
+        "classi": 1,
+        "complessita": 5.0
+      },
+      "sdq1/diagnostica.py": {
+        "righe_totali": 192,
+        "righe_codice": 160,
+        "commenti": 8,
+        "vuote": 24,
+        "funzioni": 4,
+        "classi": 2,
+        "complessita": 5.5
+      },
+      "sdq1/futures/__init__.py": {
+        "righe_totali": 6,
+        "righe_codice": 4,
+        "commenti": 0,
+        "vuote": 2,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/futures/scenari.py": {
+        "righe_totali": 167,
+        "righe_codice": 160,
+        "commenti": 0,
+        "vuote": 7,
+        "funzioni": 2,
+        "classi": 1,
+        "complessita": 2.0
+      },
+      "sdq1/futures/simulatore.py": {
+        "righe_totali": 125,
+        "righe_codice": 110,
+        "commenti": 1,
+        "vuote": 14,
+        "funzioni": 6,
+        "classi": 2,
+        "complessita": 2.5
+      },
+      "sdq1/guardian.py": {
+        "righe_totali": 263,
+        "righe_codice": 200,
+        "commenti": 12,
+        "vuote": 51,
+        "funzioni": 10,
+        "classi": 0,
+        "complessita": 3.8
+      },
+      "sdq1/llm/__init__.py": {
+        "righe_totali": 4,
+        "righe_codice": 3,
+        "commenti": 0,
+        "vuote": 1,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/llm/client.py": {
+        "righe_totali": 82,
+        "righe_codice": 68,
+        "commenti": 1,
+        "vuote": 13,
+        "funzioni": 4,
+        "classi": 2,
+        "complessita": 1.2
+      },
+      "sdq1/llm/providers/__init__.py": {
+        "righe_totali": 19,
+        "righe_codice": 18,
+        "commenti": 0,
+        "vuote": 1,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/llm/providers/anthropic_provider.py": {
+        "righe_totali": 45,
+        "righe_codice": 37,
+        "commenti": 0,
+        "vuote": 8,
+        "funzioni": 2,
+        "classi": 1,
+        "complessita": 3.5
+      },
+      "sdq1/llm/providers/base.py": {
+        "righe_totali": 72,
+        "righe_codice": 61,
+        "commenti": 0,
+        "vuote": 11,
+        "funzioni": 5,
+        "classi": 2,
+        "complessita": 1.4
+      },
+      "sdq1/llm/providers/gemini_provider.py": {
+        "righe_totali": 66,
+        "righe_codice": 52,
+        "commenti": 0,
+        "vuote": 14,
+        "funzioni": 2,
+        "classi": 1,
+        "complessita": 4.5
+      },
+      "sdq1/llm/providers/ollama_provider.py": {
+        "righe_totali": 64,
+        "righe_codice": 52,
+        "commenti": 1,
+        "vuote": 11,
+        "funzioni": 2,
+        "classi": 1,
+        "complessita": 4.0
+      },
+      "sdq1/llm/providers/openai_provider.py": {
+        "righe_totali": 76,
+        "righe_codice": 60,
+        "commenti": 0,
+        "vuote": 16,
+        "funzioni": 2,
+        "classi": 5,
+        "complessita": 5.0
+      },
+      "sdq1/llm/providers/stub_provider.py": {
+        "righe_totali": 88,
+        "righe_codice": 72,
+        "commenti": 4,
+        "vuote": 12,
+        "funzioni": 3,
+        "classi": 1,
+        "complessita": 2.7
+      },
+      "sdq1/llm/router.py": {
+        "righe_totali": 409,
+        "righe_codice": 320,
+        "commenti": 35,
+        "vuote": 54,
+        "funzioni": 17,
+        "classi": 3,
+        "complessita": 4.3
+      },
+      "sdq1/llm/specializzazioni.py": {
+        "righe_totali": 216,
+        "righe_codice": 196,
+        "commenti": 2,
+        "vuote": 18,
+        "funzioni": 3,
+        "classi": 1,
+        "complessita": 4.3
+      },
+      "sdq1/memory/__init__.py": {
+        "righe_totali": 4,
+        "righe_codice": 3,
+        "commenti": 0,
+        "vuote": 1,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/memory/store.py": {
+        "righe_totali": 145,
+        "righe_codice": 116,
+        "commenti": 1,
+        "vuote": 28,
+        "funzioni": 10,
+        "classi": 3,
+        "complessita": 2.9
+      },
+      "sdq1/memory/vss.py": {
+        "righe_totali": 95,
+        "righe_codice": 64,
+        "commenti": 12,
+        "vuote": 19,
+        "funzioni": 8,
+        "classi": 1,
+        "complessita": 1.9
+      },
+      "sdq1/monitor.py": {
+        "righe_totali": 162,
+        "righe_codice": 130,
+        "commenti": 5,
+        "vuote": 27,
+        "funzioni": 5,
+        "classi": 0,
+        "complessita": 5.6
+      },
+      "sdq1/monitoring/__init__.py": {
+        "righe_totali": 9,
+        "righe_codice": 8,
+        "commenti": 0,
+        "vuote": 1,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/monitoring/health.py": {
+        "righe_totali": 112,
+        "righe_codice": 93,
+        "commenti": 2,
+        "vuote": 17,
+        "funzioni": 6,
+        "classi": 2,
+        "complessita": 3.5
+      },
+      "sdq1/monitoring/metrics.py": {
+        "righe_totali": 125,
+        "righe_codice": 110,
+        "commenti": 0,
+        "vuote": 15,
+        "funzioni": 5,
+        "classi": 2,
+        "complessita": 3.4
+      },
+      "sdq1/nas.py": {
+        "righe_totali": 337,
+        "righe_codice": 270,
+        "commenti": 15,
+        "vuote": 52,
+        "funzioni": 9,
+        "classi": 1,
+        "complessita": 2.8
+      },
+      "sdq1/orchestrator/__init__.py": {
+        "righe_totali": 0,
+        "righe_codice": 0,
+        "commenti": 0,
+        "vuote": 0,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/orchestrator/gerarchico.py": {
+        "righe_totali": 158,
+        "righe_codice": 136,
+        "commenti": 1,
+        "vuote": 21,
+        "funzioni": 5,
+        "classi": 2,
+        "complessita": 4.2
+      },
+      "sdq1/output/__init__.py": {
+        "righe_totali": 0,
+        "righe_codice": 0,
+        "commenti": 0,
+        "vuote": 0,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/output/cad_bridge.py": {
+        "righe_totali": 166,
+        "righe_codice": 135,
+        "commenti": 3,
+        "vuote": 28,
+        "funzioni": 5,
+        "classi": 2,
+        "complessita": 4.0
+      },
+      "sdq1/persistence/__init__.py": {
+        "righe_totali": 3,
+        "righe_codice": 2,
+        "commenti": 0,
+        "vuote": 1,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/persistence/store.py": {
+        "righe_totali": 174,
+        "righe_codice": 138,
+        "commenti": 0,
+        "vuote": 36,
+        "funzioni": 25,
+        "classi": 4,
+        "complessita": 1.8
+      },
+      "sdq1/persisti.py": {
+        "righe_totali": 183,
+        "righe_codice": 149,
+        "commenti": 0,
+        "vuote": 34,
+        "funzioni": 8,
+        "classi": 0,
+        "complessita": 3.9
+      },
+      "sdq1/sar/__init__.py": {
+        "righe_totali": 37,
+        "righe_codice": 36,
+        "commenti": 0,
+        "vuote": 1,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/sar/agenti_autonomi.py": {
+        "righe_totali": 527,
+        "righe_codice": 410,
+        "commenti": 30,
+        "vuote": 87,
+        "funzioni": 29,
+        "classi": 8,
+        "complessita": 2.1
+      },
+      "sdq1/sar/archivio_vivente.py": {
+        "righe_totali": 229,
+        "righe_codice": 168,
+        "commenti": 10,
+        "vuote": 51,
+        "funzioni": 11,
+        "classi": 1,
+        "complessita": 2.4
+      },
+      "sdq1/sar/ciclo.py": {
+        "righe_totali": 113,
+        "righe_codice": 94,
+        "commenti": 0,
+        "vuote": 19,
+        "funzioni": 6,
+        "classi": 3,
+        "complessita": 2.2
+      },
+      "sdq1/sar/code_scanner.py": {
+        "righe_totali": 469,
+        "righe_codice": 365,
+        "commenti": 36,
+        "vuote": 68,
+        "funzioni": 9,
+        "classi": 1,
+        "complessita": 6.9
+      },
+      "sdq1/sar/coerenza.py": {
+        "righe_totali": 80,
+        "righe_codice": 65,
+        "commenti": 0,
+        "vuote": 15,
+        "funzioni": 6,
+        "classi": 2,
+        "complessita": 2.2
+      },
+      "sdq1/sar/contraddittore.py": {
+        "righe_totali": 374,
+        "righe_codice": 301,
+        "commenti": 19,
+        "vuote": 54,
+        "funzioni": 17,
+        "classi": 3,
+        "complessita": 2.9
+      },
+      "sdq1/sar/memoria_evolutiva.py": {
+        "righe_totali": 134,
+        "righe_codice": 113,
+        "commenti": 0,
+        "vuote": 21,
+        "funzioni": 9,
+        "classi": 3,
+        "complessita": 2.9
+      },
+      "sdq1/sar/persistence.py": {
+        "righe_totali": 163,
+        "righe_codice": 135,
+        "commenti": 6,
+        "vuote": 22,
+        "funzioni": 7,
+        "classi": 1,
+        "complessita": 3.4
+      },
+      "sdq1/sar/predittivo.py": {
+        "righe_totali": 359,
+        "righe_codice": 293,
+        "commenti": 16,
+        "vuote": 50,
+        "funzioni": 14,
+        "classi": 3,
+        "complessita": 3.4
+      },
+      "sdq1/sar/radar_emozionale.py": {
+        "righe_totali": 262,
+        "righe_codice": 197,
+        "commenti": 19,
+        "vuote": 46,
+        "funzioni": 10,
+        "classi": 1,
+        "complessita": 4.0
+      },
+      "sdq1/sar/report_testo.py": {
+        "righe_totali": 123,
+        "righe_codice": 102,
+        "commenti": 0,
+        "vuote": 21,
+        "funzioni": 4,
+        "classi": 0,
+        "complessita": 3.5
+      },
+      "sdq1/sar/rilevatore_intruso.py": {
+        "righe_totali": 196,
+        "righe_codice": 153,
+        "commenti": 10,
+        "vuote": 33,
+        "funzioni": 6,
+        "classi": 3,
+        "complessita": 4.7
+      },
+      "sdq1/sar/sar.py": {
+        "righe_totali": 280,
+        "righe_codice": 217,
+        "commenti": 20,
+        "vuote": 43,
+        "funzioni": 9,
+        "classi": 2,
+        "complessita": 3.6
+      },
+      "sdq1/sar/scacchiera_quantica.py": {
+        "righe_totali": 367,
+        "righe_codice": 287,
+        "commenti": 21,
+        "vuote": 59,
+        "funzioni": 16,
+        "classi": 6,
+        "complessita": 2.6
+      },
+      "sdq1/sar/sognatore.py": {
+        "righe_totali": 204,
+        "righe_codice": 171,
+        "commenti": 0,
+        "vuote": 33,
+        "funzioni": 7,
+        "classi": 2,
+        "complessita": 2.1
+      },
+      "sdq1/sar/tensioni.py": {
+        "righe_totali": 109,
+        "righe_codice": 89,
+        "commenti": 0,
+        "vuote": 20,
+        "funzioni": 8,
+        "classi": 4,
+        "complessita": 1.8
+      },
+      "sdq1/scout.py": {
+        "righe_totali": 438,
+        "righe_codice": 345,
+        "commenti": 16,
+        "vuote": 77,
+        "funzioni": 19,
+        "classi": 3,
+        "complessita": 3.4
+      },
+      "sdq1/skyid.py": {
+        "righe_totali": 290,
+        "righe_codice": 229,
+        "commenti": 5,
+        "vuote": 56,
+        "funzioni": 15,
+        "classi": 2,
+        "complessita": 3.0
+      },
+      "sdq1/snapshot.py": {
+        "righe_totali": 189,
+        "righe_codice": 159,
+        "commenti": 0,
+        "vuote": 30,
+        "funzioni": 9,
+        "classi": 0,
+        "complessita": 2.7
+      },
+      "sdq1/tests/__init__.py": {
+        "righe_totali": 0,
+        "righe_codice": 0,
+        "commenti": 0,
+        "vuote": 0,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 1.0
+      },
+      "sdq1/tests/smoke.py": {
+        "righe_totali": 142,
+        "righe_codice": 112,
+        "commenti": 3,
+        "vuote": 27,
+        "funzioni": 11,
+        "classi": 0,
+        "complessita": 1.9
+      },
+      "sdq1/watchdog.py": {
+        "righe_totali": 87,
+        "righe_codice": 71,
+        "commenti": 0,
+        "vuote": 16,
+        "funzioni": 5,
+        "classi": 1,
+        "complessita": 2.8
+      }
+    },
+    "tempo_s": 0.034
+  },
+  "tempo_totale_s": 0.542
+}

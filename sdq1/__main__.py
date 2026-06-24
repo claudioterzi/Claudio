@@ -215,6 +215,14 @@ def main(argv: list[str]) -> int:
                         help="Snapshot completo: git + codice + agenti + output — salva in output/snapshots/")
     parser.add_argument("--push", action="store_true",
                         help="Con --snapshot: commit + push del file snapshot su GitHub")
+    parser.add_argument("--scan", action="store_true",
+                        help="Scansione completa codebase: sicurezza + qualità + dipendenze + metriche")
+    parser.add_argument("--scan-sicurezza", action="store_true",
+                        help="Solo scansione sicurezza: API key, segreti, pattern pericolosi")
+    parser.add_argument("--scan-qualita", action="store_true",
+                        help="Solo analisi qualità: debito tecnico, code smell, pattern fragili")
+    parser.add_argument("--scan-metriche", action="store_true",
+                        help="Solo metriche codice: righe, funzioni, classi, complessità")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -388,6 +396,37 @@ def main(argv: list[str]) -> int:
         m = risultati["meta"]
         print(f"[SCACCHIERA] Nodi: {m['nodi_totali_esplorati']} | Score max: {m['score_globale_max']}"
               f" | Salti: {m['salti_totali']} | Tempo: {risultati['tempo']}s")
+        return 0
+
+    if args.scan or args.scan_sicurezza or args.scan_qualita or args.scan_metriche:
+        from .sar.code_scanner import CodeScanner, stampa_report
+        scanner = CodeScanner()
+        if args.scan:
+            report = scanner.scansione_completa()
+            stampa_report(report)
+            Path("output").mkdir(exist_ok=True)
+            out = Path("output/scan_report.json")
+            out.write_text(json.dumps(report, indent=2, ensure_ascii=False, default=str),
+                           encoding="utf-8")
+            print(f"[SCAN] Report salvato: {out}")
+        elif args.scan_sicurezza:
+            r = scanner.scansione_sicurezza()
+            print(f"[SICUREZZA] {r['livello']} | Pattern: {r['pattern_scansionati']} | "
+                  f"Trovati: {len(r['trovati'])} | Tempo: {r['tempo_s']}s")
+            for p in r["trovati"]:
+                print(f"  [{p['severità']}] {p['tipo']} — {p['file']}:{p['riga']}")
+        elif args.scan_qualita:
+            r = scanner.analisi_qualita()
+            print(f"[QUALITÀ] Score: {r['score_salute']}/100 | Debito: {r['score_debito']} | "
+                  f"File: {r['file_py_analizzati']} | Tempo: {r['tempo_s']}s")
+            for p in r["problemi_critici"]:
+                print(f"  {p['tipo']} — {p['file']}:{p['riga']}")
+        elif args.scan_metriche:
+            r = scanner.metriche_codice()
+            print(f"[METRICHE] {r['file_analizzati']} file | {r['totale_righe']} righe | "
+                  f"{r['totale_funzioni']} funzioni | {r['totale_classi']} classi")
+            for m in r["top5_per_dimensione"]:
+                print(f"  {m['file']:<48} {m['righe_codice']:>5} righe  cc={m['complessita']}")
         return 0
 
     if args.snapshot:
