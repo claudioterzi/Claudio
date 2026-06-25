@@ -1,5 +1,5 @@
 """
-sdq1/agenda.py — Agenda personale e Pronto Rota di Claudio Terzi.
+sdq1/agenda.py — Agenda personale, Pronto Rota e calendario Airbnb di Claudio Terzi.
 
 Legge da output/agenda.json (cachato dalla sessione Claude Code con accesso Drive+Calendar).
 Fornisce riepilogo operativo per il briefing Telegram mattutino.
@@ -14,6 +14,7 @@ Uso:
 from __future__ import annotations
 
 import json
+import urllib.request
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any
@@ -54,6 +55,73 @@ def _formatta_dt(iso: str) -> str:
         return iso[:16]
 
 
+def _fetch_ical(url: str) -> str:
+    with urllib.request.urlopen(url, timeout=15) as r:
+        return r.read().decode("utf-8", errors="replace")
+
+
+def _parse_ical(text: str) -> list[dict]:
+    unfolded: list[str] = []
+    for raw in text.splitlines():
+        if raw.startswith((" ", "\t")) and unfolded:
+            unfolded[-1] += raw[1:]
+        else:
+            unfolded.append(raw)
+
+    events: list[dict] = []
+    ev: dict | None = None
+    for line in unfolded:
+        tag = line.rstrip()
+        if tag == "BEGIN:VEVENT":
+            ev = {}
+        elif tag == "END:VEVENT":
+            if ev is not None:
+                events.append(ev)
+            ev = None
+        elif ev is not None and ":" in line:
+            key, _, val = line.partition(":")
+            key = key.split(";")[0].upper()
+            ev[key] = val.strip().replace("\\n", "\n").replace("\\,", ",")
+    return events
+
+
+def _ical_dt_to_iso(raw: str) -> str:
+    raw = raw.strip()
+    try:
+        if len(raw) == 8:
+            d = datetime(int(raw[:4]), int(raw[4:6]), int(raw[6:8]), tzinfo=_TZ)
+            return d.isoformat()
+        if raw.endswith("Z") and len(raw) >= 15:
+            dt = datetime(int(raw[:4]), int(raw[4:6]), int(raw[6:8]),
+                          int(raw[9:11]), int(raw[11:13]), tzinfo=timezone.utc)
+            return dt.astimezone(_TZ).isoformat()
+    except Exception:
+        pass
+    return raw
+
+
+def sync_airbnb(url: str) -> list[dict]:
+    """Recupera l'iCal Airbnb e restituisce le prenotazioni in formato agenda."""
+    raw = _fetch_ical(url)
+    bookings = []
+    for ev in _parse_ical(raw):
+        summary = ev.get("SUMMARY", "Prenotazione")
+        dtstart = ev.get("DTSTART", "")
+        dtend = ev.get("DTEND", "")
+        uid = ev.get("UID", "")
+        if not dtstart:
+            continue
+        bookings.append({
+            "uid": uid,
+            "titolo": summary,
+            "checkin": _ical_dt_to_iso(dtstart),
+            "checkout": _ical_dt_to_iso(dtend) if dtend else "",
+            "tipo": "airbnb",
+        })
+    bookings.sort(key=lambda b: b.get("checkin", ""))
+    return bookings
+
+
 def prossimi_viaggi(giorni: int = 7) -> list[dict]:
     agenda = carica()
     ora = datetime.now(_TZ)
@@ -88,6 +156,21 @@ def riepilogo_briefing() -> str:
             righe.append(f"  {icona} <b>{r['priorita']}</b> — {r['titolo']}")
             if r.get("prossimo_passo"):
                 righe.append(f"      → {r['prossimo_passo']}")
+
+    # Prenotazioni Airbnb (check-in/checkout nei prossimi 3 giorni)
+    airbnb = agenda.get("prenotazioni_airbnb", [])
+    if airbnb:
+        ora = datetime.now(_TZ)
+        limite = (ora + timedelta(days=3)).isoformat()
+        ora_str = ora.isoformat()
+        checkin_imm = [b for b in airbnb if ora_str <= b.get("checkin", "") <= limite]
+        checkout_imm = [b for b in airbnb if ora_str <= b.get("checkout", "") <= limite]
+        if checkin_imm or checkout_imm:
+            righe.append("\n<b>🏠 Airbnb</b>")
+            for b in checkin_imm:
+                righe.append(f"  ✈️ Check-in {_formatta_dt(b['checkin'])} — {b['titolo']}")
+            for b in checkout_imm:
+                righe.append(f"  🚪 Check-out {_formatta_dt(b['checkout'])} — {b['titolo']}")
 
     # Note operative
     note = agenda.get("note", [])

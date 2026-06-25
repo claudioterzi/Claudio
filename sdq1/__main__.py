@@ -231,6 +231,8 @@ def main(argv: list[str]) -> int:
                         help="Legge ed esegue comandi Telegram in coda (/scan /status /agenti /push)")
     parser.add_argument("--agenda", action="store_true",
                         help="Mostra agenda personale e Pronto Rota (legge output/agenda.json)")
+    parser.add_argument("--sync-airbnb", metavar="URL", nargs="?", const="",
+                        help="Sincronizza calendario Airbnb iCal (legge AIRBNB_ICAL_URL se URL omesso)")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -489,6 +491,24 @@ def main(argv: list[str]) -> int:
         rota = [r for r in agenda.get("pronto_rota", []) if not r.get("fatto")]
         print(f"Pronto Rota: {len(rota)} item da fare\n")
         print(riepilogo_briefing() or "(agenda vuota)")
+        return 0
+
+    if args.sync_airbnb is not None:
+        url = args.sync_airbnb or os.environ.get("AIRBNB_ICAL_URL", "")
+        if not url:
+            print("Errore: specifica URL o imposta AIRBNB_ICAL_URL nel .env")
+            return 1
+        from .agenda import sync_airbnb, carica, salva
+        print("Fetch iCal Airbnb...")
+        bookings = sync_airbnb(url)
+        print(f"Trovate {len(bookings)} prenotazioni")
+        dati = carica()
+        dati["prenotazioni_airbnb"] = bookings
+        salva(dati)
+        for b in bookings:
+            stato = b.get("titolo", "?")
+            print(f"  {b.get('checkin', '')[:10]} → {b.get('checkout', '')[:10]}  {stato}")
+        print("Salvate in output/agenda.json")
         return 0
 
     if args.notifica_test or args.notifica_briefing or args.telegram_comandi:
