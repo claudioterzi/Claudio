@@ -235,18 +235,6 @@ def main(argv: list[str]) -> int:
                         help="Sincronizza calendario Airbnb iCal (legge AIRBNB_ICAL_URL se URL omesso)")
     args = parser.parse_args(argv[1:])
 
-    if args.watchdog:
-        from .watchdog import Watchdog
-        wd = Watchdog(health, router, intervallo_s=args.intervallo)
-        print(f"Watchdog avviato — ping ogni {args.intervallo}s — log: output/health_log.jsonl")
-        print("Ctrl+C per fermare.")
-        try:
-            wd.avvia()
-        except KeyboardInterrupt:
-            wd.ferma()
-            print("\nWatchdog fermato.")
-        return 0
-
     if args.contatto:
         _contatti = Path("output/contatti.jsonl")
         _contatti.parent.mkdir(parents=True, exist_ok=True)
@@ -291,6 +279,37 @@ def main(argv: list[str]) -> int:
         print(json.dumps(esito, indent=2, ensure_ascii=False))
         return 0
 
+    if args.sync_airbnb is not None:
+        url = args.sync_airbnb or os.environ.get("AIRBNB_ICAL_URL", "")
+        if not url:
+            print("Errore: specifica URL o imposta AIRBNB_ICAL_URL nel .env")
+            return 1
+        from .agenda import sync_airbnb, carica, salva
+        print("Fetch iCal Airbnb...")
+        bookings = sync_airbnb(url)
+        print(f"Trovate {len(bookings)} prenotazioni")
+        dati = carica()
+        dati["prenotazioni_airbnb"] = bookings
+        salva(dati)
+        for b in bookings:
+            stato_b = b.get("titolo", "?")
+            print(f"  {b.get('checkin', '')[:10]} → {b.get('checkout', '')[:10]}  {stato_b}")
+        print("Salvate in output/agenda.json")
+        return 0
+
+    if args.chat_telegram:
+        from .notifiche import esegui_comandi_e_chat
+        n = esegui_comandi_e_chat()
+        print(f"[CHAT] Messaggi elaborati: {n}")
+        return 0
+
+    if args.briefing_operativo:
+        from .notifiche import briefing_operativo
+        print("[BRIEFING] Query multi-AI in corso (Gemini + Claude + DeepSeek)...")
+        ok = briefing_operativo()
+        print(f"[BRIEFING] {'Inviato ✅' if ok else 'Fallito ❌'}")
+        return 0 if ok else 1
+
     orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
 
     # Startup: aggiorna circuit breaker in base allo stato reale dei provider
@@ -317,6 +336,18 @@ def main(argv: list[str]) -> int:
         for name in list(PROVIDER_REGISTRY):
             if name != "stub":
                 router._circuit[name] = time.time() + 86400  # aperto per 24h
+
+    if args.watchdog:
+        from .watchdog import Watchdog
+        wd = Watchdog(health, router, intervallo_s=args.intervallo)
+        print(f"Watchdog avviato — ping ogni {args.intervallo}s — log: output/health_log.jsonl")
+        print("Ctrl+C per fermare.")
+        try:
+            wd.avvia()
+        except KeyboardInterrupt:
+            wd.ferma()
+            print("\nWatchdog fermato.")
+        return 0
 
     if args.autoevoluzione:
         _data, _ora = _ora_brussels()
@@ -491,24 +522,6 @@ def main(argv: list[str]) -> int:
         rota = [r for r in agenda.get("pronto_rota", []) if not r.get("fatto")]
         print(f"Pronto Rota: {len(rota)} item da fare\n")
         print(riepilogo_briefing() or "(agenda vuota)")
-        return 0
-
-    if args.sync_airbnb is not None:
-        url = args.sync_airbnb or os.environ.get("AIRBNB_ICAL_URL", "")
-        if not url:
-            print("Errore: specifica URL o imposta AIRBNB_ICAL_URL nel .env")
-            return 1
-        from .agenda import sync_airbnb, carica, salva
-        print("Fetch iCal Airbnb...")
-        bookings = sync_airbnb(url)
-        print(f"Trovate {len(bookings)} prenotazioni")
-        dati = carica()
-        dati["prenotazioni_airbnb"] = bookings
-        salva(dati)
-        for b in bookings:
-            stato = b.get("titolo", "?")
-            print(f"  {b.get('checkin', '')[:10]} → {b.get('checkout', '')[:10]}  {stato}")
-        print("Salvate in output/agenda.json")
         return 0
 
     if args.notifica_test or args.notifica_briefing or args.telegram_comandi:

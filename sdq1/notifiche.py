@@ -203,8 +203,8 @@ def briefing_mattutino() -> bool:
 # COMANDI IN ENTRATA
 # ══════════════════════════════════════════════════════════════════
 
-def leggi_comandi() -> list[dict[str, Any]]:
-    """Legge nuovi comandi Telegram dall'ultima lettura (stateful via offset file)."""
+def _leggi_aggiornamenti() -> list[dict[str, Any]]:
+    """Legge tutti i nuovi aggiornamenti Telegram (comandi e messaggi liberi)."""
     last_id = 0
     if _OFFSET_FILE.exists():
         try:
@@ -224,12 +224,15 @@ def leggi_comandi() -> list[dict[str, Any]]:
     if not updates:
         return []
 
-    # Salva nuovo offset
     _OFFSET_FILE.parent.mkdir(parents=True, exist_ok=True)
     _OFFSET_FILE.write_text(json.dumps(updates[-1]["update_id"]))
+    return updates
 
+
+def leggi_comandi() -> list[dict[str, Any]]:
+    """Legge nuovi comandi / (compatibilità esistente)."""
     comandi = []
-    for upd in updates:
+    for upd in _leggi_aggiornamenti():
         msg = upd.get("message", {})
         testo = msg.get("text", "").strip()
         if testo.startswith("/"):
@@ -243,95 +246,260 @@ def leggi_comandi() -> list[dict[str, Any]]:
     return comandi
 
 
-def esegui_comandi() -> int:
-    """Legge ed esegue tutti i comandi Telegram in coda. Restituisce numero eseguiti."""
-    comandi = leggi_comandi()
-    if not comandi:
-        print("[TELEGRAM] Nessun comando in coda.")
+def _risposta_claude(testo_utente: str) -> str:
+    """Chiama Claude Haiku e restituisce la risposta per Telegram."""
+    try:
+        from sdq1.llm.providers import AnthropicProvider
+        from sdq1.agenda import riepilogo_briefing
+
+        ctx = riepilogo_briefing() or ""
+
+        sistema = (
+            "Sei Raffaello — l'intelligenza operativa di SDQ-1, il sistema autonomo di Claudio Terzi. "
+            "Rispondi in italiano, sintetico e diretto. "
+            "Hai accesso al contesto dell'agenda e delle prenotazioni Airbnb di Claudio. "
+            f"Contesto attuale:\n{ctx}\n"
+            "Se la domanda riguarda l'agenda o l'Airbnb, usa questi dati. "
+            "Altrimenti rispondi alla domanda liberamente con il tuo giudizio autonomo."
+        )
+        prov = AnthropicProvider(modello="claude-haiku-4-5-20251001", api_key=None, timeout=30)
+        if not prov.disponibile:
+            return "⚠️ Claude non disponibile al momento."
+        r = prov.completa(sistema, testo_utente)
+        return r.testo.strip() if r.testo else "⚠️ Nessuna risposta."
+    except Exception as e:
+        return f"⚠️ Errore: {e}"
+
+
+def esegui_comandi_e_chat() -> int:
+    """Legge tutti i messaggi Telegram: esegue comandi / e risponde via Claude ai messaggi liberi."""
+    updates = _leggi_aggiornamenti()
+    if not updates:
+        print("[TELEGRAM] Nessun messaggio in coda.")
         return 0
 
-    for cmd in comandi:
-        nome = cmd["comando"]
-        print(f"[TELEGRAM] Comando: /{nome}")
+    eseguiti = 0
+    for upd in updates:
+        msg = upd.get("message", {})
+        testo = msg.get("text", "").strip()
+        if not testo:
+            continue
 
-        if nome == "scan":
-            notifica_progresso("Scan in corso...", emoji="🔍")
-            try:
-                from sdq1.sar.code_scanner import CodeScanner
-                sc = CodeScanner()
-                sic = sc.scansione_sicurezza()
-                qual = sc.analisi_qualita()
-                score = round(sic["score"] * 0.6 + qual["score_salute"] * 0.4)
-                invia(
-                    f"🔍 <b>Scan completato</b>\n"
-                    f"  Score: <b>{score}/100</b>\n"
-                    f"  Sicurezza: {sic['score']}/100 {'✅' if sic['ok'] else '🔴'}\n"
-                    f"  Qualità: {qual['score_salute']}/100 | debito: {qual['score_debito']}pt\n"
-                    f"  File: {qual['file_py_analizzati']} | Pattern: {sic['pattern_scansionati']}"
-                )
-            except Exception as e:
-                invia(f"❌ Scan fallito: {e}")
+        eseguiti += 1
 
-        elif nome == "status":
-            try:
-                from sdq1.snapshot import crea_snapshot
-                snap = crea_snapshot()
-                g = snap["git"]
-                c = snap["codice"]
-                a = snap["agenti"]
-                sc = snap.get("scanner", {})
-                grd = _emoji_livello(a.get("guardian_allerta", "?")) if a.get("ok") else "?"
-                invia(
-                    f"📊 <b>Status SDQ-1</b>\n"
-                    f"  Commit: <code>{g['commit_short']}</code> | Git: {'✓' if not g['dirty'] else '⚠'}\n"
-                    f"  Codice: {c['file_presenti']}/{len(c['file'])} integri\n"
-                    f"  Guardian: {grd} {a.get('guardian_allerta', '?')}\n"
-                    f"  Scacchiera: {a.get('scacchiera_score', '?')}\n"
-                    f"  Scanner: {sc.get('score_sistema', '?')}/100"
-                )
-            except Exception as e:
-                invia(f"❌ Status fallito: {e}")
-
-        elif nome == "agenti":
-            notifica_progresso("Ciclo 7 agenti in corso...", emoji="🤖")
-            try:
-                from sdq1.sar.agenti_autonomi import SistemaAgenti
-                sistema = SistemaAgenti()
-                sistema.attivazione()
-                report = sistema.ciclo_valutazione()
-                sq = report.get("scacchiera", {})
-                grd = report.get("agenti", {}).get("guardian", {}).get("livello_allerta", "?")
-                notifica_completato("Agenti completati", [
-                    f"Guardian: {_emoji_livello(grd)} {grd}",
-                    f"Scacchiera: {sq.get('score_medio', '?'):.2f}  dir: {sq.get('direzione_dominante', '?')}",
-                    f"Codebase: {report.get('scanner', {}).get('score_sistema', '?')}/100",
-                ])
-            except Exception as e:
-                invia(f"❌ Agenti falliti: {e}")
-
-        elif nome == "push":
-            notifica_progresso("Snapshot + push in corso...", emoji="☁️")
-            try:
-                from sdq1.snapshot import crea_snapshot, salva_snapshot, push_snapshot
-                snap = crea_snapshot()
-                dest = salva_snapshot(snap)
-                ok = push_snapshot(dest)
-                sc = snap.get("scanner", {})
-                notifica_completato("Push completato" if ok else "Push fallito", [
-                    f"Snapshot: {dest.name}",
-                    f"GitHub: {'✅ OK' if ok else '❌ FALLITO'}",
-                    f"Scanner: {sc.get('score_sistema', '?')}/100",
-                ])
-            except Exception as e:
-                invia(f"❌ Push fallito: {e}")
-
+        if testo.startswith("/"):
+            # Comando sistema
+            parti = testo.split()
+            nome = parti[0].lower().lstrip("/")
+            _esegui_singolo_comando(nome)
         else:
-            invia(
-                f"❓ Comando <code>/{nome}</code> non riconosciuto.\n"
-                f"Comandi disponibili: /scan /status /agenti /push"
-            )
+            # Messaggio libero → risponde Claude
+            print(f"[TELEGRAM] Messaggio: {testo[:60]}")
+            risposta = _risposta_claude(testo)
+            invia(f"🤖 <b>Raffaello</b>\n\n{risposta}")
 
-    return len(comandi)
+    return eseguiti
+
+
+def _esegui_singolo_comando(nome: str) -> None:
+    """Esegue un singolo comando Telegram."""
+    print(f"[TELEGRAM] Comando: /{nome}")
+
+    if nome == "scan":
+        notifica_progresso("Scan in corso...", emoji="🔍")
+        try:
+            from sdq1.sar.code_scanner import CodeScanner
+            sc = CodeScanner()
+            sic = sc.scansione_sicurezza()
+            qual = sc.analisi_qualita()
+            score = round(sic["score"] * 0.6 + qual["score_salute"] * 0.4)
+            invia(
+                f"🔍 <b>Scan completato</b>\n"
+                f"  Score: <b>{score}/100</b>\n"
+                f"  Sicurezza: {sic['score']}/100 {'✅' if sic['ok'] else '🔴'}\n"
+                f"  Qualità: {qual['score_salute']}/100 | debito: {qual['score_debito']}pt\n"
+                f"  File: {qual['file_py_analizzati']} | Pattern: {sic['pattern_scansionati']}"
+            )
+        except Exception as e:
+            invia(f"❌ Scan fallito: {e}")
+
+    elif nome == "status":
+        try:
+            from sdq1.snapshot import crea_snapshot
+            snap = crea_snapshot()
+            g = snap["git"]
+            c = snap["codice"]
+            a = snap["agenti"]
+            sc = snap.get("scanner", {})
+            grd = _emoji_livello(a.get("guardian_allerta", "?")) if a.get("ok") else "?"
+            invia(
+                f"📊 <b>Status SDQ-1</b>\n"
+                f"  Commit: <code>{g['commit_short']}</code> | Git: {'✓' if not g['dirty'] else '⚠'}\n"
+                f"  Codice: {c['file_presenti']}/{len(c['file'])} integri\n"
+                f"  Guardian: {grd} {a.get('guardian_allerta', '?')}\n"
+                f"  Scacchiera: {a.get('scacchiera_score', '?')}\n"
+                f"  Scanner: {sc.get('score_sistema', '?')}/100"
+            )
+        except Exception as e:
+            invia(f"❌ Status fallito: {e}")
+
+    elif nome == "agenti":
+        notifica_progresso("Ciclo 7 agenti in corso...", emoji="🤖")
+        try:
+            from sdq1.sar.agenti_autonomi import SistemaAgenti
+            sistema = SistemaAgenti()
+            sistema.attivazione()
+            report = sistema.ciclo_valutazione()
+            sq = report.get("scacchiera", {})
+            grd = report.get("agenti", {}).get("guardian", {}).get("livello_allerta", "?")
+            notifica_completato("Agenti completati", [
+                f"Guardian: {_emoji_livello(grd)} {grd}",
+                f"Scacchiera: {sq.get('score_medio', '?'):.2f}  dir: {sq.get('direzione_dominante', '?')}",
+                f"Codebase: {report.get('scanner', {}).get('score_sistema', '?')}/100",
+            ])
+        except Exception as e:
+            invia(f"❌ Agenti falliti: {e}")
+
+    elif nome == "push":
+        notifica_progresso("Snapshot + push in corso...", emoji="☁️")
+        try:
+            from sdq1.snapshot import crea_snapshot, salva_snapshot, push_snapshot
+            snap = crea_snapshot()
+            dest = salva_snapshot(snap)
+            ok = push_snapshot(dest)
+            sc = snap.get("scanner", {})
+            notifica_completato("Push completato" if ok else "Push fallito", [
+                f"Snapshot: {dest.name}",
+                f"GitHub: {'✅ OK' if ok else '❌ FALLITO'}",
+                f"Scanner: {sc.get('score_sistema', '?')}/100",
+            ])
+        except Exception as e:
+            invia(f"❌ Push fallito: {e}")
+
+    elif nome == "briefing":
+        briefing_operativo()
+
+    else:
+        invia(
+            f"❓ Comando <code>/{nome}</code> non riconosciuto.\n"
+            f"Comandi: /scan /status /agenti /push /briefing\n"
+            f"Oppure scrivi liberamente — rispondo io."
+        )
+
+
+def esegui_comandi() -> int:
+    """Legge ed esegue comandi Telegram. Ora delega a esegui_comandi_e_chat."""
+    return esegui_comandi_e_chat()
+
+
+def _consulta_ai(provider_cls, modello: str, sistema: str, domanda: str) -> str:
+    """Chiede a un provider. Restituisce risposta o stringa vuota."""
+    try:
+        prov = provider_cls(modello=modello, api_key=None, timeout=25)
+        if not prov.disponibile:
+            return ""
+        r = prov.completa(sistema, domanda)
+        return r.testo.strip() if r.testo else ""
+    except Exception:
+        return ""
+
+
+def briefing_operativo() -> bool:
+    """Briefing operativo 4 blocchi — query multi-AI (Gemini + Claude + DeepSeek)."""
+    import concurrent.futures
+    from sdq1.agenda import carica as carica_agenda, prossimi_viaggi
+    from sdq1.llm.providers import GeminiProvider, AnthropicProvider, DeepSeekProvider
+
+    agenda = carica_agenda()
+    ora = datetime.now(_TZ).strftime("%Y-%m-%d %H:%M")
+    oggi = datetime.now(_TZ).date().isoformat()
+
+    rota = [r for r in agenda.get("pronto_rota", []) if not r.get("fatto")]
+    airbnb = agenda.get("prenotazioni_airbnb", [])
+    viaggi = prossimi_viaggi(giorni=1)
+
+    # Contesto condiviso per i provider
+    p0 = rota[0] if rota else {}
+    checkin_oggi = [b for b in airbnb if b.get("checkin", "").startswith(oggi)]
+    checkout_oggi = [b for b in airbnb if b.get("checkout", "").startswith(oggi)]
+    reserved = [b for b in airbnb if "Reserved" in b.get("titolo", "")]
+
+    contesto = (
+        f"Data: {ora}\n"
+        f"Azione P0: {p0.get('titolo', 'nessuna')} — {p0.get('prossimo_passo', '')}\n"
+        f"Airbnb: {len(reserved)} prenotazioni attive | "
+        f"check-in oggi: {len(checkin_oggi)} | check-out oggi: {len(checkout_oggi)}\n"
+        f"Viaggio oggi: {viaggi[0]['titolo'] if viaggi else 'nessuno'}\n"
+    )
+
+    karch = next((r for r in rota if "Kärcher" in r.get("titolo", "") or "kärcher" in r.get("titolo", "").lower()), None)
+    roi = karch.get("roi", {}) if karch else {}
+    netto = roi.get("netto_per_intervento", 119.60)
+    capex = roi.get("capex_totale", 484.99)
+
+    # Query parallele ai provider
+    SISTEMA_INTENTO = (
+        "Sei l'intelligenza operativa di SDQ-1. Genera UNA singola frase di allineamento "
+        "in italiano: energica, chirurgica, orientata all'azione. Max 15 parole."
+    )
+    SISTEMA_COSTRUTTO = (
+        "Sei l'analista sistemico di SDQ-1. In 2 frasi telegrafiche in italiano: "
+        "stato infrastruttura e prossima milestone operativa. Max 25 parole totali."
+    )
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+        fut_gemini   = ex.submit(_consulta_ai, GeminiProvider,    "gemini-2.5-flash",          SISTEMA_INTENTO,    contesto)
+        fut_claude   = ex.submit(_consulta_ai, AnthropicProvider, "claude-haiku-4-5-20251001", SISTEMA_COSTRUTTO, contesto)
+        fut_deepseek = ex.submit(_consulta_ai, DeepSeekProvider,  "deepseek-chat",             SISTEMA_COSTRUTTO, contesto)
+
+    intento            = fut_gemini.result()   or "L'azione è cristallizzata. Il sistema avanza."
+    costrutto_claude   = fut_claude.result()
+    costrutto_deepseek = fut_deepseek.result()
+
+    # Costrutto: usa quello disponibile o entrambi
+    if costrutto_claude and costrutto_deepseek:
+        costrutto = f"[Claude] {costrutto_claude}\n[DeepSeek] {costrutto_deepseek}"
+    else:
+        costrutto = costrutto_claude or costrutto_deepseek or "Sistema SDQ-1 operativo."
+
+    # Blocco 2 — Bersaglio Fisico
+    riga_azione = f"{p0.get('icona', '⚡')} {p0.get('titolo', '—')}\n→ {p0.get('prossimo_passo', '—')}"
+    if viaggi:
+        v = viaggi[0]
+        riga_azione += f"\n🚆 {v['titolo']} — {v.get('inizio', '')[:16][-5:]}"
+
+    # Blocco 3 — Matematica
+    n = len(reserved)
+    valore_lordo = n * 120
+    costo_op = n * 0.40
+    valore_netto = valore_lordo - costo_op
+    karch_line = ""
+    if karch:
+        karch_line = (
+            f"\n  🧹 Kärcher: CAPEX {capex:.0f}€ | ROI break-even in 5 interventi"
+        )
+
+    righe = [
+        f"<b>⚡ SDQ-1 — Briefing Operativo</b>  <i>{ora}</i>",
+        "",
+        "<b>① STATO DELL'INTENTO</b>",
+        f"<i>{intento}</i>",
+        "",
+        "<b>② BERSAGLIO FISICO</b>",
+        riga_azione,
+        "",
+        "<b>③ MATEMATICA DELLA REALTÀ</b>",
+        f"  Prenotazioni Airbnb: <b>{n}</b> × 120€ = {valore_lordo}€",
+        f"  Costo operativo fluido: {costo_op:.2f}€",
+        f"  Valore Vitale Proiettato: <b>{valore_netto:.0f}€</b>" + karch_line,
+        "",
+        "<b>④ COSTRUTTO SISTEMICO</b>",
+        costrutto,
+        "",
+        "<i>[Gemini · Claude · DeepSeek — analisi parallela]</i>",
+    ]
+
+    return invia("\n".join(righe))
 
 
 def test_connessione() -> bool:

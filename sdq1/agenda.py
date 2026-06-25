@@ -95,6 +95,11 @@ def _ical_dt_to_iso(raw: str) -> str:
             dt = datetime(int(raw[:4]), int(raw[4:6]), int(raw[6:8]),
                           int(raw[9:11]), int(raw[11:13]), tzinfo=timezone.utc)
             return dt.astimezone(_TZ).isoformat()
+        if "T" in raw and len(raw) >= 15:
+            # Local datetime without timezone suffix — treat as local TZ
+            dt = datetime(int(raw[:4]), int(raw[4:6]), int(raw[6:8]),
+                          int(raw[9:11]), int(raw[11:13]), tzinfo=_TZ)
+            return dt.isoformat()
     except Exception:
         pass
     return raw
