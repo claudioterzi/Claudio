@@ -21,15 +21,27 @@ jobs:
           git config user.email "noreply@anthropic.com"
 
       - name: Installa dipendenze
-        run: python3 -m pip install --no-cache-dir anthropic
+        run: python3 -m pip install --no-cache-dir anthropic "google-genai>=1.0.0" "openai>=1.50.0"
+
+      - name: Chat Telegram — leggi e rispondi
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          GOOGLE_API_KEY:     ${{ secrets.GOOGLE_API_KEY }}
+          DEEPSEEK_API_KEY:   ${{ secrets.DEEPSEEK_API_KEY }}
+          AIRBNB_ICAL_URL:    ${{ secrets.AIRBNB_ICAL_URL }}
+        run: python3 -m sdq1 --chat-telegram
 
       - name: Esegui task autonomo
+        continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python3 scripts/agente_orario.py
 
-      - name: Salva output e aggiorna task
+      - name: Salva output
         run: |
-          git add output/task_output/ TASK_AUTONOMI.md
-          git diff --staged --quiet || git commit -m "SDQ-1 task autonomo $(date +%Y-%m-%d\ %H:%M)"
+          git add output/ || true
+          git diff --staged --quiet || git commit -m "SDQ-1 orario $(date +%Y-%m-%d\ %H:%M)"
           git push || true

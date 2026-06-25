@@ -235,6 +235,8 @@ def main(argv: list[str]) -> int:
                         help="Sincronizza calendario Airbnb iCal (legge AIRBNB_ICAL_URL se URL omesso)")
     parser.add_argument("--briefing-operativo", action="store_true",
                         help="Briefing 4 blocchi multi-AI (Gemini+Claude+DeepSeek) → Telegram")
+    parser.add_argument("--chat-telegram", action="store_true",
+                        help="Legge messaggi Telegram liberi e risponde come Raffaello (Claude)")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -511,6 +513,12 @@ def main(argv: list[str]) -> int:
             stato = b.get("titolo", "?")
             print(f"  {b.get('checkin', '')[:10]} → {b.get('checkout', '')[:10]}  {stato}")
         print("Salvate in output/agenda.json")
+        return 0
+
+    if args.chat_telegram:
+        from .notifiche import esegui_comandi_e_chat
+        n = esegui_comandi_e_chat()
+        print(f"[CHAT] Messaggi elaborati: {n}")
         return 0
 
     if args.briefing_operativo:
