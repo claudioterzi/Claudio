@@ -65,10 +65,10 @@ jobs:
         continue-on-error: true
         run: python3 -m sdq1 --snapshot --push
 
-      # ── 4. Briefing mattutino su Telegram
+      # ── 4. Briefing operativo multi-AI su Telegram
       - name: Briefing Telegram
         continue-on-error: true
-        run: python3 -m sdq1 --notifica-briefing
+        run: python3 -m sdq1 --briefing-operativo
 
       # ── 5. Salva tutti gli output (scan_report, agenti_stato, ecc.)
       - name: Commit output

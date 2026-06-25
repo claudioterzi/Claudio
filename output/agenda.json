@@ -19,6 +19,22 @@
       "fatto": false
     },
     {
+      "priorita": "P0",
+      "icona": "🧹",
+      "titolo": "Kärcher Puzzi 8/1 — Sistema Pulizia Professionale",
+      "dettaglio": "CAPEX: 455€ (Kärcher Puzzi 8/1) + 29.99€ (Dirtbusters 3-in-1 5L) = 484.99€. ROI: 5 interventi × 119.60€ netto = break-even. Dal 6° intervento: profitto puro ~100%. 57 ricariche da un solo flacone.",
+      "prossimo_passo": "Acquista Kärcher Puzzi 8/1 + Dirtbusters 3-in-1 Concentrate 5L. Primo intervento: materasso matrimoniale Airbnb.",
+      "roi": {
+        "capex_totale": 484.99,
+        "ricavo_per_intervento": 120.00,
+        "costo_fluido_per_intervento": 0.40,
+        "netto_per_intervento": 119.60,
+        "break_even_interventi": 5,
+        "ricariche_disponibili": 57
+      },
+      "fatto": false
+    },
+    {
       "priorita": "P1",
       "icona": "⚖️",
       "titolo": "ASBL SkyRights Foundation",

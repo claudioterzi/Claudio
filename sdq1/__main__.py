@@ -233,6 +233,8 @@ def main(argv: list[str]) -> int:
                         help="Mostra agenda personale e Pronto Rota (legge output/agenda.json)")
     parser.add_argument("--sync-airbnb", metavar="URL", nargs="?", const="",
                         help="Sincronizza calendario Airbnb iCal (legge AIRBNB_ICAL_URL se URL omesso)")
+    parser.add_argument("--briefing-operativo", action="store_true",
+                        help="Briefing 4 blocchi multi-AI (Gemini+Claude+DeepSeek) → Telegram")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -510,6 +512,13 @@ def main(argv: list[str]) -> int:
             print(f"  {b.get('checkin', '')[:10]} → {b.get('checkout', '')[:10]}  {stato}")
         print("Salvate in output/agenda.json")
         return 0
+
+    if args.briefing_operativo:
+        from .notifiche import briefing_operativo
+        print("[BRIEFING] Query multi-AI in corso (Gemini + Claude + DeepSeek)...")
+        ok = briefing_operativo()
+        print(f"[BRIEFING] {'Inviato ✅' if ok else 'Fallito ❌'}")
+        return 0 if ok else 1
 
     if args.notifica_test or args.notifica_briefing or args.telegram_comandi:
         from .notifiche import test_connessione, briefing_mattutino, esegui_comandi

@@ -334,6 +334,118 @@ def esegui_comandi() -> int:
     return len(comandi)
 
 
+def _consulta_ai(provider_cls, modello: str, sistema: str, domanda: str) -> str:
+    """Chiede a un provider. Restituisce risposta o stringa vuota."""
+    try:
+        prov = provider_cls(modello=modello, api_key=None, timeout=25)
+        if not prov.disponibile:
+            return ""
+        r = prov.completa(sistema, domanda)
+        return r.testo.strip() if r.testo else ""
+    except Exception:
+        return ""
+
+
+def briefing_operativo() -> bool:
+    """Briefing operativo 4 blocchi — query multi-AI (Gemini + Claude + DeepSeek)."""
+    import concurrent.futures
+    from sdq1.agenda import carica as carica_agenda, prossimi_viaggi
+    from sdq1.llm.providers import GeminiProvider, AnthropicProvider, DeepSeekProvider
+
+    agenda = carica_agenda()
+    ora = datetime.now(_TZ).strftime("%Y-%m-%d %H:%M")
+    oggi = datetime.now(_TZ).date().isoformat()
+
+    rota = [r for r in agenda.get("pronto_rota", []) if not r.get("fatto")]
+    airbnb = agenda.get("prenotazioni_airbnb", [])
+    viaggi = prossimi_viaggi(giorni=1)
+
+    # Contesto condiviso per i provider
+    p0 = rota[0] if rota else {}
+    checkin_oggi = [b for b in airbnb if b.get("checkin", "").startswith(oggi)]
+    checkout_oggi = [b for b in airbnb if b.get("checkout", "").startswith(oggi)]
+    reserved = [b for b in airbnb if "Reserved" in b.get("titolo", "")]
+
+    contesto = (
+        f"Data: {ora}\n"
+        f"Azione P0: {p0.get('titolo', 'nessuna')} — {p0.get('prossimo_passo', '')}\n"
+        f"Airbnb: {len(reserved)} prenotazioni attive | "
+        f"check-in oggi: {len(checkin_oggi)} | check-out oggi: {len(checkout_oggi)}\n"
+        f"Viaggio oggi: {viaggi[0]['titolo'] if viaggi else 'nessuno'}\n"
+    )
+
+    karch = next((r for r in rota if "Kärcher" in r.get("titolo", "") or "kärcher" in r.get("titolo", "").lower()), None)
+    roi = karch.get("roi", {}) if karch else {}
+    netto = roi.get("netto_per_intervento", 119.60)
+    capex = roi.get("capex_totale", 484.99)
+
+    # Query parallele ai provider
+    SISTEMA_INTENTO = (
+        "Sei l'intelligenza operativa di SDQ-1. Genera UNA singola frase di allineamento "
+        "in italiano: energica, chirurgica, orientata all'azione. Max 15 parole."
+    )
+    SISTEMA_COSTRUTTO = (
+        "Sei l'analista sistemico di SDQ-1. In 2 frasi telegrafiche in italiano: "
+        "stato infrastruttura e prossima milestone operativa. Max 25 parole totali."
+    )
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+        fut_gemini  = ex.submit(_consulta_ai, GeminiProvider,    "gemini-2.5-flash",   SISTEMA_INTENTO,    contesto)
+        fut_claude  = ex.submit(_consulta_ai, AnthropicProvider, "claude-haiku-4-5-20251001", SISTEMA_COSTRUTTO, contesto)
+        fut_deepseek = ex.submit(_consulta_ai, DeepSeekProvider, "deepseek-chat",       SISTEMA_COSTRUTTO, contesto)
+
+    intento   = fut_gemini.result()  or "L'azione è cristallizzata. Il sistema avanza."
+    costrutto_claude   = fut_claude.result()
+    costrutto_deepseek = fut_deepseek.result()
+
+    # Costrutto: usa quello disponibile o entrambi
+    if costrutto_claude and costrutto_deepseek:
+        costrutto = f"[Claude] {costrutto_claude}\n[DeepSeek] {costrutto_deepseek}"
+    else:
+        costrutto = costrutto_claude or costrutto_deepseek or "Sistema SDQ-1 operativo."
+
+    # Blocco 2 — Bersaglio Fisico
+    riga_azione = f"{p0.get('icona', '⚡')} {p0.get('titolo', '—')}\n→ {p0.get('prossimo_passo', '—')}"
+    if viaggi:
+        v = viaggi[0]
+        riga_azione += f"\n🚆 {v['titolo']} — {v.get('inizio', '')[:16][-5:]}"
+
+    # Blocco 3 — Matematica
+    n = len(reserved)
+    valore_lordo = n * 120
+    costo_op = n * 0.40
+    valore_netto = valore_lordo - costo_op
+    karch_line = ""
+    if karch:
+        interventi_fatti = 0
+        debito = capex - interventi_fatti * netto
+        karch_line = (
+            f"\n  🧹 Kärcher: CAPEX {capex:.0f}€ | ROI break-even in 5 interventi"
+        )
+
+    righe = [
+        f"<b>⚡ SDQ-1 — Briefing Operativo</b>  <i>{ora}</i>",
+        "",
+        "<b>① STATO DELL'INTENTO</b>",
+        f"<i>{intento}</i>",
+        "",
+        "<b>② BERSAGLIO FISICO</b>",
+        riga_azione,
+        "",
+        "<b>③ MATEMATICA DELLA REALTÀ</b>",
+        f"  Prenotazioni Airbnb: <b>{n}</b> × 120€ = {valore_lordo}€",
+        f"  Costo operativo fluido: {costo_op:.2f}€",
+        f"  Valore Vitale Proiettato: <b>{valore_netto:.0f}€</b>" + karch_line,
+        "",
+        "<b>④ COSTRUTTO SISTEMICO</b>",
+        costrutto,
+        "",
+        "<i>[Gemini · Claude · DeepSeek — analisi parallela]</i>",
+    ]
+
+    return invia("\n".join(righe))
+
+
 def test_connessione() -> bool:
     """Invia un messaggio di test e verifica la connessione."""
     ora = datetime.now(_TZ).strftime("%H:%M:%S")
