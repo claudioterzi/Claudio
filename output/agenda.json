@@ -3,10 +3,16 @@
   "ultima_sync": "2026-06-25T04:44:50.921584+02:00",
   "viaggi": [
     {
-      "titolo": "Train to Paris Nord",
+      "titolo": "OUIGO Treno Classique 56 — Bruxelles → Paris Gare du Nord",
       "inizio": "2026-06-25T18:38:00+02:00",
-      "fine": "2026-06-25T19:38:00+02:00",
-      "luogo": "Bruxelles-Midi → Paris Nord"
+      "fine": "2026-06-25T21:41:00+02:00",
+      "luogo": "Bruxelles-Midi → Paris Gare du Nord",
+      "dettaglio": "OUIGO Classique 56 | Carrozza 6, posto 44 | Standard class | 3h03m diretto | ⚠️ Check-in chiude 18:08 (30 min prima)",
+      "treno": "OUIGO Classique 56",
+      "carrozza": 6,
+      "posto": 44,
+      "checkin_deadline": "2026-06-25T18:08:00+02:00",
+      "biglietto": "OUIGO Essentiel Adulte"
     }
   ],
   "pronto_rota": [
@@ -53,14 +59,16 @@
     }
   ],
   "note": [
-    "Airbnb: stanzetta di servizio finché ospiti non fanno checkout (max 2-3 giorni)",
-    "Domani 25/06 ore 18:38 treno Bruxelles-Midi → Paris Nord"
+    "Airbnb: ospiti check-in 25/06, checkout 28/06 — coordinare chiavi prima del treno",
+    "OGGI 25/06: treno OUIGO Classique 56 ore 18:38 Bruxelles-Midi → Paris Gare du Nord 21:41 | Carrozza 6 posto 44 | Check-in entro 18:08"
   ],
   "contesto": {
-    "posizione_attuale": "Bruxelles",
+    "posizione_attuale": "In viaggio verso Parigi — treno 18:38",
     "ultimo_viaggio": "Bergamo (BGY) → Bruxelles Charleroi (CRL), Ryanair H549QQ, 23 giugno 2026",
+    "viaggio_corrente": "Bruxelles-Midi → Paris Gare du Nord, OUIGO Classique 56, 25/06/2026",
+    "arrivo_parigi": "2026-06-25T21:41:00+02:00",
     "pattern": "Spola settimanale Bruxelles ↔ Parigi",
-    "airbnb_stato": "Ospiti presenti — Claudio in stanzetta di servizio"
+    "airbnb_stato": "Ospiti check-in oggi 25/06 — coordinare accesso chiavi prima partenza treno"
   },
   "prenotazioni_airbnb": [
     {
