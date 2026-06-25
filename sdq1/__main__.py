@@ -191,6 +191,48 @@ def main(argv: list[str]) -> int:
                         help="Tool disponibili per l'agente (es. search_web send_email)")
     parser.add_argument("--autonomia", default="semi-autonomo",
                         help="Livello autonomia agente: supervisionato | semi-autonomo | completamente_autonomo")
+    parser.add_argument("--autoevoluzione", action="store_true",
+                        help="Analisi interna: il sistema si valuta e propone evoluzioni concrete")
+    parser.add_argument("--diagnostica", action="store_true",
+                        help="Diagnostica tecnica: metriche reali, problemi, raccomandazioni (no LLM)")
+    parser.add_argument("--argo", action="store_true",
+                        help="ARGO Heartbeat: ping nodi R3, riflessione Gemini, salva in output/argo_heartbeats/")
+    parser.add_argument("--argo-multi", action="store_true",
+                        help="ARGO Multi: chiama in parallelo tutti i provider attivi, coro di voci AI")
+    parser.add_argument("--scacchiera", action="store_true",
+                        help="Scacchiera Quantica: autoriflessione algoritmica (no LLM), 3 cicli × 10 livelli")
+    parser.add_argument("--scacchiera-cicli", type=int, default=3, metavar="N",
+                        help="Numero cicli Scacchiera Quantica (default: 3)")
+    parser.add_argument("--scacchiera-livelli", type=int, default=10, metavar="N",
+                        help="Livelli per ciclo Scacchiera Quantica (default: 10)")
+    parser.add_argument("--agenti", action="store_true",
+                        help="Ciclo valutazione 7 agenti SDQ-1 (no LLM): CoerenzaKeeper, Intelligence, Guardian, Memory, Coordinator, Future, Milestone")
+    parser.add_argument("--agenti-autonomo", action="store_true",
+                        help="Avvia loop autonomo agenti (ogni ora, blocca il processo)")
+    parser.add_argument("--agenti-intervallo", type=int, default=3600, metavar="S",
+                        help="Secondi tra cicli autonomi (default: 3600)")
+    parser.add_argument("--snapshot", action="store_true",
+                        help="Snapshot completo: git + codice + agenti + output — salva in output/snapshots/")
+    parser.add_argument("--push", action="store_true",
+                        help="Con --snapshot: commit + push del file snapshot su GitHub")
+    parser.add_argument("--scan", action="store_true",
+                        help="Scansione completa codebase: sicurezza + qualità + dipendenze + metriche")
+    parser.add_argument("--scan-sicurezza", action="store_true",
+                        help="Solo scansione sicurezza: API key, segreti, pattern pericolosi")
+    parser.add_argument("--scan-qualita", action="store_true",
+                        help="Solo analisi qualità: debito tecnico, code smell, pattern fragili")
+    parser.add_argument("--scan-metriche", action="store_true",
+                        help="Solo metriche codice: righe, funzioni, classi, complessità")
+    parser.add_argument("--notifica-test", action="store_true",
+                        help="Invia messaggio di test su Telegram (verifica connessione bot)")
+    parser.add_argument("--notifica-briefing", action="store_true",
+                        help="Invia briefing mattutino completo su Telegram")
+    parser.add_argument("--telegram-comandi", action="store_true",
+                        help="Legge ed esegue comandi Telegram in coda (/scan /status /agenti /push)")
+    parser.add_argument("--agenda", action="store_true",
+                        help="Mostra agenda personale e Pronto Rota (legge output/agenda.json)")
+    parser.add_argument("--sync-airbnb", metavar="URL", nargs="?", const="",
+                        help="Sincronizza calendario Airbnb iCal (legge AIRBNB_ICAL_URL se URL omesso)")
     args = parser.parse_args(argv[1:])
 
     if args.watchdog:
@@ -275,6 +317,227 @@ def main(argv: list[str]) -> int:
         for name in list(PROVIDER_REGISTRY):
             if name != "stub":
                 router._circuit[name] = time.time() + 86400  # aperto per 24h
+
+    if args.autoevoluzione:
+        _data, _ora = _ora_brussels()
+        health_raw = health.riepilogo()
+        metrics_raw = metrics.aggregati()
+        provider_up = [d["provider"] for d in health_raw.get("dettagli", []) if d.get("raggiungibile")]
+        provider_down = [d["provider"] for d in health_raw.get("dettagli", []) if not d.get("raggiungibile")]
+        prompt_autoeval = (
+            f"AUTOEVOLUZIONE SDQ-1 — {_data} {_ora} Brussels\n\n"
+            f"Sei il sistema SDQ-1. Analizza te stesso come ingegnere, non come poeta.\n\n"
+            f"STATO REALE:\n"
+            f"- Provider attivi: {provider_up}\n"
+            f"- Provider non configurati: {provider_down}\n"
+            f"- Latenza media pipeline: {metrics_raw.get('latenza_media_ms', 'N/A')} ms\n"
+            f"- Tasso successo: {metrics_raw.get('tasso_successo', 'N/A')}\n"
+            f"- Chiamate totali: {metrics_raw.get('chiamate_totali', 0)}\n"
+            f"- VSS size: {vss.dimensione()}\n"
+            f"- Persistenza: InMemory (Redis non installato — stato perso a ogni riavvio)\n\n"
+            f"ARCHITETTURA:\n"
+            f"- Pipeline 6 agenti: RAFFA-001 → DECOMP-005 → MEMO-002 → SENTIN-004 → GEN-006 → WAVE-003\n"
+            f"- RAFFA/GEN/SENTIN usano gemini-2.5-pro; DECOMP/MEMO usano gemini-2.5-flash\n"
+            f"- WAVE-003 raffina con flash ma i metadata non erano propagati (bug corretto oggi)\n"
+            f"- ARGO Heartbeat: non attivo (manca attivazione manuale su script.google.com)\n"
+            f"- SAR: funziona ma calibrato per riflessione umana, non analisi tecnica\n\n"
+            f"Rispondi con ESATTAMENTE questo formato JSON (nient'altro, solo JSON):\n"
+            f'{{"evoluzioni": [{{"id": "EVO-001", "titolo": "...", "problema": "...", "soluzione": "...", "impatto": "...", "effort": "alto|medio|basso"}}], "priorita": ["EVO-001"], "nota": "..."}}\n\n'
+            f"Proponi 3-5 evoluzioni concrete e implementabili. Nessuna filosofia, nessuna metafora."
+        )
+        import re as _re
+        esecuzione = orch.esegui_interno({"testo": prompt_autoeval})
+        risposta_raw = esecuzione.output_finale.get("risposta_finale", "")
+        output_dir = Path("output/autoevoluzione")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        ts = _data.replace("-", "") + "_" + _ora.replace(":", "")
+        out_file = output_dir / f"evo_{ts}.json"
+        report: dict = {
+            "timestamp": f"{_data}T{_ora}",
+            "durata_secondi": esecuzione.durata_secondi,
+            "provider_attivi": provider_up,
+            "metrics": {k: metrics_raw.get(k) for k in ("chiamate_totali", "tasso_successo", "latenza_media_ms")},
+            "analisi_raw": risposta_raw,
+        }
+        m = _re.search(r'\{[\s\S]*?"evoluzioni"[\s\S]*?\}(?=\s*$|\s*\n)', risposta_raw)
+        if not m:
+            m = _re.search(r'\{[\s\S]*?"evoluzioni"[\s\S]*\}', risposta_raw)
+        if m:
+            try:
+                report["evoluzioni"] = json.loads(m.group())
+            except json.JSONDecodeError:
+                pass
+        out_file.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(json.dumps(report, indent=2, ensure_ascii=False))
+        print(f"\n[AUTOEVOLUZIONE] Report salvato: {out_file}")
+        return 0
+
+    if args.argo_multi:
+        from .argo import esegui_multi as argo_multi
+        esito = argo_multi(router)
+        print(f"[ARGO MULTI] {esito['timestamp']}")
+        print(f"[ARGO MULTI] Provider: {esito['provider_ok']}/{esito['provider_chiamati']} risposto")
+        print(f"[ARGO MULTI] File: {esito['file']}")
+        print()
+        for r in esito["risposte"]:
+            icona = "✅" if r["ok"] else "❌"
+            print(f"  {icona} {r['provider']:<12} {r['latenza_ms']:.0f}ms  {r['preview'] or r.get('errore','')[:60]}")
+        return 0
+
+    if args.argo:
+        from .argo import esegui as argo_esegui
+        def _argo_llm(sistema: str, utente: str) -> str:
+            esito = router.chiama(sistema, utente, profilo="default")
+            return esito.risposta.testo
+        esito_argo = argo_esegui(_argo_llm)
+        print(f"[ARGO] {esito_argo['timestamp']}")
+        print(f"[ARGO] Nodi: {esito_argo['nodi_online']} VERDE / {esito_argo['nodi_offline']} ROSSO")
+        print(f"[ARGO] File: {esito_argo['file']}")
+        print()
+        print(esito_argo["risposta"])
+        return 0
+
+    if args.scacchiera:
+        from .sar.scacchiera_quantica import AutoriflessoreV3, stampa as sq_stampa
+        print(f"[SCACCHIERA] Avvio — {args.scacchiera_cicli} cicli × {args.scacchiera_livelli} livelli")
+        ar = AutoriflessoreV3()
+        risultati = ar.esegui(cicli=args.scacchiera_cicli, livelli=args.scacchiera_livelli)
+        sq_stampa(risultati)
+        m = risultati["meta"]
+        print(f"[SCACCHIERA] Nodi: {m['nodi_totali_esplorati']} | Score max: {m['score_globale_max']}"
+              f" | Salti: {m['salti_totali']} | Tempo: {risultati['tempo']}s")
+        return 0
+
+    if args.scan or args.scan_sicurezza or args.scan_qualita or args.scan_metriche:
+        from .sar.code_scanner import CodeScanner, stampa_report
+        scanner = CodeScanner()
+        if args.scan:
+            report = scanner.scansione_completa()
+            stampa_report(report)
+            Path("output").mkdir(exist_ok=True)
+            out = Path("output/scan_report.json")
+            out.write_text(json.dumps(report, indent=2, ensure_ascii=False, default=str),
+                           encoding="utf-8")
+            print(f"[SCAN] Report salvato: {out}")
+        elif args.scan_sicurezza:
+            r = scanner.scansione_sicurezza()
+            print(f"[SICUREZZA] {r['livello']} | Pattern: {r['pattern_scansionati']} | "
+                  f"Trovati: {len(r['trovati'])} | Tempo: {r['tempo_s']}s")
+            for p in r["trovati"]:
+                print(f"  [{p['severità']}] {p['tipo']} — {p['file']}:{p['riga']}")
+        elif args.scan_qualita:
+            r = scanner.analisi_qualita()
+            print(f"[QUALITÀ] Score: {r['score_salute']}/100 | Debito: {r['score_debito']} | "
+                  f"File: {r['file_py_analizzati']} | Tempo: {r['tempo_s']}s")
+            for p in r["problemi_critici"]:
+                print(f"  {p['tipo']} — {p['file']}:{p['riga']}")
+        elif args.scan_metriche:
+            r = scanner.metriche_codice()
+            print(f"[METRICHE] {r['file_analizzati']} file | {r['totale_righe']} righe | "
+                  f"{r['totale_funzioni']} funzioni | {r['totale_classi']} classi")
+            for m in r["top5_per_dimensione"]:
+                print(f"  {m['file']:<48} {m['righe_codice']:>5} righe  cc={m['complessita']}")
+        return 0
+
+    if args.snapshot:
+        from .snapshot import crea_snapshot, salva_snapshot, push_snapshot
+        snap = crea_snapshot()
+        dest = salva_snapshot(snap)
+        g = snap["git"]
+        c = snap["codice"]
+        a = snap["agenti"]
+        print(f"[SNAPSHOT] {snap['meta']['data_ora']} — {g['commit_short']} {g['branch']}")
+        print(f"[SNAPSHOT] Codice: {c['file_presenti']}/{len(c['file'])} file integri"
+              + (f" — MANCANTI: {c['file_mancanti']}" if c['file_mancanti'] else ""))
+        print(f"[SNAPSHOT] Agenti: {'OK' if a['ok'] else 'ERRORE'}"
+              + (f" | Guardian: {a.get('guardian_allerta')} | Score: {a.get('scacchiera_score')}" if a['ok'] else f" — {a.get('errore')}"))
+        sc = snap.get("scanner", {})
+        if sc.get("score_sistema") is not None:
+            print(f"[SNAPSHOT] Scanner: {sc['score_sistema']}/100"
+                  f" | Sicurezza: {'OK' if sc['sicurezza_ok'] else 'ALLERTA'}"
+                  f" [{sc['sicurezza_livello']}]"
+                  f" | Qualità: {sc['qualita_score']}/100")
+        print(f"[SNAPSHOT] Salvato: {dest}")
+        if args.push:
+            ok = push_snapshot(dest)
+            print(f"[SNAPSHOT] Push GitHub: {'OK' if ok else 'FALLITO'}")
+        return 0
+
+    if args.agenti or args.agenti_autonomo:
+        from .sar.agenti_autonomi import SistemaAgenti
+        sistema = SistemaAgenti()
+        print(sistema.attivazione())
+        if args.agenti_autonomo:
+            print(f"[AGENTI] Loop autonomo — intervallo: {args.agenti_intervallo}s — Ctrl+C per fermare")
+            sistema.ciclo_autonomo(intervallo_s=args.agenti_intervallo)
+        else:
+            report = sistema.ciclo_valutazione()
+            sq = report.get("scacchiera", {})
+            print(f"\n[AGENTI] Ciclo completato — {report['ts']}")
+            for nome, dati in report["agenti"].items():
+                stato_agente = dati.get("stato", dati.get("livello_allerta", dati.get("id", "OK")))
+                print(f"  {nome:<16} {stato_agente}")
+            if sq:
+                print(f"\n[SCACCHIERA] Score: {sq['score_medio']} | Dir: {sq['direzione_dominante']} | Salti: {sq['salti']}")
+            print(f"[AGENTI] Memoria: output/agenti_stato.json")
+        return 0
+
+    if args.agenda:
+        from .agenda import carica, prossimi_viaggi, riepilogo_briefing
+        agenda = carica()
+        print(f"Ultima sync: {agenda.get('ultima_sync', 'mai')}")
+        viaggi = prossimi_viaggi(giorni=7)
+        print(f"Viaggi (7gg): {len(viaggi)}")
+        rota = [r for r in agenda.get("pronto_rota", []) if not r.get("fatto")]
+        print(f"Pronto Rota: {len(rota)} item da fare\n")
+        print(riepilogo_briefing() or "(agenda vuota)")
+        return 0
+
+    if args.sync_airbnb is not None:
+        url = args.sync_airbnb or os.environ.get("AIRBNB_ICAL_URL", "")
+        if not url:
+            print("Errore: specifica URL o imposta AIRBNB_ICAL_URL nel .env")
+            return 1
+        from .agenda import sync_airbnb, carica, salva
+        print("Fetch iCal Airbnb...")
+        bookings = sync_airbnb(url)
+        print(f"Trovate {len(bookings)} prenotazioni")
+        dati = carica()
+        dati["prenotazioni_airbnb"] = bookings
+        salva(dati)
+        for b in bookings:
+            stato = b.get("titolo", "?")
+            print(f"  {b.get('checkin', '')[:10]} → {b.get('checkout', '')[:10]}  {stato}")
+        print("Salvate in output/agenda.json")
+        return 0
+
+    if args.notifica_test or args.notifica_briefing or args.telegram_comandi:
+        from .notifiche import test_connessione, briefing_mattutino, esegui_comandi
+        if args.notifica_test:
+            ok = test_connessione()
+            print(f"[TELEGRAM] Test: {'OK ✅' if ok else 'FALLITO ❌'}")
+        elif args.notifica_briefing:
+            ok = briefing_mattutino()
+            print(f"[TELEGRAM] Briefing: {'Inviato ✅' if ok else 'Fallito ❌'}")
+        else:
+            n = esegui_comandi()
+            print(f"[TELEGRAM] Comandi eseguiti: {n}")
+        return 0
+
+    if args.diagnostica:
+        from .diagnostica import esegui_diagnostica, salva_report
+        _data, _ora = _ora_brussels()
+        diag = esegui_diagnostica(
+            health_riepilogo=health.riepilogo(),
+            metrics_aggregati=metrics.aggregati(),
+            vss_size=vss.dimensione(),
+            tipo_persistenza=type(stato).__name__,
+            provider_attivi=router.provider_attivi(),
+        )
+        out = salva_report(diag)
+        print(diag.stampa())
+        print(f"\n[DIAGNOSTICA] Report salvato: {out}")
+        return 0
 
     if args.sar_stato:
         from .sar import PersistenzaSAR, report_stato

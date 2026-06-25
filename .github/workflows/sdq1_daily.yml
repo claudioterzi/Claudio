@@ -17,6 +17,7 @@ jobs:
       GOOGLE_API_KEY:     ${{ secrets.GOOGLE_API_KEY }}
       ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
       DEEPSEEK_API_KEY:   ${{ secrets.DEEPSEEK_API_KEY }}
+      AIRBNB_ICAL_URL:    ${{ secrets.AIRBNB_ICAL_URL }}
 
     steps:
       - name: Checkout
@@ -30,6 +31,15 @@ jobs:
         run: |
           python3 -m pip install --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
           sudo apt-get install -y ripgrep
+
+      # ── 0a. Sync calendario Airbnb
+      - name: Sync Airbnb
+        continue-on-error: true
+        run: |
+          mkdir -p output
+          if [ -n "$AIRBNB_ICAL_URL" ]; then
+            python3 -m sdq1 --sync-airbnb
+          fi
 
       # ── 0. Controlla comandi Telegram in coda
       - name: Comandi Telegram

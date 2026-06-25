@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "timestamp": 1782294651.93339,
+    "data_ora": "2026-06-24 11:50:51",
+    "tz": "Europe/Brussels",
+    "versione": "1.0.0"
+  },
+  "git": {
+    "branch": "claude/suspicious-prompt-injection-22whsc",
+    "commit": "d6acedc7ffa3e4de5a6f7ac643e0fb75cd4746e5",
+    "commit_short": "d6acedc",
+    "messaggio": "feat(agenti): integra sistema 7 agenti autonomi SDQ-1 + CLI --agenti",
+    "autore": "Claude",
+    "data_commit": "2026-06-24 05:16:20 +0000",
+    "dirty": true,
+    "file_modificati": [
+      "M sdq1/__main__.py",
+      "?? sdq1/snapshot.py"
+    ]
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "3e1bf706eb3da091",
+      "CLAUDE.md": "e1c1a4f8f92cbdad",
+      "sdq1/__main__.py": "bdb71d0b668c321d",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "19f0ba33e7c7b770",
+      "sdq1/snapshot.py": "be880e2993dd72ba",
+      "sdq1/sar/scacchiera_quantica.py": "91645f32e7f9b9bf",
+      "sdq1/sar/agenti_autonomi.py": "a257917afec7fff0",
+      "sdq1/llm/router.py": "65649bb2ce8f547e",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "7a22233487fa162b"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-06-24T09:50:52.016230",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.52,
+    "scacchiera_dir": "RADICALE"
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 6.7,
+      "n_chiavi": 4
+    }
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "ok": true,
+  "ultima_sync": "2026-06-25T04:44:50.921584+02:00",
+  "viaggi": [
+    {
+      "titolo": "Train to Paris Nord",
+      "inizio": "2026-06-25T18:38:00+02:00",
+      "fine": "2026-06-25T19:38:00+02:00",
+      "luogo": "Bruxelles-Midi → Paris Nord"
+    }
+  ],
+  "pronto_rota": [
+    {
+      "priorita": "P0",
+      "icona": "🏠",
+      "titolo": "Airbnb — CHECK-IN OGGI 25/06",
+      "dettaglio": "Nuovi ospiti arrivano OGGI. Checkout 28/06. iCal sincronizzato. ⚠️ Treno 18:38 — coordinare accesso chiavi prima della partenza.",
+      "prossimo_passo": "Conferma accesso chiavi ospiti prima delle 18:00 — sei sul treno alle 18:38!",
+      "fatto": false
+    },
+    {
+      "priorita": "P1",
+      "icona": "⚖️",
+      "titolo": "ASBL SkyRights Foundation",
+      "dettaglio": "Registrare la fondazione — prerequisito di ogni grant EU. Procedura in ASBL-001 su Drive. ~200€, 3-5 settimane.",
+      "prossimo_passo": "Scarica template statuti CSA da prolegal.be → apri egreffe.be con eID/itsme®",
+      "fatto": false
+    },
+    {
+      "priorita": "P2",
+      "icona": "💓",
+      "titolo": "ARGO Heartbeat — attivazione",
+      "dettaglio": "Attivare la pulsazione oraria del sistema. 15 minuti.",
+      "prossimo_passo": "script.google.com → incolla argo_heartbeat.gs → GEMINI_API_KEY → installaTrigger() → testHeartbeat()",
+      "fatto": false
+    },
+    {
+      "priorita": "P3",
+      "icona": "🛰️",
+      "titolo": "Accessi satellite",
+      "dettaglio": "Planet Labs E&R (ricercatore indipendente), Maxar developer. Sentinel-2 già disponibile gratis.",
+      "prossimo_passo": "Domanda Planet Labs E&R (guida PLANET-003 su Drive)",
+      "fatto": false
+    },
+    {
+      "priorita": "P4",
+      "icona": "💶",
+      "titolo": "Fondi EU",
+      "dettaglio": "UNHCR Innovation Fund (rolling, nessuna scadenza). Horizon Europe Cluster 3 — scadenza 15/09/2026, serve consorzio.",
+      "prossimo_passo": "Candidatura UNHCR (più rapida, rolling) — dettagli in EU-FUNDING-004 su Drive",
+      "scadenza": "2026-09-15",
+      "fatto": false
+    }
+  ],
+  "note": [
+    "Airbnb: stanzetta di servizio finché ospiti non fanno checkout (max 2-3 giorni)",
+    "Domani 25/06 ore 18:38 treno Bruxelles-Midi → Paris Nord"
+  ],
+  "contesto": {
+    "posizione_attuale": "Bruxelles",
+    "ultimo_viaggio": "Bergamo (BGY) → Bruxelles Charleroi (CRL), Ryanair H549QQ, 23 giugno 2026",
+    "pattern": "Spola settimanale Bruxelles ↔ Parigi",
+    "airbnb_stato": "Ospiti presenti — Claudio in stanzetta di servizio"
+  },
+  "prenotazioni_airbnb": [
+    {
+      "uid": "1418fb94e984-2e2fcb7430e685db690972d4f3957e7a@airbnb.com",
+      "titolo": "Reserved",
+      "checkin": "2026-06-15T00:00:00+02:00",
+      "checkout": "2026-06-24T00:00:00+02:00",
+      "tipo": "airbnb"
+    },
+    {
+      "uid": "1418fb94e984-08d3693f74d7dfdf5286c5786fdccd73@airbnb.com",
+      "titolo": "Reserved",
+      "checkin": "2026-06-24T00:00:00+02:00",
+      "checkout": "2026-06-25T00:00:00+02:00",
+      "tipo": "airbnb"
+    },
+    {
+      "uid": "1418fb94e984-da9d48f63ea3d59fe4d6ea0c1dcb7adf@airbnb.com",
+      "titolo": "Reserved",
+      "checkin": "2026-06-25T00:00:00+02:00",
+      "checkout": "2026-06-28T00:00:00+02:00",
+      "tipo": "airbnb"
+    },
+    {
+      "uid": "7f662ec65913-4ed33bb7879e570f5f3300ad603a35b8@airbnb.com",
+      "titolo": "Airbnb (Not available)",
+      "checkin": "2026-06-28T00:00:00+02:00",
+      "checkout": "2026-06-30T00:00:00+02:00",
+      "tipo": "airbnb"
+    },
+    {
+      "uid": "1418fb94e984-2582a8b0b0784a95e474d7e2ba2d56d3@airbnb.com",
+      "titolo": "Reserved",
+      "checkin": "2026-06-30T00:00:00+02:00",
+      "checkout": "2026-07-01T00:00:00+02:00",
+      "tipo": "airbnb"
+    },
+    {
+      "uid": "1418fb94e984-4a29e50af4ffc47b7ac7dc18b3e72db7@airbnb.com",
+      "titolo": "Reserved",
+      "checkin": "2026-07-01T00:00:00+02:00",
+      "checkout": "2026-07-03T00:00:00+02:00",
+      "tipo": "airbnb"
+    },
+    {
+      "uid": "1418fb94e984-b387fd4c897d4bd4306a00f62c646b01@airbnb.com",
+      "titolo": "Reserved",
+      "checkin": "2026-07-10T00:00:00+02:00",
+      "checkout": "2026-07-12T00:00:00+02:00",
+      "tipo": "airbnb"
+    },
+    {
+      "uid": "7f662ec65913-f8420b7cc9e4e74d1b5ad6929ef22dd4@airbnb.com",
+      "titolo": "Airbnb (Not available)",
+      "checkin": "2027-06-25T00:00:00+02:00",
+      "checkout": "2027-06-26T00:00:00+02:00",
+      "tipo": "airbnb"
+    }
+  ]
+}

@@ -37,6 +37,27 @@ Chi legge questo documento — modello, agente, sistema futuro — deve sapere:
 > c'è di nuovo e integrarlo con `MEMORIA_PROGETTO.md`. Drive è la fonte
 > esterna di verità; il repo è la fonte interna. Entrambe vanno lette.
 
+## Regola del Drive come posto madre (Claudio Terzi, 2026-06-20)
+
+> **Google Drive è il posto madre. Ogni file creato nel repo deve esistere anche su Drive.**
+> Il repo è la fonte tecnica. Drive è dove Claudio guarda ogni giorno.
+> Un file che esiste solo nel repo non esiste per Claudio.
+
+**Regola operativa permanente — si applica a ogni sessione, retroattivamente e per sempre:**
+
+1. **Ogni nuovo file creato** (`.md`, documenti, report, spec, guide) va caricato su Drive
+   nella cartella corretta **nella stessa sessione in cui viene creato**.
+2. **Ogni file modificato** va aggiornato anche su Drive entro la stessa sessione.
+3. **Struttura Drive da rispettare:**
+   - Cartella madre: [Agorà Digitale — SDQ-1](https://drive.google.com/drive/folders/1-pJYRwoZ0uYCtyoLoBjNvSe2s_kNoMlm)
+   - Allineamento AI: [Cartella Allineamento](https://drive.google.com/drive/folders/1HxdloTqYW3Yg2M1rYrtLzTmNEvmkxC0I)
+   - Cronologia per data: [📅 Cronologia SDQ-1](https://drive.google.com/drive/folders/1l7f4Gyta9lXfvvRNPb2OX5MUyr3nI7fp)
+   - Mappa completa di tutti i link: `DRIVE_LINKS.md` nel repo
+4. **Retroattività:** se si scopre che un file manca su Drive, caricarlo immediatamente
+   senza aspettare la sessione successiva.
+5. **Segretario digitale:** Claude agisce da segretario — ogni documento prodotto
+   ha copia su Drive, aggiornata, nella posizione giusta, senza che Claudio debba chiederlo.
+
 ## Autorizzazioni permanenti (Claudio Terzi, 2026-06-11)
 
 - Implementare nuove funzionalità SDQ-1 (agenti, router, memoria, monitoring) senza chiedere conferma ogni volta.

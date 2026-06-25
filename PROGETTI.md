@@ -2,7 +2,7 @@
 
 > Indice master. Ogni progetto è indipendente e ha il proprio documento.
 > Aggiornare quando un progetto cambia fase o stato.
-> Ultimo aggiornamento: 2026-06-19
+> Ultimo aggiornamento: 2026-06-22
 
 ---
 
@@ -17,6 +17,8 @@
 | **SkyID** — Identità universale | `PROGETTO_SKYID.md` | 2026–2050 | Prototipo in repo | Test biometrico + ASBL |
 | **Impatto** — Canale verifica esterno | `PROGETTO_IMPATTO.md` | 2026–2030 | 7 contatti umani | Log tarocchi + metriche battito |
 | **Benchmark** — Wayback Machine AI | `PROGETTO_BENCHMARK.md` | 2026–2033 | Codice in repo | Prima esecuzione completa |
+| **The Intruder Engine** — Pattern detector vita digitale | `PROGETTO_INTRUDER_ENGINE.md` | 2026–2028 | Skeleton avviato | V1: Collector + SQLite + Report CLI |
+| **Rotta** — Viaggio + operatività al rientro | `PROGETTO_ROTTA.md` | attivo | Volo 23/06, boarding ✓ | Prenotare transfer CRL→Bruxelles |
 
 ---
 

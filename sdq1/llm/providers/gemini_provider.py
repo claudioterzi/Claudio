@@ -1,46 +1,66 @@
-"""Provider Google Gemini (via google-genai SDK)."""
+"""Provider Google Gemini (via REST API — no SDK dipendency)."""
 
 from __future__ import annotations
 
+import json
 import os
+import urllib.error
+import urllib.request
 from typing import Any
 
 from .base import ProviderBase
 
-try:
-    from google import genai
-    from google.genai import types as genai_types
-    _OK = True
-except ImportError:
-    _OK = False
+_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models"
 
 
 class GeminiProvider(ProviderBase):
     nome = "gemini"
 
     def _inizializza(self) -> bool:
-        if not _OK:
-            return False
         key = self.api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
         if not key:
             return False
         self.api_key = key
-        self._client = genai.Client(api_key=key)
         return True
 
     def _completa_impl(self, sistema: str, utente: str) -> tuple[str, dict[str, Any]]:
-        resp = self._client.models.generate_content(
-            model=self.modello,
-            contents=utente,
-            config=genai_types.GenerateContentConfig(
-                system_instruction=sistema,
-                temperature=self.opts.get("temperatura", 0.7),
-                max_output_tokens=self.opts.get("max_token", 4096),
-            ),
+        modello = self.modello or "gemini-2.5-flash"
+        url = f"{_BASE_URL}/{modello}:generateContent?key={self.api_key}"
+
+        payload = {
+            "contents": [{"role": "user", "parts": [{"text": utente}]}],
+            "generationConfig": {
+                "temperature": self.opts.get("temperatura", 0.7),
+                "maxOutputTokens": self.opts.get("max_token", 4096),
+            },
+        }
+        if sistema:
+            payload["systemInstruction"] = {"parts": [{"text": sistema}]}
+
+        data = json.dumps(payload).encode()
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST",
         )
-        testo = resp.text or ""
+
+        try:
+            with urllib.request.urlopen(req, timeout=self.opts.get("timeout", 60)) as r:
+                resp = json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            body = e.read().decode(errors="replace")
+            raise RuntimeError(f"Gemini HTTP {e.code}: {body[:300]}") from e
+
+        candidates = resp.get("candidates", [])
+        if not candidates:
+            raise RuntimeError(f"Gemini: nessun candidato nella risposta: {resp}")
+
+        testo = candidates[0]["content"]["parts"][0].get("text", "")
         meta: dict[str, Any] = {}
-        if getattr(resp, "usage_metadata", None):
-            meta["input_tokens"] = resp.usage_metadata.prompt_token_count
-            meta["output_tokens"] = resp.usage_metadata.candidates_token_count
+        usage = resp.get("usageMetadata", {})
+        if usage:
+            meta["input_tokens"] = usage.get("promptTokenCount", 0)
+            meta["output_tokens"] = usage.get("candidatesTokenCount", 0)
+
         return testo, meta
