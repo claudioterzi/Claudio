@@ -379,10 +379,21 @@ def _esegui_singolo_comando(nome: str) -> None:
     elif nome == "briefing":
         briefing_operativo()
 
+    elif nome == "consiglio" or nome.startswith("consiglio "):
+        questione = nome[len("consiglio"):].strip() or "Qual è la prossima azione più importante?"
+        notifica_progresso(f"Consiglio in delibera su: {questione[:40]}...", emoji="⚖️")
+        try:
+            from sdq1.consiglio import ConsiglioAgenti, invia_delibera_telegram
+            c = ConsiglioAgenti()
+            delibera = c.delibera(questione)
+            invia_delibera_telegram(delibera)
+        except Exception as e:
+            invia(f"❌ Consiglio fallito: {e}")
+
     else:
         invia(
             f"❓ Comando <code>/{nome}</code> non riconosciuto.\n"
-            f"Comandi: /scan /status /agenti /push /briefing\n"
+            f"Comandi: /scan /status /agenti /push /briefing /consiglio\n"
             f"Oppure scrivi liberamente — rispondo io."
         )
 
