@@ -170,6 +170,16 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 58 | Archivio delle Rinunce (Cosa Non Fare) | ✅ Documentato |
 | 59 | Le 7 Rivelazioni Finali (una per libro) | ✅ Documentate |
 | 60 | Testamento dell'Opera | 🔄 Da scrivere alla conclusione |
+| 61 | Bibbia della Bellezza (6 tipi di bellezza) | 🔄 Da costruire |
+| 62 | Archivio delle Lacrime (scene devastanti) | 🔄 Da costruire |
+| 63 | Le 12 Leggi dell'Universo | ✅ Documentate |
+| 64 | Archivio delle Morti (nessuna gratuita) | 🔄 Da costruire |
+| 65 | Mappa della Redenzione | ✅ Documentata |
+| 66 | Archivio delle Rinascite | ✅ Documentato |
+| 67 | Geografia Sacra dei Luoghi | 🔄 In costruzione (file luoghi/) |
+| 68 | Musica dell'Universo (tema per libro) | 🔄 Da costruire |
+| 69 | Linguaggio Sacro (lessico proprio) | 🔄 Da costruire |
+| 70 | Obiettivo Ultimo del Lettore | ✅ Definito |
 
 ---
 
