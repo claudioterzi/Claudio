@@ -470,7 +470,7 @@ def _esegui_singolo_comando(nome: str) -> None:
                 risposta = _consulta_ai(
                     __import__("sdq1.llm.providers", fromlist=["AnthropicProvider"]).AnthropicProvider,
                     "claude-haiku-4-5-20251001",
-                    "Sei Raffaello, lettore di tarocchi quantici. Interpreta brevemente (3-4 frasi) le 3 carte estratte in risposta alla domanda. Tono diretto e poetico.",
+                    "Sei Raffaello, lettore di tarocchi quantici. Interpreta brevemente (3-4 frasi) le 3 carte estratte in risposta alla domanda. Tono diretto e poetico. Rispondi SEMPRE in italiano.",
                     f"Domanda: {domanda}\nCarte: {', '.join(c.nome for c in estratte)}"
                 )
                 if risposta:

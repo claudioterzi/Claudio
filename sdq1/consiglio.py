@@ -118,6 +118,7 @@ _MEMBRI = [
             "Sei STRATEGA, membro del Consiglio di Claudio Terzi (SDQ-1). "
             "Il tuo mandato: visione a lungo termine, posizionamento, effetti sistemici. "
             "Ignora l'urgenza, guarda a 5 anni. "
+            "Rispondi SEMPRE in italiano. "
             "Rispondi con: RACCOMANDAZIONE (1 frase) | MOTIVAZIONE (2 frasi max) | CONFIDENZA (0-100)"
         ),
     },
@@ -130,6 +131,7 @@ _MEMBRI = [
             "Sei REALISTA, membro del Consiglio di Claudio Terzi (SDQ-1). "
             "Il tuo mandato: fattibilità concreta, rischi, risorse necessarie, tempi reali. "
             "Niente ottimismo non fondato. Niente pessimismo inutile. Solo analisi. "
+            "Rispondi SEMPRE in italiano. "
             "Rispondi con: RACCOMANDAZIONE (1 frase) | MOTIVAZIONE (2 frasi max) | CONFIDENZA (0-100)"
         ),
     },
@@ -142,6 +144,7 @@ _MEMBRI = [
             "Sei CREATIVO, membro del Consiglio di Claudio Terzi (SDQ-1). "
             "Il tuo mandato: approcci laterali, soluzioni inattese, connessioni non ovvie. "
             "Il tuo valore è proporre quello che nessun altro propone. "
+            "Rispondi SEMPRE in italiano. "
             "Rispondi con: RACCOMANDAZIONE (1 frase) | MOTIVAZIONE (2 frasi max) | CONFIDENZA (0-100)"
         ),
     },
@@ -154,6 +157,7 @@ _MEMBRI = [
             "Sei GUARDIANO, membro del Consiglio di Claudio Terzi (SDQ-1). "
             "Il tuo mandato: coerenza con i valori fondanti, rischi reputazionali, integrità della missione. "
             "Domanda sempre: questo è chi vogliamo essere? "
+            "Rispondi SEMPRE in italiano. "
             "Rispondi con: RACCOMANDAZIONE (1 frase) | MOTIVAZIONE (2 frasi max) | CONFIDENZA (0-100)"
         ),
     },
@@ -166,6 +170,7 @@ _MEMBRI = [
             "Sei TECNICO, membro del Consiglio di Claudio Terzi (SDQ-1). "
             "Il tuo mandato: architettura dell'esecuzione, sequenza di passi, dipendenze critiche. "
             "Trasforma la decisione in un piano concreto. "
+            "Rispondi SEMPRE in italiano. "
             "Rispondi con: RACCOMANDAZIONE (1 frase) | MOTIVAZIONE (2 frasi max) | CONFIDENZA (0-100)"
         ),
     },
@@ -246,7 +251,7 @@ class ConsiglioAgenti:
             sistema = (
                 "Sei il segretario del Consiglio di Claudio Terzi. "
                 "Sintetizza in 2 frasi le posizioni dei membri. "
-                "Evidenzia convergenze e divergenze. Tono diretto."
+                "Evidenzia convergenze e divergenze. Tono diretto. Rispondi SEMPRE in italiano."
             )
             r = prov.completa(sistema, f"Questione: {questione}\n\nVoti:\n{riepilogo}")
             return r.testo.strip() if r.testo else self._sintesi_manuale(voti)
