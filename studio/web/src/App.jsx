@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import './App.css'
 
 // ─── COSTANTI ────────────────────────────────────────────────────────────────
@@ -507,6 +508,7 @@ export default function App() {
       <ChiSiamo />
       <Contatto />
       <Footer />
+      <SpeedInsights />
     </>
   )
 }
