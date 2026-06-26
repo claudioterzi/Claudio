@@ -47,6 +47,12 @@ def index():
     return send_from_directory("public", "index.html")
 
 
+@app.route("/home")
+def home():
+    """SDQ-1 Mini App — dashboard Raffaello per Telegram."""
+    return send_from_directory("public", "home.html")
+
+
 @app.route("/api/mazzo")
 def mazzo():
     """Restituisce tutte le 74 carte. voce() è il nome per le letture."""
