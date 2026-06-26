@@ -180,6 +180,27 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 68 | Musica dell'Universo (tema per libro) | 🔄 Da costruire |
 | 69 | Linguaggio Sacro (lessico proprio) | 🔄 Da costruire |
 | 70 | Obiettivo Ultimo del Lettore | ✅ Definito |
+| 71-80 | [Fasi intermedie — da documentare] | 🔄 In coda |
+| 81 | Archivio delle Eredità | ✅ Documentato |
+| 82 | Sistema delle Generazioni (3) | ✅ Documentato |
+| 83 | Archivio delle Lettere (4 lettere fondative) | ✅ Struttura e bozze create |
+| 84 | Sistema della Memoria (umana / artificiale / cosmica) | ✅ Documentato |
+| 85 | Archivio delle Civiltà Perdute | 🔄 Da costruire |
+| 86 | Sistema dei Nomi (etimologia + simbolo) | ✅ Documentato |
+| 87 | Archivio delle Profezie | ✅ Struttura creata |
+| 88 | Sistema delle Scelte Impossibili | ✅ Documentato |
+| 89 | Archivio Domande del Lettore per Capitolo | 🔄 Da costruire in scrittura |
+| 90 | Strategia Transmediale (6 formati) | ✅ Documentata |
+| 91 | Archivio delle Interpretazioni (7 livelli di lettura) | ✅ Documentato |
+| 92 | Il Lettore Ideale | ✅ Definito |
+| 93 | Il Nucleo Irriducibile (una frase) | ✅ Definito |
+| 94 | Domande Aperte Finali per il Lettore | ✅ Documentate |
+| 95 | Test del Tempo | ✅ Criterio fissato |
+| 96 | Archivio della Bellezza Stilistica | 🔄 Da costruire |
+| 97 | Manifesto dell'Opera | ✅ Scritto |
+| 98 | Archivio delle Trasformazioni del Lettore | ✅ Documentato |
+| 99 | L'Ultima Pagina — progettata in anticipo | ✅ Prima bozza |
+| 100 | La Civiltà Narrativa — architettura completa | ✅ Dichiarata |
 
 ---
 
