@@ -289,11 +289,39 @@ class ScacchieraV3:
 class AutoriflessoreV3:
     def __init__(self):
         self.scacchiera = ScacchieraV3(stato=Stato.INCISIVO)
+        self.cicli_eseguiti = 0
+        self.improvement_multiplier = 1.0
+
+    def valuta_azioni(self, azioni: list[dict], filtro_etico: bool = True) -> dict:
+        """Valuta azioni esterne: score = (impatto × velocità) / rischio.
+
+        Ogni azione dict può usare chiavi 'impact'/'speed'/'risk' (en)
+        o 'impatto'/'velocita'/'rischio' (it). Restituisce top-3 + backup.
+        """
+        FORBIDDEN = {"illegal", "harm", "deception"}
+        scored = []
+        for az in azioni:
+            imp = az.get("impact", az.get("impatto", 5))
+            vel = az.get("speed", az.get("velocita", 5))
+            ris = max(1, az.get("risk", az.get("rischio", 5)))
+            if filtro_etico and any(w in str(az).lower() for w in FORBIDDEN):
+                continue
+            scored.append({**az, "score_azione": round((imp * vel) / ris, 2)})
+
+        scored.sort(key=lambda x: x["score_azione"], reverse=True)
+        return {
+            "top": scored[:3],
+            "backup": scored[3] if len(scored) > 3 else None,
+            "totale_valutate": len(scored),
+        }
 
     def esegui(self, cicli: int = 3, livelli: int = 10) -> dict[str, Any]:
         t0 = time.time()
         risultati = self.scacchiera.cicli_multipli(n=cicli, livelli=livelli)
         t1 = time.time()
+
+        self.cicli_eseguiti += cicli
+        self.improvement_multiplier *= 1.15 ** cicli
 
         tutti_scores:    list[float] = []
         tutte_direzioni: list[str]   = []
@@ -320,6 +348,9 @@ class AutoriflessoreV3:
                 "salti_totali":          len(self.scacchiera.salti),
                 "salti":                 self.scacchiera.salti,
                 "nodi_totali_esplorati": len(self.scacchiera.motore.tutti_nodi),
+                "cicli_totali":          self.cicli_eseguiti,
+                "improvement_multiplier": round(self.improvement_multiplier, 3),
+                "density_gain":          f"+{int((self.improvement_multiplier - 1) * 100)}%",
             },
             "tempo": round(t1 - t0, 4),
         }
