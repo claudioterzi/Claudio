@@ -143,6 +143,69 @@ def leggi():
     })
 
 
+@app.route("/home")
+def home():
+    """SDQ-1 Mini App — dashboard Raffaello per Telegram."""
+    return send_from_directory("public", "home.html")
+
+
+@app.route("/api/telegram", methods=["POST"])
+def telegram_webhook():
+    """Webhook Telegram — riceve update e li gestisce in background."""
+    import threading
+
+    update = request.get_json(force=True, silent=True) or {}
+    if not update:
+        return "ok", 200
+
+    def _gestisci(upd):
+        try:
+            from sdq1.notifiche import _esegui_singolo_comando, _risposta_claude, invia
+            msg = upd.get("message", {})
+            testo = msg.get("text", "").strip()
+            if not testo:
+                return
+            if testo.startswith("/"):
+                parti = testo.split(maxsplit=1)
+                nome = parti[0].lower().lstrip("/")
+                args = parti[1] if len(parti) > 1 else ""
+                _esegui_singolo_comando(f"{nome} {args}".strip())
+            else:
+                risposta = _risposta_claude(testo)
+                invia(f"🤖 <b>Raffaello</b>\n\n{risposta}")
+        except Exception as e:
+            print(f"[WEBHOOK] Errore: {e}")
+
+    threading.Thread(target=_gestisci, args=(update,), daemon=True).start()
+    return "ok", 200
+
+
+@app.route("/api/telegram/set_webhook", methods=["GET"])
+def set_webhook():
+    """Registra il webhook di questo deployment su Telegram."""
+    import urllib.request
+    import json as _json
+
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+    if not token:
+        return jsonify({"errore": "TELEGRAM_BOT_TOKEN non configurato"}), 500
+
+    host = request.host_url.rstrip("/")
+    webhook_url = f"{host}/api/telegram"
+
+    payload = _json.dumps({"url": webhook_url}).encode()
+    req = urllib.request.Request(
+        f"https://api.telegram.org/bot{token}/setWebhook",
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=10) as r:
+        result = _json.loads(r.read())
+
+    return jsonify({"webhook": webhook_url, "telegram": result})
+
+
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "5001"))
     app.run(debug=True, port=port)
