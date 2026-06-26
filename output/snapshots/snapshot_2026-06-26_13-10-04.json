@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "timestamp": 1782472204.2092822,
+    "data_ora": "2026-06-26 13:10:04",
+    "tz": "Europe/Brussels",
+    "versione": "1.1.0"
+  },
+  "git": {
+    "branch": "claude/suspicious-prompt-injection-22whsc",
+    "commit": "c407308ecf068b8d12a067f6df5dd0f651ef34f8",
+    "commit_short": "c407308",
+    "messaggio": "feat: nuovi comandi bot Raffaello — snapshot, agenda, tarocchi, riflessione, desideri, skyrights, help",
+    "autore": "Claude",
+    "data_commit": "2026-06-26 11:01:43 +0000",
+    "dirty": true,
+    "file_modificati": [
+      "?? output/snapshots/snapshot_2026-06-26_13-09-41.json"
+    ]
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "3e1bf706eb3da091",
+      "CLAUDE.md": "e1c1a4f8f92cbdad",
+      "sdq1/__main__.py": "d25f9e0268d07aa6",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "89db6bf7b0574e47",
+      "sdq1/snapshot.py": "2fffc6b76d22bd0f",
+      "sdq1/sar/scacchiera_quantica.py": "d8f5c478c83d533c",
+      "sdq1/sar/agenti_autonomi.py": "20688ed2ae77ed5c",
+      "sdq1/llm/router.py": "65649bb2ce8f547e",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "9619bde5e07834fa"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-06-26T11:10:04.693061",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.41,
+    "scacchiera_dir": "SINTETICO"
+  },
+  "scanner": {
+    "agente": "CODE_SCANNER",
+    "score_sistema": 92,
+    "sicurezza_ok": true,
+    "sicurezza_livello": "VERDE",
+    "qualita_score": 81,
+    "debito_per_1k": 9.4,
+    "file_totali": 74,
+    "righe_totali": 13633,
+    "problemi_critici": 0,
+    "trovati_sicurezza": 0
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 42.1,
+      "n_chiavi": 4
+    }
+  }
+}
