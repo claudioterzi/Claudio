@@ -124,8 +124,8 @@ def leggi():
 # ── Telegram webhook ────────────────────────────────────────────
 
 def _invia(testo: str) -> bool:
-    token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-    chat  = os.environ.get("TELEGRAM_CHAT_ID", "")
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    chat  = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
     if not token or not chat:
         return False
     try:
@@ -171,8 +171,8 @@ def _gestisci_update(upd: dict) -> None:
 @app.route("/api/telegram/debug")
 def telegram_debug():
     """Verifica env vars e connessione Telegram."""
-    token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-    chat  = os.environ.get("TELEGRAM_CHAT_ID", "")
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    chat  = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
     token_ok = bool(token)
     chat_ok  = bool(chat)
 
