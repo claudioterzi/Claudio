@@ -448,7 +448,10 @@ def _esegui_singolo_comando(nome: str) -> None:
         try:
             import random
             import sys
-            sys.path.insert(0, "/home/user/Claudio")
+            import os as _os
+            _root = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+            if _root not in sys.path:
+                sys.path.insert(0, _root)
             from tarocchi import MAZZO, OrientamentoCarta
             n_carte = 3
             estratte = random.sample(MAZZO, n_carte)
@@ -504,7 +507,8 @@ def _esegui_singolo_comando(nome: str) -> None:
     elif nome == "desideri":
         try:
             import re
-            testo_md = open("/home/user/Claudio/REGISTRO_DESIDERI.md", encoding="utf-8").read()
+            _repo_root = Path(__file__).parent.parent
+            testo_md = (_repo_root / "REGISTRO_DESIDERI.md").read_text(encoding="utf-8")
             titoli = re.findall(r"## (Desiderio \d+[^\n]*)\n", testo_md)
             righe = [f"✨ <b>Registro dei Desideri</b>  ({len(titoli)} voci)\n"]
             for t in titoli[:10]:
