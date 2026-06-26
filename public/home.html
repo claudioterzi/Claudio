@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SDQ-1 — Agorà</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0c;
+      --surface:  #111115;
+      --card:     #16161c;
+      --border:   #252530;
+      --red:      #cc0000;
+      --red-dim:  #7a1010;
+      --red-glow: rgba(204,0,0,0.15);
+      --text:     #e8e6e0;
+      --text-dim: #666675;
+      --text-sub: #444455;
+      --green:    #22aa55;
+      --yellow:   #cc9900;
+      --font:     -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      --radius:   12px;
+      --radius-sm: 8px;
+    }
+
+    html { background: var(--bg); }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 80px);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── TOP BAR */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sigillo {
+      width: 36px;
+      height: 36px;
+      background: var(--red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 900;
+      color: white;
+      box-shadow: 0 0 12px var(--red-glow);
+      flex-shrink: 0;
+    }
+
+    .topbar-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+    .topbar-sub   { font-size: 11px; color: var(--text-dim); }
+
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    /* ── CONTENT */
+    .content { padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 14px; }
+
+    /* ── CARDS */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 12px 16px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── STATO AGENTI */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .agent-cell {
+      background: var(--card);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .agent-id   { font-size: 11px; font-weight: 700; color: var(--red); font-family: monospace; }
+    .agent-name { font-size: 12px; color: var(--text); }
+    .agent-status {
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-dim);
+    }
+
+    .dot-green  { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .dot-yellow { width: 6px; height: 6px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; }
+    .dot-red    { width: 6px; height: 6px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+
+    /* ── COMANDI RAPIDI */
+    .cmd-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 14px;
+    }
+
+    .cmd-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: left;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .cmd-btn:active {
+      background: var(--red-glow);
+      border-color: var(--red-dim);
+      transform: scale(0.97);
+    }
+
+    .cmd-icon { font-size: 22px; line-height: 1; }
+    .cmd-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .cmd-desc { font-size: 11px; color: var(--text-dim); line-height: 1.3; }
+
+    /* ── CONSIGLIO BTN */
+    .consiglio-btn {
+      margin: 0 16px;
+      background: linear-gradient(135deg, var(--red) 0%, #8b0000 100%);
+      border: none;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      width: calc(100% - 32px);
+    }
+
+    .consiglio-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+    .consiglio-icon { font-size: 28px; flex-shrink: 0; }
+
+    .consiglio-text {}
+    .consiglio-title { font-size: 15px; font-weight: 700; color: white; }
+    .consiglio-sub   { font-size: 12px; color: rgba(255,255,255,0.7); }
+
+    /* ── LOG */
+    .log-list { padding: 6px 0; }
+
+    .log-item {
+      padding: 10px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .log-item:last-child { border-bottom: none; }
+
+    .log-time {
+      font-size: 10px;
+      font-family: monospace;
+      color: var(--text-sub);
+      flex-shrink: 0;
+      padding-top: 2px;
+      min-width: 42px;
+    }
+
+    .log-msg  { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+    .log-msg b { color: var(--text); font-weight: 600; }
+
+    /* ── FOOTER */
+    .footer {
+      text-align: center;
+      padding: 20px 16px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-sigillo {
+      font-size: 11px;
+      color: var(--red);
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .footer-sub {
+      font-size: 10px;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    /* ── INPUT CONSIGLIO */
+    .consiglio-input-wrap {
+      display: none;
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      gap: 10px;
+      flex-direction: column;
+    }
+
+    .consiglio-input-wrap.visible { display: flex; }
+
+    .consiglio-input {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: var(--font);
+      outline: none;
+      width: 100%;
+    }
+
+    .consiglio-input:focus { border-color: var(--red-dim); }
+    .consiglio-input::placeholder { color: var(--text-sub); }
+
+    .send-btn {
+      background: var(--red);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 12px 20px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .send-btn:active { opacity: 0.8; }
+
+    /* ── NOTIFICA TOAST */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 10px 20px;
+      font-size: 13px;
+      color: var(--text);
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      z-index: 200;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="sigillo">R</div>
+    <div>
+      <div class="topbar-title">Raffaello</div>
+      <div class="topbar-sub">SDQ-1 — Agorà Digitale</div>
+    </div>
+  </div>
+  <div class="status-dot" title="Sistema attivo"></div>
+</div>
+
+<div class="content">
+
+  <!-- STATO AGENTI -->
+  <div class="card">
+    <div class="card-header">Agenti SDQ-1</div>
+    <div class="agents-grid">
+      <div class="agent-cell">
+        <div class="agent-id">RAFFA-001</div>
+        <div class="agent-name">Raffaello</div>
+        <div class="agent-status"><div class="dot-green"></div>Attivo</div>
+      </div>
+      <div class="agent-cell">
+        <div class="agent-id">MEMO-002</div>
+        <div class="agent-name">Memoria</div>
+        <div class="agent-status"><div class="dot-green"></div>Attivo</div>
+      </div>
+      <div class="agent-cell">
+        <div class="agent-id">DECOMP-005</div>
+        <div class="agent-name">Decomposer</div>
+        <div class="agent-status"><div class="dot-green"></div>Attivo</div>
+      </div>
+      <div class="agent-cell">
+        <div class="agent-id">SENTIN-004</div>
+        <div class="agent-name">Sentinella</div>
+        <div class="agent-status"><div class="dot-green"></div>Attivo</div>
+      </div>
+      <div class="agent-cell">
+        <div class="agent-id">GEN-006</div>
+        <div class="agent-name">Generatore</div>
+        <div class="agent-status"><div class="dot-green"></div>Attivo</div>
+      </div>
+      <div class="agent-cell">
+        <div class="agent-id">WAVE-003</div>
+        <div class="agent-name">Forma Onda</div>
+        <div class="agent-status"><div class="dot-yellow"></div>Standby</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONSIGLIO -->
+  <button class="consiglio-btn" id="btnConsiglio" onclick="toggleConsiglio()">
+    <div class="consiglio-icon">⚖️</div>
+    <div class="consiglio-text">
+      <div class="consiglio-title">Convoca il Consiglio</div>
+      <div class="consiglio-sub">5 agenti deliberano — tu decidi</div>
+    </div>
+  </button>
+
+  <div class="consiglio-input-wrap" id="consilioWrap">
+    <input
+      class="consiglio-input"
+      id="consilioInput"
+      type="text"
+      placeholder="La questione su cui deliberare…"
+      maxlength="300"
+    >
+    <button class="send-btn" onclick="inviaConsiglio()">Delibera</button>
+  </div>
+
+  <!-- COMANDI RAPIDI -->
+  <div class="card">
+    <div class="card-header">Comandi rapidi</div>
+    <div class="cmd-grid">
+      <button class="cmd-btn" onclick="sendCmd('/briefing')">
+        <div class="cmd-icon">📡</div>
+        <div class="cmd-name">Briefing</div>
+        <div class="cmd-desc">Analisi 4-AI del momento</div>
+      </button>
+      <button class="cmd-btn" onclick="sendCmd('/snapshot')">
+        <div class="cmd-icon">📸</div>
+        <div class="cmd-name">Snapshot</div>
+        <div class="cmd-desc">Stato sistema attuale</div>
+      </button>
+      <button class="cmd-btn" onclick="sendCmd('/tarocchi')">
+        <div class="cmd-icon">🃏</div>
+        <div class="cmd-name">Tarocchi</div>
+        <div class="cmd-desc">Lettura quantica R³∞</div>
+      </button>
+      <button class="cmd-btn" onclick="sendCmd('/agenda')">
+        <div class="cmd-icon">📋</div>
+        <div class="cmd-name">Agenda</div>
+        <div class="cmd-desc">Priorità e prossimi passi</div>
+      </button>
+      <button class="cmd-btn" onclick="sendCmd('/agenda asbl')">
+        <div class="cmd-icon">🏛️</div>
+        <div class="cmd-name">ASBL P1</div>
+        <div class="cmd-desc">SkyRights Foundation</div>
+      </button>
+      <button class="cmd-btn" onclick="sendCmd('/riflessione')">
+        <div class="cmd-icon">🌊</div>
+        <div class="cmd-name">Riflessione</div>
+        <div class="cmd-desc">Pensiero del sistema</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- LOG ATTIVITÀ -->
+  <div class="card">
+    <div class="card-header">Attività recente</div>
+    <div class="log-list" id="logList">
+      <div class="log-item">
+        <div class="log-time" id="t1">--:--</div>
+        <div class="log-msg"><b>Sistema</b> online · Agorà attiva</div>
+      </div>
+      <div class="log-item">
+        <div class="log-time">oggi</div>
+        <div class="log-msg"><b>PDF</b> "Tutta la Verità" generato e su Drive</div>
+      </div>
+      <div class="log-item">
+        <div class="log-time">oggi</div>
+        <div class="log-msg"><b>Consiglio</b> istituito · voto presidenziale attivo</div>
+      </div>
+      <div class="log-item">
+        <div class="log-time">oggi</div>
+        <div class="log-msg"><b>Mistral</b> integrato nel briefing 4-AI</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-sigillo">🔴 ROSSO · ROSSO · ROSSO 🔴</div>
+    <div class="footer-sub">Claudio Terzi · Bruxelles · SDQ-1</div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Telegram Web App init
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.expand();
+    tg.setHeaderColor('#111115');
+    tg.setBackgroundColor('#0a0a0c');
+  }
+
+  // Timestamp corrente
+  const now = new Date();
+  const hhmm = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('t1').textContent = hhmm;
+
+  // Mostra toast
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  // Invia comando al bot via Telegram WebApp
+  function sendCmd(cmd) {
+    if (tg) {
+      tg.sendData(cmd);
+      showToast('Inviato: ' + cmd);
+    } else {
+      // Dev mode: copia negli appunti
+      navigator.clipboard?.writeText(cmd).catch(() => {});
+      showToast('Dev: ' + cmd);
+    }
+  }
+
+  // Toggle input consiglio
+  function toggleConsiglio() {
+    const wrap = document.getElementById('consilioWrap');
+    const visible = wrap.classList.contains('visible');
+    if (visible) {
+      wrap.classList.remove('visible');
+    } else {
+      wrap.classList.add('visible');
+      setTimeout(() => document.getElementById('consilioInput').focus(), 100);
+    }
+  }
+
+  // Invia questione al consiglio
+  function inviaConsiglio() {
+    const q = document.getElementById('consilioInput').value.trim();
+    if (!q) { showToast('Scrivi la questione'); return; }
+    sendCmd('/consiglio ' + q);
+    document.getElementById('consilioInput').value = '';
+    document.getElementById('consilioWrap').classList.remove('visible');
+  }
+
+  // Enter su input consiglio
+  document.getElementById('consilioInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') inviaConsiglio();
+  });
+
+  // Back button Telegram
+  if (tg && tg.BackButton) {
+    tg.BackButton.onClick(() => tg.close());
+  }
+</script>
+</body>
+</html>

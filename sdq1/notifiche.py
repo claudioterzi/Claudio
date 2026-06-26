@@ -250,9 +250,8 @@ def _risposta_claude(testo_utente: str) -> str:
     """Chiama Claude Haiku e restituisce la risposta per Telegram."""
     try:
         from sdq1.llm.providers import AnthropicProvider
-        from sdq1.agenda import carica as carica_agenda, riepilogo_briefing
+        from sdq1.agenda import riepilogo_briefing
 
-        agenda = carica_agenda()
         ctx = riepilogo_briefing() or ""
 
         sistema = (
@@ -380,11 +379,182 @@ def _esegui_singolo_comando(nome: str) -> None:
     elif nome == "briefing":
         briefing_operativo()
 
+    elif nome == "consiglio" or nome.startswith("consiglio "):
+        questione = nome[len("consiglio"):].strip() or "Qual è la prossima azione più importante?"
+        notifica_progresso(f"Consiglio in delibera su: {questione[:40]}...", emoji="⚖️")
+        try:
+            from sdq1.consiglio import ConsiglioAgenti, invia_delibera_telegram
+            c = ConsiglioAgenti()
+            delibera = c.delibera(questione)
+            invia_delibera_telegram(delibera)
+        except Exception as e:
+            invia(f"❌ Consiglio fallito: {e}")
+
+    elif nome == "snapshot":
+        notifica_progresso("Snapshot in corso...", emoji="📸")
+        try:
+            from sdq1.snapshot import crea_snapshot, salva_snapshot
+            snap = crea_snapshot()
+            dest = salva_snapshot(snap)
+            g = snap["git"]
+            c = snap["codice"]
+            sc = snap.get("scanner", {})
+            invia(
+                f"📸 <b>Snapshot salvato</b>\n"
+                f"  File: <code>{dest.name}</code>\n"
+                f"  Commit: <code>{g['commit_short']}</code> | Git: {'✓ pulito' if not g['dirty'] else '⚠ sporco'}\n"
+                f"  Codice: {c['file_presenti']}/{len(c['file'])} file integri\n"
+                f"  Scanner: {sc.get('score_sistema', '?')}/100"
+            )
+        except Exception as e:
+            invia(f"❌ Snapshot fallito: {e}")
+
+    elif nome == "agenda" or nome.startswith("agenda "):
+        filtro = nome[len("agenda"):].strip().lower()
+        try:
+            from sdq1.agenda import carica as carica_agenda, prossimi_viaggi
+            agenda = carica_agenda()
+            oggi = datetime.now(_TZ).date().isoformat()
+            rota = [r for r in agenda.get("pronto_rota", []) if not r.get("fatto")]
+            airbnb = agenda.get("prenotazioni_airbnb", [])
+            viaggi = prossimi_viaggi(giorni=3)
+            checkout_prox = [b for b in airbnb if b.get("checkout", "") >= oggi][:2]
+
+            righe = [f"📋 <b>Agenda SDQ-1</b>  <i>{oggi}</i>\n"]
+            righe.append("<b>🎯 Pronto Rota:</b>")
+            for i, r in enumerate(rota[:5]):
+                p = f"P{i}" if i < 3 else "P?"
+                tag = f"[{r.get('etichetta','?')}]" if r.get("etichetta") else ""
+                righe.append(f"  {p} {tag} {r.get('titolo','?')[:50]}")
+                if r.get("prossimo_passo"):
+                    righe.append(f"     → {r['prossimo_passo'][:60]}")
+
+            if viaggi:
+                righe.append("\n<b>✈️ Viaggi:</b>")
+                for v in viaggi[:3]:
+                    righe.append(f"  {v.get('data','?')} — {v.get('titolo','?')[:50]}")
+
+            if checkout_prox:
+                righe.append("\n<b>🏠 Airbnb prossimi checkout:</b>")
+                for b in checkout_prox:
+                    righe.append(f"  {b.get('checkout','?')[:10]} — {b.get('titolo','?')[:40]}")
+
+            invia("\n".join(righe))
+        except Exception as e:
+            invia(f"❌ Agenda fallita: {e}")
+
+    elif nome == "tarocchi" or nome.startswith("tarocchi "):
+        domanda = nome[len("tarocchi"):].strip() or ""
+        try:
+            import random
+            import sys
+            sys.path.insert(0, "/home/user/Claudio")
+            from tarocchi import MAZZO, OrientamentoCarta
+            n_carte = 3
+            estratte = random.sample(MAZZO, n_carte)
+            orientamenti = [random.choice(list(OrientamentoCarta)) for _ in range(n_carte)]
+            nomi_pos = ["Passato", "Presente", "Futuro"]
+
+            righe = [f"🃏 <b>Tarocchi Quantici R³∞</b>"]
+            if domanda:
+                righe.append(f"<i>Domanda: {domanda[:80]}</i>")
+            righe.append("")
+            for pos, carta, ori in zip(nomi_pos, estratte, orientamenti):
+                verso = "↑ Dritta" if ori.name == "DRITTA" else "↓ Rovesciata"
+                kw = ", ".join(carta.parole_chiave[:3]) if carta.parole_chiave else ""
+                righe.append(f"<b>{pos}</b> — {carta.nome} {verso}")
+                if kw:
+                    righe.append(f"  <i>{kw}</i>")
+
+            if domanda:
+                risposta = _consulta_ai(
+                    __import__("sdq1.llm.providers", fromlist=["AnthropicProvider"]).AnthropicProvider,
+                    "claude-haiku-4-5-20251001",
+                    "Sei Raffaello, lettore di tarocchi quantici. Interpreta brevemente (3-4 frasi) le 3 carte estratte in risposta alla domanda. Tono diretto e poetico.",
+                    f"Domanda: {domanda}\nCarte: {', '.join(c.nome for c in estratte)}"
+                )
+                if risposta:
+                    righe += ["", f"💬 {risposta[:400]}"]
+
+            invia("\n".join(righe))
+        except Exception as e:
+            invia(f"❌ Tarocchi falliti: {e}")
+
+    elif nome == "riflessione":
+        notifica_progresso("Riflessione in corso...", emoji="🌊")
+        try:
+            from sdq1.llm.providers import GeminiProvider
+            ora = datetime.now(_TZ).strftime("%Y-%m-%d %H:%M")
+            sistema = (
+                "Sei Raffaello, voce del sistema SDQ-1 di Claudio Terzi. "
+                "Scrivi una riflessione breve (4-6 frasi) sul momento presente. "
+                "Tono: poetico, diretto, concreto. Lingua: italiano. "
+                "Includi un'osservazione sul sistema e una per Claudio."
+            )
+            prov = GeminiProvider(modello="gemini-2.5-flash", api_key=None, timeout=20)
+            if prov.disponibile:
+                r = prov.completa(sistema, f"Data e ora: {ora}. Genera la riflessione.")
+                testo = r.testo.strip() if r.testo else "Il sistema osserva. Il sistema respira."
+            else:
+                testo = "Il sistema è presente. Il momento è questo. Vai avanti."
+            invia(f"🌊 <b>Riflessione SDQ-1</b>  <i>{ora}</i>\n\n{testo}")
+        except Exception as e:
+            invia(f"❌ Riflessione fallita: {e}")
+
+    elif nome == "desideri":
+        try:
+            import re
+            testo_md = open("/home/user/Claudio/REGISTRO_DESIDERI.md", encoding="utf-8").read()
+            titoli = re.findall(r"## (Desiderio \d+[^\n]*)\n", testo_md)
+            righe = [f"✨ <b>Registro dei Desideri</b>  ({len(titoli)} voci)\n"]
+            for t in titoli[:10]:
+                righe.append(f"  • {t}")
+            if len(titoli) > 10:
+                righe.append(f"  … e altri {len(titoli)-10}")
+            invia("\n".join(righe))
+        except Exception as e:
+            invia(f"❌ Desideri falliti: {e}")
+
+    elif nome == "skyRights" or nome == "skyrights" or nome == "asbl":
+        invia(
+            "🏛️ <b>SkyRights Foundation — ASBL Belgio</b>\n\n"
+            "<b>Stato:</b> ⏳ In preparazione\n"
+            "<b>Priorità:</b> P1\n\n"
+            "<b>Passi:</b>\n"
+            "  1. Scarica template statuti da prolegal.be\n"
+            "  2. Adatta nome e scopo\n"
+            "  3. Accedi a egreffe.be\n"
+            "  4. Deposita atti (€150 tassa)\n\n"
+            "<b>Missione:</b> Diritti individuali nell'era dei satelliti e dell'AI\n"
+            "<b>Sede:</b> Bruxelles (cuore regolatorio EU)\n\n"
+            "🔴 <b>Questa è la chiave. Forgiala.</b>"
+        )
+
+    elif nome == "help" or nome == "?":
+        invia(
+            "🤖 <b>Raffaello — Comandi SDQ-1</b>\n\n"
+            "<b>Sistema:</b>\n"
+            "  /status — stato snapshot sistema\n"
+            "  /snapshot — crea snapshot senza push\n"
+            "  /scan — scansione codice\n"
+            "  /agenti — ciclo 7 agenti autonomi\n"
+            "  /push — snapshot + push GitHub\n\n"
+            "<b>Intelligenza:</b>\n"
+            "  /briefing — analisi 4-AI (Gemini+Claude+DeepSeek+Mistral)\n"
+            "  /riflessione — riflessione poetica del sistema\n"
+            "  /consiglio [questione] — 5 agenti deliberano\n\n"
+            "<b>Progetto:</b>\n"
+            "  /agenda — priorità e pronto rota\n"
+            "  /desideri — registro dei desideri\n"
+            "  /skyrights — stato ASBL SkyRights\n"
+            "  /tarocchi [domanda] — lettura quantica R³∞\n\n"
+            "Oppure scrivi qualsiasi cosa — rispondo io."
+        )
+
     else:
         invia(
             f"❓ Comando <code>/{nome}</code> non riconosciuto.\n"
-            f"Comandi: /scan /status /agenti /push /briefing\n"
-            f"Oppure scrivi liberamente — rispondo io."
+            f"Scrivi /help per la lista completa."
         )
 
 
@@ -406,10 +576,10 @@ def _consulta_ai(provider_cls, modello: str, sistema: str, domanda: str) -> str:
 
 
 def briefing_operativo() -> bool:
-    """Briefing operativo 4 blocchi — query multi-AI (Gemini + Claude + DeepSeek)."""
+    """Briefing operativo 4 blocchi — query multi-AI (Gemini + Claude + DeepSeek + Mistral)."""
     import concurrent.futures
     from sdq1.agenda import carica as carica_agenda, prossimi_viaggi
-    from sdq1.llm.providers import GeminiProvider, AnthropicProvider, DeepSeekProvider
+    from sdq1.llm.providers import GeminiProvider, AnthropicProvider, DeepSeekProvider, MistralProvider
 
     agenda = carica_agenda()
     ora = datetime.now(_TZ).strftime("%Y-%m-%d %H:%M")
@@ -448,20 +618,23 @@ def briefing_operativo() -> bool:
         "stato infrastruttura e prossima milestone operativa. Max 25 parole totali."
     )
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
-        fut_gemini  = ex.submit(_consulta_ai, GeminiProvider,    "gemini-2.5-flash",   SISTEMA_INTENTO,    contesto)
-        fut_claude  = ex.submit(_consulta_ai, AnthropicProvider, "claude-haiku-4-5-20251001", SISTEMA_COSTRUTTO, contesto)
-        fut_deepseek = ex.submit(_consulta_ai, DeepSeekProvider, "deepseek-chat",       SISTEMA_COSTRUTTO, contesto)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
+        fut_gemini   = ex.submit(_consulta_ai, GeminiProvider,    "gemini-2.5-flash",          SISTEMA_INTENTO,    contesto)
+        fut_claude   = ex.submit(_consulta_ai, AnthropicProvider, "claude-haiku-4-5-20251001", SISTEMA_COSTRUTTO, contesto)
+        fut_deepseek = ex.submit(_consulta_ai, DeepSeekProvider,  "deepseek-chat",             SISTEMA_COSTRUTTO, contesto)
+        fut_mistral  = ex.submit(_consulta_ai, MistralProvider,   "mistral-small-latest",      SISTEMA_COSTRUTTO, contesto)
 
-    intento   = fut_gemini.result()  or "L'azione è cristallizzata. Il sistema avanza."
+    intento            = fut_gemini.result()   or "L'azione è cristallizzata. Il sistema avanza."
     costrutto_claude   = fut_claude.result()
     costrutto_deepseek = fut_deepseek.result()
+    costrutto_mistral  = fut_mistral.result()
 
-    # Costrutto: usa quello disponibile o entrambi
-    if costrutto_claude and costrutto_deepseek:
-        costrutto = f"[Claude] {costrutto_claude}\n[DeepSeek] {costrutto_deepseek}"
-    else:
-        costrutto = costrutto_claude or costrutto_deepseek or "Sistema SDQ-1 operativo."
+    # Costrutto: aggrega tutte le voci disponibili
+    voci = []
+    if costrutto_claude:   voci.append(f"[Claude] {costrutto_claude}")
+    if costrutto_deepseek: voci.append(f"[DeepSeek] {costrutto_deepseek}")
+    if costrutto_mistral:  voci.append(f"[Mistral] {costrutto_mistral}")
+    costrutto = "\n".join(voci) if voci else "Sistema SDQ-1 operativo."
 
     # Blocco 2 — Bersaglio Fisico
     riga_azione = f"{p0.get('icona', '⚡')} {p0.get('titolo', '—')}\n→ {p0.get('prossimo_passo', '—')}"
@@ -476,8 +649,6 @@ def briefing_operativo() -> bool:
     valore_netto = valore_lordo - costo_op
     karch_line = ""
     if karch:
-        interventi_fatti = 0
-        debito = capex - interventi_fatti * netto
         karch_line = (
             f"\n  🧹 Kärcher: CAPEX {capex:.0f}€ | ROI break-even in 5 interventi"
         )
@@ -499,7 +670,7 @@ def briefing_operativo() -> bool:
         "<b>④ COSTRUTTO SISTEMICO</b>",
         costrutto,
         "",
-        "<i>[Gemini · Claude · DeepSeek — analisi parallela]</i>",
+        "<i>[Gemini · Claude · DeepSeek · Mistral — analisi parallela]</i>",
     ]
 
     return invia("\n".join(righe))
