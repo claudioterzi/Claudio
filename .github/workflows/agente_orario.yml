@@ -14,14 +14,17 @@ jobs:
 
     steps:
       - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Configura git
         run: |
-          git clone --branch "${{ github.ref_name }}" \
-            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" .
           git config user.name "Claude"
           git config user.email "noreply@anthropic.com"
 
       - name: Installa dipendenze
-        run: python3 -m pip install --no-cache-dir anthropic "google-genai>=1.0.0" "openai>=1.50.0"
+        run: python3 -m pip install --quiet --no-cache-dir anthropic "google-genai>=1.0.0" "openai>=1.50.0"
 
       - name: Chat Telegram — leggi e rispondi
         continue-on-error: true
@@ -43,5 +46,5 @@ jobs:
       - name: Salva output
         run: |
           git add output/ || true
-          git diff --staged --quiet || git commit -m "SDQ-1 orario $(date +%Y-%m-%d\ %H:%M)"
+          git diff --staged --quiet || git commit -m "SDQ-1 orario $(date +%Y-%m-%d\ %H:%M) [skip ci]"
           git push || true

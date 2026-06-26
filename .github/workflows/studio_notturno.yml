@@ -13,14 +13,17 @@ jobs:
 
     steps:
       - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Configura git
         run: |
-          git clone --branch "${{ github.ref_name }}" \
-            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" .
           git config user.name "Claude"
           git config user.email "noreply@anthropic.com"
 
       - name: Installa dipendenze
-        run: python3 -m pip install --no-cache-dir anthropic
+        run: python3 -m pip install --quiet --no-cache-dir anthropic
 
       - name: Studio Notturno
         env:
@@ -30,5 +33,5 @@ jobs:
       - name: Salva Morning Brief nel repo
         run: |
           git add output/morning_brief/
-          git diff --staged --quiet || git commit -m "morning brief $(date +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "morning brief $(date +%Y-%m-%d) [skip ci]"
           git push || true

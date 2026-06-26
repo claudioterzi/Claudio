@@ -11,30 +11,27 @@ jobs:
     permissions:
       contents: write
 
-    env:
-      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-      TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
-      GOOGLE_API_KEY:     ${{ secrets.GOOGLE_API_KEY }}
-      ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
-      DEEPSEEK_API_KEY:   ${{ secrets.DEEPSEEK_API_KEY }}
-      AIRBNB_ICAL_URL:    ${{ secrets.AIRBNB_ICAL_URL }}
-
     steps:
       - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Configura git
         run: |
-          git clone --branch "${{ github.ref_name }}" \
-            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" .
-          git config user.name "SDQ-1 Autonomo"
-          git config user.email "sdq1@claudio.local"
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
 
       - name: Installa dipendenze
         run: |
-          python3 -m pip install --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
+          python3 -m pip install --quiet --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
           sudo apt-get install -y ripgrep
 
       # ── 0a. Sync calendario Airbnb
       - name: Sync Airbnb
         continue-on-error: true
+        env:
+          AIRBNB_ICAL_URL: ${{ secrets.AIRBNB_ICAL_URL }}
         run: |
           mkdir -p output
           if [ -n "$AIRBNB_ICAL_URL" ]; then
@@ -44,6 +41,10 @@ jobs:
       # ── 0. Controlla comandi Telegram in coda
       - name: Comandi Telegram
         continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           mkdir -p output
           python3 -m sdq1 --telegram-comandi
@@ -51,6 +52,12 @@ jobs:
       # ── 1. Ciclo 7 agenti (notifica automatica se guardian non VERDE)
       - name: Agenti autonomi
         continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_API_KEY:     ${{ secrets.GOOGLE_API_KEY }}
+          DEEPSEEK_API_KEY:   ${{ secrets.DEEPSEEK_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           mkdir -p output
           python3 -m sdq1 --agenti
@@ -58,21 +65,33 @@ jobs:
       # ── 2. Scanner sicurezza + qualità
       - name: Scanner
         continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python3 -m sdq1 --scan
 
       # ── 3. Snapshot completo + push
       - name: Snapshot e push
         continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python3 -m sdq1 --snapshot --push
 
       # ── 4. Briefing operativo multi-AI su Telegram
       - name: Briefing Telegram
         continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_API_KEY:     ${{ secrets.GOOGLE_API_KEY }}
+          DEEPSEEK_API_KEY:   ${{ secrets.DEEPSEEK_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python3 -m sdq1 --briefing-operativo
 
       # ── 5. Salva tutti gli output (scan_report, agenti_stato, ecc.)
       - name: Commit output
         run: |
           git add output/ || true
-          git diff --staged --quiet || git commit -m "chore(daily): agenti + scanner + snapshot $(date +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "chore(daily): agenti + scanner + snapshot $(date +%Y-%m-%d) [skip ci]"
           git push || true
