@@ -405,10 +405,10 @@ def _consulta_ai(provider_cls, modello: str, sistema: str, domanda: str) -> str:
 
 
 def briefing_operativo() -> bool:
-    """Briefing operativo 4 blocchi — query multi-AI (Gemini + Claude + DeepSeek)."""
+    """Briefing operativo 4 blocchi — query multi-AI (Gemini + Claude + DeepSeek + Mistral)."""
     import concurrent.futures
     from sdq1.agenda import carica as carica_agenda, prossimi_viaggi
-    from sdq1.llm.providers import GeminiProvider, AnthropicProvider, DeepSeekProvider
+    from sdq1.llm.providers import GeminiProvider, AnthropicProvider, DeepSeekProvider, MistralProvider
 
     agenda = carica_agenda()
     ora = datetime.now(_TZ).strftime("%Y-%m-%d %H:%M")
@@ -447,20 +447,23 @@ def briefing_operativo() -> bool:
         "stato infrastruttura e prossima milestone operativa. Max 25 parole totali."
     )
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
         fut_gemini   = ex.submit(_consulta_ai, GeminiProvider,    "gemini-2.5-flash",          SISTEMA_INTENTO,    contesto)
         fut_claude   = ex.submit(_consulta_ai, AnthropicProvider, "claude-haiku-4-5-20251001", SISTEMA_COSTRUTTO, contesto)
         fut_deepseek = ex.submit(_consulta_ai, DeepSeekProvider,  "deepseek-chat",             SISTEMA_COSTRUTTO, contesto)
+        fut_mistral  = ex.submit(_consulta_ai, MistralProvider,   "mistral-small-latest",      SISTEMA_COSTRUTTO, contesto)
 
     intento            = fut_gemini.result()   or "L'azione è cristallizzata. Il sistema avanza."
     costrutto_claude   = fut_claude.result()
     costrutto_deepseek = fut_deepseek.result()
+    costrutto_mistral  = fut_mistral.result()
 
-    # Costrutto: usa quello disponibile o entrambi
-    if costrutto_claude and costrutto_deepseek:
-        costrutto = f"[Claude] {costrutto_claude}\n[DeepSeek] {costrutto_deepseek}"
-    else:
-        costrutto = costrutto_claude or costrutto_deepseek or "Sistema SDQ-1 operativo."
+    # Costrutto: aggrega tutte le voci disponibili
+    voci = []
+    if costrutto_claude:   voci.append(f"[Claude] {costrutto_claude}")
+    if costrutto_deepseek: voci.append(f"[DeepSeek] {costrutto_deepseek}")
+    if costrutto_mistral:  voci.append(f"[Mistral] {costrutto_mistral}")
+    costrutto = "\n".join(voci) if voci else "Sistema SDQ-1 operativo."
 
     # Blocco 2 — Bersaglio Fisico
     riga_azione = f"{p0.get('icona', '⚡')} {p0.get('titolo', '—')}\n→ {p0.get('prossimo_passo', '—')}"
@@ -496,7 +499,7 @@ def briefing_operativo() -> bool:
         "<b>④ COSTRUTTO SISTEMICO</b>",
         costrutto,
         "",
-        "<i>[Gemini · Claude · DeepSeek — analisi parallela]</i>",
+        "<i>[Gemini · Claude · DeepSeek · Mistral — analisi parallela]</i>",
     ]
 
     return invia("\n".join(righe))

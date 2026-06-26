@@ -74,3 +74,9 @@ class GrokProvider(_OpenAIBase):
     nome = "grok"
     env_var = "XAI_API_KEY"
     base_url = "https://api.x.ai/v1"
+
+
+class MistralProvider(_OpenAIBase):
+    nome = "mistral"
+    env_var = "MISTRAL_API_KEY"
+    base_url = "https://api.mistral.ai/v1"
