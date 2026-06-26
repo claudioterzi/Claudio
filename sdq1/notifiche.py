@@ -43,14 +43,14 @@ _OFFSET_FILE = Path("output/telegram_offset.json")
 # ══════════════════════════════════════════════════════════════════
 
 def _token() -> str:
-    t = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+    t = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
     if not t:
         raise RuntimeError("TELEGRAM_BOT_TOKEN non configurato nel .env")
     return t
 
 
 def _chat_id() -> str:
-    c = os.environ.get("TELEGRAM_CHAT_ID", "")
+    c = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
     if not c:
         raise RuntimeError("TELEGRAM_CHAT_ID non configurato nel .env")
     return c
