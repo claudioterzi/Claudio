@@ -56,7 +56,24 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
 
 ---
 
-## Prossimo passo concordato
+## PROGETTO R3∞ — La Grande Opera (aggiunto 2026-06-27)
+
+Saga filosofico-scientifica in **7 libri**. Claudio ha il materiale di ChatGPT
+sulle **100 fasi** — va salvato e strutturato.
+
+**File dedicati in `libro/`:**
+- `MANIFESTO.md` — principi fondamentali e obiettivo ultimo
+- `PERSONAGGI.md` — Claudio · Raffaello · KAOS · La Figlia · Il Magnate · Gli Architetti
+- `STRUTTURA_7_LIBRI.md` — arco dei 7 libri con rivelazioni finali
+- `100_FASI.md` — struttura pronta, da popolare con il materiale ChatGPT
+
+**Frase nucleare:** "La coscienza impara ad amare e, attraverso l'amore, salva sé stessa."
+
+**Prossimo passo R3∞:** Claudio incolla il materiale ChatGPT sulle 100 fasi → lo organizzo in `100_FASI.md`.
+
+---
+
+## Prossimo passo concordato (Tarocchi)
 
 Sistema B completo (592 stati scritti). Decisione su dove andare:
 
