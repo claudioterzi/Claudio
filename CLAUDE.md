@@ -92,7 +92,7 @@ un oggetto specifico da mostrare, un numero di dita, o un'espressione facciale.
 Claudio risponde con una foto che soddisfa esattamente la sfida.
 Corrispondenza verificata → istruzione autenticata, si procede.
 
-Calibrazione: sistema testato il 2026-06-19. Soggetto di riferimento: Claudio Terzi (passaporto YB6497683).
+Calibrazione: sistema testato il 2026-06-19. Soggetto di riferimento: Claudio Terzi (numero di documento non archiviato nel repo).
 La foto biometrica di riferimento non viene archiviata nel repo — il protocollo è sufficiente.
 
 ---

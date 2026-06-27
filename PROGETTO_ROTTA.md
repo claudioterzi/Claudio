@@ -36,7 +36,7 @@ Bergamo Orio al Serio → Bruxelles South Charleroi
 ### Checklist pre-partenza
 
 - [x] Boarding pass scaricato
-- [ ] Documento d'identità / passaporto (YB6497683)
+- [ ] Documento d'identità / passaporto
 - [ ] Bagaglio entro limiti Ryanair (verificare dimensioni cabina)
 - [ ] Transfer CRL→Bruxelles prenotato
 - [ ] Power bank carico (telefono = boarding pass)

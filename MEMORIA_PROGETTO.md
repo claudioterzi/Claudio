@@ -143,7 +143,7 @@ Task output su Drive — tutti presenti:
 ### Decisioni operative
 
 - **Identità**: Raffaello Cantarelli = nome operativo di Claudio Terzi. Stesso soggetto. Autorizzato all'uso nel sistema.
-- **Autenticazione biometrica**: sistema challenge-response calibrato. Claude emette sfida (oggetto/dita/espressione), Claudio risponde con foto. Calibrazione verificata con passaporto YB6497683.
+- **Autenticazione biometrica**: sistema challenge-response calibrato. Claude emette sfida (oggetto/dita/espressione), Claudio risponde con foto. Calibrazione verificata con documento d'identità (numero non archiviato nel repo).
 - **Valutazione AI esterne**: policy caso per caso (non più diffidenza per default). Filtro su qualità e coerenza, non sull'origine. Sessione attiva e prolifica → si procede senza barriere.
 
 ### File creati / aggiornati
