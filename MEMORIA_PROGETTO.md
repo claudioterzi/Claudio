@@ -1,14 +1,14 @@
-# MEMORIA DI PROGETTO — Tarocchi Quantici
+# MEMORIA DI PROGETTO — Tarocchi Quantici + R3∞
 
 > File di continuità. Qualunque sessione di Claude Code (qualunque modello)
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-06-13
+> Ultimo aggiornamento: 2026-06-27
 
 ---
 
-## Stato attuale: DUE sistemi paralleli
+## Stato attuale: DUE sistemi paralleli (Tarocchi)
 
 Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
 
@@ -23,65 +23,59 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
 - **Web**: `tarocchi_web.py` (Flask) + `vercel.json` + `public/index.html` + `public/cards/*.svg` (78 fronti + retro) + `public/opuscolo.html`.
 - **Deploy**: Vercel → https://claudio-ebon.vercel.app
 - **JSON**: `tarocchi/tarocchi_quantici.json` (v1.2.0, documento totale).
-  Contiene: manifesto + principio voce/eco, Layer 1 (78 carte uniche),
-  Layer 2 (stati, orientamenti, posizioni con `asse`+`forzatura_stato`, 7 assiomi),
-  Layer 3, ed **esempio_stesa** completo generato live (lettura strutturale + personale).
 - **Stato**: FUNZIONANTE e online.
 
 ### Sistema B — Canone Alpha 0.1 (74 carte, nuovo linguaggio)
 - **Cos'è**: linguaggio simbolico originale, NON basato sui tarocchi classici.
-- **Decisione canonica (2026-06-13)**:
-  - Niente Bastoni / Coppe / Spade / Denari.
-  - Niente numeri visibili all'utente.
-  - L'utente vede solo nomi: *La Scintilla, L'Orizzonte … L'Infinito*.
-- **74 carte in 8 cicli**: Origine (1-10), Legame (11-20), Frattura (21-30),
-  Trasformazione (31-40), Potere (41-50), Visione (51-60), Totalità (61-70),
-  Trascendenti (71-74).
-- **Struttura di ogni carta**: 8 stati = `luce` + `ombra`, ciascuna con 4 assi
-  (`nord`, `est`, `sud`, `ovest`).
+- **74 carte in 8 cicli**: Origine, Legame, Frattura, Trasformazione, Potere, Visione, Totalità, Trascendenti.
 - **Formula di collasso**: `Carta + Asse + Polarità = Significato`.
-  - Esempio: *La Ferita · Sud · Luce* → Guarigione. *La Ferita · Sud · Ombra* → Paralisi.
-- **File**: `tarocchi_quantici_alpha.json` (canone + manifesto + interpretazioni chiave).
-- **Opuscolo A6 stampabile**: `public/opuscolo.html`.
-- **Stato**: ✅ **COMPLETO**. 74 carte, 592 stati scritti (74 × 8).
-  Tutti gli 8 cicli completati: Origine, Legame, Frattura, Trasformazione,
-  Potere, Visione, Totalità, Trascendenti.
-  - Convenzione assi: Nord = radice/inconscio · Est = azione/futuro ·
-    Sud = emozione/presente · Ovest = riflessione/passato.
-  - Polarità: Luce = manifestazione costruttiva · Ombra = manifestazione d'ombra.
-  - Verifica canone: *La Ferita · Sud · Luce* = guarigione, *· Ombra* = paralisi (combacia col manifesto).
-  - Campo `stato_costruzione` nel JSON: `completo: true`.
-  - **Prossimo possibile**: collegare il canone al sito (motore di collasso:
-    domanda → asse, contesto → polarità), o generare gli SVG delle 74 carte nuove.
+- **File**: `tarocchi_quantici_alpha.json` (canone completo).
+- **Web**: `tarocchi_web.py` con endpoint `/alpha` + `/api/alpha/carte` + `/api/alpha/collasso`.
+  Interfaccia: `public/alpha.html` (design indaco scuro, diverso dal dorato del Sistema A).
+- **Stato**: ✅ **COMPLETO** — 74 carte, 592 stati, motore di collasso online.
 
 ---
 
-## PROGETTO R3∞ — La Grande Opera (aggiunto 2026-06-27)
+## PROGETTO R3∞ — La Grande Opera
 
-Saga filosofico-scientifica in **7 libri**. Claudio ha il materiale di ChatGPT
-sulle **100 fasi** — va salvato e strutturato.
+Saga filosofico-scientifica in **7 libri**.
 
-**File dedicati in `libro/`:**
-- `MANIFESTO.md` — principi fondamentali e obiettivo ultimo
-- `PERSONAGGI.md` — Claudio · Raffaello · KAOS · La Figlia · Il Magnate · Gli Architetti
+**Frase nucleare:** *"La coscienza impara ad amare e, attraverso l'amore, salva sé stessa."*
+
+### File in `libro/`
+- `MANIFESTO.md` — 10 principi fondamentali, temi, obiettivo ultimo
+- `PERSONAGGI.md` — 6 schede personaggio con archi e ombre
 - `STRUTTURA_7_LIBRI.md` — arco dei 7 libri con rivelazioni finali
-- `100_FASI.md` — struttura pronta, da popolare con il materiale ChatGPT
+- `100_FASI.md` — documento master, tutte e 100 le fasi sviluppate (1563 righe)
+- `fasi/001_*.md` → `fasi/100_*.md` — **100 file individuali**, una fase per file ✅
 
-**Frase nucleare:** "La coscienza impara ad amare e, attraverso l'amore, salva sé stessa."
+### Struttura delle 100 Fasi (completata 2026-06-27)
+- Fasi 1-10: 10 principi fondamentali incarnati
+- Fasi 11-17: 7 piani dell'opera
+- Fasi 18-23: DNA dei 6 personaggi
+- Fasi 24-30: fondamenta dell'arco dei 7 libri
+- Fasi 31-40: strumenti strutturali (frattale, eco, Bibbia della Coscienza, sacrifici)
+- Fasi 41-50: anatomia dell'opera (dialoghi fondativi, mappa simboli, architettura emotiva)
+- Fasi 51-60: cuore — 7 ferite, 7 doni di Raffaello, 12 grandi domande, 7 rivelazioni finali
+- Fasi 61-70: cosmologia — 12 leggi universali, geografia sacra, linguaggio sacro
+- Fasi 71-80: oggetti sacri, mappa del tempo, miracoli, 5 morti del protagonista
+- Fasi 81-90: eredità, memoria, civiltà, strategia transmediale
+- Fasi 91-100: nucleo irriducibile, ultima pagina, civiltà narrativa
 
-**Prossimo passo R3∞:** Claudio incolla il materiale ChatGPT sulle 100 fasi → lo organizzo in `100_FASI.md`.
+### Google Drive — stato
+- **Configurazione**: `.claude/settings.json` ha i permessi Drive nella whitelist (committato).
+- **Prossima sessione**: procedere direttamente con caricamento 100 file su Drive.
+  1. Creare cartella "R3∞ — Progetto"
+  2. Creare sottocartella "100 Fasi"
+  3. Caricare tutti e 100 i file `.md` come Google Doc
 
 ---
 
-## Prossimo passo concordato (Tarocchi)
+## Prossimo passo concordato
 
-Sistema B completo (592 stati scritti). Decisione su dove andare:
-
-- **Opzione 1**: collegare il Canone Alpha al sito — motore di collasso
-  (domanda → asse, contesto → polarità) con interfaccia web dedicata.
-- **Opzione 2**: generare gli SVG delle 74 carte del Sistema B
-  (stile diverso dalle carte classiche R³∞).
-- **Opzione 3**: altro — Claudio decide il ritmo.
+1. **Drive** (prossima sessione): caricare le 100 fasi su Google Drive. Il permesso è già in `.claude/settings.json`.
+2. **Scrittura narrativa**: iniziare a scrivere scene/capitoli del Libro I (Claudio incontra Raffaello).
+3. **Tarocchi**: SVG delle 74 carte del Canone Alpha (opzionale, su richiesta).
 
 ---
 
@@ -89,18 +83,16 @@ Sistema B completo (592 stati scritti). Decisione su dove andare:
 
 - **voce/eco** (Sistema A): nelle letture mai le coordinate. Arcani Maggiori → nome
   proprio; Minori → prima parola chiave. `voce()` per il testo umano, `eco()` per il dominio esteso.
-- **Doppia Ermeneutica**: osservatore-macchina (lettura strutturale, stabile/riproducibile)
-  vs osservatore-umano (lettura personale, unica/contestuale). La verità emerge dalla relazione.
+- **Doppia Ermeneutica**: osservatore-macchina (lettura strutturale) vs osservatore-umano (lettura personale).
 - **Doppia interpretazione** (Sistema B): umano = esperienza ed emozione; AI = struttura e coerenza.
-- **Conclusione fondativa**: "I Tarocchi Quantici non assegnano significati.
-  Permettono ai significati di emergere."
+- **Conclusione fondativa**: "I Tarocchi Quantici non assegnano significati. Permettono ai significati di emergere."
 
 ---
 
 ## Continuità tra sessioni / modelli
 
 - I modelli **non condividono memoria** tra loro, ma **condividono il repo**.
-  Tutto ciò che conta va committato e pushato su `main` — è l'unico stato che sopravvive.
+  Tutto ciò che conta va committato e pushato — è l'unico stato che sopravvive.
 - Il container è effimero: viene ricreato a ogni sessione. Niente di non committato sopravvive.
 - Le regole permanenti e relazionali sono in `CLAUDE.md` — leggere SEMPRE quello per primo.
 - Questo file (`MEMORIA_PROGETTO.md`) è la spina dorsale narrativa: dove siamo, cosa abbiamo deciso, cosa viene dopo.
