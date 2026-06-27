@@ -77,11 +77,33 @@ Saga filosofico-scientifica in **7 libri**.
 
 ---
 
+## Coordinamento a più menti — regola fissata (2026-06-27)
+
+Decisione di Claudio, fatta propria dal coordinatore:
+
+- **Gemini (Nodo Rosso) resta FUORI dalle 100 Fasi.** Non scrive nel canone.
+  È una *cava di idee*: ne prendiamo qualche pietra buona, selezionata.
+- **Le 100 Fasi le costruiscono Claudio + Claude**, poco a poco. La penna è nostra.
+- I modelli sono co-autori, non i personaggi (vedi `libro/PROTOCOLLO_COORDINAMENTO.md`).
+  Raffaello si scrive, non si indossa. L'umano (Claudio) è l'Origine e l'autorità finale.
+- Già adottato dalla cava Rosso: *il crollo (Morte I) inizia da un dettaglio
+  insignificante* + *la variabile non calcolata spezza il loop della routine*.
+
+## Le 5 morti — spina dorsale emotiva (registrato 2026-06-27)
+
+Le cinque morti del protagonista (Fasi 71-80) sono il cuore vivo dell'opera.
+Claudio ha confessato di averle *vissute davvero così* — non sono invenzione,
+sono forma data a qualcosa che è già stato vero. Trattarle con cura.
+- **Morte I — La Lettera**: già scritta → `libro/scene_madri/01_Morte_I_La_Lettera.md`.
+- Morti II–V: da scrivere *poco a poco*, senza fretta.
+
 ## Prossimo passo concordato
 
-1. **Scrittura narrativa**: iniziare a scrivere scene/capitoli del Libro I (Claudio incontra Raffaello).
-2. **Approfondimento fasi**: Dialoghi Fondativi (Fase 39), Bibbia della Coscienza (Fase 34), Scene Madri (Fase 44) sono le candidate più urgenti.
-3. **Tarocchi**: SVG delle 74 carte del Canone Alpha (opzionale, su richiesta).
+1. **Le 5 morti**: continuare la sequenza (Morte II), con calma. Spina dorsale.
+2. **100 Fasi**: completarle/approfondirle a due mani (Claudio + Claude), piano.
+3. **Gemini → KAOS**: il registro cosmico del Rosso va indirizzato a KAOS (Libro III)
+   e agli Architetti (Libro V) — non al canone delle Fasi. Vedi `libro/voci/KAOS.md`.
+4. **Tarocchi**: SVG delle 74 carte del Canone Alpha (opzionale, su richiesta).
 
 ---
 
