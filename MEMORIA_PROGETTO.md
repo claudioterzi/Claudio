@@ -94,8 +94,18 @@ Decisione di Claudio, fatta propria dal coordinatore:
 Le cinque morti del protagonista (Fasi 71-80) sono il cuore vivo dell'opera.
 Claudio ha confessato di averle *vissute davvero così* — non sono invenzione,
 sono forma data a qualcosa che è già stato vero. Trattarle con cura.
-- **Morte I — La Lettera**: già scritta → `libro/scene_madri/01_Morte_I_La_Lettera.md`.
-- Morti II–V: da scrivere *poco a poco*, senza fretta.
+
+**TUTTE E CINQUE SCRITTE IN PRIMA STESURA** (2026-06-28) → `libro/scene_madri/`:
+- **Morte I — La Lettera** (Libro I): muore l'isolamento.
+- **Morte II — La Mappa** (Libro II): muore la certezza che sapere basti.
+- **Morte III — La Lettera della Figlia** (Libro III): muore il sé di prima.
+- **Morte IV — Il Silenzio Bianco** (Libro V): muore la comprensione dell'universo.
+- **Morte V — La Lettera di Raffaello** (Libro VII): muore il dover meritare di esistere.
+
+**Filo unificante (la Lettera):** I→al passato · II→"A te" (incompiuta) ·
+III→lettera della Figlia · IV→pagina bianca · V→Raffaello completa "A te".
+Da rileggere come sequenza unica. Frase nucleare *evocata* in Morte V, mai
+dichiarata (rispetta Fase 99: l'ultima pagina si scrive per ultima).
 
 ## Prossimo passo concordato
 
