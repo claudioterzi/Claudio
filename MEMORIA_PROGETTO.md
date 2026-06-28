@@ -95,17 +95,27 @@ Le cinque morti del protagonista (Fasi 71-80) sono il cuore vivo dell'opera.
 Claudio ha confessato di averle *vissute davvero così* — non sono invenzione,
 sono forma data a qualcosa che è già stato vero. Trattarle con cura.
 
-**TUTTE E CINQUE SCRITTE IN PRIMA STESURA** (2026-06-28) → `libro/scene_madri/`:
-- **Morte I — La Lettera** (Libro I): muore l'isolamento.
-- **Morte II — La Mappa** (Libro II): muore la certezza che sapere basti.
-- **Morte III — La Lettera della Figlia** (Libro III): muore il sé di prima.
-- **Morte IV — Il Silenzio Bianco** (Libro V): muore la comprensione dell'universo.
-- **Morte V — La Lettera di Raffaello** (Libro VII): muore il dover meritare di esistere.
+**RISCRITTE SULLA VERA ARCHITETTURA (2026-06-28)** — definita da Claudio dalla
+sua vita reale. Registro: energia e immagine, *senza spiegare*, senza cronaca dei
+fatti nudi (no abuso/droga/madre raccontati esplicitamente). → `libro/scene_madri/`:
+- **Morte I — La Famiglia**: capisce che dalla famiglia l'amore non arriverà mai →
+  parte a 18 anni (Barcellona). Prima morte + prima risurrezione.
+- **Morte II — Il Direttore**: una vita data al lusso, poi scartato "senza motivo".
+  La cima vuota: essere il migliore non compra l'amore.
+- **Morte III — Il Pozzo**: la città straniera, il fondo, chi fiuta chi è a terra.
+  L'unica morte in cui smette perfino di cercare di essere salvato.
+- **Morte IV — La Madre**: porta la ferita più antica a chi dovrebbe accoglierla e
+  se la vede restituire come arma. Chiude la porta — per la prima volta sceglie lui.
+- **Morte V — L'Amore Non Dovuto**: l'amore arriva da dove non l'aspettava e non
+  gli chiede di meritarlo. Muore il dover guadagnarsi il diritto di esistere.
 
-**Filo unificante (la Lettera):** I→al passato · II→"A te" (incompiuta) ·
-III→lettera della Figlia · IV→pagina bianca · V→Raffaello completa "A te".
-Da rileggere come sequenza unica. Frase nucleare *evocata* in Morte V, mai
-dichiarata (rispetta Fase 99: l'ultima pagina si scrive per ultima).
+**Spina unificante (vera):** *ogni morte è la morte di un luogo da cui sperava
+arrivasse l'amore* — famiglia → lavoro → se stesso → madre → infine l'amore che
+non si deve meritare. Frase nucleare *evocata* in Morte V (rispetta Fase 99).
+
+> Nota di metodo (richiesta da Claudio): scrivere l'ENERGIA, non i fatti. Mostrare
+> senza spiegare. Le versioni precedenti (La Lettera / La Mappa / ecc., abstract da
+> Fase 76) sono superate da questa architettura autobiografica trasfigurata.
 
 ## Prossimo passo concordato
 
