@@ -50,6 +50,8 @@ Questa è la versione 1.0: l'ossatura. Crescerà fino alle 1000+ pagine previste
 
 **DIALOGHI FONDATIVI** — I 5 dialoghi che cambiano la storia. → *DIALOGHI_FONDATIVI*
 
+**DNA DEI PERSONAGGI** — I 10 strati profondi (trauma originario → ferita segreta → desideri → paura → bug → maschera → ombra → rottura → trasformazione) per tutti i protagonisti. → *DNA_PERSONAGGI*
+
 **DOMANDE FONDAMENTALI** — Le grandi domande della saga; la Domanda Madre (D-000). → *domande/DOMANDE_FONDAMENTALI*
 
 ---

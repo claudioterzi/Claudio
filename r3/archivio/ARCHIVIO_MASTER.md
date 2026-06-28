@@ -6,11 +6,12 @@
 
 ## STATO DEL SISTEMA
 
-- **51 documenti** · ~6300 righe · **100 fasi documentate**
+- **52 documenti** · ~7800 righe · **100 fasi documentate**
 - **1° consolidamento completato** (2026-06-26): grafo semantico estratto, 3 nodi orfani risolti
+- **FASE 41 completata** (2026-06-28): DNA dei Personaggi — 10 strati profondi per tutti i protagonisti
 - **Porte d'ingresso:** `ENCICLOPEDIA_R3` (A-Z) · `MATRICE_QUANTICA` (grafo) · `LIBRO_MAESTRO_V1` (visione)
 - **Nodi-hub:** Claudio (28) · Raffaello (28) · KAOS (24) · Architetti (18) · Eden (15)
-- **Prossimo focus:** DNA Personaggi (FASE 41) · Scene Madri (FASE 44) · Architettura Emotiva (FASE 45)
+- **Prossimo focus:** Scene Madri (FASE 44) · Architettura Emotiva (FASE 45) · Filosofia Comparata (FASE 46)
 
 ---
 
@@ -160,7 +161,7 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 38 | Archivio dei Sogni | 🔄 Struttura creata |
 | 39 | Sistema dei Dialoghi Fondativi | 🔄 Struttura creata |
 | 40 | Test di Coerenza Finale | ✅ Criterio fissato |
-| 41 | DNA dei Personaggi (10 strati) | 🔄 In corso — priorità alta |
+| 41 | DNA dei Personaggi (10 strati) | ✅ Completato (2026-06-28) |
 | 42 | Cronologia Assoluta (Big Bang → Libro VII) | 🔄 In corso (base in Cosmo-008) |
 | 43 | Mappa Completa dei Simboli | ✅ 10 simboli consolidati |
 | 44 | Archivio Scene Madri (50-100 scene) | 🔄 Struttura creata |
