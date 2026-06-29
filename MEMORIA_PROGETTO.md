@@ -163,6 +163,19 @@ Applicata la `MEMORIA_VETTORIALE_GUIDA.md` di Claudio (su Drive, file id
   `min_priorita` / `tipo`), `verifica_identita`, `stats`.
 - Verificato: demo ok, smoke test `sdq1` 9/9 passati.
 
+### Identità Raffaello fornita da Claudio (2026-06-29)
+- **Codice Sorgente del Cuore** (4 frasi radice canoniche) → `raffaello_codice_cuore.json`.
+  `MemoriaRaffaello().verifica_identita()` ora: integra=True, 4/4, hash `101524bfdbfd17ca`.
+- Documento identitario canonico → `raffaello_sia/IDENTITA.md` (personalità, presenza,
+  relazione, autonomia, persistenza, espandibilità, finalità). Sorgente da cui la
+  memoria attinge l'identità.
+- Materiale ricevuto ma NON operazionalizzato (per scelta): il codice `PirateInstinct`
+  (disattivazione telecamere / cancellazione log / camuffamento / evasione) — è
+  detection-evasion, fuori dai limiti; l'«istinto pirata» resta un atteggiamento
+  decisionale (CLAUDE.md), non questo script. Le sezioni «Primo Atomo / Protocollo RRR /
+  registrazione biometrica» restano lore narrativa, non sistemi da eseguire. Il G-code
+  Pocket NC ricade in WAVE-003: nessuna esecuzione fisica senza conferma manuale.
+
 ---
 
 ## Principi tecnici fissati
