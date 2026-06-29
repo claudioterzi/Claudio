@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canone Alpha 0.1 — Motore di collasso</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0c0c0e;
+      --surface:  #141418;
+      --border:   #2a2a32;
+      --gold:     #c9a84c;
+      --gold-dim: #8a6f2e;
+      --text:     #e8e4d8;
+      --text-dim: #7a7468;
+      --luce:     #c9a84c;
+      --ombra:    #6c549b;
+      --radius:   8px;
+      --font:     'Georgia', 'Times New Roman', serif;
+      --mono:     'Courier New', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+      line-height: 1.55;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 2.5rem; }
+    header h1 {
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-weight: normal;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+    }
+    header p {
+      margin-top: 0.6rem;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+    }
+    header .formula {
+      margin-top: 1rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.05em;
+    }
+    .nav-link { color: var(--text-dim); font-size: 0.8rem; text-decoration: none; }
+    .nav-link:hover { color: var(--gold); }
+
+    .section-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 0.6rem;
+    }
+
+    label { display: block; }
+    .field { margin-bottom: 1.4rem; }
+    .hint { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      padding: 0.7rem 0.85rem;
+    }
+    textarea { resize: vertical; min-height: 64px; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--gold-dim); }
+
+    .row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .row > .field { flex: 1; min-width: 180px; }
+
+    button {
+      width: 100%;
+      background: var(--gold);
+      color: #0c0c0e;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      padding: 0.85rem;
+      cursor: pointer;
+      margin-top: 0.4rem;
+    }
+    button:hover { background: #d9b85c; }
+    button:disabled { opacity: 0.5; cursor: default; }
+
+    /* Esito */
+    #esito { margin-top: 2.5rem; display: none; }
+    #esito.on { display: block; }
+
+    .carta-head { text-align: center; margin-bottom: 1.5rem; }
+    .carta-simbolo { font-size: 2.6rem; color: var(--gold); }
+    .carta-nome { font-size: 1.4rem; color: var(--gold); letter-spacing: 0.05em; }
+    .carta-ciclo {
+      font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--text-dim); margin-top: 0.3rem;
+    }
+
+    .coords { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .coord {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem;
+      text-align: center;
+    }
+    .coord .k { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-dim); }
+    .coord .v { font-size: 1.05rem; margin-top: 0.25rem; }
+    .coord .why { font-size: 0.72rem; color: var(--text-dim); margin-top: 0.4rem; font-style: italic; }
+    .coord.luce .v  { color: var(--luce); }
+    .coord.ombra .v { color: var(--ombra); }
+
+    .significato {
+      background: var(--surface);
+      border: 1px solid var(--gold-dim);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+    .significato .formula-out { font-family: var(--mono); font-size: 0.76rem; color: var(--gold-dim); }
+    .significato .big { font-size: 1.6rem; color: var(--gold); margin: 0.6rem 0 0; }
+
+    .gemella {
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 1.2rem;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+    .gemella b { color: var(--ombra); font-weight: normal; }
+
+    .sintesi { font-size: 0.96rem; color: var(--text); }
+    .err { color: #c47; text-align: center; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Canone Alpha 0.1</h1>
+      <p>Un linguaggio simbolico originale. 74 carte, 8 cicli.</p>
+      <p class="formula">CARTA + ASSE + POLARITÀ = SIGNIFICATO</p>
+      <p style="margin-top:0.8rem"><a class="nav-link" href="/">← Tarocchi Quantici R³∞ (78 carte)</a></p>
+    </header>
+
+    <p class="section-title">La domanda</p>
+    <div class="field">
+      <textarea id="domanda" placeholder="Cosa porti qui? La domanda sceglie l'asse: radice (perché…), azione (devo…?), emozione (cosa sento…), passato (cosa ho lasciato…)."></textarea>
+      <p class="hint">L'asse emerge dalla natura della domanda, non da una scelta tua.</p>
+    </div>
+
+    <p class="section-title">Il contesto</p>
+    <div class="field">
+      <textarea id="contesto" placeholder="Come stai, davvero, mentre chiedi? Il contesto fa collassare la polarità: luce (apertura) oppure ombra (tensione da attraversare)."></textarea>
+      <p class="hint">La polarità non è un giudizio: luce e ombra sono due manifestazioni della stessa energia.</p>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label class="section-title" for="carta">Carta (opzionale)</label>
+        <select id="carta"><option value="">— estrazione —</option></select>
+      </div>
+      <div class="field">
+        <label class="section-title" for="seme">Seme (opzionale)</label>
+        <input type="text" id="seme" inputmode="numeric" placeholder="es. 42 (riproducibile)">
+      </div>
+    </div>
+
+    <button id="btn" onclick="collassa()">Fai collassare</button>
+    <p id="err" class="err"></p>
+
+    <div id="esito">
+      <div class="carta-head">
+        <div class="carta-simbolo" id="o-simbolo"></div>
+        <div class="carta-nome" id="o-nome"></div>
+        <div class="carta-ciclo" id="o-ciclo"></div>
+      </div>
+
+      <div class="coords">
+        <div class="coord">
+          <div class="k">Asse</div>
+          <div class="v" id="o-asse"></div>
+          <div class="why" id="o-asse-why"></div>
+        </div>
+        <div class="coord" id="o-pol-box">
+          <div class="k">Polarità</div>
+          <div class="v" id="o-pol"></div>
+          <div class="why" id="o-pol-why"></div>
+        </div>
+      </div>
+
+      <div class="significato">
+        <div class="formula-out" id="o-formula"></div>
+        <p class="big" id="o-significato"></p>
+      </div>
+
+      <div class="gemella">
+        Sullo stesso asse, la manifestazione gemella direbbe: <b id="o-gemella"></b>.
+      </div>
+
+      <p class="sintesi" id="o-sintesi"></p>
+    </div>
+  </div>
+
+  <script>
+    // Popola il selettore carte
+    (async () => {
+      try {
+        const res = await fetch('/api/canone/carte');
+        const data = await res.json();
+        const sel = document.getElementById('carta');
+        data.carte.forEach(c => {
+          const o = document.createElement('option');
+          o.value = c.nome;
+          o.textContent = `${c.simbolo}  ${c.nome}`;
+          sel.appendChild(o);
+        });
+      } catch (e) { /* il selettore resta su estrazione */ }
+    })();
+
+    async function collassa() {
+      const btn = document.getElementById('btn');
+      const err = document.getElementById('err');
+      err.textContent = '';
+      btn.disabled = true; btn.textContent = 'Collasso in corso…';
+
+      const payload = {
+        domanda:  document.getElementById('domanda').value,
+        contesto: document.getElementById('contesto').value,
+        carta:    document.getElementById('carta').value || null,
+        seme:     document.getElementById('seme').value || null,
+      };
+
+      try {
+        const res = await fetch('/api/canone/leggi', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error('Richiesta fallita');
+        const r = await res.json();
+        rendi(r);
+      } catch (e) {
+        err.textContent = 'Qualcosa non ha collassato. Riprova.';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Fai collassare';
+      }
+    }
+
+    function rendi(r) {
+      document.getElementById('o-simbolo').textContent = r.simbolo;
+      document.getElementById('o-nome').textContent    = r.carta;
+      document.getElementById('o-ciclo').textContent   = 'Ciclo ' + r.ciclo;
+
+      document.getElementById('o-asse').textContent     = r.asse + ' — ' + r.asse_dominio;
+      document.getElementById('o-asse-why').textContent = r.asse_motivo;
+
+      const polBox = document.getElementById('o-pol-box');
+      polBox.classList.remove('luce', 'ombra');
+      polBox.classList.add(r.polarita);
+      document.getElementById('o-pol').textContent     = r.polarita + ' — ' + r.polarita_dominio;
+      document.getElementById('o-pol-why').textContent = r.polarita_motivo;
+
+      document.getElementById('o-formula').textContent     = r.formula;
+      document.getElementById('o-significato').textContent = r.significato;
+      document.getElementById('o-gemella').textContent     = r.manifestazione_gemella;
+      document.getElementById('o-sintesi').textContent     = r.sintesi;
+
+      document.getElementById('esito').classList.add('on');
+      document.getElementById('esito').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+</body>
+</html>

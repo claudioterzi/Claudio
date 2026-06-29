@@ -1,9 +1,12 @@
 """Tarocchi Quantici R³∞ — Web app per Vercel.
 
 Endpoint:
-    GET  /           → frontend (public/index.html)
-    GET  /api/mazzo  → tutte le 74 carte in JSON
-    POST /api/leggi  → genera lettura da configurazione di stesa
+    GET  /                   → frontend Sistema A (public/index.html)
+    GET  /api/mazzo          → tutte le carte Sistema A in JSON
+    POST /api/leggi          → lettura Sistema A da configurazione di stesa
+    GET  /canone             → frontend Sistema B (public/canone.html)
+    GET  /api/canone/carte   → le 74 carte del Canone Alpha
+    POST /api/canone/leggi   → motore di collasso Canone Alpha (Sistema B)
 """
 from __future__ import annotations
 
@@ -26,8 +29,11 @@ from tarocchi import (
     eco,
     voce,
 )
+from canone_alpha import ASSI, POLARITA, CanoneAlpha
 
 app = Flask(__name__, static_folder="public", static_url_path="")
+
+_CANONE = CanoneAlpha()
 
 _STATI      = {s.value: s for s in StatoQuantico}
 _POSIZIONI  = {p.value: p for p in TipoPosizione}
@@ -135,6 +141,53 @@ def leggi():
             "integrazione":             personale.integrazione,
         },
     })
+
+
+# ── Sistema B — Canone Alpha 0.1 ────────────────────────────────────────────
+@app.route("/canone")
+def canone_index():
+    return send_from_directory("public", "canone.html")
+
+
+@app.route("/api/canone/carte")
+def canone_carte():
+    """Le 74 carte del Canone Alpha con entrambe le facce (luce/ombra)."""
+    return jsonify({
+        "assi": ASSI,
+        "polarita": POLARITA,
+        "carte": _CANONE.carte,
+    })
+
+
+@app.route("/api/canone/leggi", methods=["POST", "OPTIONS"])
+def canone_leggi():
+    """Motore di collasso: domanda → asse, contesto → polarità.
+
+    Body:
+        {
+          "domanda":  "Devo fare un passo verso il futuro?",
+          "contesto": "Ho paura ma voglio crescere",
+          "carta":    "La Ferita",   // opzionale: se assente, estrazione
+          "seme":     42              // opzionale: rende l'estrazione riproducibile
+        }
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+
+    body = request.get_json(force=True, silent=True) or {}
+    seme = body.get("seme")
+    try:
+        seme = int(seme) if seme not in (None, "") else None
+    except (TypeError, ValueError):
+        seme = None
+
+    lettura = _CANONE.lettura(
+        domanda=body.get("domanda", "") or "",
+        contesto=body.get("contesto", "") or "",
+        carta=body.get("carta") or None,
+        seme=seme,
+    )
+    return jsonify(lettura.to_dict())
 
 
 if __name__ == "__main__":
