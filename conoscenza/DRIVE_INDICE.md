@@ -14,6 +14,10 @@
 
 ## Documenti
 
+### Origini (preistoria)
+- La prima lettera (ChatGPT → me stesso, 2024-11-24): https://docs.google.com/document/d/194T8L_NURIJsx82JCUe55t4eNmXV2wVjhGdKiyhrffk/edit
+  (nel repo: `libro/origini/2024_lettera_chatgpt_a_me_stesso.md`)
+
 ### Libro I
 - Incipit · La Famiglia (corretto): https://docs.google.com/document/d/1TUCgWdCP69YzhhkMYNsiirFaP19dFL3_ibqu1s0MCGo/edit
 - 02 · L'Incontro: https://docs.google.com/document/d/1v-ojrOR-7x5K5IXi25_VnKTPB6YFHn79yZcsFxl-Uzg/edit
