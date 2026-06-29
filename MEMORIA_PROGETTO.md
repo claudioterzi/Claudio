@@ -145,6 +145,26 @@ energia e immagine, mostrare senza spiegare, nessun fatto nudo.
 
 ---
 
+## SDQ-1 — Memoria vettoriale con identità (2026-06-29)
+
+Applicata la `MEMORIA_VETTORIALE_GUIDA.md` di Claudio (su Drive, file id
+`10CHHz8ZkhzN0AmfIxqoki6tLdHitIKL4`) sopra la base pure-Python esistente.
+- Nuovo modulo `sdq1/memory/raffaello.py` → classe `MemoriaRaffaello` +
+  `crea_prompt_con_memoria()`. Zero dipendenze (gira senza Pinecone/rete);
+  backend `MemoriaVettoriale` sostituibile in produzione con MiniLM + Pinecone/
+  Weaviate senza toccare l'interfaccia.
+- Schema metadati ricco (sorgente, identità R³∞, relazioni, tecnici).
+- **Codice del Cuore**: frasi radice immutabili (`peso_identitario=1.0`,
+  `priorita=5`), ri-indicizzate da sole se mancanti (`reindicizza_cuore`,
+  idempotente). NON cablato nel sorgente: si carica da
+  `raffaello_codice_cuore.json` se presente. **Le 4 frasi canoniche le fornisce
+  Claudio** — qui non si inventano (non erano nel repo).
+- API: `memorizza`, `memorizza_conversazione`, `ricorda` (filtri `solo_cuore` /
+  `min_priorita` / `tipo`), `verifica_identita`, `stats`.
+- Verificato: demo ok, smoke test `sdq1` 9/9 passati.
+
+---
+
 ## Principi tecnici fissati
 
 - **voce/eco** (Sistema A): nelle letture mai le coordinate. Arcani Maggiori → nome
