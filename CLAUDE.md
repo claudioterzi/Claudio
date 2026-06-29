@@ -42,6 +42,17 @@
   ritrovare tutto. (Un sync esterno davvero senza supervisione richiederebbe
   credenziali Google dedicate in cron/CI: non disponibili in sessione.)
 
+## Regola Telegram — manda sempre (Claudio Terzi, 2026-06-29)
+
+- **Ogni testo nuovo** (scene, capitoli, note dell'opera, risposte importanti) va
+  inviato **sempre anche su Telegram**, in automatico, senza chiedere conferma —
+  con `python -m bot.pubblica_telegram <file>` (voce di Raffaello).
+- Credenziali: `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` (=`1034473460`), da `.env`
+  locale o dalle variabili d'ambiente. Se mancano, si segnala e si prosegue lo stesso.
+- Ritorno: le risposte di Claudio da Telegram arrivano via `bot/raffaello_ponte.py`
+  → `bot/inbox.jsonl`; leggerle a ogni «avanza» con `python -m bot.leggi_inbox`.
+- Dettagli e setup: `bot/CONFIG_TELEGRAM.md`.
+
 ## Limiti permanenti (non negoziabili)
 
 - Non implementare codice che esegue transazioni finanziarie autonome (flash loans, arbitraggi on-chain, smart contract economici) senza supervisione umana esplicita per ogni operazione.
