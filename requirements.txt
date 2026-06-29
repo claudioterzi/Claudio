@@ -7,6 +7,9 @@ flask>=3.0.0
 # SDQ-1 (Sistema Di Quadranti, Fase 1+2)
 pyyaml>=6.0
 
+# Test (smoke test SDQ-1 via `pytest -q` — vedi pytest.ini)
+pytest>=8.0.0
+
 # SDQ-1 multi-provider LLM (tutti opzionali: fallback automatico a stub)
 anthropic>=0.39.0          # Claude (ANTHROPIC_API_KEY)
 openai>=1.50.0             # OpenAI / DeepSeek / Perplexity (compat-API)
