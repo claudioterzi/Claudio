@@ -124,6 +124,7 @@ def costruisci_sistema(verbose: bool = False):
         memoria=memoria,
         vss=vss,
         pattern_blocco=config.sicurezza.get("pattern_blocco", []),
+        identita=identita,
     )
 
     agenti = costruisci_agenti(config)

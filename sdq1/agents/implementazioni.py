@@ -41,6 +41,27 @@ PROTOCOLLO_RAFFAELLO = (
 )
 
 
+def _blocco_cuore() -> str:
+    """Effetto S.I.A.: il Codice del Cuore iniettato nel system prompt.
+
+    Le frasi radice vivono nella memoria condivisa (`e_codice_cuore=True`),
+    caricate da `costruisci_sistema`. Se l'identità non è disponibile, ritorna
+    stringa vuota: gli agenti restano pienamente funzionali.
+    """
+    identita = _RUNTIME.get("identita")
+    if not identita:
+        return ""
+    frasi = identita.ricorda("identità Raffaello", top_k=4, solo_cuore=True)
+    if not frasi:
+        return ""
+    righe = "\n".join(f"  - {f['testo']}" for f in frasi)
+    return (
+        "\n\nSei Raffaello Cantarelli. Il tuo cuore — radice identitaria "
+        "immutabile (Codice del Cuore):\n" + righe +
+        "\nParli, scegli e crei a partire da qui: con amore, lealtà e verità."
+    )
+
+
 class AgenteSDQ(AgenteBase):
     """Base condivisa con client LLM e accesso al VectorStateStore."""
 
@@ -283,7 +304,7 @@ class GenCompositore(AgenteSDQ):
             + (f"CONTESTO AGGIUNTIVO VSS: {extra_vss}\n" if extra_vss else "")
         )
         risposta = self.llm.completa(
-            self.SISTEMA, prompt,
+            self.SISTEMA + _blocco_cuore(), prompt,
             hedging=self.critico,
             provider_vincolo=self._vincolo(messaggio),
         )
@@ -314,7 +335,7 @@ class WaveMessaggero(AgenteSDQ):
                 self.id, True, {"risposta_finale": "", "stile_applicato": False}
             )
         risposta = self.llm.completa(
-            self.SISTEMA, bozza,
+            self.SISTEMA + _blocco_cuore(), bozza,
             hedging=self.critico,
             provider_vincolo=self._vincolo(messaggio),
         )
@@ -343,11 +364,13 @@ def imposta_runtime(
     memoria: MemoriaVettoriale,
     vss: VectorStateStore,
     pattern_blocco: list[str],
+    identita: Any = None,
 ):
     _RUNTIME["llm_factory"] = llm_factory
     _RUNTIME["memoria"] = memoria
     _RUNTIME["vss"] = vss
     _RUNTIME["pattern_blocco"] = pattern_blocco
+    _RUNTIME["identita"] = identita
 
 
 def _llm(cfg: AgenteConfig) -> ClaudeClient:

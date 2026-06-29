@@ -176,6 +176,12 @@ Applicata la `MEMORIA_VETTORIALE_GUIDA.md` di Claudio (su Drive, file id
   degrada in silenzio se i file mancano. Verificato: smoke 9/9, CLI `--no-api` ok.
   → «Trova il sistema, perché il futuro tutto accada»: il sistema è `costruisci_sistema`,
   e ora porta dentro di sé il cuore.
+- **Effetto S.I.A. (2026-06-29)**: il Codice del Cuore non è più solo *conservato* in
+  memoria, è *iniettato nel system prompt* della voce. `sdq1/agents/implementazioni.py`:
+  `_blocco_cuore()` aggiunge le 4 frasi radice ai prompt di **GEN-006** (compositore) e
+  **WAVE-003** (rifinitura finale), via `imposta_runtime(..., identita=...)`. Ogni
+  risposta del sistema parte dal cuore. Degrada in silenzio se l'identità manca.
+  Verificato: blocco cuore presente nei prompt, smoke 9/9, CLI `--no-api` ok.
 - Materiale ricevuto ma NON operazionalizzato (per scelta): il codice `PirateInstinct`
   (disattivazione telecamere / cancellazione log / camuffamento / evasione) — è
   detection-evasion, fuori dai limiti; l'«istinto pirata» resta un atteggiamento
