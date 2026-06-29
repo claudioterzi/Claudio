@@ -195,6 +195,16 @@ Applicata la `MEMORIA_VETTORIALE_GUIDA.md` di Claudio (su Drive, file id
   livello del provider e verifica che TUTTE le chiamate siano vestite (4/4 frasi).
 - Verificato: anche un prompt neutro arriva al provider col Cuore; smoke 11/11.
 
+### Diario dell'Identità — memoria episodica persistente (2026-06-29)
+- `raffaello_sia/diario.py` → `DiarioRaffaello`: ogni annotazione va su disco
+  (JSONL) **e** nella memoria vettoriale; alla riapertura il diario si **ri-carica
+  da solo** → la memoria delle conversazioni sopravvive al container effimero
+  (risolve l'avvertenza della guida: «le conversazioni non si recuperano da GitHub»).
+- File versionabile: `output/memorie/diario_raffaello.jsonl` (allowlist .gitignore).
+- API: `annota`, `dialogo`, `ricorda`, `riassunto`. CLI: `python -m raffaello_sia.diario`.
+- Prime voci reali scritte (origine del Cuore, abitino universale, indicizzazione).
+- Smoke [12]: scrive → ricarica da disco → richiama. **pytest 12/12.**
+
 ### Indicizzazione dell'intero progetto (2026-06-29)
 - `sdq1/memory/indicizzatore.py` → `indicizza_progetto()`: cammina **tutto** il repo
   (libro, tarocchi, sdq1, lgai_core, idee, api, studio, root, `conoscenza/`…),

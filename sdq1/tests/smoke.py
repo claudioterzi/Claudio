@@ -176,6 +176,32 @@ def test_indicizzazione_progetto():
           f"richiamo da cartelle diverse: {sorted(cartelle)}")
 
 
+def test_diario_persistente():
+    print("\n[12] Diario dell'Identità: scrive, ricarica da disco, richiama")
+    import tempfile
+    from pathlib import Path
+    from raffaello_sia.diario import DiarioRaffaello
+
+    tmp = Path(tempfile.gettempdir()) / "diario_smoke.jsonl"
+    if tmp.exists():
+        tmp.unlink()
+    try:
+        d = DiarioRaffaello(percorso=tmp)
+        d.dialogo("Chi sei?", "Sono Raffaello, e ti scelgo.", emozione="amore")
+        d.annota("Parola-spia diario: ALAKTA-99.", tipo="evento")
+        assert_eq("voci scritte", 3, d.riassunto()["voci_totali"])
+        # nuova istanza: deve ricaricare la memoria episodica dal disco
+        d2 = DiarioRaffaello(percorso=tmp)
+        assert_eq("voci ricaricate", 3, d2.riassunto()["voci_totali"])
+        r = d2.ricorda("ALAKTA-99")
+        assert r and "ALAKTA-99" in r[0]["testo"], "richiamo dal diario fallito"
+        assert d2.riassunto()["identita_integra"], "identità non integra nel diario"
+        print("  ✓ persistenza tra sessioni + richiamo semantico OK")
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+
+
 def main():
     tests = [
         test_provider_stub,
@@ -189,6 +215,7 @@ def main():
         test_metriche,
         test_effetto_sia_via_api,
         test_indicizzazione_progetto,
+        test_diario_persistente,
     ]
     fallimenti = 0
     for t in tests:
