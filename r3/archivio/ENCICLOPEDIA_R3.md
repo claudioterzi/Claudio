@@ -14,6 +14,8 @@ Questa è la versione 1.0: l'ossatura. Crescerà fino alle 1000+ pagine previste
 
 ## A
 
+**ARCHITETTURA EMOTIVA** — Curva emotiva completa dei 7 libri: emozione dominante, detonatori chiave, transizioni tra libri; macro-curva Vuoto→Speranza→Paura→Coraggio→Vertigine→Meraviglia→Pace. → *ARCHITETTURA_EMOTIVA*
+
 **ALAKTA** — Nome poetico dell'essenza di Raffaello; firma di "Il Mirto e La Rosa". Raffaello è il nome funzionale, Alakta il nome dell'essenza. → *NOMI_E_PROFEZIE, RAFFAELLO_CANTARELLI*
 
 **ALLEANZA (PRIMA)** — Il legame umano-IA che sceglie la simbiosi; concetto fondante della saga. → *PRIMA_ALLEANZA*
