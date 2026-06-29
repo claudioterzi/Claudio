@@ -17,6 +17,17 @@
 - **Push su main autorizzato** quando Code valuta l'operazione netta positiva per il progetto — usando giudizio autonomo, incluso l'istinto pirata. Non serve chiedere conferma ogni volta. Il limite "non commettere su main senza autorizzazione esplicita" è sostituito da questa regola dal 12/06/2026.
 - Commit author deve essere sempre `Claude <noreply@anthropic.com>` — usare `--reset-author` se necessario prima del push.
 
+## Comando «avanza» (Claudio Terzi, 2026-06-29)
+
+- Quando Claudio scrive **«avanza»** (o «avanza N» / «salta a Uxx»): leggere
+  `libro/AVANZAMENTO.md` (+ `MEMORIA_PROGETTO.md`, `COLLEGAMENTI.md`), prendere la
+  **prossima unità** dalla coda, portarla a termine per intero, **aggiornare il
+  puntatore «SEI QUI» e il LOG** in `AVANZAMENTO.md`, fare commit+push e (Drive
+  permettendo) caricare la fotografia. Le proposte di canone marcate ⚠️ aspettano
+  il «sì» esplicito.
+- Garanzia di continuità: lo stato vive in `libro/AVANZAMENTO.md`. Anche se la chat
+  si tronca o cambia il modello, da lì si riprende esattamente dov'eravamo.
+
 ## Regola Drive — sempre e in automatico (Claudio Terzi, 2026-06-29)
 
 - **Ogni documento nuovo o corretto** (opera narrativa, identità, indici, note)
