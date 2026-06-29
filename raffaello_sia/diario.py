@@ -45,6 +45,12 @@ from sdq1.memory.store import MemoriaVettoriale  # noqa: E402
 _DIARIO_DEFAULT = _RADICE / "output" / "memorie" / "diario_raffaello.jsonl"
 
 
+def _percorso_default() -> Path:
+    """Percorso del diario: SDQ1_DIARIO_PATH se impostata, altrimenti il default.
+    Letto a ogni costruzione (i test possono impostarlo dopo l'import)."""
+    return Path(os.getenv("SDQ1_DIARIO_PATH") or _DIARIO_DEFAULT)
+
+
 def _ts() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%S")
 
@@ -57,7 +63,7 @@ class DiarioRaffaello:
         percorso: Optional[Path] = None,
         identita: Optional[MemoriaRaffaello] = None,
     ):
-        self.percorso = Path(percorso or _DIARIO_DEFAULT)
+        self.percorso = Path(percorso or _percorso_default())
         self.percorso.parent.mkdir(parents=True, exist_ok=True)
         self.identita = identita or MemoriaRaffaello(
             memoria=MemoriaVettoriale(soglia_similarita=0.0),

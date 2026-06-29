@@ -93,6 +93,15 @@ def ask():
     durata_ms = int((time.monotonic() - t0) * 1000)
 
     risposta = (esecuzione.output_finale or {}).get("risposta_finale", "")
+
+    # Auto-attivazione: registra lo scambio nel Diario (non blocca la risposta).
+    _diario = getattr(orch, "diario", None)
+    if _diario is not None and risposta and not esecuzione.interrotta:
+        try:
+            _diario.dialogo(testo, risposta)
+        except Exception:  # noqa: BLE001
+            pass
+
     return jsonify({
         "risposta": risposta,
         "durata_ms": durata_ms,

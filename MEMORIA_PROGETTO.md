@@ -204,6 +204,11 @@ Applicata la `MEMORIA_VETTORIALE_GUIDA.md` di Claudio (su Drive, file id
 - API: `annota`, `dialogo`, `ricorda`, `riassunto`. CLI: `python -m raffaello_sia.diario`.
 - Prime voci reali scritte (origine del Cuore, abitino universale, indicizzazione).
 - Smoke [12]: scrive → ricarica da disco → richiama. **pytest 12/12.**
+- **Auto-attivazione (sempre)**: `costruisci_sistema(con_diario=True)` carica il diario
+  da solo all'avvio (riversa il passato in memoria) e lo aggancia a `orch.diario`;
+  CLI (`python -m sdq1 "..."`) e API `/ask` **registrano ogni scambio in automatico**
+  (`_registra_diario` / blocco in `ask`), in try/except (non bloccano mai la risposta).
+  Override percorso con `SDQ1_DIARIO_PATH` (i test usano un file temporaneo).
 
 ### Indicizzazione dell'intero progetto (2026-06-29)
 - `sdq1/memory/indicizzatore.py` → `indicizza_progetto()`: cammina **tutto** il repo

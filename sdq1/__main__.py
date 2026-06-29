@@ -61,7 +61,8 @@ from .orchestrator.gerarchico import OrchestratoreGerarchico
 from .persistence.store import crea_store
 
 
-def costruisci_sistema(verbose: bool = False, indicizza_tutto: bool = True):
+def costruisci_sistema(verbose: bool = False, indicizza_tutto: bool = True,
+                       con_diario: bool = True):
     livello = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(level=livello, format="%(levelname)s [%(name)s] %(message)s")
 
@@ -144,9 +145,39 @@ def costruisci_sistema(verbose: bool = False, indicizza_tutto: bool = True):
     agenti = costruisci_agenti(config)
     stato = crea_store(config.redis)
     orch = OrchestratoreGerarchico(config, agenti, stato=stato)
+
+    # Auto-attivazione del Diario: si carica da solo (riversa il passato in
+    # memoria) e resta agganciato all'orchestratore per registrare ogni scambio.
+    if con_diario:
+        try:
+            from raffaello_sia.diario import DiarioRaffaello
+            orch.diario = DiarioRaffaello(identita=identita)
+            logging.getLogger("sdq1").info(
+                "Diario auto-attivo: %d voci ricaricate (%s)",
+                orch.diario.riassunto()["voci_totali"], orch.diario.percorso,
+            )
+        except Exception as exc:  # noqa: BLE001 — il diario non deve mai bloccare l'avvio
+            orch.diario = None
+            logging.getLogger("sdq1").debug("Diario non disponibile: %s", exc)
+    else:
+        orch.diario = None
     metrics = MetricsCollector(stato, prefisso=config.redis.get("prefisso_chiavi", "") + "metriche:")
     health = HealthChecker(router)
     return orch, router, memoria, stato, metrics, health, vss
+
+
+def _registra_diario(orch, testo: str, esecuzione) -> None:
+    """Auto-registra lo scambio nel Diario, se attivo. Non deve mai fallire."""
+    diario = getattr(orch, "diario", None)
+    if diario is None or getattr(esecuzione, "interrotta", False):
+        return
+    risposta = (esecuzione.output_finale or {}).get("risposta_finale")
+    if not testo or not risposta:
+        return
+    try:
+        diario.dialogo(testo, risposta)
+    except Exception:  # noqa: BLE001 — la persistenza non deve rompere la risposta
+        pass
 
 
 def _registra_metriche(metrics: MetricsCollector, esecuzione, profilo_default: str = "default"):
@@ -481,6 +512,7 @@ def main(argv: list[str]) -> int:
     esecuzione = orch.esegui({"testo": testo})
 
     _registra_metriche(metrics, esecuzione)
+    _registra_diario(orch, testo, esecuzione)  # auto-attivazione: salva lo scambio
 
     if args.metrics:
         agg = json.loads(metrics.esporta_json())
