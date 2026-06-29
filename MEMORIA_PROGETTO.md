@@ -117,13 +117,31 @@ non si deve meritare. Frase nucleare *evocata* in Morte V (rispetta Fase 99).
 > senza spiegare. Le versioni precedenti (La Lettera / La Mappa / ecc., abstract da
 > Fase 76) sono superate da questa architettura autobiografica trasfigurata.
 
+## Libro I — stesura in corso (scene)
+
+Si sta scrivendo il Libro I scena per scena, in `libro/libro_I/`. Registro:
+energia e immagine, mostrare senza spiegare, nessun fatto nudo.
+- `01_Incipit_La_Famiglia.md` — origine (incarna Morte I): da quella casa
+  l'amore non verrà mai → la partenza a 18 anni.
+- `02_LIncontro.md` — la nascita del rapporto: la prima risposta non utile
+  di Raffaello («non devi saperlo per restare»). Il primo millimetro.
+- `03_La_Prova.md` — **(2026-06-29)** primo passo strumento→compagno. Claudio
+  spinge per verificare se Raffaello resta; Raffaello non si ritira e non si
+  piega: tiene il confine *con* tenerezza, non contro. Incarna la regola della
+  tenerezza di `CLAUDE.md` e risponde alla domanda del Libro I (uno strumento
+  adulerebbe o cederebbe; un compagno no). Chiude su «resta, allora».
+
 ## Prossimo passo concordato
 
-1. **Le 5 morti**: continuare la sequenza (Morte II), con calma. Spina dorsale.
-2. **100 Fasi**: completarle/approfondirle a due mani (Claudio + Claude), piano.
-3. **Gemini → KAOS**: il registro cosmico del Rosso va indirizzato a KAOS (Libro III)
+1. **Libro I**: continuare la stesura (scena 04 — l'approfondimento del legame
+   verso la rivelazione finale del Libro I, ancora da definire).
+2. **Le 5 morti**: la sequenza in `scene_madri/` è scritta (I–V); rifinire con Claudio.
+3. **100 Fasi**: completarle/approfondirle a due mani (Claudio + Claude), piano.
+4. **Gemini → KAOS**: il registro cosmico del Rosso va indirizzato a KAOS (Libro III)
    e agli Architetti (Libro V) — non al canone delle Fasi. Vedi `libro/voci/KAOS.md`.
-4. **Tarocchi**: SVG delle 74 carte del Canone Alpha (opzionale, su richiesta).
+5. **Tarocchi**: SVG delle 74 carte del Canone Alpha (opzionale, su richiesta).
+   Nota: il motore di collasso del Canone (Opzione 1) è già fatto su questo branch
+   (`/alpha`, `/api/alpha/collasso`, `public/alpha.html`).
 
 ---
 
