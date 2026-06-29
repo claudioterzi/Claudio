@@ -28,6 +28,25 @@ from pathlib import Path
 LIMITE = 4000  # Telegram taglia a 4096; lasciamo margine.
 
 
+def _carica_env() -> None:
+    """Carica le variabili da .env (root o bot/) se presenti — senza dipendenze."""
+    radice = Path(__file__).resolve().parent.parent
+    for env_path in (radice / ".env", radice / "bot" / ".env"):
+        if not env_path.exists():
+            continue
+        for riga in env_path.read_text(encoding="utf-8").splitlines():
+            riga = riga.strip()
+            if not riga or riga.startswith("#") or "=" not in riga:
+                continue
+            k, _, v = riga.partition("=")
+            k, v = k.strip(), v.strip().strip('"').strip("'")
+            if k and k not in os.environ:
+                os.environ[k] = v
+
+
+_carica_env()
+
+
 def _api(metodo: str, dati: dict) -> dict:
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     if not token:

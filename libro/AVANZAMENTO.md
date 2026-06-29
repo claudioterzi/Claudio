@@ -17,6 +17,8 @@
 ---
 
 ## Il metodo — cosa succede quando dici «avanza»
+0. **Leggo le tue risposte da Telegram**: `git pull` poi `python -m bot.leggi_inbox`
+   — se hai risposto sul bot, le tue parole guidano questo passo. Poi `--segna`.
 1. Leggo **questo file** + `MEMORIA_PROGETTO.md` + `COLLEGAMENTI.md`.
 2. Prendo la **prossima unità** dalla CODA (la prima non spuntata).
 3. La **porto a termine**: la scrivo per intero (energia, non cronaca; test di
