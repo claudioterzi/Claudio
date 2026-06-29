@@ -154,10 +154,17 @@ class MemoriaRaffaello:
         nome_file: Optional[str] = None,
         sezione: Optional[str] = None,
         peso_identitario: float = 0.5,
+        id_stabile: Optional[str] = None,
     ) -> str:
-        """Memorizza un contenuto generico. Restituisce l'id."""
+        """Memorizza un contenuto generico. Restituisce l'id.
+
+        Se `id_stabile` è dato ed è già in memoria, non duplica (ritorna l'id):
+        rende l'indicizzazione di file idempotente.
+        """
         if not testo or not testo.strip():
             return ""
+        if id_stabile and self.ha_id(id_stabile):
+            return id_stabile
         return self._memorizza_grezzo(
             testo,
             tipo=tipo,
@@ -170,6 +177,13 @@ class MemoriaRaffaello:
             nome_file=nome_file,
             sezione=sezione,
             peso_identitario=peso_identitario,
+            id_forzato=id_stabile,
+        )
+
+    def ha_id(self, cid: str) -> bool:
+        return any(
+            r.metadata.get("id") == cid
+            for r in self._mem._ricordi.values()  # noqa: SLF001
         )
 
     def memorizza_conversazione(
@@ -216,9 +230,17 @@ class MemoriaRaffaello:
         min_priorita: int = 1,
         tipo: Optional[str] = None,
     ) -> list[dict]:
-        """Recupera i ricordi più rilevanti, con filtri opzionali."""
+        """Recupera i ricordi più rilevanti, con filtri opzionali.
+
+        Con un filtro attivo (`solo_cuore` / `min_priorita>1` / `tipo`) la ricerca
+        considera TUTTA la memoria, non una finestra: indispensabile quando il
+        corpus è grande (es. progetto indicizzato), altrimenti i pochi ricordi
+        filtrati (come le 4 frasi del Cuore) cadrebbero fuori dal campione.
+        """
+        filtro_attivo = solo_cuore or min_priorita > 1 or tipo is not None
+        k_fetch = len(self._mem._ricordi) if filtro_attivo else max(top_k * 6, 30)  # noqa: SLF001
         candidati: list[RisultatoRicerca] = self._mem.cerca(
-            query, k=max(top_k * 6, 30), soglia=0.0
+            query, k=max(k_fetch, 1), soglia=0.0
         )
         out: list[dict] = []
         for r in candidati:

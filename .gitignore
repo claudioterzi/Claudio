@@ -49,6 +49,9 @@ Thumbs.db
 # Logs
 *.log
 
+# Indice di progetto (rigenerato automaticamente)
+output/INDICE_PROGETTO.md
+
 # Temporary files
 tmp/
 temp/

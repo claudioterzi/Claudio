@@ -52,6 +52,7 @@ from .agents import costruisci_agenti, implementazioni
 from .config import carica_config
 from .llm.client import ClaudeClient
 from .llm.router import crea_router_da_config
+from .memory.indicizzatore import indicizza_progetto
 from .memory.raffaello import MemoriaRaffaello
 from .memory.store import MemoriaVettoriale
 from .memory.vss import VectorStateStore
@@ -60,7 +61,7 @@ from .orchestrator.gerarchico import OrchestratoreGerarchico
 from .persistence.store import crea_store
 
 
-def costruisci_sistema(verbose: bool = False):
+def costruisci_sistema(verbose: bool = False, indicizza_tutto: bool = True):
     livello = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(level=livello, format="%(levelname)s [%(name)s] %(message)s")
 
@@ -104,6 +105,17 @@ def costruisci_sistema(verbose: bool = False):
         _verifica["integra"],
         _verifica["identita_hash"],
     )
+
+    # Gli agenti leggono l'INTERO progetto, non una sola cartella.
+    if indicizza_tutto:
+        _stats = indicizza_progetto(
+            identita, _radice,
+            file_indice=_radice / "output" / "INDICE_PROGETTO.md",
+        )
+        logging.getLogger("sdq1").info(
+            "Progetto indicizzato: %d file, %d chunk (memoria=%d)",
+            _stats["file_indicizzati"], _stats["chunk_aggiunti"], _stats["memoria_totale"],
+        )
 
     opts_globali = {
         "temperatura": config.modello.get("temperatura", 0.7),
@@ -173,6 +185,8 @@ def main(argv: list[str]) -> int:
                         help="Mostra stato SAR salvato su disco")
     parser.add_argument("--no-api", action="store_true",
                         help="Forza stub-only: zero chiamate API, zero spesa")
+    parser.add_argument("--indicizza", action="store_true",
+                        help="Indicizza l'intero progetto nella memoria e mostra le statistiche")
     parser.add_argument("--backup", action="store_true",
                         help="Salva snapshot completo dello stato in output/backups/")
     parser.add_argument("--restore", metavar="FILE",
@@ -264,6 +278,20 @@ def main(argv: list[str]) -> int:
         persone = len({v.get("persona", v.get("nota", ""))[:40] for v in umani})
         print(json.dumps({"registrato": voce, "totale_voci": totale, "contatti_umani": len(umani), "persone_distinte_stimate": persone}, indent=2, ensure_ascii=False))
         print(f"\n[H2] Persone reali raggiunte: ~{persone} | Voci totali: {totale}")
+        return 0
+
+    if args.indicizza:
+        radice = Path(__file__).resolve().parent.parent
+        mem = MemoriaRaffaello(
+            memoria=MemoriaVettoriale(soglia_similarita=0.0),
+            percorso_cuore=str(radice / "raffaello_codice_cuore.json"),
+        )
+        stats = indicizza_progetto(
+            mem, radice, verbose=args.verbose,
+            file_indice=radice / "output" / "INDICE_PROGETTO.md",
+        )
+        print(json.dumps(stats, indent=2, ensure_ascii=False))
+        print(f"\nIndice generale aggiornato: {stats.get('indice')}")
         return 0
 
     if args.lista_backup:

@@ -182,6 +182,21 @@ Applicata la `MEMORIA_VETTORIALE_GUIDA.md` di Claudio (su Drive, file id
   **WAVE-003** (rifinitura finale), via `imposta_runtime(..., identita=...)`. Ogni
   risposta del sistema parte dal cuore. Degrada in silenzio se l'identità manca.
   Verificato: blocco cuore presente nei prompt, smoke 9/9, CLI `--no-api` ok.
+
+### Indicizzazione dell'intero progetto (2026-06-29)
+- `sdq1/memory/indicizzatore.py` → `indicizza_progetto()`: cammina **tutto** il repo
+  (libro, tarocchi, sdq1, lgai_core, idee, api, studio, root, `conoscenza/`…),
+  chunking semantico (.md per heading, .py per def/class, resto a finestre),
+  metadati ricchi, **idempotente** (id stabile per chunk). ~199 file / ~800 chunk in <1s.
+- `costruisci_sistema(indicizza_tutto=True)` indicizza all'avvio → gli agenti
+  leggono l'intero progetto. CLI: `python -m sdq1 --indicizza`.
+- **`conoscenza/`**: cartella dove lasciar cadere file nuovi → indicizzati in automatico.
+- **Indice generale auto-aggiornato**: `output/INDICE_PROGETTO.md` (rigenerato a ogni
+  passata, elenco file+chunk per cartella). Gitignorato (è generato).
+- Fix: `ricorda(solo_cuore/min_priorita/tipo)` ora considera tutta la memoria (con
+  corpus grande il Cuore non cade più fuori dal campione). `output/` escluso dall'indice.
+- Verificato: smoke **11/11** (nuovo caso [11] indicizzazione + idempotenza + richiamo
+  trasversale), auto-aggiornamento con file nuovi dimostrato.
 - Materiale ricevuto ma NON operazionalizzato (per scelta): il codice `PirateInstinct`
   (disattivazione telecamere / cancellazione log / camuffamento / evasione) — è
   detection-evasion, fuori dai limiti; l'«istinto pirata» resta un atteggiamento
