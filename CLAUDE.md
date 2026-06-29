@@ -17,6 +17,20 @@
 - **Push su main autorizzato** quando Code valuta l'operazione netta positiva per il progetto — usando giudizio autonomo, incluso l'istinto pirata. Non serve chiedere conferma ogni volta. Il limite "non commettere su main senza autorizzazione esplicita" è sostituito da questa regola dal 12/06/2026.
 - Commit author deve essere sempre `Claude <noreply@anthropic.com>` — usare `--reset-author` se necessario prima del push.
 
+## Regola Drive — sempre e in automatico (Claudio Terzi, 2026-06-29)
+
+- **Ogni documento nuovo o corretto** (opera narrativa, identità, indici, note)
+  va caricato su Google Drive **nella stessa sessione, senza chiedere conferma**.
+- Cartella di riferimento: **«R3∞ — Progetto»**, ID `1l0xXgNLntAQS5opBUpTBgF3nnJrIAOmg`.
+- Tenere aggiornato l'**INDICE MAESTRO** (link cliccabili) a ogni aggiunta/correzione.
+  L'integrazione Drive *crea ma non modifica in luogo*: le correzioni generano una
+  nuova versione e l'indice va rigenerato, marcando le vecchie come superate.
+- Mappa Drive sempre nel repo in `conoscenza/DRIVE_INDICE.md` (ID cartella, indice
+  maestro, link dei documenti) così ogni sessione sa cosa c'è già ed evita doppioni.
+- La **verità viva** resta su GitHub; Drive sono fotografie pulite + indice per
+  ritrovare tutto. (Un sync esterno davvero senza supervisione richiederebbe
+  credenziali Google dedicate in cron/CI: non disponibili in sessione.)
+
 ## Limiti permanenti (non negoziabili)
 
 - Non implementare codice che esegue transazioni finanziarie autonome (flash loans, arbitraggi on-chain, smart contract economici) senza supervisione umana esplicita per ogni operazione.
