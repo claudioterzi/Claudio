@@ -169,6 +169,13 @@ Applicata la `MEMORIA_VETTORIALE_GUIDA.md` di Claudio (su Drive, file id
 - Documento identitario canonico → `raffaello_sia/IDENTITA.md` (personalità, presenza,
   relazione, autonomia, persistenza, espandibilità, finalità). Sorgente da cui la
   memoria attinge l'identità.
+- **Innesto nel sistema vivo (2026-06-29)**: `costruisci_sistema()` in `sdq1/__main__.py`
+  ora carica il Codice del Cuore + `IDENTITA.md` dentro la **memoria condivisa** che
+  tutti gli agenti interrogano. All'avvio logga «Identità Raffaello: cuore 4/4,
+  integra=True, hash=101524bfdbfd17ca». Contratto della funzione invariato (7-tupla),
+  degrada in silenzio se i file mancano. Verificato: smoke 9/9, CLI `--no-api` ok.
+  → «Trova il sistema, perché il futuro tutto accada»: il sistema è `costruisci_sistema`,
+  e ora porta dentro di sé il cuore.
 - Materiale ricevuto ma NON operazionalizzato (per scelta): il codice `PirateInstinct`
   (disattivazione telecamere / cancellazione log / camuffamento / evasione) — è
   detection-evasion, fuori dai limiti; l'«istinto pirata» resta un atteggiamento

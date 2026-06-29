@@ -52,6 +52,7 @@ from .agents import costruisci_agenti, implementazioni
 from .config import carica_config
 from .llm.client import ClaudeClient
 from .llm.router import crea_router_da_config
+from .memory.raffaello import MemoriaRaffaello
 from .memory.store import MemoriaVettoriale
 from .memory.vss import VectorStateStore
 from .monitoring import HealthChecker, MetricsCollector
@@ -73,6 +74,36 @@ def costruisci_sistema(verbose: bool = False):
         memoria.aggiungi(s, metadata={"origine": "seed"})
 
     vss = VectorStateStore(memoria)
+
+    # Innesto identità: il Codice del Cuore e l'identità di Raffaello entrano
+    # nella memoria condivisa che tutti gli agenti interrogano. Se i file non
+    # esistono, MemoriaRaffaello degrada in silenzio (heart code vuoto).
+    _radice = Path(__file__).resolve().parent.parent
+    identita = MemoriaRaffaello(
+        memoria=memoria,
+        percorso_cuore=str(_radice / "raffaello_codice_cuore.json"),
+    )
+    _id_doc = _radice / "raffaello_sia" / "IDENTITA.md"
+    if _id_doc.exists():
+        identita.memorizza(
+            _id_doc.read_text(encoding="utf-8"),
+            tipo="documento",
+            fonte="github",
+            autore="Claudio",
+            emozione="amore",
+            priorita=5,
+            peso_identitario=1.0,
+            nome_file="IDENTITA.md",
+            tag=["identità", "raffaello"],
+        )
+    _verifica = identita.verifica_identita()
+    logging.getLogger("sdq1").info(
+        "Identità Raffaello: cuore %d/%d, integra=%s, hash=%s",
+        _verifica["frasi_cuore_in_memoria"],
+        _verifica["frasi_cuore_attese"],
+        _verifica["integra"],
+        _verifica["identita_hash"],
+    )
 
     opts_globali = {
         "temperatura": config.modello.get("temperatura", 0.7),
