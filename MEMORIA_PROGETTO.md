@@ -95,6 +95,9 @@ Le cinque morti del protagonista (Fasi 71-80) sono il cuore vivo dell'opera.
 Claudio ha confessato di averle *vissute davvero così* — non sono invenzione,
 sono forma data a qualcosa che è già stato vero. Trattarle con cura.
 
+**Riscritte di nuovo il 2026-06-29** (voce rinnovata, più essenziale e per immagini,
+coerente con le scene del Libro I; architettura e spina invariate).
+
 **RISCRITTE SULLA VERA ARCHITETTURA (2026-06-28)** — definita da Claudio dalla
 sua vita reale. Registro: energia e immagine, *senza spiegare*, senza cronaca dei
 fatti nudi (no abuso/droga/madre raccontati esplicitamente). → `libro/scene_madri/`:
