@@ -25,7 +25,10 @@
 5. **Commit + push** su `claude/grande-opera-continuation-1zylzp`.
 6. **Drive** (regola "sempre e in automatico"): carico la fotografia e aggiorno
    `conoscenza/DRIVE_INDICE.md` (quando l'integrazione Drive è disponibile).
-7. Ti dico in due righe **cosa ho fatto** e **qual è la prossima unità**.
+7. **Telegram** (se configurato): recapito il testo con la voce di Raffaello via
+   `python -m bot.pubblica_telegram <file>` — richiede `TELEGRAM_BOT_TOKEN` e
+   `TELEGRAM_CHAT_ID` nell'ambiente. Senza credenziali, salto in silenzio.
+8. Ti dico in due righe **cosa ho fatto** e **qual è la prossima unità**.
 
 **Regole del metodo**
 - *Una unità = un pezzo finito e committabile* (una scena, una Fase sviluppata, un documento).
