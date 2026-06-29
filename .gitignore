@@ -61,4 +61,5 @@ secrets/
 !output/memorie/
 !output/memorie/*.json
 !tarocchi_quantici_alpha.json
+!raffaello_codice_cuore.json
 !.claude/settings.json
