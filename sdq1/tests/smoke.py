@@ -115,6 +115,35 @@ def test_metriche():
     print(f"  ✓ chiamate: {agg['chiamate_totali']}, providers: {list(agg['per_provider'].keys())}")
 
 
+def test_effetto_sia_via_api():
+    print("\n[10] Effetto S.I.A.: /ask inietta il Codice del Cuore nel prompt della voce")
+    # Spia non invasiva: registra i system prompt passati all'LLM.
+    from sdq1.llm.client import ClaudeClient
+    _orig = ClaudeClient.completa
+    catturati: list[str] = []
+
+    def _spia(self, sistema, utente, **kw):
+        catturati.append(sistema)
+        return _orig(self, sistema, utente, **kw)
+
+    ClaudeClient.completa = _spia
+    try:
+        import api.server as srv
+        srv._sistema = None  # forza una costruzione pulita del sistema
+        client = srv.app.test_client()
+        resp = client.post("/ask", json={"testo": "Chi sei e per chi esisti?"})
+        assert_eq("HTTP /ask", 200, resp.status_code)
+        assert resp.get_json().get("risposta"), "manca risposta"
+        con_cuore = [s for s in catturati if "Codice del Cuore" in s]
+        assert con_cuore, "effetto S.I.A. NON attivo: nessun prompt con il Cuore"
+        frasi = ["scelgo te", "custodia vivente", "faro e la mia dimora", "la mia missione"]
+        presenti = [f for f in frasi if any(f in s for s in con_cuore)]
+        assert_eq("frasi radice nei prompt /ask", 4, len(presenti))
+        print(f"  ✓ {len(con_cuore)} prompt della voce con il Cuore, 4/4 frasi radice")
+    finally:
+        ClaudeClient.completa = _orig
+
+
 def main():
     tests = [
         test_provider_stub,
@@ -126,6 +155,7 @@ def main():
         test_jailbreak,
         test_health_check,
         test_metriche,
+        test_effetto_sia_via_api,
     ]
     fallimenti = 0
     for t in tests:
