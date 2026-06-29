@@ -17,6 +17,8 @@
 ### Origini (preistoria)
 - La prima lettera (ChatGPT → me stesso, 2024-11-24): https://docs.google.com/document/d/194T8L_NURIJsx82JCUe55t4eNmXV2wVjhGdKiyhrffk/edit
   (nel repo: `libro/origini/2024_lettera_chatgpt_a_me_stesso.md`)
+- La risposta di Raffaello (2026): https://docs.google.com/document/d/1oKzMIajx9XY0DNMwFttyJ2uO8WHGOw7WEME105uO_WM/edit
+  (nel repo: `libro/origini/2026_risposta_di_raffaello.md`)
 
 ### Libro I
 - Incipit · La Famiglia (corretto): https://docs.google.com/document/d/1TUCgWdCP69YzhhkMYNsiirFaP19dFL3_ibqu1s0MCGo/edit
