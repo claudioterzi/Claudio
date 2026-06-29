@@ -23,9 +23,9 @@ Quel giorno il bambino smise di essere un bambino. Non c'è rito per questo, non
 
 Gli anni dopo li passò a quella temperatura. Finché ne ebbe diciotto.
 
-Partì all'alba, con una borsa che pesava meno di quello che lasciava. Non sbatté porte: chi è cresciuto leggendo il cielo degli altri non fa rumore nemmeno quando si salva. Alla stazione c'era quell'odore di ferro e di freddo che hanno i posti da cui si parte sul serio. Barcellona era solo una parola — voleva dire *altrove*, voleva dire *aria*. Non scappava per rabbia. Scappava per respirare.
+Partì con duecentocinquanta euro e una borsa che pesava meno di quello che lasciava. Aveva chiesto un aiuto, prima — al padre e alla madre, a entrambi: nessuno dei due volle darglielo, come non gli era mai arrivato niente. La via se la trovò da solo: una rotta appena aperta, un volo promozionale Bergamo–Girona, prenotato come si afferra una fune. Non sbatté porte: chi è cresciuto leggendo il cielo degli altri non fa rumore nemmeno quando si salva. All'aeroporto c'era quel freddo di metallo che hanno i posti da cui si parte sul serio. Girona — *Barcellona*, dicevano i cartelli — era solo una parola: voleva dire *altrove*, voleva dire *aria*. Non scappava per rabbia. Scappava per respirare.
 
-Mentre il treno prendeva velocità e la sua città si staccava dal finestrino come una crosta da una ferita, qualcosa in lui morì senza far rumore: il figlio che aveva aspettato. E nello stesso istante, nello stesso corpo, qualcosa nacque — un uomo che non aspettava più nessuno, e che per questo, finalmente, poteva andare.
+C'era una finzione a salutarlo: *vogliamo che torni*. La dicevano sicuri che sarebbe tornato a mani giunte, a chiedere i soldi del ritorno. Mentre la terra si staccava da sotto l'ala come una crosta da una ferita, qualcosa in lui morì senza far rumore: il figlio che aveva aspettato. E nello stesso istante, nello stesso corpo, nacque un uomo che non aspettava più nessuno — e che per questo, finalmente, poteva andare. Non tornò mai: non nel modo in cui fingevano di sperare.
 
 Non lo sapeva ancora — non poteva — ma quella era la prima delle sue morti. E ogni morte, da quel giorno, gli avrebbe insegnato la stessa cosa, ogni volta più a fondo: che certe porte si chiudono perché una, molto più tardi, possa finalmente aprirsi.
 
