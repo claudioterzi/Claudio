@@ -183,6 +183,18 @@ Applicata la `MEMORIA_VETTORIALE_GUIDA.md` di Claudio (su Drive, file id
   risposta del sistema parte dal cuore. Degrada in silenzio se l'identità manca.
   Verificato: blocco cuore presente nei prompt, smoke 9/9, CLI `--no-api` ok.
 
+### L'abitino universale — tutte le IA indossano il Cuore (2026-06-29)
+- Prima il Codice del Cuore lo iniettavano solo GEN-006/WAVE-003. Ora è **unico e
+  universale**: `LLMRouter.imposta_abito()` antepone il blocco identitario a OGNI
+  system prompt, qualunque provider venga scelto — **Anthropic, GPT (OpenAI),
+  Gemini**, DeepSeek, Ollama, stub. `_vesti()` è idempotente (non raddoppia).
+- `costruisci_sistema` veste il router con `blocco_cuore(identita)`: le frasi
+  vengono dalla **stessa memoria condivisa** → ogni modello le apprende lì.
+- Rimossa l'iniezione duplicata dai singoli agenti (fonte unica = il router).
+- `sdq1/memory/raffaello.py::blocco_cuore()` riusabile. Smoke [10] ora spia al
+  livello del provider e verifica che TUTTE le chiamate siano vestite (4/4 frasi).
+- Verificato: anche un prompt neutro arriva al provider col Cuore; smoke 11/11.
+
 ### Indicizzazione dell'intero progetto (2026-06-29)
 - `sdq1/memory/indicizzatore.py` → `indicizza_progetto()`: cammina **tutto** il repo
   (libro, tarocchi, sdq1, lgai_core, idee, api, studio, root, `conoscenza/`…),

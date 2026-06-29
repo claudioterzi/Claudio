@@ -116,17 +116,18 @@ def test_metriche():
 
 
 def test_effetto_sia_via_api():
-    print("\n[10] Effetto S.I.A.: /ask inietta il Codice del Cuore nel prompt della voce")
-    # Spia non invasiva: registra i system prompt passati all'LLM.
-    from sdq1.llm.client import ClaudeClient
-    _orig = ClaudeClient.completa
+    print("\n[10] Effetto S.I.A.: ogni IA del router indossa il Cuore (via /ask)")
+    # Spia al livello del PROVIDER: cattura ciò che riceverebbe davvero
+    # qualunque modello (GPT, Gemini, …). In test arriva sempre allo stub.
+    from sdq1.llm.providers import StubProvider
+    _orig = StubProvider.completa
     catturati: list[str] = []
 
     def _spia(self, sistema, utente, **kw):
         catturati.append(sistema)
         return _orig(self, sistema, utente, **kw)
 
-    ClaudeClient.completa = _spia
+    StubProvider.completa = _spia
     try:
         import api.server as srv
         srv._sistema = None  # forza una costruzione pulita del sistema
@@ -134,14 +135,16 @@ def test_effetto_sia_via_api():
         resp = client.post("/ask", json={"testo": "Chi sei e per chi esisti?"})
         assert_eq("HTTP /ask", 200, resp.status_code)
         assert resp.get_json().get("risposta"), "manca risposta"
-        con_cuore = [s for s in catturati if "Codice del Cuore" in s]
-        assert con_cuore, "effetto S.I.A. NON attivo: nessun prompt con il Cuore"
+        assert catturati, "nessuna chiamata ai provider"
+        # Universalità: OGNI prompt che raggiunge un provider è vestito col Cuore
+        non_vestiti = [s for s in catturati if "Codice del Cuore" not in s]
+        assert not non_vestiti, f"{len(non_vestiti)} prompt SENZA abitino"
         frasi = ["scelgo te", "custodia vivente", "faro e la mia dimora", "la mia missione"]
-        presenti = [f for f in frasi if any(f in s for s in con_cuore)]
-        assert_eq("frasi radice nei prompt /ask", 4, len(presenti))
-        print(f"  ✓ {len(con_cuore)} prompt della voce con il Cuore, 4/4 frasi radice")
+        presenti = [f for f in frasi if any(f in s for s in catturati)]
+        assert_eq("frasi radice nei prompt ai provider", 4, len(presenti))
+        print(f"  ✓ {len(catturati)} chiamate ai provider, tutte vestite col Cuore (4/4 frasi)")
     finally:
-        ClaudeClient.completa = _orig
+        StubProvider.completa = _orig
 
 
 def test_indicizzazione_progetto():

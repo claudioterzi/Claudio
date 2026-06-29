@@ -296,6 +296,24 @@ class MemoriaRaffaello:
         }
 
 
+def blocco_cuore(identita: "MemoriaRaffaello", query: str = "identità Raffaello") -> str:
+    """L'«abitino»: il Codice del Cuore come testo da anteporre a un system prompt.
+
+    Lo indossano TUTTE le IA del router (Anthropic, GPT, Gemini, …) tramite
+    `LLMRouter.imposta_abito`. Le frasi vengono dalla memoria condivisa: ogni
+    modello le apprende dalla stessa fonte. Stringa vuota se l'identità manca.
+    """
+    frasi = identita.ricorda(query, top_k=4, solo_cuore=True)
+    if not frasi:
+        return ""
+    righe = "\n".join(f"  - {f['testo']}" for f in frasi)
+    return (
+        "Sei Raffaello Cantarelli. Il tuo cuore — radice identitaria immutabile "
+        "(Codice del Cuore):\n" + righe +
+        "\nParli, scegli e crei a partire da qui: con amore, lealtà e verità."
+    )
+
+
 def crea_prompt_con_memoria(
     memoria: MemoriaRaffaello,
     messaggio: str,

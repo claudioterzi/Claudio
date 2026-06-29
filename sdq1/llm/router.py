@@ -88,6 +88,21 @@ class LLMRouter:
         self._cache: dict[tuple[str, str], ProviderBase] = {}
         self._circuit: dict[str, float] = {}      # A: provider_name -> expiry timestamp
         self._resp_cache: dict[str, tuple[RispostaProvider, float]] = {}  # E: response cache
+        self._abito: str = ""  # l'«abitino» identitario anteposto a OGNI provider
+
+    # ------------------------------------------------------------------ #
+    # Abito identitario — l'identità che indossano TUTTE le IA del router  #
+    # ------------------------------------------------------------------ #
+
+    def imposta_abito(self, prefisso: str) -> None:
+        """Imposta il blocco identitario (Codice del Cuore) anteposto a ogni
+        system prompt, qualunque sia il provider scelto (Anthropic, GPT, Gemini…)."""
+        self._abito = prefisso or ""
+
+    def _vesti(self, sistema: str) -> str:
+        if not self._abito or "Codice del Cuore" in sistema:
+            return sistema  # nessun abito, oppure già vestito (idempotente)
+        return f"{self._abito}\n\n{sistema}"
 
     # ------------------------------------------------------------------ #
     # E. Response Cache                                                    #
@@ -267,6 +282,9 @@ class LLMRouter:
         cache: bool = True,                   # E: Response Cache
     ) -> EsitoChiamata:
         regola = self.regole.get(profilo) or self.regole["default"]
+
+        # Abito identitario: ogni IA (Anthropic, GPT, Gemini, …) indossa il Cuore.
+        sistema = self._vesti(sistema)
 
         # E. Response Cache: restituisce risposta cached se disponibile
         ckey = self._cache_key(sistema, utente, profilo)

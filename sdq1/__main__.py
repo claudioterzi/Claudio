@@ -53,7 +53,7 @@ from .config import carica_config
 from .llm.client import ClaudeClient
 from .llm.router import crea_router_da_config
 from .memory.indicizzatore import indicizza_progetto
-from .memory.raffaello import MemoriaRaffaello
+from .memory.raffaello import MemoriaRaffaello, blocco_cuore
 from .memory.store import MemoriaVettoriale
 from .memory.vss import VectorStateStore
 from .monitoring import HealthChecker, MetricsCollector
@@ -123,6 +123,9 @@ def costruisci_sistema(verbose: bool = False, indicizza_tutto: bool = True):
         "timeout_secondi": config.modello.get("timeout_secondi", 60),
     }
     router = crea_router_da_config(opts_globali, config.router["regole"])
+    # L'abitino: ogni IA del router (Anthropic, GPT, Gemini, …) indossa il Cuore
+    # e lo apprende dalla stessa memoria condivisa.
+    router.imposta_abito(blocco_cuore(identita))
 
     cache: dict[str, ClaudeClient] = {}
 
@@ -136,7 +139,6 @@ def costruisci_sistema(verbose: bool = False, indicizza_tutto: bool = True):
         memoria=memoria,
         vss=vss,
         pattern_blocco=config.sicurezza.get("pattern_blocco", []),
-        identita=identita,
     )
 
     agenti = costruisci_agenti(config)
