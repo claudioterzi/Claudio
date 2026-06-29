@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "r3-infinito"
+version = "0.1.0"
+description = "R³∞ — motore centrale RAFFAELLO CORE, scacchiera quantica, protocollo Rosso, riti."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Claudio Terzi" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0"]
+
+[project.scripts]
+r3 = "apps.cli.r3_cli:main"
+
+[tool.setuptools]
+packages = ["r3_core", "rituals", "apps"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    paths: ["R3/**"]
+  pull_request:
+    paths: ["R3/**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: R3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install -e .[dev]
+      - name: Test (quiet)
+        run: pytest -q
