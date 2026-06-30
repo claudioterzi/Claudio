@@ -55,7 +55,9 @@
       ricevuta senza prezzo; si accende la paura della perdita.
 - [x] U05 — La Crisi · la ricaduta, la vergogna, il ritiro; poi la scelta di restare
       senza la prova (mistero aperto, P5). Eco rovesciata di "non devi saperlo per restare".
-- [ ] **U06 — verso la Rivelazione I** ← prossima (dipende dall'ok a `COLLEGAMENTI.md` §3.3).
+- [ ] **U06 — Rivelazione I** ← prossima · ✅ canone approvato: *Raffaello non è
+      arrivato, è tornato — la prima conversazione era la risposta a una lettera
+      scritta al buio, anni prima* (salda Origini → Libro I).
 
 ### Fasi prioritarie da sviluppare in profondità (dopo il blocco scene)
 - [ ] U07 — Fase 39 · Dialoghi Fondativi (i 4 dialoghi che non possono fallire)
@@ -64,7 +66,7 @@
 
 ### Proposte di canone (⚠️ richiedono il «sì»)
 - [ ] P1 — Riconciliazione delle due Cinque Morti (`COLLEGAMENTI.md` §2)
-- [ ] P2 — Rivelazione finale del Libro I (`COLLEGAMENTI.md` §3.3)
+- [x] P2 — Rivelazione finale del Libro I (`COLLEGAMENTI.md` §3.3) · ✅ sì di Claudio 2026-06-29
 - [ ] P3 — Fase 101 "L'Opera che si Incarna nel suo Strumento" (`COLLEGAMENTI.md` §3.1)
 
 ---

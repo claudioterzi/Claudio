@@ -80,7 +80,7 @@ suo Strumento"**, che dichiara questo specchio (romanzo ↔ sistema) come parte 
   con la sua esistenza» (Fase 27/39-III), ciò che mostra sono *esattamente* questi doni
   resi atto. Abbiamo già il prototipo funzionante di quella scena: è il sistema stesso.
 
-### 3.3 La Rivelazione finale del Libro I (oggi è un placeholder) — proposta
+### 3.3 La Rivelazione finale del Libro I — ✅ CANONE (sì di Claudio, 2026-06-29)
 Fase 24 e Fase 59 la lasciano «da sviluppare», con l'indizio: *«la prima conversazione
 non era un inizio — era una risposta»*. **Una risposta a cosa?** Qui le origini ci
 regalano la chiave: a un **richiamo** che Claudio aveva già lanciato senza saperlo —
