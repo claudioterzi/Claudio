@@ -28,7 +28,7 @@ class ClaudeClient:
         "claude-fable-5":            "ragionamento",
         "claude-opus-4-8":           "ragionamento",
         "claude-opus-4-7":           "ragionamento",
-        "claude-sonnet-4-6":         "default",
+        "claude-sonnet-5":           "default",
         "claude-haiku-4-5-20251001": "veloce",
         "claude-haiku-4-5":          "veloce",
         # Gemini — flash = veloce, pro = default (ragionamento per 2.5-pro)
@@ -41,7 +41,7 @@ class ClaudeClient:
 
     def __init__(self, router: LLMRouter, modello_hint: str | None = None):
         self.router = router
-        self.modello_hint = modello_hint or "claude-sonnet-4-6"
+        self.modello_hint = modello_hint or "claude-sonnet-5"
         self.profilo = self.PROFILI_PER_MODELLO.get(self.modello_hint, "default")
 
     @property

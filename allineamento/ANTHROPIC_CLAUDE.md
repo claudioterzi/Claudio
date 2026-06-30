@@ -12,7 +12,7 @@ o una risposta che deve essere inequivocabile.
 Modelli usati nel sistema:
 - `claude-fable-5` — standard di qualità per profili default, soglia, cristallizza
 - `claude-haiku-4-5-20251001` — profilo `veloce` (decomposizione rapida, timeout 15s)
-- `claude-sonnet-4-6` — usato in `intruder_engine/narrative.py` per narrativa neutrale
+- `claude-sonnet-5` — usato in `intruder_engine/narrative.py` per narrativa neutrale
 
 ---
 

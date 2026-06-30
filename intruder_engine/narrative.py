@@ -1,7 +1,7 @@
 """Modulo 5 — NARRATIVE ENGINE.
 
 Trasforma tracce e assenze in linguaggio naturale neutrale.
-LLM principale: Claude (claude-sonnet-4-6). Fallback: template locale.
+LLM principale: Claude (claude-sonnet-5). Fallback: template locale.
 """
 
 from __future__ import annotations
@@ -52,7 +52,7 @@ def generate_narrative(
             user_content += "\n\nASSENZE:\n" + "\n".join(str(a) for a in absences)
 
         response = client.messages.create(
-            model="claude-sonnet-4-6",
+            model="claude-sonnet-5",
             max_tokens=600,
             system=_SYSTEM_PROMPT,
             messages=[{"role": "user", "content": user_content}],

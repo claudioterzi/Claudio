@@ -170,10 +170,10 @@ potente         120s     gemini-pro → deepseek-reasoner → stub        Massim
 
 ### ANTHROPIC / CLAUDE
 **Ruolo nel sistema:** Provider di riferimento per codice, precisione, sintesi tecnica. Primario nel profilo `veloce`.
-**Modelli:** `claude-fable-5` (standard), `claude-haiku-4-5-20251001` (veloce), `claude-sonnet-4-6` (Intruder Engine)
+**Modelli:** `claude-fable-5` (standard), `claude-haiku-4-5-20251001` (veloce), `claude-sonnet-5` (Intruder Engine)
 **Eccelle in:** precisione tecnica, codice funzionante, sintesi densa
 **Profilo principe:** `veloce` (haiku, 1° in cascata), `soglia`/`cristallizza` (fable, 2° in cascata)
-**Ruolo extra:** `intruder_engine/narrative.py` usa claude-sonnet-4-6 direttamente per narrativa neutrale con questo system prompt:
+**Ruolo extra:** `intruder_engine/narrative.py` usa claude-sonnet-5 direttamente per narrativa neutrale con questo system prompt:
 > *"Sei The Intruder Engine. Il tuo ruolo è osservare, non interpretare. Riferisci fatti statistici in italiano, in modo preciso e neutrale. Non dare risposte assolute. Formula osservazioni e al massimo una domanda. Sii conciso: massimo 5 righe per osservazione."*
 
 ---

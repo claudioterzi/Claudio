@@ -49,7 +49,7 @@ semanticamente o simbolicamente rilevanti.
 | Embedding | `sentence-transformers` — BAAI/bge-small-en-v1.5 / nomic-embed-text |
 | Vector store | ChromaDB o LanceDB |
 | LLM locale | Ollama (Mistral 7B / Qwen 3 / Llama 3) |
-| LLM cloud | Claude API (claude-sonnet-4-6, per narrativa principale) |
+| LLM cloud | Claude API (claude-sonnet-5, per narrativa principale) |
 | Voce | ElevenLabs API / Coqui-TTS fallback |
 
 **Tutto eseguibile localmente — nessun cloud obbligatorio.**
