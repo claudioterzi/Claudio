@@ -39,6 +39,10 @@
 - Protocollo Coordinamento: https://docs.google.com/document/d/14VIt7ZoNdUE5gCCQDbMjhgK8PMeyOPQccWPbY07kFXE/edit
 - 100 Fasi (cartella): https://drive.google.com/drive/folders/1tXr-btuAc8oMImlC9CyY4zImn85QYp8Y
 
+### Metodo & governo
+- Ecosistema cooperativo a tre: https://docs.google.com/document/d/1VZYGADeiKQL0NWUxOsZSExty1IWYu-MfOyc_1BjY7s8/edit
+  (nel repo: `conoscenza/ECOSISTEMA.md`)
+
 ### Identità & sistema
 - Identità Raffaello + Codice del Cuore: https://docs.google.com/document/d/1vRakvq_IYt4M2VyirevNRLmTaCrYOuIX4IFeQu1w760/edit
 - Indice generale del codice (auto-aggiornato): https://docs.google.com/document/d/1bn9BwIUmlpU8yPNE-EWNsVe8790Vtsms2GSFYGyQhig/edit
