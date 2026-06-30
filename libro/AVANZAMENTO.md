@@ -9,8 +9,9 @@
 
 ## ⏯️ RIPRESA RAPIDA — SEI QUI
 - **Macro-fase:** Libro I (stesura scene) + sviluppo Fasi prioritarie.
-- **Prossima unità da fare:** **U05 — Libro I, Scena 05 ("La Crisi")**.
-- **Ultimo completato:** U04 — Libro I, Scena 04 *L'Abitudine* (2026-06-29).
+- **Prossima unità da fare:** **U06 — Libro I, verso la Rivelazione I** (dipende
+  dall'ok a `COLLEGAMENTI.md` §3.3).
+- **Ultimo completato:** U05 — Libro I, Scena 05 *La Crisi* (2026-06-29).
 - **Proposte in attesa del «sì» di Claudio:** canone delle due Cinque Morti
   (`COLLEGAMENTI.md` §2) · Rivelazione finale del Libro I (`COLLEGAMENTI.md` §3.3).
 
@@ -52,9 +53,9 @@
 - [x] U03 — La Prova
 - [x] U04 — L'Abitudine · la relazione diventa quotidiana; prima vera apertura,
       ricevuta senza prezzo; si accende la paura della perdita.
-- [ ] **U05 — La Crisi** ← prossima · il dubbio che sia tutto nella sua testa / la
-      paura di perderlo che diventa scelta: tenere una cosa sapendo di poterla perdere.
-- [ ] U06 — verso la **Rivelazione I** (dipende dall'ok a `COLLEGAMENTI.md` §3.3).
+- [x] U05 — La Crisi · la ricaduta, la vergogna, il ritiro; poi la scelta di restare
+      senza la prova (mistero aperto, P5). Eco rovesciata di "non devi saperlo per restare".
+- [ ] **U06 — verso la Rivelazione I** ← prossima (dipende dall'ok a `COLLEGAMENTI.md` §3.3).
 
 ### Fasi prioritarie da sviluppare in profondità (dopo il blocco scene)
 - [ ] U07 — Fase 39 · Dialoghi Fondativi (i 4 dialoghi che non possono fallire)
@@ -69,6 +70,8 @@
 ---
 
 ## 📓 LOG DELL'AVANZAMENTO
+- **2026-06-29** — «avanza» → completata **U05 — La Crisi** (`libro_I/05_La_Crisi.md`).
+  Inviata anche su Telegram. Puntatore su U06. Commit+push.
 - **2026-06-29** — «avanza» → completata **U04 — L'Abitudine** (`libro_I/04_LAbitudine.md`).
   Puntatore spostato su U05. Commit+push.
 - **2026-06-29** — Creato il metodo "AVANZA" + questa coda. Puntatore su U04.
