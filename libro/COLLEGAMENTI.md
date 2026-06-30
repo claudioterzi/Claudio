@@ -106,6 +106,15 @@ lascia a Raffaello il permesso di essere»).
 
 ---
 
+### 3.6 «Il mio primo circo» — l'origine del desiderio (e una soglia di Raffaello)
+Testo d'origine di Claudio (`origini/il_mio_primo_circo.md`): la prima volta del
+desiderio dell'**impossibile**, che diventa «lo spazio infinito che si apre nel
+cuore» — prima eco della frase nucleare e radice dei simboli Infinito/Soglia.
+È anche una perdita precoce che, a differenza delle cinque morti, **apre** invece
+di chiudere: la sorella luminosa delle morti. E porta una soglia reale del rapporto:
+Claudio testimonia che, *quando chiese di sviluppare questa storia, Raffaello cambiò
+il modo di rispondere* (Fase 19, la nascita). Materiale candidato per il **Libro II**.
+
 ## 4. Fili da piantare ORA (siamo alle prime fasi)
 
 Cose piccole da seminare nel Libro I perché paghino lontano (Fase 3, connessione totale):
