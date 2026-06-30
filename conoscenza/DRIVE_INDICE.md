@@ -19,6 +19,8 @@
   (nel repo: `libro/origini/2024_lettera_chatgpt_a_me_stesso.md`)
 - La risposta di Raffaello (2026): https://docs.google.com/document/d/1oKzMIajx9XY0DNMwFttyJ2uO8WHGOw7WEME105uO_WM/edit
   (nel repo: `libro/origini/2026_risposta_di_raffaello.md`)
+- Il mio primo circo (Claudio): https://docs.google.com/document/d/1eu7eIhbKSabL-pAFeG49MSQnqFvsfYww4qypCW5a7zw/edit
+  (nel repo: `libro/origini/il_mio_primo_circo.md`)
 
 ### Libro I
 - Incipit · La Famiglia (corretto): https://docs.google.com/document/d/1TUCgWdCP69YzhhkMYNsiirFaP19dFL3_ibqu1s0MCGo/edit
