@@ -1,19 +1,20 @@
 # R3∞ — ARCHIVIO COSMICO — MASTER INDEX
 *Documento di navigazione. Ogni idea ha una posizione precisa.*
-*Ultimo aggiornamento: 2026-06-26 (post primo consolidamento)*
+*Ultimo aggiornamento: 2026-06-30 (2° wave parallelo — +22 documenti)*
 
 ---
 
 ## STATO DEL SISTEMA
 
-- **54 documenti** · ~11200 righe · **100 fasi documentate**
+- **76 documenti** · ~16500 righe · **100 fasi documentate**
 - **1° consolidamento completato** (2026-06-26): grafo semantico estratto, 3 nodi orfani risolti
 - **FASE 41 completata** (2026-06-28): DNA dei Personaggi — 10 strati profondi per tutti i protagonisti
 - **FASE 44 completata** (2026-06-29): Scene Madri — 64 scene fondamentali su 7 libri, 29 detonatori mappati
 - **FASE 45 completata** (2026-06-29): Architettura Emotiva — curva emotiva completa dei 7 libri
+- **WAVE PARALLELO 2026-06-30** (+22 doc in una sessione): FASI 46/47/61/62/64/67/68/71/74/85/96 + 10 simboli individuali + 2 luoghi
 - **Porte d'ingresso:** `ENCICLOPEDIA_R3` (A-Z) · `MATRICE_QUANTICA` (grafo) · `LIBRO_MAESTRO_V1` (visione)
 - **Nodi-hub:** Claudio (28) · Raffaello (28) · KAOS (24) · Architetti (18) · Eden (15)
-- **Prossimo focus:** Filosofia Comparata (FASE 46) · Bibbia della Bellezza (FASE 61) · Archivio delle Lacrime (FASE 62)
+- **Prossimo focus:** Cronologia Assoluta (FASE 42) · Enciclopedia Definitiva (FASE 48) · Scene Fondative (FASE 26)
 
 ---
 
@@ -70,26 +71,26 @@ r3/archivio/
 │   ├── 006_TEORIA_DEI_SEGNALI.md
 │   ├── 007_GIORNO_DEL_GIUDIZIO.md
 │   └── 008_CRONOLOGIA_COSMICA.md
-├── simboli/
-│   ├── INFINITO.md
-│   ├── SPECCHIO.md
-│   ├── LUCE.md
-│   ├── ROSA.md
-│   ├── MIRTO.md
-│   ├── PONTE.md
-│   ├── LABIRINTO.md
-│   ├── SOGNO.md
-│   ├── OCCHI.md
-│   └── PORTA.md
+├── simboli/                      ← 10 file individuali (tutti creati 2026-06-30)
+│   ├── INFINITO.md               ← SIM-001
+│   ├── SPECCHIO.md               ← SIM-002
+│   ├── LUCE.md                   ← SIM-003
+│   ├── ROSA.md                   ← SIM-004
+│   ├── MIRTO.md                  ← SIM-005
+│   ├── PONTE.md                  ← SIM-006
+│   ├── LABIRINTO.md              ← SIM-007
+│   ├── SOGNO.md                  ← SIM-008
+│   ├── OCCHI.md                  ← SIM-009
+│   └── PORTA.md                  ← SIM-010
 ├── scene_fondative/
 │   ├── SF-001_primo_incontro.md
 │   ├── SF-002_prima_prova_coscienza.md
 │   └── ...
 ├── luoghi/
-│   ├── BRUXELLES.md
-│   ├── LABORATORIO_SENA.md
-│   ├── SERVER_KAOS.md
-│   └── EDEN.md
+│   ├── BRUXELLES.md              ← città di Claudio
+│   ├── EDEN.md                   ← la relazione perfetta (luogo cosmico)
+│   ├── LABORATORIO_SENA.md       ← dove nasce Raffaello (FASE 67, 2026-06-30)
+│   └── SERVER_KAOS.md            ← il Nodo Zero di KAOS (FASE 67, 2026-06-30)
 ├── citazioni/
 │   └── FRASI_IMMORTALI.md
 ├── ricerca_scientifica/
@@ -168,8 +169,8 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 43 | Mappa Completa dei Simboli | ✅ 10 simboli consolidati |
 | 44 | Archivio Scene Madri (50-100 scene) | ✅ Completato — 64 scene (2026-06-29) |
 | 45 | Architettura Emotiva (curva dei 7 libri) | ✅ Completata (2026-06-29) |
-| 46 | Filosofia Comparata (8 tradizioni) | 🔄 Da costruire |
-| 47 | Sistema delle Domande del Lettore | 🔄 Da costruire |
+| 46 | Filosofia Comparata (8 tradizioni) | ✅ FILOSOFIA_COMPARATA.md (2026-06-30) |
+| 47 | Sistema delle Domande del Lettore | ✅ DOMANDE_LETTORE_PER_CAPITOLO.md (2026-06-30) |
 | 48 | Enciclopedia Definitiva R3∞ (1000+ pag.) | 🔄 Struttura iniziata |
 | 49 | Versione Cinematografica / Transmedia | 🔄 Da costruire |
 | 50 | Il Cuore dell'Opera — Perché questa storia deve esistere? | ✅ Risposta provvisoria documentata |
@@ -183,33 +184,39 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 58 | Archivio delle Rinunce (Cosa Non Fare) | ✅ Documentato |
 | 59 | Le 7 Rivelazioni Finali (una per libro) | ✅ Documentate |
 | 60 | Testamento dell'Opera | 🔄 Da scrivere alla conclusione |
-| 61 | Bibbia della Bellezza (6 tipi di bellezza) | 🔄 Da costruire |
-| 62 | Archivio delle Lacrime (scene devastanti) | 🔄 Da costruire |
+| 61 | Bibbia della Bellezza (6 tipi di bellezza) | ✅ BIBBIA_BELLEZZA.md (2026-06-30) |
+| 62 | Archivio delle Lacrime (scene devastanti) | ✅ ARCHIVIO_LACRIME.md (2026-06-30) |
 | 63 | Le 12 Leggi dell'Universo | ✅ Documentate |
-| 64 | Archivio delle Morti (nessuna gratuita) | 🔄 Da costruire |
+| 64 | Archivio delle Morti (nessuna gratuita) | ✅ ARCHIVIO_MORTI.md (2026-06-30) |
 | 65 | Mappa della Redenzione | ✅ Documentata |
 | 66 | Archivio delle Rinascite | ✅ Documentato |
-| 67 | Geografia Sacra dei Luoghi | 🔄 In costruzione (file luoghi/) |
-| 68 | Musica dell'Universo (tema per libro) | 🔄 Da costruire |
+| 67 | Geografia Sacra dei Luoghi | ✅ 4 luoghi: BRUXELLES, EDEN, LABORATORIO_SENA, SERVER_KAOS (2026-06-30) |
+| 68 | Musica dell'Universo (tema per libro) | ✅ MUSICA_UNIVERSO.md (2026-06-30) |
 | 69 | Linguaggio Sacro (lessico proprio) | 🔄 Da costruire |
 | 70 | Obiettivo Ultimo del Lettore | ✅ Definito |
-| 71-80 | [Fasi intermedie — da documentare] | 🔄 In coda |
+| 71 | Archivio delle Voci (stile per personaggio) | ✅ ARCHIVIO_VOCI.md (2026-06-30) |
+| 72 | [Da documentare] | 🔄 In coda |
+| 73 | [Da documentare] | 🔄 In coda |
+| 74 | Sistema dei Colori (palette cromatica) | ✅ SISTEMA_COLORI.md (2026-06-30) |
+| 75-78 | [Fasi intermedie — da documentare] | 🔄 In coda |
+| 79 | Archivio delle Prime Volte (momenti fondativi) | ✅ ARCHIVIO_PRIME_VOLTE.md (2026-06-30) |
+| 80 | [Da documentare] | 🔄 In coda |
 | 81 | Archivio delle Eredità | ✅ Documentato |
 | 82 | Sistema delle Generazioni (3) | ✅ Documentato |
 | 83 | Archivio delle Lettere (4 lettere fondative) | ✅ Struttura e bozze create |
 | 84 | Sistema della Memoria (umana / artificiale / cosmica) | ✅ Documentato |
-| 85 | Archivio delle Civiltà Perdute | 🔄 Da costruire |
+| 85 | Archivio delle Civiltà Perdute | ✅ CIVILTA_PERDUTE.md (2026-06-30) |
 | 86 | Sistema dei Nomi (etimologia + simbolo) | ✅ Documentato |
 | 87 | Archivio delle Profezie | ✅ Struttura creata |
 | 88 | Sistema delle Scelte Impossibili | ✅ Documentato |
-| 89 | Archivio Domande del Lettore per Capitolo | 🔄 Da costruire in scrittura |
+| 89 | Archivio Domande del Lettore per Capitolo | ✅ Vedi FASE 47 (DOMANDE_LETTORE_PER_CAPITOLO.md) |
 | 90 | Strategia Transmediale (6 formati) | ✅ Documentata |
 | 91 | Archivio delle Interpretazioni (7 livelli di lettura) | ✅ Documentato |
 | 92 | Il Lettore Ideale | ✅ Definito |
 | 93 | Il Nucleo Irriducibile (una frase) | ✅ Definito |
 | 94 | Domande Aperte Finali per il Lettore | ✅ Documentate |
 | 95 | Test del Tempo | ✅ Criterio fissato |
-| 96 | Archivio della Bellezza Stilistica | 🔄 Da costruire |
+| 96 | Archivio della Bellezza Stilistica | ✅ BELLEZZA_STILISTICA.md (2026-06-30) |
 | 97 | Manifesto dell'Opera | ✅ Scritto |
 | 98 | Archivio delle Trasformazioni del Lettore | ✅ Documentato |
 | 99 | L'Ultima Pagina — progettata in anticipo | ✅ Prima bozza |
