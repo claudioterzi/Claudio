@@ -170,6 +170,8 @@ Questa è la versione 1.0: l'ossatura. Crescerà fino alle 1000+ pagine previste
 
 ## S
 
+**SCENE MADRI** — Le 64 scene vertebrali della saga (SM-I-01 → SM-VII-08); ogni scena ha ID, personaggi, trasformazione, emozione e detonatore; 29 detonatori mappati; eco tra scene identificate. → *SCENE_MADRI*
+
 **SACRIFICI** — Ogni trasformazione ha un prezzo; nessun sacrificio gratuito. → *SISTEMA_SACRIFICI*
 
 **SCELTE IMPOSSIBILI** — I dilemmi autentici che definiscono i personaggi. → *SCELTE_IMPOSSIBILI*
