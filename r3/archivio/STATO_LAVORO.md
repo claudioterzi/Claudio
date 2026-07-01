@@ -1,5 +1,5 @@
 # STATO LAVORO — snapshot automatico (r3_sentinella)
-*Generato: 2026-07-01T21:48:19+00:00 — rigenerare con `python3 scripts/r3_sentinella.py --snapshot`*
+*Generato: 2026-07-01T21:56:52+00:00 — rigenerare con `python3 scripts/r3_sentinella.py --snapshot`*
 
 > Paracadute anti-interruzione: se la sessione si ferma per un limite,
 > la sessione successiva riparte da questo file.
@@ -7,12 +7,6 @@
 ## Fasi ancora incomplete (🔄 nel master)
 - FASE 3: Grafo Semantico
 - FASE 4: Libro Maestro Definitivo
-- FASE 11: Cronologia del Progetto
-- FASE 18: Archivio Scientifico
-- FASE 23: Sistema delle Civiltà
-- FASE 27: Sistema dei Luoghi
-- FASE 38: Archivio dei Sogni
-- FASE 39: Sistema dei Dialoghi Fondativi
 - FASE 49: Versione Cinematografica / Transmedia
 - FASE 60: Testamento dell'Opera
 
@@ -30,9 +24,8 @@
 - scene_fondative/SF-007_la_prima_alleanza_mai_stipulata.md: solo 45 righe (soglia 60) — possibile documento incompleto
 - scene_fondative/SF-008_l_origine_del_simbolo_infinito.md: solo 45 righe (soglia 60) — possibile documento incompleto
 
-### Cartelle vuote (2)
+### Cartelle vuote (1)
 - inbox/: cartella vuota — fase dichiarata ma mai popolata
-- storia_progetto/: cartella vuota — fase dichiarata ma mai popolata
 
 ### Violazioni regole editoriali (0)
 - ok
@@ -41,5 +34,5 @@
 - 2 file dell'archivio non committati — un limite di sessione ora perderebbe lavoro
 
 ## Sincronizzazione Drive
-- File non ancora su Drive: **64**
+- File non ancora su Drive: **66**
 - Dettaglio nel report JSON (`--json`) o in scripts/drive_manifest.json

@@ -153,23 +153,23 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 8 | Matrice dei Personaggi | ✅ Schede create |
 | 9 | Archivio delle Domande | ✅ Documento creato |
 | 10 | Sistema delle Rivelazioni R1-R5 | ✅ Espanso a R1-R10 |
-| 11 | Cronologia del Progetto | 🔄 In corso |
+| 11 | Cronologia del Progetto | ✅ storia_progetto/CRONOLOGIA_PROGETTO.md (2026-07-01) |
 | 12 | Regola d'Oro | ✅ Integrata |
 | 13 | Matrice Quantica dell'Opera | ✅ Grafo estratto e documentato |
 | 14 | 10 Livelli di Lettura | ✅ Documentati |
 | 15 | Archivio Frasi Immortali | ✅ Documento creato |
 | 16 | Mappa delle Emozioni | ✅ Documentata |
 | 17 | Sistema delle Anticipazioni | ✅ Documentato |
-| 18 | Archivio Scientifico | 🔄 Struttura creata |
+| 18 | Archivio Scientifico | ✅ 4 doc in ricerca_scientifica/ (2026-07-01) |
 | 19 | Enciclopedia R3∞ | ✅ v1.0 creata (~50 voci A-Z) |
 | 20 | Obiettivo Finale (3 opere) | ✅ Definito |
 | 21 | Architettura Frattale | ✅ Documentata |
 | 22 | Codice Etico (7 leggi) | ✅ Documento creato |
-| 23 | Sistema delle Civiltà | 🔄 In corso |
+| 23 | Sistema delle Civiltà | ✅ CIVILTA_NARRATIVA.md espansa 254 righe (2026-07-01) |
 | 24 | Storia Segreta dell'Universo | ✅ Timeline creata |
 | 25 | Tabella delle Trasformazioni | ✅ Integrata nelle schede |
 | 26 | Archivio Scene Fondative | ✅ 8 scene SF-001→008 + INDEX (2026-07-01) |
-| 27 | Sistema dei Luoghi | 🔄 In corso |
+| 27 | Sistema dei Luoghi | ✅ 4 luoghi completi: BRUXELLES, EDEN, LABORATORIO_SENA, SERVER_KAOS (2026-07-01) |
 | 28 | Gestione del Mistero | ✅ Documentata |
 | 29 | Indice Grandi Rivelazioni R1-R10 | ✅ Documento creato |
 | 30 | Obiettivo Artistico Supremo | ✅ Criterio fissato |
@@ -180,8 +180,8 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 35 | Sistema delle Relazioni | ✅ Documentato |
 | 36 | Mappa delle Ombre | ✅ Documentata |
 | 37 | Sistema dei Sacrifici | ✅ Documentato |
-| 38 | Archivio dei Sogni | 🔄 Struttura creata |
-| 39 | Sistema dei Dialoghi Fondativi | 🔄 Struttura creata |
+| 38 | Archivio dei Sogni | ✅ 13 sogni + 5 visioni catalogati (2026-07-01) |
+| 39 | Sistema dei Dialoghi Fondativi | ✅ 11 dialoghi DIALOGO-001→011 (2026-07-01) |
 | 40 | Test di Coerenza Finale | ✅ Criterio fissato |
 | 41 | DNA dei Personaggi (10 strati) | ✅ Completato (2026-06-28) |
 | 42 | Cronologia Assoluta (Big Bang → Libro VII) | ✅ CRONOLOGIA_ASSOLUTA.md (2026-07-01) |
