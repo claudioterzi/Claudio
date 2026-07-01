@@ -8,6 +8,7 @@ studio/web/dist/
 data/
 *.json
 !registro_ipotesi.json
+!scripts/drive_manifest.json
 !output/contatti.jsonl
 !output/benchmark/
 !output/benchmark/*.json
