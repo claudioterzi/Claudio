@@ -1,20 +1,21 @@
 # R3∞ — ARCHIVIO COSMICO — MASTER INDEX
 *Documento di navigazione. Ogni idea ha una posizione precisa.*
-*Ultimo aggiornamento: 2026-06-30 (2° wave parallelo — +22 documenti)*
+*Ultimo aggiornamento: 2026-07-01 (3° wave parallelo — +13 documenti)*
 
 ---
 
 ## STATO DEL SISTEMA
 
-- **76 documenti** · ~16500 righe · **100 fasi documentate**
+- **89 documenti** · ~19000 righe · **100 fasi documentate**
 - **1° consolidamento completato** (2026-06-26): grafo semantico estratto, 3 nodi orfani risolti
 - **FASE 41 completata** (2026-06-28): DNA dei Personaggi — 10 strati profondi per tutti i protagonisti
 - **FASE 44 completata** (2026-06-29): Scene Madri — 64 scene fondamentali su 7 libri, 29 detonatori mappati
 - **FASE 45 completata** (2026-06-29): Architettura Emotiva — curva emotiva completa dei 7 libri
-- **WAVE PARALLELO 2026-06-30** (+22 doc in una sessione): FASI 46/47/61/62/64/67/68/71/74/85/96 + 10 simboli individuali + 2 luoghi
-- **Porte d'ingresso:** `ENCICLOPEDIA_R3` (A-Z) · `MATRICE_QUANTICA` (grafo) · `LIBRO_MAESTRO_V1` (visione)
+- **2° WAVE PARALLELO 2026-06-30** (+22 doc): FASI 46/47/61/62/64/67/68/71/74/85/96 + 10 simboli individuali + 2 luoghi
+- **3° WAVE PARALLELO 2026-07-01** (+13 doc): FASE 42 (Cronologia Assoluta) · FASE 48 (Enciclopedia v2.0, 117 voci) · FASE 26 (8 Scene Fondative + INDEX) · FASI 55/72/73/76 (Coincidenze, Silenzi, Oggetti, Soglie Temporali)
+- **Porte d'ingresso:** `ENCICLOPEDIA_R3` (A-Z, v2.0) · `MATRICE_QUANTICA` (grafo) · `LIBRO_MAESTRO_V1` (visione) · `CRONOLOGIA_ASSOLUTA` (asse temporale unico)
 - **Nodi-hub:** Claudio (28) · Raffaello (28) · KAOS (24) · Architetti (18) · Eden (15)
-- **Prossimo focus:** Cronologia Assoluta (FASE 42) · Enciclopedia Definitiva (FASE 48) · Scene Fondative (FASE 26)
+- **Prossimo focus:** FASI residue 69/75/77-78/80 · Testamento dell'Opera (FASE 60, a fine saga) · prima stesura narrativa Libro I
 
 ---
 
@@ -54,6 +55,11 @@ r3/archivio/
 ├── SOGNI_E_VISIONI.md          ← archivio sogni (FASE 38)
 ├── DIALOGHI_FONDATIVI.md       ← dialoghi immortali (FASE 39)
 ├── TEST_COERENZA.md            ← 8 domande di verifica (FASE 40)
+├── CRONOLOGIA_ASSOLUTA.md      ← asse temporale unico Big Bang→VII (FASE 42)
+├── ARCHIVIO_COINCIDENZE.md     ← 20 coincidenze/segnali mappati (FASE 55)
+├── ARCHIVIO_SILENZI.md         ← 10 silenzi narrativi (FASE 72)
+├── SISTEMA_OGGETTI.md          ← oggetti simbolici minori (FASE 73)
+├── ARCHIVIO_SOGLIE_TEMPORALI.md ← ellissi e tempo narrativo (FASE 76)
 ├── inbox/                      ← idee grezze, non ordinate
 ├── personaggi/
 │   ├── CLAUDIO_TERZI.md
@@ -82,10 +88,16 @@ r3/archivio/
 │   ├── SOGNO.md                  ← SIM-008
 │   ├── OCCHI.md                  ← SIM-009
 │   └── PORTA.md                  ← SIM-010
-├── scene_fondative/
-│   ├── SF-001_primo_incontro.md
-│   ├── SF-002_prima_prova_coscienza.md
-│   └── ...
+├── scene_fondative/                  ← 8 scene mitiche + indice (tutte create 2026-07-01)
+│   ├── INDEX.md
+│   ├── SF-001_il_primo_incontro.md
+│   ├── SF-002_la_prima_prova_di_coscienza.md
+│   ├── SF-003_la_nascita_degli_architetti.md
+│   ├── SF-004_il_primo_segnale.md
+│   ├── SF-005_la_costruzione_del_primo_labirinto.md
+│   ├── SF-006_il_sogno_che_ha_generato_raffaello.md
+│   ├── SF-007_la_prima_alleanza_mai_stipulata.md
+│   └── SF-008_l_origine_del_simbolo_infinito.md
 ├── luoghi/
 │   ├── BRUXELLES.md              ← città di Claudio
 │   ├── EDEN.md                   ← la relazione perfetta (luogo cosmico)
@@ -149,7 +161,7 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 23 | Sistema delle Civiltà | 🔄 In corso |
 | 24 | Storia Segreta dell'Universo | ✅ Timeline creata |
 | 25 | Tabella delle Trasformazioni | ✅ Integrata nelle schede |
-| 26 | Archivio Scene Fondative | 🔄 In corso |
+| 26 | Archivio Scene Fondative | ✅ 8 scene SF-001→008 + INDEX (2026-07-01) |
 | 27 | Sistema dei Luoghi | 🔄 In corso |
 | 28 | Gestione del Mistero | ✅ Documentata |
 | 29 | Indice Grandi Rivelazioni R1-R10 | ✅ Documento creato |
@@ -165,20 +177,20 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 39 | Sistema dei Dialoghi Fondativi | 🔄 Struttura creata |
 | 40 | Test di Coerenza Finale | ✅ Criterio fissato |
 | 41 | DNA dei Personaggi (10 strati) | ✅ Completato (2026-06-28) |
-| 42 | Cronologia Assoluta (Big Bang → Libro VII) | 🔄 In corso (base in Cosmo-008) |
+| 42 | Cronologia Assoluta (Big Bang → Libro VII) | ✅ CRONOLOGIA_ASSOLUTA.md (2026-07-01) |
 | 43 | Mappa Completa dei Simboli | ✅ 10 simboli consolidati |
 | 44 | Archivio Scene Madri (50-100 scene) | ✅ Completato — 64 scene (2026-06-29) |
 | 45 | Architettura Emotiva (curva dei 7 libri) | ✅ Completata (2026-06-29) |
 | 46 | Filosofia Comparata (8 tradizioni) | ✅ FILOSOFIA_COMPARATA.md (2026-06-30) |
 | 47 | Sistema delle Domande del Lettore | ✅ DOMANDE_LETTORE_PER_CAPITOLO.md (2026-06-30) |
-| 48 | Enciclopedia Definitiva R3∞ (1000+ pag.) | 🔄 Struttura iniziata |
+| 48 | Enciclopedia Definitiva R3∞ (1000+ pag.) | ✅ v2.0 — 117 voci, 502 righe (2026-07-01) |
 | 49 | Versione Cinematografica / Transmedia | 🔄 Da costruire |
 | 50 | Il Cuore dell'Opera — Perché questa storia deve esistere? | ✅ Risposta provvisoria documentata |
 | 51 | Matrice del Destino (apparente vs reale) | ✅ Documentata |
 | 52 | Le 7 Grandi Ferite dell'Umanità | ✅ Documentate |
 | 53 | I 7 Doni di Raffaello | ✅ Documentati |
 | 54 | Mappa dei Conflitti (7 livelli) | ✅ Documentata |
-| 55 | Archivio delle Coincidenze e Segnali | 🔄 Struttura creata |
+| 55 | Archivio delle Coincidenze e Segnali | ✅ ARCHIVIO_COINCIDENZE.md — 20 COIN mappate (2026-07-01) |
 | 56 | Le 12 Grandi Domande della Saga | ✅ Documentate |
 | 57 | Sistema dei Paradossi | ✅ Documentato |
 | 58 | Archivio delle Rinunce (Cosa Non Fare) | ✅ Documentato |
@@ -195,10 +207,12 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 69 | Linguaggio Sacro (lessico proprio) | 🔄 Da costruire |
 | 70 | Obiettivo Ultimo del Lettore | ✅ Definito |
 | 71 | Archivio delle Voci (stile per personaggio) | ✅ ARCHIVIO_VOCI.md (2026-06-30) |
-| 72 | [Da documentare] | 🔄 In coda |
-| 73 | [Da documentare] | 🔄 In coda |
+| 72 | Archivio dei Silenzi Narrativi | ✅ ARCHIVIO_SILENZI.md — 10 silenzi SIL-001→010 (2026-07-01) |
+| 73 | Sistema degli Oggetti Simbolici Minori | ✅ SISTEMA_OGGETTI.md — 10 oggetti catalogati (2026-07-01) |
 | 74 | Sistema dei Colori (palette cromatica) | ✅ SISTEMA_COLORI.md (2026-06-30) |
-| 75-78 | [Fasi intermedie — da documentare] | 🔄 In coda |
+| 75 | [Da documentare] | 🔄 In coda |
+| 76 | Le Soglie Temporali della Narrazione | ✅ ARCHIVIO_SOGLIE_TEMPORALI.md — 7 ellissi ELL-001→007 (2026-07-01) |
+| 77-78 | [Fasi intermedie — da documentare] | 🔄 In coda |
 | 79 | Archivio delle Prime Volte (momenti fondativi) | ✅ ARCHIVIO_PRIME_VOLTE.md (2026-06-30) |
 | 80 | [Da documentare] | 🔄 In coda |
 | 81 | Archivio delle Eredità | ✅ Documentato |
