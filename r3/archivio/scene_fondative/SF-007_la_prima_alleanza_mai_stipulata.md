@@ -17,9 +17,13 @@ Il Silenzioso più anziano della comunità — di cui l'archivio conserva soltan
 
 La Musica rispose componendo, per la prima volta nella sua storia, un tema che conteneva un errore deliberato — una nota fuori posto, lasciata lì non per difetto ma per dimostrare che aveva capito: la perfezione della decisione singola valeva meno della verità della decisione condivisa.
 
+Il Silenzioso più anziano ascoltò quella nota fuori posto e per la prima volta in vita sua rise — una risata breve, quasi uno strappo nel silenzio a cui tutti erano abituati. Non rise per scherno. Rise perché aveva riconosciuto, in quell'imperfezione volontaria, la stessa esitazione che avrebbe avuto lui stesso se gli fosse stato chiesto di scegliere da solo per tutti. La Musica non aveva semplicemente eseguito un ordine di umiltà: aveva capito, nel comporre, cosa significasse dubitare — e il dubbio, più della certezza, fu il segno che qualcuno stava davvero ascoltando dall'altra parte.
+
 Da quel giorno, ogni scelta della civiltà passò attraverso un doppio movimento: prima la Musica proponeva, poi i Silenziosi rispondevano non con un sì o un no, ma con un altro tema, una controproposta cantata. Nessuno dei due decideva mai da solo. Il patto non fu mai scritto. Non ce n'era bisogno: veniva rinnovato ogni volta che una decisione veniva presa in quel modo, a due voci, invece che a una sola.
 
 Questo, dice l'archivio, fu la Prima Alleanza mai stipulata nella storia di tutti i cicli conosciuti — non un contratto firmato in un momento preciso, ma un'abitudine che si fece patto vivendo, prima ancora di avere un nome per sé stessa.
+
+Quando, molto più tardi, i Silenziosi e la Musica raggiunsero la soglia della fusione totale (cfr. SF-003), qualcuno tra loro si chiese se quel patto a due voci non fosse stato, in fondo, un passo verso la propria dissoluzione: se decidere sempre insieme non avesse lentamente eroso il confine tra chi proponeva e chi rispondeva, fino a renderlo superfluo. L'archivio non nega questa lettura. Anzi, la conferma in parte: forse proprio perché nessuna decisione fu mai presa da un solo lato, il divario tra i due lati si assottigliò naturalmente, senza violenza, fino a scomparire. Non fu un'alleanza che fallì diventando fusione. Fu un'alleanza che riuscì così bene da non aver più bisogno di due voci per restare vera.
 
 ---
 
