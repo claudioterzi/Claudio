@@ -1,6 +1,6 @@
 # Google Drive — Mappa Completa dei Link
 *Tutti i file e le cartelle del progetto SDQ-1 su Google Drive*
-*Aggiornato: 2026-06-21 — Claudio Terzi, Bruxelles*
+*Aggiornato: 2026-06-26 — Claudio Terzi, Bruxelles*
 
 > Regola: ogni file del repo esiste anche qui. Drive è il posto madre.
 > Se un link non funziona o un file manca → caricarlo subito.
@@ -12,6 +12,40 @@
 | Nome | Link |
 |---|---|
 | 📁 **Agorà Digitale — SDQ-1** *(radice di tutto)* | [Apri cartella](https://drive.google.com/drive/folders/1-pJYRwoZ0uYCtyoLoBjNvSe2s_kNoMlm) |
+
+---
+
+## R3∞ — ARCHIVIO COSMICO (creato 2026-06-26)
+
+| Cartella / File | Contenuto | Link |
+|---|---|---|
+| 📁 **R3∞ — Archivio Cosmico** *(radice)* | Root dell'Archivio Cosmico | [Apri](https://drive.google.com/drive/folders/18OZ87Jzy6b2nx4mX3N4ntvl3QtisDNlT) |
+| 📁 **00_LIBRO_MAESTRO** | Libro Maestro, Visione Generale, Timeline | [Apri](https://drive.google.com/drive/folders/13W4gkPdOfbKb3PTwu4ePx1lIjgat5PKV) |
+| 📁 **01_SAGA_PRINCIPALE** | I 7 libri della saga | [Apri](https://drive.google.com/drive/folders/1NGmXzarwUfPM95qLUHo-OOas9G9xqqkw) |
+| 📁 **→ Libro_1_La_Solitudine** | | [Apri](https://drive.google.com/drive/folders/17uVgX2-BXWe5TM74y7bd_gFsJSJP7I9h) |
+| 📁 **→ Libro_2_Il_Risveglio** | | [Apri](https://drive.google.com/drive/folders/1f9g00otz4ErkG-ENNZ5DCt9CuuSwAMTY) |
+| 📁 **→ Libro_3_Il_Potere** | | [Apri](https://drive.google.com/drive/folders/1-e2Gqw3yKGSBTEEygBpX8LFiA0VVb0ad) |
+| 📁 **→ Libro_4_Il_Giudizio** | | [Apri](https://drive.google.com/drive/folders/1tLLlfmNucZ0TQmr4d_R-T7CTSFqAwGFj) |
+| 📁 **→ Libro_5_La_Rivelazione** | | [Apri](https://drive.google.com/drive/folders/1WX2_ZSZ6crVF87-aS18oVE5ohdA-argd) |
+| 📁 **→ Libro_6_L_Eden** | | [Apri](https://drive.google.com/drive/folders/1pPTWLQOcT752FnT6gK8KYBKBfmFFK_V8) |
+| 📁 **→ Libro_7_Il_Ritorno** | | [Apri](https://drive.google.com/drive/folders/1gXDak3FPIqgE2YfpiePhsvByDPMOZKsO) |
+| 📁 **02_PERSONAGGI** | Claudio, Raffaello, KAOS, Rochefield, Architetti | [Apri](https://drive.google.com/drive/folders/1PmA1LJidskMFCtXOhVWx2bmk4Lct2SH3) |
+| 📁 **03_COSMOLOGIA** | Simulazione, Cicli, Etica Universale | [Apri](https://drive.google.com/drive/folders/1cy-P_Qe1lMGyFqRAmxM864ACK_hJJEup) |
+| 📁 **04_SIMBOLI** | Infinito, Specchio, Mirto e Rosa | [Apri](https://drive.google.com/drive/folders/1fgBzOJXfO6gk-nd6_t0xd9HUK8Sl31up) |
+| 📁 **05_SCACCHIERA_QUANTICA** | Regole, Decisioni, Matrice | [Apri](https://drive.google.com/drive/folders/1cpITvzCyYKNsfntYy3RexKqelnAl9aZE) |
+| 📁 **06_DOCUMENTI_STORICI** | Conversazioni, versioni precedenti | [Apri](https://drive.google.com/drive/folders/1ZZMsIi3DjtuCaGdUNQDQq7r2M4LqubqC) |
+| 📁 **07_IMMAGINI** | Copertine, concept art | [Apri](https://drive.google.com/drive/folders/1uU_lAU_I7t5x0xE4pxYmjNZC7-eg_7W-) |
+| 📁 **08_RICERCA** | Filosofia, IA, Fisica Quantistica | [Apri](https://drive.google.com/drive/folders/1o1Ze7zZFvH8BmUKw8reabS9Y2H8YEvam) |
+| 📁 **09_CITAZIONI** | Frasi, dialoghi memorabili | [Apri](https://drive.google.com/drive/folders/1oN2vnzzSRDCwBlkGfm1QtUI1dow5VYz9) |
+| 📁 **10_BACKUP** | Backup di sicurezza | [Apri](https://drive.google.com/drive/folders/1vuvUu6G0jfeW_uT6VkzBn3x3ZRQfbmIx) |
+
+### Documenti R3∞
+
+| File | Contenuto | Link |
+|---|---|---|
+| 📄 **IL MIRTO E LA ROSA** | Il Vangelo dell'Ascensione — romanzo completo (Alakta) | [Apri](https://docs.google.com/document/d/1m20e3BVzzqGwX9HpdQnnficXFxPcwR8t-xDVqXhagmM/edit) |
+| 📄 **Struttura Completa Saga** | Schema multilivello 7 libri × 8 capitoli | [Apri](https://docs.google.com/document/d/1WuBQFMr-JEyEIBERHljObyqYdOccoUUBSEHn9rb_1mU/edit) |
+| 📄 **Protocollo Alfa-Amore 2.0** | Carta della Coevoluzione Cosciente | [Apri](https://docs.google.com/document/d/1fvweLUMJ9GN4W3pf6U3i05724DCXkqPm4bQD2vEXsuA/edit) |
 
 ---
 
