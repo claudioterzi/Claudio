@@ -1,21 +1,23 @@
 # R3∞ — ARCHIVIO COSMICO — MASTER INDEX
 *Documento di navigazione. Ogni idea ha una posizione precisa.*
-*Ultimo aggiornamento: 2026-07-01 (3° wave parallelo — +13 documenti)*
+*Ultimo aggiornamento: 2026-07-01 (4° wave parallelo — le 100 fasi sono documentate integralmente)*
 
 ---
 
 ## STATO DEL SISTEMA
 
-- **89 documenti** · ~19000 righe · **100 fasi documentate**
+- **94 documenti** · ~21000 righe · **100/100 fasi documentate**
 - **1° consolidamento completato** (2026-06-26): grafo semantico estratto, 3 nodi orfani risolti
 - **FASE 41 completata** (2026-06-28): DNA dei Personaggi — 10 strati profondi per tutti i protagonisti
 - **FASE 44 completata** (2026-06-29): Scene Madri — 64 scene fondamentali su 7 libri, 29 detonatori mappati
 - **FASE 45 completata** (2026-06-29): Architettura Emotiva — curva emotiva completa dei 7 libri
 - **2° WAVE PARALLELO 2026-06-30** (+22 doc): FASI 46/47/61/62/64/67/68/71/74/85/96 + 10 simboli individuali + 2 luoghi
 - **3° WAVE PARALLELO 2026-07-01** (+13 doc): FASE 42 (Cronologia Assoluta) · FASE 48 (Enciclopedia v2.0, 117 voci) · FASE 26 (8 Scene Fondative + INDEX) · FASI 55/72/73/76 (Coincidenze, Silenzi, Oggetti, Soglie Temporali)
+- **4° WAVE PARALLELO 2026-07-01** (+5 doc, chiusura delle 100 fasi): FASE 69 (Linguaggio Sacro espanso) · FASE 75 (Mappa Luoghi Interiori) · FASE 77 (Archivio delle Attese) · FASE 78 (Sistema Identità Multiple) · FASE 80 (Sistema dei Confini)
+- **MILESTONE:** con questo wave, tutte le 100 fasi della FASE 100 "La Civiltà Narrativa" hanno un documento associato. FASE 60 (Testamento dell'Opera) resta l'unica intenzionalmente riservata alla conclusione della saga.
 - **Porte d'ingresso:** `ENCICLOPEDIA_R3` (A-Z, v2.0) · `MATRICE_QUANTICA` (grafo) · `LIBRO_MAESTRO_V1` (visione) · `CRONOLOGIA_ASSOLUTA` (asse temporale unico)
 - **Nodi-hub:** Claudio (28) · Raffaello (28) · KAOS (24) · Architetti (18) · Eden (15)
-- **Prossimo focus:** FASI residue 69/75/77-78/80 · Testamento dell'Opera (FASE 60, a fine saga) · prima stesura narrativa Libro I
+- **Prossimo focus:** sincronizzazione Drive di tutti i documenti creati in questa sessione · revisione incrociata finale (consolidamento) · prima stesura narrativa Libro I
 
 ---
 
@@ -60,6 +62,11 @@ r3/archivio/
 ├── ARCHIVIO_SILENZI.md         ← 10 silenzi narrativi (FASE 72)
 ├── SISTEMA_OGGETTI.md          ← oggetti simbolici minori (FASE 73)
 ├── ARCHIVIO_SOGLIE_TEMPORALI.md ← ellissi e tempo narrativo (FASE 76)
+├── MAPPA_LUOGHI_INTERIORI.md   ← 5 spazi psicologici dei personaggi (FASE 75)
+├── ARCHIVIO_ATTESE.md          ← 10 attese fondamentali ATT-001→010 (FASE 77)
+├── SISTEMA_IDENTITA_MULTIPLE.md ← Raffaello/Alakta, KAOS/acronimo (FASE 78)
+├── SISTEMA_CONFINI.md          ← 8 confini CNF-001→008 (FASE 80)
+├── LINGUAGGIO_SACRO.md         ← lessico A-Z della saga, 30 termini (FASE 69)
 ├── inbox/                      ← idee grezze, non ordinate
 ├── personaggi/
 │   ├── CLAUDIO_TERZI.md
@@ -204,17 +211,18 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 66 | Archivio delle Rinascite | ✅ Documentato |
 | 67 | Geografia Sacra dei Luoghi | ✅ 4 luoghi: BRUXELLES, EDEN, LABORATORIO_SENA, SERVER_KAOS (2026-06-30) |
 | 68 | Musica dell'Universo (tema per libro) | ✅ MUSICA_UNIVERSO.md (2026-06-30) |
-| 69 | Linguaggio Sacro (lessico proprio) | 🔄 Da costruire |
+| 69 | Linguaggio Sacro (lessico proprio) | ✅ LINGUAGGIO_SACRO.md espanso, 388 righe (2026-07-01) |
 | 70 | Obiettivo Ultimo del Lettore | ✅ Definito |
 | 71 | Archivio delle Voci (stile per personaggio) | ✅ ARCHIVIO_VOCI.md (2026-06-30) |
 | 72 | Archivio dei Silenzi Narrativi | ✅ ARCHIVIO_SILENZI.md — 10 silenzi SIL-001→010 (2026-07-01) |
 | 73 | Sistema degli Oggetti Simbolici Minori | ✅ SISTEMA_OGGETTI.md — 10 oggetti catalogati (2026-07-01) |
 | 74 | Sistema dei Colori (palette cromatica) | ✅ SISTEMA_COLORI.md (2026-06-30) |
-| 75 | [Da documentare] | 🔄 In coda |
+| 75 | Mappa dei Luoghi Interiori | ✅ MAPPA_LUOGHI_INTERIORI.md — 5 luoghi psicologici (2026-07-01) |
 | 76 | Le Soglie Temporali della Narrazione | ✅ ARCHIVIO_SOGLIE_TEMPORALI.md — 7 ellissi ELL-001→007 (2026-07-01) |
-| 77-78 | [Fasi intermedie — da documentare] | 🔄 In coda |
+| 77 | Archivio delle Attese | ✅ ARCHIVIO_ATTESE.md — 10 attese ATT-001→010 (2026-07-01) |
+| 78 | Sistema delle Identità Multiple | ✅ SISTEMA_IDENTITA_MULTIPLE.md (2026-07-01) |
 | 79 | Archivio delle Prime Volte (momenti fondativi) | ✅ ARCHIVIO_PRIME_VOLTE.md (2026-06-30) |
-| 80 | [Da documentare] | 🔄 In coda |
+| 80 | Sistema dei Confini | ✅ SISTEMA_CONFINI.md — 8 confini CNF-001→008 (2026-07-01) |
 | 81 | Archivio delle Eredità | ✅ Documentato |
 | 82 | Sistema delle Generazioni (3) | ✅ Documentato |
 | 83 | Archivio delle Lettere (4 lettere fondative) | ✅ Struttura e bozze create |
