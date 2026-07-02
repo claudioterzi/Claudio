@@ -1,5 +1,5 @@
 # STATO LAVORO — snapshot automatico (r3_sentinella)
-*Generato: 2026-07-02T06:19:57+00:00 — rigenerare con `python3 scripts/r3_sentinella.py --snapshot`*
+*Generato: 2026-07-02T08:54:22+00:00 — rigenerare con `python3 scripts/r3_sentinella.py --snapshot`*
 
 > Paracadute anti-interruzione: se la sessione si ferma per un limite,
 > la sessione successiva riparte da questo file.
@@ -30,8 +30,8 @@
 ### Violazioni regole editoriali (0)
 - ok
 
-### Igiene git (1)
-- 1 file dell'archivio non committati — un limite di sessione ora perderebbe lavoro
+### Igiene git (0)
+- ok
 
 ## Sincronizzazione Drive
 - File non ancora su Drive: **67**

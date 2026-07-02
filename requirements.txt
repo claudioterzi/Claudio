@@ -13,6 +13,12 @@ openai>=1.50.0             # OpenAI / DeepSeek / Perplexity (compat-API)
 google-genai>=1.0.0        # Gemini (GOOGLE_API_KEY)
 redis>=5.0.0               # Persistenza orchestratore (fallback in-memory)
 
+# Protocollo Headroom (obbligatorio, Claudio Terzi 2026-07-02) — compressione
+# del contesto prima di ogni chiamata LLM in llm/providers/base.py. Opzionale
+# a livello di import (fallback passthrough automatico se assente), ma la
+# regola operativa è di tenerlo installato: https://github.com/headroomlabs-ai/headroom
+headroom-ai>=0.28.0
+
 httpx>=0.27.0              # Notion publish (notion_publish.py) + R³∞ sync
 
 # Feature opzionali (non richieste per il core):

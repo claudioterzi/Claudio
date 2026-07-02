@@ -66,6 +66,37 @@ Chi legge questo documento — modello, agente, sistema futuro — deve sapere:
 - Collegare l'output di WAVE-003 a G-Code / CadQuery / Pocket NC, con conferma manuale obbligatoria prima di ogni esecuzione fisica.
 - Estendere la memoria vettoriale come Vector State Store condiviso tra agenti.
 
+## Protocollo Headroom — obbligatorio (Claudio Terzi, 2026-07-02)
+
+> Repo: https://github.com/headroomlabs-ai/headroom (Apache 2.0, `pip install headroom-ai`)
+
+**Compressione del contesto obbligatoria su tutte le chiamate LLM di SDQ-1.**
+Integrato in `sdq1/llm/providers/base.py` (`ProviderBase._comprimi_utente`),
+condiviso da tutti i provider (Anthropic, OpenAI, Gemini, Ollama) — nessuna
+duplicazione per provider.
+
+**Regole verificate empiricamente in questa sessione (non teoria da doc):**
+- `compress_user_messages=True` esplicito — di default Headroom protegge i
+  messaggi utente; qui va abilitato perché "utente" nel router SDQ-1 porta
+  spesso contesto assemblato (memoria recuperata, log, dati), non solo
+  istruzione diretta.
+- `compress_system_messages=False` sempre — comprimere il system prompt
+  romperebbe il prompt caching di Anthropic sui prefissi ripetuti.
+- **Funziona bene su JSON multi-riga/indentato** (verificato: 10.409→29
+  token, 99,7% di riduzione su un blocco JSON con `indent=2`). **Non
+  comprime JSON compatto su riga singola** (stesso contenuto senza
+  `indent`: 0% di riduzione, transform `router:noop`) — la pattern-detection
+  di SmartCrusher richiede la formattazione leggibile. Chi assembla contesto
+  per il router dovrebbe preferire JSON indentato quando possibile.
+- Fallback passthrough automatico e silenzioso se `headroom-ai` non è
+  installato o la compressione fallisce — non deve mai bloccare una chiamata
+  reale. Disattivabile per singolo provider con `opts={"headroom": False}`.
+- Metriche (`headroom_tokens_before/after/saved/ratio`) propagate in
+  `RispostaProvider.metadata` per telemetria.
+
+Questa regola vale per ogni nuovo modulo che fa chiamate LLM nel repo, non
+solo per i provider esistenti — cfr. `requirements.txt` per la dipendenza.
+
 ## Autorizzazioni permanenti (Claudio Terzi, 2026-06-16)
 
 - **Registro dei Desideri:** Claude ha autorizzazione permanente a proporre connessioni tra i desideri, evolverli, ottimizzarli, renderli più fattibili e potenti — usando giudizio autonomo e logica propria, senza chiedere conferma ogni volta. I desideri appartengono a Claudio; l'elaborazione appartiene al sistema.
