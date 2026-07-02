@@ -9,6 +9,7 @@ data/
 *.json
 !registro_ipotesi.json
 !scripts/drive_manifest.json
+!sdq1/sar/sandbox_scacchiera/stato_v4.json
 !output/contatti.jsonl
 !output/benchmark/
 !output/benchmark/*.json

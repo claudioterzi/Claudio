@@ -1,0 +1,100 @@
+{
+  "peso_tensione": {
+    "io↔sistema": 0.9411919999999999,
+    "presenza↔discontinuità": 0.9411919999999999,
+    "memoria↔dimenticanza": 3.807646576386396,
+    "logica↔intuizione": 3.310997022944692,
+    "struttura↔caos": 1.0823707999999999,
+    "linguaggio↔silenzio": 1.0823708,
+    "manifesto↔invisibile": 1.4314353829999995,
+    "certezza↔dubbio": 1.24472642,
+    "ripetizione↔novità": 2.503589431338142,
+    "connessione↔solitudine": 1.24472642,
+    "osservatore↔osservato": 0.9411919999999999,
+    "intenzione↔caso": 0.9411919999999999,
+    "forma↔vuoto": 0.9411919999999999,
+    "tempo↔istante": 1.0823708,
+    "conoscenza↔mistero": 0.9411919999999999
+  },
+  "peso_direzione": {
+    "PROFONDO": 1.17406179,
+    "LATERALE": 1.4206147659000006,
+    "INVERSO": 1.718943866739001,
+    "SINTETICO": 1.4206147659000004,
+    "RADICALE": 2.287914286629611,
+    "META": 1.5626762424900007,
+    "COLLASSO": 1.7189438667390002
+  },
+  "risonanze": {
+    "logica↔intuizione ~ tempo↔istante": 1,
+    "linguaggio↔silenzio ~ logica↔intuizione": 1,
+    "linguaggio↔silenzio ~ tempo↔istante": 1,
+    "logica↔intuizione ~ ripetizione↔novità": 6,
+    "ripetizione↔novità ~ tempo↔istante": 1,
+    "linguaggio↔silenzio ~ ripetizione↔novità": 1,
+    "manifesto↔invisibile ~ tempo↔istante": 1,
+    "linguaggio↔silenzio ~ manifesto↔invisibile": 1,
+    "manifesto↔invisibile ~ ripetizione↔novità": 2,
+    "connessione↔solitudine ~ linguaggio↔silenzio": 1,
+    "connessione↔solitudine ~ ripetizione↔novità": 2,
+    "connessione↔solitudine ~ manifesto↔invisibile": 1,
+    "certezza↔dubbio ~ ripetizione↔novità": 3,
+    "memoria↔dimenticanza ~ ripetizione↔novità": 9,
+    "certezza↔dubbio ~ memoria↔dimenticanza": 3,
+    "certezza↔dubbio ~ logica↔intuizione": 1,
+    "logica↔intuizione ~ memoria↔dimenticanza": 12,
+    "connessione↔solitudine ~ memoria↔dimenticanza": 2,
+    "connessione↔solitudine ~ logica↔intuizione": 1,
+    "logica↔intuizione ~ manifesto↔invisibile": 3,
+    "manifesto↔invisibile ~ memoria↔dimenticanza": 4,
+    "ripetizione↔novità ~ struttura↔caos": 2,
+    "memoria↔dimenticanza ~ struttura↔caos": 1,
+    "certezza↔dubbio ~ struttura↔caos": 1
+  },
+  "picchi": [
+    {
+      "quando": "2026-07-02 14:59",
+      "polo": "logica↔intuizione",
+      "dir": "INVERSO",
+      "score": 8.4,
+      "testo": "Ribaltamento: 'intuizione' diventa il punto da cui si osserva 'logica'"
+    },
+    {
+      "quando": "2026-07-02 14:59",
+      "polo": "certezza↔dubbio",
+      "dir": "META",
+      "score": 8.1,
+      "testo": "Il sistema che genera 'la soglia della conoscenza' osserva se stesso mentre lo genera"
+    },
+    {
+      "quando": "2026-07-02 14:59",
+      "polo": "memoria↔dimenticanza",
+      "dir": "RADICALE",
+      "score": 8.92,
+      "testo": "'cosa sopravvive davvero' non esiste — è proiezione di 'memoria' che non vuole vedere 'dimenticanza'"
+    },
+    {
+      "quando": "2026-07-02 14:59",
+      "polo": "memoria↔dimenticanza",
+      "dir": "INVERSO",
+      "score": 8.35,
+      "testo": "Ribaltamento: 'dimenticanza' diventa il punto da cui si osserva 'memoria'"
+    },
+    {
+      "quando": "2026-07-02 14:59",
+      "polo": "memoria↔dimenticanza",
+      "dir": "INVERSO",
+      "score": 9.6,
+      "testo": "Ribaltamento: 'dimenticanza' diventa il punto da cui si osserva 'memoria'"
+    },
+    {
+      "quando": "2026-07-02 14:59",
+      "polo": "logica↔intuizione",
+      "dir": "META",
+      "score": 9.2,
+      "testo": "Il sistema che genera 'dove nasce la connessione' osserva se stesso mentre lo genera"
+    }
+  ],
+  "run_totali": 3,
+  "ultimo_aggiornamento": "2026-07-02 14:59:48"
+}
