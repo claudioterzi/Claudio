@@ -50,27 +50,50 @@ POLL_SECONDI = 15
 POLL_MAX_TENTATIVI = 40  # ~10 minuti a traccia
 
 
+# Tracce con testo cantato reale (citazioni canoniche già esistenti nell'archivio,
+# cfr. §2 e §6 del documento). Tutte le altre sono strumentali con struttura piena.
+TRACCE_VOCALI = {"TRK-IV-04", "TRK-VII-02"}
+
+
 def carica_tracce():
-    """Estrae dal documento: ID traccia, titolo, prompt, e se il link è già inserito."""
+    """Estrae dal documento: ID traccia, titolo, link, blocco STYLE, blocco LYRICS."""
     testo = DOC.read_text(encoding="utf-8")
     tracce = {}
-    # Righe tabella: | TRK-I-01 | "La Stanza di Bruxelles" | ancora | pagina | link |
-    for m in re.finditer(
-        r"\|\s*(TRK-[IVP]+-\d+)\s*\|\s*\"([^\"]+)\"\s*\|[^|]*\|[^|]*\|\s*([^|]+)\|", testo
-    ):
-        tid, titolo, cella_link = m.group(1), m.group(2), m.group(3).strip()
+    # Righe tabella, elaborate una per volta (mai su più righe: le tabelle dei
+    # libri hanno 5 colonne — Ancora, Pagina, Link — quelle dei personaggi ne
+    # hanno 4 — Fonte, Link. Un regex "globale" con [^|]* può scavalcare la
+    # newline e mescolare celle di righe diverse quando il numero di colonne
+    # non è uniforme; riga per riga questo non può succedere).
+    riga_rx = re.compile(r'^\|\s*(TRK-[IVP]+-\d+)\s*\|\s*"([^"]+)"\s*\|(.*)\|\s*$')
+    for riga in testo.splitlines():
+        m = riga_rx.match(riga.strip())
+        if not m:
+            continue
+        tid, titolo, resto = m.group(1), m.group(2), m.group(3)
+        celle = [c.strip() for c in resto.split("|")]
+        cella_link = celle[-1] if celle else ""
         tracce[tid] = {
             "titolo": titolo,
             "link_presente": "[inserire link]" not in cella_link,
         }
-    # Prompt: **Prompt Suno TRK-I-01:** `...`
-    for m in re.finditer(r"\*\*Prompt Suno (TRK-[IVP]+-\d+):\*\*\s*`([^`]+)`", testo):
-        tid, prompt = m.group(1), m.group(2).strip()
+    # Blocchi: **TRK-I-01 — "Titolo"** [nota corsiva opzionale] STYLE:```...``` LYRICS:```...```
+    # Il ".*?STYLE:" (non ".*?\*\*\s*STYLE:") è deliberato: alcune tracce (es.
+    # TRK-IV-04, TRK-VII-02) hanno un paragrafo corsivo tra il titolo e STYLE —
+    # richiedere "**" subito prima di STYLE fa saltare il match fino al blocco
+    # STYLE della traccia SUCCESSIVA. Il non-greedy si ferma al primo "STYLE:"
+    # letterale dopo il titolo, che è sempre quello corretto della propria traccia.
+    for m in re.finditer(
+        r"\*\*(TRK-[IVP]+-\d+)\s*—.*?\*\*.*?"
+        r"STYLE:\s*```\s*(.*?)\s*```\s*"
+        r"LYRICS:\s*```\s*(.*?)\s*```",
+        testo, re.DOTALL,
+    ):
+        tid, style, lyrics = m.group(1), m.group(2).strip(), m.group(3).strip()
         if tid in tracce:
-            tracce[tid]["prompt"] = prompt
-    # Le tracce personaggi (TRK-P-*) non hanno prompt inline nel doc:
-    # si generano manualmente o si aggiungono prompt in seguito.
-    return {k: v for k, v in tracce.items() if v.get("prompt")}
+            tracce[tid]["style"] = style
+            tracce[tid]["lyrics"] = lyrics
+            tracce[tid]["instrumental"] = tid not in TRACCE_VOCALI
+    return {k: v for k, v in tracce.items() if v.get("style")}
 
 
 def carica_stato():
@@ -98,13 +121,19 @@ def api(percorso, payload=None):
 
 
 def genera_traccia(tid, info):
-    """Lancia la generazione e attende il link. Ritorna l'URL della traccia."""
-    print(f"  → genero {tid} — \"{info['titolo']}\"")
+    """Lancia la generazione e attende il link. Ritorna l'URL della traccia.
+
+    Campo `tags` = blocco STYLE del documento (genere/strumenti/mood, tag brevi).
+    Campo `prompt` = blocco LYRICS del documento (struttura a sezioni, testo
+    cantato solo per le tracce in TRACCE_VOCALI — cfr. carica_tracce()).
+    """
+    print(f"  → genero {tid} — \"{info['titolo']}\" ({'strumentale' if info['instrumental'] else 'con testo cantato'})")
     esito = api("/generate", {
-        "prompt": info["prompt"],
+        "prompt": info["lyrics"],
+        "tags": info["style"],
         "title": f"{info['titolo']} (R3∞ {tid})",
-        "tags": "R3-infinito, colonna sonora",
-        "instrumental": True,
+        "instrumental": info["instrumental"],
+        "custom_mode": True,
         "n": VARIANTI,
     })
     job_id = esito.get("id") or esito.get("job_id") or (esito.get("clips") or [{}])[0].get("id")
@@ -157,14 +186,17 @@ def main():
         and (solo is None or tid == solo)
     }
 
-    print(f"Tracce con prompt nel documento: {len(tracce)}")
+    print(f"Tracce con STYLE+LYRICS nel documento: {len(tracce)}")
     print(f"Già generate (stato locale): {len(stato['generate'])}")
     print(f"Da generare ora: {len(da_fare)}")
 
     if "--esegui" not in args:
         print("\n[DRY-RUN] Nessuna chiamata API. Cosa verrebbe generato:")
         for tid, info in da_fare.items():
-            print(f"  {tid} — \"{info['titolo']}\"\n     prompt: {info['prompt'][:90]}...")
+            tipo = "strumentale" if info["instrumental"] else "con testo cantato"
+            print(f"  {tid} — \"{info['titolo']}\" [{tipo}]")
+            print(f"     STYLE:  {info['style'][:80]}")
+            print(f"     LYRICS: {info['lyrics'].splitlines()[0][:80]}...")
         print("\nPer generare davvero: --esegui (richiede SUNO_API_KEY in ambiente)")
         return
 

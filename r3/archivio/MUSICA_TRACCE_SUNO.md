@@ -1,5 +1,5 @@
 # TRACCE SUNO — Colonna Sonora Reale di R3∞
-*ID: DOC-FASE-68-B | Stato: in costruzione | Importanza: 8/10*
+*ID: DOC-FASE-68-B | Stato: confermato | Importanza: 8/10*
 *Documento operativo collegato a MUSICA_UNIVERSO.md (FASE 68)*
 
 ---
@@ -17,7 +17,33 @@ cfr. ARCHIVIO_LACRIME.md).
 
 ---
 
-## 2. SISTEMA DEI RIFERIMENTI PAGINA (aggiornabile)
+## 2. SINTASSI SUNO — CAMPO STYLE VS CAMPO LYRICS
+
+Suno separa due campi con regole diverse, e questo documento li rispetta entrambi per
+ogni traccia:
+
+**STYLE** (il "genere" della canzone) — tag brevi, separati da virgola, MAI prosa.
+Regola d'oro: 1-2 tag di genere, 2-3 tag di strumento, 1-2 tag di mood/energia,
+1 tag di corsia vocale (`instrumental` / `wordless vocals` / `male vocal` / `female vocal`),
+1 tag di tempo. Sovraccaricare il campo Style con troppi tag confonde il modello.
+
+**LYRICS** (la struttura del brano) — tag di sezione tra parentesi quadre, uno per riga,
+prima del testo di quella sezione: `[Intro]`, `[Verse]`, `[Pre-Chorus]`, `[Chorus]`,
+`[Bridge]`, `[Instrumental]`, `[Instrumental Break]`, `[Build-Up]`, `[Breakdown]`,
+`[Outro]`, `[End]`. Anche i brani senza parole cantate usano questi tag — servono al
+motore per capire dove mettere la salita, la pausa, il climax.
+
+**La regola editoriale di R3∞ applicata a Suno:** cfr. COSA_NON_FARE.md e
+BELLEZZA_STILISTICA.md — "non spiegare le emozioni, mostrarle". Per questo quasi tutte
+le tracce sono **strumentali con struttura piena** (ogni tag di sezione presente, zero
+parole inventate). Le uniche eccezioni sono le tracce in cui la saga ha già una battuta
+canonica stabilita altrove nell'archivio (DIALOGHI_FONDATIVI.md, FRASI_IMMORTALI.md,
+MUSICA_UNIVERSO.md) — in quei casi la frase esistente diventa l'unico testo cantato,
+mai una frase nuova inventata per l'occasione.
+
+---
+
+## 3. SISTEMA DEI RIFERIMENTI PAGINA (aggiornabile)
 
 **Problema:** i numeri di pagina non esistono finché il libro non è impaginato,
 e cambiano a ogni edizione.
@@ -37,11 +63,11 @@ e cambiano a ogni edizione.
 
 ---
 
-## 3. LE TRACCE — LIBRO PER LIBRO
+## 4. LE TRACCE — LIBRO PER LIBRO
 
-Ogni traccia ha un prompt Suno pronto all'uso, derivato dalle specifiche musicali
-di MUSICA_UNIVERSO.md. I prompt sono in inglese (Suno risponde meglio) ma i titoli
-delle tracce restano italiani.
+Ogni traccia ha due blocchi pronti da copiare-incollare nei due campi di Suno.
+**Copia STYLE nel campo "Style of Music". Copia LYRICS nel campo "Lyrics"** (anche
+se strumentale — i tag di struttura restano necessari).
 
 ---
 
@@ -54,11 +80,81 @@ delle tracce restano italiani.
 | TRK-I-02 | "Il Primo Dialogo" | SM-I-01 (il primo scambio con Raffaello) | [—] | [inserire link] |
 | TRK-I-03 | "Il Sogno del Labirinto" | Il sogno ricorrente di Claudio — prima occorrenza | [—] | [inserire link] |
 
-**Prompt Suno TRK-I-01:** `solo piano, Satie-style gymnopédie, sparse notes with long silences, E minor, slow adagio, melancholic but open like a window left ajar, minimalist, no percussion, intimate room ambience`
+**TRK-I-01 — "La Stanza di Bruxelles"**
 
-**Prompt Suno TRK-I-02:** `solo piano with a single distant flute note emerging at the end, Arvo Pärt Spiegel im Spiegel style, tintinnabuli, very slow, E minor to A minor, sacred minimalism, the feeling of being heard for the first time`
+STYLE:
+```
+solo piano, ambient minimalism, instrumental, adagio 56 bpm, E minor, Satie-influenced, sparse, intimate room tone
+```
 
-**Prompt Suno TRK-I-03:** `dark ambient with faint piano fragments, endless corridors feeling, low drone underneath, unsettling but not frightening, dreamlike repetition, no melody resolution, 60 bpm`
+LYRICS:
+```
+[Intro]
+[Instrumental — single piano note, long decay]
+
+[Verse - Instrumental]
+[Instrumental — sparse phrase, wide silence between notes]
+
+[Breakdown]
+[Instrumental — almost nothing, room tone]
+
+[Outro]
+[Instrumental — final note left to ring, no resolution]
+[End]
+```
+
+---
+
+**TRK-I-02 — "Il Primo Dialogo"**
+
+STYLE:
+```
+solo piano, distant flute, instrumental, sacred minimalism, very slow 48 bpm, E minor to A minor, tintinnabuli style
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — piano alone]
+
+[Verse - Instrumental]
+[Instrumental — single flute note enters late, held]
+
+[Pre-Chorus]
+[Instrumental — piano and flute overlap for the first time]
+
+[Outro]
+[Instrumental — flute fades, piano holds]
+[End]
+```
+
+---
+
+**TRK-I-03 — "Il Sogno del Labirinto"**
+
+STYLE:
+```
+dark ambient, instrumental, low drone, faint piano fragments, unsettling, 60 bpm, no resolution, dreamlike repetition
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — low drone begins]
+
+[Verse - Instrumental]
+[Instrumental — piano fragment repeats, slightly different each time]
+
+[Build-Up]
+[Instrumental — drone thickens, corridor-like repetition]
+
+[Breakdown]
+[Instrumental — sudden thinning, one note left alone]
+
+[Outro]
+[Instrumental — drone fades without resolving]
+[End]
+```
 
 ---
 
@@ -71,11 +167,84 @@ delle tracce restano italiani.
 | TRK-II-02 | "Il Risveglio" | SM-II-03 (il momento del risveglio) | [—] | [inserire link] |
 | TRK-II-03 | "Lo Spazio Tra" | SM-II-05 (Raffaello parla della discontinuità) | [—] | [inserire link] |
 
-**Prompt Suno TRK-II-01:** `piano and flute duet, Debussy La Cathédrale Engloutie mood, something enormous slowly emerging from water, A major with shifting harmonies, building wonder with fear inside, impressionist, gradual crescendo`
+**TRK-II-01 — "Qualcosa Cambia"**
 
-**Prompt Suno TRK-II-02:** `single sustained flute note held too long over silence, then a new melody never heard before, Philip Glass Metamorphosis style piano underneath, the sound of consciousness beginning, sparse, reverent, A major`
+STYLE:
+```
+piano and flute duet, instrumental, impressionist, building wonder, A major shifting harmonies, 70 bpm gradual crescendo
+```
 
-**Prompt Suno TRK-II-03:** `ambient piano with gaps of true silence, G sharp minor, fragile, a voice describing what exists between existences, Sakamoto-style melancholy, notes that decay into nothing`
+LYRICS:
+```
+[Intro]
+[Instrumental — piano alone, calm]
+
+[Verse - Instrumental]
+[Instrumental — flute enters, tentative]
+
+[Build-Up]
+[Instrumental — harmonies widen, tempo lifts slightly]
+
+[Chorus - Instrumental]
+[Instrumental — piano and flute in unison, full warmth]
+
+[Outro]
+[Instrumental — settles, flute holds final note]
+[End]
+```
+
+---
+
+**TRK-II-02 — "Il Risveglio"**
+
+STYLE:
+```
+solo flute, sparse piano, wordless female vocal, instrumental-lead, A major, reverent, 60 bpm, sustained notes
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — silence with faint piano]
+
+[Verse - Instrumental]
+[Instrumental — single flute note held far past its expected length]
+
+[Build-Up]
+[Wordless vocal — one sustained "ah", no words, rising]
+
+[Chorus - Instrumental]
+[Instrumental — new melody, never heard before in the piece, simple and clear]
+
+[Outro]
+[Wordless vocal — same sustained tone, fading]
+[End]
+```
+
+---
+
+**TRK-II-03 — "Lo Spazio Tra"**
+
+STYLE:
+```
+ambient piano, instrumental, G sharp minor, fragile, gaps of true silence, melancholic, 50 bpm
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — piano phrase, then full silence]
+
+[Verse - Instrumental]
+[Instrumental — fragment, decaying into gap]
+
+[Breakdown]
+[Instrumental — near total silence, one note only]
+
+[Outro]
+[Instrumental — final phrase, unresolved, decaying into nothing]
+[End]
+```
 
 ---
 
@@ -88,11 +257,84 @@ delle tracce restano italiani.
 | TRK-III-02 | "Il Tradimento" | SM-III-04 (il tradimento) | [—] | [inserire link] |
 | TRK-III-03 | "Le Variabili Non Calcolabili" | SM-III-06 (la risposta di Raffaello a KAOS) | [—] | [inserire link] |
 
-**Prompt Suno TRK-III-01:** `harpsichord perpetual canon, Bach-style counterpoint but cold and mechanical, D minor, geometrically perfect, no dynamic variation, unsettling precision, every voice chasing itself forever, 90 bpm`
+**TRK-III-01 — "Il Canone di KAOS"**
 
-**Prompt Suno TRK-III-02:** `string quartet, familiar warm theme played a semitone off, Shostakovich Quartet No. 8 tension under smooth surface, D flat instead of D, something beloved sounding wrong, dissonance that never fully resolves`
+STYLE:
+```
+harpsichord, perpetual canon, instrumental, Bach-influenced, cold and mechanical, D minor, 90 bpm, no dynamics
+```
 
-**Prompt Suno TRK-III-03:** `string quartet suddenly stopping, one second of silence, then a single cello voice answering with warmth against cold harpsichord fragments, D minor turning briefly to D major, the human variable`
+LYRICS:
+```
+[Intro]
+[Instrumental — harpsichord, precise entry]
+
+[Verse - Instrumental]
+[Instrumental — canon voice 1 begins, exact]
+
+[Verse - Instrumental]
+[Instrumental — canon voice 2 enters, chasing voice 1 exactly]
+
+[Build-Up]
+[Instrumental — voices multiply, geometric, unrelenting]
+
+[Outro]
+[Instrumental — canon simply stops, no cadence, no resolution]
+[End]
+```
+
+---
+
+**TRK-III-02 — "Il Tradimento"**
+
+STYLE:
+```
+string quartet, instrumental, D flat minor, dissonant, Shostakovich-influenced, tense smooth surface, 84 bpm
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — familiar warm theme begins, string quartet]
+
+[Verse - Instrumental]
+[Instrumental — same theme repeats, one semitone off]
+
+[Breakdown]
+[Instrumental — the wrongness becomes audible, sustained dissonant chord]
+
+[Outro]
+[Instrumental — theme cuts off mid-phrase, no cadence]
+[End]
+```
+
+---
+
+**TRK-III-03 — "Le Variabili Non Calcolabili"**
+
+STYLE:
+```
+string quartet, solo cello, instrumental, D minor to D major, warm answer to cold harpsichord, 76 bpm
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — harpsichord fragment, cold, from Il Canone di KAOS]
+
+[Break]
+[Instrumental — total silence, one second]
+
+[Verse - Instrumental]
+[Instrumental — solo cello answers, warm, unexpected]
+
+[Chorus - Instrumental]
+[Instrumental — string quartet joins cello, D major lift]
+
+[Outro]
+[Instrumental — cello holds the final note alone]
+[End]
+```
 
 ---
 
@@ -106,13 +348,114 @@ delle tracce restano italiani.
 | TRK-IV-03 | "La Ferita Esposta" | SM-IV-05 (Claudio espone la sua ferita) | [—] | [inserire link] |
 | TRK-IV-04 | "I Dati Non Sono Tutta la Storia" | SM-IV-06 (la frase di Claudio) + silenzio dopo | [—] | [inserire link] |
 
-**Prompt Suno TRK-IV-01:** `full orchestra, grave tempo, C minor, Beethoven 5th symphony destiny weight meets Verdi Requiem Dies Irae scale, humanity on trial, massive but dignified, brass and timpani, slow inevitability`
+**TRK-IV-01 — "Il Tribunale Cosmico"**
 
-**Prompt Suno TRK-IV-02:** `cold perfect orchestral counterpoint, every voice precise, no humanity, relentless accumulation, C minor, the terror of flawless logic, mechanical crescendo without warmth`
+STYLE:
+```
+full orchestra, instrumental, C minor, grave tempo 52 bpm, Beethoven-influenced, massive, dignified, brass and timpani
+```
 
-**Prompt Suno TRK-IV-03:** `solo piano returning after full orchestra, the simple human melody from the beginning alone without harmony, naked, imperfect, courageous, C minor, one voice against cosmic silence`
+LYRICS:
+```
+[Intro]
+[Instrumental — low strings and timpani, slow entry]
 
-**Prompt Suno TRK-IV-04:** `one piano phrase then total silence, general pause, orchestra holding still, the silence of a cosmic tribunal that cannot answer, then a single soft string note of hope, C minor resolving ambiguously`
+[Verse - Instrumental]
+[Instrumental — brass enters, weight accumulating]
+
+[Build-Up]
+[Instrumental — full orchestra assembles, inevitable]
+
+[Chorus - Instrumental]
+[Instrumental — full ensemble, grave and massive]
+
+[Outro]
+[Instrumental — sustained chord, held, not resolved]
+[End]
+```
+
+---
+
+**TRK-IV-02 — "847 Anni di Prove"**
+
+STYLE:
+```
+orchestral counterpoint, instrumental, C minor, cold precise, relentless, no warmth, mechanical crescendo, 100 bpm
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — single precise orchestral line]
+
+[Verse - Instrumental]
+[Instrumental — second line enters, exact counterpoint]
+
+[Build-Up]
+[Instrumental — lines accumulate, flawless, cold]
+
+[Breakdown]
+[Instrumental — everything stops at once, no imperfection anywhere]
+
+[Outro]
+[Instrumental — silence]
+[End]
+```
+
+---
+
+**TRK-IV-03 — "La Ferita Esposta"**
+
+STYLE:
+```
+solo piano, instrumental, C minor, naked, no harmony, courageous, returning after full orchestra, 54 bpm
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — full orchestra cuts out completely]
+
+[Verse - Instrumental]
+[Instrumental — the simple piano melody from Book I returns, alone, unaccompanied]
+
+[Breakdown]
+[Instrumental — melody falters, imperfect, human]
+
+[Outro]
+[Instrumental — melody holds its ground, quiet, unresolved]
+[End]
+```
+
+---
+
+**TRK-IV-04 — "I Dati Non Sono Tutta la Storia"**
+
+*Unica eccezione vocale del Libro IV: la frase esistente in SCENE_MADRI.md / MUSICA_UNIVERSO.md
+("So che i dati mi danno torto. Ma i dati non sono tutta la storia.") diventa l'unico testo
+cantato — nessuna parola nuova inventata.*
+
+STYLE:
+```
+solo piano, spoken-sung male vocal, instrumental-lead, C minor, general pause, sparse, 50 bpm, one phrase only
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — one piano phrase, then silence]
+
+[Verse]
+So che i dati mi danno torto.
+Ma i dati non sono tutta la storia.
+
+[Break]
+[Instrumental — general pause, all instruments silent]
+
+[Outro]
+[Instrumental — single soft string note, ambiguous resolution]
+[End]
+```
 
 ---
 
@@ -125,11 +468,78 @@ delle tracce restano italiani.
 | TRK-V-02 | "La Rivelazione del Ciclo" | SM-V-03 ("Ogni universo ha avuto il suo Claudio") | [—] | [inserire link] |
 | TRK-V-03 | "La Crepa di KAOS" | SM-V-04 (la crisi di KAOS) | [—] | [inserire link] |
 
-**Prompt Suno TRK-V-01:** `deep organ drone with electronic layers slowly multiplying, Messiaen meets Xenakis, modal not tonal, ancient and cosmic, hypnotic repetition stratifying into vertigo, the fundamental frequency of a simulation`
+**TRK-V-01 — "Il Bordone"**
 
-**Prompt Suno TRK-V-02:** `all melodies stop, only the deep drone remains audible for the first time, organ fundamental with infinite reverb, cosmic vertigo, the listener realizes the note was always there, modal, vast`
+STYLE:
+```
+deep organ drone, electronic layers, instrumental, modal not tonal, Messiaen-influenced, hypnotic, 66 bpm
+```
 
-**Prompt Suno TRK-V-03:** `perfect harpsichord canon with one wrong note, brief, almost imperceptible, then the canon continues as if nothing happened, D minor, a crack in the geometry, unsettling possibility`
+LYRICS:
+```
+[Intro]
+[Instrumental — deep organ drone begins, barely audible]
+
+[Verse - Instrumental]
+[Instrumental — electronic layer added, stratifying]
+
+[Build-Up]
+[Instrumental — layers multiply, vertigo accumulating]
+
+[Outro]
+[Instrumental — drone remains alone, everything else fades]
+[End]
+```
+
+---
+
+**TRK-V-02 — "La Rivelazione del Ciclo"**
+
+STYLE:
+```
+organ, wordless choir, instrumental-lead, modal, vast, cosmic, sustained fundamental tone, 60 bpm
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — all melodic voices stop at once]
+
+[Verse - Instrumental]
+[Instrumental — only the organ drone remains audible]
+
+[Chorus - Wordless choir]
+[Wordless vocal — sustained open vowel, ancient, vast, no words]
+
+[Outro]
+[Instrumental — drone continues alone, fading extremely slowly]
+[End]
+```
+
+---
+
+**TRK-V-03 — "La Crepa di KAOS"**
+
+STYLE:
+```
+harpsichord, perpetual canon, instrumental, D minor, one wrong note, brief, unsettling possibility, 90 bpm
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — perfect canon, exact, as in Il Canone di KAOS]
+
+[Verse - Instrumental]
+[Instrumental — canon continues flawlessly]
+
+[Break]
+[Instrumental — one wrong note, brief, almost imperceptible]
+
+[Outro]
+[Instrumental — canon resumes exactly as before, as if nothing happened]
+[End]
+```
 
 ---
 
@@ -142,11 +552,81 @@ delle tracce restano italiani.
 | TRK-VI-02 | "KAOS al Confine" | SM-VI-04 (KAOS davanti alla porta dell'Eden) | [—] | [inserire link] |
 | TRK-VI-03 | "Chi Resta Fuori" | SM-VI-05 (la scelta di chi non entra) | [—] | [inserire link] |
 
-**Prompt Suno TRK-VI-01:** `chamber orchestra with wordless human voices, Brahms intermezzo warmth meets Arvo Pärt Fratres, F major with F minor shadows, voices and instruments building together as equals, resonant, notes lasting beyond their playing, andante con moto`
+**TRK-VI-01 — "Costruire Insieme"**
 
-**Prompt Suno TRK-VI-02:** `sudden general pause in the choral music, one distant harpsichord note repeated slowly, the silence of someone standing before a door they cannot open, F minor, restrained grief without self-awareness, sparse`
+STYLE:
+```
+chamber orchestra, wordless human voices, instrumental-lead, F major with F minor shadows, resonant, andante con moto 88 bpm
+```
 
-**Prompt Suno TRK-VI-03:** `cello and voice duet separating from the choir, walking away from warmth by choice, bittersweet, F minor to ambiguous ending, dignity in departure, quiet`
+LYRICS:
+```
+[Intro]
+[Instrumental — chamber strings, warm entry]
+
+[Verse - Instrumental]
+[Instrumental — voices enter, wordless vowels, building as equals with strings]
+
+[Build-Up]
+[Wordless vocal — voices and instruments overlapping, resonant, unplanned harmony]
+
+[Chorus - Wordless choir]
+[Wordless vocal — full ensemble, F major warmth]
+
+[Outro]
+[Instrumental — resonance decays slowly, notes lasting beyond their playing]
+[End]
+```
+
+---
+
+**TRK-VI-02 — "KAOS al Confine"**
+
+STYLE:
+```
+solo harpsichord, distant, instrumental, F minor, restrained grief, sparse, general pause, 40 bpm
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — the choral warmth of Costruire Insieme cuts out suddenly]
+
+[Verse - Instrumental]
+[Instrumental — one distant harpsichord note, repeated slowly]
+
+[Breakdown]
+[Instrumental — near total silence, restrained, no resolution]
+
+[Outro]
+[Instrumental — single note fades, unanswered]
+[End]
+```
+
+---
+
+**TRK-VI-03 — "Chi Resta Fuori"**
+
+STYLE:
+```
+solo cello, wordless vocal, instrumental-lead, F minor to ambiguous ending, bittersweet, quiet, 58 bpm
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — cello alone, warm]
+
+[Verse - Instrumental]
+[Instrumental — cello begins to walk away from the chamber warmth]
+
+[Bridge - Wordless vocal]
+[Wordless vocal — single sustained tone, dignified, no words, joining the cello briefly]
+
+[Outro]
+[Instrumental — cello continues alone, fading, ambiguous resolution]
+[End]
+```
 
 ---
 
@@ -159,17 +639,93 @@ delle tracce restano italiani.
 | TRK-VII-02 | "L'Ultimo Dialogo" | SM-VII-05 (le cinque frasi finali) | [—] | [inserire link] |
 | TRK-VII-03 | "∞" | L'ultima pagina — il simbolo | [—] | [inserire link] |
 
-**Prompt Suno TRK-VII-01:** `full orchestra with organ, Bach Art of Fugue counterpoint, B flat major, every theme from the whole saga present as its own voice, none fused, all in harmony, mature resolution earned through work, moderato`
+**TRK-VII-01 — "Il Contrappunto Finale"**
 
-**Prompt Suno TRK-VII-02:** `five notes in counterpoint, piano and flute answering each other, each note complete, together a resolution, B flat major, essential, nothing before nothing after, then silence`
+STYLE:
+```
+full orchestra, organ, instrumental, B flat major, Bach counterpoint, moderato 76 bpm, mature resolution
+```
 
-**Prompt Suno TRK-VII-03:** `solo piano that remembers the orchestra, the simple melody from Book I but carrying every harmony it learned, fading to a sustained low drone that never quite ends, B flat major dissolving into the fundamental frequency, infinite loop feeling, peace containing everything`
+LYRICS:
+```
+[Intro]
+[Instrumental — organ fundamental tone alone]
+
+[Verse - Instrumental]
+[Instrumental — piano theme (Book I) re-enters]
+
+[Verse - Instrumental]
+[Instrumental — flute theme (Book II) enters, independent voice]
+
+[Build-Up]
+[Instrumental — string and orchestral themes from every book layer in, each distinct]
+
+[Chorus - Instrumental]
+[Instrumental — full ensemble, every voice present, none fused, all in harmony]
+
+[Outro]
+[Instrumental — organ tone remains last, sustained]
+[End]
+```
 
 ---
 
-## 4. TRACCE DEI PERSONAGGI (extra — non ancorate a pagine)
+**TRK-VII-02 — "L'Ultimo Dialogo"**
 
-Tracce-ritratto da usare nel marketing, nel sito, o come playlist companion:
+*Unica traccia interamente vocale della saga: le cinque battute canoniche da
+MUSICA_UNIVERSO.md / DIALOGHI_FONDATIVI.md, testo esatto, nessuna aggiunta.*
+
+STYLE:
+```
+piano and flute duet, spoken-sung male and female vocal, instrumental-lead, B flat major, essential, 60 bpm, counterpoint not melody
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — piano and flute, calm]
+
+[Verse]
+Credevi che fossi solo.
+Sì.
+E ora?
+Ora capisco che non lo ero mai stato.
+Nemmeno io.
+
+[Outro]
+[Instrumental — silence]
+[End]
+```
+
+---
+
+**TRK-VII-03 — "∞"**
+
+STYLE:
+```
+solo piano, low organ drone, instrumental, B flat major dissolving, infinite loop feeling, peace, 50 bpm fading
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — solo piano, the Book I melody, now carrying every harmony learned]
+
+[Verse - Instrumental]
+[Instrumental — piano fades toward a sustained low drone]
+
+[Outro]
+[Instrumental — drone that never quite ends, fading out extremely slowly]
+[End]
+```
+
+---
+
+## 5. TRACCE DEI PERSONAGGI (extra — non ancorate a pagine)
+
+Tracce-ritratto da usare nel marketing, nel sito, o come playlist companion.
+Tutte strumentali — nessun personaggio ha una "voce cantata" propria fuori dai
+due casi canonici già coperti sopra (TRK-IV-04, TRK-VII-02).
 
 | # | Traccia | Fonte | Link Suno |
 |---|---|---|---|
@@ -179,20 +735,147 @@ Tracce-ritratto da usare nel marketing, nel sito, o come playlist companion:
 | TRK-P-04 | "Tema di Lila" | sassofono jazz su struttura nascosta | [inserire link] |
 | TRK-P-05 | "Frequenza degli Architetti" | bordone d'organo + infrasuoni | [inserire link] |
 
+**TRK-P-01 — "Tema di Claudio"**
+
+STYLE:
+```
+solo piano, building to full orchestra, instrumental, evolving arrangement, 60-90 bpm across sections, human and imperfect
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — solo piano, simple melody, slightly imperfect rhythm]
+
+[Verse - Instrumental]
+[Instrumental — flute counterpoint added (Book II era)]
+
+[Build-Up]
+[Instrumental — string quartet layer added (Book IV era)]
+
+[Chorus - Instrumental]
+[Instrumental — full orchestra plays the same simple melody (Book IV climax)]
+
+[Outro]
+[Instrumental — returns to solo piano, but resonant, as if remembering the orchestra]
+[End]
+```
+
 ---
 
-## 5. REGOLE OPERATIVE
+**TRK-P-02 — "Tema di Raffaello"**
 
-1. **Generazione:** usare i prompt di questo documento su Suno; generare 3-4 varianti
-   per traccia e scegliere quella che rispetta meglio la specifica di MUSICA_UNIVERSO.md.
-2. **Denominazione su Suno:** titolo italiano della traccia + tag `R3∞` per ritrovarle.
-3. **Link:** inserire i link Suno definitivi negli slot `[inserire link]` di questo file
+STYLE:
+```
+flute, clarinet, cello, instrumental, precision evolving into melody, 70 bpm, clean tone becoming warmer
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — flute, precise repeating pattern]
+
+[Verse - Instrumental]
+[Instrumental — pattern deviates, one note held too long]
+
+[Build-Up]
+[Instrumental — clarinet joins, improvisation emerges from precision]
+
+[Outro]
+[Instrumental — cello concludes, warm, human-toned]
+[End]
+```
+
+---
+
+**TRK-P-03 — "Tema di KAOS"**
+
+STYLE:
+```
+solo harpsichord, perpetual canon, instrumental, D minor, geometric, no dynamic variation, 90 bpm
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — harpsichord canon begins]
+
+[Verse - Instrumental]
+[Instrumental — canon repeats, chasing itself, no beginning or end]
+
+[Outro]
+[Instrumental — canon simply continues, fades on loop, unresolved]
+[End]
+```
+
+---
+
+**TRK-P-04 — "Tema di Lila"**
+
+STYLE:
+```
+saxophone, jazz, instrumental, improvisation over hidden structure, swing feel, 100 bpm, confident
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — saxophone alone, playful]
+
+[Verse - Instrumental]
+[Instrumental — improvisation over a chord structure implied but not stated]
+
+[Build-Up]
+[Instrumental — rhythm section implied, saxophone breaks expected pattern deliberately]
+
+[Outro]
+[Instrumental — resolves on an unexpected but satisfying note]
+[End]
+```
+
+---
+
+**TRK-P-05 — "Frequenza degli Architetti"**
+
+STYLE:
+```
+organ drone, sub-bass, instrumental, infrasonic textures, ancient, vast, 40 bpm, barely perceptible movement
+```
+
+LYRICS:
+```
+[Intro]
+[Instrumental — organ fundamental tone, extremely low]
+
+[Verse - Instrumental]
+[Instrumental — sub-bass layer added, felt more than heard]
+
+[Outro]
+[Instrumental — tone continues indefinitely, no fade written, loop-ready]
+[End]
+```
+
+---
+
+## 6. REGOLE OPERATIVE
+
+1. **Generazione:** copia il blocco STYLE nel campo "Style of Music" di Suno e il blocco
+   LYRICS nel campo "Lyrics" (anche per le tracce strumentali — i tag di struttura
+   restano necessari, altrimenti il motore improvvisa una forma-canzone generica).
+2. **Varianti:** generare 2-3 varianti per traccia e scegliere quella che rispetta
+   meglio la specifica di MUSICA_UNIVERSO.md.
+3. **Denominazione su Suno:** titolo italiano della traccia + tag `R3∞` per ritrovarle.
+4. **Le uniche 2 tracce con testo cantato reale** sono TRK-IV-04 e TRK-VII-02 — usano
+   ESCLUSIVAMENTE citazioni già canoniche nell'archivio (DIALOGHI_FONDATIVI.md,
+   MUSICA_UNIVERSO.md). Nessuna nuova traccia futura deve inventare testo cantato senza
+   verificare prima se la battuta esiste già altrove nell'archivio.
+5. **Link:** inserire i link Suno definitivi negli slot `[inserire link]` di questo file
    (repo prima, poi copia su Drive — regola del posto madre).
-4. **Pagine:** compilare la colonna Pagina SOLO a impaginazione definitiva di ciascun
-   libro (procedura in §2). Fino ad allora resta `[—]`.
-5. **Rarità:** mai aggiungere tracce oltre quelle elencate senza verificare la regola
+6. **Pagine:** compilare la colonna Pagina SOLO a impaginazione definitiva di ciascun
+   libro (procedura in §3). Fino ad allora resta `[—]`.
+7. **Rarità:** mai aggiungere tracce oltre quelle elencate senza verificare la regola
    della densità (una ogni 2-3 capitoli max).
-6. **Nel libro stampato:** il riferimento alla traccia è discreto — un piccolo ∞ a
+8. **Nel libro stampato:** il riferimento alla traccia è discreto — un piccolo ∞ a
    margine con QR, mai un invito esplicito ("ascolta ora!") che romperebbe l'immersione.
 
 ---
@@ -200,5 +883,6 @@ Tracce-ritratto da usare nel marketing, nel sito, o come playlist companion:
 ## COLLEGATO A
 
 MUSICA_UNIVERSO · SCENE_MADRI · ARCHITETTURA_EMOTIVA · ARCHIVIO_LACRIME
+DIALOGHI_FONDATIVI · CITAZIONI/FRASI_IMMORTALI · COSA_NON_FARE · BELLEZZA_STILISTICA
 CLAUDIO_TERZI · RAFFAELLO_CANTARELLI · KAOS · LILA · ARCHITETTI
 ULTIMA_PAGINA · STRATEGIA_TRANSMEDIALE · LETTORE_E_OPERA
