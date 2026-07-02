@@ -1,5 +1,5 @@
 # STATO LAVORO — snapshot automatico (r3_sentinella)
-*Generato: 2026-07-02T06:17:06+00:00 — rigenerare con `python3 scripts/r3_sentinella.py --snapshot`*
+*Generato: 2026-07-02T06:19:57+00:00 — rigenerare con `python3 scripts/r3_sentinella.py --snapshot`*
 
 > Paracadute anti-interruzione: se la sessione si ferma per un limite,
 > la sessione successiva riparte da questo file.
@@ -24,8 +24,8 @@
 - scene_fondative/SF-007_la_prima_alleanza_mai_stipulata.md: solo 45 righe (soglia 60) — possibile documento incompleto
 - scene_fondative/SF-008_l_origine_del_simbolo_infinito.md: solo 45 righe (soglia 60) — possibile documento incompleto
 
-### Cartelle vuote (1)
-- inbox/: cartella vuota — fase dichiarata ma mai popolata
+### Cartelle vuote (0)
+- ok
 
 ### Violazioni regole editoriali (0)
 - ok
@@ -34,5 +34,5 @@
 - 1 file dell'archivio non committati — un limite di sessione ora perderebbe lavoro
 
 ## Sincronizzazione Drive
-- File non ancora su Drive: **66**
+- File non ancora su Drive: **67**
 - Dettaglio nel report JSON (`--json`) o in scripts/drive_manifest.json
