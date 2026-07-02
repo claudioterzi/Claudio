@@ -29,6 +29,9 @@ _DEFAULT_URL = "http://localhost:11434/v1"
 
 class OllamaProvider(ProviderBase):
     nome = "ollama"
+    # Modelli locali: i token non costano — la compressione darebbe solo
+    # latenza e rischio semantico a fronte di zero risparmio. Cfr. CLAUDE.md.
+    _headroom_default = False
 
     def _inizializza(self) -> bool:
         if not _OK:

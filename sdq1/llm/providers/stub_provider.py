@@ -65,6 +65,9 @@ _DEFAULT = "Risposta locale generata. Sistema SDQ-1 operativo in modalità stub.
 
 class StubProvider(ProviderBase):
     nome = "stub"
+    # Risponde per keyword-matching sul testo utente: il rewrite di Headroom
+    # romperebbe il matching. Nessun costo token da risparmiare comunque.
+    _headroom_default = False
 
     def _inizializza(self) -> bool:
         return True
