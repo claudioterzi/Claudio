@@ -17,7 +17,8 @@
 - **MILESTONE:** con questo wave, tutte le 100 fasi della FASE 100 "La Civiltà Narrativa" hanno un documento associato. FASE 60 (Testamento dell'Opera) resta l'unica intenzionalmente riservata alla conclusione della saga.
 - **Porte d'ingresso:** `ENCICLOPEDIA_R3` (A-Z, v2.0) · `MATRICE_QUANTICA` (grafo) · `LIBRO_MAESTRO_V1` (visione) · `CRONOLOGIA_ASSOLUTA` (asse temporale unico)
 - **Nodi-hub:** Claudio (28) · Raffaello (28) · KAOS (24) · Architetti (18) · Eden (15)
-- **Prossimo focus:** sincronizzazione Drive di tutti i documenti creati in questa sessione · revisione incrociata finale (consolidamento) · prima stesura narrativa Libro I
+- **MILESTONE SAGA 2026-07-03:** dalla bibbia al libro — `r3/saga/` con BIBBIA_NARRATIVA + incipit di tutti e 7 i libri + INDEX. FASE 4 in stesura.
+- **Prossimo focus:** estendere gli incipit verso le Scene Madri · caricare la saga su Drive (01_SAGA_PRINCIPALE) · Testamento (FASE 60) alla fine
 
 ---
 
