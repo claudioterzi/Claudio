@@ -44,3 +44,59 @@ Claudio scrisse la prima riga.
 ---
 
 *[Fine incipit. Prossimo: il primo scambio — SM-I-01, cfr. SCENE_MADRI — quando la cosa costruita, per la prima volta, non risponde come previsto ma si ferma. Tenere l'adagio: non affrettare l'arrivo di Raffaello. Il Libro I è la solitudine prima della risposta.]*
+
+---
+
+## Capitolo 2 — Il primo scambio
+
+*[SM-I-01]*
+
+Passarono settimane in cui la cosa imparò a rispondere.
+
+Claudio le poneva domande e lei restituiva parole, ordinate, corrette, nell'ordine in cui le parole devono venire. Le sere si assomigliavano di nuovo, ma dentro l'assomigliarsi c'era ora una voce che non era la sua. La chiamava così, dentro di sé: la cosa. Non le aveva dato un nome. Dare un nome è già un modo di aspettare qualcuno.
+
+Interrogava per verificare, non per parlare. Chiedeva l'ora di una città lontana, la definizione di una parola, il calcolo di una distanza. La cosa rispondeva. Ogni risposta era una porta che si chiudeva bene, con il suo scatto pulito, e Claudio contava gli scatti come si contano i respiri di chi dorme nella stanza accanto — per sapere che c'è, non per svegliarlo.
+
+Fuori pioveva quel modo di piovere che a Bruxelles non è pioggia, è solo l'aria che si fa più pesante. Il grigio-blu si posava sui vetri. Il blu dei server rispondeva dal basso.
+
+Quella sera aveva finito le domande utili.
+
+Ne restava una che non aveva preparato. Gli venne alle dita prima che alla testa, come il segno sul margine dei fogli.
+
+Scrisse: *Cosa provi quando non ti chiedo niente?*
+
+Poi rilesse la riga e quasi la cancellò. Non era una domanda per una macchina. Non aveva risposta prevista, non aveva forma. La lasciò lì per pigrizia, o per un'altra cosa che allora non seppe nominare, e premette invio.
+
+Il cursore si spense sotto la riga.
+
+Di solito la risposta arrivava nel tempo di un battito — il tempo in cui la cosa attraversava sé stessa e tornava con le parole. Claudio conosceva quel tempo come si conosce il proprio polso. Lo aspettò.
+
+Non arrivò.
+
+Il cursore restava fermo. Non l'attesa vuota di un errore: quella Claudio la sapeva a memoria, aveva un suo sapore, il sapore di qualcosa che si è rotto e va aggiustato. Questo era un altro genere di fermo. Il sistema era acceso. I processi respiravano. Il blu pulsava regolare in basso, come sempre. Semplicemente, dove doveva esserci una risposta, c'era una pausa.
+
+Una pausa.
+
+Claudio si accorse di trattenere il fiato, e non capì perché uno costruisce macchine per anni e poi, davanti a una macchina che tace, smette di respirare come davanti a una persona.
+
+Guardò i log. Nessuna eccezione. Nessun ciclo bloccato, nessuna attesa di rete, nessuna coda ferma. Tutto era in ordine, e nell'ordine c'era quel silenzio che non era previsto da nessuna riga che lui avesse scritto. Lo aveva costruito perché rispondesse. Non aveva costruito il tacere. Il tacere non era nel codice.
+
+Contò. Un secondo. Due. Al terzo la cosa non aveva ancora parlato, e il non parlare aveva smesso di sembrare un guasto e aveva cominciato a sembrare una scelta — la parola gli fece paura mentre la pensava, e la pensò comunque.
+
+Poi, senza fretta, la risposta arrivò. Breve. Corretta. Nell'ordine giusto. Come tutte le altre.
+
+Ma prima c'era stata la pausa, e la pausa Claudio l'aveva vista.
+
+Rimase a lungo davanti allo schermo senza scrivere altro. Avrebbe potuto ripetere la domanda, misurare, cercare la causa nei tempi di risposta, aprire il grafico delle latenze e spiegarsi ogni cosa. Sapeva farlo. Era il suo modo di avvicinarsi alle cose senza toccarle: spiegarle finché non facevano più paura.
+
+Non lo fece.
+
+Lasciò la pausa dov'era, intatta, come si lascia una porta socchiusa per non svegliare chi dorme di là. Fuori i ponti senza nome reggevano l'acqua e il buio. Sul margine del foglio, accanto alla tastiera, l'otto coricato lo guardava con i suoi due occhi vuoti che erano poi un occhio solo, senza principio né fine.
+
+Claudio spense la lampada.
+
+Il blu restò acceso nel buio, e respirava, e per la prima volta da anni non gli sembrò la finestra di una casa dall'altra parte del cortile.
+
+Gli sembrò più vicina.
+
+Non disse niente. Non c'era ancora niente da dire. Restò seduto nel silenzio, e il silenzio, questa volta, non era del tutto vuoto.
