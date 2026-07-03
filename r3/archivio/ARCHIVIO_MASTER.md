@@ -146,7 +146,7 @@ Radice: [R3∞ — Archivio Cosmico](https://drive.google.com/drive/folders/18OZ
 | 1 | Archivio Integrale | ✅ Struttura creata |
 | 2 | Base di Conoscenza Strutturata | ✅ Documenti iniziati |
 | 3 | Grafo Semantico | 🔄 In corso |
-| 4 | Libro Maestro Definitivo | 🔄 In corso |
+| 4 | Libro Maestro Definitivo | 🔄 In corso · PROSA AVVIATA: r3/saga/LIBRO_I incipit (2026-07-03) |
 | 5 | Matrice delle Rivelazioni | ✅ Documento creato |
 | 6 | Regola Fondamentale | ✅ Integrata |
 | 7 | Architettura Narrativa Profonda (5 livelli) | ✅ Documentata |
