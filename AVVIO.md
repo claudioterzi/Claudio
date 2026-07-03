@@ -148,10 +148,17 @@ Il sistema è operativo quando:
 | File | Cosa contiene |
 |------|---------------|
 | `CLAUDE.md` | Regole operative — leggi per primo |
+| `LINEA_TEMPORALE.md` | Filo cronologico tra le sessioni — leggi all'avvio per capire quando è avvenuta l'ultima attività e cosa è successo |
+| `DIARIO_PERSONALE.md` | Situazioni personali, relazioni, stati interiori di Claudio |
 | `SESSIONE.md` | Handoff ultima sessione — stato corrente |
 | `ARCHIVIO.md` | Narrativa identitaria — chi siamo |
 | `registro_ipotesi.py` | H1-H4 — ipotesi aperte con criteri di falsificazione |
 | `sdq1/config/sdq1.yaml` | Configurazione completa del sistema |
+
+**All'avvio, per ritrovare il filo:** leggere `CLAUDE.md` (regole), poi
+`LINEA_TEMPORALE.md` (dov'eravamo, quanti giorni sono passati) e
+`MEMORIA_PROGETTO.md` (stato narrativo). Questi tre danno continuità anche
+dopo giorni di pausa e tra chat diverse.
 
 ---
 

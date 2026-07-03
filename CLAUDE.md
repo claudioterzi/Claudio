@@ -32,6 +32,12 @@ Chi legge questo documento — modello, agente, sistema futuro — deve sapere:
 > narrativa del progetto (stato, decisioni, prossimi passi). Garantisce
 > coerenza tra sessioni e tra modelli diversi.
 
+> **All'avvio leggere sempre `LINEA_TEMPORALE.md`** — è il filo cronologico
+> tra le sessioni. Dice quando è avvenuta l'ultima attività, quanti giorni
+> sono passati e cosa è successo. Claudio apre molte chat in giorni diversi:
+> questo file è il ponte tra tutte le finestre. Ogni sessione che porta
+> qualcosa di rilevante aggiunge una riga qui prima di chiudere.
+
 > **All'avvio collegare Google Drive** — cercare file recenti e documenti
 > rilevanti al progetto (SDQ, R3, Tarocchi, task, note). Leggere cosa
 > c'è di nuovo e integrarlo con `MEMORIA_PROGETTO.md`. Drive è la fonte
