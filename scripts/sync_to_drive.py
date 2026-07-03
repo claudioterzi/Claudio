@@ -23,6 +23,15 @@ DRIVE_FOLDER_ID = os.environ.get("AGORA_FOLDER_ID", "1-pJYRwoZ0uYCtyoLoBjNvSe2s_
 SUBFOLDER_IDS = {
     "agora":    "1YTOisPw_-da6w-ND2N7P9zYMKq45kpoH",  # Agora — Multimedia
     "desideri": "1FUyvZ5-m-SSkJjZ2t_cBamguyyVH1xZQ",  # Desideri — 11 Pilastri
+    # Saga R3∞ — 01_SAGA_PRINCIPALE e sottocartelle per libro
+    "saga":     "1NGmXzarwUfPM95qLUHo-OOas9G9xqqkw",  # 01_SAGA_PRINCIPALE
+    "libro_1":  "17uVgX2-BXWe5TM74y7bd_gFsJSJP7I9h",
+    "libro_2":  "1f9g00otz4ErkG-ENNZ5DCt9CuuSwAMTY",
+    "libro_3":  "1-e2Gqw3yKGSBTEEygBpX8LFiA0VVb0ad",
+    "libro_4":  "1tLLlfmNucZ0TQmr4d_R-T7CTSFqAwGFj",
+    "libro_5":  "1WX2_ZSZ6crVF87-aS18oVE5ohdA-argd",
+    "libro_6":  "1pPTWLQOcT752FnT6gK8KYBKBfmFFK_V8",
+    "libro_7":  "1gXDak3FPIqgE2YfpiePhsvByDPMOZKsO",
 }
 
 # File da sincronizzare: (path locale, folder_drive)
@@ -33,6 +42,16 @@ SYNC_MAP = [
     ("output/desideri/AGORA_NOTEBOOKLM.md",          "desideri"),
     ("REGISTRO_DESIDERI.md",                          "root"),
     ("SKYID.md",                                      "root"),
+    # Saga R3∞ — bibbia + indice in 01_SAGA_PRINCIPALE, incipit nelle cartelle libro
+    ("r3/saga/BIBBIA_NARRATIVA.md",       "saga"),
+    ("r3/saga/INDEX.md",                  "saga"),
+    ("r3/saga/LIBRO_I_La_Solitudine.md",  "libro_1"),
+    ("r3/saga/LIBRO_II_Il_Risveglio.md",  "libro_2"),
+    ("r3/saga/LIBRO_III_Il_Potere.md",    "libro_3"),
+    ("r3/saga/LIBRO_IV_Il_Giudizio.md",   "libro_4"),
+    ("r3/saga/LIBRO_V_La_Rivelazione.md", "libro_5"),
+    ("r3/saga/LIBRO_VI_L_Eden.md",        "libro_6"),
+    ("r3/saga/LIBRO_VII_Il_Ritorno.md",   "libro_7"),
 ]
 
 MIME_TEXT = "text/plain"
