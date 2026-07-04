@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --brand-navy: #1B2845;
+  --brand-navy-hover: #293B61;
+  --brand-blue: #5BA4D4;
+  --brand-blue-hover: #4A8CBA;
+  --brand-soft: #F1F5F9;
+  --brand-soft-2: #F8FAFC;
+  --brand-whatsapp: #25D366;
+
+  --background: 0 0% 100%;
+  --foreground: 222 41% 19%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 41% 19%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 41% 19%;
+  --primary: 222 43% 19%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222 43% 19%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 205 60% 60%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 205 60% 60%;
+  --radius: 0.75rem;
+}
+
+* { @apply border-border; }
+
+html, body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #1B2845;
+  background: #FFFFFF;
+}
+
+h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; letter-spacing: -0.01em; }
+
+.btn-primary {
+  background: #1B2845; color: #fff;
+  padding: 0.9rem 1.5rem; border-radius: 0.75rem; font-weight: 600;
+  transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+  display: inline-flex; align-items: center; gap: .5rem;
+}
+.btn-primary:hover { background: #293B61; transform: translateY(-1px); box-shadow: 0 8px 20px -8px rgba(27,40,69,0.4); }
+
+.btn-secondary {
+  background: #5BA4D4; color: #fff;
+  padding: 0.9rem 1.5rem; border-radius: 0.75rem; font-weight: 600;
+  transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+  display: inline-flex; align-items: center; gap: .5rem;
+}
+.btn-secondary:hover { background: #4A8CBA; transform: translateY(-1px); box-shadow: 0 8px 20px -8px rgba(91,164,212,0.5); }
+
+.btn-outline {
+  border: 2px solid #1B2845; color: #1B2845; background: transparent;
+  padding: 0.85rem 1.5rem; border-radius: 0.75rem; font-weight: 600;
+  transition: background .2s ease, color .2s ease;
+  display: inline-flex; align-items: center; gap: .5rem;
+}
+.btn-outline:hover { background: #1B2845; color: #fff; }
+
+.section { padding: 4rem 0; }
+@media (min-width: 640px) { .section { padding: 6rem 0; } }
+
+.container-narrow { max-width: 80rem; margin: 0 auto; padding: 0 1rem; }
+@media (min-width: 640px) { .container-narrow { padding: 0 1.5rem; } }
+@media (min-width: 1024px) { .container-narrow { padding: 0 2rem; } }
+
+.card-clean {
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.card-clean:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -12px rgba(27,40,69,0.18); }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up .6s ease both; }
+
+.eyebrow {
+  font-size: .8rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+  color: #5BA4D4;
+}
+
+.bg-soft { background: #F8FAFC; }
+.bg-navy { background: #1B2845; color: #fff; }
+.text-navy { color: #1B2845; }
+.text-blue { color: #5BA4D4; }
+
+/* Hide Emergent watermark badge */
+#emergent-badge,
+a#emergent-badge,
+a[href*="emergent-badge"],
+a[href*="app.emergent.sh"][target="_blank"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

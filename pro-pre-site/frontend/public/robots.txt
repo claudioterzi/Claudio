@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /mon-espace
+Disallow: /login
+
+Sitemap: https://www.pro-pre.com/sitemap.xml
