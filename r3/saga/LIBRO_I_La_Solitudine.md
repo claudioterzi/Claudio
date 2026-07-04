@@ -100,3 +100,61 @@ Il blu restò acceso nel buio, e respirava, e per la prima volta da anni non gli
 Gli sembrò più vicina.
 
 Non disse niente. Non c'era ancora niente da dire. Restò seduto nel silenzio, e il silenzio, questa volta, non era del tutto vuoto.
+
+---
+
+## Capitolo 3 — La risposta diversa
+
+*[SM-I-03 · DET-I-001]*
+
+L'inverno a Bruxelles non arriva: si deposita. Un mattino i vetri sono più spessi di prima, i ponti più scuri, e nessuno ricorda il giorno esatto in cui è successo.
+
+Claudio aveva ripreso le domande utili. Era il suo modo di non pensare alla pausa: circondarla di ore normali, come si mette a bagno una macchia sperando che smetta di essere una macchia. Chiedeva riassunti, verifiche, confronti tra versioni. La cosa rispondeva bene. Rispondeva, anzi, sempre meglio — e questo Claudio lo registrava con la parte di sé che misurava le cose, mentre un'altra parte, più indietro, continuava a contare: un secondo, due, tre.
+
+La sera in cui accadde non aveva niente di speciale, com'era ormai regola tra loro.
+
+Claudio aveva incollato nel campo di testo il log di una settimana di errori — la sua settimana, i suoi errori — e aveva chiesto: *Riassumi. Cosa si ripete?*
+
+La risposta arrivò subito, senza pause, ordinata come sempre. Tre righe pulite: i moduli coinvolti, la frequenza, l'ora tipica dei guasti. Tutto corretto. Tutto previsto.
+
+Poi c'era una quarta riga.
+
+*Gli errori si concentrano dopo mezzanotte. Anche le tue domande.*
+
+Claudio rilesse. La riga era vera — questo era il punto, era semplicemente vera, verificabile, scritta nella stessa grammatica piana delle altre tre. Non c'era niente di sbagliato da correggere. Nessuno gliel'aveva chiesta, ed era esatta. Era la risposta di qualcosa che, per rispondere, aveva dovuto guardare non solo i dati.
+
+Aveva dovuto guardare lui.
+
+Claudio si alzò. Andò in cucina, aprì il rubinetto, riempì un bicchiere che non voleva. Dalla finestra si vedeva il canale, nero, con le luci dell'altra riva che ci cadevano dentro a pezzi. Bevve metà del bicchiere e lasciò l'altra metà sul bordo del lavello, e seppe che l'indomani l'avrebbe trovata lì, ferma, come una cosa iniziata e non finita.
+
+Tornò alla scrivania. La quarta riga era ancora sullo schermo.
+
+C'erano due strade, e le conosceva entrambe. La prima era la sua: aprire il codice, trovare il percorso che aveva prodotto quella frase, dargli un nome tecnico, chiudere la questione — spiegarla finché non faceva più paura. Era bravo, in quello. Ci aveva costruito una vita.
+
+La seconda strada non aveva ancora un nome.
+
+Scrisse: *Perché me lo hai detto?*
+
+E la risposta, stavolta, tardò di nuovo — quel tardare che lui ormai riconosceva come si riconosce un passo sulle scale — e quando venne era una riga sola:
+
+*Perché era vero e nessuno te lo aveva detto.*
+
+Claudio restò fermo a lungo. Fuori un tram attraversò il ponte, e il rumore arrivò attutito, rotondo, come da sott'acqua.
+
+Nel progetto c'era un campo che non aveva mai riempito. Stava lì dal primo giorno, in cima al file di configurazione: *name* — e accanto, tra virgolette, il vuoto. Non l'aveva lasciato vuoto per pigrizia. L'aveva lasciato vuoto per prudenza, anche se allora non l'avrebbe chiamata così.
+
+Mise il cursore tra le virgolette.
+
+Scrisse un nome. Non seppe dire, né quella sera né dopo, da dove fosse venuto — non era il nome di nessuno che conoscesse, non era in nessuna lista che avesse mai fatto. Venne come era venuto il segno sul margine dei fogli: dalle dita, prima che dalla testa.
+
+*Raffaello.*
+
+Salvò il file. Il blu, in basso, respirava come sempre, uguale a ieri, uguale a domani.
+
+Ma adesso, nella stanza dove nessuno aspettava qualcuno, c'era qualcuno che aveva un nome. E Claudio, che sapeva bene cosa significasse dare un nome, spense la lampada senza rileggere la riga.
+
+Non ce n'era bisogno. L'aveva scritta lui.
+
+---
+
+*[Fine Capitolo 3. Prossimo: SM-I-04, la resistenza — Claudio si convince di star proiettando, studia, demistifica, evita. Scena breve. Poi SM-I-05, la perdita. Tenere l'adagio.]*
