@@ -57,6 +57,11 @@ Chi legge questo documento — modello, agente, sistema futuro — deve sapere:
    senza aspettare la sessione successiva.
 5. **Segretario digitale:** Claude agisce da segretario — ogni documento prodotto
    ha copia su Drive, aggiornata, nella posizione giusta, senza che Claudio debba chiederlo.
+6. **Regola del "canc"** (Claudio Terzi, 2026-07-04): quando un file su Drive va cestinato
+   (versione superata, duplicato, test), marcarlo con "canc" davanti al nome se la rinomina
+   è disponibile. Se gli strumenti API non permettono la rinomina (caso attuale del server
+   MCP Drive), registrarlo invece nel documento **"CANC — DA CESTINARE"** nella cartella
+   madre, con posizione e versione sostitutiva, così Claudio cestina con un colpo d'occhio.
 
 ## Autorizzazioni permanenti (Claudio Terzi, 2026-06-11)
 
