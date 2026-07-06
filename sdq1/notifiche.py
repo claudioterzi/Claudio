@@ -22,10 +22,38 @@ import json
 import logging
 import os
 import urllib.request
+from pathlib import Path
 
 log = logging.getLogger("sdq1.notifiche")
 
 _API = "https://api.telegram.org/bot{token}/sendMessage"
+
+
+def _carica_env() -> None:
+    """Carica un file `.env` dalla root del repo, se presente.
+
+    Legge solo chiavi non già impostate nell'ambiente (l'ambiente vince sempre).
+    Nessuna dipendenza esterna, formato KEY=VALORE, righe `#` ignorate.
+    """
+    root = Path(__file__).resolve().parent.parent  # .../Claudio
+    env = root / ".env"
+    if not env.is_file():
+        return
+    try:
+        for riga in env.read_text(encoding="utf-8").splitlines():
+            riga = riga.strip()
+            if not riga or riga.startswith("#") or "=" not in riga:
+                continue
+            chiave, _, valore = riga.partition("=")
+            chiave = chiave.strip()
+            valore = valore.strip().strip('"').strip("'")
+            if chiave and chiave not in os.environ:
+                os.environ[chiave] = valore
+    except OSError:
+        pass
+
+
+_carica_env()
 
 
 def configurato() -> bool:
