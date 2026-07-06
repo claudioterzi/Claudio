@@ -80,6 +80,35 @@ Sistema B completo (592 stati scritti). Decisione su dove andare:
 
 ---
 
+## Caccia voli autonoma — `sdq1/voli/` (2026-07-06)
+
+Sistema di agenti che cerca **errori di prezzo (error fare)** e promo forti sui
+voli e **scrive note su Telegram** a Claudio. Nasce dalla richiesta di trovare
+voli economicissimi da Bruxelles/Parigi verso San Paolo, Cuba, Sud America.
+
+- **Filosofia (Protocollo Rosso Rosso Rosso)**: non seguire i blog di offerte —
+  interrogare direttamente il motore di prenotazione (Google Flights) e leggere
+  i prezzi reali. Gli errori si trovano prima così.
+- **Pipeline**: `ScoutVoli` (motore Node/Playwright `engine.js`) → `ValutatoreVoli`
+  (error_fare ≤55% soglia / promo_forte ≤ soglia / normale) → `CronistaVoli`
+  (nota Telegram via `sdq1/notifiche.py`).
+- **Rotte e soglie**: `sdq1/voli/rotte.py` (BRU/CDG/MAD/LIS → San Paolo/Cuba).
+- **Uso**: `python -m sdq1.voli [--dry-run] [--tag cuba] [--rotta ID]`.
+- **Motore**: `engine.js` usa il Chromium preinstallato (`/opt/pw-browsers/chromium`)
+  e instrada le richieste via stack Node (il proxy resetta il TLS del browser).
+  Serve `npm install` in `sdq1/voli/` una volta.
+
+### Per renderlo automatico e "sempre attivo"
+1. Impostare nell'ambiente Claude (web) i segreti **come variabili d'ambiente**
+   (non nel repo): `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
+   - Bot: **@AssistenteRaffaelloBot**. Il `chat_id` si scopre con `getUpdates`
+     dopo aver scritto un messaggio al bot.
+   - ⚠️ Il token è stato mostrato in chat/immagine il 06/07/2026 → **da rigenerare**
+     via @BotFather appena possibile (regola non negoziabile: il token non si
+     scrive mai in chat/documenti condivisi; il repo è backup pubblico).
+2. Creare un **trigger/cron giornaliero** che esegue `python -m sdq1.voli`.
+   Esempio cron: `0 7 * * * cd /path/Claudio && python -m sdq1.voli`.
+
 ## Continuità tra sessioni / modelli
 
 - I modelli **non condividono memoria** tra loro, ma **condividono il repo**.

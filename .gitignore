@@ -56,8 +56,13 @@ temp/
 # Credenziali e segreti
 .env
 .env.*
+!.env.example
 *.key
 secrets/
+
+# Node / Playwright (motore caccia voli)
+node_modules/
+!sdq1/voli/package.json
 !output/memorie/
 !output/memorie/*.json
 !tarocchi_quantici_alpha.json
