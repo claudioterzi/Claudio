@@ -86,3 +86,6 @@ guardian/
 !sdq1_master.json
 !.claude/settings.json
 .guardian/
+
+# Motore caccia voli
+!sdq1/voli/package.json

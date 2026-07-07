@@ -1,0 +1,45 @@
+name: Caccia voli low cost (SDQ-1)
+
+# Ricerca automatica di error fare / voli low cost.
+# Gira 3 volte al giorno e manda una nota su Telegram per ogni offerta notevole.
+#
+# Richiede due secret del repository (Settings → Secrets and variables → Actions):
+#   TELEGRAM_BOT_TOKEN  — token del bot @AssistenteRaffaelloBot (@BotFather)
+#   TELEGRAM_CHAT_ID    — id chat di Claudio (es. 1034473460)
+# Senza i secret il job gira in dry-run e non invia nulla.
+
+on:
+  schedule:
+    - cron: "0 6,14,20 * * *"   # 06:00, 14:00, 20:00 UTC
+  workflow_dispatch:            # avvio manuale dal tab Actions
+
+concurrency:
+  group: caccia-voli
+  cancel-in-progress: false
+
+jobs:
+  caccia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installa motore (Playwright + Chromium)
+        working-directory: sdq1/voli
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Esegui la caccia
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m sdq1.voli -v
