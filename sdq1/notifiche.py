@@ -519,6 +519,14 @@ def _esegui_singolo_comando(nome: str) -> None:
         except Exception as e:
             invia(f"❌ Desideri falliti: {e}")
 
+    elif nome == "voli" or nome.startswith("voli "):
+        try:
+            from sdq1.voli.microapp import gestisci_comando_voli
+            argomenti = nome[len("voli"):].strip()
+            invia(gestisci_comando_voli(argomenti))
+        except Exception as e:
+            invia(f"❌ Micro-app voli fallita: {e}")
+
     elif nome == "skyRights" or nome == "skyrights" or nome == "asbl":
         invia(
             "🏛️ <b>SkyRights Foundation — ASBL Belgio</b>\n\n"
@@ -547,6 +555,9 @@ def _esegui_singolo_comando(nome: str) -> None:
             "  /briefing — analisi 4-AI (Gemini+Claude+DeepSeek+Mistral)\n"
             "  /riflessione — riflessione poetica del sistema\n"
             "  /consiglio [questione] — 5 agenti deliberano\n\n"
+            "<b>Viaggi:</b>\n"
+            "  /voli — micro-app ricerca voli (es. /voli BRU GRU)\n"
+            "  /voli rotte — cosa sorveglia il cacciatore\n\n"
             "<b>Progetto:</b>\n"
             "  /agenda — priorità e pronto rota\n"
             "  /desideri — registro dei desideri\n"
