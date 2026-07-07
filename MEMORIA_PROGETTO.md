@@ -4,7 +4,7 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-07-06
+> Ultimo aggiornamento: 2026-07-07
 
 ---
 
@@ -74,6 +74,28 @@
 5. **ARGO Heartbeat**: attivare dopo il rientro (15 minuti in script.google.com).
 6. **ASBL SkyRights**: attaccare dopo checkout ospiti.
 7. **Airbnb iCal**: trovare URL feed .ics e aggiungere a Google Calendar.
+
+---
+
+## Sessione 2026-07-07 — branch `claude/github-issues-kvdsnp`
+
+### Diagnosi CI: i workflow GitHub Actions falliscono tutti
+
+- **Sintomo**: notifiche continue di fallimento (Deploy to GitHub Pages, Test Runner, Deploy Jekyll) su main.
+- **Causa radice (livello account, NON codice)**: nessun job è mai stato preso in carico da un runner.
+  In tutta la storia conservata (237 run dal 12/06/2026) ogni job termina in ~2 secondi con
+  `runner_id: 0`, zero step eseguiti, zero log. È la firma di un account con Actions bloccato
+  (account flagged o problema di billing/spending limit), non di un errore nei workflow.
+- **Azione richiesta a Claudio (manuale, non automatizzabile)**:
+  1. Controllare https://github.com/settings/billing (pagamenti falliti / spending limit).
+  2. Se il billing è a posto, l'account è probabilmente flagged: aprire ticket a https://support.github.com
+     chiedendo la riabilitazione di GitHub Actions.
+- **Fix lato repo (fatto in questa sessione)**: rimosso `.github/workflows/jekyll-gh-pages.yml` —
+  era il workflow di esempio Jekyll rimasto attivo, in conflitto con `deploy-pages.yml`
+  (stesso gruppo di concorrenza `pages`, entrambi su ogni push a main). Il sito è statico in
+  `public/`, quindi il deploy corretto è solo `deploy-pages.yml`.
+- **Verifica**: tutti gli step del Test Runner passano in locale sul codice di main
+  (mazzo 78 carte, notifiche, providers, Flask app). Quando Actions tornerà attivo, il CI sarà verde.
 
 ---
 
