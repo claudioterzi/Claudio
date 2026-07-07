@@ -1,0 +1,78 @@
+{
+  "id": "acido_acetico",
+  "nome": "Acido Acetico",
+  "sinonimi": ["Acetic Acid (INCI)", "E260", "acido etanoico", "essenza di aceto (soluzioni concentrate alimentari)"],
+  "categoria": "acido",
+  "formula_chimica": "CH₃COOH (C₂H₄O₂)",
+  "ph_tipico": "~2,9 (soluzione al 5%, tipo aceto)",
+  "origine": "Naturale nella fermentazione acetica (aceto: 5-8%); industrialmente per carbonilazione del metanolo. Gradi d'uso: soluzioni al 5-10% (uso corrente), 24-30% (tecnico), 80% e glaciale ~99% (solo industriale).",
+  "come_funziona": "Acido organico debole monoprotico (pKa 4,76). Abbassa il pH e neutralizza l'alcalinità residua; essendo volatile, evapora completamente senza lasciare residui solidi. Sulle fibre proteiche riporta la cheratina e la fibroina al loro punto isoelettrico, richiudendo le squame della lana e fissando i coloranti acidi.",
+  "dove_si_usa": [
+    "Risciacquo acido dopo lavaggio alcalino su lana, seta e tappeti orientali (dosaggi tipici: 50-100 ml di soluzione al 5-10% per litro nel risciacquo finale)",
+    "Blocco della migrazione dei coloranti acidi durante il lavaggio a umido",
+    "Correzione del browning (imbrunimento cellulosico) su tappeti, in sinergia o alternativa al perossido",
+    "Neutralizzazione di residui di ammoniaca o detergenti alcalini",
+    "Anticalcare leggero su superfici lavabili"
+  ],
+  "dove_non_si_usa": [
+    "Marmo e pietre calcaree",
+    "Ambienti chiusi non ventilati a concentrazioni tecniche (vapori irritanti)",
+    "Insieme a ipoclorito (candeggina)",
+    "Su macchie ossidabili prima di un trattamento riducente (interferisce con il pH di lavoro)"
+  ],
+  "compatibilita": [
+    "fibre proteiche: lana e seta (è l'acido di riferimento per queste fibre)",
+    "tensioattivi anionici e non ionici",
+    "acido_citrico (azioni complementari: volatile + chelante)",
+    "coloranti acidi (li stabilizza)"
+  ],
+  "incompatibilita": [
+    {
+      "con": "ipoclorito di sodio (candeggina)",
+      "effetto": "libera cloro gassoso, tossico per le vie respiratorie",
+      "pericolo": true
+    },
+    {
+      "con": "perossido_di_idrogeno concentrato",
+      "effetto": "può formare acido peracetico in modo non controllato: fortemente irritante per occhi e vie respiratorie",
+      "pericolo": true
+    },
+    {
+      "con": "basi forti (soda, ammoniaca)",
+      "effetto": "neutralizzazione reciproca con sviluppo di calore se concentrati",
+      "pericolo": false
+    },
+    {
+      "con": "metalli non nobili (ferro, zinco) a contatto prolungato",
+      "effetto": "corrosione e formazione di acetati metallici che possono macchiare",
+      "pericolo": false
+    }
+  ],
+  "vantaggi": [
+    "Volatile: evapora senza lasciare alcun residuo sul tessuto",
+    "L'acido 'storico' per lana e seta: comportamento prevedibilissimo sulle fibre proteiche",
+    "Economico e reperibile ovunque",
+    "Biodegradabile"
+  ],
+  "svantaggi": [
+    "Odore pungente e persistente durante l'uso (svanisce con l'asciugatura)",
+    "Nessun potere chelante: sul calcare è meno completo del citrico",
+    "Le concentrazioni tecniche (>25%) sono corrosive e richiedono cautela reale",
+    "Infiammabile allo stato glaciale"
+  ],
+  "tossicita": "Diluito (≤10%) è sostanzialmente sicuro: irritazione lieve di occhi e pelle sensibile. Concentrato (>25%) è corrosivo per pelle e occhi e i vapori irritano fortemente le vie respiratorie. Il glaciale (99%) provoca ustioni chimiche.",
+  "sicurezza": {
+    "dpi": ["occhiali di protezione", "guanti in nitrile", "ventilazione o mascherina con filtro per vapori organici quando si diluisce dal grado tecnico"],
+    "manipolazione": "Diluire sempre aggiungendo l'acido all'acqua. Lavorare in ambiente ventilato. Mai miscelare con clorati o perossidi concentrati.",
+    "stoccaggio": "Contenitori originali chiusi, in luogo fresco e ventilato, lontano da ossidanti e basi. Il glaciale solidifica sotto i 16,6 °C: è normale.",
+    "primo_soccorso": "Occhi: risciacquo abbondante 15 minuti, consulto medico se concentrato. Pelle: lavare con molta acqua. Inalazione di vapori: aria fresca."
+  },
+  "costo": "Basso: indicativamente 1-2 €/L per soluzioni al 10%, 2-4 €/kg per il grado tecnico 80% (riferimento 2026).",
+  "alternative": [
+    { "sostanza": "acido_citrico", "quando_preferirla": "quando serve anche azione chelante sul calcare, o si vuole evitare l'odore" },
+    { "sostanza": "acido lattico", "quando_preferirla": "odore più tenue, buona azione anche igienizzante" },
+    { "sostanza": "acido formico", "quando_preferirla": "solo in tintoria/industria: più forte, stessa volatilità, ma più pericoloso" }
+  ],
+  "collegamenti": ["acido_citrico", "ammoniaca", "perossido_di_idrogeno", "volume_1:acidi", "volume_1:ph", "volume_3:lana", "volume_3:seta", "volume_4:browning"],
+  "verifica": { "stato": "bozza", "data": "2026-07-07", "note": "Scheda pilota. Da revisionare da un tecnico prima dell'uso in formazione." }
+}

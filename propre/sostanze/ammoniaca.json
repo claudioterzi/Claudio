@@ -1,0 +1,77 @@
+{
+  "id": "ammoniaca",
+  "nome": "Ammoniaca (soluzione acquosa)",
+  "sinonimi": ["Ammonium Hydroxide (INCI)", "idrossido di ammonio", "ammoniaca casalinga (2-5%)", "soluzione ammoniacale"],
+  "categoria": "base",
+  "formula_chimica": "NH₃ in acqua (NH₄OH); uso domestico 2-5%, tecnico fino a 25-30%",
+  "ph_tipico": "~11,5 (soluzione al 2%)",
+  "origine": "Sintesi industriale (processo Haber-Bosch) da azoto e idrogeno, poi disciolta in acqua. Liquido incolore dall'odore pungente inconfondibile.",
+  "come_funziona": "Base debole volatile. Alza il pH saponificando parzialmente i grassi e gonfiando i residui organici, che si staccano più facilmente dalle superfici. È volatile: dopo l'azione evapora senza lasciare residui solidi — per questo storicamente usata su vetri e superfici lucide. Sui tessili l'alcalinità apre le fibre e aiuta i tensioattivi a penetrare, ma sulle fibre proteiche questo stesso meccanismo è dannoso.",
+  "dove_si_usa": [
+    "Sgrassaggio di superfici dure lavabili (non protein-based)",
+    "Pre-smacchiatura di macchie grasse su fibre cellulosiche e sintetiche robuste (sempre diluita e risciacquata)",
+    "Neutralizzazione di aloni acidi",
+    "Ravvivare colori su alcuni tessuti cellulosici (uso storico, con cautela e test preventivo)"
+  ],
+  "dove_non_si_usa": [
+    "MAI su lana e seta: l'alcalinità danneggia la cheratina e la fibroina (ingiallimento, infeltrimento, perdita di mano)",
+    "MAI miscelata o usata insieme a candeggina/ipoclorito (clorammine tossiche)",
+    "Su superfici in alluminio, ottone e rame a contatto prolungato",
+    "In ambienti chiusi non ventilati",
+    "Su macchie proteiche fissate dal calore (le fissa ulteriormente)"
+  ],
+  "compatibilita": [
+    "tensioattivi anionici e non ionici (ne potenzia lo sgrassaggio)",
+    "fibre cellulosiche robuste (cotone, lino) in soluzioni diluite e risciacquate",
+    "isopropanolo (formulazioni per vetri)"
+  ],
+  "incompatibilita": [
+    {
+      "con": "ipoclorito di sodio (candeggina)",
+      "effetto": "formazione di clorammine gassose: tossiche per le vie respiratorie, pericolo reale anche in piccoli ambienti. È l'incidente domestico chimico più comune",
+      "pericolo": true
+    },
+    {
+      "con": "acidi forti concentrati",
+      "effetto": "reazione esotermica violenta con sviluppo di fumi",
+      "pericolo": true
+    },
+    {
+      "con": "fibre proteiche (lana, seta)",
+      "effetto": "degradazione della fibra: ingiallimento, perdita di elasticità, infeltrimento",
+      "pericolo": false
+    },
+    {
+      "con": "rame, ottone, alluminio",
+      "effetto": "corrosione e formazione di complessi colorati (il rame diventa blu)",
+      "pericolo": false
+    }
+  ],
+  "vantaggi": [
+    "Sgrassante energico ed economico",
+    "Volatile: non lascia residui dopo l'evaporazione",
+    "Azione rapida",
+    "Non lascia patine (storico standard per i vetri)"
+  ],
+  "svantaggi": [
+    "Odore pungente e irritante anche a basse concentrazioni",
+    "Incompatibile con le fibre nobili che sono il cuore del lavoro Pro-Pre",
+    "Rischio reale di miscelazione accidentale con clorati",
+    "In gran parte sostituibile con alcali più sicuri e gestibili (silicati, carbonati, etanolammine)"
+  ],
+  "tossicita": "I vapori irritano occhi, naso e vie respiratorie già a basse concentrazioni (soglia olfattiva ~5 ppm, ben sotto la soglia di danno: l'odore è un buon allarme). Le soluzioni concentrate (>10%) sono corrosive per pelle e occhi. L'esposizione prolungata ad alte concentrazioni può causare danni polmonari.",
+  "sicurezza": {
+    "dpi": ["occhiali di protezione sempre", "guanti in nitrile", "ventilazione obbligatoria; filtro per gas inorganici (tipo K) per il grado tecnico"],
+    "manipolazione": "Aprire i contenitori lontano dal viso (pressione di vapore). Diluire versando l'ammoniaca nell'acqua. Tenere fisicamente separata dai prodotti clorati, anche nello stoccaggio.",
+    "stoccaggio": "Luogo fresco e ventilato, contenitori ben chiusi, MAI sullo stesso scaffale della candeggina.",
+    "primo_soccorso": "Inalazione: aria fresca immediata, consulto medico se l'irritazione persiste. Occhi: risciacquo 15 minuti e consulto medico. Pelle: lavare abbondantemente."
+  },
+  "costo": "Basso: indicativamente 1-2 €/L per la soluzione domestica al 5%, 0,5-1 €/kg equivalente per il grado tecnico (riferimento 2026).",
+  "alternative": [
+    { "sostanza": "carbonato di sodio", "quando_preferirla": "alcalinità simile senza vapori né rischio clorammine; non volatile (va risciacquato)" },
+    { "sostanza": "monoetanolammina (MEA)", "quando_preferirla": "sgrassaggio professionale formulato: meno volatile, più controllabile" },
+    { "sostanza": "isopropanolo", "quando_preferirla": "quando il bersaglio è unto leggero su superfici lucide e serve evaporazione rapida senza alcalinità" }
+  ],
+  "collegamenti": ["isopropanolo", "acido_acetico", "volume_1:basi", "volume_1:ph", "volume_3:lana", "volume_3:seta", "volume_4:grasso"],
+  "verifica": { "stato": "bozza", "data": "2026-07-07", "note": "Scheda pilota. Da revisionare da un tecnico prima dell'uso in formazione." }
+}

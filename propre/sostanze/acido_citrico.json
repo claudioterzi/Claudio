@@ -1,0 +1,73 @@
+{
+  "id": "acido_citrico",
+  "nome": "Acido Citrico",
+  "sinonimi": ["Citric Acid (INCI)", "E330", "acido 2-idrossi-1,2,3-propantricarbossilico"],
+  "categoria": "acido",
+  "formula_chimica": "C₆H₈O₇ (monoidrato: C₆H₈O₇·H₂O)",
+  "ph_tipico": "~2,2 (soluzione al 1%)",
+  "origine": "Naturale negli agrumi; industrialmente prodotto per fermentazione di zuccheri con Aspergillus niger. Venduto in polvere cristallina bianca, anidro o monoidrato.",
+  "come_funziona": "Acido organico debole triprotico (pKa 3,1 / 4,8 / 6,4). Agisce in due modi: abbassa il pH neutralizzando i residui alcalini, e chela gli ioni calcio e magnesio (sequestrante), sciogliendo calcare e depositi minerali. La chelazione è il suo vero punto di forza rispetto ad altri acidi: non si limita a dissolvere il carbonato, lega lo ione e lo tiene in soluzione, impedendo che si ridepositi.",
+  "dove_si_usa": [
+    "Risciacquo acido dopo lavaggi alcalini su lana e seta (riporta la fibra al suo pH naturale, ~4,5-5,5)",
+    "Decalcificazione di macchine, serbatoi, ugelli e resistenze",
+    "Stabilizzazione dei coloranti acidi su fibre proteiche (riduce il rischio di migrazione del colore)",
+    "Correzione di aloni alcalini e ingiallimenti da residuo di detergente",
+    "Ammorbidente naturale nel risciacquo (in alternativa ai cationici)"
+  ],
+  "dove_non_si_usa": [
+    "Marmo, travertino e pietre calcaree: le corrode opacizzandole",
+    "Cemento e fughe cementizie a contatto prolungato",
+    "Superfici metalliche tenere (zinco, alluminio) a lungo contatto",
+    "Insieme a prodotti a base di ipoclorito (candeggina)"
+  ],
+  "compatibilita": [
+    "tensioattivi anionici e non ionici",
+    "altri acidi organici (acido_acetico, acido lattico)",
+    "fibre proteiche: lana e seta (a dosaggio corretto)",
+    "cotone e lino (soluzioni diluite, risciacquate)"
+  ],
+  "incompatibilita": [
+    {
+      "con": "ipoclorito di sodio (candeggina)",
+      "effetto": "l'acidificazione dell'ipoclorito libera cloro gassoso, tossico per le vie respiratorie",
+      "pericolo": true
+    },
+    {
+      "con": "basi forti (soda caustica, ammoniaca)",
+      "effetto": "neutralizzazione reciproca: entrambi i prodotti perdono efficacia; reazione esotermica se concentrati",
+      "pericolo": false
+    },
+    {
+      "con": "bicarbonato_di_sodio e carbonati",
+      "effetto": "reazione con effervescenza (CO₂): innocua, ma annulla l'azione di entrambi",
+      "pericolo": false
+    }
+  ],
+  "vantaggi": [
+    "Prontamente biodegradabile, profilo ecologico eccellente",
+    "Solido stabile: facile da stoccare, dosare e trasportare rispetto agli acidi liquidi",
+    "Inodore (a differenza dell'acido acetico)",
+    "Potere chelante: previene la rideposizione del calcare",
+    "Molto economico"
+  ],
+  "svantaggi": [
+    "Più lento degli acidi forti sulle incrostazioni pesanti",
+    "Se sovradosato e non risciacquato lascia residui leggermente appiccicosi che riattaccano lo sporco",
+    "Il citrato di calcio che si forma decalcificando è poco solubile: su incrostazioni spesse può fare da barriera"
+  ],
+  "tossicita": "Bassa. Irritante per gli occhi (la polvere e le soluzioni concentrate); può irritare la pelle sensibile a contatto prolungato. Non tossico per ingestione alle dosi d'uso (è un additivo alimentare), ma le soluzioni tecniche concentrate vanno comunque tenute lontano da bambini.",
+  "sicurezza": {
+    "dpi": ["occhiali di protezione quando si manipola la polvere o soluzioni >10%", "guanti in nitrile per contatti prolungati"],
+    "manipolazione": "Evitare di sollevare polvere; sciogliere aggiungendo l'acido all'acqua, mai il contrario per soluzioni molto concentrate. Non miscelare mai con prodotti clorati.",
+    "stoccaggio": "Luogo asciutto e chiuso: è igroscopico e impacca con l'umidità. Lontano da basi forti e ipoclorito.",
+    "primo_soccorso": "Occhi: risciacquare 10-15 minuti con acqua corrente. Pelle: lavare con acqua. Ingestione di soluzioni concentrate: bere acqua, non indurre vomito, consultare un medico."
+  },
+  "costo": "Basso: indicativamente 1,5-3 €/kg grado tecnico in sacchi da 25 kg (riferimento 2026).",
+  "alternative": [
+    { "sostanza": "acido_acetico", "quando_preferirla": "quando serve un acido volatile che non lasci alcun residuo solido (evapora completamente)" },
+    { "sostanza": "acido lattico", "quando_preferirla": "decalcificazione con minore aggressività sui metalli e buona azione battericida" },
+    { "sostanza": "acido sulfamico", "quando_preferirla": "incrostazioni calcaree pesanti su macchine, dove serve più forza (mai su tessuti)" }
+  ],
+  "collegamenti": ["acido_acetico", "bicarbonato_di_sodio", "volume_1:acidi", "volume_1:ph", "volume_1:durezza_acqua", "volume_3:lana", "volume_3:seta"],
+  "verifica": { "stato": "bozza", "data": "2026-07-07", "note": "Scheda pilota. Da revisionare da un tecnico prima dell'uso in formazione." }
+}

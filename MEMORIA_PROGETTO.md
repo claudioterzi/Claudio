@@ -4,11 +4,44 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-06-13
+> Ultimo aggiornamento: 2026-07-07
 
 ---
 
-## Stato attuale: DUE sistemi paralleli
+## Sistema C — Enciclopedia Tecnica Pro-Pre (nuovo, 2026-07-07)
+
+- **Cos'è**: non un manuale PDF, ma una wikipedia privata Pro-Pre.
+  JSON-first: ogni voce nasce come dato strutturato validato da schema;
+  da lì si generano wiki, PDF stampabile e base di conoscenza dell'IA
+  — una sola fonte di verità, non tre documenti da tenere allineati.
+- **8 volumi previsti**: Chimica della Pulizia, Le Sostanze (~1.500
+  schede target), Le Fibre, Le Macchie, Prodotti Pro-Pre, La Macchina,
+  Heritage, IA.
+- **File**: `propre/`
+  - `README.md` — architettura, roadmap di crescita (pilota → nucleo
+    ~50 → estensione ~300 → enciclopedia ~1.500).
+  - `schema/sostanza.schema.json` — struttura obbligatoria di ogni
+    scheda sostanza (formula, meccanismo, incompatibilità con flag
+    `pericolo`, sicurezza, DPI, alternative, stato di verifica).
+  - `sostanze/*.json` — 7 schede pilota complete: acido citrico, acido
+    acetico, bicarbonato di sodio, ammoniaca, perossido di idrogeno,
+    lanolina, isopropanolo.
+  - `volumi/volume_1..8_*.md` — Volume 1 (Chimica) scritto per intero;
+    Volumi 2-8 come indici ragionati con struttura pianificata.
+  - `wiki.html` — seme della wiki privata: pagina autonoma, offline,
+    naviga le 7 schede pilota (ricerca, collegamenti incrociati,
+    incompatibilità pericolose evidenziate in rosso).
+- **Regola di sicurezza fissata**: nessuna scheda senza sicurezza e
+  incompatibilità complete; l'IA (Volume 8) userà solo schede
+  `verificata`, mai bozze, mai conoscenza a memoria del modello.
+- **Stato**: fondamenta poste (schema + pilota + wiki funzionante).
+  Prossimo passo: le ~50 sostanze del Nucleo (vedi
+  `propre/volumi/volume_2_sostanze.md`), poi collegare il catalogo
+  prodotti Pro-Pre reale al Volume 5.
+
+---
+
+## Stato attuale: DUE sistemi paralleli (Sistema A e B, tarocchi)
 
 Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
 

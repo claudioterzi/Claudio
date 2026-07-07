@@ -7,6 +7,8 @@ data/
 !output/contatti.jsonl
 !tarocchi/tarocchi_quantici.json
 !vercel.json
+!propre/schema/*.json
+!propre/sostanze/*.json
 
 # Python
 __pycache__/

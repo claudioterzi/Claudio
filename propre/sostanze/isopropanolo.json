@@ -1,0 +1,82 @@
+{
+  "id": "isopropanolo",
+  "nome": "Isopropanolo",
+  "sinonimi": ["Isopropyl Alcohol (INCI)", "alcol isopropilico", "IPA", "2-propanolo", "propan-2-olo"],
+  "categoria": "solvente",
+  "formula_chimica": "C₃H₈O (CH₃)₂CHOH",
+  "ph_tipico": "neutro (~7, non è né acido né base in acqua)",
+  "origine": "Sintesi industriale per idratazione del propilene. Liquido incolore, odore alcolico pungente, completamente miscibile con acqua. Gradi comuni: 70% (disinfezione), 99,9% (tecnico/elettronica).",
+  "come_funziona": "Solvente polare-protico 'di mezzo': abbastanza polare da sciogliersi in acqua, abbastanza apolare da sciogliere oli leggeri, resine, inchiostri e adesivi. Rompe le membrane lipidiche (da cui l'azione disinfettante, massima al 70% dove l'acqua ne rallenta l'evaporazione e ne aumenta la penetrazione). Evapora rapidamente e completamente: pulisce senza risciacquo e accelera l'asciugatura delle zone trattate. Sui tessili è il solvente da smacchiatura 'ponte' tra le macchie a base acquosa e quelle a base solvente.",
+  "dove_si_usa": [
+    "Smacchiatura di inchiostri, penna a sfera, pennarelli (tamponare, mai strofinare)",
+    "Rimozione di residui di adesivi, etichette, resine leggere",
+    "Sgrassaggio rapido di superfici che devono asciugare subito",
+    "Disinfezione di superfici e strumenti (grado 70%)",
+    "Accelerante di asciugatura su piccole zone trattate a umido",
+    "Solvente vettore in formulazioni smacchianti"
+  ],
+  "dove_non_si_usa": [
+    "Su acetato e triacetato: scioglie la fibra (buchi irreversibili)",
+    "Su superfici verniciate, laccate o plastiche sensibili (plexiglass: crea microfratture)",
+    "Su coloranti non testati: alcuni inchiostri e tinture migrano formando aloni più grandi della macchia",
+    "Vicino a fiamme, scintille o superfici calde (infiammabile)",
+    "Su gomma e alcune guarnizioni a contatto prolungato"
+  ],
+  "compatibilita": [
+    "acqua (miscibile in ogni proporzione: si formulano gradazioni su misura)",
+    "etanolo e altri alcoli",
+    "tensioattivi (co-solvente comune nelle formule sgrassanti)",
+    "ammoniaca (formulazioni per vetri)",
+    "fibre: cotone, lino, poliestere, poliammide (con test preventivo sui colori)"
+  ],
+  "incompatibilita": [
+    {
+      "con": "fiamme libere, scintille, cariche elettrostatiche",
+      "effetto": "infiammabile (flash point ~12 °C): i vapori formano miscele esplosive con l'aria",
+      "pericolo": true
+    },
+    {
+      "con": "ossidanti forti (perossido_di_idrogeno concentrato, ipoclorito, acidi ossidanti)",
+      "effetto": "reazione esotermica, possibile innesco d'incendio",
+      "pericolo": true
+    },
+    {
+      "con": "fibre di acetato e triacetato",
+      "effetto": "dissoluzione della fibra: danno irreversibile",
+      "pericolo": false
+    },
+    {
+      "con": "lanolina e trattamenti nutrienti/impermeabilizzanti",
+      "effetto": "li asporta: dopo l'uso va ripristinato il trattamento",
+      "pericolo": false
+    }
+  ],
+  "vantaggi": [
+    "Evapora completamente: zero residui, zero risciacquo",
+    "Versatile: smacchiatura, sgrassaggio, disinfezione, asciugatura",
+    "Miscibile con acqua: gradazione regolabile sulla macchia",
+    "Economico e reperibile",
+    "Meno tossico del metanolo e meno regolamentato dell'etanolo denaturato in molti contesti"
+  ],
+  "svantaggi": [
+    "Infiammabile: impone regole vere di stoccaggio e uso",
+    "Vapori narcotici in ambienti chiusi (mal di testa, vertigini)",
+    "Sgrassa anche la pelle delle mani (dermatiti da uso frequente senza guanti)",
+    "Su alcune macchie fissa invece di sciogliere se usato puro senza test"
+  ],
+  "tossicita": "Moderata. Inalazione: i vapori irritano le mucose e ad alte concentrazioni danno effetti narcotici (vertigini, sonnolenza). Ingestione: tossico (più dell'etanolo, meno del metanolo) — da escludere assolutamente. Contatto: secca e irrita la pelle con l'uso ripetuto. Non classificato cancerogeno.",
+  "sicurezza": {
+    "dpi": ["guanti in nitrile (il lattice non protegge dai solventi)", "occhiali di protezione", "ventilazione; filtro per vapori organici (tipo A) per usi prolungati"],
+    "manipolazione": "Lontano da ogni fonte di innesco. Travasare lentamente per evitare cariche elettrostatiche. Richiudere subito i contenitori. Tamponare le macchie dall'esterno verso il centro.",
+    "stoccaggio": "Armadio per infiammabili o luogo fresco e ventilato, lontano da ossidanti e fonti di calore. Contenitori metallici o HDPE ben chiusi.",
+    "primo_soccorso": "Inalazione: aria fresca. Occhi: risciacquo 15 minuti. Pelle: lavare e idratare. Ingestione: NON indurre vomito, consulto medico immediato."
+  },
+  "costo": "Basso-medio: indicativamente 2-4 €/L per il grado tecnico 99,9% in taniche (riferimento 2026).",
+  "alternative": [
+    { "sostanza": "etanolo", "quando_preferirla": "profilo tossicologico ancora migliore; costa di più per via delle accise se non denaturato" },
+    { "sostanza": "acetone", "quando_preferirla": "resine e smalti che l'IPA non scioglie; MAI su acetato, ancora più aggressivo" },
+    { "sostanza": "solventi glicolici (butilglicole, propilenglicole)", "quando_preferirla": "evaporazione lenta e potere sgrassante maggiore nelle formule professionali; richiedono risciacquo" }
+  ],
+  "collegamenti": ["ammoniaca", "lanolina", "perossido_di_idrogeno", "volume_1:solventi", "volume_3:acetato", "volume_4:inchiostro", "volume_4:adesivi"],
+  "verifica": { "stato": "bozza", "data": "2026-07-07", "note": "Scheda pilota. Da revisionare da un tecnico prima dell'uso in formazione." }
+}

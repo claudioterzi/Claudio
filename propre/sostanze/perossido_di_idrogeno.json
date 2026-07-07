@@ -1,0 +1,83 @@
+{
+  "id": "perossido_di_idrogeno",
+  "nome": "Perossido di Idrogeno",
+  "sinonimi": ["Hydrogen Peroxide (INCI)", "acqua ossigenata", "H₂O₂"],
+  "categoria": "ossidante",
+  "formula_chimica": "H₂O₂",
+  "ph_tipico": "~4-5 (le soluzioni commerciali sono stabilizzate in ambiente leggermente acido)",
+  "origine": "Sintesi industriale (processo all'antrachinone). Gradi comuni: 3% (10 volumi, farmaceutico), 12% (40 vol., cosmetico), 35% (130 vol., tecnico — da maneggiare con serietà).",
+  "come_funziona": "Ossidante che si decompone in acqua e ossigeno: 2 H₂O₂ → 2 H₂O + O₂. L'ossigeno attivo spezza i doppi coniugati dei cromofori — i gruppi chimici che danno colore alle macchie — rendendole incolori. È una sbianca 'a freddo' e progressiva: non rimuove la sostanza, ne distrugge il colore. L'azione cresce con pH alcalino e temperatura, ma insieme cresce anche l'aggressività sulla fibra: l'arte sta nel bilanciare.",
+  "dove_si_usa": [
+    "Sbianca ossidante 'sicura per i colori' a basse concentrazioni (test preventivo sempre)",
+    "Macchie organiche colorate: vino, caffè, tè, frutta, sangue secco",
+    "Correzione del browning cellulosico su tappeti e tessuti (spesso con successivo risciacquo acido)",
+    "Ingiallimenti da invecchiamento su cotone e lino",
+    "Sanificazione: è biocida ad ampio spettro e non lascia residui"
+  ],
+  "dove_non_si_usa": [
+    "Su lana e seta ad alte concentrazioni o a caldo (degrada le fibre proteiche)",
+    "Su capi con parti metalliche o residui di ferro/rame: i metalli catalizzano la decomposizione (reazione di Fenton) e possono bucare il tessuto",
+    "Su coloranti non testati: alcuni sono sensibili all'ossidazione",
+    "Insieme a candeggina o a riducenti"
+  ],
+  "compatibilita": [
+    "fibre cellulosiche: cotone, lino (le fibre più tolleranti)",
+    "lana e seta SOLO diluito (≤3%), a freddo e con risciacquo",
+    "acido_citrico e acido_acetico (stabilizzano il pH sul versante acido, azione più dolce)",
+    "silicati e attivatori (TAED) nelle formulazioni professionali"
+  ],
+  "incompatibilita": [
+    {
+      "con": "ipoclorito di sodio (candeggina)",
+      "effetto": "reazione vigorosa con sviluppo di ossigeno e possibile cloro: pericolosa e inutile",
+      "pericolo": true
+    },
+    {
+      "con": "metalli di transizione (ferro, rame, manganese) e loro ruggini",
+      "effetto": "decomposizione catalitica violenta (Fenton): schiuma, calore, radicali che degradano la fibra fino a bucarla",
+      "pericolo": true
+    },
+    {
+      "con": "acido_acetico concentrato",
+      "effetto": "formazione non controllata di acido peracetico, fortemente irritante",
+      "pericolo": true
+    },
+    {
+      "con": "riducenti (idrosolfito, bisolfito)",
+      "effetto": "si annullano a vicenda con reazione esotermica",
+      "pericolo": false
+    },
+    {
+      "con": "materiali organici secchi (carta, stracci) — solo grado tecnico ≥35%",
+      "effetto": "l'ossidante concentrato può innescare combustione spontanea",
+      "pericolo": true
+    }
+  ],
+  "vantaggi": [
+    "Si decompone in acqua e ossigeno: zero residui chimici sul tessuto",
+    "Molto più delicata dell'ipoclorito sui colori e sulle fibre",
+    "Doppio uso: sbianca e sanificazione",
+    "Efficace sul browning, problema classico dei tappeti in fibre naturali"
+  ],
+  "svantaggi": [
+    "Instabile: perde titolo con luce, calore e tempo (i contenitori sono scuri per questo)",
+    "Azione lenta a freddo e pH acido: servono tempo o attivazione",
+    "Richiede test preventivo su ogni colorante",
+    "Il grado tecnico 35% è un prodotto seriamente pericoloso da manipolare"
+  ],
+  "tossicita": "Al 3% è poco pericolosa (irritazione lieve, sbianca temporaneamente la pelle). Al 12% irrita seriamente pelle e occhi. Al 35% è corrosiva: ustioni chimiche a pelle e occhi, pericolosa per ingestione e i vapori irritano le vie respiratorie.",
+  "sicurezza": {
+    "dpi": ["occhiali di protezione sempre (anche col 3%)", "guanti in nitrile", "per il 35%: visiera, grembiule chimico, ventilazione"],
+    "manipolazione": "Non travasare mai in contenitori metallici o sporchi (decomposizione catalitica). Non richiudere ermeticamente contenitori che hanno mostrato sviluppo di gas. Diluire il grado tecnico versandolo nell'acqua.",
+    "stoccaggio": "Contenitori originali scuri e ventilati (tappo con sfiato), al fresco, lontano da metalli, combustibili e luce diretta.",
+    "primo_soccorso": "Occhi: risciacquo immediato 15 minuti, sempre consulto medico oltre il 10%. Pelle: lavare abbondantemente (lo sbiancamento cutaneo scompare). Ingestione: non indurre vomito, consulto medico immediato."
+  },
+  "costo": "Basso-medio: indicativamente 1-2 €/L al 3%; 2-4 €/kg per il 35% tecnico (riferimento 2026).",
+  "alternative": [
+    { "sostanza": "percarbonato di sodio", "quando_preferirla": "stessa chimica in polvere stabile e dosabile (rilascia H₂O₂ + alcalinità in acqua): lo standard per l'ammollo sbiancante" },
+    { "sostanza": "ipoclorito di sodio", "quando_preferirla": "solo su cotone bianco resistente quando serve sbianca drastica: mai su colori, lana, seta" },
+    { "sostanza": "idrosolfito di sodio (riducente)", "quando_preferirla": "macchie che l'ossidazione non tocca o peggiora: ruggine, alcuni coloranti, tannini fissati — è la sbianca 'opposta'" }
+  ],
+  "collegamenti": ["acido_acetico", "acido_citrico", "bicarbonato_di_sodio", "volume_1:ossidanti", "volume_4:vino", "volume_4:caffe", "volume_4:browning", "volume_4:ruggine"],
+  "verifica": { "stato": "bozza", "data": "2026-07-07", "note": "Scheda pilota. Da revisionare da un tecnico prima dell'uso in formazione." }
+}

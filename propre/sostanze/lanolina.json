@@ -1,0 +1,74 @@
+{
+  "id": "lanolina",
+  "nome": "Lanolina",
+  "sinonimi": ["Lanolin (INCI)", "grasso di lana", "cera di lana", "adeps lanae"],
+  "categoria": "grasso_cera",
+  "formula_chimica": "Miscela naturale complessa di esteri di acidi grassi con alcoli lanolinici e steroli (non ha formula unica)",
+  "ph_tipico": "non applicabile (sostanza grassa, non acquosa)",
+  "origine": "Sottoprodotto del lavaggio della lana grezza: la secrezione sebacea della pecora che protegge il vello. Raffinata per centrifugazione e purificazione. Cera giallastra, morbida, dall'odore caratteristico tenue.",
+  "come_funziona": "È il condizionante naturale della lana: chimicamente affine alla cheratina, si distribuisce sulla superficie della fibra ripristinando il film lipidico che i lavaggi (soprattutto alcalini o con solventi) asportano. Effetti: la fibra ritrova morbidezza, elasticità e una moderata idrorepellenza; le squame superficiali scorrono invece di agganciarsi (meno infeltrimento); i colori riprendono profondità ottica. È anche un emolliente potentissimo: assorbe fino a due volte il suo peso in acqua formando emulsioni A/O.",
+  "dove_si_usa": [
+    "Ritrattamento nutriente di tappeti e capi in lana dopo lavaggi aggressivi (emulsione diluita nel risciacquo finale o nebulizzata)",
+    "Ripristino della mano su lane infeltrite o 'secche'",
+    "Manutenzione di pellami e cuoio (nutriente classico)",
+    "Protezione di lane pregiate (cashmere, mohair) in cicli di lavaggio frequenti",
+    "Impermeabilizzazione naturale leggera (indumenti tecnici in lana, copripannolini)"
+  ],
+  "dove_non_si_usa": [
+    "Su fibre sintetiche: unge senza alcun beneficio strutturale",
+    "Su tessuti che devono restare assorbenti (spugne, strofinacci)",
+    "Su tessuti chiari in eccesso: può ingiallire nel tempo e trattenere sporco",
+    "Su persone/oggetti con allergia nota alla lanolina"
+  ],
+  "compatibilita": [
+    "fibre proteiche: lana (affinità naturale), seta",
+    "tensioattivi non ionici (servono per emulsionarla in acqua)",
+    "oli e cere naturali (miscibile)",
+    "acido_citrico e acido_acetico nel bagno di risciacquo (pH acido = fibra proteica felice)"
+  ],
+  "incompatibilita": [
+    {
+      "con": "solventi forti (isopropanolo concentrato, acetone, percloroetilene)",
+      "effetto": "la sciolgono e la asportano: un lavaggio a secco successivo annulla il trattamento",
+      "pericolo": false
+    },
+    {
+      "con": "alcali forti (soda, ammoniaca)",
+      "effetto": "saponificazione parziale: la lanolina si degrada e perde le proprietà protettive",
+      "pericolo": false
+    },
+    {
+      "con": "ossidanti (perossido_di_idrogeno, ipoclorito)",
+      "effetto": "irrancidimento accelerato con possibile ingiallimento del tessuto",
+      "pericolo": false
+    }
+  ],
+  "vantaggi": [
+    "È letteralmente ciò che la lana ha perso: nessun condizionante sintetico ha la stessa affinità",
+    "Naturale, biodegradabile, ammessa in contesti heritage e conservativi",
+    "Riduce infeltrimento ed elettricità statica",
+    "Dona idrorepellenza moderata senza film plastici"
+  ],
+  "svantaggi": [
+    "Sovradosata trattiene lo sporco e appesantisce la mano del tessuto",
+    "Può irrancidire e ingiallire nel tempo (usare gradi raffinati e dosaggi corretti)",
+    "Allergene noto per una piccola percentuale di persone",
+    "Difficile da emulsionare: richiede formulazione, non si scioglie in acqua da sola",
+    "Costo superiore ai condizionanti sintetici"
+  ],
+  "tossicita": "Molto bassa: è usata in cosmetica e perfino nei prodotti per neonati. Unico rischio rilevante: dermatite allergica da contatto in soggetti sensibilizzati (prevalenza bassa ma documentata). I gradi tecnici non raffinati possono contenere residui di pesticidi del vello: per il tessile di pregio usare gradi raffinati.",
+  "sicurezza": {
+    "dpi": ["nessuno richiesto per l'uso normale; guanti se si manipola a lungo il prodotto puro"],
+    "manipolazione": "Scaldare a bagnomaria (fonde a ~38-44 °C) per emulsionarla, mai a fiamma diretta. Preparare le emulsioni fresche o conservarle con antiossidante.",
+    "stoccaggio": "Contenitori chiusi, al buio e al fresco: luce e aria la irrancidiscono.",
+    "primo_soccorso": "Contatto cutaneo: nessuna azione necessaria salvo reazione allergica (lavare e sospendere l'uso). Occhi: risciacquare con acqua tiepida."
+  },
+  "costo": "Medio-alto: indicativamente 8-20 €/kg per gradi tecnici, 20-40 €/kg per gradi farmaceutici/anidri raffinati (riferimento 2026).",
+  "alternative": [
+    { "sostanza": "ammorbidenti cationici (esterquat)", "quando_preferirla": "morbidezza economica e facile da dosare su fibre miste; nessun valore conservativo" },
+    { "sostanza": "emulsioni siliconiche (dimeticone/amino-siliconi)", "quando_preferirla": "mano scivolosa e idrorepellenza su sintetici e miste; film non naturale" },
+    { "sostanza": "olio di jojoba emulsionato", "quando_preferirla": "alternativa vegetale per chi è allergico alla lanolina; più stabile all'irrancidimento" }
+  ],
+  "collegamenti": ["isopropanolo", "acido_acetico", "volume_3:lana", "volume_3:seta", "volume_7:conservazione", "volume_1:tensioattivi"],
+  "verifica": { "stato": "bozza", "data": "2026-07-07", "note": "Scheda pilota. Da revisionare da un tecnico prima dell'uso in formazione." }
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://propre.example/schema/sostanza.schema.json",
+  "title": "Scheda Sostanza — Enciclopedia Tecnica Pro-Pre",
+  "description": "Struttura obbligatoria di ogni voce del Volume 2. Una scheda senza sicurezza e incompatibilità complete non può diventare 'verificata'.",
+  "type": "object",
+  "required": [
+    "id", "nome", "categoria", "formula_chimica", "origine",
+    "come_funziona", "dove_si_usa", "dove_non_si_usa",
+    "compatibilita", "incompatibilita", "vantaggi", "svantaggi",
+    "tossicita", "sicurezza", "costo", "alternative", "verifica"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Identificatore univoco, snake_case (es. acido_citrico). È la chiave dei collegamenti incrociati."
+    },
+    "nome": { "type": "string" },
+    "sinonimi": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Nomi alternativi, commerciali, INCI, sigle."
+    },
+    "categoria": {
+      "type": "string",
+      "enum": [
+        "acido", "base", "tensioattivo", "enzima", "solvente",
+        "ossidante", "riducente", "chelante", "sale_tampone",
+        "grasso_cera", "polimero", "conservante", "profumo", "altro"
+      ]
+    },
+    "formula_chimica": {
+      "type": "string",
+      "description": "Formula bruta o descrizione per miscele/sostanze naturali."
+    },
+    "ph_tipico": {
+      "type": "string",
+      "description": "pH in soluzione d'uso tipica, con concentrazione (es. '~2,2 (sol. 1%)'). Vuoto se non applicabile."
+    },
+    "origine": { "type": "string" },
+    "come_funziona": {
+      "type": "string",
+      "description": "Meccanismo d'azione spiegato al tecnico: cosa fa a livello chimico-fisico e perché."
+    },
+    "dove_si_usa": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "dove_non_si_usa": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "compatibilita": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Sostanze, fibre e condizioni con cui lavora bene. Usare gli id delle altre schede quando esistono."
+    },
+    "incompatibilita": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["con", "effetto", "pericolo"],
+        "properties": {
+          "con": { "type": "string", "description": "Sostanza o condizione incompatibile (id di scheda se esiste)." },
+          "effetto": { "type": "string", "description": "Cosa succede, concretamente." },
+          "pericolo": { "type": "boolean", "description": "true = rischio per la persona (gas tossici, reazione violenta), non solo per il tessuto." }
+        }
+      }
+    },
+    "vantaggi": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "svantaggi": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "tossicita": {
+      "type": "string",
+      "description": "Profilo tossicologico in linguaggio da tecnico: vie di esposizione, effetti, soglie pratiche."
+    },
+    "sicurezza": {
+      "type": "object",
+      "required": ["dpi", "manipolazione", "stoccaggio", "primo_soccorso"],
+      "properties": {
+        "dpi": { "type": "array", "items": { "type": "string" }, "description": "Dispositivi di protezione individuale richiesti." },
+        "manipolazione": { "type": "string" },
+        "stoccaggio": { "type": "string" },
+        "primo_soccorso": { "type": "string" }
+      }
+    },
+    "costo": {
+      "type": "string",
+      "description": "Fascia indicativa €/kg o €/L grado tecnico, con data di riferimento."
+    },
+    "alternative": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sostanza", "quando_preferirla"],
+        "properties": {
+          "sostanza": { "type": "string", "description": "id di scheda se esiste, altrimenti nome." },
+          "quando_preferirla": { "type": "string" }
+        }
+      }
+    },
+    "collegamenti": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "id di voci correlate (fibre, macchie, prodotti, capitoli) per i link della wiki."
+    },
+    "verifica": {
+      "type": "object",
+      "required": ["stato", "data"],
+      "properties": {
+        "stato": { "type": "string", "enum": ["bozza", "verificata", "da_aggiornare"] },
+        "data": { "type": "string", "format": "date" },
+        "revisore": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

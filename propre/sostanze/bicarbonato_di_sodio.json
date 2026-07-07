@@ -1,0 +1,74 @@
+{
+  "id": "bicarbonato_di_sodio",
+  "nome": "Bicarbonato di Sodio",
+  "sinonimi": ["Sodium Bicarbonate (INCI)", "E500ii", "idrogenocarbonato di sodio", "baking soda"],
+  "categoria": "sale_tampone",
+  "formula_chimica": "NaHCO₃",
+  "ph_tipico": "~8,3 (soluzione al 1%) — alcalinità debole e tamponata",
+  "origine": "Minerale (nahcolite, trona) o prodotto industrialmente con il processo Solvay. Polvere cristallina bianca, inodore.",
+  "come_funziona": "Sale anfotero: tampona il pH intorno a 8-8,5, reagendo sia con gli acidi (liberando CO₂) sia, debolmente, con le basi. Tre azioni utili: (1) tampone — mantiene stabile il pH di una soluzione di lavaggio; (2) deodorante — neutralizza chimicamente gli odori acidi (sudore, rancido) e adsorbe le molecole odorose sulla superficie dei cristalli; (3) abrasivo dolcissimo — durezza Mohs ~2,5, inferiore a quasi tutte le superfici, quindi pulisce meccanicamente senza graffiare.",
+  "dove_si_usa": [
+    "Deodorizzazione a secco di tappeti e moquette: cospargere, lasciare agire, aspirare a fondo",
+    "Tamponamento del pH nelle soluzioni di lavaggio",
+    "Pulizia delicata di superfici con leggera azione meccanica",
+    "Neutralizzazione rapida di sversamenti acidi",
+    "Pretrattamento di odori organici (animali, umidità) prima del lavaggio"
+  ],
+  "dove_non_si_usa": [
+    "Su lana e seta in soluzioni concentrate o ripetute: l'alcalinità, pur debole, danneggia le fibre proteiche nel tempo",
+    "Su alluminio (lo scurisce)",
+    "Insieme ad acidi quando si vuole conservare l'azione di entrambi",
+    "Come detergente principale: il potere pulente proprio è modesto"
+  ],
+  "compatibilita": [
+    "tensioattivi anionici e non ionici",
+    "fibre cellulosiche: cotone, lino (le tollerano bene)",
+    "percarbonato di sodio (spesso formulati insieme)",
+    "enzimi (il pH 8-8,5 è nell'intervallo di lavoro di proteasi e lipasi)"
+  ],
+  "incompatibilita": [
+    {
+      "con": "acidi (acido_citrico, acido_acetico)",
+      "effetto": "effervescenza con sviluppo di CO₂: innocua, ma neutralizza entrambi i prodotti",
+      "pericolo": false
+    },
+    {
+      "con": "contenitori chiusi ermeticamente con acidi o umidità",
+      "effetto": "la CO₂ sviluppata può mettere in pressione il contenitore",
+      "pericolo": true
+    },
+    {
+      "con": "alluminio",
+      "effetto": "scurimento e corrosione superficiale del metallo",
+      "pericolo": false
+    }
+  ],
+  "vantaggi": [
+    "Sicurezza pressoché totale: alimentare, non irritante, nessun DPI particolare",
+    "Costo bassissimo",
+    "Deodorante vero (neutralizza, non copre)",
+    "Stabile indefinitamente se tenuto asciutto",
+    "Ecologico"
+  ],
+  "svantaggi": [
+    "Potere detergente proprio molto limitato",
+    "Lascia residui polverosi bianchi se non aspirato o risciacquato a fondo",
+    "Poco solubile a freddo (~9 g/100 ml a 20 °C): facile superare la saturazione",
+    "Sopra i 50 °C si decompone in carbonato (più alcalino): il pH della soluzione calda sale"
+  ],
+  "tossicita": "Molto bassa: è un additivo alimentare. La polvere può irritare lievemente occhi e vie respiratorie in grandi quantità. Nessun rischio pratico alle dosi d'uso.",
+  "sicurezza": {
+    "dpi": ["nessuno richiesto per l'uso normale; occhiali se si movimentano grandi quantità di polvere"],
+    "manipolazione": "Evitare di sollevare nuvole di polvere. Non chiudere ermeticamente miscele umide con acidi.",
+    "stoccaggio": "Luogo asciutto: con l'umidità impacca. Nessuna precauzione speciale.",
+    "primo_soccorso": "Occhi: risciacquare con acqua. Inalazione abbondante di polvere: aria fresca."
+  },
+  "costo": "Bassissimo: indicativamente 0,7-1,5 €/kg grado tecnico in sacchi (riferimento 2026).",
+  "alternative": [
+    { "sostanza": "carbonato di sodio (soda Solvay)", "quando_preferirla": "quando serve più alcalinità e potere sgrassante (pH ~11), su fibre che la tollerano" },
+    { "sostanza": "percarbonato di sodio", "quando_preferirla": "quando oltre all'alcalinità serve azione sbiancante ossidante (rilascia perossido_di_idrogeno)" },
+    { "sostanza": "sesquicarbonato di sodio", "quando_preferirla": "via di mezzo tra bicarbonato e carbonato, usato nel lavaggio dei tessili delicati alcalino-tolleranti" }
+  ],
+  "collegamenti": ["acido_citrico", "acido_acetico", "perossido_di_idrogeno", "volume_1:basi", "volume_1:ph", "volume_4:odori"],
+  "verifica": { "stato": "bozza", "data": "2026-07-07", "note": "Scheda pilota. Da revisionare da un tecnico prima dell'uso in formazione." }
+}
