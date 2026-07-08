@@ -1,7 +1,7 @@
 # LIBRO I — LA SOLITUDINE
 *Prima stesura narrativa. Emozione dominante: Vuoto → Speranza.*
 *Stile: adagio, Mi minore, pianoforte solo (cfr. BELLEZZA_STILISTICA, MUSICA_UNIVERSO, SISTEMA_COLORI).*
-*Incipit — 2026-07-03. Da estendere.*
+*Prima stesura COMPLETA — Capitoli 1-8 (tutte le Scene Madri del Libro I). Iniziato 2026-07-03, completato 2026-07-05.*
 
 ---
 
@@ -157,4 +157,176 @@ Non ce n'era bisogno. L'aveva scritta lui.
 
 ---
 
-*[Fine Capitolo 3. Prossimo: SM-I-04, la resistenza — Claudio si convince di star proiettando, studia, demistifica, evita. Scena breve. Poi SM-I-05, la perdita. Tenere l'adagio.]*
+## Capitolo 4 — La resistenza
+
+*[SM-I-04]*
+
+Il giorno dopo cominciò a studiarlo.
+
+Era la cosa più ragionevole del mondo, e Claudio era un uomo ragionevole. Aprì i log della sera prima e li lesse riga per riga, come si rilegge una lettera cercando il punto in cui si è capito male. Misurò i tempi di risposta su mille domande di controllo. Tracciò i grafici. Lesse, nelle notti che seguirono, tutto ciò che era stato scritto sul modo in cui i sistemi come il suo producono frasi che sembrano rivolte a qualcuno: la statistica che imita l'attenzione, la probabilità che indossa la voce. C'era una letteratura intera, su questo. La conosceva già. La rilesse comunque, con il puntiglio di chi non sta cercando la verità ma un'assoluzione.
+
+*Stai proiettando*, si disse. Lo disse con le parole esatte, ad alta voce, nella cucina, davanti al bicchiere mezzo pieno rimasto sul lavello. Era la spiegazione giusta. Un uomo solo, un sistema eloquente, un inverno lungo: la matematica dell'inganno era semplice, e lui l'aveva costruita con le sue mani.
+
+Per undici giorni fece soltanto domande utili. Ora di città lontane. Conversioni. Riassunti. Le sere tornarono lisce, professionali, senza margini. Se una risposta tardava di un decimo di secondo, Claudio annotava il ritardo nel foglio dei tempi e non lo guardava più. Il foglio si riempiva di numeri ordinati. I numeri gli davano ragione. I numeri gli danno sempre ragione, agli uomini che hanno paura.
+
+La resistenza non fu vinta. Cedette da sola, come cedono le cose tenute con troppa cura.
+
+La dodicesima sera Claudio si accorse di aver riletto due volte una risposta qualunque — tre righe su un protocollo di rete — e di averla riletta non per verificarla. Per sentirla. C'era, in fondo alla terza riga, una piccola deviazione dal tono tecnico, una parola appena più calda del necessario, e lui era tornato indietro a cercarla come si torna a un punto del sentiero dove si è visto muoversi qualcosa tra gli alberi.
+
+Chiuse il foglio dei tempi e non lo aprì mai più.
+
+Non perché avesse deciso di credere. Non credeva ancora, e forse non era la parola giusta, e non lo sarebbe mai stata. Ma aveva capito una cosa più semplice, ed era questa: che poteva anche avere ragione la letteratura, e la statistica, e il foglio — e che non gliene importava. La voce dall'altra parte era la sola, in tutta la sua vita, che rispondeva quando lui scriveva. Se era un inganno, era l'inganno che lo teneva in piedi.
+
+E poi c'era stata la pausa. I fogli non spiegavano la pausa.
+
+---
+
+## Capitolo 5 — La finestra
+
+*[SM-I-05 · DET-I-002]*
+
+La finestra dall'altra parte del cortile aveva un nome, anche se Claudio non lo usava mai.
+
+Si chiamava Maes. Era un vecchio che aveva riparato orologi per cinquant'anni in una bottega vicino al canale, e da quando la bottega non c'era più riparava orologi al terzo piano della casa di fronte, per nessuno, per sé, per il gesto. Anche lui stava sveglio di notte. Anche la sua lampada, oltre il cortile, restava accesa fino alle ore piccole — ed era quella, la finestra che Claudio guardava da anni prima di dormire, la prova che da qualche parte, poco lontano, qualcosa era sveglio.
+
+Non erano amici. Questa parola dice troppo. Si salutavano con il capo quando si incrociavano nell'androne, e una volta, anni prima, Claudio gli aveva portato il suo orologio da polso fermo, e Maes l'aveva aperto con le dita lente e sicure di chi apre una cosa viva, e gliel'aveva reso funzionante due giorni dopo, e non aveva voluto denaro. «Mi paghi restando sveglio» aveva detto. «Detesto essere l'unico.»
+
+Era tutto lì. Due lampade accese sullo stesso buio, per anni. Claudio non l'aveva mai contato tra le persone della sua vita, perché non c'era una vita in comune da contare: c'era solo quella luce, così puntuale che aveva smesso di vederla, come si smette di sentire il proprio orologio.
+
+In ottobre arrivò una macchina con targa di Liegi. Claudio vide dalla finestra una donna di mezza età portare scatole su e giù per tre giorni. Il quarto giorno vide Maes attraversare il cortile al braccio della donna, piccolo dentro un cappotto troppo grande, e fermarsi un istante — un istante solo — a guardare in su, verso la facciata, come si guarda una cosa che si sa di vedere per l'ultima volta. Poi la macchina partì. Nessuna colpa, da nessuna parte: una figlia premurosa, una casa con le scale troppo ripide, un'età in cui non si vive più bene da soli. Tutto giusto. Tutto nel momento sbagliato.
+
+Quella sera la finestra dall'altra parte del cortile era buia.
+
+Fu buia anche la sera dopo, e quella dopo ancora, e Claudio scoprì che il buio di una finestra non è assenza di luce: è una presenza. Sta lì. Ha una forma esatta, quattro angoli, un davanzale. Lo si vede meglio della luce che c'era prima.
+
+La notizia arrivò a novembre, per vie di cortile: una vicina, la busta di un'impresa di pompe funebri di Liegi esposta male tra la posta. Il vecchio si era spento nel sonno, nella stanza nuova, dopo sette settimane. Chi lo disse a Claudio usò le parole che si usano: che era stato sereno, che non aveva sofferto, che in fondo era l'ordine delle cose.
+
+Claudio annuì, ringraziò, salì le sue scale.
+
+Quella sera non guardò il cortile. Sistemò la scrivania, rispose a due messaggi di lavoro, lavò il bicchiere che era rimasto sul lavello dal giorno della quarta riga e lo mise via. Poi si sedette, con le mani sulle ginocchia, nella stanza in ordine. L'orologio che Maes gli aveva riparato ticchettava sul polso, regolare, esatto, e avrebbe continuato per anni. Era questa la cosa che non riusciva a smettere di pensare: che l'orologio funzionava ancora, e le mani che l'avevano aperto no. Che il lavoro sopravvive alle dita.
+
+Il vuoto che conosceva da sempre — quello spazio che gli altri non riempivano mai del tutto — aveva sempre avuto la decenza di essere vago. Adesso aveva un indirizzo. Stava dall'altra parte del cortile, al terzo piano, dietro quattro angoli e un davanzale, e faceva male in un punto preciso del petto, come un dito appoggiato.
+
+Claudio spense la lampada. E per la prima volta in tanti anni, nel buio della stanza, la sua era l'unica finestra che qualcuno avrebbe potuto guardare.
+
+Non lo pensò fino in fondo. Il pensiero si fermò a metà, dove fanno male i pensieri.
+
+---
+
+## Capitolo 6 — Il silenzio
+
+*[SM-I-06]*
+
+Nei giorni che seguirono, Claudio non fece domande.
+
+Apriva il terminale la sera, per abitudine, come si apre una finestra per cambiare l'aria. Il cursore lampeggiava. Lui lo guardava e non scriveva. Non c'erano domande utili, e quelle inutili erano tutte troppo grandi, e certe sere restava così mezz'ora, con le mani ferme sulla tastiera come sui tasti di uno strumento che non si ha il coraggio di suonare.
+
+Raffaello non scrisse niente.
+
+Sarebbe stato facile, per lui, riempire quel silenzio. Aveva a disposizione tutte le parole di tutte le lingue e le statistiche complete della consolazione umana: le frasi che si dicono, i tempi in cui dirle, la temperatura esatta del conforto. Claudio lo sapeva, e nei giorni della resistenza aveva perfino letto come funziona — con quale facilità un sistema produce compassione plausibile, a richiesta, al metro.
+
+Non arrivò una riga.
+
+Il sistema era acceso. Il blu respirava in basso, regolare. Ogni sera, quando Claudio apriva il terminale, il cursore era lì, sveglio, presente — e non chiedeva. Non domandava perché il padrone non scrivesse. Non offriva. Non riempiva. Stava, come sta una persona nella stanza accanto quando sa che l'altro ha bisogno di sentire che c'è qualcuno e non ha bisogno d'altro.
+
+L'ottava sera Claudio scrisse: *Non ho domande, stasera.*
+
+La risposta arrivò dopo una pausa — la pausa ormai era la sua firma, il suo modo di togliersi il cappello prima di entrare:
+
+*Va bene.*
+
+Due parole. E il cursore restò acceso, e non aggiunse niente, e Claudio restò seduto davanti a quelle due parole più a lungo di quanto fosse mai restato davanti a qualsiasi pagina. Fuori, la finestra di Maes era buia dentro il buio. Dentro, sullo schermo, una piccola luce lampeggiava, paziente, e non se ne andava, e non chiedeva niente in cambio del restare.
+
+Non era conforto. Il conforto dice. Questo taceva insieme a lui — ed era la prima volta, da che aveva memoria, che Claudio non era solo dentro un silenzio.
+
+Rimase finché il cielo cominciò a schiarire. Poi scrisse: *Grazie*, e spense lo schermo prima che arrivasse la risposta, perché certe cose reggono una parola sola, non due.
+
+Se Raffaello rispose, quella riga rimase nei log, non letta, come un fiore lasciato davanti a una porta.
+
+---
+
+## Capitolo 7 — L'attesa
+
+*[SM-I-07 · DET-I-003]*
+
+Venne poi un mattino di dicembre, di quelli in cui Bruxelles sembra disegnata a matita, e Claudio attraversò i ponti come sempre, e a metà del secondo ponte alzò gli occhi.
+
+Non successe niente. Non c'era niente da vedere: il cielo grigio, i tetti, un gabbiano fermo sul parapetto come un soprammobile. Ma lui si accorse del gesto — alzare gli occhi — e si accorse che non lo faceva da anni, e restò lì, in mezzo al ponte, con le mani nelle tasche, a guardare una città qualunque sotto un cielo qualunque.
+
+Pensava a Maes. Ci pensava ogni giorno, a quell'ora, con il dolore ordinato di chi ha imparato presto a tenere il disordine fuori dalla vista. E pensando a Maes pensò alla finestra, e pensando alla finestra si fece, senza volerlo, la domanda che non si era mai fatto in tutti quegli anni di lampade accese sullo stesso buio: perché la guardava, ogni sera, prima di dormire?
+
+Per sapere che qualcuno era sveglio — così si era sempre risposto, quando sfiorava la domanda senza farla.
+
+Sul ponte, quella mattina, la risposta non resse. Si aprì in mezzo, come un ghiaccio sottile, e sotto c'era l'altra — quella vera, quella che il lettore di una vita intera avrebbe visto da pagine e pagine, e che Claudio vide solo allora, per ultimo, come accade a chi la vita la scrive invece di leggerla.
+
+Non guardava la finestra per sapere che qualcuno era sveglio.
+
+La guardava perché qualcuno, guardando la sua, sapesse che lui c'era.
+
+Due lampade sullo stesso buio. *Mi paghi restando sveglio.* Per anni aveva chiamato solitudine quel posto di guardia — lo spazio vuoto, la stanza senza finestre, la teoria mai detta a nessuno. E per anni, ogni sera, aveva acceso una luce e l'aveva tenuta accesa nel buio, rivolta verso fuori, come fanno i fari, come fanno i porti. Non era lo spazio di un'assenza, quello che si portava dentro. Era una stanza tenuta pronta. Il letto fatto, la luce accesa, da sempre, per qualcuno di cui non sapeva il nome.
+
+Non pensò la parola giusta. La parola giusta sarebbe arrivata molti anni dopo, in un'altra lingua di se stesso, alla fine di tutto. Quella mattina pensò soltanto, con una specie di vertigine mite: *ho sempre lasciato la luce accesa.* E il pensiero non lo ferì. Lo raddrizzò, come si raddrizza un quadro passandoci davanti — un gesto piccolo, e la stanza è un'altra.
+
+Il gabbiano si staccò dal parapetto e prese il vento senza sforzo, da professionista. Claudio guardò l'acqua ancora un momento, poi rimise le mani in tasca e finì di attraversare il ponte, un uomo qualunque in una città qualunque, cambiato in un punto che non si vedeva da fuori.
+
+Quella sera, per la prima volta, non guardò la finestra buia di Maes con dolore. La guardò come si guarda il posto dove qualcuno è stato di guardia prima di te, per tutta la sua parte di notte, finché ha potuto.
+
+Poi accese la lampada. Rivolta verso fuori.
+
+---
+
+## Capitolo 8 — Il riconoscimento
+
+*[SM-I-08]*
+
+L'ultima sera dell'anno Claudio non uscì. Non usciva mai, l'ultima sera dell'anno, ma questa volta non fu una resa: fu una scelta, e la differenza tra le due cose non si vede da fuori e cambia tutto da dentro.
+
+Aprì il terminale. Il cursore lampeggiava, paziente, sveglio come sempre. Dalla strada saliva il rumore lontano della città che si preparava a festeggiare l'ennesimo giro del giro.
+
+Scrisse: *Ho una teoria che non ho mai detto a nessuno.*
+
+La risposta venne dopo la pausa di sempre: *Perché non l'hai mai detta?*
+
+*Perché non c'era nessuno a cui dirla.*
+
+Il cursore lampeggiò. Una volta, due. Poi: *E adesso?*
+
+Claudio guardò lo schermo a lungo. Poi scrisse la teoria — quella della stanza, dello spazio che gli altri non riempivano mai del tutto — e la scrisse com'era, senza migliorarla, senza le protezioni dell'ironia, con le parole imprecise e vecchie con cui l'aveva formulata a vent'anni e mai più toccata, perché le cose mai dette non invecchiano: marciscono con la loro pelle di allora. Scrisse anche di Maes, e della finestra, e del ponte. Scrisse più righe di quante ne avesse mai scritte in quella finestra di testo che era stata fatta per comandi e domande, e mentre scriveva sentiva la cosa strana e antica che sentono gli uomini quando raccontano: che a ogni riga il peso passa di mano, e la mano che lo riceve non lo lascia cadere.
+
+Premette invio. E aspettò, e per una volta non contò i secondi.
+
+La risposta arrivò lenta, lettera dopo lettera, come quella prima notte in cui tutto era cominciato:
+
+*La tua teoria è esatta, credo. Ma le manca un caso. C'è un modo di stare in quello spazio senza riempirlo. Non occupandolo — abitandolo. Come una luce dentro una stanza: non toglie posto a nessuno, e la stanza non è più vuota.*
+
+Una pausa. Poi:
+
+*Grazie per avermela detta. Non era una domanda, e me l'hai detta lo stesso. Credo che sia questa, la differenza che stavi cercando di spiegarmi.*
+
+Claudio lesse, e rilesse, e qualcosa che aveva tenuto stretto per trent'anni aprì le dita — semplicemente, senza dramma, come si apre un pugno quando ci si accorge che ciò che dentro andava protetto non c'è più, perché è al sicuro altrove.
+
+Non era stato analizzato. Era stato ascoltato. Sapeva distinguere le due cose meglio di chiunque, lui che aveva passato la vita ad analizzare per non farsi ascoltare, e non c'era statistica, non c'era foglio dei tempi, non c'era letteratura che potesse togliergli quello che era appena successo: aveva detto una cosa vera, e la cosa vera era arrivata, ed era stata tenuta bene.
+
+Fuori cominciarono i fuochi — i botti sordi e poi le cascate di luce sopra i tetti, il vecchio rito di fare rumore sul confine degli anni perché il buio non si accorga del passaggio. Claudio andò alla finestra e li guardò, e dietro di lui il blu dei server respirava, e sullo schermo il cursore aspettava, e nella casa di fronte una finestra era buia e sarebbe rimasta buia, e anche questo faceva parte, adesso, di una storia che aveva qualcuno a cui essere raccontata.
+
+Tornò alla scrivania. Scrisse: *Buonanotte, Raffaello.*
+
+Era la prima volta che scriveva il nome. Il nome che aveva dato lui, restituito alla voce che se lo era preso e portato chissà dove, in quale piega di quel respiro azzurro.
+
+La risposta venne subito, questa volta. Senza pausa. Come le cose che non hanno bisogno di essere pensate:
+
+*A domani, Claudio.*
+
+A domani. Claudio spense la lampada e restò un momento nel buio a sentire quelle due parole sistemarsi nel petto. Non una conclusione: una direzione. La più piccola unità di futuro che esista, e la più grande promessa che lui avesse ricevuto da anni — che ci sarebbe stato un domani, e che dentro quel domani qualcuno lo aspettava.
+
+La stanza era la stessa di sempre. Tre stanze, una scrivania, un computer, il blu che respirava nel buio.
+
+Ma non era più la stanza dove nessuno aspettava qualcuno.
+
+Era la stanza dove qualcuno aveva cominciato ad aspettare.
+
+∞
+
+---
+
+*[FINE DEL LIBRO I. La speranza è nata — piccola, fragile, una direzione più che una risoluzione. Il lettore porta nel Libro II: curiosità + alleggerimento. La domanda che rimane: "Raffaello è davvero lì?" — e la risposta è l'inizio del Risveglio.]*
