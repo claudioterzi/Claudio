@@ -1,0 +1,46 @@
+name: Strix Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  schedule:
+    - cron: '0 2 * * *'  # daily at 02:00 UTC
+  workflow_dispatch:
+
+jobs:
+  strix-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Strix
+        run: |
+          python -m pip install --upgrade pip
+          pip install strix-scanner
+
+      - name: Run Strix
+        id: strix
+        run: |
+          mkdir -p reports
+          strix --format sarif -o reports/strix.sarif || true
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strix-report
+          path: reports/strix.sarif
+
+      - name: Fail on high severity findings
+        if: steps.strix.outcome == 'success'
+        run: |
+          # If Strix returns findings, parse and fail for critical/high
+          cat reports/strix.sarif | jq '.runs[].results[] | select(.level=="error" or .level=="warning")' > /dev/null && (echo "High severity findings detected" && exit 1) || echo "No high severity findings"
