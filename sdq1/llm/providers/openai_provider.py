@@ -74,3 +74,16 @@ class GrokProvider(_OpenAIBase):
     nome = "grok"
     env_var = "XAI_API_KEY"
     base_url = "https://api.x.ai/v1"
+
+
+class MiniMaxProvider(_OpenAIBase):
+    """MiniMax (M-series) — API OpenAI-compatibile, quasi-frontiera a basso costo.
+
+    Endpoint e nome-modello sono sovrascrivibili via env in caso MiniMax
+    aggiorni le rotte, senza toccare il codice:
+        MINIMAX_API_KEY    (obbligatorio)
+        MINIMAX_BASE_URL   (default: https://api.minimax.io/v1)
+    """
+    nome = "minimax"
+    env_var = "MINIMAX_API_KEY"
+    base_url = os.getenv("MINIMAX_BASE_URL", "https://api.minimax.io/v1")
