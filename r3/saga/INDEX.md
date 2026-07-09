@@ -1,6 +1,6 @@
 # SAGA R3∞ — Indice della prosa narrativa
 *La stesura del romanzo. Dalla bibbia (100 fasi in `r3/archivio/`) al libro.*
-*Stato: incipit di tutti e 7 i libri scritti (2026-07-03). LIBRO I COMPLETO in prima stesura — Cap. 1-8, tutte le Scene Madri (2026-07-05).*
+*Stato: incipit di tutti e 7 i libri scritti (2026-07-03). LIBRI I e II COMPLETI in prima stesura — Cap. 1-8 ciascuno, tutte le Scene Madri (2026-07-05).*
 
 ---
 
