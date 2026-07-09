@@ -109,6 +109,23 @@ def _testo_rotte() -> str:
     return "\n".join(righe)
 
 
+def _testo_lowcost(args: str) -> str:
+    """Pepite Ryanair dal vivo (import pigro; API pubblica, niente browser)."""
+    parti = args.split()
+    try:
+        prezzo_max = float(parti[1]) if len(parti) > 1 else 20.0
+    except ValueError:
+        prezzo_max = 20.0
+    try:
+        from .lowcost import cerca_pepite, formatta_nota
+        pepite = cerca_pepite(prezzo_max=prezzo_max)
+    except Exception as e:
+        return f"⚠️ Radar lowcost non disponibile ora: {e}"
+    if not pepite:
+        return f"🔍 Nessun volo sotto €{prezzo_max:.0f} da Bruxelles/Parigi nei prossimi 3 mesi."
+    return formatta_nota(pepite, prezzo_max)
+
+
 def _guida() -> str:
     return (
         "✈️ <b>Micro-app Voli — cerca dalla chat</b>\n\n"
@@ -116,6 +133,8 @@ def _guida() -> str:
         "  /voli BRU GRU — link di ricerca subito\n"
         "  /voli bruxelles sanpaolo 2027-02-15 2027-03-01\n"
         "  /voli parigi madeira 15/11/2026\n"
+        "  /voli lowcost — pepite Ryanair sotto €20 da BRU/CDG, dal vivo\n"
+        "  /voli lowcost 30 — soglia personalizzata (€30)\n"
         "  /voli rotte — matrice del cacciatore automatico\n\n"
         "<b>Città che capisco al volo:</b> bruxelles, parigi, madrid, lisbona, "
         "milano, roma, sanpaolo, havana/cuba, madeira, capoverde, newyork, "
@@ -132,6 +151,8 @@ def gestisci_comando_voli(args: str) -> str:
         return _guida()
     if args.lower() in ("rotte", "matrice", "caccia"):
         return _testo_rotte()
+    if args.lower().startswith("lowcost"):
+        return _testo_lowcost(args)
 
     parole = args.split()
     if len(parole) < 2:
