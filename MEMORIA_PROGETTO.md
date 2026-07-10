@@ -56,6 +56,26 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
 
 ---
 
+## Filone parallelo — CUSTODE-001 (2026-07-10)
+
+Sistema integrale di custodia per case Airbnb, richiesto da Claudio.
+Due sottosistemi che si coprono a vicenda:
+- **OCCHIO**: inventario fotografico di precisione a zone (CountGD++/VLM).
+- **SOGLIA**: micro-tag RFID UHF (inlay carta da incollare anche in una
+  pagina di libro — tecnologia da biblioteca, NON va inventata: esiste)
+  + varco d'uscita con direzione che allarma se un oggetto taggato esce.
+
+- **Studio completo**: `idee/CUSTODE-001_sistema-custode-airbnb.md`
+  (tecnologie, hardware, costi, privacy/GDPR, roadmap v0→v3).
+- **Prototipo v0**: pacchetto `custode/` — modelli, motori di conteggio
+  (Claude vision opzionale, fallback stub come sdq1.llm), confronto
+  baseline/check-out, registro tag, varco, report integrato con incrocio
+  a evidenza doppia. Demo: `python -m custode.demo`. Test: 7/7 OK.
+- **Branch**: `claude/airbnb-rental-assistance-g5miim`.
+- **Prossimo (v1)**: app foto guidate a zone + motore denso CountGD++.
+
+---
+
 ## Prossimo passo concordato
 
 Sistema B completo (592 stati scritti). Decisione su dove andare:
