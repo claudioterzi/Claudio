@@ -132,7 +132,7 @@ class Nodo:
     @property
     def id(self) -> str:
         raw = f"{self.contenuto[:30]}{self.livello}{self.timestamp}"
-        return hashlib.md5(raw.encode()).hexdigest()[:8]
+        return hashlib.md5(raw.encode(), usedforsecurity=False).hexdigest()[:8]
 
     @property
     def polo(self) -> str:
