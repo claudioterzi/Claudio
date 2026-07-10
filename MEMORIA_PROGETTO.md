@@ -72,7 +72,15 @@ Due sottosistemi che si coprono a vicenda:
   baseline/check-out, registro tag, varco, report integrato con incrocio
   a evidenza doppia. Demo: `python -m custode.demo`. Test: 7/7 OK.
 - **Branch**: `claude/airbnb-rental-assistance-g5miim`.
-- **Prossimo (v1)**: app foto guidate a zone + motore denso CountGD++.
+- **Preventivi e piani d'azione** (2026-07-10):
+  - `idee/CUSTODE-002_preventivo-piano-OCCHIO.md` — avvio 30–130 €,
+    API 10–35 $/anno (Haiku+Batch), pilota in 4 fasi (8 settimane).
+  - `idee/CUSTODE-003_preventivo-piano-SOGLIA.md` — config. A palmare
+    ~285–655 €, config. B varco ~1.025–2.735 €, piano in 4 fasi con
+    conformità GDPR. Raccomandazione: partire dalla A.
+  - Budget pilota complessivo ~320–800 € (senza varco), ricorrente <300 €/anno.
+- **Prossimo (v1)**: Fase 1 dei piani — mappatura zone + baseline (OCCHIO),
+  campionario tag + palmare (SOGLIA).
 
 ---
 
