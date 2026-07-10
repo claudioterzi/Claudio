@@ -88,6 +88,31 @@ def caccia_radar(dry_run: bool = False) -> int:
     return 1 if notifiche.invia(nota) else 0
 
 
+def bollettino(valutazioni: list[Valutazione], dry_run: bool = False) -> int:
+    """Nota riassuntiva 'last minute': tutti i prezzi voli trovati, anche normali.
+
+    Si affianca ai radar (lowcost + promo hotel): insieme formano il
+    bollettino completo voli + hotel richiesto da Claudio (10/07/2026).
+    """
+    from datetime import datetime, timezone
+
+    ora = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    righe = [f"🧳 <b>Bollettino voli last minute</b>  <i>{ora}</i>", ""]
+    for v in valutazioni:
+        prezzo = f"<b>€{v.min_eur}</b>" if v.min_eur is not None else "—"
+        marca = "‼️ " if v.notevole else "• "
+        righe.append(f"{marca}{v.rotta.descrizione}: {prezzo} (soglia €{v.rotta.soglia_eur})")
+    righe.append("")
+    righe.append("#nota #voli #bollettino #lastminute")
+    nota = "\n".join(righe)
+    if dry_run or not telegram_pronto():
+        print("----- NOTA BOLLETTINO (dry-run) -----")
+        print(nota)
+        return 0
+    from .. import notifiche
+    return 1 if notifiche.invia(nota) else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="Caccia agli errori di prezzo voli (SDQ-1).")
     p.add_argument("--dry-run", action="store_true", help="non inviare note, stampa soltanto")
@@ -98,6 +123,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--solo-radar", action="store_true", help="solo radar feed promo/error fare")
     p.add_argument("--niente-rotte", action="store_true", help="salta la scansione rotte via browser")
     p.add_argument("--prezzo-max", type=float, default=20.0, help="soglia pepite lowcost (default €20)")
+    p.add_argument("--bollettino", action="store_true",
+                   help="invia sempre la nota riassuntiva voli, anche senza offerte notevoli")
     p.add_argument("-v", "--verbose", action="store_true")
     args = p.parse_args(argv)
 
@@ -133,6 +160,9 @@ def main(argv: list[str] | None = None) -> int:
 
     cacciatore = Cacciatore(dry_run=True if args.dry_run else None)
     ris = cacciatore.caccia(rotte)
+
+    if args.bollettino:
+        inviate_extra += bollettino(ris.valutazioni, dry_run=args.dry_run)
 
     print(f"\nCaccia completata: {len(rotte)} rotte, {len(ris.notevoli)} notevoli, "
           f"{ris.inviate + inviate_extra} note inviate.")

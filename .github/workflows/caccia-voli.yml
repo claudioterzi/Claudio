@@ -12,6 +12,11 @@ on:
   schedule:
     - cron: "0 6,14,20 * * *"   # 06:00, 14:00, 20:00 UTC
   workflow_dispatch:            # avvio manuale dal tab Actions
+    inputs:
+      bollettino:
+        description: "Invia sempre il bollettino riassuntivo voli, anche senza offerte notevoli"
+        type: boolean
+        default: true
 
 concurrency:
   group: caccia-voli
@@ -42,4 +47,4 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python -m sdq1.voli -v
+        run: python -m sdq1.voli -v ${{ github.event_name == 'workflow_dispatch' && inputs.bollettino && '--bollettino' || '' }}
