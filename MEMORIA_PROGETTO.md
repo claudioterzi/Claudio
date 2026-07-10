@@ -88,6 +88,25 @@
   (Tarocchi Quantici R³∞ funzionante).
 - **Resta aperto (separato)**: https://claudio-ebon.vercel.app risponde 404 —
   a giugno era online. Da verificare nel dashboard Vercel.
+  ⚠️ Su Vercel girava il webhook Telegram del bot (`/api/telegram`): finché è giù, il bot non risponde.
+
+### Seconda parte della sessione — "riattiva tutto"
+
+- **Security Scan**: il workflow "Strix" installava `strix-scanner`, pacchetto inesistente
+  su PyPI → falliva a ogni push/PR/cron. Sostituito con **Bandit** (PR #17). Bandit ha
+  trovato 4 finding high severity reali, tutti corretti (PR #18): 3× `hashlib.md5` marcati
+  `usedforsecurity=False` in `sdq1/sar/`, e `tarocchi_web.py` non parte più con
+  `debug=True` di default (debugger Werkzeug = RCE) — ora serve `FLASK_DEBUG=1`.
+- **Caccia voli deduplicata**: rimosso `caccia_voli.yml` (doppione vecchio 1x/giorno di
+  `caccia-voli.yml` 3x/giorno) — niente più note Telegram doppie.
+- **Studio Notturno**: senza secret `ANTHROPIC_API_KEY` ora salta con warning invece di
+  fallire ogni notte. ➜ Per attivarlo: aggiungere il secret in Settings → Secrets → Actions.
+- **Riattivato tutto**: al 10/07 ~06:45 UTC tutti i workflow verdi — Test Runner,
+  Deploy Pages, Security Scan, Agente Orario, Daily Run, Studio Notturno (skip pulito),
+  Caccia voli (6 rotte: GRU da €754, HAV da €744 — prezzi normali, nessun error fare;
+  radar promo inviato).
+- **Profilo GitHub**: `PROFILO_GITHUB_README.md` pronto nel repo e su Drive — da pubblicare
+  nel repo speciale `claudioterzi/claudioterzi` (serve accesso app o creazione manuale).
 
 ---
 
