@@ -258,7 +258,7 @@ class MemoryManager:
     def snapshot(self, mem: Dict, nota: Optional[str] = None) -> Dict:
         self.snapshot_count += 1
         snap_id = hashlib.md5(
-            f"{_ts()}{self.snapshot_count}".encode()
+            f"{_ts()}{self.snapshot_count}".encode(), usedforsecurity=False
         ).hexdigest()[:8]
 
         snap = {
@@ -427,7 +427,7 @@ class MilestoneLogger:
 
     def registra(self, evento: str, mem: Dict, dettaglio: str = "") -> Dict:
         ts = _ts()
-        milestone_id = hashlib.md5(f"{ts}{evento}".encode()).hexdigest()[:8]
+        milestone_id = hashlib.md5(f"{ts}{evento}".encode(), usedforsecurity=False).hexdigest()[:8]
         entry = {
             "id":       milestone_id,
             "ts":       ts,

@@ -209,4 +209,4 @@ def telegram_webhook():
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "5001"))
-    app.run(debug=True, port=port)
+    app.run(debug=os.getenv("FLASK_DEBUG") == "1", port=port)
