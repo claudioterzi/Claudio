@@ -1,15 +1,19 @@
-name: Strix Security Scan
+name: Security Scan
+
+# Scansione di sicurezza del codice Python con Bandit (SAST).
+# Sostituisce il precedente workflow "Strix" che installava un pacchetto
+# inesistente su PyPI (strix-scanner) e falliva a ogni run.
 
 on:
   push:
     branches: [ main ]
   pull_request:
   schedule:
-    - cron: '0 2 * * *'  # daily at 02:00 UTC
+    - cron: '0 2 * * *'  # ogni giorno alle 02:00 UTC
   workflow_dispatch:
 
 jobs:
-  strix-scan:
+  security-scan:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,30 +21,24 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install Strix
+      - name: Install Bandit
         run: |
           python -m pip install --upgrade pip
-          pip install strix-scanner
+          pip install bandit
 
-      - name: Run Strix
-        id: strix
+      - name: Run Bandit (fail su findings high severity)
         run: |
           mkdir -p reports
-          strix --format sarif -o reports/strix.sarif || true
+          bandit -r . -x ./node_modules --severity-level high -f json -o reports/bandit.json
+          echo "Nessun finding high severity"
 
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: strix-report
-          path: reports/strix.sarif
-
-      - name: Fail on high severity findings
-        if: steps.strix.outcome == 'success'
-        run: |
-          # If Strix returns findings, parse and fail for critical/high
-          cat reports/strix.sarif | jq '.runs[].results[] | select(.level=="error" or .level=="warning")' > /dev/null && (echo "High severity findings detected" && exit 1) || echo "No high severity findings"
+          name: security-report
+          path: reports/bandit.json
