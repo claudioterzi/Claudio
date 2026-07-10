@@ -91,9 +91,19 @@ Due sottosistemi che si coprono a vicenda:
   `analizza_mancanti()`. `custode/web.py` — interfaccia Flask con il
   bottone "🔍 Analizza oggetti mancanti" (porta 5001). Test 10/10,
   verificata end-to-end. Il catalogo esporta il RegistroTag per il varco.
+- **Schedatura rapida a due foto** (2026-07-10): `custode/schedatura.py` —
+  foto frontespizio → visione compila la scheda; foto tag → legge l'EPC
+  stampato e li associa. Integrata in `web.py` (mobile-first: da iPhone
+  la fotocamera si apre dai campi foto, `capture="environment"`).
+  Scheda precompilata da controllare e salvare. Verificata end-to-end
+  con stub; con ANTHROPIC_API_KEY usa Claude vision (Sonnet).
+- **Gestione da iPhone**: sì — la web app è pensata per Safari mobile;
+  i palmari UHF Bluetooth si collegano a iPhone. Nessuna app nativa
+  necessaria per il pilota.
 - **Prossimo (v1)**: Fase 1 dei piani — mappatura zone + baseline (OCCHIO),
   campionario tag + palmare (SOGLIA); collegare il palmare Bluetooth
-  al campo EPC della pagina inventario.
+  al campo EPC della pagina inventario; pubblicare la web app
+  (es. Vercel, come i tarocchi) per averla sull'iPhone di Claudio.
 
 ---
 

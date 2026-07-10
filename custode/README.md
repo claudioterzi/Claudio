@@ -21,10 +21,15 @@ coprono a vicenda, un unico report di check-out.
   (per un libro: autore, ISBN, valore, **dove è nascosto il tag** —
   es. "incollato tra pagina 142 e 143"), persistenza JSON, e il metodo
   `analizza_mancanti(epc_letti)`: catalogo − letti = mancanti.
-- **Web** — `web.py` (Flask): compilazione schede + il bottone
-  **"🔍 Analizza oggetti mancanti"**: si incollano gli EPC letti dal
-  palmare e si ottiene il report (in v2 il lettore Bluetooth riempirà
-  il campo da solo).
+- **Schedatura rapida** — `schedatura.py`: due foto e basta. Foto al
+  frontespizio → la visione compila la scheda (titolo, autore, ISBN,
+  stima del valore); foto al tag → legge l'EPC stampato sull'inlay e
+  lo associa. ~20 secondi a oggetto.
+- **Web** — `web.py` (Flask, mobile-first): da iPhone/Android la
+  fotocamera si apre direttamente dai campi foto (`capture`).
+  Schedatura rapida, scheda precompilata da controllare e salvare,
+  e il bottone **"🔍 Analizza oggetti mancanti"** (in v2 il lettore
+  Bluetooth riempirà il campo EPC da solo).
 
 ## Uso
 
