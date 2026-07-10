@@ -79,6 +79,12 @@ Due sottosistemi che si coprono a vicenda:
     ~285–655 €, config. B varco ~1.025–2.735 €, piano in 4 fasi con
     conformità GDPR. Raccomandazione: partire dalla A.
   - Budget pilota complessivo ~320–800 € (senza varco), ricorrente <300 €/anno.
+- **Analisi tracker GPS/Bluetooth** (2026-07-10, CUSTODE-004): AirTag & co.
+  NON sostituiscono l'RFID (costano 100–600× di più per oggetto, batterie,
+  non nascondibili, anti-stalking li fa scoprire, tracciare la posizione
+  dell'ospite è indifendibile per GDPR). Ruolo complementare: 2–4 AirTag
+  per mazzi di chiavi e oggetti da esterno (~60–120 €, zero canoni).
+  Decisione: SOGLIA resta su RFID UHF.
 - **Prossimo (v1)**: Fase 1 dei piani — mappatura zone + baseline (OCCHIO),
   campionario tag + palmare (SOGLIA).
 
