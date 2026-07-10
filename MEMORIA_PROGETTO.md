@@ -4,7 +4,7 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-07-07
+> Ultimo aggiornamento: 2026-07-10
 
 ---
 
@@ -74,6 +74,20 @@
 5. **ARGO Heartbeat**: attivare dopo il rientro (15 minuti in script.google.com).
 6. **ASBL SkyRights**: attaccare dopo checkout ospiti.
 7. **Airbnb iCal**: trovare URL feed .ics e aggiungere a Google Calendar.
+
+---
+
+## Sessione 2026-07-10 — branch `claude/github-issues-kvdsnp`
+
+### ✅ RISOLTO: blocco GitHub Actions rimosso, CI tutto verde
+
+- **Sblocco avvenuto il 09/07/2026** (primo run verde alle 18:44 UTC). Il lock
+  "account locked due to a billing issue" non c'è più.
+- **Verificato il 10/07**: Test Runner ✅ e Deploy to GitHub Pages ✅ rilanciati
+  e passati al primo colpo. Sito di nuovo online: https://claudioterzi.github.io/Claudio/
+  (Tarocchi Quantici R³∞ funzionante).
+- **Resta aperto (separato)**: https://claudio-ebon.vercel.app risponde 404 —
+  a giugno era online. Da verificare nel dashboard Vercel.
 
 ---
 
