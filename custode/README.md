@@ -17,11 +17,21 @@ coprono a vicenda, un unico report di check-out.
 - **Report** — `report.py` incrocia le due fonti: una mancanza vista
   in foto E confermata dal varco è evidenza doppia per AirCover/deposito.
 
+- **Catalogo** — `catalogo.py`: la scheda di ogni oggetto taggato
+  (per un libro: autore, ISBN, valore, **dove è nascosto il tag** —
+  es. "incollato tra pagina 142 e 143"), persistenza JSON, e il metodo
+  `analizza_mancanti(epc_letti)`: catalogo − letti = mancanti.
+- **Web** — `web.py` (Flask): compilazione schede + il bottone
+  **"🔍 Analizza oggetti mancanti"**: si incollano gli EPC letti dal
+  palmare e si ottiene il report (in v2 il lettore Bluetooth riempirà
+  il campo da solo).
+
 ## Uso
 
 ```bash
 python -m custode.demo          # demo completa, senza hardware né API key
 python -m custode.test_custode  # test
+python -m custode.web           # interfaccia web → http://localhost:5001
 ```
 
 Con `ANTHROPIC_API_KEY` impostata (e `pip install anthropic`),

@@ -66,5 +66,46 @@ class TestReport(unittest.TestCase):
         self.assertIn("evidenza doppia", conferme[0])
 
 
+class TestCatalogo(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from custode.catalogo import Catalogo, SchedaOggetto
+        self.percorso = tempfile.mktemp(suffix=".json")
+        self.catalogo = Catalogo(self.percorso)
+        self.catalogo.aggiungi(SchedaOggetto(
+            epc="E1", nome="Il nome della rosa", categoria="libro",
+            zona_id="soggiorno/libreria-ripiano-2", valore_eur=35.0,
+            posizione_tag="incollato tra pagina 142 e 143",
+            campi={"autore": "Umberto Eco", "isbn": "978-88-452-1066-1"}))
+        self.catalogo.aggiungi(SchedaOggetto(
+            epc="E2", nome="phon", categoria="elettronica", valore_eur=40.0))
+
+    def tearDown(self):
+        import os
+        if os.path.exists(self.percorso):
+            os.remove(self.percorso)
+
+    def test_bottone_analizza_mancanti(self):
+        r = self.catalogo.analizza_mancanti({"E2", "EPC-IGNOTO"})
+        self.assertEqual([s.nome for s in r.mancanti], ["Il nome della rosa"])
+        self.assertEqual([s.epc for s in r.presenti], ["E2"])
+        self.assertEqual(r.epc_sconosciuti, ["EPC-IGNOTO"])
+        self.assertAlmostEqual(r.valore_mancante, 35.0)
+        self.assertIn("pagina 142", r.testo())
+
+    def test_persistenza(self):
+        from custode.catalogo import Catalogo
+        riletto = Catalogo(self.percorso)
+        scheda = riletto.scheda("E1")
+        self.assertEqual(scheda.campi["autore"], "Umberto Eco")
+        self.assertEqual(scheda.posizione_tag, "incollato tra pagina 142 e 143")
+
+    def test_export_registro_per_varco(self):
+        registro = self.catalogo.registro()
+        tag = registro.cerca("E1")
+        self.assertEqual(tag.oggetto, "libro — Il nome della rosa")
+        self.assertEqual(tag.valore_eur, 35.0)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -85,8 +85,15 @@ Due sottosistemi che si coprono a vicenda:
   dell'ospite è indifendibile per GDPR). Ruolo complementare: 2–4 AirTag
   per mazzi di chiavi e oggetti da esterno (~60–120 €, zero canoni).
   Decisione: SOGLIA resta su RFID UHF.
+- **Catalogo + bottone inventario** (2026-07-10, richiesta di Claudio):
+  `custode/catalogo.py` — scheda completa per ogni oggetto taggato
+  (libro: autore/ISBN/posizione del tag nascosto), persistenza JSON,
+  `analizza_mancanti()`. `custode/web.py` — interfaccia Flask con il
+  bottone "🔍 Analizza oggetti mancanti" (porta 5001). Test 10/10,
+  verificata end-to-end. Il catalogo esporta il RegistroTag per il varco.
 - **Prossimo (v1)**: Fase 1 dei piani — mappatura zone + baseline (OCCHIO),
-  campionario tag + palmare (SOGLIA).
+  campionario tag + palmare (SOGLIA); collegare il palmare Bluetooth
+  al campo EPC della pagina inventario.
 
 ---
 
