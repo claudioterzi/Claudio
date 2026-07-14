@@ -1,27 +1,32 @@
 """Interfaccia web CUSTODE — schede oggetti + il bottone "Analizza mancanti".
 
-Esecuzione:  python -m custode.web   →  http://localhost:5001
+In locale:   python -m custode.web   →  http://localhost:5001/custode
+Su Vercel:   montata da tarocchi_web.py sotto /custode (stesso progetto
+             dei Tarocchi). Variabili d'ambiente in produzione:
+             CUSTODE_PASSWORD  — login (obbligatoria online)
+             ANTHROPIC_API_KEY — visione per la schedatura a due foto
+             REDIS_URL         — persistenza del catalogo (es. Upstash)
 
-- Compilare la scheda quando si nasconde un tag (per un libro: autore,
-  ISBN, dove è incollato il tag).
-- Al momento dell'inventario: incollare gli EPC letti dal palmare (uno
-  per riga) e premere il bottone → analisi degli oggetti mancanti.
-  In v2 il palmare Bluetooth riempirà il campo da solo.
+- Schedatura rapida: foto al frontespizio + foto al tag → scheda
+  precompilata dalla visione, da controllare e salvare.
+- Inventario: EPC letti dal palmare → bottone → analisi mancanti.
 """
 
 import os
 import tempfile
 
-from flask import Flask, redirect, render_template_string, request, url_for
+from flask import (Blueprint, Flask, redirect, render_template_string,
+                   request, session, url_for)
 
+from custode.archivio import crea_archivio
 from custode.catalogo import Catalogo, SchedaOggetto
 from custode.schedatura import crea_schedatore
 
 PERCORSO_CATALOGO = os.environ.get(
     "CUSTODE_CATALOGO", os.path.join("output", "catalogo_custode.json"))
 
-app = Flask(__name__)
-catalogo = Catalogo(PERCORSO_CATALOGO)
+custode_bp = Blueprint("custode", __name__)
+catalogo = Catalogo(archivio=crea_archivio(PERCORSO_CATALOGO))
 schedatore = crea_schedatore()
 
 PAGINA = """<!doctype html><html lang="it"><head><meta charset="utf-8">
@@ -43,16 +48,20 @@ PAGINA = """<!doctype html><html lang="it"><head><meta charset="utf-8">
  .mancante{background:#fde8e8} .ok{color:#2e7d32}
  .esito{background:#fff;border:2px solid #b3532e;padding:1rem;white-space:pre-wrap;
       font-family:monospace}
+ .avviso{background:#fff3cd;border:1px solid #d9b64c;padding:.6rem 1rem}
 </style></head><body>
 <h1>CUSTODE · Catalogo &amp; Inventario</h1>
+{% if effimero %}<p class="avviso">⚠ Archivio temporaneo: le schede si perdono
+al riavvio. Configura <code>REDIS_URL</code> su Vercel (Upstash, gratuito).</p>
+{% endif %}
 
 {% if esito %}<h2>Esito inventario</h2>
 <div class="esito">{{ esito }}</div>
-<p><a href="{{ url_for('home') }}">← torna al catalogo</a></p>
+<p><a href="{{ url_for('custode.home') }}">← torna al catalogo</a></p>
 {% else %}
 
 <h2>Inventario ({{ schede|length }} oggetti a catalogo)</h2>
-<form method="post" action="{{ url_for('inventario') }}">
+<form method="post" action="{{ url_for('custode.inventario') }}">
  <p>EPC letti dal palmare — uno per riga (in v2 arrivano dal lettore Bluetooth):</p>
  <textarea name="epc_letti" rows="5" placeholder="E280-0001&#10;E280-0002"></textarea>
  <p><button class="bottone-inventario" type="submit">🔍 ANALIZZA OGGETTI MANCANTI</button></p>
@@ -71,7 +80,7 @@ PAGINA = """<!doctype html><html lang="it"><head><meta charset="utf-8">
 <h2>📷 Schedatura rapida — due foto e basta</h2>
 <p>Foto 1: frontespizio del libro (o l'oggetto). Foto 2: il tag prima di
 nasconderlo. La scheda si compila da sola — controlla e salva.</p>
-<form class="scheda" method="post" action="{{ url_for('schedatura') }}"
+<form class="scheda" method="post" action="{{ url_for('custode.schedatura') }}"
       enctype="multipart/form-data">
  <label>1 · Frontespizio / oggetto<br>
   <input type="file" name="foto_oggetto" accept="image/*" capture="environment" required></label>
@@ -81,7 +90,7 @@ nasconderlo. La scheda si compila da sola — controlla e salva.</p>
 </form>
 
 <h2>Scheda {{ "precompilata — controlla e salva" if pre else "manuale" }}</h2>
-<form class="scheda" method="post" action="{{ url_for('nuova_scheda') }}">
+<form class="scheda" method="post" action="{{ url_for('custode.nuova_scheda') }}">
  <input name="epc" placeholder="EPC del tag (obbligatorio)" required
         value="{{ pre.get('epc','') }}">
  <select name="categoria">
@@ -109,14 +118,49 @@ nasconderlo. La scheda si compila da sola — controlla e salva.</p>
 {% endif %}
 </body></html>"""
 
+LOGIN = """<!doctype html><html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CUSTODE — Accesso</title><style>
+ body{font-family:Georgia,serif;max-width:400px;margin:4rem auto;padding:0 1rem;
+      background:#f4f1ea;color:#2b2b2b;text-align:center}
+ input,button{padding:.7rem;font:inherit;width:100%;box-sizing:border-box;margin:.3rem 0}
+ button{background:#b3532e;color:#fff;border:0;cursor:pointer}
+</style></head><body>
+<h1><i>CUSTODE</i></h1>
+{% if errore %}<p style="color:#b3532e">Password errata.</p>{% endif %}
+<form method="post">
+ <input type="password" name="password" placeholder="Password" autofocus required>
+ <button type="submit">Entra</button>
+</form></body></html>"""
 
-@app.route("/")
+
+def _pagina(**kwargs):
+    kwargs.setdefault("schede", catalogo.tutte())
+    kwargs.setdefault("esito", None)
+    kwargs.setdefault("pre", {})
+    kwargs.setdefault("effimero", getattr(catalogo.archivio, "effimero", False))
+    return render_template_string(PAGINA, **kwargs)
+
+
+@custode_bp.before_request
+def _controllo_accesso():
+    password = os.environ.get("CUSTODE_PASSWORD")
+    if not password or session.get("custode_auth"):
+        return None
+    if request.method == "POST" and request.endpoint == "custode.home":
+        if request.form.get("password") == password:
+            session["custode_auth"] = True
+            return redirect(url_for("custode.home"))
+        return render_template_string(LOGIN, errore=True)
+    return render_template_string(LOGIN, errore=False)
+
+
+@custode_bp.route("/", methods=["GET", "POST"])
 def home():
-    return render_template_string(PAGINA, schede=catalogo.tutte(),
-                                  esito=None, pre={})
+    return _pagina()
 
 
-@app.route("/schedatura", methods=["POST"])
+@custode_bp.route("/schedatura", methods=["POST"])
 def schedatura():
     """Due foto → scheda precompilata dalla visione, da controllare e salvare."""
     def _salva_upload(nome_campo):
@@ -149,11 +193,10 @@ def schedatura():
         for p in (foto_oggetto, foto_tag):
             if p and os.path.exists(p):
                 os.remove(p)
-    return render_template_string(PAGINA, schede=catalogo.tutte(),
-                                  esito=None, pre=pre)
+    return _pagina(pre=pre)
 
 
-@app.route("/scheda", methods=["POST"])
+@custode_bp.route("/scheda", methods=["POST"])
 def nuova_scheda():
     campi = {k: request.form[k].strip()
              for k in ("autore", "isbn") if request.form.get(k, "").strip()}
@@ -167,17 +210,26 @@ def nuova_scheda():
         note=request.form.get("note", "").strip(),
         campi=campi,
     ))
-    return redirect(url_for("home"))
+    return redirect(url_for("custode.home"))
 
 
-@app.route("/inventario", methods=["POST"])
+@custode_bp.route("/inventario", methods=["POST"])
 def inventario():
     epc_letti = {r.strip() for r in request.form.get("epc_letti", "").splitlines()
                  if r.strip()}
     risultato = catalogo.analizza_mancanti(epc_letti)
-    return render_template_string(PAGINA, schede=catalogo.tutte(),
-                                  esito=risultato.testo(), pre={})
+    return _pagina(esito=risultato.testo())
+
+
+def registra_custode(app: Flask, prefisso: str = "/custode") -> None:
+    """Monta CUSTODE su un'app Flask esistente (usato da tarocchi_web.py)."""
+    if not app.secret_key:
+        app.secret_key = os.environ.get(
+            "SECRET_KEY", os.environ.get("CUSTODE_PASSWORD", "custode-dev"))
+    app.register_blueprint(custode_bp, url_prefix=prefisso)
 
 
 if __name__ == "__main__":
+    app = Flask(__name__)
+    registra_custode(app)
     app.run(host="0.0.0.0", port=5001, debug=False)

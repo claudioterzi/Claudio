@@ -8,8 +8,6 @@ l'EPC e risalgono alla scheda da qui.
 Persistenza: JSON semplice (zero dipendenze), un file per casa.
 """
 
-import json
-import os
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Set
@@ -69,12 +67,14 @@ class RisultatoInventario:
 
 
 class Catalogo:
-    """L'insieme delle schede di una casa, con persistenza JSON."""
+    """L'insieme delle schede di una casa, con persistenza pluggabile
+    (file JSON in locale, Redis in produzione — vedi custode.archivio)."""
 
-    def __init__(self, percorso: Optional[str] = None):
-        self.percorso = percorso
+    def __init__(self, percorso: Optional[str] = None, archivio=None):
+        from custode.archivio import ArchivioFile
+        self.archivio = archivio or (ArchivioFile(percorso) if percorso else None)
         self._schede: Dict[str, SchedaOggetto] = {}
-        if percorso and os.path.exists(percorso):
+        if self.archivio:
             self._carica()
 
     # ── gestione schede ──
@@ -115,14 +115,9 @@ class Catalogo:
 
     # ── persistenza ──
     def _salva(self) -> None:
-        if not self.percorso:
-            return
-        os.makedirs(os.path.dirname(self.percorso) or ".", exist_ok=True)
-        with open(self.percorso, "w", encoding="utf-8") as f:
-            json.dump([asdict(s) for s in self.tutte()],
-                      f, ensure_ascii=False, indent=2)
+        if self.archivio:
+            self.archivio.scrivi([asdict(s) for s in self.tutte()])
 
     def _carica(self) -> None:
-        with open(self.percorso, encoding="utf-8") as f:
-            for dati in json.load(f):
-                self._schede[dati["epc"]] = SchedaOggetto(**dati)
+        for dati in self.archivio.leggi():
+            self._schede[dati["epc"]] = SchedaOggetto(**dati)
