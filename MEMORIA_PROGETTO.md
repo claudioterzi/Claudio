@@ -356,6 +356,14 @@ Due sottosistemi che si coprono a vicenda:
 - **Gestione da iPhone**: sì — la web app è pensata per Safari mobile;
   i palmari UHF Bluetooth si collegano a iPhone. Nessuna app nativa
   necessaria per il pilota.
+- **ONLINE su Vercel** (2026-07-10, merge su main): CUSTODE è montato su
+  **https://claudio-ebon.vercel.app/custode** come blueprint dentro
+  l'app dei Tarocchi (try/except: non può romperli). Variabili
+  d'ambiente da impostare nel dashboard Vercel:
+  - `CUSTODE_PASSWORD` (obbligatoria: senza, la pagina è aperta a tutti)
+  - `ANTHROPIC_API_KEY` (per la schedatura a due foto; senza → stub)
+  - `REDIS_URL` (Upstash gratuito, per la persistenza del catalogo;
+    senza → /tmp effimero con banner di avviso in pagina)
 - **Prossimo (v1)**: Fase 1 dei piani — mappatura zone + baseline (OCCHIO),
   campionario tag + palmare (SOGLIA); collegare il palmare Bluetooth
   al campo EPC della pagina inventario; pubblicare la web app
