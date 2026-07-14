@@ -19,9 +19,14 @@ installazione fissa, nessun tema privacy in tempo reale.
 | 150 inlay UHF carta (EPC Gen2) | 0,05–0,25 $/pz, adesivi, invisibili applicati | 10–40 € |
 | 10 tag on-metal | per elettronica e oggetti metallici | 15–40 € |
 | 5 micro-tag Murata 1,25 mm | oggetti piccoli di valore (lettura a contatto) | 10–25 € |
-| Lettore palmare UHF Bluetooth | si collega allo smartphone | 250–550 € |
-| Applicazione + registro tag | ~2 min/oggetto ≈ 5 h di lavoro; registro con `custode.varco.RegistroTag` | 0 € (tempo) |
-| **Totale configurazione A** | | **~285–655 €** |
+| Lettore palmare UHF Bluetooth | si accoppia all'**iPhone** (gestione tutta da Safari mobile) | 250–550 € |
+| Schedatura a due foto | foto frontespizio + foto tag → scheda automatica (`custode/schedatura.py`), ~0,01 $/oggetto | ~2 € una tantum |
+| (Opz.) 2–4 AirTag | mazzi di chiavi + oggetti da esterno — v. analisi CUSTODE-004; zero canoni | 60–120 € |
+| **Totale configurazione A** | | **~285–775 €** |
+
+La compilazione del registro non è più "5 h di lavoro manuale": con la
+schedatura a due foto (~20 s/oggetto) i 150 oggetti si schedano in
+**~1 ora**, dall'iPhone, con stima del valore automatica.
 
 Costo ricorrente: ~10–20 €/anno (sostituzione tag rovinati). Zero costi API.
 
@@ -76,9 +81,12 @@ uscita, EPC sconosciuti ignorati (minimizzazione dati). Simulatore incluso.
 ### Fase 2 — Tagging della casa pilota (settimane 3–4)
 1. Lista oggetti da proteggere con Claudio: valore > ~20 € oppure
    "sparizione frequente" (telecomandi, phon, adattatori, libri, biancheria).
-2. Applicazione nascosta + registrazione: EPC → oggetto → zona → valore
-   (`RegistroTag`; le zone coincidono con quelle di OCCHIO: stesso ID).
-3. Collegare il palmare al registro: scansione stanza → confronto → lista mancanti.
+2. **Schedatura a due foto dall'iPhone** (già implementata in
+   `custode/schedatura.py` + `web.py`): foto al frontespizio → scheda
+   compilata dalla visione; foto al tag → EPC letto e associato;
+   si annota dove è nascosto il tag e si salva. ~20 s/oggetto.
+3. Collegare il palmare Bluetooth al campo EPC della pagina inventario:
+   scansione stanza → bottone "Analizza mancanti" → lista con valori.
 4. **Criterio di uscita**: verifica completa della casa col palmare in
    ≤10 minuti, zero falsi mancanti.
 

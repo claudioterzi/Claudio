@@ -138,11 +138,28 @@ prima ancora che l'auto dell'ospite parta.
 │  app foto a zone ────────────────┼────▶ │ motore conteggio│
 │                                  │      │ (CountGD + VLM) │
 │  SOGLIA (tempo reale)            │      │ confronto        │
-│  varco UHF porta + IR direzione ─┼────▶ │ registro tag     │
+│  varco UHF porta + IR direzione ─┼────▶ │ CATALOGO schede  │
 │  lettore palmare (turnover) ─────┼────▶ │ report check-out │
-└──────────────────────────────────┘      │ notifiche push   │
-                                          └──────────────────┘
+│                                  │      │ notifiche push   │
+│  iPhone dell'host = console ─────┼────▶ │ web app mobile   │
+└──────────────────────────────────┘      └──────────────────┘
 ```
+
+**Principio iPhone-first** (2026-07-10): tutta la gestione passa da
+Safari su iPhone — schedatura con la fotocamera, bottone inventario,
+notifiche push. Il palmare UHF si sceglie Bluetooth proprio per
+accoppiarsi al telefono. Nessuna app nativa per il pilota.
+
+### Il Catalogo e la schedatura a due foto (implementati, 2026-07-10)
+
+Ogni oggetto taggato ha la sua **scheda** (`custode/catalogo.py`): per un
+libro autore/ISBN/valore e **dove è nascosto il tag** ("incollato tra
+pagina 142 e 143"). La compilazione è a **due foto** (`schedatura.py`):
+foto al frontespizio → la visione compila la scheda e stima il valore;
+foto al tag → legge l'EPC stampato sull'inlay e li associa (~20 s e
+~0,01 $ a oggetto). Il **bottone "🔍 Analizza oggetti mancanti"**
+(`web.py`) confronta catalogo vs EPC letti: catalogo − letti = mancanti,
+con valore totale. Il catalogo esporta il registro tag per il varco.
 
 Il **report di check-out** unisce le due fonti:
 1. eventi varco durante il soggiorno (che cosa è uscito e quando);
@@ -155,16 +172,31 @@ Il **report di check-out** unisce le due fonti:
 | Voce | Costo |
 |---|---|
 | 200 inlay UHF carta | 10–50 $ |
-| Lettore palmare UHF (turnover) | 300–600 $ |
-| Gate reader UHF + antenne + IR porta | 800–2.500 $ |
+| Lettore palmare UHF **Bluetooth** (turnover, si accoppia all'iPhone) | 300–600 $ |
+| Gate reader UHF + antenne + IR porta (opzionale, config. B) | 800–2.500 $ |
+| 2–4 AirTag per chiavi e oggetti da esterno (complementari, v. CUSTODE-004) | 60–120 € |
 | Software (questo repo) | prototipo `custode/` |
+
+Preventivi dettagliati e piani d'azione: **CUSTODE-002** (OCCHIO) e
+**CUSTODE-003** (SOGLIA, config. A palmare / B varco).
+
+### Decisione registrata: niente GPS/tracker per il tagging (CUSTODE-004)
+
+AirTag/Tile/GPS **non sostituiscono l'RFID**: costano 100–600× per
+oggetto, hanno batterie, non si nascondono in una pagina, gli avvisi
+anti-stalking li fanno scoprire, e tracciare la posizione dell'ospite è
+indifendibile (GDPR). Ruolo complementare: AirTag su mazzi di chiavi e
+oggetti da esterno (bici, barbecue), dove la posizione è lecita e utile.
 
 ### Roadmap
 
-- **v0 (questo commit)**: prototipo software `custode/` — modelli dati,
-  conteggio via VLM (Claude vision, opzionale), confronto baseline/checkout,
-  registro tag, simulatore varco, report integrato, demo senza hardware.
-- **v1**: app mobile per foto guidate a zone; integrazione CountGD++ per il denso.
+- **v0 — FATTO ✅**: prototipo `custode/` completo — modelli dati, conteggio
+  VLM con fallback stub, confronto baseline/checkout, varco simulato,
+  report a evidenza doppia, **catalogo schede**, **schedatura a due foto**,
+  **web app mobile con bottone inventario**. Test 10/10, verifiche end-to-end.
+- **v1**: pubblicare la web app (Vercel, come i tarocchi, con login);
+  campionario tag + palmare Bluetooth → riempimento automatico del campo
+  EPC; app foto guidate a zone; integrazione CountGD++ per il denso.
 - **v2**: hardware reale — gate reader EPC Gen2 (i reader espongono
   eventi EPC via LLRP/MQTT: il `custode.varco` è già disegnato per riceverli).
 - **v3**: prodotto multi-proprietà, canale di vendita host/property manager.

@@ -54,9 +54,12 @@ scala gratis** — è il punto di forza commerciale di OCCHIO.
 
 ## 2. Piano d'azione
 
-### Fase 0 — Fondamenta (fatto ✅)
+### Fase 0 — Fondamenta (fatto ✅, esteso il 10/07)
 Prototipo `custode/`: modelli dati, motori di conteggio con fallback stub,
-confronto baseline/check-out, report. Test 7/7, demo funzionante.
+confronto baseline/check-out, report. In più (stesso giorno): catalogo
+schede, schedatura a due foto, web app mobile-first con bottone
+"Analizza mancanti" — la base della futura app foto a zone (Fase 2)
+esiste già. Test 10/10, verifiche end-to-end.
 
 ### Fase 1 — Pilota su casa reale (settimane 1–2)
 1. Claudio sceglie la casa pilota e definisce con Code le ~30 zone
