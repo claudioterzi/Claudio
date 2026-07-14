@@ -312,6 +312,57 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
 
 ---
 
+## Filone parallelo — CUSTODE-001 (2026-07-10)
+
+Sistema integrale di custodia per case Airbnb, richiesto da Claudio.
+Due sottosistemi che si coprono a vicenda:
+- **OCCHIO**: inventario fotografico di precisione a zone (CountGD++/VLM).
+- **SOGLIA**: micro-tag RFID UHF (inlay carta da incollare anche in una
+  pagina di libro — tecnologia da biblioteca, NON va inventata: esiste)
+  + varco d'uscita con direzione che allarma se un oggetto taggato esce.
+
+- **Studio completo**: `idee/CUSTODE-001_sistema-custode-airbnb.md`
+  (tecnologie, hardware, costi, privacy/GDPR, roadmap v0→v3).
+- **Prototipo v0**: pacchetto `custode/` — modelli, motori di conteggio
+  (Claude vision opzionale, fallback stub come sdq1.llm), confronto
+  baseline/check-out, registro tag, varco, report integrato con incrocio
+  a evidenza doppia. Demo: `python -m custode.demo`. Test: 7/7 OK.
+- **Branch**: `claude/airbnb-rental-assistance-g5miim`.
+- **Preventivi e piani d'azione** (2026-07-10):
+  - `idee/CUSTODE-002_preventivo-piano-OCCHIO.md` — avvio 30–130 €,
+    API 10–35 $/anno (Haiku+Batch), pilota in 4 fasi (8 settimane).
+  - `idee/CUSTODE-003_preventivo-piano-SOGLIA.md` — config. A palmare
+    ~285–655 €, config. B varco ~1.025–2.735 €, piano in 4 fasi con
+    conformità GDPR. Raccomandazione: partire dalla A.
+  - Budget pilota complessivo ~320–800 € (senza varco), ricorrente <300 €/anno.
+- **Analisi tracker GPS/Bluetooth** (2026-07-10, CUSTODE-004): AirTag & co.
+  NON sostituiscono l'RFID (costano 100–600× di più per oggetto, batterie,
+  non nascondibili, anti-stalking li fa scoprire, tracciare la posizione
+  dell'ospite è indifendibile per GDPR). Ruolo complementare: 2–4 AirTag
+  per mazzi di chiavi e oggetti da esterno (~60–120 €, zero canoni).
+  Decisione: SOGLIA resta su RFID UHF.
+- **Catalogo + bottone inventario** (2026-07-10, richiesta di Claudio):
+  `custode/catalogo.py` — scheda completa per ogni oggetto taggato
+  (libro: autore/ISBN/posizione del tag nascosto), persistenza JSON,
+  `analizza_mancanti()`. `custode/web.py` — interfaccia Flask con il
+  bottone "🔍 Analizza oggetti mancanti" (porta 5001). Test 10/10,
+  verificata end-to-end. Il catalogo esporta il RegistroTag per il varco.
+- **Schedatura rapida a due foto** (2026-07-10): `custode/schedatura.py` —
+  foto frontespizio → visione compila la scheda; foto tag → legge l'EPC
+  stampato e li associa. Integrata in `web.py` (mobile-first: da iPhone
+  la fotocamera si apre dai campi foto, `capture="environment"`).
+  Scheda precompilata da controllare e salvare. Verificata end-to-end
+  con stub; con ANTHROPIC_API_KEY usa Claude vision (Sonnet).
+- **Gestione da iPhone**: sì — la web app è pensata per Safari mobile;
+  i palmari UHF Bluetooth si collegano a iPhone. Nessuna app nativa
+  necessaria per il pilota.
+- **Prossimo (v1)**: Fase 1 dei piani — mappatura zone + baseline (OCCHIO),
+  campionario tag + palmare (SOGLIA); collegare il palmare Bluetooth
+  al campo EPC della pagina inventario; pubblicare la web app
+  (es. Vercel, come i tarocchi) per averla sull'iPhone di Claudio.
+
+---
+
 ## Prossimo passo concordato
 
 **Sessione 2026-06-22**: motore di collasso implementato e online.

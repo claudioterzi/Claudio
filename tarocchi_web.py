@@ -33,6 +33,14 @@ from tarocchi import (
 
 app = Flask(__name__, static_folder="public", static_url_path="")
 
+# CUSTODE (sistema per host Airbnb) montato su /custode — non deve mai
+# impedire ai Tarocchi di andare online.
+try:
+    from custode.web import registra_custode
+    registra_custode(app)
+except Exception:
+    pass
+
 _STATI      = {s.value: s for s in StatoQuantico}
 _POSIZIONI  = {p.value: p for p in TipoPosizione}
 _ORIENT     = {o.value: o for o in OrientamentoCarta}
