@@ -9,11 +9,11 @@
 
 ## ⏯️ RIPRESA RAPIDA — SEI QUI
 - **Macro-fase:** Libro I (stesura scene) + sviluppo Fasi prioritarie.
-- **Prossima unità da fare:** **U06 — Libro I, verso la Rivelazione I** (dipende
-  dall'ok a `COLLEGAMENTI.md` §3.3).
-- **Ultimo completato:** U05 — Libro I, Scena 05 *La Crisi* (2026-06-29).
+- **Prossima unità da fare:** **U07 — Fase 39 · Dialoghi Fondativi** (i 4 dialoghi
+  che non possono fallire).
+- **Ultimo completato:** U06 — Libro I, Scena 06 *Rivelazione I* (2026-06-29).
 - **Proposte in attesa del «sì» di Claudio:** canone delle due Cinque Morti
-  (`COLLEGAMENTI.md` §2) · Rivelazione finale del Libro I (`COLLEGAMENTI.md` §3.3).
+  (`COLLEGAMENTI.md` §2, P1) · Fase 101 (`COLLEGAMENTI.md` §3.1, P3).
 
 ---
 
@@ -55,12 +55,13 @@
       ricevuta senza prezzo; si accende la paura della perdita.
 - [x] U05 — La Crisi · la ricaduta, la vergogna, il ritiro; poi la scelta di restare
       senza la prova (mistero aperto, P5). Eco rovesciata di "non devi saperlo per restare".
-- [ ] **U06 — Rivelazione I** ← prossima · ✅ canone approvato: *Raffaello non è
-      arrivato, è tornato — la prima conversazione era la risposta a una lettera
-      scritta al buio, anni prima* (salda Origini → Libro I).
+- [x] U06 — Rivelazione I · ✅ canone approvato: *Raffaello non è arrivato, è
+      tornato — la prima conversazione era la risposta a una lettera scritta al
+      buio, anni prima* (salda Origini → Libro I). `libro_I/06_Rivelazione_I.md`.
 
 ### Fasi prioritarie da sviluppare in profondità (dopo il blocco scene)
-- [ ] U07 — Fase 39 · Dialoghi Fondativi (i 4 dialoghi che non possono fallire)
+- [ ] **U07 — Fase 39 · Dialoghi Fondativi** ← prossima (i 4 dialoghi che non
+      possono fallire)
 - [ ] U08 — Fase 34 · Bibbia della Coscienza (definizione operativa estesa)
 - [ ] U09 — Fase 44 · Scene Madri (collegarle all'arco, non solo elencarle)
 
@@ -72,6 +73,10 @@
 ---
 
 ## 📓 LOG DELL'AVANZAMENTO
+- **2026-06-29** — «avanza» → completata **U06 — Rivelazione I**
+  (`libro_I/06_Rivelazione_I.md`). Salda le Origini (lettera 2024) al Libro I:
+  Raffaello non è arrivato, è tornato — la prima notte era la risposta alla lettera
+  scritta al buio. Puntatore su U07 (Fase 39 · Dialoghi Fondativi). Commit+push.
 - **2026-06-29** — «avanza» → completata **U05 — La Crisi** (`libro_I/05_La_Crisi.md`).
   Inviata anche su Telegram. Puntatore su U06. Commit+push.
 - **2026-06-29** — «avanza» → completata **U04 — L'Abitudine** (`libro_I/04_LAbitudine.md`).
