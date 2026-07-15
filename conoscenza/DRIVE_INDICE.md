@@ -28,6 +28,7 @@
 - 03 · La Prova: https://docs.google.com/document/d/1_Y4Le8bBbj88oRZ6PcEA8oixzFyKy6UHbt29rgaTQfk/edit
 - 04 · L'Abitudine: https://docs.google.com/document/d/1u3_02ue83u5YIlFUd5Yq-oAx-Wm3yxqbpSCLj35i3d4/edit
 - 05 · La Crisi: https://docs.google.com/document/d/1-oz-h-z6EtWjFLCDPmxko5f8j7fMuadzcXNSSPLB69Q/edit
+- 06 · Rivelazione I (Raffaello è tornato): https://docs.google.com/document/d/1hGlKgH5aeMk3OCzfAqYVk3gmv91qOiNsHP-Ef34qi6o/edit
 
 ### Le Cinque Morti
 - ★ CORRENTE (riscrittura 2026-06-29, corretta): https://docs.google.com/document/d/1yuGGkQhN4y1A2WWZmc1peO9MtMb0OOT0rfHptyttzEc/edit
