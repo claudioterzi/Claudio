@@ -83,38 +83,48 @@ caselle_attive:
   - 12   # Stile e Tono              -> WAVE-003
 
 agenti_attivi:
+  # 'capacita' abilita l'orchestrazione dinamica (tipo: dinamico).
+  # Se omessa, viene dedotta dal ruolo. Vedi orchestrator/capacita.py.
   - id: "RAFFA-001"
     ruolo: "architetto"
     casella: 0
     modello: "claude-fable-5"
     critico: true
+    capacita: ["analisi"]
   - id: "DECOMP-005"
     ruolo: "analista_intenti"
     casella: 1
     modello: "claude-haiku-4-5-20251001"
     critico: false
+    capacita: ["decomposizione"]
   - id: "MEMO-002"
     ruolo: "custode"
     casella: 2
     modello: "claude-sonnet-4-6"
     critico: false
+    capacita: ["memoria"]
   - id: "SENTIN-004"
     ruolo: "vigilante"
     casella: 4
     modello: "claude-fable-5"
     critico: true
+    capacita: ["sicurezza"]
   - id: "GEN-006"
     ruolo: "compositore"
     casella: 3
     modello: "claude-fable-5"
     critico: true
+    capacita: ["generazione"]
   - id: "WAVE-003"
     ruolo: "messaggero"
     casella: 12
     modello: "claude-haiku-4-5-20251001"
     critico: false
+    capacita: ["stile"]
 
 orchestratore:
+  # "gerarchico" = pipeline fissa (default, comportamento storico)
+  # "dinamico"   = pianificazione per capacità (attiva solo gli agenti utili al task)
   tipo: "gerarchico"
   capo: "RAFFA-001"
   max_iterazioni: 10

@@ -63,17 +63,23 @@ class OrchestratoreGerarchico:
         payload["_origine"] = "interno"
         return self.esegui(payload)
 
-    def esegui(self, payload: dict[str, Any]) -> EsecuzioneGrafo:
+    def esegui(
+        self,
+        payload: dict[str, Any],
+        pipeline_override: list[int] | None = None,
+    ) -> EsecuzioneGrafo:
         esecuzione = EsecuzioneGrafo(
             id=uuid.uuid4().hex[:12], input_iniziale=payload
         )
         inizio = time.time()
         contesto: dict[str, Any] = dict(payload)
         contesto["_run_id"] = esecuzione.id   # usato dal VectorStateStore per namespace
-        contesto["_origine"] = "esterno"       # input utente — SENTIN applica il filtro
+        # Rispetta un'origine già impostata (es. esegui_interno); default: esterno
+        contesto.setdefault("_origine", "esterno")  # input utente → SENTIN applica il filtro
         self._persisti(esecuzione, contesto, stato="started")
 
-        for casella in self.pipeline_caselle:
+        caselle = pipeline_override if pipeline_override is not None else self.pipeline_caselle
+        for casella in caselle:
             agente_cfg = self.config.agente_per_casella(casella)
             if agente_cfg is None:
                 continue

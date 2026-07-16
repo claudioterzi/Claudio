@@ -55,7 +55,7 @@ from .llm.router import crea_router_da_config
 from .memory.store import MemoriaVettoriale
 from .memory.vss import VectorStateStore
 from .monitoring import HealthChecker, MetricsCollector
-from .orchestrator.gerarchico import OrchestratoreGerarchico
+from .orchestrator import crea_orchestratore
 from .persistence.store import crea_store
 
 
@@ -97,7 +97,7 @@ def costruisci_sistema(verbose: bool = False):
 
     agenti = costruisci_agenti(config)
     stato = crea_store(config.redis)
-    orch = OrchestratoreGerarchico(config, agenti, stato=stato)
+    orch = crea_orchestratore(config, agenti, stato=stato)
     metrics = MetricsCollector(stato, prefisso=config.redis.get("prefisso_chiavi", "") + "metriche:")
     health = HealthChecker(router)
     return orch, router, memoria, stato, metrics, health, vss

@@ -24,6 +24,7 @@ class AgenteConfig:
     casella: int
     modello: str
     critico: bool = False
+    capacita: list[str] = field(default_factory=list)
 
 
 @dataclass
