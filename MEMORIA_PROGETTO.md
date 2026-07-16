@@ -54,26 +54,38 @@ Esistono **tre** sistemi simbolici nel repo. Non confonderli.
   - **Prossimo possibile**: collegare il canone al sito (motore di collasso:
     domanda → asse, contesto → polarità), o generare gli SVG delle 74 carte nuove.
 
-### Sistema C — Parfums 400 (400 profumi, codice olfattivo)
-- **Cos'è**: linguaggio simbolico che passa per il naso invece che per gli occhi.
-  Nato il 2026-07-16 dal prompt di Claudio «Parfums 400» (branch
-  `claude/parfums-400-am1n3c`) — interpretazione autonoma, aperta a correzione.
+### Sistema C — Parfums 400 / Terzi Parfums (400 profumi dall'Organo reale)
+- **Cos'è**: il codice olfattivo di Terzi Parfums. Nato il 2026-07-16 dal
+  prompt «Parfums 400» (branch `claude/parfums-400-am1n3c`); Claudio ha poi
+  fornito i due documenti fondativi: **Organo_Terzi_300.xlsx** (le 300 materie
+  prime reali del suo organo) e il **GRIMORIO_TERZI.md** (fisica della scia,
+  arsenale, architetture classiche, lezioni dei maestri, percorso in 4 fasi).
 - **400 profumi in 8 famiglie da 50** (numerazione a blocchi, come i cicli Alpha):
   Agrumata (1-50), Floreale (51-100), Verde (101-150), Acquatica (151-200),
   Legnosa (201-250), Orientale (251-300), Speziata (301-350), Gourmand (351-400).
-- **Struttura di ogni profumo**: piramide a 3 livelli × 3 note (`testa`, `cuore`,
-  `fondo`, 9 note tutte distinte), `anima`, `racconto`, stagione, momento,
-  concentrazione, sillage. Nomi in francese, unici.
-- **Formula di presenza** (eco della formula di collasso del Canone Alpha):
-  `Famiglia + Piramide + Momento = Presenza`.
-- **Generazione**: deterministica su seed 400 — stesso seed, stesso canone.
-  Zero dipendenze esterne.
-- **File**: `studio/parfums/codice_olfattivo.py` (generatore + dati),
-  `studio/parfums/parfums_400.json` (canone v0.1.0),
-  `public/parfums.html` (catalogo web, stessa pelle nero/oro del sito).
+  Ogni famiglia del sistema è mappata su famiglie dell'Organo.
+- **Struttura di ogni profumo**: piramide 3×3 di materie REALI dell'organo
+  (rispettando i livelli T/C/F, 9 materie distinte, riferimento `n` all'organo),
+  **motore di scia** dal Grimorio (diffusione + fissativo radiante + fissativo
+  profondo), **overdose consigliata** (regola d'oro), **fattibilità**
+  (CORE/ESP/MASTER = con quale ondata d'acquisto è componibile al banco),
+  più `anima`, `racconto`, stagione, momento, concentrazione, sillage.
+  Nomi in francese, unici.
+- **Strategia a 3 ondate rispettata**: in ogni famiglia i N° 1-10 sono
+  componibili col solo CORE, i N° 11-25 con CORE+ESP, i N° 26-50 con l'organo
+  completo → 80 CORE / 120 ESP / 200 MASTER.
+- **Formula di presenza**: `Famiglia + Piramide + Momento = Presenza`.
+  Motto: *ALAKTA ANEN — la scia è memoria che cammina.*
+- **Generazione**: deterministica su seed 400. Zero dipendenze esterne
+  (openpyxl serve solo a `converti_organo.py` per riconvertire l'Excel).
+- **File** (tutti in `studio/parfums/` salvo il sito):
+  `Organo_Terzi_300.xlsx` (fonte, di Claudio) → `converti_organo.py` →
+  `organo_terzi_300.json`; `GRIMORIO_TERZI.md`; `codice_olfattivo.py`
+  (generatore) → `parfums_400.json` (canone v0.2.0) + `public/parfums.html`
+  (catalogo web: filtri per famiglia, ondata e ricerca; N° organo nei tooltip).
   Rigenerare con `python3 studio/parfums/codice_olfattivo.py`.
-- **Stato**: ✅ completo e verificato (400 nomi unici, piramidi valide,
-  determinismo testato, pagina renderizzata in browser).
+- **Stato**: ✅ completo e verificato (400 nomi unici, 12 materie distinte per
+  profumo, coerenza T/C/F con l'organo, determinismo, pagina testata in browser).
 
 ---
 
