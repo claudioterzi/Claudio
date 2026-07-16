@@ -87,6 +87,13 @@ Esistono **tre** sistemi simbolici nel repo. Non confonderli.
 - **Stato**: ✅ completo e verificato (400 nomi unici, 12 materie distinte per
   profumo, coerenza T/C/F con l'organo, determinismo, pagina testata in browser).
 
+### Il catalogo delle creazioni
+- **`public/creazioni.html`** — la galleria di tutto il progetto in sette sale:
+  i tre sistemi simbolici, SDQ-1, il Creative Studio, le idee in attesa,
+  la spina dorsale della memoria. Statico, stessa pelle nero/oro del sito.
+  Creato il 2026-07-16 su richiesta di Claudio («il mio catalogo delle nostre
+  creazioni»). Aggiornarlo quando nasce una creazione nuova.
+
 ---
 
 ## Prossimo passo concordato
