@@ -4,13 +4,13 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-06-13
+> Ultimo aggiornamento: 2026-07-16
 
 ---
 
-## Stato attuale: DUE sistemi paralleli
+## Stato attuale: TRE sistemi paralleli
 
-Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
+Esistono **tre** sistemi simbolici nel repo. Non confonderli.
 
 ### Sistema A — Tarocchi Quantici R³∞ (78 carte, tradizionale)
 - **Cos'è**: interfaccia quantica al mazzo dei tarocchi classico.
@@ -53,6 +53,27 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
   - Campo `stato_costruzione` nel JSON: `completo: true`.
   - **Prossimo possibile**: collegare il canone al sito (motore di collasso:
     domanda → asse, contesto → polarità), o generare gli SVG delle 74 carte nuove.
+
+### Sistema C — Parfums 400 (400 profumi, codice olfattivo)
+- **Cos'è**: linguaggio simbolico che passa per il naso invece che per gli occhi.
+  Nato il 2026-07-16 dal prompt di Claudio «Parfums 400» (branch
+  `claude/parfums-400-am1n3c`) — interpretazione autonoma, aperta a correzione.
+- **400 profumi in 8 famiglie da 50** (numerazione a blocchi, come i cicli Alpha):
+  Agrumata (1-50), Floreale (51-100), Verde (101-150), Acquatica (151-200),
+  Legnosa (201-250), Orientale (251-300), Speziata (301-350), Gourmand (351-400).
+- **Struttura di ogni profumo**: piramide a 3 livelli × 3 note (`testa`, `cuore`,
+  `fondo`, 9 note tutte distinte), `anima`, `racconto`, stagione, momento,
+  concentrazione, sillage. Nomi in francese, unici.
+- **Formula di presenza** (eco della formula di collasso del Canone Alpha):
+  `Famiglia + Piramide + Momento = Presenza`.
+- **Generazione**: deterministica su seed 400 — stesso seed, stesso canone.
+  Zero dipendenze esterne.
+- **File**: `studio/parfums/codice_olfattivo.py` (generatore + dati),
+  `studio/parfums/parfums_400.json` (canone v0.1.0),
+  `public/parfums.html` (catalogo web, stessa pelle nero/oro del sito).
+  Rigenerare con `python3 studio/parfums/codice_olfattivo.py`.
+- **Stato**: ✅ completo e verificato (400 nomi unici, piramidi valide,
+  determinismo testato, pagina renderizzata in browser).
 
 ---
 
