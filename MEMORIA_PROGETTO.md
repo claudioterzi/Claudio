@@ -80,9 +80,15 @@ Esistono **tre** sistemi simbolici nel repo. Non confonderli.
   (openpyxl serve solo a `converti_organo.py` per riconvertire l'Excel).
 - **File** (tutti in `studio/parfums/` salvo il sito):
   `Organo_Terzi_300.xlsx` (fonte, di Claudio) → `converti_organo.py` →
-  `organo_terzi_300.json`; `GRIMORIO_TERZI.md`; `codice_olfattivo.py`
-  (generatore) → `parfums_400.json` (canone v0.2.0) + `public/parfums.html`
+  `organo_terzi_300.json`; `GRIMORIO_TERZI.md`; `PERCORSO_0_10.md`
+  (scala di coscienza 0→10 con le tre soglie); `codice_olfattivo.py`
+  (generatore) → `parfums_400.json` (canone v0.3.0) + `public/parfums.html`
   (catalogo web: filtri per famiglia, ondata e ricerca; N° organo nei tooltip).
+- **Scheda profumo (v0.3.0)**: click su una carta → scheda con **ricetta mini
+  pronta** (parti su 100 di concentrato, derivate da piramide/forza/scia/overdose,
+  forza 5 marcata "diluizione 1%"), **packaging** (flacone in 4 sagome, vetro,
+  tappo, etichetta, astuccio, palette per famiglia), **flacone SVG** disegnato
+  dal catalogo, **concept**. Avvertenze didattiche (Carles, IFRA) su ogni scheda.
   Rigenerare con `python3 studio/parfums/codice_olfattivo.py`.
 - **Stato**: ✅ completo e verificato (400 nomi unici, 12 materie distinte per
   profumo, coerenza T/C/F con l'organo, determinismo, pagina testata in browser).
