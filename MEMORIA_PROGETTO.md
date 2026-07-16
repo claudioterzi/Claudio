@@ -84,6 +84,12 @@ Esistono **tre** sistemi simbolici nel repo. Non confonderli.
   (scala di coscienza 0→10 con le tre soglie); `codice_olfattivo.py`
   (generatore) → `parfums_400.json` (canone v0.3.0) + `public/parfums.html`
   (catalogo web: filtri per famiglia, ondata e ricerca; N° organo nei tooltip).
+- **Il Libro dei Parfums**: `public/libro.html`, generato da
+  `studio/parfums/genera_libro.py` (rigenerarlo dopo ogni modifica al canone).
+  Copertina, colophon, avvertenza di sicurezza, Parte I la storia, Parte II
+  il sapere dal Grimorio, Parte III l'organo (riepilogo, motore scia, accordi
+  studio), Parte IV le 400 schede complete in 8 capitoli con flacone SVG,
+  concept, ricetta e packaging. Stampabile (CSS print A4, tema chiaro).
 - **Scheda profumo (v0.3.0)**: click su una carta → scheda con **ricetta mini
   pronta** (parti su 100 di concentrato, derivate da piramide/forza/scia/overdose,
   forza 5 marcata "diluizione 1%"), **packaging** (flacone in 4 sagome, vetro,
