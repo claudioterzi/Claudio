@@ -36,7 +36,7 @@ import json
 import random
 from pathlib import Path
 
-VERSIONE = "0.2.0"
+VERSIONE = "0.3.0"
 SEED = 400
 DATA_CANONE = "2026-07-16"
 
@@ -202,6 +202,54 @@ SILLAGE = ["intimo", "moderato", "moderato", "avvolgente", "imponente"]
 
 RUOLI_SCIA = ["DIFFUSIONE", "FISSATIVO RADIANTE", "FISSATIVO PROFONDO"]
 
+# Estetica per famiglia: palette del liquido, forma del flacone, packaging,
+# e il "chi" del concept. Le forme sono 4 sagome SVG disegnate dal catalogo.
+ESTETICHE = {
+    "Agrumata": {"liquido": "#d9b23c", "chiaro": "#f2e2a0", "forma": "slanciata",
+                 "vetro": "vetro chiaro", "tappo": "legno d'ulivo chiaro",
+                 "astuccio": "cartoncino avorio, interno giallo sole",
+                 "chi": "comincia le cose senza chiedere il permesso"},
+    "Floreale": {"liquido": "#c98a9e", "chiaro": "#ecd3da", "forma": "tonda",
+                 "vetro": "vetro chiaro satinato", "tappo": "sfera di vetro smerigliato",
+                 "astuccio": "cartoncino cipria, interno petalo",
+                 "chi": "si fida ancora, e lo sa"},
+    "Verde": {"liquido": "#7c9a5f", "chiaro": "#cfe0bd", "forma": "slanciata",
+              "vetro": "vetro chiaro", "tappo": "legno grezzo",
+              "astuccio": "carta kraft, interno felce",
+              "chi": "cammina senza destinazione e arriva sempre"},
+    "Acquatica": {"liquido": "#5f8fa3", "chiaro": "#cfe3ec", "forma": "tonda",
+                  "vetro": "vetro azzurrato", "tappo": "alluminio spazzolato",
+                  "astuccio": "cartoncino grigio nebbia, interno orizzonte",
+                  "chi": "guarda il largo senza paura di partire"},
+    "Legnosa": {"liquido": "#8a5a33", "chiaro": "#d8c3a8", "forma": "quadrata",
+                "vetro": "vetro fumé", "tappo": "legno di cedro massiccio",
+                "astuccio": "cartoncino tabacco, interno corteccia",
+                "chi": "mantiene la parola data"},
+    "Orientale": {"liquido": "#9c4a1f", "chiaro": "#e0b46a", "forma": "anfora",
+                  "vetro": "vetro ambrato", "tappo": "ottone brunito",
+                  "astuccio": "cartoncino notte, interno oro vecchio",
+                  "chi": "racconta a voce bassa e tutti si avvicinano"},
+    "Speziata": {"liquido": "#a3502a", "chiaro": "#dfb08a", "forma": "quadrata",
+                 "vetro": "vetro ambrato", "tappo": "bakelite nera",
+                 "astuccio": "cartoncino terracotta, interno pepe",
+                 "chi": "decide senza voltarsi indietro"},
+    "Gourmand": {"liquido": "#7d5230", "chiaro": "#e3c9a3", "forma": "anfora",
+                 "vetro": "vetro fumé caldo", "tappo": "ceramica crema",
+                 "astuccio": "cartoncino cacao, interno crema",
+                 "chi": "sa che il conforto è una forma d'arte"},
+}
+
+MOMENTO_FRASE = {"alba": "le albe", "giorno": "il pieno giorno",
+                 "sera": "le sere", "notte": "la notte"}
+STAGIONE_FRASE = {"primavera": "di primavera", "estate": "d'estate",
+                  "autunno": "d'autunno", "inverno": "d'inverno"}
+
+# Fattori di dosaggio: più una materia è potente, meno parti riceve.
+FATTORE_FORZA = {1: 1.4, 2: 1.15, 3: 1.0, 4: 0.45, 5: 0.1}
+PARTI_LIVELLO = {"testa": 20.0, "cuore": 30.0, "fondo": 35.0}
+PARTI_SCIA = {"diffusione": 8.0, "fissativo radiante": 4.0,
+              "fissativo profondo": 3.0}
+
 # Strategia a 3 ondate del Grimorio: in ogni famiglia i primi 10 profumi
 # pescano solo dal CORE, i successivi 15 da CORE+ESP, gli ultimi 25
 # dall'organo completo. Se un pool si esaurisce, si allarga all'ondata
@@ -296,6 +344,57 @@ def _motore(rng, organo_fam, ruoli, usate, ondata):
     return motore
 
 
+def _ricetta(piramide, motore, overdose_n):
+    """Ricetta mini pronta: parti su 100 di concentrato, derivate (non a caso)
+    da livello di piramide, forza della materia, ruolo di scia e overdose.
+    Punto di partenza didattico alla maniera degli Accordi Studio."""
+    righe = []
+    for liv, tot in PARTI_LIVELLO.items():
+        note = piramide[liv]
+        pesi = []
+        for i, x in enumerate(note):
+            w = (1.6 if i == 0 else 1.0) * FATTORE_FORZA[x["forza"]]
+            if x["n"] == overdose_n:
+                w *= 2.5
+            pesi.append(w)
+        somma = sum(pesi)
+        for x, w in zip(note, pesi):
+            righe.append({"n": x["n"], "nome": x["nome"], "livello": liv,
+                          "forza": x["forza"], "parti": tot * w / somma})
+    for m in motore:
+        righe.append({"n": m["n"], "nome": m["nome"], "livello": "scia",
+                      "forza": m["forza"], "parti": PARTI_SCIA[m["ruolo"]]})
+
+    for r in righe:
+        r["parti"] = max(0.5, round(r["parti"] * 2) / 2)
+        r["micro"] = r["forza"] == 5
+    scarto = round(100.0 - sum(r["parti"] for r in righe), 1)
+    massimo = max(righe, key=lambda r: r["parti"])
+    massimo["parti"] = round(massimo["parti"] + scarto, 1)
+    return righe
+
+
+def _packaging(nome_famiglia, numero, nome):
+    e = ESTETICHE[nome_famiglia]
+    return {
+        "flacone": f"flacone {e['forma']}, {e['vetro']}, 30 ml",
+        "tappo": e["tappo"],
+        "etichetta": f"carta avorio, serif oro: “N° {numero} — {nome}” · Terzi Parfums",
+        "astuccio": e["astuccio"],
+        "palette": {"liquido": e["liquido"], "chiaro": e["chiaro"]},
+        "forma": e["forma"],
+    }
+
+
+def _concept(p, nome_famiglia):
+    e = ESTETICHE[nome_famiglia]
+    anima = p["anima"][0].upper() + p["anima"][1:]
+    return (f"{anima}. {p['racconto']} Pensato per {MOMENTO_FRASE[p['momento']]} "
+            f"{STAGIONE_FRASE[p['stagione']]}, al polso di chi {e['chi']}. "
+            f"La firma della casa: overdose di {p['overdose']['nome']}, "
+            f"sillage {p['sillage']}.")
+
+
 def genera_parfums(seed=SEED, organo=None):
     """Genera il canone completo: 400 profumi dall'Organo Terzi 300,
     deterministici sul seed."""
@@ -338,7 +437,7 @@ def genera_parfums(seed=SEED, organo=None):
                 fondo=piramide["fondo"][0]["nome"],
             )
 
-            parfums.append({
+            p = {
                 "numero": numero,
                 "nome": nome,
                 "famiglia": nome_famiglia,
@@ -352,7 +451,11 @@ def genera_parfums(seed=SEED, organo=None):
                 "momento": rng.choice(fam["momenti"]),
                 "concentrazione": rng.choice(CONCENTRAZIONI),
                 "sillage": rng.choice(SILLAGE),
-            })
+            }
+            p["ricetta"] = _ricetta(piramide, motore, overdose["n"])
+            p["packaging"] = _packaging(nome_famiglia, numero, nome)
+            p["concept"] = _concept(p, nome_famiglia)
+            parfums.append(p)
 
     assert len(parfums) == 400
     assert len({p["nome"] for p in parfums}) == 400
@@ -386,6 +489,11 @@ def documento(parfums, organo=None):
             "ondate": "In ogni famiglia: N° 1-10 componibili col CORE, "
                       "N° 11-25 con CORE+ESP, N° 26-50 con l'organo completo "
                       "(salvo allargamenti di pool, dichiarati in `fattibilita`).",
+            "ricette": "Le ricette sono punti di partenza DIDATTICI (parti su "
+                       "100 di concentrato), derivati da piramide, forza e "
+                       "motore di scia — non formule finite. Lavorare in "
+                       "diluizione col metodo Carles; materie forza 5 solo in "
+                       "diluizione all'1%. Verificare IFRA prima di vendere.",
             "fratelli": [
                 "Sistema A — Tarocchi Quantici R³∞ (78 carte)",
                 "Sistema B — Canone Alpha (74 carte, 8 cicli)",
@@ -429,6 +537,10 @@ def genera_html(doc):
                 "anima": p["anima"], "racconto": p["racconto"],
                 "stagione": p["stagione"], "momento": p["momento"],
                 "conc": p["concentrazione"], "sillage": p["sillage"],
+                "ric": [[r["nome"], r["n"], r["parti"], r["livello"],
+                         1 if r["micro"] else 0] for r in p["ricetta"]],
+                "pack": p["packaging"],
+                "concept": p["concept"],
             }
             for p in doc["parfums"]
         ],
@@ -485,7 +597,50 @@ def genera_html(doc):
     #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
             gap: 0.9rem; }
     .card { background: var(--surface); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 1.1rem 1.25rem; }
+            border-radius: var(--radius); padding: 1.1rem 1.25rem; cursor: pointer; }
+    .card:hover { border-color: var(--gold-dim); }
+    .card .apri { margin-top: 0.6rem; font-size: 0.68rem; letter-spacing: 0.14em;
+                  text-transform: uppercase; color: var(--gold-dim); }
+
+    /* Scheda profumo (overlay) */
+    #velo { position: fixed; inset: 0; background: rgba(6,6,8,0.85);
+            display: none; align-items: flex-start; justify-content: center;
+            overflow-y: auto; padding: 3rem 1rem; z-index: 50; }
+    #velo.aperto { display: flex; }
+    .scheda { background: var(--surface); border: 1px solid var(--gold-dim);
+              border-radius: var(--radius); max-width: 760px; width: 100%;
+              padding: 1.75rem 2rem 2rem; position: relative; }
+    .scheda-chiudi { position: absolute; top: 0.8rem; right: 1rem; background: none;
+              border: none; color: var(--text-dim); font-size: 1.4rem;
+              cursor: pointer; font-family: var(--font); }
+    .scheda-chiudi:hover { color: var(--gold); }
+    .scheda-corpo { display: flex; gap: 1.75rem; flex-wrap: wrap; }
+    .scheda-flacone { flex: 0 0 180px; display: flex; flex-direction: column;
+              align-items: center; gap: 0.75rem; }
+    .scheda-info { flex: 1 1 300px; min-width: 260px; }
+    .scheda h2 { color: var(--gold); font-weight: normal; font-size: 1.4rem;
+                 margin-bottom: 0.1rem; padding-right: 2rem; }
+    .scheda .sotto { color: var(--text-dim); font-size: 0.8rem;
+                     letter-spacing: 0.1em; text-transform: uppercase;
+                     margin-bottom: 1rem; }
+    .scheda h3 { color: var(--gold-dim); font-weight: normal; font-size: 0.72rem;
+                 letter-spacing: 0.18em; text-transform: uppercase;
+                 margin: 1.1rem 0 0.4rem; }
+    .scheda .concept { font-style: italic; line-height: 1.65; font-size: 0.92rem; }
+    table.ricetta { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    table.ricetta td { padding: 0.28rem 0.4rem; border-bottom: 1px solid var(--border); }
+    table.ricetta td.parti { text-align: right; color: var(--gold);
+                             white-space: nowrap; width: 4.5em; }
+    table.ricetta td.lv { color: var(--text-dim); font-size: 0.68rem;
+                          text-transform: uppercase; letter-spacing: 0.1em;
+                          width: 5.5em; }
+    .micro { color: var(--red); font-size: 0.75em; }
+    .avvertenza { margin-top: 0.6rem; font-size: 0.75rem; color: var(--text-dim);
+                  line-height: 1.55; }
+    .packlist { list-style: none; font-size: 0.85rem; line-height: 1.7; }
+    .packlist b { color: var(--gold-dim); font-weight: normal; font-size: 0.7rem;
+                  letter-spacing: 0.12em; text-transform: uppercase;
+                  display: inline-block; min-width: 5.5em; }
     .card-top { display: flex; justify-content: space-between; align-items: baseline;
                 margin-bottom: 0.35rem; }
     .card-num { font-size: 0.68rem; letter-spacing: 0.14em; color: var(--gold-dim); }
@@ -525,6 +680,10 @@ def genera_html(doc):
     <div id="famdesc"></div>
     <div id="count"></div>
     <div id="grid"></div>
+
+    <div id="velo" role="dialog" aria-modal="true">
+      <div class="scheda" id="scheda"></div>
+    </div>
 
     <footer>
       Ogni nota è una materia reale dell'Organo Terzi 300 (passa il mouse per il N°).<br>
@@ -571,6 +730,97 @@ def genera_html(doc):
         x.nome + '</span>').join(", ");
     }
 
+    // ---- Scheda profumo -------------------------------------------------
+    const FORME = {
+      slanciata: { corpo: "M60,60 L60,52 Q60,48 64,46 L64,40 L96,40 L96,46 Q100,48 100,52 L100,60 L100,208 Q100,216 92,216 L68,216 Q60,216 60,208 Z",
+                   tappo: "M66,14 L94,14 L94,40 L66,40 Z", liquidoY: 92 },
+      tonda:     { corpo: "M80,52 Q140,58 140,140 Q140,212 80,212 Q20,212 20,140 Q20,58 80,52 Z",
+                   tappo: "M68,16 L92,16 L92,52 L68,52 Z", liquidoY: 100 },
+      quadrata:  { corpo: "M32,56 L128,56 L128,204 Q128,212 120,212 L40,212 Q32,212 32,204 Z",
+                   tappo: "M62,18 L98,18 L98,56 L62,56 Z", liquidoY: 96 },
+      anfora:    { corpo: "M80,50 Q124,64 118,130 Q114,180 104,196 Q98,212 80,212 Q62,212 56,196 Q46,180 42,130 Q36,64 80,50 Z",
+                   tappo: "M70,14 Q80,8 90,14 L90,50 L70,50 Z", liquidoY: 104 },
+    };
+
+    function flaconeSvg(p) {
+      const f = FORME[p.pack.forma] || FORME.slanciata;
+      const c = p.pack.palette;
+      const id = "g" + p.n;
+      return '<svg viewBox="0 0 160 230" width="170" height="244" aria-label="Flacone">' +
+        '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="' + c.chiaro + '"/>' +
+        '<stop offset="1" stop-color="' + c.liquido + '"/></linearGradient>' +
+        '<clipPath id="c' + id + '"><path d="' + f.corpo + '"/></clipPath></defs>' +
+        '<path d="' + f.corpo + '" fill="#1a1a20" stroke="#3a3a44" stroke-width="1.5"/>' +
+        '<rect clip-path="url(#c' + id + ')" x="0" y="' + f.liquidoY +
+        '" width="160" height="230" fill="url(#' + id + ')" opacity="0.9"/>' +
+        '<path d="' + f.corpo + '" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/>' +
+        '<path d="' + f.tappo + '" fill="#2c2c34" stroke="#c9a84c" stroke-width="0.8"/>' +
+        '<rect x="45" y="132" width="70" height="46" rx="2" fill="#efe8d8" opacity="0.96"/>' +
+        '<text x="80" y="147" text-anchor="middle" font-family="Georgia" font-size="9" fill="#8a6f2e">N° ' + p.n + '</text>' +
+        '<text x="80" y="160" text-anchor="middle" font-family="Georgia" font-size="7.5" fill="#2c2418">' + nomeCorto(p.nome, 18) + '</text>' +
+        '<text x="80" y="171" text-anchor="middle" font-family="Georgia" font-size="5.5" letter-spacing="1" fill="#8a6f2e">TERZI PARFUMS</text>' +
+        '</svg>';
+    }
+
+    function nomeCorto(s, max) {
+      return s.length <= max ? s : s.slice(0, max - 1) + "…";
+    }
+
+    const LIV_LABEL = { testa: "Testa", cuore: "Cuore", fondo: "Fondo", scia: "Scia" };
+
+    function apriScheda(p) {
+      const righe = p.ric.map(r =>
+        '<tr><td class="lv">' + LIV_LABEL[r[3]] + '</td>' +
+        '<td title="Organo N° ' + r[1] + '">' + r[0] +
+        (r[4] ? ' <span class="micro">⚠ forza 5 — diluizione 1%</span>' : '') +
+        '</td><td class="parti">' + r[2].toFixed(1).replace('.', ',') + '</td></tr>'
+      ).join('');
+
+      document.getElementById("scheda").innerHTML =
+        '<button class="scheda-chiudi" onclick="chiudiScheda()" aria-label="Chiudi">✕</button>' +
+        '<h2>' + p.nome + '</h2>' +
+        '<div class="sotto">N° ' + p.n + ' · ' + p.fam + ' · ' + p.conc +
+        ' · <span class="badge">' + p.liv + '</span></div>' +
+        '<div class="scheda-corpo">' +
+          '<div class="scheda-flacone">' + flaconeSvg(p) +
+            '<div style="font-size:0.72rem;color:var(--text-dim);text-align:center">' +
+            p.stagione + ' · ' + p.momento + ' · sillage ' + p.sillage + '</div>' +
+          '</div>' +
+          '<div class="scheda-info">' +
+            '<h3>Concept</h3><p class="concept">' + p.concept + '</p>' +
+            '<h3>Ricetta mini pronta — parti su 100 di concentrato</h3>' +
+            '<table class="ricetta">' + righe + '</table>' +
+            '<p class="avvertenza">Come provarla: pesa le parti in gocce ' +
+            '(100 gocce ≈ 2,5 ml di concentrato), poi 2,5 ml + 14 ml di alcol ' +
+            '≈ Eau de Parfum al 15%. Macerare 2–4 settimane. Punto di partenza ' +
+            'didattico (metodo Carles), non formula finita: le materie ⚠ vanno ' +
+            'usate partendo dalla diluizione all\\'1%. Verificare IFRA prima di ' +
+            'qualunque vendita.</p>' +
+            '<h3>Packaging</h3>' +
+            '<ul class="packlist">' +
+              '<li><b>Flacone</b> ' + p.pack.flacone + '</li>' +
+              '<li><b>Tappo</b> ' + p.pack.tappo + '</li>' +
+              '<li><b>Etichetta</b> ' + p.pack.etichetta + '</li>' +
+              '<li><b>Astuccio</b> ' + p.pack.astuccio + '</li>' +
+            '</ul>' +
+          '</div>' +
+        '</div>';
+      document.getElementById("velo").classList.add("aperto");
+      document.body.style.overflow = "hidden";
+    }
+
+    function chiudiScheda() {
+      document.getElementById("velo").classList.remove("aperto");
+      document.body.style.overflow = "";
+    }
+    document.getElementById("velo").addEventListener("click", e => {
+      if (e.target.id === "velo") chiudiScheda();
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") chiudiScheda();
+    });
+
     function render() {
       for (const b of chips.children)
         b.classList.toggle("active", b.textContent === (fam || "Tutte"));
@@ -608,7 +858,9 @@ def genera_html(doc):
           '<div class="liv scia"><b>Firma</b><span>overdose di ' + p.ovr + '</span></div>' +
           '<div class="card-anima">' + p.anima + '</div>' +
           '<div class="card-meta">' + p.stagione + ' · ' + p.momento + ' · ' +
-          p.conc + ' · sillage ' + p.sillage + '</div>';
+          p.conc + ' · sillage ' + p.sillage + '</div>' +
+          '<div class="apri">Apri la scheda — ricetta · packaging · concept →</div>';
+        d.addEventListener("click", () => apriScheda(p));
         grid.appendChild(d);
       }
     }
