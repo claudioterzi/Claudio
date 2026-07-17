@@ -27,12 +27,17 @@ class GeminiProvider(ProviderBase):
         modello = self.modello or "gemini-2.5-flash"
         url = f"{_BASE_URL}/{modello}:generateContent?key={self.api_key}"
 
+        gen = {
+            "temperature": self.opts.get("temperatura", 0.7),
+            "maxOutputTokens": self.opts.get("max_token", 4096),
+        }
+        # modalità JSON strutturata: Gemini garantisce output JSON valido,
+        # senza preamboli né recinti markdown (usata dall'Atelier)
+        if self.opts.get("json_mode"):
+            gen["responseMimeType"] = "application/json"
         payload = {
             "contents": [{"role": "user", "parts": [{"text": utente}]}],
-            "generationConfig": {
-                "temperature": self.opts.get("temperatura", 0.7),
-                "maxOutputTokens": self.opts.get("max_token", 4096),
-            },
+            "generationConfig": gen,
         }
         if sistema:
             payload["systemInstruction"] = {"parts": [{"text": sistema}]}

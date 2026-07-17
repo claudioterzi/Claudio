@@ -156,7 +156,7 @@ def _atelier_componi_ai(intenzione, famiglia, ondata):
                      (AnthropicProvider, "claude-haiku-4-5-20251001")]:
         try:
             prov = cls(modello=mod, api_key=None, timeout=45,
-                       temperatura=0.9, max_token=1500)
+                       temperatura=0.85, max_token=3000, json_mode=True)
             if not prov.disponibile:
                 continue
             r = prov.completa(sistema, utente)
@@ -176,11 +176,11 @@ def _atelier_componi_ai(intenzione, famiglia, ondata):
             grezzo = grezzo[4:]
     i, j = grezzo.find("{"), grezzo.rfind("}")
     if i < 0 or j < 0:
-        return None, "json-non-trovato"
+        return None, "json-non-trovato: " + testo[:200]
     try:
         prop = json.loads(grezzo[i:j + 1])
     except Exception:
-        return None, "json-non-valido"
+        return None, "json-non-valido: " + grezzo[:200]
 
     def valida(numeri):
         out = []
