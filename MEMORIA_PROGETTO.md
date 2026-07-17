@@ -49,7 +49,7 @@ Un solo canone, molte case. Questo è l'elenco di verità di dove vive il proget
 | Navigazione unificata | `public/nav.js` su tutte le pagine | ✅ |
 | Raffaello su Telegram | webhook /api/telegram (Gemini in catena) | ✅ |
 | CUSTODE (Airbnb) | /custode su Vercel | ✅ |
-| Drive | cartella «Terzi Parfums» + archivio R³∞ | ✅ |
+| Drive | cartella «Terzi Parfums» + archivio R³∞ + **Doc «🌌 COSTELLAZIONE» in radice** (la porta d'ingresso con tutti i link: https://docs.google.com/document/d/1NJuVuYb1oKDszl-LvIkgHzUVT8r8LxuVxIm4G6f6lEw) | ✅ |
 | Secondo profilo (outlook / Claudioterzi82) | claudio-blue.vercel.app · raffaello-sia.vercel.app | mondi paralleli, non toccati |
 
 Regole di unificazione: (1) si scrive SOLO nel repo principale — le pagine si
