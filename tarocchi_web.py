@@ -31,7 +31,11 @@ from tarocchi import (
     voce,
 )
 
-app = Flask(__name__, static_folder="public", static_url_path="")
+# Percorso assoluto: su Vercel la working directory non è la radice del
+# progetto, e i path relativi rompono la home (404 Flask).
+_PUBLIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
+
+app = Flask(__name__, static_folder=_PUBLIC, static_url_path="")
 
 # CUSTODE (sistema per host Airbnb) montato su /custode — non deve mai
 # impedire ai Tarocchi di andare online.
@@ -56,13 +60,13 @@ def _cors(response):
 
 @app.route("/")
 def index():
-    return send_from_directory("public", "index.html")
+    return send_from_directory(_PUBLIC, "index.html")
 
 
 @app.route("/home")
 def home():
     """SDQ-1 Mini App — dashboard Raffaello per Telegram."""
-    return send_from_directory("public", "home.html")
+    return send_from_directory(_PUBLIC, "home.html")
 
 
 @app.route("/api/mazzo")
