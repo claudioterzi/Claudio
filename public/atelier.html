@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Atelier di Raffaello — Terzi Parfums</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c0c0e; --surface: #141418; --border: #2a2a32;
+    --gold: #c9a84c; --gold-dim: #8a6f2e;
+    --text: #e8e4d8; --text-dim: #7a7468; --red: #c96a5a;
+    --radius: 8px; --font: 'Georgia', 'Times New Roman', serif;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font);
+         min-height: 100vh; padding: 2rem 1rem 4rem; }
+  .container { max-width: 860px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 2rem; }
+  header h1 { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: normal;
+              letter-spacing: 0.1em; color: var(--gold); }
+  header p { margin-top: 0.5rem; color: var(--text-dim); font-size: 0.9rem; }
+  header .formula { margin-top: 0.6rem; font-style: italic; color: var(--gold-dim); }
+
+  .banco { background: var(--surface); border: 1px solid var(--border);
+           border-radius: var(--radius); padding: 1.5rem 1.75rem; margin-bottom: 1.5rem; }
+  label { display: block; font-size: 0.68rem; letter-spacing: 0.16em;
+          text-transform: uppercase; color: var(--gold-dim); margin: 1rem 0 0.35rem; }
+  textarea, select { width: 100%; background: var(--bg); border: 1px solid var(--border);
+          color: var(--text); border-radius: var(--radius); padding: 0.6rem 0.9rem;
+          font-family: var(--font); font-size: 0.95rem; }
+  textarea { min-height: 4.2em; resize: vertical; }
+  textarea:focus, select:focus { outline: none; border-color: var(--gold-dim); }
+  .riga-opzioni { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                  gap: 0 1.2rem; }
+  .azioni { text-align: center; margin-top: 1.5rem; }
+  button.oro { background: none; border: 1px solid var(--gold-dim); color: var(--gold);
+        border-radius: 999px; padding: 0.55rem 1.8rem; font-family: var(--font);
+        font-size: 0.95rem; letter-spacing: 0.08em; cursor: pointer; margin: 0 0.4rem; }
+  button.oro:hover { border-color: var(--gold); }
+  button.oro:disabled { opacity: 0.4; cursor: default; }
+
+  #voce { text-align: center; font-style: italic; color: var(--text-dim);
+          min-height: 1.4em; margin-bottom: 1rem; }
+
+  .scheda { display: none; background: var(--surface); border: 1px solid var(--gold-dim);
+            border-radius: var(--radius); padding: 1.5rem 1.75rem; }
+  .scheda.viva { display: flex; gap: 1.6rem; flex-wrap: wrap; }
+  .col-fl { flex: 0 0 140px; text-align: center; }
+  .col-fl svg { width: 130px; height: 187px; }
+  .col-fl .meta { font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase;
+                  letter-spacing: 0.08em; line-height: 1.7; margin-top: 0.5rem; }
+  .col-tx { flex: 1; min-width: 280px; }
+  .etich { font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase;
+           color: var(--gold-dim); margin: 0.9rem 0 0.3rem; }
+  .col-tx h2 { font-weight: normal; color: var(--gold); font-size: 1.35rem; }
+  .sotto { color: var(--text-dim); font-size: 0.78rem; letter-spacing: 0.1em;
+           text-transform: uppercase; margin-bottom: 0.5rem; }
+  .concept { font-style: italic; font-size: 0.9rem; line-height: 1.6; }
+  table.ricetta { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  table.ricetta td { padding: 0.2rem 0.35rem; border-bottom: 1px solid var(--border); }
+  td.lv { color: var(--text-dim); width: 4.6em; font-size: 0.66rem;
+          text-transform: uppercase; letter-spacing: 0.1em; }
+  td.parti { text-align: right; color: var(--gold); white-space: nowrap; width: 4em; }
+  .avviso { color: var(--red); font-size: 0.78em; }
+  .nota-regola { color: var(--gold-dim); font-size: 0.78em; font-style: italic; }
+  .avvertenza { margin-top: 0.8rem; font-size: 0.74rem; color: var(--text-dim);
+                line-height: 1.55; }
+  .badge { display: inline-block; border: 1px solid var(--gold-dim); color: var(--gold-dim);
+           border-radius: 4px; padding: 0 0.35em; font-size: 0.85em; }
+  .seme { text-align: center; margin-top: 0.9rem; font-size: 0.72rem;
+          color: var(--text-dim); font-style: italic; }
+  footer { text-align: center; margin-top: 2.5rem; color: var(--text-dim);
+           font-size: 0.8rem; line-height: 1.8; }
+  footer a { color: var(--gold-dim); }
+</style>
+</head>
+<body>
+<script src="soglia.js"></script>
+<div class="container">
+  <header>
+    <h1>L'Atelier di Raffaello</h1>
+    <p>Terzi Parfums · il banco dove nascono le ricette nuove, dall'Organo 300 e dalle regole del Grimorio</p>
+    <p class="formula">Intenzione + Organo + Regole = Proposta</p>
+  </header>
+
+  <div class="banco">
+    <label for="intenzione">L'intenzione — di' a Raffaello cosa deve diventare profumo</label>
+    <textarea id="intenzione" placeholder="Es.: un profumo per chi torna a casa dopo tanti anni…"></textarea>
+    <div class="riga-opzioni">
+      <div><label for="famiglia">Famiglia</label>
+        <select id="famiglia"><option value="">Scelga Raffaello</option></select></div>
+      <div><label for="stile">Stile (la lezione)</label>
+        <select id="stile">
+          <option value="carles">Carles — classico, 12 materie</option>
+          <option value="ellena">Ellena — formula corta, 8 materie</option>
+          <option value="roudnitska">Roudnitska — silhouette, cuore dominante</option>
+        </select></div>
+      <div><label for="ondata">Ondata dell'organo</label>
+        <select id="ondata">
+          <option value="0">Solo CORE</option>
+          <option value="1">CORE + ESP</option>
+          <option value="2" selected>Organo completo</option>
+        </select></div>
+    </div>
+    <div class="azioni">
+      <button class="oro" id="componi">Componi</button>
+      <button class="oro" id="ancora" disabled>Un'altra proposta</button>
+      <button class="oro" id="scarica" disabled>Scarica la formula</button>
+    </div>
+  </div>
+
+  <div id="voce"></div>
+  <div class="scheda" id="scheda"></div>
+  <div class="seme" id="seme"></div>
+
+  <footer>
+    Le proposte dell'Atelier sono punti di partenza didattici (metodo Carles), non formule finite.<br>
+    La stessa intenzione genera sempre la stessa proposta: il seme è la tua domanda.<br>
+    <a href="parfums.html">Il catalogo dei 400</a> · <a href="libro.html">Il Libro</a> · <a href="creazioni.html">Le Creazioni</a>
+  </footer>
+</div>
+
+<script>
+const D = {"materie":[{"n":1,"nome":"Arancia dolce EO","fam":"Agrumi","nota":"T","forza":2,"liv":"CORE","ruolo":"-","ifra":0},{"n":2,"nome":"Bergamotto EO (Calabria)","fam":"Agrumi","nota":"T","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":3,"nome":"Dihydromyrcenol","fam":"Agrumi","nota":"T","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":4,"nome":"Limone EO (Sicilia)","fam":"Agrumi","nota":"T","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":5,"nome":"Petitgrain bigarade EO","fam":"Agrumi","nota":"T","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":6,"nome":"Aldeide C-14 (g-undecalattone)","fam":"Aldeidi","nota":"C-F","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":7,"nome":"Ambroxan","fam":"Ambrati/Resine","nota":"F","forza":4,"liv":"CORE","ruolo":"DIFFUSIONE","ifra":0},{"n":8,"nome":"Benzoino resinoide (Siam)","fam":"Ambrati/Resine","nota":"F","forza":3,"liv":"CORE","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":9,"nome":"Cumarina","fam":"Ambrati/Resine","nota":"F","forza":3,"liv":"CORE","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":10,"nome":"Incenso (olibano) EO","fam":"Ambrati/Resine","nota":"T-F","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":11,"nome":"Labdano assoluta","fam":"Ambrati/Resine","nota":"F","forza":4,"liv":"CORE","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":12,"nome":"Lavanda EO (Provenza)","fam":"Aromatiche/Verdi","nota":"T-C","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":13,"nome":"cis-3-Hexenol","fam":"Aromatiche/Verdi","nota":"T","forza":5,"liv":"CORE","ruolo":"-","ifra":0},{"n":14,"nome":"Evernyl (Veramoss)","fam":"Chypre/Terrosi","nota":"F","forza":3,"liv":"CORE","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":15,"nome":"Eugenolo","fam":"Fiorali vari","nota":"C","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":16,"nome":"Ionone alfa","fam":"Fiorali vari","nota":"C","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":17,"nome":"Ionone beta","fam":"Fiorali vari","nota":"C","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":18,"nome":"Metil ionone gamma","fam":"Fiorali vari","nota":"C-F","forza":2,"liv":"CORE","ruolo":"-","ifra":0},{"n":19,"nome":"Benzil acetato","fam":"Fiori bianchi","nota":"C","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":20,"nome":"Benzil salicilato","fam":"Fiori bianchi","nota":"C-F","forza":2,"liv":"CORE","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":21,"nome":"Hedione","fam":"Fiori bianchi","nota":"C","forza":2,"liv":"CORE","ruolo":"DIFFUSIONE","ifra":0},{"n":22,"nome":"Linalil acetato","fam":"Fiori bianchi","nota":"T-C","forza":2,"liv":"CORE","ruolo":"-","ifra":0},{"n":23,"nome":"Linalolo","fam":"Fiori bianchi","nota":"T-C","forza":2,"liv":"CORE","ruolo":"-","ifra":0},{"n":24,"nome":"Ylang ylang extra EO","fam":"Fiori bianchi","nota":"C","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":25,"nome":"Etil maltolo","fam":"Fruttati","nota":"C-F","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":26,"nome":"g-Nonalattone","fam":"Fruttati","nota":"C-F","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":27,"nome":"Etil vanillina","fam":"Gourmand/Vaniglia","nota":"F","forza":4,"liv":"CORE","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":28,"nome":"Vanillina","fam":"Gourmand/Vaniglia","nota":"F","forza":3,"liv":"CORE","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":29,"nome":"Cashmeran","fam":"Legni","nota":"C-F","forza":3,"liv":"CORE","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":30,"nome":"Cedro Atlas EO","fam":"Legni","nota":"C-F","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":31,"nome":"Cedro Virginia EO","fam":"Legni","nota":"C-F","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":32,"nome":"Iso E Super","fam":"Legni","nota":"C-F","forza":2,"liv":"CORE","ruolo":"DIFFUSIONE","ifra":0},{"n":33,"nome":"Patchouli EO","fam":"Legni","nota":"F","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":34,"nome":"Sandalore","fam":"Legni","nota":"F","forza":3,"liv":"CORE","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":35,"nome":"Vetiver Haiti EO","fam":"Legni","nota":"F","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":36,"nome":"Ethylene brassylate","fam":"Muschi","nota":"F","forza":2,"liv":"CORE","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":37,"nome":"Exaltolide","fam":"Muschi","nota":"F","forza":3,"liv":"CORE","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":38,"nome":"Galaxolide 50% (IPM)","fam":"Muschi","nota":"F","forza":2,"liv":"CORE","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":39,"nome":"Habanolide","fam":"Muschi","nota":"F","forza":3,"liv":"CORE","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":40,"nome":"Alcol feniletilico (PEA)","fam":"Rosa","nota":"C","forza":2,"liv":"CORE","ruolo":"-","ifra":0},{"n":41,"nome":"Citronellolo","fam":"Rosa","nota":"C","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":42,"nome":"Geranio bourbon EO","fam":"Rosa","nota":"C","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":43,"nome":"Geraniolo","fam":"Rosa","nota":"C","forza":3,"liv":"CORE","ruolo":"-","ifra":0},{"n":47,"nome":"Cardamomo EO","fam":"Speziati","nota":"T","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":48,"nome":"Pepe nero EO","fam":"Speziati","nota":"T","forza":4,"liv":"CORE","ruolo":"-","ifra":0},{"n":49,"nome":"Arancia amara EO","fam":"Agrumi","nota":"T","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":50,"nome":"Citrale","fam":"Agrumi","nota":"T","forza":4,"liv":"ESP","ruolo":"-","ifra":1},{"n":51,"nome":"Lime distillato EO","fam":"Agrumi","nota":"T","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":52,"nome":"Litsea cubeba EO","fam":"Agrumi","nota":"T","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":53,"nome":"Mandarino rosso EO","fam":"Agrumi","nota":"T","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":54,"nome":"Methyl pamplemousse","fam":"Agrumi","nota":"T","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":55,"nome":"Neroli EO","fam":"Agrumi","nota":"T-C","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":56,"nome":"Pompelmo EO","fam":"Agrumi","nota":"T","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":57,"nome":"d-Limonene","fam":"Agrumi","nota":"T","forza":2,"liv":"ESP","ruolo":"-","ifra":0},{"n":58,"nome":"Aldeide C-10 (decanale)","fam":"Aldeidi","nota":"T","forza":5,"liv":"ESP","ruolo":"DIFFUSIONE","ifra":0},{"n":59,"nome":"Aldeide C-11 undecilenica","fam":"Aldeidi","nota":"T","forza":5,"liv":"ESP","ruolo":"DIFFUSIONE","ifra":0},{"n":60,"nome":"Aldeide C-12 MNA","fam":"Aldeidi","nota":"T","forza":5,"liv":"ESP","ruolo":"DIFFUSIONE","ifra":0},{"n":61,"nome":"Aldeide C-12 laurica","fam":"Aldeidi","nota":"T","forza":5,"liv":"ESP","ruolo":"DIFFUSIONE","ifra":0},{"n":62,"nome":"Ambra (base)","fam":"Ambrati/Resine","nota":"F","forza":3,"liv":"ESP","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":63,"nome":"Cetalox","fam":"Ambrati/Resine","nota":"F","forza":4,"liv":"ESP","ruolo":"DIFFUSIONE","ifra":0},{"n":64,"nome":"Fava tonka assoluta","fam":"Ambrati/Resine","nota":"F","forza":4,"liv":"ESP","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":65,"nome":"Mirra EO/resinoide","fam":"Ambrati/Resine","nota":"F","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":66,"nome":"Opoponax resinoide","fam":"Ambrati/Resine","nota":"F","forza":3,"liv":"ESP","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":67,"nome":"Betulla (birch tar) EO rett.","fam":"Animalic/Cuoio","nota":"F","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":68,"nome":"Castoreum (base/ass.)","fam":"Animalic/Cuoio","nota":"F","forza":5,"liv":"ESP","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":69,"nome":"Cera d'api assoluta","fam":"Animalic/Cuoio","nota":"C-F","forza":4,"liv":"ESP","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":70,"nome":"Civetta (base sintetica)","fam":"Animalic/Cuoio","nota":"F","forza":5,"liv":"ESP","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":71,"nome":"Cuoio (base)","fam":"Animalic/Cuoio","nota":"F","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":72,"nome":"Isobutil chinolina (IBQ)","fam":"Animalic/Cuoio","nota":"F","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":73,"nome":"Suederal","fam":"Animalic/Cuoio","nota":"F","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":74,"nome":"Foglie di violetta ass.","fam":"Aromatiche/Verdi","nota":"T-C","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":75,"nome":"Galbano EO/resinoide","fam":"Aromatiche/Verdi","nota":"T","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":76,"nome":"Rosmarino EO","fam":"Aromatiche/Verdi","nota":"T","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":77,"nome":"Salvia sclarea EO","fam":"Aromatiche/Verdi","nota":"C","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":78,"nome":"Stemone","fam":"Aromatiche/Verdi","nota":"T","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":79,"nome":"Triplal (Ligustral)","fam":"Aromatiche/Verdi","nota":"T","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":80,"nome":"cis-3-Hexenyl acetate","fam":"Aromatiche/Verdi","nota":"T","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":81,"nome":"Muschio di quercia ass. (IFRA)","fam":"Chypre/Terrosi","nota":"F","forza":5,"liv":"ESP","ruolo":"FISSATIVO PROFONDO","ifra":1},{"n":82,"nome":"Tabacco assoluta","fam":"Chypre/Terrosi","nota":"F","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":83,"nome":"Aldeide anisica","fam":"Fiorali vari","nota":"C","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":84,"nome":"Eliotropina (piperonale)","fam":"Fiorali vari","nota":"C-F","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":85,"nome":"Iris (base)","fam":"Fiorali vari","nota":"C-F","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":86,"nome":"Irone alfa","fam":"Fiorali vari","nota":"C","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":87,"nome":"Isoeugenolo","fam":"Fiorali vari","nota":"C-F","forza":4,"liv":"ESP","ruolo":"-","ifra":1},{"n":88,"nome":"Osmanthus assoluta","fam":"Fiorali vari","nota":"C","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":89,"nome":"Terpineolo alfa","fam":"Fiorali vari","nota":"C","forza":2,"liv":"ESP","ruolo":"-","ifra":0},{"n":90,"nome":"Amil salicilato","fam":"Fiori bianchi","nota":"C-F","forza":2,"liv":"ESP","ruolo":"-","ifra":0},{"n":91,"nome":"Aurantiol","fam":"Fiori bianchi","nota":"C-F","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":92,"nome":"Ciclamen aldeide","fam":"Fiori bianchi","nota":"T-C","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":93,"nome":"Florosa","fam":"Fiori bianchi","nota":"C","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":94,"nome":"Gelsomino grandiflorum ass.","fam":"Fiori bianchi","nota":"C","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":95,"nome":"Idrossicitronellale","fam":"Fiori bianchi","nota":"C","forza":3,"liv":"ESP","ruolo":"-","ifra":1},{"n":96,"nome":"Indolo","fam":"Fiori bianchi","nota":"C-F","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":97,"nome":"Metil antranilato","fam":"Fiori bianchi","nota":"C","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":98,"nome":"cis-Jasmone","fam":"Fiori bianchi","nota":"C","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":99,"nome":"Allyl amyl glycolate","fam":"Fruttati","nota":"T","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":100,"nome":"Cassis base (bourgeons)","fam":"Fruttati","nota":"T-C","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":101,"nome":"Fico (base)","fam":"Fruttati","nota":"C","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":102,"nome":"Frambinone (raspberry ketone)","fam":"Fruttati","nota":"C","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":103,"nome":"Fructone","fam":"Fruttati","nota":"T-C","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":104,"nome":"Manzanate","fam":"Fruttati","nota":"T","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":105,"nome":"g-Decalattone","fam":"Fruttati","nota":"C-F","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":106,"nome":"Vaniglia assoluta (bourbon)","fam":"Gourmand/Vaniglia","nota":"F","forza":4,"liv":"ESP","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":107,"nome":"Amber Xtreme","fam":"Legni","nota":"F","forza":5,"liv":"ESP","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":108,"nome":"Cedramber","fam":"Legni","nota":"F","forza":3,"liv":"ESP","ruolo":"DIFFUSIONE","ifra":0},{"n":109,"nome":"Clearwood","fam":"Legni","nota":"F","forza":3,"liv":"ESP","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":110,"nome":"Cypriol (nagarmotha) EO","fam":"Legni","nota":"F","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":111,"nome":"Javanol","fam":"Legni","nota":"F","forza":5,"liv":"ESP","ruolo":"DIFFUSIONE","ifra":0},{"n":112,"nome":"Kephalis","fam":"Legni","nota":"F","forza":3,"liv":"ESP","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":113,"nome":"Norlimbanol/Timberol","fam":"Legni","nota":"F","forza":4,"liv":"ESP","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":114,"nome":"Oud (base sintetica)","fam":"Legni","nota":"F","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":115,"nome":"Vertofix coeur","fam":"Legni","nota":"F","forza":3,"liv":"ESP","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":116,"nome":"Vetiveryl acetato","fam":"Legni","nota":"F","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":117,"nome":"Calone 1951","fam":"Marini/Ozonici","nota":"T-C","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":118,"nome":"Floralozone","fam":"Marini/Ozonici","nota":"T","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":119,"nome":"Ambrettolide","fam":"Muschi","nota":"F","forza":3,"liv":"ESP","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":120,"nome":"Damascenone","fam":"Rosa","nota":"C","forza":5,"liv":"ESP","ruolo":"DIFFUSIONE","ifra":0},{"n":121,"nome":"Damascone alfa","fam":"Rosa","nota":"C","forza":5,"liv":"ESP","ruolo":"DIFFUSIONE","ifra":0},{"n":122,"nome":"Palmarosa EO","fam":"Rosa","nota":"C","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":123,"nome":"Rose oxide","fam":"Rosa","nota":"T-C","forza":5,"liv":"ESP","ruolo":"DIFFUSIONE","ifra":0},{"n":126,"nome":"Cannella corteccia EO","fam":"Speziati","nota":"C","forza":5,"liv":"ESP","ruolo":"-","ifra":1},{"n":127,"nome":"Chiodi di garofano EO","fam":"Speziati","nota":"C","forza":5,"liv":"ESP","ruolo":"-","ifra":0},{"n":128,"nome":"Elemi EO","fam":"Speziati","nota":"T","forza":3,"liv":"ESP","ruolo":"-","ifra":0},{"n":129,"nome":"Noce moscata EO","fam":"Speziati","nota":"C","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":130,"nome":"Pepe rosa EO","fam":"Speziati","nota":"T","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":131,"nome":"Safraleine","fam":"Speziati","nota":"C","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":132,"nome":"Zenzero EO","fam":"Speziati","nota":"T","forza":4,"liv":"ESP","ruolo":"-","ifra":0},{"n":133,"nome":"Citrathal V","fam":"Agrumi","nota":"T","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":134,"nome":"Citronellale","fam":"Agrumi","nota":"T","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":135,"nome":"Lemongrass EO","fam":"Agrumi","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":136,"nome":"Orange terpenes","fam":"Agrumi","nota":"T","forza":1,"liv":"MASTER","ruolo":"-","ifra":0},{"n":137,"nome":"Verbena (Lippia) EO","fam":"Agrumi","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":138,"nome":"Yuzu (base/EO)","fam":"Agrumi","nota":"T","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":139,"nome":"Adoxal","fam":"Aldeidi","nota":"T","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":140,"nome":"Aldeide C-11 undecanale","fam":"Aldeidi","nota":"T","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":141,"nome":"Aldeide C-16 (fragola)","fam":"Aldeidi","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":142,"nome":"Aldeide C-8 (ottanale)","fam":"Aldeidi","nota":"T","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":143,"nome":"Aldeide C-9 (nonanale)","fam":"Aldeidi","nota":"T","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":144,"nome":"Ambermax","fam":"Ambrati/Resine","nota":"F","forza":5,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":145,"nome":"Ambra fossile (attar fumoso)","fam":"Ambrati/Resine","nota":"F","forza":5,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":146,"nome":"Ambrettolide","fam":"Ambrati/Resine","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":147,"nome":"Ambrinol 10%","fam":"Ambrati/Resine","nota":"F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":148,"nome":"Balsamo Tolu'","fam":"Ambrati/Resine","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":149,"nome":"Balsamo del Peru'","fam":"Ambrati/Resine","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":1},{"n":150,"nome":"Cisto EO","fam":"Ambrati/Resine","nota":"C-F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":151,"nome":"Cisto ladanifer (Spagna) EO","fam":"Ambrati/Resine","nota":"C-F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":152,"nome":"Galbanum resinoide","fam":"Ambrati/Resine","nota":"C-F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":153,"nome":"Labdano assoluta chiara","fam":"Ambrati/Resine","nota":"F","forza":4,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":154,"nome":"Olibanum resinoide","fam":"Ambrati/Resine","nota":"F","forza":4,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":155,"nome":"Sclareolide","fam":"Ambrati/Resine","nota":"F","forza":2,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":156,"nome":"Storace (styrax) resinoide","fam":"Ambrati/Resine","nota":"F","forza":4,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":1},{"n":157,"nome":"Sylvamber","fam":"Ambrati/Resine","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":158,"nome":"Trisamber","fam":"Ambrati/Resine","nota":"F","forza":4,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":159,"nome":"Ambra grigia (tintura sint.)","fam":"Animalic/Cuoio","nota":"F","forza":4,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":160,"nome":"Animalis (tipo)","fam":"Animalic/Cuoio","nota":"F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":161,"nome":"Cade EO rettificato","fam":"Animalic/Cuoio","nota":"F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":162,"nome":"Civetone","fam":"Animalic/Cuoio","nota":"F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":163,"nome":"Costus (sostituto)","fam":"Animalic/Cuoio","nota":"F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":164,"nome":"Hyraceum (tintura/ass.)","fam":"Animalic/Cuoio","nota":"F","forza":5,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":165,"nome":"Para-cresolo 10%","fam":"Animalic/Cuoio","nota":"F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":166,"nome":"Skatolo 1%","fam":"Animalic/Cuoio","nota":"F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":167,"nome":"Artemisia EO","fam":"Aromatiche/Verdi","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":168,"nome":"Basilico EO","fam":"Aromatiche/Verdi","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":169,"nome":"Eucalipto globulus EO","fam":"Aromatiche/Verdi","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":170,"nome":"Eucaliptolo (1,8-cineolo)","fam":"Aromatiche/Verdi","nota":"T","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":171,"nome":"Fieno assoluta (Foin)","fam":"Aromatiche/Verdi","nota":"C-F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":172,"nome":"Foglie di pomodoro (base)","fam":"Aromatiche/Verdi","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":173,"nome":"Lavandino EO","fam":"Aromatiche/Verdi","nota":"T","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":174,"nome":"Liffarome","fam":"Aromatiche/Verdi","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":175,"nome":"Menta piperita EO","fam":"Aromatiche/Verdi","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":176,"nome":"Menta verde EO","fam":"Aromatiche/Verdi","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":177,"nome":"Mentolo","fam":"Aromatiche/Verdi","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":178,"nome":"Timo EO","fam":"Aromatiche/Verdi","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":179,"nome":"Undecavertol","fam":"Aromatiche/Verdi","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":180,"nome":"1-Otten-3-olo (fungo)","fam":"Chypre/Terrosi","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":181,"nome":"Akigalawood","fam":"Chypre/Terrosi","nota":"F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":182,"nome":"Angelica radice EO","fam":"Chypre/Terrosi","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":183,"nome":"Carota semi EO","fam":"Chypre/Terrosi","nota":"C-F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":184,"nome":"Geosmina 1%","fam":"Chypre/Terrosi","nota":"F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":185,"nome":"Immortelle (elicriso) ass.","fam":"Chypre/Terrosi","nota":"C-F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":186,"nome":"Lentisco EO","fam":"Chypre/Terrosi","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":187,"nome":"Mate' assoluta","fam":"Chypre/Terrosi","nota":"C-F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":188,"nome":"Mousse de Saxe (tipo, base)","fam":"Chypre/Terrosi","nota":"F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":189,"nome":"Treemoss (muschio d'albero)","fam":"Chypre/Terrosi","nota":"F","forza":4,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":190,"nome":"Anisyl acetato","fam":"Fiorali vari","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":191,"nome":"Benzil alcol","fam":"Fiorali vari","nota":"C","forza":1,"liv":"MASTER","ruolo":"-","ifra":0},{"n":192,"nome":"Cassie assoluta","fam":"Fiorali vari","nota":"C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":193,"nome":"Champaca assoluta","fam":"Fiorali vari","nota":"C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":194,"nome":"Farnesolo","fam":"Fiorali vari","nota":"C-F","forza":2,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":195,"nome":"Fenilacetaldeide 50%","fam":"Fiorali vari","nota":"T-C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":196,"nome":"Florhydral","fam":"Fiorali vari","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":197,"nome":"Frangipani assoluta","fam":"Fiorali vari","nota":"C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":198,"nome":"Giacinto (base)","fam":"Fiorali vari","nota":"C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":199,"nome":"Ginestra (broom) assoluta","fam":"Fiorali vari","nota":"C-F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":200,"nome":"Iris/Orris butter (concreta)","fam":"Fiorali vari","nota":"C-F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":201,"nome":"Magnolia EO","fam":"Fiorali vari","nota":"T-C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":202,"nome":"Mimosa assoluta","fam":"Fiorali vari","nota":"C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":203,"nome":"Narciso assoluta","fam":"Fiorali vari","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":204,"nome":"Nerolidolo","fam":"Fiorali vari","nota":"C-F","forza":2,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":205,"nome":"Peonile","fam":"Fiorali vari","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":206,"nome":"Petalia","fam":"Fiorali vari","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":207,"nome":"Tiglio (base)","fam":"Fiorali vari","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":208,"nome":"Violetta (base)","fam":"Fiorali vari","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":209,"nome":"Benzil propionato","fam":"Fiori bianchi","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":210,"nome":"Fiori d'arancio assoluta","fam":"Fiori bianchi","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":211,"nome":"Gelsomino sambac ass.","fam":"Fiori bianchi","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":212,"nome":"Hedione HC","fam":"Fiori bianchi","nota":"C","forza":3,"liv":"MASTER","ruolo":"DIFFUSIONE","ifra":0},{"n":213,"nome":"Lilyflore","fam":"Fiori bianchi","nota":"C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":214,"nome":"Mayol","fam":"Fiori bianchi","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":215,"nome":"Nerolina (yara yara)","fam":"Fiori bianchi","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":216,"nome":"Styrallyl acetato","fam":"Fiori bianchi","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":217,"nome":"Tuberosa assoluta","fam":"Fiori bianchi","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":218,"nome":"p-Cresil acetato","fam":"Fiori bianchi","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":219,"nome":"Allile caproato","fam":"Fruttati","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":220,"nome":"Davana EO","fam":"Fruttati","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":221,"nome":"Dynascone 10%","fam":"Fruttati","nota":"T","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":222,"nome":"Etil 2-metilbutirrato","fam":"Fruttati","nota":"T","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":223,"nome":"Etil decadienoato (pera)","fam":"Fruttati","nota":"T","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":224,"nome":"Furaneol","fam":"Fruttati","nota":"C-F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":225,"nome":"Isoamil acetato","fam":"Fruttati","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":226,"nome":"Melonal","fam":"Fruttati","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":227,"nome":"Nectaryl","fam":"Fruttati","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":228,"nome":"Pesca (base)","fam":"Fruttati","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":229,"nome":"Prunol/Prugna (base)","fam":"Fruttati","nota":"C-F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":230,"nome":"Veloutone","fam":"Fruttati","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":231,"nome":"Verdox","fam":"Fruttati","nota":"T-C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":232,"nome":"d-Decalattone","fam":"Fruttati","nota":"C-F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":233,"nome":"g-Ottalattone","fam":"Fruttati","nota":"C-F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":234,"nome":"Acetanisolo","fam":"Gourmand/Vaniglia","nota":"C-F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":235,"nome":"Acido fenilacetico","fam":"Gourmand/Vaniglia","nota":"C-F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":236,"nome":"Benzaldeide","fam":"Gourmand/Vaniglia","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":237,"nome":"Bicyclononalactone","fam":"Gourmand/Vaniglia","nota":"C-F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":238,"nome":"Cacao assoluta","fam":"Gourmand/Vaniglia","nota":"F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":239,"nome":"Caffe' assoluta","fam":"Gourmand/Vaniglia","nota":"F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":240,"nome":"Ciclotene (corylone)","fam":"Gourmand/Vaniglia","nota":"C-F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":241,"nome":"Filbertone 1%","fam":"Gourmand/Vaniglia","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":242,"nome":"Isobutavan","fam":"Gourmand/Vaniglia","nota":"F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":243,"nome":"Lattone della quercia (whisky)","fam":"Gourmand/Vaniglia","nota":"C-F","forza":4,"liv":"MASTER","ruolo":"-","ifra":1},{"n":244,"nome":"Maltolo","fam":"Gourmand/Vaniglia","nota":"C-F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":245,"nome":"Miele (base)","fam":"Gourmand/Vaniglia","nota":"C-F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":246,"nome":"Pralina (base)","fam":"Gourmand/Vaniglia","nota":"F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":247,"nome":"Rhum (base boozy)","fam":"Gourmand/Vaniglia","nota":"T-C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":248,"nome":"d-Dodecalattone (latteo)","fam":"Gourmand/Vaniglia","nota":"C-F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":249,"nome":"Abete balsamico ass.","fam":"Legni","nota":"F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":250,"nome":"Bacdanol","fam":"Legni","nota":"F","forza":3,"liv":"MASTER","ruolo":"DIFFUSIONE","ifra":0},{"n":251,"nome":"Bois de rose (palissandro) EO","fam":"Legni","nota":"T-C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":252,"nome":"Boisambrene forte","fam":"Legni","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":253,"nome":"Cedryl acetato","fam":"Legni","nota":"C-F","forza":2,"liv":"MASTER","ruolo":"-","ifra":0},{"n":254,"nome":"Cipresso EO","fam":"Legni","nota":"T-C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":255,"nome":"Ebanol","fam":"Legni","nota":"F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":256,"nome":"Guaiacwood EO","fam":"Legni","nota":"F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":257,"nome":"Okoumal","fam":"Legni","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":258,"nome":"Patchouli coeur (frazionato)","fam":"Legni","nota":"F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":259,"nome":"Pino silvestre EO","fam":"Legni","nota":"T","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":260,"nome":"Sandalo EO (album/austrocal.)","fam":"Legni","nota":"F","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":261,"nome":"Ysamber K","fam":"Legni","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":262,"nome":"Aldron","fam":"Marini/Ozonici","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":263,"nome":"Alghe assoluta (seaweed)","fam":"Marini/Ozonici","nota":"C-F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":264,"nome":"Azurone","fam":"Marini/Ozonici","nota":"T","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":265,"nome":"Cascalone","fam":"Marini/Ozonici","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":266,"nome":"Helional (dove permesso)","fam":"Marini/Ozonici","nota":"T-C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":267,"nome":"Ozofleur","fam":"Marini/Ozonici","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":268,"nome":"Ultrazur","fam":"Marini/Ozonici","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":269,"nome":"Applelide","fam":"Muschi","nota":"F","forza":2,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":270,"nome":"Cosmone","fam":"Muschi","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":271,"nome":"Helvetolide","fam":"Muschi","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":272,"nome":"Muscenone","fam":"Muschi","nota":"F","forza":4,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":273,"nome":"Nirvanolide","fam":"Muschi","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":274,"nome":"Romandolide","fam":"Muschi","nota":"F","forza":2,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":275,"nome":"Semi di ambretta EO/ass.","fam":"Muschi","nota":"F","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":276,"nome":"Serenolide","fam":"Muschi","nota":"F","forza":2,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":277,"nome":"Velvione","fam":"Muschi","nota":"F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO RADIANTE","ifra":0},{"n":278,"nome":"Feniletil acetato","fam":"Rosa","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":279,"nome":"Feniletil fenilacetato","fam":"Rosa","nota":"C-F","forza":3,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":280,"nome":"Geranil acetato","fam":"Rosa","nota":"T-C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":281,"nome":"Nerolo","fam":"Rosa","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":282,"nome":"Rodinol","fam":"Rosa","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":283,"nome":"Rosa centifolia assoluta","fam":"Rosa","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":284,"nome":"Rosa damascena EO (otto)","fam":"Rosa","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":287,"nome":"Tonalide (Fixolide)","fam":"Solventi/Fissativi","nota":"F","forza":2,"liv":"MASTER","ruolo":"FISSATIVO PROFONDO","ifra":0},{"n":288,"nome":"Anetolo","fam":"Speziati","nota":"T-C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":289,"nome":"Anice stellato EO","fam":"Speziati","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":290,"nome":"Bacche di ginepro EO","fam":"Speziati","nota":"T","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":291,"nome":"Cannella foglia EO","fam":"Speziati","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":1},{"n":292,"nome":"Cascarilla EO","fam":"Speziati","nota":"T-C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":293,"nome":"Cinnamaldeide","fam":"Speziati","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":294,"nome":"Coriandolo EO","fam":"Speziati","nota":"T","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":295,"nome":"Cumino EO","fam":"Speziati","nota":"C","forza":5,"liv":"MASTER","ruolo":"-","ifra":0},{"n":296,"nome":"Curcuma EO","fam":"Speziati","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":297,"nome":"Metil diantilis","fam":"Speziati","nota":"C","forza":3,"liv":"MASTER","ruolo":"-","ifra":0},{"n":298,"nome":"Pepe di Sichuan EO","fam":"Speziati","nota":"T","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":299,"nome":"Pimento (allspice) EO","fam":"Speziati","nota":"C","forza":4,"liv":"MASTER","ruolo":"-","ifra":0},{"n":300,"nome":"Sotolone 1%","fam":"Speziati","nota":"C-F","forza":5,"liv":"MASTER","ruolo":"-","ifra":0}],"famiglie":{"Agrumata":{"organo":["Agrumi","Aldeidi","Aromatiche/Verdi"],"nomi":["Riviera","Capri","Séville","Menton","Sorrente","Palerme","Lisbonne","Sicile","Midi","Soleil","Verger","l'Été"],"anime":["luce che taglia il mattino","una risata in un giardino d'estate","la prima finestra aperta dell'anno","acqua fredda sui polsi a mezzogiorno","una promessa fatta in piena luce","il coraggio semplice di cominciare"],"stagioni":["primavera","estate","estate","primavera"],"momenti":["alba","giorno","giorno","giorno"],"chi":"comincia le cose senza chiedere il permesso","liquido":"#d9b23c","chiaro":"#f2e2a0","forma":"slanciata"},"Floreale":{"organo":["Fiorali vari","Rosa","Fiori bianchi"],"nomi":["Grasse","Mai","Roseraie","Ophélie","Flore","Printemps","Pétale","Damas","Florence","Aurore","Camille","Jardin"],"anime":["una lettera scritta a mano e mai spedita","il momento esatto in cui un fiore si apre","tenerezza che non chiede permesso","un abbraccio che dura un secondo più del previsto","la memoria di un mese di maggio","bellezza che non ha bisogno di spiegarsi"],"stagioni":["primavera","primavera","estate","autunno"],"momenti":["giorno","giorno","sera","alba"],"chi":"si fida ancora, e lo sa","liquido":"#c98a9e","chiaro":"#ecd3da","forma":"tonda"},"Verde":{"organo":["Aromatiche/Verdi","Chypre/Terrosi"],"nomi":["Figuier","Forêt","Prairie","Bambou","Lierre","Mousse","Toscane","Avril","Rosée","Feuillage","Ombrelle","Sentier"],"anime":["erba appena tagliata dietro una casa d'infanzia","il silenzio verde di un sottobosco","una passeggiata senza destinazione","linfa che sale senza chiedere il permesso","l'odore delle mani dopo il giardino","un pensiero pulito, appena nato"],"stagioni":["primavera","primavera","estate","autunno"],"momenti":["alba","giorno","giorno","giorno"],"chi":"cammina senza destinazione e arriva sempre","liquido":"#7c9a5f","chiaro":"#cfe0bd","forma":"slanciata"},"Acquatica":{"organo":["Marini/Ozonici","Aldeidi","Muschi"],"nomi":["Océan","Marée","Bretagne","Écume","Lagune","Azur","Cyclades","Atlantique","Brume","Récif","Sirène","Horizon"],"anime":["vento che arriva da dove non si vede terra","il primo respiro davanti al mare","sale rimasto sulla pelle a sera","una partenza che non fa paura","l'orizzonte come domanda aperta","acqua che non ricorda ma accoglie"],"stagioni":["estate","estate","primavera","estate"],"momenti":["giorno","giorno","alba","sera"],"chi":"guarda il largo senza paura di partire","liquido":"#5f8fa3","chiaro":"#cfe3ec","forma":"tonda"},"Legnosa":{"organo":["Legni","Muschi","Chypre/Terrosi"],"nomi":["Cèdre","Atlas","Santal","Kyoto","Ébène","Racine","Hiver","Cabane","Nord","Séquoia","Bois","Refuge"],"anime":["una casa di legno che ha visto tre generazioni","la calma di chi non deve dimostrare niente","radici che lavorano al buio","il fuoco basso di fine serata","una parola data e mantenuta","silenzio che sa di corteccia"],"stagioni":["autunno","inverno","autunno","inverno"],"momenti":["sera","sera","notte","giorno"],"chi":"mantiene la parola data","liquido":"#8a5a33","chiaro":"#d8c3a8","forma":"quadrata"},"Orientale":{"organo":["Ambrati/Resine","Animalic/Cuoio","Speziati"],"nomi":["Byzance","Tanger","Samarcande","Ambre","Ispahan","Shéhérazade","Désert","Caravane","Orient","Bazar","Mille Nuits","Sahara"],"anime":["una storia raccontata a voce bassa","oro vecchio che non ha bisogno di brillare","il calore che resta dopo che il fuoco è spento","una carovana che viaggia di notte","segreti custoditi con eleganza","la notte come stanza, non come assenza"],"stagioni":["inverno","autunno","inverno","inverno"],"momenti":["notte","sera","notte","sera"],"chi":"racconta a voce bassa e tutti si avvicinano","liquido":"#9c4a1f","chiaro":"#e0b46a","forma":"anfora"},"Speziata":{"organo":["Speziati","Animalic/Cuoio","Aromatiche/Verdi"],"nomi":["Épices","Zanzibar","Ceylan","Safran","Comptoir","Madras","Marrakech","Cannelle","Goa","Route","Feu","Escale"],"anime":["un mercato al tramonto, tutto insieme","la decisione presa senza voltarsi","calore che pizzica e poi consola","una rotta tracciata a mano su una mappa","il coraggio che sa di pepe","una cucina dove succede qualcosa di importante"],"stagioni":["autunno","autunno","inverno","estate"],"momenti":["sera","giorno","sera","notte"],"chi":"decide senza voltarsi indietro","liquido":"#a3502a","chiaro":"#dfb08a","forma":"quadrata"},"Gourmand":{"organo":["Gourmand/Vaniglia","Fruttati"],"nomi":["Vanille","Praline","Havane","Cacao","Miel","Automne","Dimanche","Caramel","Noisette","Minuit","Gourmandise","Douceur"],"anime":["una cucina d'inverno con il forno acceso","la domenica pomeriggio di quando eri piccolo","dolcezza che non chiede scusa","un dolce condiviso in due, senza parlare","il conforto come forma d'arte","zucchero e malinconia in parti uguali"],"stagioni":["inverno","autunno","inverno","autunno"],"momenti":["sera","notte","sera","giorno"],"chi":"sa che il conforto è una forma d'arte","liquido":"#7d5230","chiaro":"#e3c9a3","forma":"anfora"}},"template_nomi":["Eau de {}","Nuit de {}","L'Ombre de {}","Jardin de {}","Souvenir de {}","Clair de {}","{} Absolu","{} Sauvage","{} Noir","Lettre de {}","Retour à {}","Minuit à {}","Un Matin à {}","{} Éternel","Le Silence de {}","Aube de {}"],"racconti":["Apre come {testa}, si scioglie in {cuore} e riposa su {fondo}.","Parte da {testa}, attraversa {cuore}, finisce dove comincia {fondo}.","{testa} in superficie, {cuore} al centro, {fondo} come verità ultima.","Prima {testa}, poi {cuore}; alla fine resta solo {fondo}.","Un lampo di {testa}, un cuore di {cuore}, una radice di {fondo}."],"momento_frase":{"alba":"le albe","giorno":"il pieno giorno","sera":"le sere","notte":"la notte"},"stagione_frase":{"primavera":"di primavera","estate":"d'estate","autunno":"d'autunno","inverno":"d'inverno"}};
+const ONDATE = [["CORE"], ["CORE","ESP"], ["CORE","ESP","MASTER"]];
+const RANGO = { CORE: 0, ESP: 1, MASTER: 2 };
+const FORME = {
+  slanciata: { corpo: "M60,60 L60,52 Q60,48 64,46 L64,40 L96,40 L96,46 Q100,48 100,52 L100,60 L100,208 Q100,216 92,216 L68,216 Q60,216 60,208 Z", tappo: "M66,14 L94,14 L94,40 L66,40 Z" },
+  tonda: { corpo: "M80,52 Q140,58 140,140 Q140,212 80,212 Q20,212 20,140 Q20,58 80,52 Z", tappo: "M68,16 L92,16 L92,52 L68,52 Z" },
+  quadrata: { corpo: "M32,56 L128,56 L128,204 Q128,212 120,212 L40,212 Q32,212 32,204 Z", tappo: "M62,18 L98,18 L98,56 L62,56 Z" },
+  anfora: { corpo: "M80,50 Q124,64 118,130 Q114,180 104,196 Q98,212 80,212 Q62,212 56,196 Q46,180 42,130 Q36,64 80,50 Z", tappo: "M70,14 Q80,8 90,14 L90,50 L70,50 Z" },
+};
+const STILI = {
+  carles:     { conta: {testa:3, cuore:3, fondo:3}, parti: {testa:20, cuore:30, fondo:35},
+                scia: ["DIFFUSIONE","FISSATIVO RADIANTE","FISSATIVO PROFONDO"], scia_tot: 15,
+                lezione: "metodo Carles — struttura piena, fondo prima" },
+  ellena:     { conta: {testa:2, cuore:2, fondo:2}, parti: {testa:22, cuore:34, fondo:30},
+                scia: ["DIFFUSIONE","FISSATIVO PROFONDO"], scia_tot: 14,
+                lezione: "lezione di Ellena — pochi materiali, massima evocazione" },
+  roudnitska: { conta: {testa:2, cuore:3, fondo:2}, parti: {testa:14, cuore:42, fondo:29},
+                scia: ["DIFFUSIONE","FISSATIVO RADIANTE","FISSATIVO PROFONDO"], scia_tot: 15,
+                lezione: "lezione di Roudnitska — una silhouette che si riconosce in un secondo" },
+};
+const VOCI = [
+  "Raffaello ha ascoltato l'intenzione, e propone.",
+  "Raffaello annusa la domanda prima delle materie. Ecco cosa sente.",
+  "Dal banco dell'Atelier, Raffaello apre questi flaconi.",
+  "Raffaello compone: prima il fondo, poi il cuore, per ultima la testa.",
+];
+const FATTORE_FORZA = {1:1.4, 2:1.15, 3:1.0, 4:0.45, 5:0.1};
+
+// PRNG deterministico: l'intenzione è il seme
+function cyrb53(str, seed=0) {
+  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  for (let i = 0; i < str.length; i++) {
+    const ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
+  return 4294967296 * (2097151 & h2) + (h1>>>0);
+}
+function mulberry32(a) {
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a>>>15, 1 | a);
+    t = t + Math.imul(t ^ t>>>7, 61 | t) ^ t;
+    return ((t ^ t>>>14) >>> 0) / 4294967296;
+  };
+}
+const scelta = (rng, arr) => arr[Math.floor(rng() * arr.length)];
+
+function livelliNota(m) { return m.nota === "-" ? [] : m.nota.split("-"); }
+
+function pesca(rng, pools, usate, ondata) {
+  for (let i = ondata; i < 3; i++) {
+    for (const pool of pools) {
+      const c = pool.filter(m => !usate.has(m.n) && ONDATE[i].includes(m.liv));
+      if (c.length) { const m = scelta(rng, c); usate.add(m.n); return m; }
+    }
+  }
+  const resto = pools.flat().filter(m => !usate.has(m.n));
+  const m = scelta(rng, resto); usate.add(m.n); return m;
+}
+
+function componi(intenzione, nomeFam, stileKey, ondata, variazione) {
+  const seme = cyrb53(intenzione.trim().toLowerCase() + "\u00b7" + stileKey +
+                      "\u00b7" + (nomeFam || "") + "\u00b7" + ondata + "\u00b7" + variazione);
+  const rng = mulberry32(seme);
+  const stile = STILI[stileKey];
+  const fam = nomeFam || scelta(rng, Object.keys(D.famiglie));
+  const F = D.famiglie[fam];
+  const organoFam = new Set(F.organo);
+
+  const perLiv = { T: [], C: [], F: [] };
+  for (const m of D.materie) for (const l of livelliNota(m)) perLiv[l].push(m);
+  const firma = {};
+  for (const l of ["T","C","F"]) firma[l] = perLiv[l].filter(m => organoFam.has(m.fam));
+
+  const usate = new Set();
+  const piramide = { testa: [], cuore: [], fondo: [] };
+  const mappa = { testa: "T", cuore: "C", fondo: "F" };
+  for (const liv of ["fondo", "cuore", "testa"]) {           // Carles: fondo prima
+    const l = mappa[liv];
+    const soloFirma = (stileKey === "roudnitska" && liv === "cuore");
+    for (let k = 0; k < stile.conta[liv]; k++) {
+      const pools = (k === 0 || soloFirma) ? [firma[l], perLiv[l]] : [firma[l].concat(perLiv[l])];
+      piramide[liv].push(pesca(rng, pools, usate, ondata));
+    }
+  }
+
+  const ruoli = {};
+  for (const r of stile.scia)
+    ruoli[r] = D.materie.filter(m => m.ruolo === r);
+  const sciaNote = stile.scia.map(r => {
+    const pref = ruoli[r].filter(m => organoFam.has(m.fam));
+    return { ...pesca(rng, [pref, ruoli[r]], usate, ondata), ruolo: r.toLowerCase() };
+  });
+
+  // regola del Grimorio: MAI un muschio solo
+  let notaBlend = null;
+  const tutte = [...piramide.testa, ...piramide.cuore, ...piramide.fondo, ...sciaNote];
+  const muschi = tutte.filter(m => m.fam === "Muschi");
+  if (muschi.length === 1) {
+    const altri = D.materie.filter(m => m.fam === "Muschi" && !usate.has(m.n));
+    if (altri.length) {
+      const extra = { ...pesca(rng, [altri], usate, ondata), ruolo: "blend muschi" };
+      sciaNote.push(extra);
+      notaBlend = extra.nome;
+    }
+  }
+
+  // overdose (regola d'oro): Roudnitska → la prima nota del cuore
+  const noteP = [...piramide.testa, ...piramide.cuore, ...piramide.fondo];
+  const overdose = (stileKey === "roudnitska")
+    ? piramide.cuore[0]
+    : scelta(rng, noteP.filter(m => m.forza <= 4).length ? noteP.filter(m => m.forza <= 4) : noteP);
+
+  // ricetta: parti su 100
+  const righe = [];
+  for (const liv of ["testa", "cuore", "fondo"]) {
+    const note = piramide[liv];
+    const pesi = note.map((m, i) => {
+      let w = (i === 0 ? 1.6 : 1.0) * FATTORE_FORZA[m.forza];
+      if (m.n === overdose.n) w *= 2.5;
+      return w;
+    });
+    const s = pesi.reduce((a, b) => a + b, 0);
+    note.forEach((m, i) => righe.push({ ...m, livello: liv, parti: stile.parti[liv] * pesi[i] / s }));
+  }
+  const sciaBase = { "diffusione": 8, "fissativo radiante": 4, "fissativo profondo": 3, "blend muschi": 3 };
+  const sciaSomma = sciaNote.reduce((a, m) => a + sciaBase[m.ruolo], 0);
+  for (const m of sciaNote)
+    righe.push({ ...m, livello: "scia", parti: stile.scia_tot * sciaBase[m.ruolo] / sciaSomma });
+  for (const r of righe) r.parti = Math.max(0.5, Math.round(r.parti * 2) / 2);
+  const scarto = Math.round((100 - righe.reduce((a, r) => a + r.parti, 0)) * 10) / 10;
+  righe.sort((a, b) => b.parti - a.parti)[0].parti =
+    Math.round((righe.sort((a, b) => b.parti - a.parti)[0].parti + scarto) * 10) / 10;
+  const ordine = { testa: 0, cuore: 1, fondo: 2, scia: 3 };
+  righe.sort((a, b) => ordine[a.livello] - ordine[b.livello]);
+
+  const nome = scelta(rng, D.template_nomi).replace("{}", scelta(rng, F.nomi));
+  const anima = scelta(rng, F.anime);
+  const stagione = scelta(rng, F.stagioni);
+  const momento = scelta(rng, F.momenti);
+  const racconto = scelta(rng, D.racconti)
+    .replace("{testa}", piramide.testa[0].nome)
+    .replace("{cuore}", piramide.cuore[0].nome)
+    .replace("{fondo}", piramide.fondo[0].nome);
+  const concept = anima.charAt(0).toUpperCase() + anima.slice(1) + ". " + racconto +
+    " Pensato per " + D.momento_frase[momento] + " " + D.stagione_frase[stagione] +
+    ", al polso di chi " + F.chi + ". Overdose di " + overdose.nome + ".";
+  const fattibilita = ["CORE","ESP","MASTER"][Math.max(...righe.map(r => RANGO[r.liv]))];
+
+  return { seme, fam, F, stile, stileKey, nome, anima, stagione, momento,
+           concept, righe, overdose, fattibilita, notaBlend, piramide };
+}
+
+function flacone(p) {
+  const f = FORME[p.F.forma], id = "ga";
+  return '<svg viewBox="0 0 160 230">' +
+    '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + p.F.chiaro + '"/>' +
+    '<stop offset="1" stop-color="' + p.F.liquido + '"/></linearGradient></defs>' +
+    '<path d="' + f.corpo + '" fill="url(#' + id + ')" opacity="0.9"/>' +
+    '<path d="' + f.corpo + '" fill="none" stroke="#8a6f2e" stroke-width="1.2"/>' +
+    '<path d="' + f.tappo + '" fill="#2c2c34" stroke="#8a6f2e" stroke-width="0.8"/>' +
+    '<rect x="45" y="128" width="70" height="50" rx="2" fill="#efe8d8" opacity="0.97"/>' +
+    '<text x="80" y="146" text-anchor="middle" font-family="Georgia" font-size="8" fill="#8a6f2e">ATELIER</text>' +
+    '<text x="80" y="159" text-anchor="middle" font-family="Georgia" font-size="7" fill="#2c2418">' +
+    (p.nome.length > 19 ? p.nome.slice(0, 18) + "\u2026" : p.nome) + '</text>' +
+    '<text x="80" y="170" text-anchor="middle" font-family="Georgia" font-size="5.5" letter-spacing="1" fill="#8a6f2e">TERZI PARFUMS</text>' +
+    '</svg>';
+}
+
+let corrente = null, variazione = 0;
+
+function mostra(p) {
+  corrente = p;
+  document.getElementById("voce").textContent = VOCI[p.seme % VOCI.length];
+  const righe = p.righe.map(r =>
+    '<tr><td class="lv">' + r.livello + (r.livello === "scia" ? " \u00b7 " + r.ruolo : "") + '</td>' +
+    '<td title="Organo N\u00b0 ' + r.n + ' \u00b7 forza ' + r.forza + '/5">' + r.nome +
+    (r.forza === 5 ? ' <span class="avviso">\u26a0 forza 5 \u2014 diluizione 1%</span>' : "") +
+    (r.ifra ? ' <span class="avviso">\u26a0 IFRA</span>' : "") +
+    '</td><td class="parti">' + r.parti.toFixed(1).replace(".", ",") + '</td></tr>').join("");
+  document.getElementById("scheda").innerHTML =
+    '<div class="col-fl">' + flacone(p) +
+    '<div class="meta">' + p.stagione + " \u00b7 " + p.momento +
+    '<br><span class="badge">' + p.fattibilita + '</span></div></div>' +
+    '<div class="col-tx">' +
+    '<div class="sotto">Proposta dell\u2019Atelier \u00b7 ' + p.fam + " \u00b7 " + p.stile.lezione + '</div>' +
+    '<h2>' + p.nome + '</h2>' +
+    '<div class="etich">Concept</div><p class="concept">' + p.concept + '</p>' +
+    '<div class="etich">Ricetta \u2014 parti su 100 di concentrato</div>' +
+    '<table class="ricetta">' + righe + '</table>' +
+    (p.notaBlend ? '<p class="nota-regola">Regola del Grimorio applicata: mai un muschio solo \u2014 aggiunto ' + p.notaBlend + ' al blend.</p>' : "") +
+    '<p class="avvertenza">Punto di partenza didattico, non formula finita: lavorare in diluizione, ' +
+    'correggere col naso, registrare nel diario. Le materie \u26a0 IFRA hanno limiti severi per uso su pelle. ' +
+    'Verificare IFRA/CPSR prima di qualunque vendita.</p></div>';
+  document.getElementById("scheda").classList.add("viva");
+  document.getElementById("seme").textContent =
+    "seme " + p.seme + " \u00b7 variazione " + variazione + " \u2014 stessa intenzione, stessa proposta";
+  document.getElementById("ancora").disabled = false;
+  document.getElementById("scarica").disabled = false;
+}
+
+function leggi() {
+  return {
+    intenzione: document.getElementById("intenzione").value || "senza intenzione",
+    fam: document.getElementById("famiglia").value || null,
+    stile: document.getElementById("stile").value,
+    ondata: parseInt(document.getElementById("ondata").value, 10),
+  };
+}
+
+document.getElementById("componi").addEventListener("click", () => {
+  variazione = 0;
+  const i = leggi();
+  mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione));
+});
+document.getElementById("ancora").addEventListener("click", () => {
+  variazione += 1;
+  const i = leggi();
+  mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione));
+});
+document.getElementById("scarica").addEventListener("click", () => {
+  if (!corrente) return;
+  const p = corrente, i = leggi();
+  const testo = [
+    "ATELIER DI RAFFAELLO \u2014 Terzi Parfums",
+    "Proposta: " + p.nome + " (" + p.fam + ", " + p.fattibilita + ")",
+    "Intenzione: \u201c" + i.intenzione + "\u201d",
+    "Stile: " + p.stile.lezione,
+    "Seme: " + p.seme + " \u00b7 variazione " + variazione,
+    "",
+    "CONCEPT", p.concept, "",
+    "RICETTA \u2014 parti su 100 di concentrato",
+    ...p.righe.map(r => "  " + r.livello.padEnd(6) + " " + r.nome +
+      " \u2014 " + r.parti.toFixed(1).replace(".", ",") + " parti" +
+      " (Organo N\u00b0 " + r.n + ", forza " + r.forza + "/5)" +
+      (r.forza === 5 ? " \u26a0 diluizione 1%" : "") + (r.ifra ? " \u26a0 IFRA" : "")),
+    "",
+    "AVVERTENZE: punto di partenza didattico (metodo Carles), non formula finita.",
+    "Guanti, diluizioni, mai annusare puro. IFRA/CPSR obbligatori prima di vendere.",
+    "",
+    "ALAKTA ANEN \u2014 la scia \u00e8 memoria che cammina.",
+  ].join("\n");
+  const blob = new Blob([testo], { type: "text/plain;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "atelier_" + p.nome.toLowerCase().replace(/[^a-z0-9]+/g, "_") + ".txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+const selFam = document.getElementById("famiglia");
+for (const f of Object.keys(D.famiglie)) {
+  const o = document.createElement("option");
+  o.value = f; o.textContent = f;
+  selFam.appendChild(o);
+}
+</script>
+</body>
+</html>

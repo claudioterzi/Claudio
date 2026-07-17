@@ -689,6 +689,7 @@ def genera_html(doc):
     <footer>
       Ogni nota è una materia reale dell'Organo Terzi 300 (passa il mouse per il N°).<br>
       <a href="libro.html">Il Libro dei Parfums</a> — storia, sapere, organo e le 400 schede, stampabile.<br>
+      <a href="atelier.html">L'Atelier di Raffaello</a> — componi una ricetta nuova dalla tua intenzione.<br>
       Sistema C del progetto Claudio · fratello dei
       <a href="index.html">Tarocchi Quantici R³∞</a> e del Canone Alpha<br>
       <em>ALAKTA ANEN — la scia è memoria che cammina.</em>
