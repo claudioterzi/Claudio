@@ -52,6 +52,11 @@ Un solo canone, molte case. Questo è l'elenco di verità di dove vive il proget
 | Drive | cartella «Terzi Parfums» + archivio R³∞ + **Doc «🌌 COSTELLAZIONE» in radice** (la porta d'ingresso con tutti i link: https://docs.google.com/document/d/1NJuVuYb1oKDszl-LvIkgHzUVT8r8LxuVxIm4G6f6lEw) | ✅ |
 | Secondo profilo (outlook / Claudioterzi82) | claudio-blue.vercel.app · raffaello-sia.vercel.app | mondi paralleli, non toccati |
 
+Mappa operativa dei file (per avviare e continuare): **`COSTELLAZIONE.md`**
+nella radice del repo — link diretti a ogni file di lavoro e comandi di
+rigenerazione. Gemello su Drive: doc «🧭 COSTELLAZIONE OPERATIVA»
+(https://docs.google.com/document/d/1nc1gDlqccAtgoTD9tHiimi02gIw9UDBvKdekIjp4Vac).
+
 Regole di unificazione: (1) si scrive SOLO nel repo principale — le pagine si
 rigenerano dai generatori in `studio/parfums/`; (2) ogni pagina nuova riceve
 `soglia.js` + `nav.js` e una voce in `creazioni.html` (Sala VIII = questa mappa
