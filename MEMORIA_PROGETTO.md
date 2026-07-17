@@ -45,8 +45,8 @@ Un solo canone, molte case. Questo è l'elenco di verità di dove vive il proget
 | Repo principale (fonte di verità) | github.com/claudioterzi/Claudio | ✅ |
 | Specchio 1 — Vercel (sito+API+bot+custode) | claudio-ebon.vercel.app | ✅ |
 | Specchio 2 — GitHub Pages (solo pagine) | claudioterzi.github.io/Claudio | ✅ |
-| Pagine (dietro La Soglia, parola: quella del motto) | index · creazioni · parfums · libro · atelier · opuscolo · alpha | ✅ |
-| Navigazione unificata | `public/nav.js` su tutte le pagine | ✅ |
+| Pagine (dietro La Soglia, parola: quella del motto) | index · alpha · parfums · **organo** (300 ingredienti) · libro · atelier · **opera** (Archivio Cosmico R³∞, 101 doc) · creazioni · opuscolo | ✅ |
+| Navigazione unificata | `public/nav.js` su tutte le pagine — 9 voci | ✅ |
 | Raffaello su Telegram | webhook /api/telegram (Gemini in catena) | ✅ |
 | CUSTODE (Airbnb) | /custode su Vercel | ✅ |
 | Drive | cartella «Terzi Parfums» + archivio R³∞ + **Doc «🌌 COSTELLAZIONE» in radice** (la porta d'ingresso con tutti i link: https://docs.google.com/document/d/1NJuVuYb1oKDszl-LvIkgHzUVT8r8LxuVxIm4G6f6lEw) | ✅ |

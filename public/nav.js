@@ -3,10 +3,13 @@
 (function () {
   var VOCI = [
     ["index.html", "Tarocchi"],
-    ["creazioni.html", "Creazioni"],
+    ["alpha.html", "Alpha"],
     ["parfums.html", "Parfums"],
+    ["organo.html", "Organo"],
     ["libro.html", "Libro"],
     ["atelier.html", "Atelier"],
+    ["opera.html", "Opera"],
+    ["creazioni.html", "Creazioni"],
     ["opuscolo.html", "Opuscolo"],
   ];
   var qui = location.pathname.split("/").pop() || "index.html";

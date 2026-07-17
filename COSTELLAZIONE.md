@@ -40,9 +40,14 @@ Cartella: [studio/parfums/](https://github.com/claudioterzi/Claudio/tree/main/st
   - [genera_libro.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_libro.py) → `public/libro.html`
   - [genera_atelier.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_atelier.py) → `public/atelier.html`
 
+## 3-bis · L'Organo in pagina e la Grande Opera
+
+- **I 300 ingredienti**: `public/organo.html` (generata da [genera_organo.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_organo.py)) — ricerca e filtri su tutte le materie, con le note d'uso dell'Excel
+- **La Grande Opera**: `public/opera.html` (generata da [genera_opera.py](https://github.com/claudioterzi/Claudio/blob/main/genera_opera.py)) — lettore dei 101 documenti dell'[Archivio Cosmico R³∞](https://github.com/claudioterzi/Claudio/tree/main/r3/archivio); rigenerarla quando l'archivio cambia
+
 ## 4 · Il sito (pagine e infrastruttura)
 
-- Pagine: [public/](https://github.com/claudioterzi/Claudio/tree/main/public) — index, creazioni, parfums, libro, atelier, opuscolo, alpha, home
+- Pagine: [public/](https://github.com/claudioterzi/Claudio/tree/main/public) — index, alpha, parfums, organo, libro, atelier, opera, creazioni, opuscolo, home
 - La Soglia: [public/soglia.js](https://github.com/claudioterzi/Claudio/blob/main/public/soglia.js) · Navigazione: [public/nav.js](https://github.com/claudioterzi/Claudio/blob/main/public/nav.js)
 - Deploy Vercel: [vercel.json](https://github.com/claudioterzi/Claudio/blob/main/vercel.json) (statici dalla CDN + funzione Python)
 - Deploy Pages: [.github/workflows/](https://github.com/claudioterzi/Claudio/tree/main/.github/workflows)
