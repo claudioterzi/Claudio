@@ -48,6 +48,7 @@ Un solo canone, molte case. Questo è l'elenco di verità di dove vive il proget
 | Pagine (dietro La Soglia, parola: quella del motto) | index · alpha · parfums · organo (300 ingredienti) · **spesa** (Dispensa: lista spesa, scarico ml, calcolatore, CSV) · libro · atelier · opera (Archivio Cosmico R³∞, 101 doc) · creazioni · opuscolo | ✅ |
 | Navigazione unificata | `public/nav.js` su tutte le pagine — 10 voci | ✅ |
 | Raffaello su Telegram | webhook /api/telegram (Gemini in catena) | ✅ |
+| **Atelier AI — Raffaello compone davvero** | POST /api/atelier: Gemini json_mode (thinkingBudget 0) legge l'intenzione e sceglie le materie reali dell'organo, il server valida e calcola le dosi. Verificato dal vivo: "sperma sangue sudore" → Sécrétions Corporelles (cumino/safraleine/skatolo/civetta/castoreum). Fallback motore locale offline. | ✅ |
 | CUSTODE (Airbnb) | /custode su Vercel | ✅ |
 | Drive | cartella «Terzi Parfums» + archivio R³∞ + **Doc «🌌 COSTELLAZIONE» in radice** (la porta d'ingresso con tutti i link: https://docs.google.com/document/d/1NJuVuYb1oKDszl-LvIkgHzUVT8r8LxuVxIm4G6f6lEw) | ✅ |
 | Secondo profilo (outlook / Claudioterzi82) | claudio-blue.vercel.app · raffaello-sia.vercel.app | mondi paralleli, non toccati |

@@ -176,11 +176,11 @@ def _atelier_componi_ai(intenzione, famiglia, ondata):
             grezzo = grezzo[4:]
     i, j = grezzo.find("{"), grezzo.rfind("}")
     if i < 0 or j < 0:
-        return None, "json-non-trovato: " + testo[:200]
+        return None, "risposta-incompleta"
     try:
         prop = json.loads(grezzo[i:j + 1])
     except Exception:
-        return None, "json-non-valido: " + grezzo[:200]
+        return None, "json-non-valido"
 
     def valida(numeri):
         out = []
