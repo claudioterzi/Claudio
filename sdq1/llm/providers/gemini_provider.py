@@ -35,6 +35,9 @@ class GeminiProvider(ProviderBase):
         # senza preamboli né recinti markdown (usata dall'Atelier)
         if self.opts.get("json_mode"):
             gen["responseMimeType"] = "application/json"
+            # spegne il "thinking" di Gemini 2.5: tutto il budget di token va
+            # all'output JSON, che altrimenti si tronca a metà
+            gen["thinkingConfig"] = {"thinkingBudget": 0}
         payload = {
             "contents": [{"role": "user", "parts": [{"text": utente}]}],
             "generationConfig": gen,
