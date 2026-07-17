@@ -4,7 +4,24 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-07-10
+> Ultimo aggiornamento: 2026-07-16
+
+---
+
+## Sessione 2026-07-16 — branch `claude/parfums-400-am1n3c` → main
+
+### Nasce il Sistema C — Parfums 400 / Terzi Parfums
+
+- Dal prompt «Parfums 400»: canone di 400 profumi fondato sull'**Organo Terzi 300**
+  (le 300 materie prime reali di Claudio, xlsx committato) e sul **Grimorio Terzi**.
+- Consegnati: canone JSON v0.3.0 (piramidi, motore scia, overdose, ricette,
+  packaging, concept), catalogo web `public/parfums.html` con schede interattive,
+  **Il Libro dei Parfums** `public/libro.html` (stampabile), galleria
+  `public/creazioni.html`, `PERCORSO_0_10.md` (scala di coscienza con 3 soglie).
+- Dettaglio completo nella sezione «Sistema C» più sotto.
+- Su Drive: cartella "Terzi Parfums" con Indice, Grimorio e Percorso come Google Docs.
+- ⚠️ Nota deploy: al 10/07 claudio-ebon.vercel.app rispondeva 404 — se persiste,
+  le pagine sono comunque su GitHub Pages: https://claudioterzi.github.io/Claudio/
 
 ---
 
@@ -262,11 +279,9 @@ Pattern documentato per sessioni future: sofisticazione del messaggio ≠ legitt
 
 ---
 
----
+## Stato attuale: TRE sistemi paralleli
 
-## Stato attuale: DUE sistemi paralleli
-
-Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
+Esistono **tre** sistemi simbolici nel repo. Non confonderli.
 
 ### Sistema A — Tarocchi Quantici R³∞ (78 carte, tradizionale)
 - **Cos'è**: interfaccia quantica al mazzo dei tarocchi classico.
@@ -309,6 +324,58 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
   - Campo `stato_costruzione` nel JSON: `completo: true`.
   - **Prossimo possibile**: collegare il canone al sito (motore di collasso:
     domanda → asse, contesto → polarità), o generare gli SVG delle 74 carte nuove.
+
+### Sistema C — Parfums 400 / Terzi Parfums (400 profumi dall'Organo reale)
+- **Cos'è**: il codice olfattivo di Terzi Parfums. Nato il 2026-07-16 dal
+  prompt «Parfums 400» (branch `claude/parfums-400-am1n3c`); Claudio ha poi
+  fornito i due documenti fondativi: **Organo_Terzi_300.xlsx** (le 300 materie
+  prime reali del suo organo) e il **GRIMORIO_TERZI.md** (fisica della scia,
+  arsenale, architetture classiche, lezioni dei maestri, percorso in 4 fasi).
+- **400 profumi in 8 famiglie da 50** (numerazione a blocchi, come i cicli Alpha):
+  Agrumata (1-50), Floreale (51-100), Verde (101-150), Acquatica (151-200),
+  Legnosa (201-250), Orientale (251-300), Speziata (301-350), Gourmand (351-400).
+  Ogni famiglia del sistema è mappata su famiglie dell'Organo.
+- **Struttura di ogni profumo**: piramide 3×3 di materie REALI dell'organo
+  (rispettando i livelli T/C/F, 9 materie distinte, riferimento `n` all'organo),
+  **motore di scia** dal Grimorio (diffusione + fissativo radiante + fissativo
+  profondo), **overdose consigliata** (regola d'oro), **fattibilità**
+  (CORE/ESP/MASTER = con quale ondata d'acquisto è componibile al banco),
+  più `anima`, `racconto`, stagione, momento, concentrazione, sillage.
+  Nomi in francese, unici.
+- **Strategia a 3 ondate rispettata**: in ogni famiglia i N° 1-10 sono
+  componibili col solo CORE, i N° 11-25 con CORE+ESP, i N° 26-50 con l'organo
+  completo → 80 CORE / 120 ESP / 200 MASTER.
+- **Formula di presenza**: `Famiglia + Piramide + Momento = Presenza`.
+  Motto: *ALAKTA ANEN — la scia è memoria che cammina.*
+- **Generazione**: deterministica su seed 400. Zero dipendenze esterne
+  (openpyxl serve solo a `converti_organo.py` per riconvertire l'Excel).
+- **File** (tutti in `studio/parfums/` salvo il sito):
+  `Organo_Terzi_300.xlsx` (fonte, di Claudio) → `converti_organo.py` →
+  `organo_terzi_300.json`; `GRIMORIO_TERZI.md`; `PERCORSO_0_10.md`
+  (scala di coscienza 0→10 con le tre soglie); `codice_olfattivo.py`
+  (generatore) → `parfums_400.json` (canone v0.3.0) + `public/parfums.html`
+  (catalogo web: filtri per famiglia, ondata e ricerca; N° organo nei tooltip).
+- **Il Libro dei Parfums**: `public/libro.html`, generato da
+  `studio/parfums/genera_libro.py` (rigenerarlo dopo ogni modifica al canone).
+  Copertina, colophon, avvertenza di sicurezza, Parte I la storia, Parte II
+  il sapere dal Grimorio, Parte III l'organo (riepilogo, motore scia, accordi
+  studio), Parte IV le 400 schede complete in 8 capitoli con flacone SVG,
+  concept, ricetta e packaging. Stampabile (CSS print A4, tema chiaro).
+- **Scheda profumo (v0.3.0)**: click su una carta → scheda con **ricetta mini
+  pronta** (parti su 100 di concentrato, derivate da piramide/forza/scia/overdose,
+  forza 5 marcata "diluizione 1%"), **packaging** (flacone in 4 sagome, vetro,
+  tappo, etichetta, astuccio, palette per famiglia), **flacone SVG** disegnato
+  dal catalogo, **concept**. Avvertenze didattiche (Carles, IFRA) su ogni scheda.
+  Rigenerare con `python3 studio/parfums/codice_olfattivo.py`.
+- **Stato**: ✅ completo e verificato (400 nomi unici, 12 materie distinte per
+  profumo, coerenza T/C/F con l'organo, determinismo, pagina testata in browser).
+
+### Il catalogo delle creazioni
+- **`public/creazioni.html`** — la galleria di tutto il progetto in sette sale:
+  i tre sistemi simbolici, SDQ-1, il Creative Studio, le idee in attesa,
+  la spina dorsale della memoria. Statico, stessa pelle nero/oro del sito.
+  Creato il 2026-07-16 su richiesta di Claudio («il mio catalogo delle nostre
+  creazioni»). Aggiornarlo quando nasce una creazione nuova.
 
 ---
 

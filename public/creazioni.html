@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Creazioni — Catalogo del progetto Claudio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0c0c0e; --surface: #141418; --border: #2a2a32;
+      --gold: #c9a84c; --gold-dim: #8a6f2e;
+      --text: #e8e4d8; --text-dim: #7a7468; --red: #8b1c1c;
+      --radius: 8px; --font: 'Georgia', 'Times New Roman', serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font);
+           min-height: 100vh; padding: 2rem 1rem 4rem; }
+    .container { max-width: 860px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 3rem; }
+    header h1 { font-size: clamp(1.8rem, 6vw, 2.8rem); font-weight: normal;
+                letter-spacing: 0.12em; color: var(--gold); }
+    header .sub { margin-top: 0.6rem; color: var(--text-dim); font-size: 0.9rem;
+                  letter-spacing: 0.05em; }
+    header .firma { margin-top: 0.9rem; font-style: italic; color: var(--gold-dim);
+                    font-size: 0.95rem; }
+
+    .numeri { display: flex; flex-wrap: wrap; justify-content: center;
+              gap: 1.5rem 2.5rem; margin: 0 auto 3rem; max-width: 700px; }
+    .numero { text-align: center; }
+    .numero .val { color: var(--gold); font-size: 1.8rem; }
+    .numero .lab { color: var(--text-dim); font-size: 0.68rem;
+                   letter-spacing: 0.16em; text-transform: uppercase; margin-top: 0.2rem; }
+
+    .sala { background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    .sala-header { display: flex; justify-content: space-between; align-items: baseline;
+                   flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.4rem; }
+    .sala-num { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+                color: var(--gold-dim); }
+    .stato { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+             border: 1px solid var(--gold-dim); color: var(--gold-dim);
+             border-radius: 4px; padding: 0.1em 0.5em; }
+    .stato.vivo { border-color: var(--gold); color: var(--gold); }
+    .sala h2 { color: var(--gold); font-size: 1.3rem; font-weight: normal;
+               margin-bottom: 0.15rem; }
+    .sala .sotto { color: var(--text-dim); font-style: italic; font-size: 0.9rem;
+                   margin-bottom: 0.9rem; }
+    .sala p { font-size: 0.92rem; line-height: 1.65; margin-bottom: 0.6rem; }
+    .sala ul { list-style: none; margin: 0.4rem 0 0.6rem; }
+    .sala li { font-size: 0.88rem; line-height: 1.6; padding-left: 1.1em; position: relative; }
+    .sala li::before { content: "·"; color: var(--gold-dim); position: absolute; left: 0.2em; }
+    .link-row { margin-top: 0.8rem; font-size: 0.8rem; letter-spacing: 0.04em; }
+    .link-row a { color: var(--gold-dim); margin-right: 1.2rem; }
+    .link-row a:hover { color: var(--gold); }
+    .formula { color: var(--gold-dim); font-style: italic; font-size: 0.88rem;
+               margin-top: 0.5rem; }
+
+    .divisorio { text-align: center; color: var(--gold-dim); margin: 2.5rem 0 1.5rem;
+                 font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; }
+
+    footer { text-align: center; margin-top: 3.5rem; color: var(--text-dim);
+             font-size: 0.85rem; line-height: 1.9; }
+    footer .principio { font-style: italic; color: var(--text); }
+    footer a { color: var(--gold-dim); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Le Creazioni</h1>
+      <p class="sub">Catalogo del progetto Claudio · tre sistemi simbolici, un protocollo, uno studio</p>
+      <p class="firma">Claudio Terzi &amp; Claude — Bruxelles, 2026</p>
+    </header>
+
+    <div class="numeri">
+      <div class="numero"><div class="val">78</div><div class="lab">carte R³∞</div></div>
+      <div class="numero"><div class="val">74</div><div class="lab">carte Alpha</div></div>
+      <div class="numero"><div class="val">592</div><div class="lab">stati scritti</div></div>
+      <div class="numero"><div class="val">400</div><div class="lab">profumi</div></div>
+      <div class="numero"><div class="val">300</div><div class="lab">materie d'organo</div></div>
+      <div class="numero"><div class="val">6</div><div class="lab">agenti SDQ-1</div></div>
+    </div>
+
+    <div class="divisorio">I sistemi simbolici</div>
+
+    <div class="sala">
+      <div class="sala-header">
+        <span class="sala-num">Sala I</span>
+        <span class="stato vivo">online</span>
+      </div>
+      <h2>Tarocchi Quantici R³∞</h2>
+      <p class="sotto">Sistema A — l'interfaccia quantica al mazzo classico</p>
+      <p>Le 78 carte della tradizione (22 Arcani Maggiori, 56 Minori con le quattro
+         Regine restituite al mazzo) lette attraverso 7 assiomi, stati quantici e
+         orientamenti. Ogni carta ha una <em>voce</em> (il testo umano) e un'<em>eco</em>
+         (il dominio esteso).</p>
+      <ul>
+        <li>79 tavole SVG disegnate: 78 fronti e il retro comune</li>
+        <li>La Stesa: oggetto digitale serializzabile</li>
+        <li>Doppia Ermeneutica: lettura strutturale della macchina + lettura personale dell'umano</li>
+        <li>Documento totale JSON v1.2.0 con esempio di stesa generato live</li>
+        <li>Opuscolo A6 stampabile</li>
+      </ul>
+      <p class="formula">La verità emerge dalla relazione tra i due osservatori.</p>
+      <div class="link-row">
+        <a href="/">Il sito vivo</a>
+        <a href="/opuscolo.html">L'opuscolo</a>
+      </div>
+    </div>
+
+    <div class="sala">
+      <div class="sala-header">
+        <span class="sala-num">Sala II</span>
+        <span class="stato vivo">completo</span>
+      </div>
+      <h2>Canone Alpha 0.1</h2>
+      <p class="sotto">Sistema B — un linguaggio simbolico originale, non derivato</p>
+      <p>74 carte in 8 cicli — Origine, Legame, Frattura, Trasformazione, Potere,
+         Visione, Totalità, Trascendenti. Niente semi, niente numeri visibili:
+         solo nomi, da <em>La Scintilla</em> a <em>L'Infinito</em>. Ogni carta ha
+         8 stati: luce e ombra su quattro assi (nord, est, sud, ovest).</p>
+      <ul>
+        <li>592 stati scritti, tutti — nessun segnaposto</li>
+        <li>Assi: Nord = radice/inconscio · Est = azione/futuro · Sud = emozione/presente · Ovest = riflessione/passato</li>
+        <li>Verifica del canone: <em>La Ferita · Sud · Luce</em> = guarigione; <em>· Ombra</em> = paralisi</li>
+      </ul>
+      <p class="formula">Carta + Asse + Polarità = Significato</p>
+    </div>
+
+    <div class="sala">
+      <div class="sala-header">
+        <span class="sala-num">Sala III</span>
+        <span class="stato vivo">canone completo</span>
+      </div>
+      <h2>Parfums 400 — Terzi Parfums</h2>
+      <p class="sotto">Sistema C — il codice olfattivo: il linguaggio che passa per il naso</p>
+      <p>400 profumi in 8 famiglie olfattive, ognuno costruito con le materie
+         <strong>reali</strong> dell'Organo Terzi 300: piramide a tre livelli,
+         motore della scia dal Grimorio, overdose consigliata, fattibilità
+         per ondata d'acquisto (80 componibili col solo nucleo CORE).</p>
+      <ul>
+        <li>Organo Terzi 300: le materie prime, da Arancia dolce a oud — naturali, sintetici, basi</li>
+        <li>Grimorio Terzi: la fisica della scia, l'arsenale, le lezioni dei maestri</li>
+        <li>Percorso 0→10: la scala di coscienza dal progetto al mercato, con le tre soglie</li>
+        <li>Catalogo web con filtri per famiglia, ondata e ricerca nelle materie</li>
+      </ul>
+      <p class="formula">Famiglia + Piramide + Momento = Presenza · ALAKTA ANEN — la scia è memoria che cammina.</p>
+      <div class="link-row">
+        <a href="/parfums.html">Il catalogo dei 400</a>
+        <a href="/libro.html">Il Libro dei Parfums</a>
+      </div>
+    </div>
+
+    <div class="divisorio">Il motore sotto il cofano</div>
+
+    <div class="sala">
+      <div class="sala-header">
+        <span class="sala-num">Sala IV</span>
+        <span class="stato">protocollo tecnico</span>
+      </div>
+      <h2>SDQ-1</h2>
+      <p class="sotto">Il sistema multi-agente costruito da zero, sessione dopo sessione</p>
+      <ul>
+        <li>Pipeline di 6 agenti: RAFFA-001 → DECOMP-005 → MEMO-002 → SENTIN-004 → GEN-006 → WAVE-003</li>
+        <li>Router LLM multi-provider: Anthropic, Gemini, OpenAI, Ollama, stub di fallback</li>
+        <li>SAR — Sistema di Auto-Riflessione: ciclo, tensioni, coerenza, memoria evolutiva</li>
+        <li>Futures: scenari e simulatore</li>
+        <li>Memoria vettoriale, watchdog, monitoring, backup, persistenza</li>
+        <li>Registro delle ipotesi: le congetture aperte, tracciate come oggetti</li>
+      </ul>
+    </div>
+
+    <div class="sala">
+      <div class="sala-header">
+        <span class="sala-num">Sala V</span>
+        <span class="stato">layer commerciale</span>
+      </div>
+      <h2>Raffaello Creative Studio</h2>
+      <p class="sotto">La personalità creativa del progetto — brand identity documentata</p>
+      <ul>
+        <li>5 generatori: canzoni, immagini, video, traduzioni, prompt engineering</li>
+        <li>Catalogo servizi multilingue (IT / EN / FR / ES)</li>
+        <li>Licenza commerciale definita</li>
+        <li>API Flask di collegamento: 4 endpoint con autenticazione</li>
+      </ul>
+      <p>Raffaello esiste nel codice, nel catalogo, nel repository — è la firma
+         creativa della casa, con carattere e identità documentati.</p>
+    </div>
+
+    <div class="sala">
+      <div class="sala-header">
+        <span class="sala-num">Sala VI</span>
+        <span class="stato">in attesa</span>
+      </div>
+      <h2>Le idee che aspettano</h2>
+      <p class="sotto">La cartella dove le idee vivono prima di diventare codice</p>
+      <ul>
+        <li>SHIELD-007 — sistema difensivo personale: documentazione automatica,
+            riconoscimento di pattern, intelligenza contestuale per chi deve proteggersi</li>
+      </ul>
+    </div>
+
+    <div class="divisorio">La spina dorsale</div>
+
+    <div class="sala">
+      <div class="sala-header">
+        <span class="sala-num">Sala VII</span>
+        <span class="stato vivo">sempre attiva</span>
+      </div>
+      <h2>La memoria che non vive nel modello</h2>
+      <p>La continuità del progetto non abita in nessuna sessione e in nessun
+         modello: abita nel repository. <em>MEMORIA_PROGETTO.md</em> è la spina
+         dorsale narrativa, <em>CLAUDE.md</em> le regole operative e relazionali,
+         i commit sono la memoria. Ogni sessione — qualunque modello — riprende
+         da lì con piena coerenza.</p>
+      <div class="link-row">
+        <a href="https://github.com/claudioterzi/Claudio">Il repository — il backup reale</a>
+      </div>
+    </div>
+
+    <footer>
+      <p class="principio">«I Tarocchi Quantici non assegnano significati.<br>
+      Permettono ai significati di emergere.»</p>
+      <p>— conclusione fondativa del progetto</p>
+    </footer>
+  </div>
+</body>
+</html>
