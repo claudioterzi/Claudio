@@ -58,26 +58,6 @@ def _cors(response):
     return response
 
 
-@app.route("/api/debug/fs")
-def debug_fs():
-    """Diagnostica filesystem su Vercel: dove siamo e dove sta public/."""
-    qui = os.path.dirname(os.path.abspath(__file__))
-    def elenca(p):
-        try:
-            return sorted(os.listdir(p))[:25]
-        except Exception as e:
-            return f"ERRORE: {e}"
-    return jsonify({
-        "__file__": os.path.abspath(__file__),
-        "cwd": os.getcwd(),
-        "public_atteso": _PUBLIC,
-        "public_esiste": os.path.isdir(_PUBLIC),
-        "contenuto_qui": elenca(qui),
-        "contenuto_cwd": elenca(os.getcwd()),
-        "contenuto_var_task": elenca("/var/task"),
-    })
-
-
 @app.route("/")
 def index():
     return send_from_directory(_PUBLIC, "index.html")

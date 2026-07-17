@@ -20,8 +20,16 @@
   `public/creazioni.html`, `PERCORSO_0_10.md` (scala di coscienza con 3 soglie).
 - Dettaglio completo nella sezione «Sistema C» più sotto.
 - Su Drive: cartella "Terzi Parfums" con Indice, Grimorio e Percorso come Google Docs.
-- ⚠️ Nota deploy: al 10/07 claudio-ebon.vercel.app rispondeva 404 — se persiste,
-  le pagine sono comunque su GitHub Pages: https://claudioterzi.github.io/Claudio/
+- ✅ **Vercel RISOLTO (17/07)**: il "404" del 10/07 non era la piattaforma giù —
+  era il 404 di Flask. Due cause: path relativo di `public/` e, soprattutto,
+  `@vercel/python` NON impacchetta i file statici nella lambda. Fix definitivo
+  in `vercel.json`: secondo build `@vercel/static` per `public/**` con route
+  esplicite (statici dalla CDN, Flask solo per /api, webhook Telegram, /custode).
+  Tutto verificato 200 su claudio-ebon.vercel.app. Il sito vive in doppio:
+  Vercel + GitHub Pages (https://claudioterzi.github.io/Claudio/).
+  Accesso API Vercel: token creato da Claudio il 17/07 (account hobby, gratuito).
+  Nota: esistono DUE progetti Vercel che buildano lo stesso repo (claudio e
+  claudio-ykoz) — build doppi, code lente. Claudio può eliminarne uno dal dashboard.
 
 ---
 
