@@ -3,16 +3,19 @@
   "builds": [
     {
       "src": "tarocchi_web.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": "public/**"
-      }
+      "use": "@vercel/python"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "tarocchi_web.py"
-    }
+    { "src": "/", "dest": "/public/index.html" },
+    { "src": "/home", "dest": "/public/home.html" },
+    { "src": "/alpha", "dest": "/public/alpha.html" },
+    { "src": "/(.+\\.(html|js|css|svg|png|jpg|ico|json|txt))", "dest": "/public/$1" },
+    { "src": "/cards/(.*)", "dest": "/public/cards/$1" },
+    { "src": "/(.*)", "dest": "tarocchi_web.py" }
   ]
 }
