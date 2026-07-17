@@ -28,8 +28,11 @@
   Tutto verificato 200 su claudio-ebon.vercel.app. Il sito vive in doppio:
   Vercel + GitHub Pages (https://claudioterzi.github.io/Claudio/).
   Accesso API Vercel: token creato da Claudio il 17/07 (account hobby, gratuito).
-  Nota: esistono DUE progetti Vercel che buildano lo stesso repo (claudio e
-  claudio-ykoz) — build doppi, code lente. Claudio può eliminarne uno dal dashboard.
+  Pulizia (17/07, autorizzata "tutta tua"): eliminato il progetto doppione
+  `claudio-ykoz` (zero env, zero domini custom) — ora un solo build per push.
+  Secondo profilo Vercel (claudioterzi82@outlook.com, team "rosso"): progetti
+  `claudio` e `raffaello-sia` — token fornito il 17/07, da revocare a fine lavori
+  insieme a quello gmail (entrambi passati in chat).
 
 ---
 
