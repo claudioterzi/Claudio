@@ -38,6 +38,14 @@
         font-size: 0.95rem; letter-spacing: 0.08em; cursor: pointer; margin: 0 0.4rem; }
   button.oro:hover { border-color: var(--gold); }
   button.oro:disabled { opacity: 0.4; cursor: default; }
+  button.oro.grande { border-color: var(--gold); color: var(--gold);
+        background: rgba(201,168,76,0.06); font-size: 1rem; padding: 0.6rem 2rem; }
+  button.oro.grande:hover { background: rgba(201,168,76,0.12); }
+  .spiega { text-align: center; font-size: 0.76rem; color: var(--text-dim);
+        line-height: 1.5; margin-top: 0.9rem; max-width: 640px; margin-left: auto;
+        margin-right: auto; }
+  .ragiona { font-size: 0.88rem; line-height: 1.6; color: var(--text);
+        border-left: 2px solid var(--gold-dim); padding-left: 0.9rem; margin-bottom: 0.4rem; }
 
   #voce { text-align: center; font-style: italic; color: var(--text-dim);
           min-height: 1.4em; margin-bottom: 1rem; }
@@ -104,10 +112,15 @@
         </select></div>
     </div>
     <div class="azioni">
-      <button class="oro" id="componi">Componi</button>
+      <button class="oro grande" id="chiedi">🧠 Chiedi a Raffaello — ascolta davvero</button>
+      <button class="oro" id="componi">Componi al volo (offline)</button>
       <button class="oro" id="ancora" disabled>Un'altra proposta</button>
       <button class="oro" id="scarica" disabled>Scarica la formula</button>
     </div>
+    <p class="spiega">«Chiedi a Raffaello» invia la tua intenzione al naso AI, che
+    la legge e sceglie le materie che davvero la rendono — anche direzioni
+    viscerali o corporee, senza pudore, è il mestiere. «Componi al volo» è il
+    motore locale istantaneo (deterministico, ma non interpreta le parole).</p>
   </div>
 
   <div id="voce"></div>
@@ -299,20 +312,28 @@ let corrente = null, variazione = 0;
 
 function mostra(p) {
   corrente = p;
-  document.getElementById("voce").textContent = VOCI[p.seme % VOCI.length];
+  const voce = p.viaAI ? "Raffaello ha ascoltato la tua intenzione, e ha composto."
+                       : VOCI[(p.seme || 0) % VOCI.length];
+  document.getElementById("voce").textContent = voce;
   const righe = p.righe.map(r =>
-    '<tr><td class="lv">' + r.livello + (r.livello === "scia" ? " \u00b7 " + r.ruolo : "") + '</td>' +
+    '<tr><td class="lv">' + r.livello + (r.livello === "scia" && r.ruolo ? " \u00b7 " + r.ruolo : "") + '</td>' +
     '<td title="Organo N\u00b0 ' + r.n + ' \u00b7 forza ' + r.forza + '/5">' + r.nome +
     (r.forza === 5 ? ' <span class="avviso">\u26a0 forza 5 \u2014 diluizione 1%</span>' : "") +
     (r.ifra ? ' <span class="avviso">\u26a0 IFRA</span>' : "") +
     '</td><td class="parti">' + r.parti.toFixed(1).replace(".", ",") + '</td></tr>').join("");
+  const sotto = p.viaAI ? "Composto da Raffaello (AI) \u00b7 " + p.fam
+                        : "Proposta dell\u2019Atelier \u00b7 " + p.fam + " \u00b7 " + p.stile.lezione;
+  const meta = p.viaAI ? '<span class="badge">' + p.fattibilita + '</span>'
+                       : p.stagione + " \u00b7 " + p.momento +
+                         '<br><span class="badge">' + p.fattibilita + '</span>';
   document.getElementById("scheda").innerHTML =
     '<div class="col-fl">' + flacone(p) +
-    '<div class="meta">' + p.stagione + " \u00b7 " + p.momento +
-    '<br><span class="badge">' + p.fattibilita + '</span></div></div>' +
+    '<div class="meta">' + meta + '</div></div>' +
     '<div class="col-tx">' +
-    '<div class="sotto">Proposta dell\u2019Atelier \u00b7 ' + p.fam + " \u00b7 " + p.stile.lezione + '</div>' +
+    '<div class="sotto">' + sotto + '</div>' +
     '<h2>' + p.nome + '</h2>' +
+    (p.ragionamento ? '<div class="etich">Perch\u00e9 queste materie</div>' +
+      '<p class="ragiona">' + p.ragionamento + '</p>' : "") +
     '<div class="etich">Concept</div><p class="concept">' + p.concept + '</p>' +
     '<div class="etich">Ricetta \u2014 parti su 100 di concentrato</div>' +
     '<table class="ricetta">' + righe + '</table>' +
@@ -321,10 +342,58 @@ function mostra(p) {
     'correggere col naso, registrare nel diario. Le materie \u26a0 IFRA hanno limiti severi per uso su pelle. ' +
     'Verificare IFRA/CPSR prima di qualunque vendita.</p></div>';
   document.getElementById("scheda").classList.add("viva");
-  document.getElementById("seme").textContent =
-    "seme " + p.seme + " \u00b7 variazione " + variazione + " \u2014 stessa intenzione, stessa proposta";
-  document.getElementById("ancora").disabled = false;
+  document.getElementById("seme").textContent = p.viaAI
+    ? "composto in ascolto \u2014 ogni chiamata pu\u00f2 variare, come un naso vero"
+    : "seme " + p.seme + " \u00b7 variazione " + variazione + " \u2014 stessa intenzione, stessa proposta";
+  document.getElementById("ancora").disabled = p.viaAI;
   document.getElementById("scarica").disabled = false;
+}
+
+function daAI(res, intenzione) {
+  const F = D.famiglie[res.fam] || D.famiglie["Orientale"];
+  return {
+    viaAI: true, nome: res.nome, fam: res.fam, F: F,
+    ragionamento: res.ragionamento, concept: res.concept,
+    fattibilita: res.liv, intenzione: intenzione,
+    righe: res.ric.map(r => ({
+      nome: r[0], n: r[1], parti: r[2], livello: r[3],
+      forza: r[4] ? 5 : 3, ifra: 0, ruolo: "",
+    })),
+  };
+}
+
+async function chiediARaffaello() {
+  const i = leggi();
+  const btn = document.getElementById("chiedi");
+  const testoBtn = btn.textContent;
+  btn.disabled = true;
+  document.getElementById("voce").textContent =
+    "\ud83e\udde0 Raffaello annusa l\u2019intenzione\u2026 (pu\u00f2 volerci qualche secondo)";
+  document.getElementById("scheda").classList.remove("viva");
+  try {
+    const resp = await fetch("/api/atelier", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ intenzione: i.intenzione, famiglia: i.fam, ondata: i.ondata }),
+    });
+    const data = await resp.json();
+    if (data.ok && data.parfum) {
+      mostra(daAI(data.parfum, i.intenzione));
+    } else {
+      document.getElementById("voce").textContent =
+        "\u26a0 Raffaello non ha potuto rispondere (" + (data.errore || "errore") +
+        "). Uso il motore locale al volo.";
+      variazione = 0;
+      mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, 0));
+    }
+  } catch (e) {
+    document.getElementById("voce").textContent =
+      "\u26a0 Connessione assente (sei su GitHub Pages? Raffaello vive su claudio-ebon.vercel.app). Uso il motore locale.";
+    variazione = 0;
+    mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, 0));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = testoBtn;
+  }
 }
 
 function leggi() {
@@ -336,6 +405,7 @@ function leggi() {
   };
 }
 
+document.getElementById("chiedi").addEventListener("click", chiediARaffaello);
 document.getElementById("componi").addEventListener("click", () => {
   variazione = 0;
   const i = leggi();
@@ -353,9 +423,10 @@ document.getElementById("scarica").addEventListener("click", () => {
     "ATELIER DI RAFFAELLO \u2014 Terzi Parfums",
     "Proposta: " + p.nome + " (" + p.fam + ", " + p.fattibilita + ")",
     "Intenzione: \u201c" + i.intenzione + "\u201d",
-    "Stile: " + p.stile.lezione,
-    "Seme: " + p.seme + " \u00b7 variazione " + variazione,
+    p.viaAI ? "Composto da Raffaello (AI, in ascolto)" : "Stile: " + p.stile.lezione,
+    p.viaAI ? "" : "Seme: " + p.seme + " \u00b7 variazione " + variazione,
     "",
+    ...(p.ragionamento ? ["PERCH\u00c9 QUESTE MATERIE", p.ragionamento, ""] : []),
     "CONCEPT", p.concept, "",
     "RICETTA \u2014 parti su 100 di concentrato",
     ...p.righe.map(r => "  " + r.livello.padEnd(6) + " " + r.nome +
