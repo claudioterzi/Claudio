@@ -156,6 +156,7 @@ PAGINA = """<!DOCTYPE html>
 </head>
 <body>
 <script src="soglia.js"></script>
+<script src="nav.js"></script>
 <div class="container">
   <header>
     <h1>L'Atelier di Raffaello</h1>

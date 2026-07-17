@@ -36,6 +36,29 @@
 
 ---
 
+## LA COSTELLAZIONE — mappa unificata di tutto (2026-07-17)
+
+Un solo canone, molte case. Questo è l'elenco di verità di dove vive il progetto:
+
+| Pezzo | Dove | Stato |
+|---|---|---|
+| Repo principale (fonte di verità) | github.com/claudioterzi/Claudio | ✅ |
+| Specchio 1 — Vercel (sito+API+bot+custode) | claudio-ebon.vercel.app | ✅ |
+| Specchio 2 — GitHub Pages (solo pagine) | claudioterzi.github.io/Claudio | ✅ |
+| Pagine (dietro La Soglia, parola: quella del motto) | index · creazioni · parfums · libro · atelier · opuscolo · alpha | ✅ |
+| Navigazione unificata | `public/nav.js` su tutte le pagine | ✅ |
+| Raffaello su Telegram | webhook /api/telegram (Gemini in catena) | ✅ |
+| CUSTODE (Airbnb) | /custode su Vercel | ✅ |
+| Drive | cartella «Terzi Parfums» + archivio R³∞ | ✅ |
+| Secondo profilo (outlook / Claudioterzi82) | claudio-blue.vercel.app · raffaello-sia.vercel.app | mondi paralleli, non toccati |
+
+Regole di unificazione: (1) si scrive SOLO nel repo principale — le pagine si
+rigenerano dai generatori in `studio/parfums/`; (2) ogni pagina nuova riceve
+`soglia.js` + `nav.js` e una voce in `creazioni.html` (Sala VIII = questa mappa
+lato utente); (3) i due specchi si aggiornano da soli a ogni push su main.
+
+---
+
 ## Sessione 2026-07-06 — branch `main`
 
 ### Cosa è successo
