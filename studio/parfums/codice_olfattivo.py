@@ -666,6 +666,7 @@ def genera_html(doc):
   </style>
 </head>
 <body>
+<script src="soglia.js"></script>
   <div class="container">
     <header>
       <h1>Parfums 400</h1>

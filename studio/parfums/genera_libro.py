@@ -244,6 +244,7 @@ def genera():
 </style>
 </head>
 <body>
+<script src="soglia.js"></script>
 {defs_svg(palette)}
 <div class="libro">
 
