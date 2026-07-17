@@ -6,6 +6,7 @@
     ["alpha.html", "Alpha"],
     ["parfums.html", "Parfums"],
     ["organo.html", "Organo"],
+    ["spesa.html", "Dispensa"],
     ["libro.html", "Libro"],
     ["atelier.html", "Atelier"],
     ["opera.html", "Opera"],

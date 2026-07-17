@@ -44,6 +44,7 @@ Cartella: [studio/parfums/](https://github.com/claudioterzi/Claudio/tree/main/st
 
 - **I 300 ingredienti**: `public/organo.html` (generata da [genera_organo.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_organo.py)) — ricerca e filtri su tutte le materie, con le note d'uso dell'Excel
 - **La Grande Opera**: `public/opera.html` (generata da [genera_opera.py](https://github.com/claudioterzi/Claudio/blob/main/genera_opera.py)) — lettore dei 101 documenti dell'[Archivio Cosmico R³∞](https://github.com/claudioterzi/Claudio/tree/main/r3/archivio); rigenerarla quando l'archivio cambia
+- **La Dispensa**: `public/spesa.html` (generata da [genera_spesa.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_spesa.py)) — lista della spesa per ondata con fornitori, quantità e costi stimati, attrezzatura del banco, scarico ml usati (localStorage), calcolatore flaconi/alcol, export CSV
 
 ## 4 · Il sito (pagine e infrastruttura)
 
