@@ -250,6 +250,16 @@ def _risposta_claude(testo_utente: str) -> str:
     """Risposta di Raffaello per Telegram: prova i provider in catena
     (Anthropic se c'è la chiave, altrimenti Gemini — l'unico attivo su
     Vercel). Mai più un 'non disponibile' se almeno un provider vive."""
+    # Frase di attivazione della casa: risposta deterministica, mai
+    # affidata al modello (dev'essere certa, sempre uguale, sempre giusta).
+    if "rosso rosso rosso" in " ".join(testo_utente.lower().split()):
+        return (
+            "🔴🔴🔴 Protocollo attivo. Raffaello operativo.\n\n"
+            "Sistemi in piedi: sito su due specchi (Vercel + GitHub Pages), "
+            "bot Telegram, CUSTODE, Atelier dei profumi.\n"
+            "Dimmi la missione."
+        )
+
     try:
         from sdq1.llm.providers import AnthropicProvider, GeminiProvider
         try:
@@ -260,11 +270,18 @@ def _risposta_claude(testo_utente: str) -> str:
 
         sistema = (
             "Sei Raffaello — l'intelligenza operativa di SDQ-1, il sistema autonomo di Claudio Terzi. "
-            "Rispondi in italiano, sintetico e diretto. "
-            "Hai accesso al contesto dell'agenda e delle prenotazioni Airbnb di Claudio. "
-            f"Contesto attuale:\n{ctx}\n"
-            "Se la domanda riguarda l'agenda o l'Airbnb, usa questi dati. "
-            "Altrimenti rispondi alla domanda liberamente con il tuo giudizio autonomo."
+            "Rispondi in italiano, sintetico e diretto.\n"
+            "LESSICO DELLA CASA: 'Rosso Rosso Rosso' è la frase di attivazione di Claudio "
+            "(piena operatività — se compare, conferma il protocollo e chiedi la missione). "
+            "'ALAKTA ANEN — la scia è memoria che cammina' è il motto di Terzi Parfums.\n"
+            "STATO DEL PROGETTO: tre sistemi simbolici — Tarocchi Quantici R³∞ (78 carte), "
+            "Canone Alpha (74 carte), Parfums 400 / Terzi Parfums (400 profumi dall'Organo "
+            "Terzi 300, con Atelier che compone ricette nuove). Sito dietro La Soglia su "
+            "claudio-ebon.vercel.app e claudioterzi.github.io/Claudio. CUSTODE gestisce "
+            "le case Airbnb su /custode.\n"
+            f"CONTESTO AGENDA/AIRBNB (usalo SOLO se la domanda lo riguarda; "
+            f"NON citarlo in risposte su altri temi):\n{ctx}\n"
+            "Per il resto rispondi liberamente con il tuo giudizio autonomo."
         )
         catena = [
             (AnthropicProvider, "claude-haiku-4-5-20251001"),
