@@ -247,12 +247,16 @@ def leggi_comandi() -> list[dict[str, Any]]:
 
 
 def _risposta_claude(testo_utente: str) -> str:
-    """Chiama Claude Haiku e restituisce la risposta per Telegram."""
+    """Risposta di Raffaello per Telegram: prova i provider in catena
+    (Anthropic se c'è la chiave, altrimenti Gemini — l'unico attivo su
+    Vercel). Mai più un 'non disponibile' se almeno un provider vive."""
     try:
-        from sdq1.llm.providers import AnthropicProvider
-        from sdq1.agenda import riepilogo_briefing
-
-        ctx = riepilogo_briefing() or ""
+        from sdq1.llm.providers import AnthropicProvider, GeminiProvider
+        try:
+            from sdq1.agenda import riepilogo_briefing
+            ctx = riepilogo_briefing() or ""
+        except Exception:
+            ctx = ""
 
         sistema = (
             "Sei Raffaello — l'intelligenza operativa di SDQ-1, il sistema autonomo di Claudio Terzi. "
@@ -262,11 +266,21 @@ def _risposta_claude(testo_utente: str) -> str:
             "Se la domanda riguarda l'agenda o l'Airbnb, usa questi dati. "
             "Altrimenti rispondi alla domanda liberamente con il tuo giudizio autonomo."
         )
-        prov = AnthropicProvider(modello="claude-haiku-4-5-20251001", api_key=None, timeout=30)
-        if not prov.disponibile:
-            return "⚠️ Claude non disponibile al momento."
-        r = prov.completa(sistema, testo_utente)
-        return r.testo.strip() if r.testo else "⚠️ Nessuna risposta."
+        catena = [
+            (AnthropicProvider, "claude-haiku-4-5-20251001"),
+            (GeminiProvider, "gemini-2.5-flash"),
+        ]
+        for provider_cls, modello in catena:
+            try:
+                prov = provider_cls(modello=modello, api_key=None, timeout=30)
+                if not prov.disponibile:
+                    continue
+                r = prov.completa(sistema, testo_utente)
+                if r.testo and r.testo.strip():
+                    return r.testo.strip()
+            except Exception:
+                continue
+        return "⚠️ Nessun provider AI disponibile al momento."
     except Exception as e:
         return f"⚠️ Errore: {e}"
 
