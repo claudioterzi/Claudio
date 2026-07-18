@@ -101,7 +101,7 @@
     <h1>L'Atelier di Raffaello</h1>
     <p>Terzi Parfums · il banco dove nascono le ricette nuove, dall'Organo 300 e dalle regole del Grimorio</p>
     <p class="formula">Intenzione + Organo + Regole = Proposta</p>
-    <p class="versione">✦ Raffaello AI · v9 — link pronti, compone da solo 🧠 ✦</p>
+    <p class="versione">✦ Raffaello AI · v10 — il bottone apre il profumo 🧠 ✦</p>
   </header>
 
   <div class="banco">
@@ -386,61 +386,21 @@ function daAI(res, intenzione) {
   };
 }
 
-let provateAI = [], intenzioneAI = "";
-
-async function chiediARaffaello(rilancio) {
+// Il bottone NON fa piu' chiamate in background (venivano bloccate su
+// alcuni dispositivi/reti). Porta alla pagina composta DAL SERVER, che
+// funziona in ogni browser perche' e' un semplice caricamento di pagina.
+function chiediARaffaello(rilancio) {
   const i = leggi();
-  if (!rilancio || i.intenzione !== intenzioneAI) {
-    provateAI = []; intenzioneAI = i.intenzione;
+  if (!i.intenzione || i.intenzione === "senza intenzione") {
+    document.getElementById("voce").textContent =
+      "\u2192 Scrivi prima la tua intenzione qui sopra.";
+    return;
   }
-  const btnC = document.getElementById("chiedi");
-  const btnA = document.getElementById("ancora");
-  btnC.disabled = true; btnA.disabled = true;
-  document.getElementById("voce").textContent = provateAI.length
-    ? "\ud83e\udde0 Raffaello cerca un\u2019altra strada\u2026 (prova " + (provateAI.length + 1) + ")"
-    : "\ud83e\udde0 Raffaello annusa l\u2019intenzione\u2026 (pu\u00f2 volerci qualche secondo)";
-  document.getElementById("scheda").classList.remove("viva");
-  const attesa = document.getElementById("voce");
-  let ultimoErrore = "";
-  try {
-    // riprova automatico: fino a 3 tentativi. Il primo può fallire per
-    // rete mobile o funzione fredda; il secondo di solito riesce.
-    for (let tent = 1; tent <= 3; tent++) {
-      if (tent > 1) {
-        attesa.textContent = "\ud83e\udde0 Raffaello si sta svegliando\u2026 (tentativo " + tent + " di 3)";
-        await new Promise(r => setTimeout(r, 1200));
-      }
-      try {
-        const ctrl = new AbortController();
-        const stop = setTimeout(() => ctrl.abort(), 62000);
-        // GET con query: passa anche dai mini-browser che bloccano le POST
-        const q = "intenzione=" + encodeURIComponent(i.intenzione) +
-          "&ondata=" + i.ondata + "&tentativo=" + provateAI.length +
-          (i.fam ? "&famiglia=" + encodeURIComponent(i.fam) : "") +
-          (provateAI.length ? "&evita=" + encodeURIComponent(provateAI.join("|")) : "") +
-          "&_=" + Date.now();
-        const resp = await fetch("/api/atelier?" + q, {
-          method: "GET", cache: "no-store", signal: ctrl.signal,
-        });
-        clearTimeout(stop);
-        if (!resp.ok) { ultimoErrore = "server " + resp.status; continue; }
-        const data = await resp.json();
-        if (data.ok && data.parfum) {
-          provateAI.push(data.parfum.nome);
-          mostra(daAI(data.parfum, i.intenzione));
-          return;
-        }
-        ultimoErrore = data.errore || "errore";
-      } catch (e) {
-        ultimoErrore = "rete";
-      }
-    }
-    document.getElementById("scheda").classList.remove("viva");
-    attesa.innerHTML = "\u26a0 Raffaello non \u00e8 riuscito dopo 3 tentativi (" + ultimoErrore +
-      "). Riprova tra un minuto col bottone grande \u2014 se insiste, \u00e8 la rete del telefono.";
-  } finally {
-    btnC.disabled = false;
-  }
+  document.getElementById("voce").textContent =
+    "\ud83e\udde0 Raffaello sta componendo\u2026 (si apre tra pochi secondi)";
+  let url = "/profumo?q=" + encodeURIComponent(i.intenzione) + "&ondata=" + i.ondata;
+  if (i.fam) url += "&famiglia=" + encodeURIComponent(i.fam);
+  window.location.href = url;
 }
 
 function leggi() {
