@@ -283,20 +283,29 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None):
     }, None
 
 
-@app.route("/api/atelier", methods=["POST", "OPTIONS"])
+@app.route("/api/atelier", methods=["POST", "GET", "OPTIONS"])
 def atelier():
     if request.method == "OPTIONS":
         return "", 200
-    body = request.get_json(force=True, silent=True) or {}
-    intenzione = (body.get("intenzione") or "").strip()
+    # accetta sia POST (JSON) sia GET (query) — i mini-browser in-app a
+    # volte bloccano le POST, la GET passa sempre.
+    if request.method == "GET":
+        intenzione = (request.args.get("intenzione") or "").strip()
+        famiglia = (request.args.get("famiglia") or "").strip()
+        ondata = int(request.args.get("ondata", 2) or 2)
+        tentativo = int(request.args.get("tentativo", 0) or 0)
+        evita = [x for x in (request.args.get("evita") or "").split("|") if x]
+    else:
+        body = request.get_json(force=True, silent=True) or {}
+        intenzione = (body.get("intenzione") or "").strip()
+        famiglia = (body.get("famiglia") or "").strip()
+        ondata = int(body.get("ondata", 2))
+        tentativo = int(body.get("tentativo", 0))
+        evita = body.get("evita") or []
+        if not isinstance(evita, list):
+            evita = []
     if not intenzione:
         return jsonify({"ok": False, "errore": "intenzione-vuota"}), 400
-    famiglia = (body.get("famiglia") or "").strip()
-    ondata = int(body.get("ondata", 2))
-    tentativo = int(body.get("tentativo", 0))
-    evita = body.get("evita") or []
-    if not isinstance(evita, list):
-        evita = []
     try:
         parfum, errore = _atelier_componi_ai(intenzione, famiglia, ondata,
                                              tentativo, evita[:8])

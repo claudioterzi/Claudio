@@ -181,7 +181,7 @@ PAGINA = """<!DOCTYPE html>
     <h1>L'Atelier di Raffaello</h1>
     <p>Terzi Parfums · il banco dove nascono le ricette nuove, dall'Organo 300 e dalle regole del Grimorio</p>
     <p class="formula">Intenzione + Organo + Regole = Proposta</p>
-    <p class="versione">✦ Raffaello AI · v7 — riprova automatico, piu robusto 🧠 ✦</p>
+    <p class="versione">✦ Raffaello AI · v8 — funziona anche nei mini-browser 🧠 ✦</p>
   </header>
 
   <div class="banco">
@@ -493,11 +493,14 @@ async function chiediARaffaello(rilancio) {
       try {
         const ctrl = new AbortController();
         const stop = setTimeout(() => ctrl.abort(), 62000);
-        const resp = await fetch("/api/atelier", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ intenzione: i.intenzione, famiglia: i.fam,
-            ondata: i.ondata, tentativo: provateAI.length, evita: provateAI }),
-          signal: ctrl.signal,
+        // GET con query: passa anche dai mini-browser che bloccano le POST
+        const q = "intenzione=" + encodeURIComponent(i.intenzione) +
+          "&ondata=" + i.ondata + "&tentativo=" + provateAI.length +
+          (i.fam ? "&famiglia=" + encodeURIComponent(i.fam) : "") +
+          (provateAI.length ? "&evita=" + encodeURIComponent(provateAI.join("|")) : "") +
+          "&_=" + Date.now();
+        const resp = await fetch("/api/atelier?" + q, {
+          method: "GET", cache: "no-store", signal: ctrl.signal,
         });
         clearTimeout(stop);
         if (!resp.ok) { ultimoErrore = "server " + resp.status; continue; }
