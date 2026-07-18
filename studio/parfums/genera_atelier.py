@@ -126,6 +126,9 @@ PAGINA = """<!DOCTYPE html>
         margin-right: auto; }
   .ragiona { font-size: 0.88rem; line-height: 1.6; color: var(--text);
         border-left: 2px solid var(--gold-dim); padding-left: 0.9rem; margin-bottom: 0.4rem; }
+  .riferimento { font-size: 0.86rem; line-height: 1.6; color: var(--text-dim);
+        background: rgba(201,168,76,0.05); border: 1px solid var(--border);
+        border-radius: 6px; padding: 0.7rem 0.9rem; margin-bottom: 0.5rem; white-space: pre-wrap; }
 
   #voce { text-align: center; font-style: italic; color: var(--text-dim);
           min-height: 1.4em; margin-bottom: 1rem; }
@@ -195,6 +198,7 @@ PAGINA = """<!DOCTYPE html>
       <button class="oro grande" id="chiedi">🧠 Chiedi a Raffaello — ascolta davvero</button>
       <button class="oro" id="componi">Componi al volo (offline)</button>
       <button class="oro" id="ancora" disabled>Un'altra proposta</button>
+      <button class="oro" id="copia" disabled>📋 Copia per le note</button>
       <button class="oro" id="scarica" disabled>Scarica la formula</button>
     </div>
     <p class="spiega">«Chiedi a Raffaello» invia la tua intenzione al naso AI, che
@@ -412,6 +416,8 @@ function mostra(p) {
     '<div class="col-tx">' +
     '<div class="sotto">' + sotto + '</div>' +
     '<h2>' + p.nome + '</h2>' +
+    (p.riferimento ? '<div class="etich">Ispirato a \\u2014 la lettura del classico</div>' +
+      '<p class="riferimento">' + p.riferimento + '</p>' : "") +
     (p.ragionamento ? '<div class="etich">Perch\\u00e9 queste materie</div>' +
       '<p class="ragiona">' + p.ragionamento + '</p>' : "") +
     '<div class="etich">Concept</div><p class="concept">' + p.concept + '</p>' +
@@ -429,12 +435,14 @@ function mostra(p) {
   document.getElementById("ancora").textContent =
     p.viaAI ? "Un'altra prova di Raffaello" : "Un'altra proposta";
   document.getElementById("scarica").disabled = false;
+  document.getElementById("copia").disabled = false;
 }
 
 function daAI(res, intenzione) {
   const F = D.famiglie[res.fam] || D.famiglie["Orientale"];
   return {
     viaAI: true, nome: res.nome, fam: res.fam, F: F,
+    riferimento: res.riferimento || "",
     ragionamento: res.ragionamento, concept: res.concept,
     fattibilita: res.liv, intenzione: intenzione,
     righe: res.ric.map(r => ({
@@ -506,16 +514,15 @@ document.getElementById("ancora").addEventListener("click", () => {
   const i = leggi();
   mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione));
 });
-document.getElementById("scarica").addEventListener("click", () => {
-  if (!corrente) return;
-  const p = corrente, i = leggi();
-  const testo = [
+function formulaTesto(p, i) {
+  return [
     "ATELIER DI RAFFAELLO \\u2014 Terzi Parfums",
     "Proposta: " + p.nome + " (" + p.fam + ", " + p.fattibilita + ")",
     "Intenzione: \\u201c" + i.intenzione + "\\u201d",
     p.viaAI ? "Composto da Raffaello (AI, in ascolto)" : "Stile: " + p.stile.lezione,
     p.viaAI ? "" : "Seme: " + p.seme + " \\u00b7 variazione " + variazione,
     "",
+    ...(p.riferimento ? ["ISPIRATO A \\u2014 LA LETTURA DEL CLASSICO", p.riferimento, ""] : []),
     ...(p.ragionamento ? ["PERCH\\u00c9 QUESTE MATERIE", p.ragionamento, ""] : []),
     "CONCEPT", p.concept, "",
     "RICETTA \\u2014 parti su 100 di concentrato",
@@ -529,12 +536,35 @@ document.getElementById("scarica").addEventListener("click", () => {
     "",
     "ALAKTA ANEN \\u2014 la scia \\u00e8 memoria che cammina.",
   ].join("\\n");
+}
+
+document.getElementById("scarica").addEventListener("click", () => {
+  if (!corrente) return;
+  const testo = formulaTesto(corrente, leggi());
   const blob = new Blob([testo], { type: "text/plain;charset=utf-8" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "atelier_" + p.nome.toLowerCase().replace(/[^a-z0-9]+/g, "_") + ".txt";
+  a.download = "atelier_" + corrente.nome.toLowerCase().replace(/[^a-z0-9]+/g, "_") + ".txt";
   a.click();
   URL.revokeObjectURL(a.href);
+});
+document.getElementById("copia").addEventListener("click", async () => {
+  if (!corrente) return;
+  const testo = formulaTesto(corrente, leggi());
+  const btn = document.getElementById("copia");
+  try {
+    await navigator.clipboard.writeText(testo);
+    const t = btn.textContent; btn.textContent = "\\u2713 Copiato \\u2014 incolla nelle Note";
+    setTimeout(() => { btn.textContent = t; }, 2500);
+  } catch (e) {
+    // fallback: selezione manuale
+    const ta = document.createElement("textarea");
+    ta.value = testo; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch (e2) {}
+    ta.remove();
+    const t = btn.textContent; btn.textContent = "\\u2713 Copiato";
+    setTimeout(() => { btn.textContent = t; }, 2500);
+  }
 });
 
 const selFam = document.getElementById("famiglia");

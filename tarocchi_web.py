@@ -140,6 +140,14 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None):
         "per il seme/pelle, muschi per il calore corporeo.\n"
         "L'intenzione va ASCOLTATA e resa: il profumo deve essere coerente con "
         "quello che Claudio ti chiede, non generico.\n"
+        "SE l'intenzione cita un profumo reale (es. «ispirato a Gucci Rush», "
+        "«come Sauvage», «alla Chanel N.5»): riconoscilo, richiama a memoria la "
+        "sua piramide olfattiva come pubblicata (testa/cuore/fondo dell'originale) "
+        "e RICOSTRUISCILA con le materie del TUO organo — non copiare, reinterpreta. "
+        "Nel campo 'riferimento' scrivi: il nome dell'originale, la sua piramide "
+        "nota, e i PARALLELISMI materia per materia (quale materia del tuo organo "
+        "rende quale nota dell'originale, e dove ti scosti e perché). Se nessun "
+        "profumo è citato, lascia 'riferimento' vuoto.\n"
         "Nel ragionamento spiega da NASO: quale materia rende quale sfaccettatura "
         "e perché, come dialogano testa-cuore-fondo, e quale gesto (l'overdose) "
         "dà la firma. Cita le materie per nome. Sii concreto, non vago.\n\n"
@@ -148,6 +156,7 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None):
         '{"nome":"nome francese evocativo","famiglia":"una delle 8 famiglie della casa",'
         '"testa":[numeri 2-3],"cuore":[numeri 2-3],"fondo":[numeri 2-3],'
         '"scia":[numeri 2-3 di diffusione/fissaggio],"overdose":numero,'
+        '"riferimento":"vuoto, oppure: originale + sua piramide nota + parallelismi materia per materia",'
         '"ragionamento":"3-5 frasi da naso: materia per materia, perché rende '
         'l intenzione, come si evolve dalla testa al fondo, il gesto dell overdose",'
         '"concept":"2-3 frasi evocative, la storia del profumo"}'
@@ -167,8 +176,8 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None):
     for cls, mod in [(GeminiProvider, "gemini-2.5-flash"),
                      (AnthropicProvider, "claude-haiku-4-5-20251001")]:
         try:
-            prov = cls(modello=mod, api_key=None, timeout=45,
-                       temperatura=0.85, max_token=3000, json_mode=True)
+            prov = cls(modello=mod, api_key=None, timeout=50,
+                       temperatura=0.85, max_token=4000, json_mode=True)
             if not prov.disponibile:
                 continue
             r = prov.completa(sistema, utente)
@@ -263,6 +272,7 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None):
     return {
         "nome": str(prop.get("nome") or "Sans Nom")[:60],
         "fam": fam,
+        "riferimento": str(prop.get("riferimento") or "")[:700],
         "ragionamento": str(prop.get("ragionamento") or "")[:500],
         "concept": str(prop.get("concept") or "")[:500],
         "ricetta": [[r["nome"], r["n"], r["parti"], r["livello"], r["micro"]]
