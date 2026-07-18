@@ -176,8 +176,8 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None):
     for cls, mod in [(GeminiProvider, "gemini-2.5-flash"),
                      (AnthropicProvider, "claude-haiku-4-5-20251001")]:
         try:
-            prov = cls(modello=mod, api_key=None, timeout=50,
-                       temperatura=0.85, max_token=4000, json_mode=True)
+            prov = cls(modello=mod, api_key=None, timeout=55,
+                       temperatura=0.85, max_token=1300, json_mode=True)
             if not prov.disponibile:
                 continue
             r = prov.completa(sistema, utente)

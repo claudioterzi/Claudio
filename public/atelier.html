@@ -411,17 +411,16 @@ async function chiediARaffaello(rilancio) {
       provateAI.push(data.parfum.nome);
       mostra(daAI(data.parfum, i.intenzione));
     } else {
-      document.getElementById("voce").textContent =
-        "\u26a0 Raffaello non ha potuto rispondere (" + (data.errore || "errore") +
-        "). Uso il motore locale al volo.";
-      variazione = 0;
-      mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, 0));
+      document.getElementById("scheda").classList.remove("viva");
+      document.getElementById("voce").innerHTML =
+        "\u26a0 Raffaello non \u00e8 riuscito a comporre in tempo (" + (data.errore || "errore") +
+        "). \u00c8 solo lentezza: <b>premi di nuovo il bottone grande</b>, di solito al secondo tentativo risponde.";
     }
   } catch (e) {
-    document.getElementById("voce").textContent =
-      "\u26a0 Connessione assente (sei su GitHub Pages? Raffaello vive su claudio-ebon.vercel.app). Uso il motore locale.";
-    variazione = 0;
-    mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, 0));
+    document.getElementById("scheda").classList.remove("viva");
+    document.getElementById("voce").innerHTML =
+      "\u26a0 Raffaello non ha risposto (rete lenta, o sei su GitHub Pages invece che su " +
+      "claudio-ebon.vercel.app). <b>Riprova col bottone grande.</b>";
   } finally {
     btnC.disabled = false;
   }
