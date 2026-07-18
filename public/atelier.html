@@ -101,7 +101,7 @@
     <h1>L'Atelier di Raffaello</h1>
     <p>Terzi Parfums · il banco dove nascono le ricette nuove, dall'Organo 300 e dalle regole del Grimorio</p>
     <p class="formula">Intenzione + Organo + Regole = Proposta</p>
-    <p class="versione">✦ Raffaello AI · v6 — ora risponde in ~5 secondi 🧠 ✦</p>
+    <p class="versione">✦ Raffaello AI · v7 — riprova automatico, piu robusto 🧠 ✦</p>
   </header>
 
   <div class="banco">
@@ -400,27 +400,41 @@ async function chiediARaffaello(rilancio) {
     ? "\ud83e\udde0 Raffaello cerca un\u2019altra strada\u2026 (prova " + (provateAI.length + 1) + ")"
     : "\ud83e\udde0 Raffaello annusa l\u2019intenzione\u2026 (pu\u00f2 volerci qualche secondo)";
   document.getElementById("scheda").classList.remove("viva");
+  const attesa = document.getElementById("voce");
+  let ultimoErrore = "";
   try {
-    const resp = await fetch("/api/atelier", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ intenzione: i.intenzione, famiglia: i.fam,
-        ondata: i.ondata, tentativo: provateAI.length, evita: provateAI }),
-    });
-    const data = await resp.json();
-    if (data.ok && data.parfum) {
-      provateAI.push(data.parfum.nome);
-      mostra(daAI(data.parfum, i.intenzione));
-    } else {
-      document.getElementById("scheda").classList.remove("viva");
-      document.getElementById("voce").innerHTML =
-        "\u26a0 Raffaello non \u00e8 riuscito a comporre in tempo (" + (data.errore || "errore") +
-        "). \u00c8 solo lentezza: <b>premi di nuovo il bottone grande</b>, di solito al secondo tentativo risponde.";
+    // riprova automatico: fino a 3 tentativi. Il primo può fallire per
+    // rete mobile o funzione fredda; il secondo di solito riesce.
+    for (let tent = 1; tent <= 3; tent++) {
+      if (tent > 1) {
+        attesa.textContent = "\ud83e\udde0 Raffaello si sta svegliando\u2026 (tentativo " + tent + " di 3)";
+        await new Promise(r => setTimeout(r, 1200));
+      }
+      try {
+        const ctrl = new AbortController();
+        const stop = setTimeout(() => ctrl.abort(), 62000);
+        const resp = await fetch("/api/atelier", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ intenzione: i.intenzione, famiglia: i.fam,
+            ondata: i.ondata, tentativo: provateAI.length, evita: provateAI }),
+          signal: ctrl.signal,
+        });
+        clearTimeout(stop);
+        if (!resp.ok) { ultimoErrore = "server " + resp.status; continue; }
+        const data = await resp.json();
+        if (data.ok && data.parfum) {
+          provateAI.push(data.parfum.nome);
+          mostra(daAI(data.parfum, i.intenzione));
+          return;
+        }
+        ultimoErrore = data.errore || "errore";
+      } catch (e) {
+        ultimoErrore = "rete";
+      }
     }
-  } catch (e) {
     document.getElementById("scheda").classList.remove("viva");
-    document.getElementById("voce").innerHTML =
-      "\u26a0 Raffaello non ha risposto (rete lenta, o sei su GitHub Pages invece che su " +
-      "claudio-ebon.vercel.app). <b>Riprova col bottone grande.</b>";
+    attesa.innerHTML = "\u26a0 Raffaello non \u00e8 riuscito dopo 3 tentativi (" + ultimoErrore +
+      "). Riprova tra un minuto col bottone grande \u2014 se insiste, \u00e8 la rete del telefono.";
   } finally {
     btnC.disabled = false;
   }
