@@ -345,7 +345,9 @@ function mostra(p) {
   document.getElementById("seme").textContent = p.viaAI
     ? "composto in ascolto \u2014 ogni chiamata pu\u00f2 variare, come un naso vero"
     : "seme " + p.seme + " \u00b7 variazione " + variazione + " \u2014 stessa intenzione, stessa proposta";
-  document.getElementById("ancora").disabled = p.viaAI;
+  document.getElementById("ancora").disabled = false;
+  document.getElementById("ancora").textContent =
+    p.viaAI ? "Un'altra prova di Raffaello" : "Un'altra proposta";
   document.getElementById("scarica").disabled = false;
 }
 
@@ -362,21 +364,29 @@ function daAI(res, intenzione) {
   };
 }
 
-async function chiediARaffaello() {
+let provateAI = [], intenzioneAI = "";
+
+async function chiediARaffaello(rilancio) {
   const i = leggi();
-  const btn = document.getElementById("chiedi");
-  const testoBtn = btn.textContent;
-  btn.disabled = true;
-  document.getElementById("voce").textContent =
-    "\ud83e\udde0 Raffaello annusa l\u2019intenzione\u2026 (pu\u00f2 volerci qualche secondo)";
+  if (!rilancio || i.intenzione !== intenzioneAI) {
+    provateAI = []; intenzioneAI = i.intenzione;
+  }
+  const btnC = document.getElementById("chiedi");
+  const btnA = document.getElementById("ancora");
+  btnC.disabled = true; btnA.disabled = true;
+  document.getElementById("voce").textContent = provateAI.length
+    ? "\ud83e\udde0 Raffaello cerca un\u2019altra strada\u2026 (prova " + (provateAI.length + 1) + ")"
+    : "\ud83e\udde0 Raffaello annusa l\u2019intenzione\u2026 (pu\u00f2 volerci qualche secondo)";
   document.getElementById("scheda").classList.remove("viva");
   try {
     const resp = await fetch("/api/atelier", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ intenzione: i.intenzione, famiglia: i.fam, ondata: i.ondata }),
+      body: JSON.stringify({ intenzione: i.intenzione, famiglia: i.fam,
+        ondata: i.ondata, tentativo: provateAI.length, evita: provateAI }),
     });
     const data = await resp.json();
     if (data.ok && data.parfum) {
+      provateAI.push(data.parfum.nome);
       mostra(daAI(data.parfum, i.intenzione));
     } else {
       document.getElementById("voce").textContent =
@@ -391,8 +401,7 @@ async function chiediARaffaello() {
     variazione = 0;
     mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, 0));
   } finally {
-    btn.disabled = false;
-    btn.textContent = testoBtn;
+    btnC.disabled = false;
   }
 }
 
@@ -412,6 +421,7 @@ document.getElementById("componi").addEventListener("click", () => {
   mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione));
 });
 document.getElementById("ancora").addEventListener("click", () => {
+  if (corrente && corrente.viaAI) { chiediARaffaello(true); return; }
   variazione += 1;
   const i = leggi();
   mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione));

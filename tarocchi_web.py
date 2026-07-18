@@ -106,10 +106,11 @@ _FAMIGLIE_CASA = ["Agrumata", "Floreale", "Verde", "Acquatica",
 _FATTORE_FORZA = {1: 1.4, 2: 1.15, 3: 1.0, 4: 0.45, 5: 0.1}
 
 
-def _atelier_componi_ai(intenzione, famiglia, ondata):
+def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None):
     """Chiede a Raffaello (Gemini, fallback Anthropic) di comporre un profumo
     LEGGENDO l'intenzione e scegliendo le materie reali dell'organo. Il server
-    valida i numeri e calcola le dosi. Ritorna (parfum, None) o (None, errore)."""
+    valida i numeri e calcola le dosi. `tentativo`/`evita` spingono verso una
+    direzione diversa a ogni nuova prova. Ritorna (parfum, None) o (None, errore)."""
     organo = _carica_organo_atelier()
     mat_per_n = {m["n"]: m for m in organo["materie"]}
 
@@ -138,17 +139,28 @@ def _atelier_componi_ai(intenzione, famiglia, ondata):
         "safraleine/note metalliche per il ferro-sangue, lattoni lattei e ambretta "
         "per il seme/pelle, muschi per il calore corporeo.\n"
         "L'intenzione va ASCOLTATA e resa: il profumo deve essere coerente con "
-        "quello che Claudio ti chiede, non generico.\n\n"
+        "quello che Claudio ti chiede, non generico.\n"
+        "Nel ragionamento spiega da NASO: quale materia rende quale sfaccettatura "
+        "e perché, come dialogano testa-cuore-fondo, e quale gesto (l'overdose) "
+        "dà la firma. Cita le materie per nome. Sii concreto, non vago.\n\n"
         f"ORGANO (numero|nome|famiglia|nota|forza|ondata|ruolo_scia):\n{catalogo}\n\n"
         "Rispondi SOLO con JSON valido, nessun testo attorno, in questa forma:\n"
         '{"nome":"nome francese evocativo","famiglia":"una delle 8 famiglie della casa",'
         '"testa":[numeri 2-3],"cuore":[numeri 2-3],"fondo":[numeri 2-3],'
         '"scia":[numeri 2-3 di diffusione/fissaggio],"overdose":numero,'
-        '"ragionamento":"2-3 frasi: perché queste materie rendono questa intenzione",'
+        '"ragionamento":"3-5 frasi da naso: materia per materia, perché rende '
+        'l intenzione, come si evolve dalla testa al fondo, il gesto dell overdose",'
         '"concept":"2-3 frasi evocative, la storia del profumo"}'
     )
+    nudge = ""
+    if tentativo and evita:
+        nomi = ", ".join(str(x) for x in evita[:8])
+        nudge = (f"\nQuesta è la prova numero {tentativo + 1}. Hai già proposto: "
+                 f"{nomi}. Cerca una lettura DIVERSA della stessa intenzione — "
+                 "altre materie, un altro angolo, un'altra famiglia se ha senso. "
+                 "Sorprendi, non ripeterti.")
     utente = (f"Intenzione di Claudio: «{intenzione}».\n{vincolo_fam}\n"
-              "Componi il profumo che rende davvero questa intenzione.")
+              "Componi il profumo che rende davvero questa intenzione." + nudge)
 
     from sdq1.llm.providers import AnthropicProvider, GeminiProvider
     testo = ""
@@ -271,8 +283,13 @@ def atelier():
         return jsonify({"ok": False, "errore": "intenzione-vuota"}), 400
     famiglia = (body.get("famiglia") or "").strip()
     ondata = int(body.get("ondata", 2))
+    tentativo = int(body.get("tentativo", 0))
+    evita = body.get("evita") or []
+    if not isinstance(evita, list):
+        evita = []
     try:
-        parfum, errore = _atelier_componi_ai(intenzione, famiglia, ondata)
+        parfum, errore = _atelier_componi_ai(intenzione, famiglia, ondata,
+                                             tentativo, evita[:8])
     except Exception as e:  # noqa: BLE001
         return jsonify({"ok": False, "errore": f"eccezione: {e}"}), 200
     if errore:
