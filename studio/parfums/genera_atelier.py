@@ -123,9 +123,15 @@ PAGINA = """<!DOCTYPE html>
   button.oro.grande { border-color: var(--gold); color: var(--gold);
         background: rgba(201,168,76,0.06); font-size: 1rem; padding: 0.6rem 2rem; }
   button.oro.grande:hover { background: rgba(201,168,76,0.12); }
+  .azioni-sec { margin-top: 0.6rem; }
+  .azioni-sec button.oro { font-size: 0.82rem; padding: 0.4rem 1.2rem; }
   .spiega { text-align: center; font-size: 0.76rem; color: var(--text-dim);
         line-height: 1.5; margin-top: 0.9rem; max-width: 640px; margin-left: auto;
         margin-right: auto; }
+  .spiega a { color: var(--gold-dim); }
+  .avviso-locale { background: rgba(139,28,28,0.14); border: 1px solid var(--red);
+        border-radius: 6px; padding: 0.55rem 0.8rem; font-size: 0.8rem;
+        color: var(--text); line-height: 1.5; margin-bottom: 0.7rem; }
   .ragiona { font-size: 0.88rem; line-height: 1.6; color: var(--text);
         border-left: 2px solid var(--gold-dim); padding-left: 0.9rem; margin-bottom: 0.4rem; }
   .riferimento { font-size: 0.86rem; line-height: 1.6; color: var(--text-dim);
@@ -175,7 +181,7 @@ PAGINA = """<!DOCTYPE html>
     <h1>L'Atelier di Raffaello</h1>
     <p>Terzi Parfums · il banco dove nascono le ricette nuove, dall'Organo 300 e dalle regole del Grimorio</p>
     <p class="formula">Intenzione + Organo + Regole = Proposta</p>
-    <p class="versione">✦ Raffaello AI · v4 — ascolta, si ispira ai classici, esporta nelle note ✦</p>
+    <p class="versione">✦ Raffaello AI · v5 — premi il bottone grande 🧠 ✦</p>
   </header>
 
   <div class="banco">
@@ -199,15 +205,17 @@ PAGINA = """<!DOCTYPE html>
     </div>
     <div class="azioni">
       <button class="oro grande" id="chiedi">🧠 Chiedi a Raffaello — ascolta davvero</button>
-      <button class="oro" id="componi">Componi al volo (offline)</button>
+    </div>
+    <div class="azioni azioni-sec">
       <button class="oro" id="ancora" disabled>Un'altra proposta</button>
       <button class="oro" id="copia" disabled>📋 Copia per le note</button>
       <button class="oro" id="scarica" disabled>Scarica la formula</button>
     </div>
-    <p class="spiega">«Chiedi a Raffaello» invia la tua intenzione al naso AI, che
-    la legge e sceglie le materie che davvero la rendono — anche direzioni
-    viscerali o corporee, senza pudore, è il mestiere. «Componi al volo» è il
-    motore locale istantaneo (deterministico, ma non interpreta le parole).</p>
+    <p class="spiega">Premi il bottone grande 🧠: la tua intenzione va al naso AI,
+    che la legge davvero, riconosce i profumi citati (es. «ispirato a Gucci Rush»)
+    e sceglie le materie che la rendono — senza pudore, è il mestiere.
+    <a href="#" id="componi">oppure componi al volo, offline e senza AI</a>
+    (istantaneo ma non interpreta le parole).</p>
   </div>
 
   <div id="voce"></div>
@@ -417,6 +425,9 @@ function mostra(p) {
     '<div class="col-fl">' + flacone(p) +
     '<div class="meta">' + meta + '</div></div>' +
     '<div class="col-tx">' +
+    (p.viaAI ? "" : '<div class="avviso-locale">\\u26a0 Questa \\u00e8 una proposta del ' +
+      'motore locale: NON ha letto le tue parole (ha ignorato eventuali profumi citati). ' +
+      'Per l\\u2019interpretazione vera premi \\ud83e\\udde0 <b>Chiedi a Raffaello</b>.</div>') +
     '<div class="sotto">' + sotto + '</div>' +
     '<h2>' + p.nome + '</h2>' +
     (p.riferimento ? '<div class="etich">Ispirato a \\u2014 la lettura del classico</div>' +
@@ -505,8 +516,9 @@ function leggi() {
   };
 }
 
-document.getElementById("chiedi").addEventListener("click", chiediARaffaello);
-document.getElementById("componi").addEventListener("click", () => {
+document.getElementById("chiedi").addEventListener("click", () => chiediARaffaello(false));
+document.getElementById("componi").addEventListener("click", (ev) => {
+  ev.preventDefault();
   variazione = 0;
   const i = leggi();
   mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione));
