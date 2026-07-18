@@ -4,6 +4,7 @@
 data/
 *.json
 !registro_ipotesi.json
+!anonima_catalogo.json
 !output/contatti.jsonl
 !tarocchi/tarocchi_quantici.json
 !vercel.json

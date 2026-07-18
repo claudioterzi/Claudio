@@ -114,9 +114,10 @@ gate è chiuso, si lavora solo su cornici, retri e dettagli astratti — che è 
 progetto completo e pubblicabile. Il resto aspetta la parte legale.
 
 ### Prossimi passi
-- [x] Pagina di progetto (manifesto + estetica Polaroid, zero contenuto esplicito)
-- [ ] Generatore SVG delle cornici Polaroid vuote/velate in `genera_svg.py`
-- [ ] Schema JSON del catalogo con campo-gate `stato_consenso`
+- [x] Pagina di progetto (manifesto + estetica Polaroid, zero contenuto esplicito) — `public/anonima.html`
+- [x] Generatore SVG delle cornici Polaroid vuote/velate — `anonima_svg.py` → `public/anonima/`
+- [x] Schema JSON del catalogo con campo-gate `stato_consenso` — `anonima_catalogo.json`
+- [x] Gate del consenso eseguibile (il confine morale come test) — `anonima_gate.py`
 - [ ] Testo critico lungo per l'opuscolo A6
 - [ ] Consulenza legale reale (612-*ter* + GDPR) prima di qualsiasi esposizione pubblica
 

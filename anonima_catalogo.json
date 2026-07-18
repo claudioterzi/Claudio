@@ -1,0 +1,78 @@
+{
+  "progetto": "ANONIMA-008",
+  "descrizione": "Catalogo dell'archivio Polaroid. Nessun dato personale reale entra qui: il database non deve mai poter ricostruire un'identita'.",
+  "versione": "0.1.0",
+  "aggiornato": "2026-07-18",
+  "principio_gate": "stato_consenso e' il cancello morale del progetto. Nessun pezzo raggiunge livello_esposizione='pubblicabile' senza stato_consenso='verificato'. Il possesso fisico della Polaroid non e' consenso.",
+  "schema": {
+    "id": "identificativo progressivo del pezzo (stringa, es. '001'). Nessun nome reale.",
+    "decennio_stimato": "una tra: 1968-1979 | 1980-1999 | 2000-oggi (dedotta da emulsione/cornice)",
+    "formato": "tipo pellicola/camera (es. SX-70, 600 film, i-Type)",
+    "emulsione": "note sull'emulsione (viraggio, colore, b/n)",
+    "stato_conservazione": "una tra: ottimo | buono | logoro | danneggiato",
+    "elementi_cornice": "array di elementi dell'oggetto che sono parte dell'opera (grafia, data a penna, bordo ingiallito, adesivo)",
+    "tag_estetici": "array di descrittori NON identificanti (luce, grana, colore, paesaggio-pelle)",
+    "elementi_identificanti_rilevati": "array di elementi da rimuovere in fase di anonimizzazione (volto, tatuaggio, sfondo, documento, riflesso, data-personale)",
+    "anonimizzazione": "una tra: da-fare | in-corso | completata",
+    "stato_consenso": "GATE. Una tra: assente | presunto-insufficiente | verificato",
+    "livello_esposizione": "una tra: solo-archivio | dettaglio-astratto | pubblicabile",
+    "note": "annotazioni curatoriali, mai dati personali"
+  },
+  "enum": {
+    "decennio_stimato": ["1968-1979", "1980-1999", "2000-oggi"],
+    "stato_conservazione": ["ottimo", "buono", "logoro", "danneggiato"],
+    "anonimizzazione": ["da-fare", "in-corso", "completata"],
+    "stato_consenso": ["assente", "presunto-insufficiente", "verificato"],
+    "livello_esposizione": ["solo-archivio", "dettaglio-astratto", "pubblicabile"]
+  },
+  "regole_gate": [
+    "livello_esposizione='pubblicabile' RICHIEDE stato_consenso='verificato' E anonimizzazione='completata'.",
+    "Se elementi_identificanti_rilevati non e' vuoto, livello_esposizione NON puo' essere 'pubblicabile' finche' anonimizzazione='completata'.",
+    "stato_consenso='assente' o 'presunto-insufficiente' => massimo consentito 'dettaglio-astratto'.",
+    "Default di ingresso di ogni nuovo pezzo: stato_consenso='assente', livello_esposizione='solo-archivio'."
+  ],
+  "pezzi": [
+    {
+      "id": "001",
+      "decennio_stimato": "1968-1979",
+      "formato": "SX-70",
+      "emulsione": "viraggio caldo, virato al giallo",
+      "stato_conservazione": "logoro",
+      "elementi_cornice": ["grafia a penna sul bordo", "bordo ingiallito"],
+      "tag_estetici": ["luce radente", "grana grossa"],
+      "elementi_identificanti_rilevati": ["sfondo riconoscibile"],
+      "anonimizzazione": "da-fare",
+      "stato_consenso": "assente",
+      "livello_esposizione": "solo-archivio",
+      "note": "Il retro con la data a penna e' l'elemento piu' forte del pezzo."
+    },
+    {
+      "id": "002",
+      "decennio_stimato": "1980-1999",
+      "formato": "600 film",
+      "emulsione": "grana fine, colore stabile",
+      "stato_conservazione": "buono",
+      "elementi_cornice": ["bordo bianco integro"],
+      "tag_estetici": ["paesaggio-pelle", "colore neutro"],
+      "elementi_identificanti_rilevati": [],
+      "anonimizzazione": "completata",
+      "stato_consenso": "presunto-insufficiente",
+      "livello_esposizione": "dettaglio-astratto",
+      "note": "Anonimizzato e astratto, ma senza liberatoria resta a 'dettaglio-astratto'."
+    },
+    {
+      "id": "003",
+      "decennio_stimato": "2000-oggi",
+      "formato": "i-Type",
+      "emulsione": "colore freddo, nitido",
+      "stato_conservazione": "ottimo",
+      "elementi_cornice": ["bordo bianco", "nessuna grafia"],
+      "tag_estetici": ["geometria", "grana minima"],
+      "elementi_identificanti_rilevati": ["tatuaggio"],
+      "anonimizzazione": "in-corso",
+      "stato_consenso": "assente",
+      "livello_esposizione": "solo-archivio",
+      "note": "Tatuaggio identificante: resta chiuso finche' non e' trattato."
+    }
+  ]
+}
