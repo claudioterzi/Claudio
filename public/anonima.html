@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ANONIMA — Archivio Polaroid 1960→</title>
+<style>
+  :root{
+    --paper:#f3efe6; --ink:#1a1712; --frame:#fbfaf6;
+    --shadow:rgba(30,25,18,.28); --accent:#8a7a5c; --line:#ded4c1;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(1200px 700px at 70% -10%, #efe8d8, transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:"Iowan Old Style",Palatino,"Palatino Linotype",Georgia,serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:64px 24px 96px}
+  header{text-align:center;margin-bottom:8px}
+  .kicker{
+    font-family:ui-monospace,"SF Mono",Menlo,monospace;
+    letter-spacing:.32em;text-transform:uppercase;font-size:12px;
+    color:var(--accent);margin-bottom:18px;
+  }
+  h1{
+    font-size:clamp(44px,9vw,96px);margin:0;letter-spacing:.14em;
+    font-weight:600;line-height:.98;
+  }
+  .sub{font-style:italic;color:#5c5140;margin-top:14px;font-size:clamp(16px,2.4vw,20px)}
+  .rule{width:60px;height:1px;background:var(--ink);opacity:.5;margin:34px auto}
+
+  .lead{max-width:640px;margin:0 auto;text-align:center;font-size:18px;color:#3a342a}
+
+  /* --- muro di polaroid, tutte vuote/velate --- */
+  .wall{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:34px 26px;margin:72px 0 24px;
+  }
+  .pola{
+    background:var(--frame);
+    padding:12px 12px 46px;
+    box-shadow:0 10px 26px var(--shadow);
+    border:1px solid #efe9dc;
+    transform:rotate(var(--r,0deg));
+    transition:transform .35s ease, box-shadow .35s ease;
+    position:relative;
+  }
+  .pola:hover{transform:rotate(0deg) translateY(-6px);box-shadow:0 18px 40px var(--shadow)}
+  .pola .win{
+    aspect-ratio:1/1;
+    background:
+      repeating-linear-gradient(45deg,#c9c1b0 0 2px,transparent 2px 6px),
+      linear-gradient(160deg,#b9b0a0,#8f8676);
+    position:relative;overflow:hidden;
+    filter:sepia(.35) contrast(.92);
+  }
+  .pola .win::after{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(120% 90% at 50% 20%, rgba(255,255,255,.35), transparent 55%);
+    mix-blend-mode:screen;
+  }
+  .pola .veil{
+    position:absolute;inset:12px 12px 46px;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.2em;
+    text-shadow:0 1px 3px rgba(0,0,0,.5);
+    backdrop-filter:blur(2px);
+  }
+  .pola .cap{
+    position:absolute;left:0;right:0;bottom:14px;text-align:center;
+    font-family:"Segoe Script","Bradley Hand",cursive;
+    color:#6a5f49;font-size:15px;
+  }
+  .decade{
+    text-align:center;font-family:ui-monospace,monospace;letter-spacing:.3em;
+    color:var(--accent);font-size:13px;margin:56px 0 -8px;text-transform:uppercase;
+  }
+
+  section.txt{max-width:680px;margin:80px auto 0}
+  h2{font-size:26px;letter-spacing:.04em;margin:0 0 6px}
+  h2 .n{font-family:ui-monospace,monospace;color:var(--accent);font-size:14px;margin-right:10px}
+  section.txt p{color:#373127;margin:12px 0}
+  .withheld{
+    border-left:3px solid var(--accent);padding:14px 18px;margin:22px 0;
+    background:#efe9db;font-style:italic;color:#4a4234;
+  }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  .card{background:var(--frame);border:1px solid #e7e0d0;padding:16px 18px;box-shadow:0 6px 16px var(--shadow)}
+  .card b{display:block;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  footer{margin-top:96px;text-align:center;color:#6a5f49;font-style:italic}
+  .gate{
+    margin:30px auto 0;max-width:680px;text-align:center;
+    font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.14em;
+    color:#7a6f57;border:1px dashed #c7bda6;padding:16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">ANONIMA · 008 — Archivio</div>
+    <h1>ANONIMA</h1>
+    <div class="sub">Archivio Polaroid, 1960 → oggi · ~500 pezzi · nessun volto</div>
+    <div class="rule"></div>
+    <p class="lead">
+      Un archivio involontario di pellicola istantanea. Sessant'anni di emulsioni,
+      cornici, viraggi e grafie sul bordo. Ciò che si mostra è la cornice.
+      Ciò che si tace è l'opera.
+    </p>
+  </header>
+
+  <div class="decade">1968 — 1979</div>
+  <div class="wall">
+    <div class="pola" style="--r:-3deg"><div class="win"></div><div class="veil">SENZA VOLTO</div><div class="cap">est. anni '60</div></div>
+    <div class="pola" style="--r:2deg"><div class="win"></div><div class="veil">TRATTENUTO</div><div class="cap">SX-70</div></div>
+    <div class="pola" style="--r:-1deg"><div class="win"></div><div class="veil">ARCHIVIO</div><div class="cap">viraggio caldo</div></div>
+    <div class="pola" style="--r:3deg"><div class="win"></div><div class="veil">ASSENZA</div><div class="cap">bordo scritto</div></div>
+  </div>
+
+  <div class="decade">1980 — 1999</div>
+  <div class="wall">
+    <div class="pola" style="--r:2deg"><div class="win"></div><div class="veil">SENZA VOLTO</div><div class="cap">600 film</div></div>
+    <div class="pola" style="--r:-2deg"><div class="win"></div><div class="veil">TRATTENUTO</div><div class="cap">grana fine</div></div>
+    <div class="pola" style="--r:1deg"><div class="win"></div><div class="veil">ARCHIVIO</div><div class="cap">ingiallito</div></div>
+    <div class="pola" style="--r:-3deg"><div class="win"></div><div class="veil">ASSENZA</div><div class="cap">est. anni '90</div></div>
+  </div>
+
+  <div class="decade">2000 — oggi</div>
+  <div class="wall">
+    <div class="pola" style="--r:-2deg"><div class="win"></div><div class="veil">SENZA VOLTO</div><div class="cap">emulsione nuova</div></div>
+    <div class="pola" style="--r:3deg"><div class="win"></div><div class="veil">TRATTENUTO</div><div class="cap">bordo bianco</div></div>
+    <div class="pola" style="--r:-1deg"><div class="win"></div><div class="veil">ARCHIVIO</div><div class="cap">colore freddo</div></div>
+    <div class="pola" style="--r:2deg"><div class="win"></div><div class="veil">ASSENZA</div><div class="cap">non datato</div></div>
+  </div>
+
+  <div class="gate">
+    Le finestre restano velate per scelta, non per censura. L'archivio pubblico
+    non contiene immagini esplicite integre. Nessun soggetto è identificabile.
+  </div>
+
+  <section class="txt">
+    <h2><span class="n">I.</span>La tesi</h2>
+    <p>
+      Il soggetto esplicito è la cosa meno interessante dell'archivio. Ciò che regge
+      come opera è l'assenza del volto come gesto strutturale, la Polaroid come oggetto
+      e come tempo, il corpo trattato come paesaggio — luce, grana, piega — e non come
+      pornografia. La differenza sta nell'inquadratura e nell'intenzione, ed è quella
+      la scelta curatoriale.
+    </p>
+    <div class="withheld">
+      Se togli il corpo e non resta niente, non era arte. Se togli il corpo e resta
+      il tempo, la grana, l'assenza — allora sì.
+    </div>
+
+    <h2><span class="n">II.</span>Il cancello etico</h2>
+    <p>
+      Sono immagini intime di persone reali che non hanno acconsentito a diventare
+      "arte". Nessuna esposizione parte prima di aver risolto il consenso. In Italia
+      l'art. 612-<i>ter</i> c.p. e il GDPR si applicano: la cornice "arte" non è una
+      scriminante automatica. Il possesso fisico della Polaroid non dà diritto di
+      pubblicarne il contenuto.
+    </p>
+    <p>
+      Per questo ANONIMA nasce come opera sull'<i>assenza</i> e sull'<i>oggetto</i>:
+      permette di fare arte senza esporre corpi identificabili. Il vincolo non limita
+      l'opera, la definisce.
+    </p>
+
+    <h2><span class="n">III.</span>Cosa si vede, cosa resta chiuso</h2>
+    <div class="grid2">
+      <div class="card"><b>Pubblico</b>Cornici. Retri con la grafia. Dettagli-paesaggio astratti. La linea del tempo della pellicola 1960→oggi. Il testo critico.</div>
+      <div class="card"><b>Chiuso</b>L'immagine esplicita integra. Ogni pezzo senza consenso verificato. Ogni elemento che possa identificare una persona.</div>
+    </div>
+
+    <h2><span class="n">IV.</span>Metodo</h2>
+    <p>
+      Triage e provenienza · digitalizzazione ad alta risoluzione di fronte, bordo e
+      retro · anonimizzazione strutturale obbligatoria · catalogazione con un campo-gate
+      sul consenso (<code>solo-archivio → dettaglio-astratto → pubblicabile</code>) ·
+      curatela e opuscolo stampato. Il gate è chiuso finché la parte legale non è reale.
+    </p>
+  </section>
+
+  <footer>
+    <div class="rule"></div>
+    ANONIMA-008 · Archivio Polaroid 1960→ · progetto SDQ-1 · 18 luglio 2026
+  </footer>
+</div>
+</body>
+</html>
