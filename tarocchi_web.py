@@ -316,6 +316,154 @@ def atelier():
     return jsonify({"ok": True, "parfum": parfum})
 
 
+# ── Profumo: pagina RENDERIZZATA DAL SERVER (nessun fetch dal browser) ──
+# Apri /profumo?q=... e il server compone e restituisce la pagina già
+# fatta. Funziona in ogni browser, anche i mini-browser in-app.
+
+_ESTETICHE_WEB = {
+    "Agrumata": ("#d9b23c", "#f2e2a0"), "Floreale": ("#c98a9e", "#ecd3da"),
+    "Verde": ("#7c9a5f", "#cfe0bd"), "Acquatica": ("#5f8fa3", "#cfe3ec"),
+    "Legnosa": ("#8a5a33", "#d8c3a8"), "Orientale": ("#9c4a1f", "#e0b46a"),
+    "Speziata": ("#a3502a", "#dfb08a"), "Gourmand": ("#7d5230", "#e3c9a3"),
+}
+
+
+def _pagina_profumo_html(intenzione, p=None, errore=None):
+    import html as _html
+    e = _html.escape
+    testa = (
+        "<!DOCTYPE html><html lang=it><head><meta charset=UTF-8>"
+        "<meta name=viewport content='width=device-width, initial-scale=1.0'>"
+        "<title>Raffaello compone — Terzi Parfums</title><style>"
+        "*{box-sizing:border-box;margin:0;padding:0}"
+        "body{background:#0c0c0e;color:#e8e4d8;font-family:Georgia,serif;"
+        "padding:1.5rem 1rem 4rem;line-height:1.6}.c{max-width:640px;margin:0 auto}"
+        "h1{color:#c9a84c;font-weight:normal;font-size:1.5rem;letter-spacing:.06em}"
+        ".int{color:#7a7468;font-style:italic;margin:.4rem 0 1.5rem}"
+        ".card{background:#141418;border:1px solid #8a6f2e;border-radius:8px;"
+        "padding:1.4rem 1.5rem;margin-bottom:1rem}"
+        ".fl{text-align:center;margin-bottom:1rem}"
+        ".nome{color:#c9a84c;font-size:1.6rem;margin:.2rem 0}"
+        ".sotto{color:#7a7468;font-size:.72rem;letter-spacing:.12em;"
+        "text-transform:uppercase;margin-bottom:.9rem}"
+        ".et{color:#8a6f2e;font-size:.64rem;letter-spacing:.16em;"
+        "text-transform:uppercase;margin:1rem 0 .3rem}"
+        ".rif{background:rgba(201,168,76,.05);border:1px solid #2a2a32;border-radius:6px;"
+        "padding:.7rem .9rem;font-size:.86rem;color:#c9c3b4;white-space:pre-wrap}"
+        ".rag{border-left:2px solid #8a6f2e;padding-left:.9rem;font-size:.9rem}"
+        ".conc{font-style:italic;font-size:.92rem}"
+        "table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:.3rem}"
+        "td{padding:.28rem .4rem;border-bottom:1px solid #2a2a32}"
+        ".lv{color:#7a7468;font-size:.64rem;text-transform:uppercase;width:5em}"
+        ".pt{text-align:right;color:#c9a84c;white-space:nowrap}"
+        ".w5{color:#c96a5a;font-size:.8em}"
+        ".avv{margin-top:.7rem;font-size:.75rem;color:#7a7468}"
+        "a{color:#8a6f2e}.rifare{display:inline-block;margin-top:1.2rem;border:1px solid #8a6f2e;"
+        "color:#c9a84c;border-radius:999px;padding:.5rem 1.4rem;text-decoration:none}"
+        "pre.f{background:#0c0c0e;border:1px solid #2a2a32;border-radius:6px;padding:.8rem;"
+        "font-size:.72rem;white-space:pre-wrap;color:#9a9384;margin-top:.6rem}"
+        "</style></head><body><div class=c>"
+        "<h1>Raffaello compone</h1>"
+        f"<div class=int>«{e(intenzione)}»</div>"
+    )
+    if errore or not p:
+        return (testa + "<div class=card><p>⚠ Raffaello non è riuscito a "
+                "comporre in questo momento (" + e(str(errore or "errore")) +
+                "). Ricarica la pagina tra un minuto.</p></div>"
+                "<a class=rifare href='javascript:location.reload()'>Riprova</a>"
+                "</div></body></html>")
+
+    liq, chiaro = _ESTETICHE_WEB.get(p["fam"], _ESTETICHE_WEB["Orientale"])
+    nome_corto = p["nome"] if len(p["nome"]) <= 18 else p["nome"][:17] + "…"
+    svg = (
+        f"<svg viewBox='0 0 160 230' width=150 height=216>"
+        f"<defs><linearGradient id=g x1=0 y1=0 x2=0 y2=1>"
+        f"<stop offset=0 stop-color='{chiaro}'/><stop offset=1 stop-color='{liq}'/>"
+        f"</linearGradient></defs>"
+        f"<path d='M80,50 Q124,64 118,130 Q114,180 104,196 Q98,212 80,212 "
+        f"Q62,212 56,196 Q46,180 42,130 Q36,64 80,50 Z' fill='url(#g)' opacity=.9/>"
+        f"<path d='M80,50 Q124,64 118,130 Q114,180 104,196 Q98,212 80,212 "
+        f"Q62,212 56,196 Q46,180 42,130 Q36,64 80,50 Z' fill=none stroke=#8a6f2e stroke-width=1.2/>"
+        f"<path d='M70,14 Q80,8 90,14 L90,50 L70,50 Z' fill=#2c2c34 stroke=#8a6f2e stroke-width=.8/>"
+        f"<rect x=45 y=128 width=70 height=50 rx=2 fill=#efe8d8 opacity=.97/>"
+        f"<text x=80 y=146 text-anchor=middle font-family=Georgia font-size=8 fill=#8a6f2e>ATELIER</text>"
+        f"<text x=80 y=159 text-anchor=middle font-family=Georgia font-size=7 fill=#2c2418>{e(nome_corto)}</text>"
+        f"<text x=80 y=170 text-anchor=middle font-family=Georgia font-size=5.5 letter-spacing=1 fill=#8a6f2e>TERZI PARFUMS</text>"
+        f"</svg>")
+
+    righe = ""
+    formula_txt = [f"ATELIER DI RAFFAELLO — Terzi Parfums",
+                   f"{p['nome']} ({p['fam']}, {p['liv']})",
+                   f"Intenzione: “{intenzione}”", ""]
+    if p.get("riferimento"):
+        formula_txt += ["ISPIRATO A:", p["riferimento"], ""]
+    formula_txt += ["RICETTA — parti su 100:"]
+    for r in p["ricetta"]:
+        nome, n, parti, liv, micro = r
+        av = " <span class=w5>⚠ forza 5 — diluizione 1%</span>" if micro else ""
+        righe += (f"<tr><td class=lv>{e(liv)}</td><td>{e(nome)}{av}</td>"
+                  f"<td class=pt>{str(parti).replace('.', ',')}</td></tr>")
+        formula_txt.append(f"  {liv:6} {nome} — {str(parti).replace('.', ',')} parti"
+                           + (" ⚠ diluizione 1%" if micro else ""))
+    formula_txt += ["", "Punto di partenza didattico (metodo Carles), non formula finita.",
+                    "ALAKTA ANEN — la scia è memoria che cammina."]
+
+    blocco_rif = ""
+    if p.get("riferimento"):
+        blocco_rif = (f"<div class=et>Ispirato a — la lettura del classico</div>"
+                      f"<div class=rif>{e(p['riferimento'])}</div>")
+    blocco_rag = ""
+    if p.get("ragionamento"):
+        blocco_rag = (f"<div class=et>Perché queste materie</div>"
+                      f"<p class=rag>{e(p['ragionamento'])}</p>")
+
+    import urllib.parse as _up
+    link_altra = "/profumo?q=" + _up.quote(intenzione) + "&r=" + str(int(_time_now()))
+    return (testa +
+            f"<div class=card><div class=fl>{svg}<div style='color:#7a7468;"
+            f"font-size:.7rem;text-transform:uppercase;margin-top:.4rem'>{e(p['fam'])} "
+            f"· {e(p['liv'])}</div></div>"
+            f"<div class=nome>{e(p['nome'])}</div>"
+            f"<div class=sotto>Composto da Raffaello, ascoltando l'intenzione</div>"
+            + blocco_rif + blocco_rag +
+            f"<div class=et>Concept</div><p class=conc>{e(p.get('concept',''))}</p>"
+            f"<div class=et>Ricetta — parti su 100 di concentrato</div>"
+            f"<table>{righe}</table>"
+            f"<p class=avv>Punto di partenza didattico (metodo Carles), non formula "
+            f"finita: lavorare in diluizione, correggere col naso. Verificare IFRA/CPSR "
+            f"prima di qualunque vendita.</p>"
+            f"<div class=et>La formula da copiare nelle note</div>"
+            f"<pre class=f>{e(chr(10).join(formula_txt))}</pre>"
+            f"</div>"
+            f"<a class=rifare href='{e(link_altra)}'>↻ Un'altra proposta</a>"
+            f"  <a class=rifare href='/atelier.html'>Vai all'Atelier</a>"
+            f"</div></body></html>")
+
+
+def _time_now():
+    import time as _t
+    return _t.time()
+
+
+@app.route("/profumo")
+def profumo():
+    intenzione = (request.args.get("q") or request.args.get("intenzione") or "").strip()
+    if not intenzione:
+        return ("<meta charset=utf-8><body style='background:#0c0c0e;color:#e8e4d8;"
+                "font-family:Georgia;padding:2rem'>Aggiungi la tua intenzione al link, "
+                "così: <b>/profumo?q=ispirato a Gucci Rush</b></body>", 200,
+                {"Content-Type": "text/html; charset=utf-8"})
+    famiglia = (request.args.get("famiglia") or "").strip()
+    ondata = int(request.args.get("ondata", 2) or 2)
+    try:
+        parfum, errore = _atelier_componi_ai(intenzione, famiglia, ondata)
+    except Exception as ex:  # noqa: BLE001
+        parfum, errore = None, f"eccezione: {ex}"
+    pagina = _pagina_profumo_html(intenzione, parfum, errore)
+    return pagina, 200, {"Content-Type": "text/html; charset=utf-8",
+                         "Cache-Control": "no-store"}
+
+
 @app.route("/api/leggi", methods=["POST", "OPTIONS"])
 def leggi():
     if request.method == "OPTIONS":
