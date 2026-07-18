@@ -173,7 +173,7 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None):
 
     from sdq1.llm.providers import AnthropicProvider, GeminiProvider
     testo = ""
-    for cls, mod in [(GeminiProvider, "gemini-2.5-flash"),
+    for cls, mod in [(GeminiProvider, "gemini-flash-latest"),
                      (AnthropicProvider, "claude-haiku-4-5-20251001")]:
         try:
             prov = cls(modello=mod, api_key=None, timeout=55,
