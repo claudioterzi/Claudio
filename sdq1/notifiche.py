@@ -285,7 +285,7 @@ def _risposta_claude(testo_utente: str) -> str:
         )
         catena = [
             (AnthropicProvider, "claude-haiku-4-5-20251001"),
-            (GeminiProvider, "gemini-flash-latest"),
+            (GeminiProvider, "gemini-2.5-flash"),
         ]
         for provider_cls, modello in catena:
             try:
@@ -525,7 +525,7 @@ def _esegui_singolo_comando(nome: str) -> None:
                 "Tono: poetico, diretto, concreto. Lingua: italiano. "
                 "Includi un'osservazione sul sistema e una per Claudio."
             )
-            prov = GeminiProvider(modello="gemini-flash-latest", api_key=None, timeout=20)
+            prov = GeminiProvider(modello="gemini-2.5-flash", api_key=None, timeout=20)
             if prov.disponibile:
                 r = prov.completa(sistema, f"Data e ora: {ora}. Genera la riflessione.")
                 testo = r.testo.strip() if r.testo else "Il sistema osserva. Il sistema respira."
@@ -665,7 +665,7 @@ def briefing_operativo() -> bool:
     )
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
-        fut_gemini   = ex.submit(_consulta_ai, GeminiProvider,    "gemini-flash-latest",          SISTEMA_INTENTO,    contesto)
+        fut_gemini   = ex.submit(_consulta_ai, GeminiProvider,    "gemini-2.5-flash",          SISTEMA_INTENTO,    contesto)
         fut_claude   = ex.submit(_consulta_ai, AnthropicProvider, "claude-haiku-4-5-20251001", SISTEMA_COSTRUTTO, contesto)
         fut_deepseek = ex.submit(_consulta_ai, DeepSeekProvider,  "deepseek-chat",             SISTEMA_COSTRUTTO, contesto)
         fut_mistral  = ex.submit(_consulta_ai, MistralProvider,   "mistral-small-latest",      SISTEMA_COSTRUTTO, contesto)
