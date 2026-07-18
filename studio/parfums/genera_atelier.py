@@ -181,7 +181,7 @@ PAGINA = """<!DOCTYPE html>
     <h1>L'Atelier di Raffaello</h1>
     <p>Terzi Parfums · il banco dove nascono le ricette nuove, dall'Organo 300 e dalle regole del Grimorio</p>
     <p class="formula">Intenzione + Organo + Regole = Proposta</p>
-    <p class="versione">✦ Raffaello AI · v8 — funziona anche nei mini-browser 🧠 ✦</p>
+    <p class="versione">✦ Raffaello AI · v9 — link pronti, compone da solo 🧠 ✦</p>
   </header>
 
   <div class="banco">
@@ -604,6 +604,19 @@ for (const f of Object.keys(D.famiglie)) {
   o.value = f; o.textContent = f;
   selFam.appendChild(o);
 }
+
+// Link già pronto: ?q=... (o ?intenzione=...) pre-riempie e compone da solo.
+// Così basta incollare un link — nessun bottone da premere.
+(function () {
+  const par = new URLSearchParams(location.search);
+  const q = par.get("q") || par.get("intenzione");
+  if (!q) return;
+  document.getElementById("intenzione").value = q;
+  const f = par.get("famiglia");
+  if (f) document.getElementById("famiglia").value = f;
+  // parte da sola appena la pagina è pronta (anche dietro La Soglia)
+  setTimeout(() => chiediARaffaello(false), 400);
+})();
 </script>
 </body>
 </html>
