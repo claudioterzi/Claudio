@@ -588,6 +588,78 @@ def _invia(testo: str) -> bool:
         return False
 
 
+def _typing(chat_action: str = "typing") -> None:
+    """Mostra 'sta scrivendo…' mentre Raffaello compone (best effort)."""
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    chat  = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+    if not token or not chat:
+        return
+    try:
+        req = urllib.request.Request(
+            f"https://api.telegram.org/bot{token}/sendChatAction",
+            data=json.dumps({"chat_id": chat, "action": chat_action}).encode(),
+            headers={"Content-Type": "application/json"}, method="POST")
+        urllib.request.urlopen(req, timeout=5)
+    except Exception:
+        pass
+
+
+def _messaggio_profumo_telegram(intenzione: str, p: dict) -> str:
+    """Formatta la proposta di Raffaello per un messaggio Telegram (HTML)."""
+    import html as _html
+    e = lambda s: _html.escape(str(s), quote=False)  # noqa: E731
+
+    righe = [f"🌸 <b>{e(p['nome'])}</b>",
+             f"<i>{e(p['fam'])} · {e(p['liv'])}</i>", "",
+             f"«{e(intenzione)}»", ""]
+    if p.get("concept"):
+        righe += [e(p["concept"]), ""]
+    if p.get("riferimento"):
+        righe += ["<b>Ispirato a:</b>", e(p["riferimento"]), ""]
+    if p.get("ragionamento"):
+        righe += ["<b>Perché queste materie:</b>", e(p["ragionamento"]), ""]
+
+    corpo = []
+    for nome, _n, parti, liv, micro in p["ricetta"]:
+        av = " ⚠1%" if micro else ""
+        corpo.append(f"{liv:6} {nome} — {str(parti).replace('.', ',')}{av}")
+    righe.append("<b>Ricetta — parti su 100:</b>")
+    righe.append("<pre>" + e("\n".join(corpo)) + "</pre>")
+    righe.append("<i>Punto di partenza didattico (metodo Carles), non formula finita.</i>")
+    righe.append("<i>ALAKTA ANEN — la scia è memoria che cammina.</i>")
+
+    testo = "\n".join(righe)
+    return testo if len(testo) <= 4000 else testo[:3980] + "\n…"
+
+
+def _comando_profumo_telegram(intenzione: str) -> None:
+    """Comando /profumo <idea> — Raffaello compone davvero, dentro Telegram."""
+    intenzione = (intenzione or "").strip()
+    if not intenzione:
+        _invia(
+            "🌸 <b>/profumo</b> — Raffaello compone una fragranza dalla tua idea.\n\n"
+            "Scrivi ad esempio:\n"
+            "<code>/profumo ispirato a Gucci Rush</code>\n"
+            "<code>/profumo pioggia su pietra calda</code>\n"
+            "<code>/profumo un ricordo d'infanzia</code>\n\n"
+            "Qualsiasi scena, emozione o profumo che ami."
+        )
+        return
+
+    _typing()
+    try:
+        parfum, errore = _atelier_componi_ai(intenzione, "", 2)
+    except Exception as e:  # noqa: BLE001
+        parfum, errore = None, str(e)
+
+    if errore or not parfum:
+        _invia(f"⚠ Raffaello non è riuscito a comporre ({errore or 'errore'}). "
+               f"Riprova tra un minuto con <code>/profumo {intenzione}</code>.")
+        return
+
+    _invia(_messaggio_profumo_telegram(intenzione, parfum))
+
+
 def _gestisci_update(upd: dict) -> None:
     msg   = upd.get("message", {})
     testo = msg.get("text", "").strip()
@@ -598,6 +670,14 @@ def _gestisci_update(upd: dict) -> None:
         parti = testo.split(maxsplit=1)
         nome  = parti[0].lower().lstrip("/")
         args  = parti[1] if len(parti) > 1 else ""
+
+        if nome == "profumo":
+            try:
+                _comando_profumo_telegram(args)
+            except Exception as e:
+                _invia(f"❌ Errore nel comando /profumo: {e}")
+            return
+
         try:
             from sdq1.notifiche import _esegui_singolo_comando
             _esegui_singolo_comando(f"{nome} {args}".strip())

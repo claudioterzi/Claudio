@@ -593,7 +593,9 @@ def _esegui_singolo_comando(nome: str) -> None:
             "  /agenda — priorità e pronto rota\n"
             "  /desideri — registro dei desideri\n"
             "  /skyrights — stato ASBL SkyRights\n"
-            "  /tarocchi [domanda] — lettura quantica R³∞\n\n"
+            "  /tarocchi [domanda] — lettura quantica R³∞\n"
+            "  /profumo [idea] — Raffaello compone una fragranza vera "
+            "dall'Organo Terzi 300\n\n"
             "Oppure scrivi qualsiasi cosa — rispondo io."
         )
 
