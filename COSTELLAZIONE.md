@@ -45,10 +45,11 @@ Cartella: [studio/parfums/](https://github.com/claudioterzi/Claudio/tree/main/st
 - **I 300 ingredienti**: `public/organo.html` (generata da [genera_organo.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_organo.py)) — ricerca e filtri su tutte le materie, con le note d'uso dell'Excel
 - **La Grande Opera**: `public/opera.html` (generata da [genera_opera.py](https://github.com/claudioterzi/Claudio/blob/main/genera_opera.py)) — lettore dei 101 documenti dell'[Archivio Cosmico R³∞](https://github.com/claudioterzi/Claudio/tree/main/r3/archivio); rigenerarla quando l'archivio cambia
 - **La Dispensa**: `public/spesa.html` (generata da [genera_spesa.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_spesa.py)) — lista della spesa per ondata con fornitori, quantità e costi stimati, attrezzatura del banco, scarico ml usati (localStorage), calcolatore flaconi/alcol, export CSV
+- **La Valigia-Organo**: `public/valigia.html` (generata da [genera_valigia.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/valigia/genera_valigia.py), dati in `studio/parfums/valigia/`) — il progetto del banco fisico: 293 boccette in 7 moduli estraibili, mappa interattiva con ricerca "trova-boccetta" (la versione software della V2 luminosa), specifiche tecniche, budget e distinta materiali. Fonti: `Mappa_Riempimento_30ml.xlsx` e `Valigia_Organo_Specifica.docx`
 
 ## 4 · Il sito (pagine e infrastruttura)
 
-- Pagine: [public/](https://github.com/claudioterzi/Claudio/tree/main/public) — index, alpha, parfums, organo, libro, atelier, opera, creazioni, opuscolo, home
+- Pagine: [public/](https://github.com/claudioterzi/Claudio/tree/main/public) — index, alpha, parfums, organo, spesa, valigia, libro, atelier, opera, creazioni, opuscolo, home
 - La Soglia: [public/soglia.js](https://github.com/claudioterzi/Claudio/blob/main/public/soglia.js) · Navigazione: [public/nav.js](https://github.com/claudioterzi/Claudio/blob/main/public/nav.js)
 - Deploy Vercel: [vercel.json](https://github.com/claudioterzi/Claudio/blob/main/vercel.json) (statici dalla CDN + funzione Python)
 - Deploy Pages: [.github/workflows/](https://github.com/claudioterzi/Claudio/tree/main/.github/workflows)

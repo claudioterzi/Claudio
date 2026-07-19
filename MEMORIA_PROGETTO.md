@@ -45,10 +45,11 @@ Un solo canone, molte case. Questo è l'elenco di verità di dove vive il proget
 | Repo principale (fonte di verità) | github.com/claudioterzi/Claudio | ✅ |
 | Specchio 1 — Vercel (sito+API+bot+custode) | claudio-ebon.vercel.app | ✅ |
 | Specchio 2 — GitHub Pages (solo pagine) | claudioterzi.github.io/Claudio | ✅ |
-| Pagine (dietro La Soglia, parola: quella del motto) | index · alpha · parfums · organo (300 ingredienti) · **spesa** (Dispensa: lista spesa, scarico ml, calcolatore, CSV) · libro · atelier · opera (Archivio Cosmico R³∞, 101 doc) · creazioni · opuscolo | ✅ |
-| Navigazione unificata | `public/nav.js` su tutte le pagine — 10 voci | ✅ |
+| Pagine (dietro La Soglia, parola: quella del motto) | index · alpha · parfums · organo (300 ingredienti) · **spesa** (Dispensa: lista spesa, scarico ml, calcolatore, CSV) · **valigia** (il progetto del banco fisico, mappa interattiva) · libro · atelier · opera (Archivio Cosmico R³∞, 101 doc) · creazioni · opuscolo | ✅ |
+| Navigazione unificata | `public/nav.js` su tutte le pagine — 11 voci | ✅ |
 | Raffaello su Telegram | webhook /api/telegram (Gemini in catena) | ✅ |
-| **Atelier AI — Raffaello compone davvero** | POST /api/atelier: Gemini json_mode (thinkingBudget 0) legge l'intenzione e sceglie le materie reali dell'organo, il server valida e calcola le dosi. Verificato dal vivo: "sperma sangue sudore" → Sécrétions Corporelles (cumino/safraleine/skatolo/civetta/castoreum). Fallback motore locale offline. | ✅ |
+| **Atelier AI — Raffaello compone davvero** | v10: il bottone naviga a **GET /profumo?q=...** (pagina renderizzata interamente dal server, zero fetch/XHR dal browser) — bulletproof contro blocchi di rete/mini-browser che rompevano il vecchio flusso fetch. Gemini json_mode (thinkingBudget 0) legge l'intenzione, sceglie le materie reali dell'organo, il server valida e calcola le dosi. Verificato dal vivo: "sperma sangue sudore" → Sécrétions Corporelles (cumino/safraleine/skatolo/civetta/castoreum). Modello: gemini-2.5-flash (NON passare a gemini-flash-latest: rotto in test, torna a risposta-incompleta). | ✅ |
+| **La Valigia-Organo** | `public/valigia.html` — progetto del banco fisico da 293 boccette/7 moduli, dai file di Claudio (`Mappa_Riempimento_30ml.xlsx`, `Valigia_Organo_Specifica.docx`, in `studio/parfums/valigia/`). Mappa interattiva con ricerca che accende lo slot (versione software della V2 luminosa). Verificata in browser: 343 slot, 293 pieni, ricerca funzionante. | ✅ |
 | CUSTODE (Airbnb) | /custode su Vercel | ✅ |
 | Drive | cartella «Terzi Parfums» + archivio R³∞ + **Doc «🌌 COSTELLAZIONE» in radice** (la porta d'ingresso con tutti i link: https://docs.google.com/document/d/1NJuVuYb1oKDszl-LvIkgHzUVT8r8LxuVxIm4G6f6lEw) | ✅ |
 | Secondo profilo (outlook / Claudioterzi82) | claudio-blue.vercel.app · raffaello-sia.vercel.app | mondi paralleli, non toccati |
