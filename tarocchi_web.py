@@ -6,6 +6,8 @@ Endpoint:
     GET  /api/mazzo                 → tutte le 78 carte R³∞ in JSON
     POST /api/leggi                 → genera lettura da configurazione di stesa
     POST /api/telegram              → webhook Telegram (bot Raffaello)
+    GET  /prova                     → invito monouso all'Atelier (no Soglia, form HTML puro)
+    GET  /profumo?q=...             → Raffaello compone dal vivo, pagina renderizzata dal server
 """
 from __future__ import annotations
 
@@ -443,6 +445,58 @@ def _pagina_profumo_html(intenzione, p=None, errore=None):
 def _time_now():
     import time as _t
     return _t.time()
+
+
+@app.route("/prova")
+def prova():
+    """Invito monouso: nessuna Soglia, nessun JS/fetch — un semplice form
+    HTML nativo (GET) che porta a /profumo. Pensato per link condivisi con
+    chi non conosce il progetto (es. 'prova l'Atelier di Raffaello')."""
+    return ("""<!DOCTYPE html><html lang=it><head><meta charset=UTF-8>
+<meta name=viewport content='width=device-width, initial-scale=1.0'>
+<title>Prova l'Atelier di Raffaello — Terzi Parfums</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0c0c0e;color:#e8e4d8;font-family:Georgia,serif;
+padding:2.5rem 1.2rem 4rem;line-height:1.6}
+.c{max-width:520px;margin:0 auto;text-align:center}
+h1{color:#c9a84c;font-weight:normal;font-size:1.7rem;letter-spacing:.06em;
+margin-bottom:.6rem}
+.sub{color:#7a7468;font-size:.92rem;margin-bottom:2rem}
+form{background:#141418;border:1px solid #2a2a32;border-radius:8px;
+padding:1.6rem 1.4rem;margin-bottom:1.2rem;text-align:left}
+label{display:block;color:#8a6f2e;font-size:.68rem;letter-spacing:.14em;
+text-transform:uppercase;margin-bottom:.5rem}
+input[type=text]{width:100%;background:#0c0c0e;border:1px solid #2a2a32;
+color:#e8e4d8;border-radius:6px;padding:.7rem .9rem;font-family:Georgia,serif;
+font-size:1rem;margin-bottom:1rem}
+input[type=text]:focus{outline:none;border-color:#8a6f2e}
+button{width:100%;background:#8a6f2e;color:#0c0c0e;border:none;
+border-radius:6px;padding:.75rem;font-family:Georgia,serif;font-size:1rem;
+font-weight:bold;cursor:pointer;letter-spacing:.03em}
+button:hover{background:#c9a84c}
+.esempi{font-size:.82rem;color:#7a7468;margin-top:1.5rem}
+.esempi a{color:#8a6f2e;display:block;margin:.4rem 0;text-decoration:none}
+.esempi a:hover{color:#c9a84c}
+.piede{margin-top:2.5rem;font-size:.72rem;color:#5a544a;font-style:italic}
+</style></head><body><div class=c>
+<h1>L'Atelier di Raffaello</h1>
+<p class=sub>Descrivi un'idea, un'emozione, una scena — o un profumo che ami.<br>
+Raffaello ascolta e compone una fragranza vera, con le materie di un organo
+olfattivo reale di 300 ingredienti.</p>
+<form action="/profumo" method="get">
+<label for=q>La tua idea</label>
+<input type=text id=q name=q placeholder="Es. ispirato a Gucci Rush · pioggia
+su pietra calda · un ricordo d'infanzia" autofocus required>
+<button type=submit>Componi il profumo →</button>
+</form>
+<div class=esempi>
+Oppure prova subito uno di questi:<br>
+<a href="/profumo?q=ispirato+a+Gucci+Rush">ispirato a Gucci Rush</a>
+<a href="/profumo?q=una+notte+a+Marrakech">una notte a Marrakech</a>
+<a href="/profumo?q=pioggia+su+pietra+calda">pioggia su pietra calda</a>
+</div>
+<p class=piede>Terzi Parfums · ALAKTA ANEN — la scia è memoria che cammina.</p>
+</div></body></html>""", 200, {"Content-Type": "text/html; charset=utf-8"})
 
 
 @app.route("/profumo")
