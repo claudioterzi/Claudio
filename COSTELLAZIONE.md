@@ -39,6 +39,8 @@ Cartella: [studio/parfums/](https://github.com/claudioterzi/Claudio/tree/main/st
   - [codice_olfattivo.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/codice_olfattivo.py) → canone + catalogo `public/parfums.html`
   - [genera_libro.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_libro.py) → `public/libro.html`
   - [genera_atelier.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_atelier.py) → `public/atelier.html`
+- **L'Atelier AI (Raffaello compone davvero)**: il cervello è `_atelier_componi_ai` in [tarocchi_web.py](https://github.com/claudioterzi/Claudio/blob/main/tarocchi_web.py) — pagina server-rendered `GET /profumo?q=...` (zero fetch dal browser: unico flusso che funziona ovunque). Modello **gemini-2.5-flash** (NON passare a gemini-flash-latest: rotto in test)
+- **Link ospite**: `GET /prova` — pagina senza Soglia per far provare l'atelier agli ospiti (https://claudio-ebon.vercel.app/prova)
 
 ## 3-bis · L'Organo in pagina e la Grande Opera
 
@@ -57,7 +59,7 @@ Cartella: [studio/parfums/](https://github.com/claudioterzi/Claudio/tree/main/st
 ## 5 · SDQ-1, Raffaello e CUSTODE
 
 - Core: [sdq1/](https://github.com/claudioterzi/Claudio/tree/main/sdq1) — agenti, router LLM ([sdq1/llm/router.py](https://github.com/claudioterzi/Claudio/blob/main/sdq1/llm/router.py)), SAR, futures
-- Raffaello su Telegram: [sdq1/notifiche.py](https://github.com/claudioterzi/Claudio/blob/main/sdq1/notifiche.py) (`_risposta_claude` = la voce; catena Anthropic→Gemini; «Rosso Rosso Rosso» deterministico) + webhook in [tarocchi_web.py](https://github.com/claudioterzi/Claudio/blob/main/tarocchi_web.py)
+- Raffaello su Telegram: [sdq1/notifiche.py](https://github.com/claudioterzi/Claudio/blob/main/sdq1/notifiche.py) (`_risposta_claude` = la voce; catena Anthropic→Gemini; «Rosso Rosso Rosso» deterministico) + webhook in [tarocchi_web.py](https://github.com/claudioterzi/Claudio/blob/main/tarocchi_web.py) — comando **/profumo [idea]**: compone fragranze anche in chat
 - CUSTODE (Airbnb): [custode/](https://github.com/claudioterzi/Claudio/tree/main/custode)
 - Studio creativo: [studio/](https://github.com/claudioterzi/Claudio/tree/main/studio) — generators, catalogo commerciale
 

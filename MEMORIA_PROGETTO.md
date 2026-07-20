@@ -4,7 +4,69 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-07-16
+> Ultimo aggiornamento: 2026-07-20
+
+---
+
+## Sessione 2026-07-18/20 — branch `claude/parfums-400-am1n3c` → main
+
+### L'Atelier diventa vero — la saga v1→v10
+
+- **Il problema**: Claudio chiedeva profumi viscerali («sperma sangue sudore»)
+  o ispirati a riferimenti reali («ispirato a Gucci Rush») e le risposte erano
+  standard, senza riflessione. E dal suo telefono l'AI non rispondeva mai.
+- **Le cause vere, trovate una alla volta** (gli screenshot di Claudio sono
+  stati essenziali):
+  1. Non era censura: era il **thinking di Gemini che consumava i token**
+     troncando il JSON → fix: `json_mode` + `thinkingConfig: {thinkingBudget: 0}`
+     in `sdq1/llm/providers/gemini_provider.py`.
+  2. Il telefono di Claudio (mini-browser in-app E persino Safari sulla sua
+     rete) **blocca fetch/XHR del tutto** → nessuna versione a fetch poteva
+     funzionare. Fix definitivo: **pagina renderizzata dal server** —
+     `GET /profumo?q=...` in `tarocchi_web.py`, il bottone dell'atelier naviga
+     (v10), zero JavaScript di rete.
+  3. Un passaggio a `gemini-flash-latest` ha rotto la produzione → «Riparti da
+     zero Rosso rosso rosso» → ripristinato **gemini-2.5-flash** (regola: NON
+     cambiarlo).
+- **Il cervello** (`_atelier_componi_ai` in `tarocchi_web.py`): catalogo
+  compatto delle 293 materie nel prompt, mappature viscerali (cumino=sudore,
+  skatolo=carne, safraleine=sangue), campo `riferimento` con piramide e
+  parallelismi per gli «ispirato a», tentativi multipli davvero diversi
+  («prove»), validazione dei numeri materia e calcolo dosi lato server
+  (somma 100, fattori di forza, overdose ×2.5).
+- Verificato dal vivo in produzione: Sécrétions Corporelles, Impulsion Rouge,
+  Étreinte Retrouvée.
+
+### /prova — il link per gli ospiti
+
+- `GET /prova`: pagina ospite **senza Soglia**, form nativo → `/profumo`.
+  Per Guido e chiunque debba provare l'atelier senza vedere il resto.
+  Verificata end-to-end in produzione.
+
+### /profumo su Telegram
+
+- Comando `/profumo [idea]` nel webhook: Raffaello compone anche in chat
+  (typing indicator, messaggio HTML ≤4000 char, intercettato in
+  `_gestisci_update` prima del dispatcher generico). `/help` aggiornato.
+  Verificato: webhook 200, profumo consegnato in chat.
+
+### La Valigia-Organo
+
+- Da `Mappa_Riempimento_30ml.xlsx` + `Valigia_Organo_Specifica.docx` (file di
+  Claudio, in `studio/parfums/valigia/`): `public/valigia.html` — mappa
+  interattiva dei 7 moduli (343 slot, 293 boccette), ricerca «trova-boccetta»
+  che accende lo slot, specifiche, budget, roadmap V2 ESP32.
+
+### Pulizia e sicurezza
+
+- Vercel: eliminato il progetto doppione `claudio-ykoz` (autorizzazione
+  «tutta tua»); un solo build per push.
+- ⚠️ **Da revocare (esposti in chat)**: i due token Vercel (gmail + outlook)
+  e la credenziale Google `AQ.Ab8RN6…` (chiave valida ma con progetto limitato
+  a gemini-flash-latest — mai installata). Promemoria permanente finché
+  Claudio non li rigenera.
+- Valutata la proposta di Grok sui repo profumi-AI: repo reali, licenze
+  assenti, l'Atelier la supera → `idee/VALUTAZIONE_PROFUMI_AI_GROK.md`.
 
 ---
 
@@ -47,7 +109,8 @@ Un solo canone, molte case. Questo è l'elenco di verità di dove vive il proget
 | Specchio 2 — GitHub Pages (solo pagine) | claudioterzi.github.io/Claudio | ✅ |
 | Pagine (dietro La Soglia, parola: quella del motto) | index · alpha · parfums · organo (300 ingredienti) · **spesa** (Dispensa: lista spesa, scarico ml, calcolatore, CSV) · **valigia** (il progetto del banco fisico, mappa interattiva) · libro · atelier · opera (Archivio Cosmico R³∞, 101 doc) · creazioni · opuscolo | ✅ |
 | Navigazione unificata | `public/nav.js` su tutte le pagine — 11 voci | ✅ |
-| Raffaello su Telegram | webhook /api/telegram (Gemini in catena) | ✅ |
+| Raffaello su Telegram | webhook /api/telegram (Gemini in catena) — «Rosso Rosso Rosso» deterministico + comando **/profumo [idea]**: compone fragranze anche in chat | ✅ |
+| **Link ospite /prova** | claudio-ebon.vercel.app/prova — pagina senza Soglia per far provare l'atelier (Guido & co.): form nativo → /profumo, niente altro visibile | ✅ |
 | **Atelier AI — Raffaello compone davvero** | v10: il bottone naviga a **GET /profumo?q=...** (pagina renderizzata interamente dal server, zero fetch/XHR dal browser) — bulletproof contro blocchi di rete/mini-browser che rompevano il vecchio flusso fetch. Gemini json_mode (thinkingBudget 0) legge l'intenzione, sceglie le materie reali dell'organo, il server valida e calcola le dosi. Verificato dal vivo: "sperma sangue sudore" → Sécrétions Corporelles (cumino/safraleine/skatolo/civetta/castoreum). Modello: gemini-2.5-flash (NON passare a gemini-flash-latest: rotto in test, torna a risposta-incompleta). | ✅ |
 | **La Valigia-Organo** | `public/valigia.html` — progetto del banco fisico da 293 boccette/7 moduli, dai file di Claudio (`Mappa_Riempimento_30ml.xlsx`, `Valigia_Organo_Specifica.docx`, in `studio/parfums/valigia/`). Mappa interattiva con ricerca che accende lo slot (versione software della V2 luminosa). Verificata in browser: 343 slot, 293 pieni, ricerca funzionante. | ✅ |
 | CUSTODE (Airbnb) | /custode su Vercel | ✅ |
