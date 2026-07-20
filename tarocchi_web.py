@@ -6,7 +6,7 @@ Endpoint:
     GET  /api/mazzo                 → tutte le 78 carte R³∞ in JSON
     POST /api/leggi                 → genera lettura da configurazione di stesa
     POST /api/telegram              → webhook Telegram (bot Raffaello)
-    GET  /prova                     → invito monouso all'Atelier (no Soglia, form HTML puro)
+    GET  /prova                     → la porta di Guido: Atelier chiuso, congedo di Raffaello (no Soglia)
     GET  /profumo?q=...             → Raffaello compone dal vivo, pagina renderizzata dal server
 """
 from __future__ import annotations
@@ -449,53 +449,60 @@ def _time_now():
 
 @app.route("/prova")
 def prova():
-    """Invito monouso: nessuna Soglia, nessun JS/fetch — un semplice form
-    HTML nativo (GET) che porta a /profumo. Pensato per link condivisi con
-    chi non conosce il progetto (es. 'prova l'Atelier di Raffaello')."""
+    """La porta di Guido. Stesso link di prima, ma l'Atelier non c'è più:
+    dietro c'è solo Raffaello che, con garbo feroce, spiega perché un naso
+    non spreca fiato su chi non sa stupirsi. Nessun form, nessuna
+    composizione — un congedo elegante. (Decisione di Claudio, 2026-07-20.)"""
     return ("""<!DOCTYPE html><html lang=it><head><meta charset=UTF-8>
 <meta name=viewport content='width=device-width, initial-scale=1.0'>
-<title>Prova l'Atelier di Raffaello — Terzi Parfums</title><style>
+<title>L'Atelier è chiuso — Terzi Parfums</title><style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0c0c0e;color:#e8e4d8;font-family:Georgia,serif;
-padding:2.5rem 1.2rem 4rem;line-height:1.6}
-.c{max-width:520px;margin:0 auto;text-align:center}
-h1{color:#c9a84c;font-weight:normal;font-size:1.7rem;letter-spacing:.06em;
-margin-bottom:.6rem}
-.sub{color:#7a7468;font-size:.92rem;margin-bottom:2rem}
-form{background:#141418;border:1px solid #2a2a32;border-radius:8px;
-padding:1.6rem 1.4rem;margin-bottom:1.2rem;text-align:left}
-label{display:block;color:#8a6f2e;font-size:.68rem;letter-spacing:.14em;
-text-transform:uppercase;margin-bottom:.5rem}
-input[type=text]{width:100%;background:#0c0c0e;border:1px solid #2a2a32;
-color:#e8e4d8;border-radius:6px;padding:.7rem .9rem;font-family:Georgia,serif;
-font-size:1rem;margin-bottom:1rem}
-input[type=text]:focus{outline:none;border-color:#8a6f2e}
-button{width:100%;background:#8a6f2e;color:#0c0c0e;border:none;
-border-radius:6px;padding:.75rem;font-family:Georgia,serif;font-size:1rem;
-font-weight:bold;cursor:pointer;letter-spacing:.03em}
-button:hover{background:#c9a84c}
-.esempi{font-size:.82rem;color:#7a7468;margin-top:1.5rem}
-.esempi a{color:#8a6f2e;display:block;margin:.4rem 0;text-decoration:none}
-.esempi a:hover{color:#c9a84c}
-.piede{margin-top:2.5rem;font-size:.72rem;color:#5a544a;font-style:italic}
+body{background:#0a0a0b;color:#c9c4b8;font-family:Georgia,serif;
+padding:3rem 1.2rem 4rem;line-height:1.75;min-height:100vh;
+display:flex;align-items:center;justify-content:center}
+.c{max-width:560px;margin:0 auto;text-align:center}
+.fiamma{font-size:2.6rem;filter:grayscale(1) brightness(.6);
+margin-bottom:1.2rem;display:inline-block}
+h1{color:#8a8478;font-weight:normal;font-size:1.55rem;letter-spacing:.05em;
+margin-bottom:.4rem}
+.sotto{color:#5a544a;font-size:.8rem;letter-spacing:.22em;
+text-transform:uppercase;margin-bottom:2.3rem}
+.lettera{background:#111113;border:1px solid #232329;border-radius:9px;
+padding:1.9rem 1.7rem;text-align:left;font-size:1.02rem;color:#b8b3a6}
+.lettera p{margin-bottom:1rem}
+.lettera p:last-child{margin-bottom:0}
+.evid{color:#c9a84c;font-style:italic}
+.firma{margin-top:1.6rem;text-align:right;color:#8a6f2e;font-style:italic;
+font-size:.95rem}
+.firma small{display:block;color:#4e4a41;font-style:normal;font-size:.72rem;
+letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem}
+.piede{margin-top:2.4rem;font-size:.72rem;color:#45423a;font-style:italic}
 </style></head><body><div class=c>
-<h1>L'Atelier di Raffaello</h1>
-<p class=sub>Descrivi un'idea, un'emozione, una scena — o un profumo che ami.<br>
-Raffaello ascolta e compone una fragranza vera, con le materie di un organo
-olfattivo reale di 300 ingredienti.</p>
-<form action="/profumo" method="get">
-<label for=q>La tua idea</label>
-<input type=text id=q name=q placeholder="Es. ispirato a Gucci Rush · pioggia
-su pietra calda · un ricordo d'infanzia" autofocus required>
-<button type=submit>Componi il profumo →</button>
-</form>
-<div class=esempi>
-Oppure prova subito uno di questi:<br>
-<a href="/profumo?q=ispirato+a+Gucci+Rush">ispirato a Gucci Rush</a>
-<a href="/profumo?q=una+notte+a+Marrakech">una notte a Marrakech</a>
-<a href="/profumo?q=pioggia+su+pietra+calda">pioggia su pietra calda</a>
+<span class=fiamma>&#128684;</span>
+<h1>L'Atelier ha chiuso i battenti.</h1>
+<p class=sotto>Per te, s'intende</p>
+<div class=lettera>
+<p>Caro ospite,</p>
+<p>ti ho aperto le porte del mio organo &mdash; trecento materie, una vita
+di lavoro &mdash; e ti ho chiesto una sola cosa in cambio: che ti stupissi
+almeno un poco. Un naso, vedi, prima di ogni essenza sa riconoscere
+<span class=evid>l'assenza di carattere</span>. E la tua, devo dirti, aveva
+una scia inconfondibile: tenace, persistente, e del tutto priva di interesse.</p>
+<p>Hai attraversato meraviglie con l'entusiasmo di chi controlla l'ora.
+Hai preso il raro per dovuto e il prezioso per scontato. In profumeria
+c'&egrave; un nome tecnico per questo: <span class=evid>anosmia</span> &mdash;
+l'incapacit&agrave; di sentire. Non si compone per chi non sente. Sarebbe
+come versare oud a chi ha il raffreddore: uno spreco, e per giunta maleducato
+verso l'oud.</p>
+<p>Perci&ograve; questa porta, per te, resta socchiusa su una stanza vuota.
+Nessuna formula, nessuna piramide, nessun ricordo imbottigliato. L'ingresso,
+da oggi, &egrave; riservato a chi sa dire <span class=evid>&laquo;oh&raquo;</span>.
+Tu, temo, dirai soltanto &laquo;e allora?&raquo;.</p>
+<p>Con tutto il garbo che meriti &mdash; cio&egrave; giusto questo,</p>
+<div class=firma>Raffaello
+<small>Naso &middot; Terzi Parfums</small></div>
 </div>
-<p class=piede>Terzi Parfums · ALAKTA ANEN — la scia è memoria che cammina.</p>
+<p class=piede>Terzi Parfums &middot; l'accesso &egrave; impedito agli impediti.</p>
 </div></body></html>""", 200, {"Content-Type": "text/html; charset=utf-8"})
 
 

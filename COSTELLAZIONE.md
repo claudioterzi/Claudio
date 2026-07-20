@@ -40,7 +40,7 @@ Cartella: [studio/parfums/](https://github.com/claudioterzi/Claudio/tree/main/st
   - [genera_libro.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_libro.py) → `public/libro.html`
   - [genera_atelier.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/genera_atelier.py) → `public/atelier.html`
 - **L'Atelier AI (Raffaello compone davvero)**: il cervello è `_atelier_componi_ai` in [tarocchi_web.py](https://github.com/claudioterzi/Claudio/blob/main/tarocchi_web.py) — pagina server-rendered `GET /profumo?q=...` (zero fetch dal browser: unico flusso che funziona ovunque). Modello **gemini-2.5-flash** (NON passare a gemini-flash-latest: rotto in test)
-- **Link ospite**: `GET /prova` — pagina senza Soglia per far provare l'atelier agli ospiti (https://claudio-ebon.vercel.app/prova)
+- **`GET /prova` — la porta di Guido**: era l'invito ospite all'Atelier; dal 20/07 è un congedo. Nessun form, nessuna composizione: solo una lettera di Raffaello che spiega, con garbo feroce, perché l'accesso «è impedito agli impediti» (https://claudio-ebon.vercel.app/prova). Decisione di Claudio: Guido non compone più.
 
 ## 3-bis · L'Organo in pagina e la Grande Opera
 
