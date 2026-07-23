@@ -28,6 +28,7 @@ class Proposta:
     mese_ideale: bool
     tipi_combacianti: tuple[str, ...]
     punteggio: float
+    live: bool = False      # True se il costo volo è un prezzo REALE dalla tua città
 
     def dizionario(self) -> dict:
         """Serializzazione JSON-friendly per l'API."""
@@ -50,12 +51,15 @@ class Proposta:
             "nel_budget": self.nel_budget,
             "mese_ideale": self.mese_ideale,
             "tipi_combacianti": list(self.tipi_combacianti),
+            "live": self.live,
         }
 
 
 def _valuta(d: Destinazione, budget: int, giorni: int,
-            mese: int | None, tipi: tuple[str, ...]) -> Proposta:
-    costo_volo = d.volo_ar
+            mese: int | None, tipi: tuple[str, ...],
+            override_volo: dict[str, int] | None = None) -> Proposta:
+    live = bool(override_volo and d.nome in override_volo)
+    costo_volo = int(override_volo[d.nome]) if live else d.volo_ar
     costo_soggiorno = giorni * d.budget_giorno
     base = costo_volo + costo_soggiorno
     margine = round(base * MARGINE_IMPREVISTI)
@@ -76,20 +80,23 @@ def _valuta(d: Destinazione, budget: int, giorni: int,
         punteggio += 25.0
     if tipi:
         punteggio += 30.0 * len(combacianti) / len(tipi)
+    if live:                       # prezzo reale dalla tua città → in cima
+        punteggio += 45.0
 
     return Proposta(
         destinazione=d, giorni=giorni,
         costo_volo=costo_volo, costo_soggiorno=costo_soggiorno,
         margine=margine, totale=totale, residuo=residuo,
         nel_budget=residuo >= 0, mese_ideale=mese is not None and mese in d.mesi_ideali,
-        tipi_combacianti=combacianti, punteggio=punteggio,
+        tipi_combacianti=combacianti, punteggio=punteggio, live=live,
     )
 
 
 def pianifica(budget: int, giorni: int, mese: int | None = None,
               tipo: str | tuple[str, ...] | None = None,
               max_risultati: int = 6,
-              solo_nel_budget: bool = False) -> list[Proposta]:
+              solo_nel_budget: bool = False,
+              override_volo: dict[str, int] | None = None) -> list[Proposta]:
     """Restituisce le migliori proposte ordinate per punteggio.
 
     budget           → totale disponibile per persona, in €
@@ -97,6 +104,7 @@ def pianifica(budget: int, giorni: int, mese: int | None = None,
     mese             → 1-12, opzionale (filtra sul periodo ideale)
     tipo             → uno o più tra TIPI, opzionale
     solo_nel_budget  → se True scarta le mete che sforano
+    override_volo    → {nome_meta: costo_volo_reale} da prezzi live della tua città
     """
     giorni = max(1, int(giorni))
     budget = max(0, int(budget))
@@ -105,7 +113,7 @@ def pianifica(budget: int, giorni: int, mese: int | None = None,
     else:
         tipi = tuple(tipo or ())
 
-    proposte = [_valuta(d, budget, giorni, mese, tipi) for d in DESTINAZIONI]
+    proposte = [_valuta(d, budget, giorni, mese, tipi, override_volo) for d in DESTINAZIONI]
 
     if tipi:
         proposte = [p for p in proposte if p.tipi_combacianti]
