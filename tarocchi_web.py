@@ -694,6 +694,69 @@ def _comando_profumo_telegram(intenzione: str) -> None:
     _invia(_messaggio_profumo_telegram(intenzione, parfum))
 
 
+def _messaggio_oracolo_telegram(r) -> str:
+    """Formatta il responso dell'Oracolo per Telegram (HTML)."""
+    import html as _html
+    e = lambda s: _html.escape(str(s), quote=False)  # noqa: E731
+
+    if not r.meta:
+        return "🔮 <b>L'Oracolo del Viaggio</b>\n\n" + e(r.responso)
+
+    m = r.meta
+    righe = ["🔮 <b>L'Oracolo del Viaggio</b>",
+             f"<i>da {e(r.origine)}, nei prossimi giorni</i>", "",
+             f"✨ <i>{e(r.responso)}</i>", "",
+             f"📍 <b>{e(m.nome)}</b> — {e(m.paese)}",
+             f"💶 <b>{m.totale:.0f}€</b> · parti <b>{e(r.quando_testo)}</b> "
+             f"· da {e(m.da)} → {e(m.iata)}"]
+    if r.alternative:
+        righe += ["", "<b>Altre fughe:</b>"]
+        for a in r.alternative[:4]:
+            righe.append(f"• {e(a.nome)} — {a.totale:.0f}€ ({e(a.giorno)})")
+    righe += ["", "<i>Prezzi live. Verifica sul sito del vettore prima di prenotare.</i>"]
+    testo = "\n".join(righe)
+    return testo if len(testo) <= 4000 else testo[:3980] + "\n…"
+
+
+def _comando_oracolo_telegram(args: str) -> None:
+    """Comando /oracolo <città> [budget] — la fuga migliore dai prossimi giorni."""
+    args = (args or "").strip()
+    if not args:
+        _invia(
+            "🔮 <b>/oracolo</b> — da dove parti, e l'Oracolo trova la fuga "
+            "migliore dei prossimi giorni.\n\n"
+            "Scrivi ad esempio:\n"
+            "<code>/oracolo Milano</code>\n"
+            "<code>/oracolo Roma 80</code>  (budget max 80€)\n"
+            "<code>/oracolo Bruxelles</code>\n\n"
+            "Ti dico dove, quando e quanto — con un responso."
+        )
+        return
+
+    # ultima parola numerica = budget massimo
+    budget = None
+    parti = args.split()
+    if parti and parti[-1].replace(".", "").isdigit():
+        budget = float(parti[-1])
+        args = " ".join(parti[:-1]).strip()
+    if not args:
+        _invia("🔮 Manca la città: prova <code>/oracolo Milano</code>.")
+        return
+
+    _typing()
+    try:
+        r = fh_consulta(args, giorni_avanti=14, budget=budget)
+    except ValueError:
+        _invia(f"🔮 Non riconosco «{args}» come città di partenza. "
+               "Prova con un aeroporto vicino, es. <code>/oracolo Milano</code>.")
+        return
+    except Exception as e:  # noqa: BLE001
+        _invia(f"⚠ L'Oracolo si è interrotto ({e}). Riprova tra un minuto.")
+        return
+
+    _invia(_messaggio_oracolo_telegram(r))
+
+
 def _gestisci_update(upd: dict) -> None:
     msg   = upd.get("message", {})
     testo = msg.get("text", "").strip()
@@ -710,6 +773,13 @@ def _gestisci_update(upd: dict) -> None:
                 _comando_profumo_telegram(args)
             except Exception as e:
                 _invia(f"❌ Errore nel comando /profumo: {e}")
+            return
+
+        if nome in ("oracolo", "viaggio", "dove"):
+            try:
+                _comando_oracolo_telegram(args)
+            except Exception as e:
+                _invia(f"❌ Errore nel comando /{nome}: {e}")
             return
 
         try:

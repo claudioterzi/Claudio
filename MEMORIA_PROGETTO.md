@@ -41,9 +41,17 @@ Sviluppo su `claude/low-cost-trips-pjvxj6`, pubblicato su main per Vercel.
   e ricerca-obiettivo diventano mondiali agganciando Kiwi/Amadeus con chiave
   API gratuita — l'interfaccia `Fonte` è già pronta. Prossimo passo naturale.
 - Valutazione due diligence esterna (ChatGPT): 8,8/10 oggi, 9,8 potenziale.
-- ⚠️ **Da verificare in produzione**: Ryanair potrebbe bloccare gli IP dei
-  datacenter Vercel. Se `/api/flight/*` dà errore online mentre la CLI funziona,
-  è quello — soluzione: fonte con API key o piccolo proxy residenziale.
+- ⚠️ Verificato in produzione (23/07): Ryanair risponde dagli IP Vercel,
+  `/api/flight/ovunque` e `/oracolo` funzionano online (test dal vivo).
+- **L'Oracolo del Viaggio** (`flight_hunter/oracolo.py`): parte creativa —
+  da una città, guarda i PROSSIMI giorni e pronuncia la fuga migliore con un
+  responso generato (apertura + verso per paese + fatti reali). Web `/oracolo`,
+  API `/api/flight/oracolo`. **Anche su Telegram**: comando `/oracolo <città>
+  [budget]` (alias `/viaggio`, `/dove`) nel webhook, accanto a `/profumo`.
+- **Multi-fonte concreta**: `FonteKiwi` pronto-chiave (`KIWI_API_KEY` →
+  copertura mondiale, dormiente finché non c'è la chiave), `ovunque()` e
+  l'Oracolo interrogano tutte le `fonti_disponibili()`. Nomi/paesi delle mete
+  ora arrivano dalla fonte (coprono anche aeroporti fuori dal DB curato).
 
 ---
 
