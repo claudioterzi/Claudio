@@ -56,6 +56,22 @@ Esistono **due** sistemi di tarocchi nel repo. Non confonderli.
 
 ---
 
+## Modulo laterale: Viaggi Low Cost (2026-07-23)
+
+Modulo indipendente dai tarocchi, stessa filosofia zero-dipendenze, stessa app Flask.
+
+- **Motore**: `viaggi/` — `destinazioni.py` (25 mete low cost dall'Italia con
+  budget/giorno, volo A/R stimato, mesi ideali, consigli) + `pianificatore.py`
+  (`pianifica(budget, giorni, mese, tipo)` → proposte ordinate per punteggio,
+  con margine imprevisti del 10%).
+- **API** (in `tarocchi_web.py`): `GET /api/viaggi/destinazioni`,
+  `POST /api/viaggi/pianifica`.
+- **Web**: `public/viaggi.html` su `/viaggi` — stessa estetica oro/scuro del sito.
+- **Stato**: funzionante, testato (motore + endpoint + regressione `/api/mazzo`).
+- Branch di sviluppo: `claude/low-cost-trips-pjvxj6`.
+
+---
+
 ## Prossimo passo concordato
 
 Sistema B completo (592 stati scritti). Decisione su dove andare:

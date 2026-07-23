@@ -1,9 +1,12 @@
 """Tarocchi Quantici R³∞ — Web app per Vercel.
 
 Endpoint:
-    GET  /           → frontend (public/index.html)
-    GET  /api/mazzo  → tutte le 74 carte in JSON
-    POST /api/leggi  → genera lettura da configurazione di stesa
+    GET  /                        → frontend (public/index.html)
+    GET  /api/mazzo               → tutte le 74 carte in JSON
+    POST /api/leggi               → genera lettura da configurazione di stesa
+    GET  /viaggi                  → frontend Viaggi Low Cost (public/viaggi.html)
+    GET  /api/viaggi/destinazioni → catalogo destinazioni low cost
+    POST /api/viaggi/pianifica    → proposte di viaggio da budget/giorni/mese/tipo
 """
 from __future__ import annotations
 
@@ -26,6 +29,8 @@ from tarocchi import (
     eco,
     voce,
 )
+
+from viaggi import DESTINAZIONI, MESI, TIPI, pianifica
 
 app = Flask(__name__, static_folder="public", static_url_path="")
 
@@ -134,6 +139,80 @@ def leggi():
             "domande_di_riflessione":   personale.domande_di_riflessione,
             "integrazione":             personale.integrazione,
         },
+    })
+
+
+@app.route("/viaggi")
+def viaggi_index():
+    return send_from_directory("public", "viaggi.html")
+
+
+@app.route("/api/viaggi/destinazioni")
+def viaggi_destinazioni():
+    """Catalogo completo delle destinazioni low cost."""
+    return jsonify({
+        "tipi": list(TIPI),
+        "mesi": list(MESI),
+        "destinazioni": [
+            {
+                "nome": d.nome,
+                "paese": d.paese,
+                "tipi": list(d.tipi),
+                "budget_giorno": d.budget_giorno,
+                "volo_ar": d.volo_ar,
+                "mesi_ideali": list(d.mesi_ideali),
+                "partenze": list(d.partenze),
+                "perche": d.perche,
+                "consigli": list(d.consigli),
+            }
+            for d in DESTINAZIONI
+        ],
+    })
+
+
+@app.route("/api/viaggi/pianifica", methods=["POST", "OPTIONS"])
+def viaggi_pianifica():
+    """Proposte di viaggio ordinate per aderenza a budget/giorni/mese/tipo.
+
+    Body:
+        {
+          "budget": 300,          // € totali per persona
+          "giorni": 4,
+          "mese": 9,              // 1-12, opzionale
+          "tipo": ["mare"],       // sottoinsieme di TIPI, opzionale
+          "solo_nel_budget": false
+        }
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+
+    body = request.get_json(force=True, silent=True) or {}
+    try:
+        budget = int(body.get("budget", 0))
+        giorni = int(body.get("giorni", 3))
+    except (TypeError, ValueError):
+        return jsonify({"errore": "budget e giorni devono essere numeri"}), 400
+
+    mese = body.get("mese")
+    mese = int(mese) if mese not in (None, "", 0, "0") else None
+    if mese is not None and not 1 <= mese <= 12:
+        return jsonify({"errore": "mese deve essere tra 1 e 12"}), 400
+
+    tipo = body.get("tipo") or ()
+    if isinstance(tipo, str):
+        tipo = (tipo,)
+    tipo = tuple(t for t in tipo if t in TIPI)
+
+    proposte = pianifica(
+        budget=budget, giorni=giorni, mese=mese, tipo=tipo,
+        solo_nel_budget=bool(body.get("solo_nel_budget", False)),
+    )
+    return jsonify({
+        "budget": budget,
+        "giorni": giorni,
+        "mese": MESI[mese - 1] if mese else None,
+        "tipi": list(tipo),
+        "proposte": [p.dizionario() for p in proposte],
     })
 
 
