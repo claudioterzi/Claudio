@@ -4,6 +4,7 @@
   var VOCI = [
     ["index.html", "Tarocchi"],
     ["alpha.html", "Alpha"],
+    ["parti.html", "Parti"],
     ["viaggi.html", "Viaggi"],
     ["flight_hunter.html", "Flight"],
     ["oracolo.html", "Oracolo"],

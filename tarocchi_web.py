@@ -56,8 +56,24 @@ from viaggi import DESTINAZIONI, MESI, TIPI, pianifica
 from flight_hunter import (
     caccia as fh_caccia,
     consulta as fh_consulta,
+    occasioni as fh_occasioni,
     ovunque as fh_ovunque,
+    piu_vicino as fh_piu_vicino,
 )
+
+
+def _link_prenota(vettore: str, da: str, a: str, giorno: str) -> str:
+    """Link diretto per prenotare: Ryanair pre-compilato su data e rotta,
+    così l'utente arriva già al volo giusto. Fallback Google Flights."""
+    from urllib.parse import quote
+    if vettore == "Ryanair" and giorno:
+        return (
+            "https://www.ryanair.com/it/it/trip/flights/select?"
+            f"adults=1&teens=0&children=0&infants=0&dateOut={giorno}&isReturn=false"
+            f"&originIata={da}&destinationIata={a}"
+            f"&tpAdults=1&tpStartDate={giorno}&tpOriginIata={da}&tpDestinationIata={a}"
+        )
+    return "https://www.google.com/travel/flights?q=" + quote(f"voli {da} {a} {giorno}")
 
 
 def _ora(iso: str) -> str:
@@ -934,6 +950,48 @@ def _prezzi_volo_da_origine(origine: str, mese: int | None):
 # ══════════════════════════════════════════════════════════════════════
 #  FLIGHT HUNTER (prezzi live)
 # ══════════════════════════════════════════════════════════════════════
+
+@app.route("/parti")
+def parti_index():
+    return send_from_directory(_PUBLIC, "parti.html")
+
+
+@app.route("/api/flight/occasioni", methods=["POST", "OPTIONS"])
+def flight_occasioni():
+    """I biglietti più economici dalla città (o dalla posizione GPS), nei
+    prossimi giorni, ordinati dal più basso — con link diretto per prenotare."""
+    if request.method == "OPTIONS":
+        return "", 200
+    body = request.get_json(force=True, silent=True) or {}
+    origine = (body.get("origine") or "").strip()
+
+    # posizione GPS → aeroporto più vicino
+    if not origine and body.get("lat") is not None and body.get("lon") is not None:
+        try:
+            ap = fh_piu_vicino(float(body["lat"]), float(body["lon"]))
+            origine = ap.iata
+        except (TypeError, ValueError):
+            return jsonify({"errore": "coordinate non valide"}), 400
+    if not origine:
+        return jsonify({"errore": "serve una città di partenza o la posizione"}), 400
+
+    try:
+        giorni = max(3, min(60, int(body.get("giorni_avanti", 45))))
+    except (TypeError, ValueError):
+        giorni = 45
+    try:
+        mete = fh_occasioni(origine, giorni_avanti=giorni, top=24)
+    except ValueError as e:
+        return jsonify({"errore": str(e)}), 400
+
+    voli = [{
+        "nome": m.nome, "paese": m.paese, "iata": m.iata, "da": m.da,
+        "giorno": m.giorno, "prezzo": round(m.prezzo_volo, 2),
+        "vettore": m.vettore,
+        "prenota": _link_prenota(m.vettore, m.da, m.iata, m.giorno),
+    } for m in mete]
+    return jsonify({"origine": origine, "voli": voli})
+
 
 @app.route("/oracolo")
 def oracolo_index():

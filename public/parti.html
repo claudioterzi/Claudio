@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parti — voli assurdi</title>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0c0c0e; --surface:#141418; --border:#2a2a32;
+      --gold:#c9a84c; --gold-dim:#8a6f2e; --text:#e8e4d8; --text-dim:#7a7468;
+      --green:#4c9a6b; --radius:12px;
+      --font:'Georgia','Times New Roman',serif; --mono:'Courier New',monospace;
+    }
+    body { background:var(--bg); color:var(--text); font-family:var(--font);
+           min-height:100vh; padding:1.5rem 1rem 4rem; }
+    .container { max-width:640px; margin:0 auto; }
+    header { text-align:center; margin-bottom:1.2rem; }
+    header h1 { font-size:clamp(1.8rem,6vw,2.6rem); font-weight:normal;
+                letter-spacing:0.08em; color:var(--gold); }
+    header p { margin-top:0.4rem; color:var(--text-dim); font-size:0.9rem; }
+    header a { color:var(--gold-dim); font-size:0.8rem; text-decoration:none; }
+
+    .controlli { display:flex; gap:0.5rem; margin:1.2rem 0; flex-wrap:wrap; }
+    .controlli input { flex:1; min-width:150px; background:var(--surface);
+      border:1px solid var(--border); border-radius:var(--radius); color:var(--text);
+      font-family:var(--font); font-size:1.05rem; padding:0.7rem 0.9rem; }
+    .controlli input:focus { outline:1px solid var(--gold-dim); }
+    .btn { border:none; border-radius:var(--radius); font-family:var(--font);
+      font-size:0.95rem; padding:0.7rem 1rem; cursor:pointer; white-space:nowrap; }
+    .btn.oro { background:var(--gold); color:var(--bg); }
+    .btn.oro:hover { background:#dfc06a; }
+    .btn.ghost { background:var(--surface); color:var(--text-dim); border:1px solid var(--border); }
+    .btn.ghost:hover { color:var(--gold); border-color:var(--gold-dim); }
+
+    .da { text-align:center; color:var(--text-dim); font-size:0.85rem; margin-bottom:1rem; }
+    .da b { color:var(--gold); }
+
+    /* Hero: il più economico */
+    .hero { background:linear-gradient(155deg,#1a1710,#111015);
+      border:1px solid var(--gold); border-radius:var(--radius); padding:1.6rem 1.4rem;
+      text-align:center; margin-bottom:1.2rem; box-shadow:0 0 40px rgba(201,168,76,0.1); }
+    .hero .occhiello { font-size:0.66rem; letter-spacing:0.26em; text-transform:uppercase;
+      color:var(--gold-dim); margin-bottom:0.6rem; }
+    .hero .prezzo { font-family:var(--mono); font-size:3.4rem; color:var(--green); line-height:1; }
+    .hero .luogo { font-size:1.5rem; color:var(--gold); margin-top:0.5rem; }
+    .hero .quando { color:var(--text-dim); font-size:0.9rem; margin-top:0.3rem; }
+    .hero .btn { margin-top:1.1rem; width:100%; font-size:1.1rem; padding:0.85rem;
+      display:inline-block; text-decoration:none; text-align:center; }
+
+    /* Lista */
+    .volo { display:flex; align-items:center; gap:0.9rem; background:var(--surface);
+      border:1px solid var(--border); border-radius:var(--radius);
+      padding:0.75rem 0.9rem; margin-bottom:0.55rem; }
+    .volo .p { font-family:var(--mono); font-size:1.35rem; color:var(--green);
+      min-width:70px; text-align:right; }
+    .volo .mid { flex:1; min-width:0; }
+    .volo .n { font-size:1.02rem; color:var(--text); }
+    .volo .q { color:var(--text-dim); font-size:0.78rem; }
+    .volo a.prenota { background:var(--gold); color:var(--bg); text-decoration:none;
+      border-radius:999px; padding:0.4rem 0.9rem; font-size:0.85rem; white-space:nowrap; }
+    .volo a.prenota:hover { background:#dfc06a; }
+
+    .stato { text-align:center; color:var(--text-dim); padding:2.5rem 0; font-style:italic; }
+    .nota { text-align:center; color:var(--text-dim); font-size:0.74rem; margin-top:2rem;
+      line-height:1.7; }
+    .nota a { color:var(--gold-dim); }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>✈️ Parti</h1>
+    <p>I biglietti più assurdi dalla tua città, adesso. Apri, scegli, vola.</p>
+    <p><a href="/oracolo">🔮 Oracolo</a> · <a href="/viaggi">Viaggi</a> · <a href="/flight">Flight Hunter</a></p>
+  </header>
+
+  <div class="controlli">
+    <input id="origine" placeholder="La tua città (es. Milano, Bruxelles)" autocomplete="off">
+    <button class="btn oro" id="cerca">Trova</button>
+    <button class="btn ghost" id="gps">📍 Posizione</button>
+  </div>
+
+  <div class="da" id="da"></div>
+  <div id="out"><div class="stato">Cerco i voli più economici…</div></div>
+
+  <p class="nota">
+    Prezzi <b>live</b> dalla rete Ryanair, sola andata, per una persona, nelle prossime
+    ~6 settimane. Il tasto «Prenota» apre Ryanair già sulla data e la rotta giuste.<br>
+    I prezzi cambiano di continuo: quello che vedi è quello di adesso — se ti piace, vola.
+  </p>
+</div>
+
+<script>
+const GIORNI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
+const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio",
+              "agosto","settembre","ottobre","novembre","dicembre"];
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dataIt = iso => {
+  const d = new Date(iso + "T00:00:00");
+  return isNaN(d) ? iso : `${GIORNI[d.getDay()]} ${d.getDate()} ${MESI[d.getMonth()]}`;
+};
+
+const out = document.getElementById('out');
+const inp = document.getElementById('origine');
+const daBox = document.getElementById('da');
+
+async function carica(payload, etichetta) {
+  out.innerHTML = '<div class="stato">Cerco i voli più economici…</div>';
+  daBox.textContent = '';
+  try {
+    const res = await fetch('/api/flight/occasioni', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload),
+    });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.errore || ('HTTP ' + res.status));
+    if (d.origine) {
+      localStorage.setItem('parti_origine', payload.origine || d.origine);
+      inp.value = payload.origine || d.origine;
+    }
+    mostra(d, etichetta);
+  } catch (err) {
+    out.innerHTML = `<div class="stato">Non riesco a cercare: ${esc(err.message)}<br>
+      <span style="font-size:0.85rem">Prova con un'altra città o riprova tra poco.</span></div>`;
+  }
+}
+
+function mostra(d, etichetta) {
+  if (!d.voli || !d.voli.length) {
+    out.innerHTML = '<div class="stato">Nessun volo trovato da qui in questo periodo. Prova un\'altra città.</div>';
+    return;
+  }
+  daBox.innerHTML = `da <b>${esc(etichetta || d.origine)}</b> · ${d.voli.length} occasioni, dalla più economica`;
+  const primo = d.voli[0];
+  const resto = d.voli.slice(1);
+  const hero = `
+    <div class="hero">
+      <div class="occhiello">Il più economico ora</div>
+      <div class="prezzo">${primo.prezzo.toFixed(2)}€</div>
+      <div class="luogo">${esc(primo.nome)}</div>
+      <div class="quando">${esc(primo.paese)} · ${esc(dataIt(primo.giorno))} · ${esc(primo.da)}→${esc(primo.iata)}</div>
+      <a class="btn oro" href="${primo.prenota}" target="_blank" rel="noopener">Prenota su ${esc(primo.vettore || 'Ryanair')} →</a>
+    </div>`;
+  const lista = resto.map(v => `
+    <div class="volo">
+      <div class="p">${v.prezzo.toFixed(0)}€</div>
+      <div class="mid">
+        <div class="n">${esc(v.nome)}</div>
+        <div class="q">${esc(dataIt(v.giorno))} · ${esc(v.da)}→${esc(v.iata)}</div>
+      </div>
+      <a class="prenota" href="${v.prenota}" target="_blank" rel="noopener">Prenota →</a>
+    </div>`).join('');
+  out.innerHTML = hero + lista;
+}
+
+// azioni
+document.getElementById('cerca').onclick = () => {
+  const c = inp.value.trim();
+  if (c) carica({ origine:c }, c);
+};
+inp.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('cerca').click(); });
+
+document.getElementById('gps').onclick = () => {
+  if (!navigator.geolocation) { alert('Geolocalizzazione non disponibile'); return; }
+  daBox.textContent = 'Trovo l\'aeroporto più vicino…';
+  navigator.geolocation.getCurrentPosition(
+    pos => carica({ lat:pos.coords.latitude, lon:pos.coords.longitude }, 'la tua posizione'),
+    () => { daBox.textContent = 'Posizione negata — scrivi la città a mano.'; },
+    { timeout:8000 }
+  );
+};
+
+// ── all'apertura: parte da solo con l'ultima città (o Milano) ──
+const iniziale = localStorage.getItem('parti_origine') || 'Milano';
+inp.value = iniziale;
+carica({ origine: iniziale }, iniziale);
+</script>
+<script src="/nav.js"></script>
+</body>
+</html>

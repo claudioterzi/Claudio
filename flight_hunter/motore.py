@@ -299,6 +299,25 @@ class MetaPossibile:
     costo_bagagli: float
     totale: float
     giorno: str = ""        # giorno reale della miglior offerta (YYYY-MM-DD)
+    vettore: str = ""       # compagnia della miglior offerta (per il link di prenotazione)
+
+
+def occasioni(origine: str, *, giorni_avanti: int = 45, da_giorni: int = 1,
+              raggio_origine: float = 250.0, bagaglio: bool = False,
+              fonti: list[Fonte] | None = None,
+              parametri: ParametriCosto | None = None,
+              top: int = 25, log=None) -> list[MetaPossibile]:
+    """I biglietti più economici in assoluto dalla città, nella finestra dei
+    prossimi giorni — ordinati dal prezzo di volo più basso. Zero domande:
+    apri e vedi cosa costa ridicolmente poco, con il giorno reale."""
+    from datetime import date, timedelta
+    oggi = date.today()
+    dal = (oggi + timedelta(days=max(0, da_giorni))).isoformat()
+    al = (oggi + timedelta(days=max(da_giorni, giorni_avanti))).isoformat()
+    mete = _mete_nel_range(origine, dal, al, raggio_origine, bagaglio,
+                           None, fonti, parametri, log)
+    mete.sort(key=lambda m: m.prezzo_volo)
+    return mete[:top]
 
 
 def ovunque(origine: str, mese: str, *, budget: float | None = None,
@@ -360,7 +379,7 @@ def _mete_nel_range(origine: str, dal: str, al: str, raggio_origine: float,
                         paese=info.paese if info else (off.paese or "—"),
                         da=a.iata, prezzo_volo=off.prezzo,
                         costo_terra=c_terra, costo_bagagli=c_bag,
-                        totale=totale, giorno=off.giorno)
+                        totale=totale, giorno=off.giorno, vettore=off.vettore)
     tot_req = sum(getattr(f, "richieste_fatte", 0) for f in fonti)
     dire(f"Richieste HTTP totali: {tot_req}")
     return sorted(migliore.values(), key=lambda m: m.totale)

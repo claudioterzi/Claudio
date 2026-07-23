@@ -18,6 +18,7 @@
     { "src": "/viaggi", "dest": "/public/viaggi.html" },
     { "src": "/flight", "dest": "/public/flight_hunter.html" },
     { "src": "/oracolo", "dest": "/public/oracolo.html" },
+    { "src": "/parti", "dest": "/public/parti.html" },
     { "src": "/(.+\\.(html|js|css|svg|png|jpg|ico|json|txt))", "dest": "/public/$1" },
     { "src": "/cards/(.*)", "dest": "/public/cards/$1" },
     { "src": "/(.*)", "dest": "tarocchi_web.py" }
