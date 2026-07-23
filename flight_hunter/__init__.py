@@ -19,6 +19,7 @@ Uso:
     # CLI:  python3 -m flight_hunter MXP TIA --mese 2026-09
 """
 from .aeroporti import AEROPORTI, cerca_aeroporto, piu_vicino, vicini
+from .categorie import CATEGORIE, tipi_di
 from .costi import ParametriCosto
 from .fonti import FonteKiwi, FonteRyanair, fonti_disponibili
 from .memoria import Memoria
@@ -27,6 +28,7 @@ from .oracolo import Responso, consulta
 
 __all__ = [
     "AEROPORTI", "cerca_aeroporto", "piu_vicino", "vicini",
+    "CATEGORIE", "tipi_di",
     "ParametriCosto", "FonteRyanair", "FonteKiwi", "fonti_disponibili", "Memoria",
     "Itinerario", "MetaPossibile", "caccia", "occasioni", "ovunque",
     "Responso", "consulta",

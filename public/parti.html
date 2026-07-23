@@ -61,6 +61,19 @@
       border-radius:999px; padding:0.4rem 0.9rem; font-size:0.85rem; white-space:nowrap; }
     .volo a.prenota:hover { background:#dfc06a; }
 
+    /* Filtri categoria */
+    .filtri { display:flex; gap:0.4rem; flex-wrap:wrap; justify-content:center;
+      margin-bottom:1rem; }
+    .fchip { border:1px solid var(--border); background:var(--surface); color:var(--text-dim);
+      font-family:var(--font); font-size:0.85rem; padding:0.35rem 0.8rem;
+      border-radius:999px; cursor:pointer; white-space:nowrap; }
+    .fchip.attivo { border-color:var(--gold); color:var(--gold); }
+    /* Etichette tipo sulle card */
+    .tipi { display:flex; gap:0.25rem; flex-wrap:wrap; margin-top:0.3rem; }
+    .tchip { font-size:0.7rem; color:var(--text-dim); border:1px solid var(--border);
+      border-radius:999px; padding:0.05rem 0.45rem; }
+    .hero .tipi { justify-content:center; margin-top:0.7rem; }
+
     .stato { text-align:center; color:var(--text-dim); padding:2.5rem 0; font-style:italic; }
     .nota { text-align:center; color:var(--text-dim); font-size:0.74rem; margin-top:2rem;
       line-height:1.7; }
@@ -82,6 +95,7 @@
   </div>
 
   <div class="da" id="da"></div>
+  <div class="filtri" id="filtri"></div>
   <div id="out"><div class="stato">Cerco i voli più economici…</div></div>
 
   <p class="nota">
@@ -102,13 +116,26 @@ const dataIt = iso => {
   return isNaN(d) ? iso : `${GIORNI[d.getDay()]} ${d.getDate()} ${MESI[d.getMonth()]}`;
 };
 
+const CATS = [
+  {c:'mare',e:'🏖️',l:'Mare'}, {c:'arte',e:'🎨',l:'Arte'},
+  {c:'città',e:'🏙️',l:'Città'}, {c:'natura',e:'🌿',l:'Natura'},
+  {c:'montagna',e:'⛰️',l:'Montagna'}, {c:'movida',e:'🎉',l:'Movida'},
+  {c:'cibo',e:'🍝',l:'Cibo'},
+];
+const EMOJI = Object.fromEntries(CATS.map(x => [x.c, x.e]));
+
 const out = document.getElementById('out');
 const inp = document.getElementById('origine');
 const daBox = document.getElementById('da');
+const filtriBox = document.getElementById('filtri');
+
+let ultimiVoli = [];      // dati caricati (per filtrare senza ricaricare)
+let etichettaDa = '';
+let filtro = null;        // categoria attiva, null = tutte
 
 async function carica(payload, etichetta) {
   out.innerHTML = '<div class="stato">Cerco i voli più economici…</div>';
-  daBox.textContent = '';
+  daBox.textContent = ''; filtriBox.innerHTML = '';
   try {
     const res = await fetch('/api/flight/occasioni', {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -120,27 +147,50 @@ async function carica(payload, etichetta) {
       localStorage.setItem('parti_origine', payload.origine || d.origine);
       inp.value = payload.origine || d.origine;
     }
-    mostra(d, etichetta);
+    ultimiVoli = d.voli || [];
+    etichettaDa = etichetta || d.origine;
+    filtro = null;
+    disegnaFiltri();
+    render();
   } catch (err) {
     out.innerHTML = `<div class="stato">Non riesco a cercare: ${esc(err.message)}<br>
       <span style="font-size:0.85rem">Prova con un'altra città o riprova tra poco.</span></div>`;
   }
 }
 
-function mostra(d, etichetta) {
-  if (!d.voli || !d.voli.length) {
-    out.innerHTML = '<div class="stato">Nessun volo trovato da qui in questo periodo. Prova un\'altra città.</div>';
+function disegnaFiltri() {
+  // mostra solo le categorie davvero presenti tra i risultati
+  const presenti = new Set();
+  ultimiVoli.forEach(v => (v.tipi || []).forEach(t => presenti.add(t)));
+  const chips = [{c:null,e:'',l:'Tutte'}].concat(CATS.filter(x => presenti.has(x.c)));
+  filtriBox.innerHTML = '';
+  chips.forEach(x => {
+    const b = document.createElement('button');
+    b.className = 'fchip' + (filtro === x.c ? ' attivo' : '');
+    b.textContent = (x.e ? x.e + ' ' : '') + x.l;
+    b.onclick = () => { filtro = x.c; disegnaFiltri(); render(); };
+    filtriBox.appendChild(b);
+  });
+}
+
+function render() {
+  const voli = filtro ? ultimiVoli.filter(v => (v.tipi || []).includes(filtro)) : ultimiVoli;
+  if (!voli.length) {
+    daBox.innerHTML = `da <b>${esc(etichettaDa)}</b>`;
+    out.innerHTML = '<div class="stato">Nessun volo di questa categoria da qui in questo periodo.</div>';
     return;
   }
-  daBox.innerHTML = `da <b>${esc(etichetta || d.origine)}</b> · ${d.voli.length} occasioni, dalla più economica`;
-  const primo = d.voli[0];
-  const resto = d.voli.slice(1);
+  daBox.innerHTML = `da <b>${esc(etichettaDa)}</b> · ${voli.length} occasioni, dalla più economica`;
+  const tchips = v => (v.tipi && v.tipi.length)
+    ? `<div class="tipi">${v.tipi.map(t => `<span class="tchip">${EMOJI[t]||''} ${esc(t)}</span>`).join('')}</div>` : '';
+  const primo = voli[0], resto = voli.slice(1);
   const hero = `
     <div class="hero">
       <div class="occhiello">Il più economico ora</div>
       <div class="prezzo">${primo.prezzo.toFixed(2)}€</div>
       <div class="luogo">${esc(primo.nome)}</div>
       <div class="quando">${esc(primo.paese)} · ${esc(dataIt(primo.giorno))} · ${esc(primo.da)}→${esc(primo.iata)}</div>
+      ${tchips(primo)}
       <a class="btn oro" href="${primo.prenota}" target="_blank" rel="noopener">Prenota su ${esc(primo.vettore || 'Ryanair')} →</a>
     </div>`;
   const lista = resto.map(v => `
@@ -149,6 +199,7 @@ function mostra(d, etichetta) {
       <div class="mid">
         <div class="n">${esc(v.nome)}</div>
         <div class="q">${esc(dataIt(v.giorno))} · ${esc(v.da)}→${esc(v.iata)}</div>
+        ${tchips(v)}
       </div>
       <a class="prenota" href="${v.prenota}" target="_blank" rel="noopener">Prenota →</a>
     </div>`).join('');
