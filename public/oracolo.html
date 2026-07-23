@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'Oracolo del Viaggio</title>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0c0c0e; --surface:#141418; --border:#2a2a32;
+      --gold:#c9a84c; --gold-dim:#8a6f2e; --text:#e8e4d8; --text-dim:#7a7468;
+      --green:#4c9a6b; --radius:10px;
+      --font:'Georgia','Times New Roman',serif; --mono:'Courier New',monospace;
+    }
+    body { background:radial-gradient(ellipse at 50% 0%, #16131c 0%, var(--bg) 60%);
+           color:var(--text); font-family:var(--font); min-height:100vh;
+           padding:2rem 1rem 4rem; }
+    .container { max-width:640px; margin:0 auto; }
+    header { text-align:center; margin-bottom:2rem; }
+    header h1 { font-size:clamp(1.5rem,5vw,2.2rem); font-weight:normal;
+                letter-spacing:0.12em; color:var(--gold); }
+    header p { margin-top:0.5rem; color:var(--text-dim); font-size:0.88rem; }
+    header a { color:var(--gold-dim); font-size:0.8rem; }
+
+    form { background:var(--surface); border:1px solid var(--border);
+           border-radius:var(--radius); padding:1.25rem; margin-bottom:2rem; }
+    .riga { display:flex; gap:0.8rem; flex-wrap:wrap; align-items:flex-end; }
+    .campo { flex:1; min-width:130px; }
+    label { display:block; font-size:0.7rem; letter-spacing:0.12em;
+            text-transform:uppercase; color:var(--gold-dim); margin-bottom:0.35rem; }
+    input, select { width:100%; background:var(--bg); border:1px solid var(--border);
+            border-radius:var(--radius); color:var(--text); font-family:var(--font);
+            font-size:1rem; padding:0.6rem 0.7rem; }
+    input:focus, select:focus { outline:1px solid var(--gold-dim); }
+    button.primario { width:100%; margin-top:1rem; background:var(--gold); color:var(--bg);
+            border:none; border-radius:var(--radius); font-family:var(--font);
+            font-size:1.05rem; letter-spacing:0.08em; padding:0.75rem; cursor:pointer; }
+    button.primario:hover { background:#dfc06a; }
+    button.primario:disabled { opacity:0.5; cursor:wait; }
+
+    /* La carta del responso */
+    .carta { background:linear-gradient(160deg,#181520,#111015);
+             border:1px solid var(--gold-dim); border-radius:var(--radius);
+             padding:2rem 1.6rem; text-align:center; position:relative;
+             box-shadow:0 0 40px rgba(201,168,76,0.08); }
+    .carta .occhiello { font-size:0.68rem; letter-spacing:0.28em; text-transform:uppercase;
+             color:var(--gold-dim); margin-bottom:1.2rem; }
+    .carta .luogo { font-size:2rem; color:var(--gold); letter-spacing:0.03em; line-height:1.1; }
+    .carta .paese { color:var(--text-dim); font-size:0.9rem; margin-top:0.3rem;
+             letter-spacing:0.06em; }
+    .carta .responso { font-size:1.12rem; line-height:1.7; margin:1.5rem 0;
+             color:var(--text); font-style:italic; }
+    .carta .fatti { display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap;
+             font-family:var(--mono); font-size:0.85rem; color:var(--text-dim);
+             border-top:1px solid var(--border); padding-top:1.2rem; margin-top:1.2rem; }
+    .carta .fatti b { color:var(--green); }
+    .carta .prezzone { font-family:var(--mono); font-size:2.4rem; color:var(--green);
+             margin:0.4rem 0; }
+
+    .alt-titolo { font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase;
+             color:var(--gold-dim); margin:2rem 0 0.8rem; text-align:center; }
+    .alt { display:flex; justify-content:space-between; align-items:baseline; gap:0.8rem;
+           background:var(--surface); border:1px solid var(--border);
+           border-radius:var(--radius); padding:0.6rem 0.9rem; margin-bottom:0.5rem; }
+    .alt .n { font-size:0.94rem; } .alt .p { color:var(--text-dim); font-size:0.75rem; }
+    .alt .v { font-family:var(--mono); color:var(--green); white-space:nowrap; }
+
+    .stato { text-align:center; color:var(--text-dim); padding:2.5rem 0; font-style:italic; }
+    .nota { text-align:center; color:var(--text-dim); font-size:0.74rem; margin-top:2.2rem;
+            line-height:1.7; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🔮 L'Oracolo del Viaggio</h1>
+    <p>Non chiede dove vuoi andare. Chiede da dove parti — e nei prossimi giorni pronuncia la fuga migliore.</p>
+    <p><a href="/flight">☠ Flight Hunter</a> · <a href="/viaggi">Viaggi</a> · <a href="/">Tarocchi</a></p>
+  </header>
+
+  <form id="form">
+    <div class="riga">
+      <div class="campo">
+        <label for="origine">Da dove parti</label>
+        <input id="origine" value="Milano" required>
+      </div>
+      <div class="campo">
+        <label for="giorni">Entro (giorni)</label>
+        <select id="giorni">
+          <option value="7">7 giorni</option>
+          <option value="10" selected>10 giorni</option>
+          <option value="14">2 settimane</option>
+          <option value="21">3 settimane</option>
+          <option value="30">un mese</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="budget">Budget max (€)</label>
+        <input id="budget" type="number" min="10" step="10" placeholder="nessuno">
+      </div>
+    </div>
+    <button type="submit" class="primario">Consulta l'Oracolo</button>
+  </form>
+
+  <div id="out"></div>
+
+  <p class="nota">
+    Prezzi live dalle fonti attive (oggi Ryanair; altre si aggiungono con una
+    chiave API). Il responso è generato dal sistema: i numeri sono veri, il
+    verso li veste. Verifica sempre sul sito del vettore prima di prenotare.
+  </p>
+</div>
+
+<script>
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+document.getElementById('form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = e.submitter;
+  const out = document.getElementById('out');
+  btn.disabled = true;
+  out.innerHTML = '<div class="stato">L\'Oracolo interroga il cielo dei prossimi giorni…</div>';
+  const budget = Number(document.getElementById('budget').value) || null;
+  try {
+    const res = await fetch('/api/flight/oracolo', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        origine: document.getElementById('origine').value,
+        giorni_avanti: Number(document.getElementById('giorni').value),
+        budget: budget,
+      }),
+    });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.errore || ('HTTP ' + res.status));
+    mostra(d);
+  } catch (err) {
+    out.innerHTML = `<div class="stato">L'Oracolo si è interrotto: ${esc(err.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+function mostra(d) {
+  const out = document.getElementById('out');
+  if (!d.trovato || !d.meta) {
+    out.innerHTML = `<div class="carta"><div class="responso">${esc(d.responso)}</div></div>`;
+    return;
+  }
+  const m = d.meta;
+  const alt = (d.alternative || []).map(a => `
+    <div class="alt">
+      <div><span class="n">${esc(a.nome)}</span> <span class="p">${esc(a.paese)} · ${esc(a.giorno)} · da ${esc(a.da)}</span></div>
+      <div class="v">${a.totale.toFixed(0)}€</div>
+    </div>`).join('');
+  out.innerHTML = `
+    <div class="carta">
+      <div class="occhiello">Il responso</div>
+      <div class="luogo">${esc(m.nome)}</div>
+      <div class="paese">${esc(m.paese)}</div>
+      <div class="prezzone">${m.totale.toFixed(0)}€</div>
+      <div class="responso">${esc(d.responso)}</div>
+      <div class="fatti">
+        <span>parti <b>${esc(d.quando)}</b></span>
+        <span>da <b>${esc(m.da)}</b> → ${esc(m.iata)}</span>
+        <span>volo ${m.prezzo_volo.toFixed(2)}€${m.costo_terra ? ' + terra '+m.costo_terra.toFixed(0)+'€' : ''}</span>
+      </div>
+    </div>
+    ${alt ? `<div class="alt-titolo">Se l'Oracolo sbaglia gusto</div>${alt}` : ''}`;
+}
+</script>
+<script src="/nav.js"></script>
+</body>
+</html>

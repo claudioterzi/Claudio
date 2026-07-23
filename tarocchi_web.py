@@ -31,7 +31,11 @@ from tarocchi import (
 )
 
 from viaggi import DESTINAZIONI, MESI, TIPI, pianifica
-from flight_hunter import caccia as fh_caccia, ovunque as fh_ovunque
+from flight_hunter import (
+    caccia as fh_caccia,
+    consulta as fh_consulta,
+    ovunque as fh_ovunque,
+)
 
 app = Flask(__name__, static_folder="public", static_url_path="")
 
@@ -239,6 +243,39 @@ def viaggi_pianifica():
         "tipi": list(tipo),
         "proposte": [p.dizionario() for p in proposte],
     })
+
+
+@app.route("/oracolo")
+def oracolo_index():
+    return send_from_directory("public", "oracolo.html")
+
+
+@app.route("/api/flight/oracolo", methods=["POST", "OPTIONS"])
+def flight_oracolo():
+    """L'Oracolo del Viaggio: da una città, nei prossimi giorni, la fuga migliore."""
+    if request.method == "OPTIONS":
+        return "", 200
+    body = request.get_json(force=True, silent=True) or {}
+    origine = (body.get("origine") or "").strip()
+    if not origine:
+        return jsonify({"errore": "serve una città di partenza ('origine')"}), 400
+    try:
+        giorni = max(2, min(30, int(body.get("giorni_avanti", 10))))
+        raggio = float(body.get("raggio", 250))
+    except (TypeError, ValueError):
+        return jsonify({"errore": "giorni_avanti e raggio devono essere numeri"}), 400
+    budget = body.get("budget")
+    try:
+        budget = float(budget) if budget else None
+    except (TypeError, ValueError):
+        budget = None
+    try:
+        r = fh_consulta(origine, giorni_avanti=giorni, budget=budget,
+                        raggio_origine=raggio,
+                        bagaglio=bool(body.get("bagaglio", False)))
+    except ValueError as e:
+        return jsonify({"errore": str(e)}), 400
+    return jsonify(r.dizionario())
 
 
 @app.route("/flight")

@@ -298,49 +298,69 @@ class MetaPossibile:
     costo_terra: float
     costo_bagagli: float
     totale: float
+    giorno: str = ""        # giorno reale della miglior offerta (YYYY-MM-DD)
 
 
 def ovunque(origine: str, mese: str, *, budget: float | None = None,
             raggio_origine: float = 250.0, bagaglio: bool = False,
-            fonte: Fonte | None = None, parametri: ParametriCosto | None = None,
+            fonte: Fonte | None = None, fonti: list[Fonte] | None = None,
+            parametri: ParametriCosto | None = None,
             top: int = 40, log=None) -> list[MetaPossibile]:
     """Ricerca per obiettivo, non per rotta: TUTTE le mete raggiungibili nel
     mese, col costo reale, ordinate dal minimo — opzionalmente entro un budget.
 
-    Costa una manciata di richieste (una mappa tariffe per aeroporto di
-    partenza): è la domanda più economica che si possa fare alla rete.
+    Multi-fonte: interroga ogni provider attivo e tiene il prezzo minimo per
+    meta. Costa una manciata di richieste per fonte.
     """
+    anno, num_mese = int(mese[:4]), int(mese[5:7])
+    dal, al = f"{mese}-01", f"{mese}-{_cal.monthrange(anno, num_mese)[1]:02d}"
+    mete = _mete_nel_range(origine, dal, al, raggio_origine, bagaglio,
+                           fonte, fonti, parametri, log)
+    if budget is not None:
+        mete = [m for m in mete if m.totale <= budget]
+    return mete[:top]
+
+
+def _mete_nel_range(origine: str, dal: str, al: str, raggio_origine: float,
+                    bagaglio: bool, fonte, fonti, parametri, log,
+                    ) -> list[MetaPossibile]:
+    """Cuore condiviso di ovunque() e oracolo(): mete raggiungibili nel range
+    di date, col giorno reale della miglior offerta, da tutte le fonti attive."""
+    from .fonti import fonti_disponibili
     p = parametri or ParametriCosto()
-    fonte = fonte or FonteRyanair()
+    if fonti is None:
+        fonti = [fonte] if fonte else fonti_disponibili()
     dire = log or (lambda *a: None)
 
     anchor = cerca_aeroporto(origine)
     if not anchor:
         raise ValueError(f"origine non riconosciuta: {origine!r}")
-    anno, num_mese = int(mese[:4]), int(mese[5:7])
-    dal, al = f"{mese}-01", f"{mese}-{_cal.monthrange(anno, num_mese)[1]:02d}"
-
     origini = vicini(anchor, raggio_origine, max_n=5)
-    dire(f"Aeroporti di partenza: {', '.join(a.iata for a, _ in origini)}")
+    dire(f"Fonti: {', '.join(f.nome for f in fonti)} · "
+         f"partenze: {', '.join(a.iata for a, _ in origini)}")
 
-    migliore_per_meta: dict[str, MetaPossibile] = {}
+    migliore: dict[str, MetaPossibile] = {}
     for a, km in origini:
         c_terra = costo_terra(km, p)
         c_bag = p.bagaglio_stiva if bagaglio else 0.0
-        for dest, prezzo in fonte.mappa_tariffe(a.iata, dal, al).items():
-            info = AEROPORTI.get(dest)
-            totale = round(prezzo + c_terra + c_bag, 2)
-            attuale = migliore_per_meta.get(dest)
-            if attuale is None or totale < attuale.totale:
-                migliore_per_meta[dest] = MetaPossibile(
-                    iata=dest,
-                    nome=info.nome if info else dest,
-                    paese=info.paese if info else "—",
-                    da=a.iata, prezzo_volo=prezzo,
-                    costo_terra=c_terra, costo_bagagli=c_bag, totale=totale)
-
-    mete = sorted(migliore_per_meta.values(), key=lambda m: m.totale)
-    if budget is not None:
-        mete = [m for m in mete if m.totale <= budget]
-    dire(f"Richieste HTTP totali: {getattr(fonte, 'richieste_fatte', '?')}")
-    return mete[:top]
+        for f in fonti:
+            try:
+                offerte = f.offerte(a.iata, dal, al)
+            except Exception as e:  # noqa: BLE001 — una fonte giù non ferma le altre
+                dire(f"  fonte {f.nome} su {a.iata}: {e}")
+                continue
+            for off in offerte:
+                info = AEROPORTI.get(off.a)
+                totale = round(off.prezzo + c_terra + c_bag, 2)
+                attuale = migliore.get(off.a)
+                if attuale is None or totale < attuale.totale:
+                    migliore[off.a] = MetaPossibile(
+                        iata=off.a,
+                        nome=info.nome if info else (off.nome or off.a),
+                        paese=info.paese if info else (off.paese or "—"),
+                        da=a.iata, prezzo_volo=off.prezzo,
+                        costo_terra=c_terra, costo_bagagli=c_bag,
+                        totale=totale, giorno=off.giorno)
+    tot_req = sum(getattr(f, "richieste_fatte", 0) for f in fonti)
+    dire(f"Richieste HTTP totali: {tot_req}")
+    return sorted(migliore.values(), key=lambda m: m.totale)
