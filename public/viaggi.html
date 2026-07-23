@@ -166,6 +166,22 @@
 
     .vuoto, .caricamento { text-align: center; color: var(--text-dim); padding: 2rem 0; }
     .nota { text-align: center; color: var(--text-dim); font-size: 0.75rem; margin-top: 2rem; line-height: 1.6; }
+
+    /* Idee cliccabili */
+    .idee { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.7rem; margin-bottom: 1.5rem; }
+    .idea { background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 0.9rem 1rem; cursor: pointer;
+            text-align: left; font-family: var(--font); color: var(--text);
+            transition: border-color .15s, transform .1s; }
+    .idea:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .idea .emoji { font-size: 1.3rem; }
+    .idea .titolo { color: var(--gold); font-size: 1rem; margin: 0.3rem 0 0.15rem; }
+    .idea .sotto { color: var(--text-dim); font-size: 0.78rem; line-height: 1.4; }
+    .intro { color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
+    .cerca { display: inline-block; margin-top: 0.6rem; color: var(--gold-dim);
+             text-decoration: none; font-size: 0.85rem; }
+    .cerca:hover { color: var(--gold); }
   </style>
 </head>
 <body>
@@ -176,7 +192,16 @@
     <p><a href="/">← Tarocchi Quantici R³∞</a> &nbsp;·&nbsp; <a href="/flight">☠ Flight Hunter (prezzi live) →</a></p>
   </header>
 
-  <div class="section-title">Parametri del viaggio</div>
+  <p class="intro">
+    Dimmi <b>quanto</b> vuoi spendere, per <b>quanti giorni</b> e che <b>tipo</b> di
+    viaggio cerchi — il pianificatore sceglie tra 25 mete low cost dall'Italia e
+    ti dà costo stimato e consigli. Non sai da dove partire? Tocca un'idea qui sotto.
+  </p>
+
+  <div class="section-title">Idee — tocca e parti</div>
+  <div class="idee" id="idee"></div>
+
+  <div class="section-title">Oppure scegli tu</div>
   <form id="form">
     <div>
       <label for="budget">Budget totale a persona (€)</label>
@@ -240,6 +265,49 @@ TIPI.forEach(t => {
   chips.appendChild(b);
 });
 
+// ── Idee cliccabili ───────────────────────────────────────────────────────────
+const IDEE = [
+  { emoji:"🏖️", titolo:"Mare economico", sotto:"4 giorni · fino a 300€",
+    budget:300, giorni:4, tipi:["mare"] },
+  { emoji:"🏛️", titolo:"Città d'arte", sotto:"weekend lungo · fino a 260€",
+    budget:260, giorni:3, tipi:["città","cultura"] },
+  { emoji:"🎉", titolo:"Notti e movida", sotto:"3 giorni · fino a 280€",
+    budget:280, giorni:3, tipi:["notturna"] },
+  { emoji:"🌿", titolo:"Natura e relax", sotto:"una settimana · fino a 450€",
+    budget:450, giorni:7, tipi:["natura","terme"] },
+  { emoji:"🍽️", titolo:"Solo mangiare bene", sotto:"4 giorni · fino a 320€",
+    budget:320, giorni:4, tipi:["cibo"] },
+  { emoji:"💸", titolo:"Il più economico", sotto:"3 giorni · solo dentro 200€",
+    budget:200, giorni:3, tipi:[], soloBudget:true },
+];
+
+function applicaIdea(idea) {
+  document.getElementById('budget').value = idea.budget;
+  document.getElementById('giorni').value = idea.giorni;
+  selMese.value = '';
+  document.getElementById('solo-budget').checked = !!idea.soloBudget;
+  // reset e imposta i tipi
+  tipiScelti.clear();
+  [...chips.children].forEach(b => {
+    const attivo = idea.tipi.includes(b.textContent);
+    b.classList.toggle('attivo', attivo);
+    if (attivo) tipiScelti.add(b.textContent);
+  });
+  document.getElementById('form').requestSubmit();
+  document.getElementById('risultati').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+const ideeBox = document.getElementById('idee');
+IDEE.forEach(idea => {
+  const card = document.createElement('button');
+  card.type = 'button'; card.className = 'idea';
+  card.innerHTML = `<div class="emoji">${idea.emoji}</div>
+    <div class="titolo">${esc(idea.titolo)}</div>
+    <div class="sotto">${esc(idea.sotto)}</div>`;
+  card.onclick = () => applicaIdea(idea);
+  ideeBox.appendChild(card);
+});
+
 // ── Ricerca ───────────────────────────────────────────────────────────────────
 document.getElementById('form').addEventListener('submit', async e => {
   e.preventDefault();
@@ -282,6 +350,9 @@ function mostra(dati) {
     const tags = p.tipi.map(t =>
       `<span class="tag ${p.tipi_combacianti.includes(t) ? 'match' : ''}">${esc(t)}</span>`).join('');
     const consigli = p.consigli.map(c => `<li>${esc(c)}</li>`).join('');
+    const citta = p.nome.split(/[+(]/)[0].trim();
+    const gflights = 'https://www.google.com/travel/flights?q=' +
+      encodeURIComponent('voli per ' + citta);
     return `
     <div class="proposta">
       <div class="proposta-testa">
@@ -302,9 +373,11 @@ function mostra(dati) {
         <summary>Consigli sul posto</summary>
         <ul>${consigli}</ul>
       </details>
+      <a class="cerca" href="${gflights}" target="_blank" rel="noopener">✈️ cerca voli reali per ${esc(citta)} →</a>
     </div>`;
   }).join('');
 }
 </script>
+<script src="/nav.js"></script>
 </body>
 </html>
