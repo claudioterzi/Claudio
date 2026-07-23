@@ -31,8 +31,33 @@ from tarocchi import (
 )
 
 from viaggi import DESTINAZIONI, MESI, TIPI, pianifica
+from flight_hunter import caccia as fh_caccia, ovunque as fh_ovunque
 
 app = Flask(__name__, static_folder="public", static_url_path="")
+
+
+def _ora(iso: str) -> str:
+    return iso[11:16] if len(iso) >= 16 else "?"
+
+
+def _itinerario_web(it) -> dict:
+    return {
+        "tipo": it.tipo,
+        "rischio": it.rischio,
+        "totale": it.totale,
+        "costo_voli": it.costo_voli,
+        "costo_terra": it.costo_terra,
+        "costo_bagagli": it.costo_bagagli,
+        "costo_notti": it.costo_notti,
+        "margine_rischio": it.margine_rischio,
+        "note": it.note,
+        "voli": [
+            {"da": v.da, "a": v.a, "giorno": v.giorno,
+             "ora_partenza": _ora(v.partenza), "ora_arrivo": _ora(v.arrivo),
+             "prezzo": v.prezzo, "vettore": v.vettore}
+            for v in it.voli
+        ],
+    }
 
 _STATI      = {s.value: s for s in StatoQuantico}
 _POSIZIONI  = {p.value: p for p in TipoPosizione}
@@ -213,6 +238,73 @@ def viaggi_pianifica():
         "mese": MESI[mese - 1] if mese else None,
         "tipi": list(tipo),
         "proposte": [p.dizionario() for p in proposte],
+    })
+
+
+@app.route("/flight")
+def flight_index():
+    return send_from_directory("public", "flight_hunter.html")
+
+
+@app.route("/api/flight/ovunque", methods=["POST", "OPTIONS"])
+def flight_ovunque():
+    """Ricerca per obiettivo: tutte le mete raggiungibili nel mese entro budget.
+    Poche richieste (una mappa tariffe per aeroporto di partenza): veloce."""
+    if request.method == "OPTIONS":
+        return "", 200
+    body = request.get_json(force=True, silent=True) or {}
+    origine = (body.get("origine") or "").strip()
+    mese = (body.get("mese") or "").strip()
+    if not origine or len(mese) != 7:
+        return jsonify({"errore": "servono 'origine' e 'mese' (YYYY-MM)"}), 400
+    budget = body.get("budget")
+    try:
+        budget = float(budget) if budget else None
+        raggio = float(body.get("raggio", 250))
+    except (TypeError, ValueError):
+        return jsonify({"errore": "budget e raggio devono essere numeri"}), 400
+    try:
+        mete = fh_ovunque(origine, mese, budget=budget, raggio_origine=raggio,
+                          bagaglio=bool(body.get("bagaglio", False)), top=60)
+    except ValueError as e:
+        return jsonify({"errore": str(e)}), 400
+    return jsonify({
+        "origine": origine, "mese": mese, "budget": budget,
+        "mete": [
+            {"iata": m.iata, "nome": m.nome, "paese": m.paese, "da": m.da,
+             "prezzo_volo": m.prezzo_volo, "costo_terra": m.costo_terra,
+             "costo_bagagli": m.costo_bagagli, "totale": m.totale}
+            for m in mete
+        ],
+    })
+
+
+@app.route("/api/flight/caccia", methods=["POST", "OPTIONS"])
+def flight_caccia():
+    """Caccia su rotta (versione web: hub ridotti per stare nei tempi serverless)."""
+    if request.method == "OPTIONS":
+        return "", 200
+    body = request.get_json(force=True, silent=True) or {}
+    origine = (body.get("origine") or "").strip()
+    dest = (body.get("destinazione") or "").strip()
+    mese = (body.get("mese") or "").strip()
+    if not origine or not dest or len(mese) != 7:
+        return jsonify({"errore": "servono 'origine', 'destinazione' e 'mese' (YYYY-MM)"}), 400
+    try:
+        raggio = float(body.get("raggio", 250))
+    except (TypeError, ValueError):
+        return jsonify({"errore": "raggio deve essere un numero"}), 400
+    try:
+        itinerari = fh_caccia(
+            origine, dest, mese,
+            raggio_origine=raggio, bagaglio=bool(body.get("bagaglio", False)),
+            hub_max=4, top=8, profondo=False,
+        )
+    except ValueError as e:
+        return jsonify({"errore": str(e)}), 400
+    return jsonify({
+        "origine": origine, "destinazione": dest, "mese": mese,
+        "itinerari": [_itinerario_web(it) for it in itinerari],
     })
 
 
