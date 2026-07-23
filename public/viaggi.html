@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viaggi Low Cost</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0c0c0e;
+      --surface:  #141418;
+      --border:   #2a2a32;
+      --gold:     #c9a84c;
+      --gold-dim: #8a6f2e;
+      --text:     #e8e4d8;
+      --text-dim: #7a7468;
+      --green:    #4c9a6b;
+      --red:      #a54848;
+      --radius:   8px;
+      --font:     'Georgia', 'Times New Roman', serif;
+      --mono:     'Courier New', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 2.5rem; }
+    header h1 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: normal;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+    }
+    header p {
+      margin-top: 0.5rem;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+    }
+    header a { color: var(--gold-dim); font-size: 0.8rem; }
+
+    .section-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 1rem;
+    }
+
+    form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 520px) { form { grid-template-columns: 1fr; } }
+
+    label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 0.4rem;
+    }
+    input, select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 1rem;
+      padding: 0.55rem 0.7rem;
+    }
+    input:focus, select:focus { outline: 1px solid var(--gold-dim); }
+
+    .tipi { grid-column: 1 / -1; }
+    .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .chip {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--text-dim);
+      font-family: var(--font);
+      font-size: 0.85rem;
+      padding: 0.35rem 0.9rem;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .chip.attivo { border-color: var(--gold); color: var(--gold); }
+
+    .azioni { grid-column: 1 / -1; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    button.primario {
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      padding: 0.65rem 1.6rem;
+      cursor: pointer;
+    }
+    button.primario:hover { background: #dfc06a; }
+    .solo-budget { display: flex; align-items: center; gap: 0.45rem; color: var(--text-dim); font-size: 0.85rem; }
+    .solo-budget input { width: auto; }
+
+    .proposta {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .proposta-testa { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+    .proposta h3 { font-weight: normal; color: var(--gold); font-size: 1.15rem; }
+    .proposta .paese { color: var(--text-dim); font-size: 0.85rem; }
+    .totale { font-family: var(--mono); font-size: 1.2rem; white-space: nowrap; }
+    .totale.ok { color: var(--green); }
+    .totale.sfora { color: var(--red); }
+
+    .perche { margin: 0.7rem 0; font-size: 0.95rem; line-height: 1.5; }
+
+    .dettagli {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-bottom: 0.7rem;
+      line-height: 1.7;
+    }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.7rem; }
+    .tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.15rem 0.6rem;
+    }
+    .tag.match { border-color: var(--gold-dim); color: var(--gold); }
+
+    details summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    details ul { margin: 0.6rem 0 0 1.1rem; font-size: 0.9rem; line-height: 1.55; color: var(--text); }
+    details li { margin-bottom: 0.35rem; }
+
+    .vuoto, .caricamento { text-align: center; color: var(--text-dim); padding: 2rem 0; }
+    .nota { text-align: center; color: var(--text-dim); font-size: 0.75rem; margin-top: 2rem; line-height: 1.6; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Viaggi Low Cost</h1>
+    <p>Budget, giorni, periodo — e il pianificatore propone dove andare.</p>
+    <p><a href="/">← Tarocchi Quantici R³∞</a> &nbsp;·&nbsp; <a href="/flight">☠ Flight Hunter (prezzi live) →</a></p>
+  </header>
+
+  <div class="section-title">Parametri del viaggio</div>
+  <form id="form">
+    <div>
+      <label for="budget">Budget totale a persona (€)</label>
+      <input type="number" id="budget" min="50" step="10" value="300" required>
+    </div>
+    <div>
+      <label for="giorni">Giorni</label>
+      <input type="number" id="giorni" min="1" max="30" value="4" required>
+    </div>
+    <div>
+      <label for="mese">Mese (opzionale)</label>
+      <select id="mese">
+        <option value="">Qualsiasi</option>
+      </select>
+    </div>
+    <div class="tipi">
+      <label>Che viaggio cerchi? (opzionale, anche più di uno)</label>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="azioni">
+      <button type="submit" class="primario">Trova viaggi</button>
+      <label class="solo-budget"><input type="checkbox" id="solo-budget"> solo mete dentro il budget</label>
+    </div>
+  </form>
+
+  <div class="section-title">Proposte</div>
+  <div id="risultati"><div class="vuoto">Imposta i parametri e premi «Trova viaggi».</div></div>
+
+  <p class="nota">
+    Stime prudenziali per persona: volo A/R low cost prenotato con anticipo +
+    alloggio economico, pasti e trasporti locali, con margine imprevisti del 10%.<br>
+    I prezzi reali dipendono da quando prenoti — le stime servono a scegliere, non a comprare.
+  </p>
+</div>
+
+<script>
+const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno",
+              "luglio","agosto","settembre","ottobre","novembre","dicembre"];
+const TIPI = ["città","mare","natura","cibo","cultura","terme","notturna"];
+
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ── Setup form ────────────────────────────────────────────────────────────────
+const selMese = document.getElementById('mese');
+MESI.forEach((m, i) => {
+  const o = document.createElement('option');
+  o.value = i + 1; o.textContent = m;
+  selMese.appendChild(o);
+});
+
+const tipiScelti = new Set();
+const chips = document.getElementById('chips');
+TIPI.forEach(t => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'chip'; b.textContent = t;
+  b.onclick = () => {
+    tipiScelti.has(t) ? tipiScelti.delete(t) : tipiScelti.add(t);
+    b.classList.toggle('attivo');
+  };
+  chips.appendChild(b);
+});
+
+// ── Ricerca ───────────────────────────────────────────────────────────────────
+document.getElementById('form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const out = document.getElementById('risultati');
+  out.innerHTML = '<div class="caricamento">Cerco le mete giuste…</div>';
+
+  const body = {
+    budget: Number(document.getElementById('budget').value),
+    giorni: Number(document.getElementById('giorni').value),
+    mese:   selMese.value ? Number(selMese.value) : null,
+    tipo:   [...tipiScelti],
+    solo_nel_budget: document.getElementById('solo-budget').checked,
+  };
+
+  try {
+    const res = await fetch('/api/viaggi/pianifica', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const dati = await res.json();
+    if (!res.ok) throw new Error(dati.errore || 'errore server');
+    mostra(dati);
+  } catch (err) {
+    out.innerHTML = `<div class="vuoto">Errore: ${esc(err.message)}</div>`;
+  }
+});
+
+function mostra(dati) {
+  const out = document.getElementById('risultati');
+  if (!dati.proposte.length) {
+    out.innerHTML = '<div class="vuoto">Nessuna meta trovata con questi parametri — prova ad alzare il budget o togliere filtri.</div>';
+    return;
+  }
+  out.innerHTML = dati.proposte.map(p => {
+    const cls = p.nel_budget ? 'ok' : 'sfora';
+    const residuo = p.nel_budget
+      ? `ti restano ~${p.residuo}€`
+      : `sfora di ~${-p.residuo}€`;
+    const tags = p.tipi.map(t =>
+      `<span class="tag ${p.tipi_combacianti.includes(t) ? 'match' : ''}">${esc(t)}</span>`).join('');
+    const consigli = p.consigli.map(c => `<li>${esc(c)}</li>`).join('');
+    return `
+    <div class="proposta">
+      <div class="proposta-testa">
+        <div>
+          <h3>${esc(p.nome)}</h3>
+          <div class="paese">${esc(p.paese)} · periodo ideale: ${p.mesi_ideali.map(esc).join(', ')}</div>
+        </div>
+        <div class="totale ${cls}">~${p.totale}€ <small>/ persona</small></div>
+      </div>
+      <div class="tag-row">${tags}</div>
+      <p class="perche">${esc(p.perche)}</p>
+      <div class="dettagli">
+        volo A/R ~${p.costo_volo}€ · ${p.giorni} giorni × ${p.budget_giorno}€ = ${p.costo_soggiorno}€
+        · imprevisti ${p.margine}€ → <strong>totale ~${p.totale}€</strong> (${residuo})<br>
+        partenze: ${p.partenze.map(esc).join(' · ')}
+      </div>
+      <details>
+        <summary>Consigli sul posto</summary>
+        <ul>${consigli}</ul>
+      </details>
+    </div>`;
+  }).join('');
+}
+</script>
+<script src="/nav.js"></script>
+</body>
+</html>

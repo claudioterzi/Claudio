@@ -4,7 +4,46 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-07-20
+> Ultimo aggiornamento: 2026-07-23
+
+---
+
+## Sessione 2026-07-23 — Viaggi Low Cost + Flight Hunter → main
+
+Nuovo ramo pratico del progetto, nato dal prompt «Crea viaggi low cost» e
+cresciuto in un motore di ricerca voli. Zero dipendenze esterne, dati live.
+Sviluppo su `claude/low-cost-trips-pjvxj6`, pubblicato su main per Vercel.
+
+- **`viaggi/`** — pianificatore di viaggi economici dall'Italia: 25 destinazioni
+  curate (budget/giorno, volo A/R stimato, mesi ideali, consigli), funzione
+  `pianifica(budget, giorni, mese, tipo)`. Pagina `public/viaggi.html` su `/viaggi`.
+- **`flight_hunter/`** — caccia al prezzo minimo REALE (non al miglior volo),
+  dati live dall'API pubblica Ryanair (`farfnd`):
+  - `aeroporti.py` ~120 aeroporti + haversine + ricerca per raggio;
+  - `fonti.py` interfaccia `Fonte` multi-provider + `FonteRyanair`
+    (cache, rate-limit 0.35s, fallback CA bundle per proxy);
+  - `motore.py` `caccia()` (diretti + split via hub con orari reali +
+    posizionamento via terra, potatura PRIMA delle richieste) e `ovunque()`
+    (ricerca per obiettivo: «dove posso andare entro budget?»);
+  - `grafo.py` Dijkstra pigro sulla rete → itinerari 2-3 tratte (`--profondo`);
+  - `costi.py` costo reale (bagagli, terra, notti, margine rischio self-transfer);
+  - `memoria.py` SQLite dei minimi + consiglio compra/aspetta + `osservazioni`
+    con curva prezzo/anticipo;
+  - `monitor.py` giro orario, avvisa solo sui nuovi minimi, webhook opzionale
+    (`FLIGHT_HUNTER_WEBHOOK`). Da eseguire su macchina sempre accesa, NON su Vercel.
+- **Web/API in `tarocchi_web.py`**: `/flight` (+ `/api/flight/ovunque` veloce e
+  `/api/flight/caccia` con hub ridotti per i tempi serverless) e `/viaggi`
+  (+ `/api/viaggi/*`). Route statiche in `vercel.json`; voci in `nav.js`.
+- **Escluso per scelta** (motivato in `flight_hunter/README.md`): scraping
+  comparatori (ToS), hidden city / throwaway (violano il contratto di trasporto),
+  fuel dump (morto), previsioni meteo/scioperi senza dati.
+- **Il vero limite**: una sola fonte live (Ryanair → Europa/Nord Africa). Grafo
+  e ricerca-obiettivo diventano mondiali agganciando Kiwi/Amadeus con chiave
+  API gratuita — l'interfaccia `Fonte` è già pronta. Prossimo passo naturale.
+- Valutazione due diligence esterna (ChatGPT): 8,8/10 oggi, 9,8 potenziale.
+- ⚠️ **Da verificare in produzione**: Ryanair potrebbe bloccare gli IP dei
+  datacenter Vercel. Se `/api/flight/*` dà errore online mentre la CLI funziona,
+  è quello — soluzione: fonte con API key o piccolo proxy residenziale.
 
 ---
 

@@ -51,6 +51,29 @@ _STATI      = {s.value: s for s in StatoQuantico}
 _POSIZIONI  = {p.value: p for p in TipoPosizione}
 _ORIENT     = {o.value: o for o in OrientamentoCarta}
 
+# ── Viaggi Low Cost + Flight Hunter (moduli laterali, zero dipendenze) ──
+from viaggi import DESTINAZIONI, MESI, TIPI, pianifica
+from flight_hunter import caccia as fh_caccia, ovunque as fh_ovunque
+
+
+def _ora(iso: str) -> str:
+    return iso[11:16] if len(iso) >= 16 else "?"
+
+
+def _itinerario_web(it) -> dict:
+    return {
+        "tipo": it.tipo, "rischio": it.rischio, "totale": it.totale,
+        "costo_voli": it.costo_voli, "costo_terra": it.costo_terra,
+        "costo_bagagli": it.costo_bagagli, "costo_notti": it.costo_notti,
+        "margine_rischio": it.margine_rischio, "note": it.note,
+        "voli": [
+            {"da": v.da, "a": v.a, "giorno": v.giorno,
+             "ora_partenza": _ora(v.partenza), "ora_arrivo": _ora(v.arrivo),
+             "prezzo": v.prezzo, "vettore": v.vettore}
+            for v in it.voli
+        ],
+    }
+
 
 @app.after_request
 def _cors(response):
@@ -736,6 +759,124 @@ def telegram_webhook():
         except Exception as e:
             print(f"[WEBHOOK] {e}")
     return "ok", 200
+
+
+# ══════════════════════════════════════════════════════════════════════
+#  VIAGGI LOW COST
+# ══════════════════════════════════════════════════════════════════════
+
+@app.route("/viaggi")
+def viaggi_index():
+    return send_from_directory(_PUBLIC, "viaggi.html")
+
+
+@app.route("/api/viaggi/destinazioni")
+def viaggi_destinazioni():
+    return jsonify({
+        "tipi": list(TIPI), "mesi": list(MESI),
+        "destinazioni": [
+            {"nome": d.nome, "paese": d.paese, "tipi": list(d.tipi),
+             "budget_giorno": d.budget_giorno, "volo_ar": d.volo_ar,
+             "mesi_ideali": list(d.mesi_ideali), "partenze": list(d.partenze),
+             "perche": d.perche, "consigli": list(d.consigli)}
+            for d in DESTINAZIONI
+        ],
+    })
+
+
+@app.route("/api/viaggi/pianifica", methods=["POST", "OPTIONS"])
+def viaggi_pianifica():
+    if request.method == "OPTIONS":
+        return "", 200
+    body = request.get_json(force=True, silent=True) or {}
+    try:
+        budget = int(body.get("budget", 0))
+        giorni = int(body.get("giorni", 3))
+    except (TypeError, ValueError):
+        return jsonify({"errore": "budget e giorni devono essere numeri"}), 400
+    mese = body.get("mese")
+    mese = int(mese) if mese not in (None, "", 0, "0") else None
+    if mese is not None and not 1 <= mese <= 12:
+        return jsonify({"errore": "mese deve essere tra 1 e 12"}), 400
+    tipo = body.get("tipo") or ()
+    if isinstance(tipo, str):
+        tipo = (tipo,)
+    tipo = tuple(t for t in tipo if t in TIPI)
+    proposte = pianifica(budget=budget, giorni=giorni, mese=mese, tipo=tipo,
+                         solo_nel_budget=bool(body.get("solo_nel_budget", False)))
+    return jsonify({
+        "budget": budget, "giorni": giorni,
+        "mese": MESI[mese - 1] if mese else None, "tipi": list(tipo),
+        "proposte": [p.dizionario() for p in proposte],
+    })
+
+
+# ══════════════════════════════════════════════════════════════════════
+#  FLIGHT HUNTER (prezzi live)
+# ══════════════════════════════════════════════════════════════════════
+
+@app.route("/flight")
+def flight_index():
+    return send_from_directory(_PUBLIC, "flight_hunter.html")
+
+
+@app.route("/api/flight/ovunque", methods=["POST", "OPTIONS"])
+def flight_ovunque():
+    """Ricerca per obiettivo: mete raggiungibili nel mese entro budget. Veloce."""
+    if request.method == "OPTIONS":
+        return "", 200
+    body = request.get_json(force=True, silent=True) or {}
+    origine = (body.get("origine") or "").strip()
+    mese = (body.get("mese") or "").strip()
+    if not origine or len(mese) != 7:
+        return jsonify({"errore": "servono 'origine' e 'mese' (YYYY-MM)"}), 400
+    budget = body.get("budget")
+    try:
+        budget = float(budget) if budget else None
+        raggio = float(body.get("raggio", 250))
+    except (TypeError, ValueError):
+        return jsonify({"errore": "budget e raggio devono essere numeri"}), 400
+    try:
+        mete = fh_ovunque(origine, mese, budget=budget, raggio_origine=raggio,
+                          bagaglio=bool(body.get("bagaglio", False)), top=60)
+    except ValueError as e:
+        return jsonify({"errore": str(e)}), 400
+    return jsonify({
+        "origine": origine, "mese": mese, "budget": budget,
+        "mete": [
+            {"iata": m.iata, "nome": m.nome, "paese": m.paese, "da": m.da,
+             "prezzo_volo": m.prezzo_volo, "costo_terra": m.costo_terra,
+             "costo_bagagli": m.costo_bagagli, "totale": m.totale}
+            for m in mete
+        ],
+    })
+
+
+@app.route("/api/flight/caccia", methods=["POST", "OPTIONS"])
+def flight_caccia():
+    """Caccia su rotta (hub ridotti per stare nei tempi serverless Vercel)."""
+    if request.method == "OPTIONS":
+        return "", 200
+    body = request.get_json(force=True, silent=True) or {}
+    origine = (body.get("origine") or "").strip()
+    dest = (body.get("destinazione") or "").strip()
+    mese = (body.get("mese") or "").strip()
+    if not origine or not dest or len(mese) != 7:
+        return jsonify({"errore": "servono 'origine', 'destinazione' e 'mese' (YYYY-MM)"}), 400
+    try:
+        raggio = float(body.get("raggio", 250))
+    except (TypeError, ValueError):
+        return jsonify({"errore": "raggio deve essere un numero"}), 400
+    try:
+        itinerari = fh_caccia(origine, dest, mese, raggio_origine=raggio,
+                              bagaglio=bool(body.get("bagaglio", False)),
+                              hub_max=4, top=8, profondo=False)
+    except ValueError as e:
+        return jsonify({"errore": str(e)}), 400
+    return jsonify({
+        "origine": origine, "destinazione": dest, "mese": mese,
+        "itinerari": [_itinerario_web(it) for it in itinerari],
+    })
 
 
 if __name__ == "__main__":
