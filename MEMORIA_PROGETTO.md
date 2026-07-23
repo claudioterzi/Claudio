@@ -70,6 +70,33 @@ Modulo indipendente dai tarocchi, stessa filosofia zero-dipendenze, stessa app F
 - **Stato**: funzionante, testato (motore + endpoint + regressione `/api/mazzo`).
 - Branch di sviluppo: `claude/low-cost-trips-pjvxj6`.
 
+### Flight Hunter v0.1 (2026-07-23) — caccia al minimo con dati LIVE
+
+Evoluzione del modulo viaggi su proposta di Claudio ("Flight Hunter AI"),
+implementata la parte solida del progetto, scartata (con motivazione scritta
+in `flight_hunter/README.md`) quella in zona grigia o infattibile.
+
+- **`flight_hunter/`** — solo stdlib, dati live dall'API pubblica Ryanair
+  (farfnd, la stessa del loro sito; verificata funzionante dal container).
+  - `aeroporti.py` ~120 aeroporti con coordinate, ricerca per raggio.
+  - `fonti.py` interfaccia `Fonte` multi-provider + `FonteRyanair`
+    (cache, rate-limit 0.35s, fallback CA bundle per proxy).
+  - `motore.py` genera diretti + split via hub (self-transfer con orari reali
+    verificati) + posizionamento via terra; potatura PRIMA delle richieste
+    (mappe tariffe → calendari solo sui candidati; ~15-40 richieste a caccia).
+  - `costi.py` costo reale: bagagli, terra, notti forzate, margine rischio.
+  - `memoria.py` SQLite dei minimi + consiglio compra/aspetta (euristica
+    dichiarata su storico osservato).
+  - `monitor.py` giro orario, segnala solo i nuovi minimi, webhook opzionale
+    (`FLIGHT_HUNTER_WEBHOOK`). Va su macchina sempre accesa, non su Vercel.
+- **Escluso per scelta**: scraping comparatori (ToS), hidden city/throwaway
+  (violazione contratto di trasporto, rischio scaricato sull'utente),
+  fuel dump (morto), previsioni meteo/scioperi senza dati (teatro).
+- **Test live**: MXP→TIA sett. 22,43€ diretto; Genova→Riga (no diretto)
+  risolto split via STN ~98€ tutto incluso. Skopje scoperta: serve Wizz
+  (anti-bot) o Kiwi/Amadeus con chiave — prossimo passo naturale.
+- **CLI**: `python3 -m flight_hunter MXP TIA --mese 2026-09`.
+
 ---
 
 ## Prossimo passo concordato

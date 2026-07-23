@@ -1,0 +1,244 @@
+"""Il motore di caccia.
+
+Pipeline (come da progetto, ridotta all'osso che funziona):
+
+    ORIGINE, DESTINAZIONE, MESE
+        │
+        ▼
+    espandi gli aeroporti (raggio origine + alternative di arrivo)
+        │
+        ▼
+    genera itinerari: diretti, split via hub (self-transfer),
+    posizionamento via terra
+        │
+        ▼
+    costo REALE: tariffa + terra + bagagli + notti + margine rischio
+        │
+        ▼
+    potatura (mappe tariffe prima, calendari solo sui candidati)
+        │
+        ▼
+    Top N ordinati per costo totale
+
+La potatura vera avviene PRIMA delle richieste: le mappe tariffe (1 richiesta
+per aeroporto ≈ tutte le destinazioni servite) decidono quali calendari
+valga la pena scaricare. Niente forza bruta.
+"""
+from __future__ import annotations
+
+import calendar as _cal
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+
+from .aeroporti import AEROPORTI, Aeroporto, cerca_aeroporto, distanza_km, vicini
+from .costi import ParametriCosto, costo_terra, ore_terra
+from .fonti import Fonte, FonteRyanair, Volo
+
+_SLACK_HUB = 25.0        # € di tolleranza: un hub resta candidato se batte il
+                         # miglior diretto entro questo margine (poi decide il totale)
+_MAX_CAL_DIRETTI = 8     # calendari massimi per i collegamenti diretti
+_MAX_COMBO_HUB = 10      # combinazioni (origine, hub, destinazione) da approfondire
+
+
+@dataclass
+class Itinerario:
+    tipo: str                       # "diretto" | "split via hub"
+    voli: list[Volo]
+    terra_prima_km: float = 0.0     # posizionamento verso l'aeroporto di partenza
+    terra_dopo_km: float = 0.0      # dall'aeroporto di arrivo alla destinazione vera
+    notti: int = 0
+    costo_voli: float = 0.0
+    costo_terra: float = 0.0
+    costo_bagagli: float = 0.0
+    costo_notti: float = 0.0
+    margine_rischio: float = 0.0
+    totale: float = 0.0
+    rischio: str = "basso"          # basso | medio | alto
+    note: list[str] = field(default_factory=list)
+
+    @property
+    def chiave(self) -> str:
+        """Identità della rotta (per dedup e per la memoria dei minimi)."""
+        return " + ".join(f"{v.da}-{v.a}@{v.giorno}" for v in self.voli)
+
+    def descrizione(self) -> str:
+        righe = []
+        for v in self.voli:
+            ora_p = v.partenza[11:16] if len(v.partenza) >= 16 else "?"
+            ora_a = v.arrivo[11:16] if len(v.arrivo) >= 16 else "?"
+            righe.append(f"  {v.da}→{v.a}  {v.giorno} {ora_p}-{ora_a}  {v.prezzo:.2f}€  ({v.vettore})")
+        return "\n".join(righe)
+
+
+def _valuta(voli: list[Volo], tipo: str, terra_prima_km: float, terra_dopo_km: float,
+            notti: int, bagaglio: bool, p: ParametriCosto,
+            note: list[str]) -> Itinerario:
+    costo_voli = sum(v.prezzo for v in voli)
+    c_terra = costo_terra(terra_prima_km, p) + costo_terra(terra_dopo_km, p)
+    c_bag = p.bagaglio_stiva * len(voli) if bagaglio else 0.0
+    c_notti = notti * p.notte
+    coincidenze = len(voli) - 1
+    margine = coincidenze * p.margine_self_transfer
+
+    rischio = "basso"
+    if coincidenze:
+        rischio = "medio"
+        gap_min = _gap_ore(voli)
+        if gap_min is not None and gap_min < p.ore_minime_scalo:
+            rischio = "alto"
+            note = note + [f"scalo di sole {gap_min:.1f}h su biglietti separati"]
+
+    tot = costo_voli + c_terra + c_bag + c_notti + margine
+    return Itinerario(
+        tipo=tipo, voli=voli,
+        terra_prima_km=terra_prima_km, terra_dopo_km=terra_dopo_km, notti=notti,
+        costo_voli=round(costo_voli, 2), costo_terra=round(c_terra, 2),
+        costo_bagagli=round(c_bag, 2), costo_notti=round(c_notti, 2),
+        margine_rischio=round(margine, 2), totale=round(tot, 2),
+        rischio=rischio, note=note,
+    )
+
+
+def _gap_ore(voli: list[Volo]) -> float | None:
+    """Ore di scalo minime tra tratte consecutive (None se orari mancanti)."""
+    gaps = []
+    for prima, dopo in zip(voli, voli[1:]):
+        try:
+            arr = datetime.fromisoformat(prima.arrivo)
+            dep = datetime.fromisoformat(dopo.partenza)
+        except ValueError:
+            return None
+        gaps.append((dep - arr).total_seconds() / 3600.0)
+    return min(gaps) if gaps else None
+
+
+def _combina_split(cal1: list[Volo], cal2: list[Volo],
+                   p: ParametriCosto) -> list[tuple[list[Volo], int]]:
+    """Accoppia i minimi giornalieri delle due tratte.
+
+    Stesso giorno solo se gli orari reali dei voli più economici lo permettono
+    (partenza tratta 2 dopo l'arrivo tratta 1 + scalo minimo); altrimenti
+    notte all'hub e volo del giorno dopo.
+    """
+    per_giorno2 = {v.giorno: v for v in cal2}
+    combo: list[tuple[list[Volo], int]] = []
+    for v1 in cal1:
+        stesso = per_giorno2.get(v1.giorno)
+        if stesso:
+            try:
+                arr = datetime.fromisoformat(v1.arrivo)
+                dep = datetime.fromisoformat(stesso.partenza)
+                if dep >= arr + timedelta(hours=2):
+                    combo.append(([v1, stesso], 0))
+            except ValueError:
+                pass
+        giorno_dopo = (datetime.fromisoformat(v1.giorno) + timedelta(days=1)).strftime("%Y-%m-%d")
+        dopo = per_giorno2.get(giorno_dopo)
+        if dopo:
+            combo.append(([v1, dopo], 1))
+    return combo
+
+
+def caccia(origine: str, destinazione: str, mese: str, *,
+           raggio_origine: float = 250.0, raggio_destinazione: float = 150.0,
+           bagaglio: bool = False, hub_max: int = 6, top: int = 20,
+           fonte: Fonte | None = None, parametri: ParametriCosto | None = None,
+           log=None) -> list[Itinerario]:
+    """Caccia al minimo per un one-way nel mese indicato (YYYY-MM).
+
+    Andata e ritorno = due cacce (anche da aeroporti diversi: open-jaw gratis).
+    """
+    p = parametri or ParametriCosto()
+    fonte = fonte or FonteRyanair()
+    dire = log or (lambda *a: None)
+
+    anchor_o = cerca_aeroporto(origine)
+    anchor_d = cerca_aeroporto(destinazione)
+    if not anchor_o or not anchor_d:
+        raise ValueError(f"origine o destinazione non riconosciuta: {origine!r} → {destinazione!r}")
+
+    anno, num_mese = int(mese[:4]), int(mese[5:7])
+    dal = f"{mese}-01"
+    al = f"{mese}-{_cal.monthrange(anno, num_mese)[1]:02d}"
+
+    origini = vicini(anchor_o, raggio_origine, max_n=5)
+    desti = vicini(anchor_d, raggio_destinazione, max_n=3)
+    dire(f"Aeroporti di partenza ({len(origini)}): "
+         + ", ".join(f"{a.iata} ({d:.0f} km)" for a, d in origini))
+    dire(f"Aeroporti di arrivo ({len(desti)}): "
+         + ", ".join(f"{a.iata} ({d:.0f} km)" for a, d in desti))
+
+    # ── 1. Mappe tariffe: una richiesta per aeroporto di partenza ─────────
+    mappe: dict[str, dict[str, float]] = {}
+    for a, _ in origini:
+        mappe[a.iata] = fonte.mappa_tariffe(a.iata, dal, al)
+        dire(f"Mappa {a.iata}: {len(mappe[a.iata])} destinazioni servite")
+
+    km_o = {a.iata: d for a, d in origini}
+    km_d = {a.iata: d for a, d in desti}
+    iata_desti = [a.iata for a, _ in desti]
+    risultati: list[Itinerario] = []
+
+    # ── 2. Diretti: calendario solo sulle coppie servite più promettenti ──
+    coppie = sorted(
+        ((o, d, mappe[o][d]) for o in mappe for d in iata_desti if d in mappe[o]),
+        key=lambda t: t[2],
+    )[:_MAX_CAL_DIRETTI]
+    miglior_diretto = coppie[0][2] if coppie else float("inf")
+
+    for o, d, _ in coppie:
+        for v in sorted(fonte.calendario(o, d, mese), key=lambda v: v.prezzo)[:3]:
+            note = []
+            if km_o[o] > 1:
+                note.append(f"posizionamento {anchor_o.citta}→{o} via terra (~{ore_terra(km_o[o])}h)")
+            if km_d[d] > 1:
+                note.append(f"arrivo a {d}, poi ~{ore_terra(km_d[d])}h via terra fino a {anchor_d.citta}")
+            risultati.append(_valuta([v], "diretto", km_o[o], km_d[d], 0, bagaglio, p, note))
+
+    # ── 3. Split via hub: potatura sulle mappe, poi calendari mirati ──────
+    candidati: list[tuple[str, str, str, float]] = []   # (o, hub, d, stima)
+    hub_visti: dict[str, dict[str, float]] = {}
+    prezzi_hub: dict[str, float] = {}
+    for o in mappe:
+        for h, prezzo in mappe[o].items():
+            if h not in iata_desti and h not in mappe and h in AEROPORTI:
+                prezzi_hub[h] = min(prezzi_hub.get(h, float("inf")), prezzo)
+    hub_papabili = sorted(prezzi_hub.items(), key=lambda t: t[1])
+
+    for h, _ in hub_papabili[:hub_max]:
+        hub_visti[h] = fonte.mappa_tariffe(h, dal, al)
+    for o in mappe:
+        for h, mappa_hub in hub_visti.items():
+            if h not in mappe[o]:
+                continue
+            for d in iata_desti:
+                if d in mappa_hub:
+                    stima = mappe[o][h] + mappa_hub[d]
+                    if stima < miglior_diretto + _SLACK_HUB:
+                        candidati.append((o, h, d, stima))
+    candidati.sort(key=lambda t: t[3])
+    dire(f"Hub esplorati: {list(hub_visti)} → {len(candidati)} combinazioni plausibili")
+
+    for o, h, d, _ in candidati[:_MAX_COMBO_HUB]:
+        cal1 = fonte.calendario(o, h, mese)
+        cal2 = fonte.calendario(h, d, mese)
+        combos = sorted(_combina_split(cal1, cal2, p),
+                        key=lambda c: sum(v.prezzo for v in c[0]))[:2]
+        for voli, notti in combos:
+            note = [f"self-transfer a {h} — biglietti separati, coincidenza NON protetta"]
+            if notti:
+                note.append(f"notte a {AEROPORTI[h].citta}")
+            if km_o[o] > 1:
+                note.append(f"posizionamento {anchor_o.citta}→{o} via terra")
+            risultati.append(_valuta(voli, "split via hub", km_o[o], km_d[d],
+                                     notti, bagaglio, p, note))
+
+    # ── 4. Dedup + Top N ──────────────────────────────────────────────────
+    visti: set[str] = set()
+    unici = []
+    for it in sorted(risultati, key=lambda i: i.totale):
+        if it.chiave not in visti:
+            visti.add(it.chiave)
+            unici.append(it)
+    dire(f"Richieste HTTP totali: {getattr(fonte, 'richieste_fatte', '?')}")
+    return unici[:top]
