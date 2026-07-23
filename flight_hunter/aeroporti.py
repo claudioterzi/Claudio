@@ -172,6 +172,12 @@ def cerca_aeroporto(chiave: str) -> Aeroporto | None:
     return None
 
 
+def piu_vicino(lat: float, lon: float) -> Aeroporto:
+    """L'aeroporto del database più vicino a una coordinata (per geolocalizzazione)."""
+    finto = Aeroporto("", "", "", "", lat, lon)
+    return min(AEROPORTI.values(), key=lambda a: distanza_km(finto, a))
+
+
 def vicini(centro: Aeroporto, raggio_km: float, max_n: int = 8) -> list[tuple[Aeroporto, float]]:
     """Aeroporti entro il raggio, ordinati per distanza (incluso il centro)."""
     trovati = [

@@ -34,10 +34,24 @@ from viaggi import DESTINAZIONI, MESI, TIPI, pianifica
 from flight_hunter import (
     caccia as fh_caccia,
     consulta as fh_consulta,
+    occasioni as fh_occasioni,
     ovunque as fh_ovunque,
+    piu_vicino as fh_piu_vicino,
 )
 
 app = Flask(__name__, static_folder="public", static_url_path="")
+
+
+def _link_prenota(vettore: str, da: str, a: str, giorno: str) -> str:
+    from urllib.parse import quote
+    if vettore == "Ryanair" and giorno:
+        return (
+            "https://www.ryanair.com/it/it/trip/flights/select?"
+            f"adults=1&teens=0&children=0&infants=0&dateOut={giorno}&isReturn=false"
+            f"&originIata={da}&destinationIata={a}"
+            f"&tpAdults=1&tpStartDate={giorno}&tpOriginIata={da}&tpDestinationIata={a}"
+        )
+    return "https://www.google.com/travel/flights?q=" + quote(f"voli {da} {a} {giorno}")
 
 
 def _ora(iso: str) -> str:
@@ -282,6 +296,40 @@ def _prezzi_volo_da_origine(origine: str, mese):
         return None, True, (f"Da {origine} nessuna di queste mete è servita diretta "
                             "nel periodo: mostro le stime generiche.")
     return override, True, None
+
+
+@app.route("/parti")
+def parti_index():
+    return send_from_directory("public", "parti.html")
+
+
+@app.route("/api/flight/occasioni", methods=["POST", "OPTIONS"])
+def flight_occasioni():
+    if request.method == "OPTIONS":
+        return "", 200
+    body = request.get_json(force=True, silent=True) or {}
+    origine = (body.get("origine") or "").strip()
+    if not origine and body.get("lat") is not None and body.get("lon") is not None:
+        try:
+            origine = fh_piu_vicino(float(body["lat"]), float(body["lon"])).iata
+        except (TypeError, ValueError):
+            return jsonify({"errore": "coordinate non valide"}), 400
+    if not origine:
+        return jsonify({"errore": "serve una città di partenza o la posizione"}), 400
+    try:
+        giorni = max(3, min(60, int(body.get("giorni_avanti", 45))))
+    except (TypeError, ValueError):
+        giorni = 45
+    try:
+        mete = fh_occasioni(origine, giorni_avanti=giorni, top=24)
+    except ValueError as e:
+        return jsonify({"errore": str(e)}), 400
+    voli = [{
+        "nome": m.nome, "paese": m.paese, "iata": m.iata, "da": m.da,
+        "giorno": m.giorno, "prezzo": round(m.prezzo_volo, 2), "vettore": m.vettore,
+        "prenota": _link_prenota(m.vettore, m.da, m.iata, m.giorno),
+    } for m in mete]
+    return jsonify({"origine": origine, "voli": voli})
 
 
 @app.route("/oracolo")
