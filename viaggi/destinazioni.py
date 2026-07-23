@@ -30,6 +30,37 @@ class Destinazione:
     consigli: tuple[str, ...] = field(default_factory=tuple)
 
 
+# Aeroporto principale di ogni meta: permette di incrociare i prezzi LIVE
+# (Flight Hunter) calcolati dalla città di partenza dell'utente.
+IATA: dict[str, str] = {
+    "Tirana + riviera albanese": "TIA",
+    "Cracovia": "KRK",
+    "Budapest": "BUD",
+    "Porto": "OPO",
+    "Valencia": "VLC",
+    "Siviglia": "SVQ",
+    "Atene + Egina": "ATH",
+    "Malta": "MLA",
+    "Praga": "PRG",
+    "Sofia + monte Vitosha": "SOF",
+    "Bucarest + Transilvania": "OTP",
+    "Marrakech": "RAK",
+    "Sarajevo + Mostar": "SJJ",
+    "Belgrado": "BEG",
+    "Salonicco": "SKG",
+    "Tenerife": "TFS",
+    "Napoli + Procida": "NAP",
+    "Palermo": "PMO",
+    "Bari + Polignano e Matera": "BRI",
+    "Danzica": "GDN",
+    "Skopje + canyon Matka": "SKP",
+    "Zagabria + laghi di Plitvice": "ZAG",
+    "Bratislava + Vienna in giornata": "BTS",
+    "Fès": "FEZ",
+    "Riga": "RIX",
+}
+
+
 DESTINAZIONI: tuple[Destinazione, ...] = (
     Destinazione(
         nome="Tirana + riviera albanese", paese="Albania",

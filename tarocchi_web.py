@@ -232,17 +232,56 @@ def viaggi_pianifica():
         tipo = (tipo,)
     tipo = tuple(t for t in tipo if t in TIPI)
 
+    origine = (body.get("origine") or "").strip()
+    override_volo = None
+    origine_ok = False
+    nota_origine = None
+    if origine:
+        override_volo, origine_ok, nota_origine = _prezzi_volo_da_origine(origine, mese)
+
     proposte = pianifica(
         budget=budget, giorni=giorni, mese=mese, tipo=tipo,
         solo_nel_budget=bool(body.get("solo_nel_budget", False)),
+        override_volo=override_volo,
     )
     return jsonify({
         "budget": budget,
         "giorni": giorni,
         "mese": MESI[mese - 1] if mese else None,
         "tipi": list(tipo),
+        "origine": origine or None,
+        "origine_ok": origine_ok,
+        "nota_origine": nota_origine,
         "proposte": [p.dizionario() for p in proposte],
     })
+
+
+def _prezzi_volo_da_origine(origine: str, mese):
+    """Prezzi VERI dei voli dalla città dell'utente (Flight Hunter), mappati
+    sulle mete via IATA (A/R ≈ andata × 2). Ritorna (override|None, ok, nota)."""
+    from datetime import date
+    from viaggi import IATA
+    oggi = date.today()
+    if mese:
+        anno = oggi.year if mese >= oggi.month else oggi.year + 1
+        mese_yyyymm = f"{anno}-{mese:02d}"
+    else:
+        m = oggi.month % 12 + 1
+        anno = oggi.year if m != 1 else oggi.year + 1
+        mese_yyyymm = f"{anno}-{m:02d}"
+    try:
+        mete = fh_ovunque(origine, mese_yyyymm, top=400)
+    except ValueError:
+        return None, False, f"Non riconosco «{origine}» come città di partenza: uso stime generiche."
+    except Exception:
+        return None, False, "Prezzi live non raggiungibili ora: uso stime generiche."
+    prezzo_per_iata = {m.iata: m.prezzo_volo for m in mete}
+    override = {nome: round(prezzo_per_iata[iata] * 2)
+                for nome, iata in IATA.items() if iata in prezzo_per_iata}
+    if not override:
+        return None, True, (f"Da {origine} nessuna di queste mete è servita diretta "
+                            "nel periodo: mostro le stime generiche.")
+    return override, True, None
 
 
 @app.route("/oracolo")

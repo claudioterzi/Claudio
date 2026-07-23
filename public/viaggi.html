@@ -182,6 +182,16 @@
     .cerca { display: inline-block; margin-top: 0.6rem; color: var(--gold-dim);
              text-decoration: none; font-size: 0.85rem; }
     .cerca:hover { color: var(--gold); }
+    .banner { background: var(--surface); border: 1px solid var(--border);
+              border-left: 3px solid var(--gold-dim); border-radius: var(--radius);
+              padding: 0.7rem 0.9rem; margin-bottom: 1rem; font-size: 0.85rem;
+              color: var(--text-dim); line-height: 1.5; }
+    .banner.ok { border-left-color: var(--green); }
+    .badge { font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase;
+             padding: 0.15rem 0.55rem; border-radius: 999px; white-space: nowrap; }
+    .badge.live { background: rgba(76,154,107,0.15); color: var(--green);
+                  border: 1px solid var(--green); }
+    .badge.stima { color: var(--text-dim); border: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -193,9 +203,10 @@
   </header>
 
   <p class="intro">
-    Dimmi <b>quanto</b> vuoi spendere, per <b>quanti giorni</b> e che <b>tipo</b> di
-    viaggio cerchi — il pianificatore sceglie tra 25 mete low cost dall'Italia e
-    ti dà costo stimato e consigli. Non sai da dove partire? Tocca un'idea qui sotto.
+    Dimmi <b>da dove parti</b>, <b>quanto</b> vuoi spendere, per <b>quanti giorni</b> e
+    che <b>tipo</b> di viaggio cerchi — il pianificatore sceglie tra 25 mete low cost e,
+    dalla tua città, calcola i <b>prezzi reali dei voli</b> dove disponibili.
+    Non sai da dove partire? Tocca un'idea qui sotto.
   </p>
 
   <div class="section-title">Idee — tocca e parti</div>
@@ -203,6 +214,10 @@
 
   <div class="section-title">Oppure scegli tu</div>
   <form id="form">
+    <div class="tipi">
+      <label for="origine">Da dove parti? (la tua città o aeroporto)</label>
+      <input id="origine" value="Milano" placeholder="es. Bruxelles, Roma, Bari" required>
+    </div>
     <div>
       <label for="budget">Budget totale a persona (€)</label>
       <input type="number" id="budget" min="50" step="10" value="300" required>
@@ -231,9 +246,11 @@
   <div id="risultati"><div class="vuoto">Imposta i parametri e premi «Trova viaggi».</div></div>
 
   <p class="nota">
-    Stime prudenziali per persona: volo A/R low cost prenotato con anticipo +
-    alloggio economico, pasti e trasporti locali, con margine imprevisti del 10%.<br>
-    I prezzi reali dipendono da quando prenoti — le stime servono a scegliere, non a comprare.
+    Con la città di partenza, il volo è un <b>prezzo reale</b> dalla tua zona
+    (andata live Ryanair ×2 per l'A/R) dove la meta è servita; alloggio, pasti e
+    trasporti restano stime prudenziali, +10% di margine imprevisti.<br>
+    Senza città di partenza, tutto è stima. I prezzi cambiano col momento in cui
+    prenoti — le stime servono a scegliere, non a comprare.
   </p>
 </div>
 
@@ -315,6 +332,7 @@ document.getElementById('form').addEventListener('submit', async e => {
   out.innerHTML = '<div class="caricamento">Cerco le mete giuste…</div>';
 
   const body = {
+    origine: document.getElementById('origine').value,
     budget: Number(document.getElementById('budget').value),
     giorni: Number(document.getElementById('giorni').value),
     mese:   selMese.value ? Number(selMese.value) : null,
@@ -342,8 +360,17 @@ function mostra(dati) {
     out.innerHTML = '<div class="vuoto">Nessuna meta trovata con questi parametri — prova ad alzare il budget o togliere filtri.</div>';
     return;
   }
-  out.innerHTML = dati.proposte.map(p => {
+  let banner = '';
+  if (dati.nota_origine) {
+    banner = `<div class="banner">${esc(dati.nota_origine)}</div>`;
+  } else if (dati.origine && dati.origine_ok) {
+    banner = `<div class="banner ok">✈️ Voli calcolati da <b>${esc(dati.origine)}</b> con prezzi reali (andata live ×2 per l'A/R) dove la meta è servita · il resto resta stima.</div>`;
+  }
+  out.innerHTML = banner + dati.proposte.map(p => {
     const cls = p.nel_budget ? 'ok' : 'sfora';
+    const badge = p.live
+      ? `<span class="badge live">✈️ prezzo reale da ${esc(dati.origine)}</span>`
+      : (dati.origine && dati.origine_ok ? `<span class="badge stima">stima generica</span>` : '');
     const residuo = p.nel_budget
       ? `ti restano ~${p.residuo}€`
       : `sfora di ~${-p.residuo}€`;
@@ -362,7 +389,7 @@ function mostra(dati) {
         </div>
         <div class="totale ${cls}">~${p.totale}€ <small>/ persona</small></div>
       </div>
-      <div class="tag-row">${tags}</div>
+      <div class="tag-row">${tags}${badge}</div>
       <p class="perche">${esc(p.perche)}</p>
       <div class="dettagli">
         volo A/R ~${p.costo_volo}€ · ${p.giorni} giorni × ${p.budget_giorno}€ = ${p.costo_soggiorno}€
