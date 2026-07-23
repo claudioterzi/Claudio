@@ -53,7 +53,11 @@ _ORIENT     = {o.value: o for o in OrientamentoCarta}
 
 # ── Viaggi Low Cost + Flight Hunter (moduli laterali, zero dipendenze) ──
 from viaggi import DESTINAZIONI, MESI, TIPI, pianifica
-from flight_hunter import caccia as fh_caccia, ovunque as fh_ovunque
+from flight_hunter import (
+    caccia as fh_caccia,
+    consulta as fh_consulta,
+    ovunque as fh_ovunque,
+)
 
 
 def _ora(iso: str) -> str:
@@ -814,6 +818,41 @@ def viaggi_pianifica():
 # ══════════════════════════════════════════════════════════════════════
 #  FLIGHT HUNTER (prezzi live)
 # ══════════════════════════════════════════════════════════════════════
+
+@app.route("/oracolo")
+def oracolo_index():
+    return send_from_directory(_PUBLIC, "oracolo.html")
+
+
+@app.route("/api/flight/oracolo", methods=["POST", "OPTIONS"])
+def flight_oracolo():
+    """L'Oracolo del Viaggio: da una città, nei prossimi giorni, la fuga
+    migliore con il suo responso. Poche richieste (finestra breve): veloce."""
+    if request.method == "OPTIONS":
+        return "", 200
+    body = request.get_json(force=True, silent=True) or {}
+    origine = (body.get("origine") or "").strip()
+    if not origine:
+        return jsonify({"errore": "serve una città di partenza ('origine')"}), 400
+    try:
+        giorni = int(body.get("giorni_avanti", 10))
+        giorni = max(2, min(30, giorni))
+        raggio = float(body.get("raggio", 250))
+    except (TypeError, ValueError):
+        return jsonify({"errore": "giorni_avanti e raggio devono essere numeri"}), 400
+    budget = body.get("budget")
+    try:
+        budget = float(budget) if budget else None
+    except (TypeError, ValueError):
+        budget = None
+    try:
+        r = fh_consulta(origine, giorni_avanti=giorni, budget=budget,
+                        raggio_origine=raggio,
+                        bagaglio=bool(body.get("bagaglio", False)))
+    except ValueError as e:
+        return jsonify({"errore": str(e)}), 400
+    return jsonify(r.dizionario())
+
 
 @app.route("/flight")
 def flight_index():

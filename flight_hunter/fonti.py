@@ -11,6 +11,7 @@ import os
 import ssl
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 
@@ -29,6 +30,21 @@ class Volo:
     vettore: str
 
 
+@dataclass(frozen=True)
+class Offerta:
+    """La tariffa più bassa verso una destinazione, CON il giorno reale.
+    È il mattone dell'Oracolo: dice non solo quanto ma anche quando partire.
+    nome/paese arrivano dalla fonte: coprono anche gli aeroporti fuori dal DB."""
+    da: str
+    a: str
+    prezzo: float
+    giorno: str          # YYYY-MM-DD del volo più economico nel range
+    partenza: str        # ISO datetime locale
+    vettore: str
+    nome: str = ""       # nome aeroporto/città di arrivo (dalla fonte)
+    paese: str = ""      # paese di arrivo (dalla fonte)
+
+
 def _contesto_ssl() -> ssl.SSLContext | None:
     """Contesto di default; se fallisce, prova i CA bundle indicati in env
     (necessario dietro proxy aziendali con CA propria)."""
@@ -42,6 +58,16 @@ def _contesto_ssl() -> ssl.SSLContext | None:
     return None
 
 
+def fonti_disponibili() -> list["Fonte"]:
+    """Le fonti realmente utilizzabili adesso: Ryanair sempre, Kiwi se c'è la
+    chiave. Aggiungere qui altri provider man mano che diventano attivi."""
+    attive: list[Fonte] = [FonteRyanair()]
+    kiwi = FonteKiwi()
+    if kiwi.attiva():
+        attive.append(kiwi)
+    return attive
+
+
 class Fonte:
     """Interfaccia di un provider tariffe."""
 
@@ -49,6 +75,10 @@ class Fonte:
 
     def mappa_tariffe(self, da: str, dal: str, al: str) -> dict[str, float]:
         """{iata_arrivo: prezzo_minimo} per tutte le destinazioni servite da `da`."""
+        return {o.a: o.prezzo for o in self.offerte(da, dal, al)}
+
+    def offerte(self, da: str, dal: str, al: str) -> list[Offerta]:
+        """Migliori offerte (dest, prezzo, giorno) nel range di date [dal, al]."""
         raise NotImplementedError
 
     def calendario(self, da: str, a: str, mese: str) -> list[Volo]:
@@ -94,19 +124,30 @@ class FonteRyanair(Fonte):
         return dati
 
     # ── API ───────────────────────────────────────────────────────────────
-    def mappa_tariffe(self, da: str, dal: str, al: str) -> dict[str, float]:
+    def offerte(self, da: str, dal: str, al: str) -> list[Offerta]:
         url = (f"{self._BASE}/oneWayFares?departureAirportIataCode={da}"
                f"&outboundDepartureDateFrom={dal}&outboundDepartureDateTo={al}"
                f"&market=it-it")
         dati = self._get(url)
-        mappa: dict[str, float] = {}
+        migliori: dict[str, Offerta] = {}
         for f in dati.get("fares") or []:
             out = f.get("outbound") or {}
             arrivo = (out.get("arrivalAirport") or {}).get("iataCode")
-            prezzo = ((out.get("price") or {}).get("value"))
-            if arrivo and prezzo is not None:
-                mappa[arrivo] = min(mappa.get(arrivo, float("inf")), float(prezzo))
-        return mappa
+            prezzo = (out.get("price") or {}).get("value")
+            if not arrivo or prezzo is None:
+                continue
+            prezzo = float(prezzo)
+            attuale = migliori.get(arrivo)
+            if attuale is None or prezzo < attuale.prezzo:
+                dep = out.get("departureDate") or ""
+                ap = out.get("arrivalAirport") or {}
+                citta = (ap.get("city") or {}).get("name")
+                migliori[arrivo] = Offerta(
+                    da=da, a=arrivo, prezzo=prezzo,
+                    giorno=dep[:10], partenza=dep, vettore=self.nome,
+                    nome=citta or ap.get("name") or arrivo,
+                    paese=ap.get("countryName") or "")
+        return list(migliori.values())
 
     def calendario(self, da: str, a: str, mese: str) -> list[Volo]:
         url = (f"{self._BASE}/oneWayFares/{da}/{a}/cheapestPerDay"
@@ -127,4 +168,86 @@ class FonteRyanair(Fonte):
                 prezzo=float(f["price"]["value"]),
                 vettore=self.nome,
             ))
+        return voli
+
+
+class FonteKiwi(Fonte):
+    """Adattatore Kiwi (Tequila Search API). PRONTO ma dormiente finché non c'è
+    la chiave: esporta KIWI_API_KEY (gratuita su tequila.kiwi.com) e si attiva.
+
+    A differenza di Ryanair copre il MONDO (voli di centinaia di compagnie,
+    self-transfer già combinati da Kiwi). Non testato in questa sessione perché
+    la chiave non c'è: quando la aggiungi, `attiva()` dice se risponde.
+    """
+    nome = "Kiwi"
+    _BASE = "https://api.tequila.kiwi.com/v2"
+
+    def __init__(self, chiave: str | None = None) -> None:
+        self.chiave = chiave or os.environ.get("KIWI_API_KEY", "")
+        self._ctx = _contesto_ssl()
+        self._ultima = 0.0
+        self.richieste_fatte = 0
+
+    def attiva(self) -> bool:
+        return bool(self.chiave)
+
+    @staticmethod
+    def _kiwi_data(iso: str) -> str:
+        # Kiwi vuole dd/mm/yyyy; il resto del sistema usa YYYY-MM-DD
+        a, m, g = iso[:10].split("-")
+        return f"{g}/{m}/{a}"
+
+    def _get(self, path: str, params: dict) -> dict:
+        if not self.chiave:
+            raise RuntimeError("KIWI_API_KEY assente: FonteKiwi è dormiente")
+        attesa = PAUSA_RICHIESTE - (time.monotonic() - self._ultima)
+        if attesa > 0:
+            time.sleep(attesa)
+        query = "&".join(f"{k}={urllib.parse.quote(str(v))}" for k, v in params.items())
+        req = urllib.request.Request(f"{self._BASE}{path}?{query}",
+                                     headers={"apikey": self.chiave,
+                                              "User-Agent": "flight-hunter/0.2"})
+        with urllib.request.urlopen(req, timeout=20, context=self._ctx) as r:
+            dati = json.load(r)
+        self._ultima = time.monotonic()
+        self.richieste_fatte += 1
+        return dati
+
+    def offerte(self, da: str, dal: str, al: str) -> list[Offerta]:
+        dati = self._get("/search", {
+            "fly_from": da, "date_from": self._kiwi_data(dal),
+            "date_to": self._kiwi_data(al), "curr": "EUR",
+            "limit": 500, "sort": "price", "one_for_city": 1,
+        })
+        migliori: dict[str, Offerta] = {}
+        for v in dati.get("data") or []:
+            arrivo, prezzo = v.get("flyTo"), v.get("price")
+            if not arrivo or prezzo is None:
+                continue
+            prezzo = float(prezzo)
+            attuale = migliori.get(arrivo)
+            if attuale is None or prezzo < attuale.prezzo:
+                dep = v.get("local_departure") or ""
+                migliori[arrivo] = Offerta(
+                    da=da, a=arrivo, prezzo=prezzo,
+                    giorno=dep[:10], partenza=dep, vettore=self.nome,
+                    nome=v.get("cityTo") or arrivo,
+                    paese=(v.get("countryTo") or {}).get("name") or "")
+        return list(migliori.values())
+
+    def calendario(self, da: str, a: str, mese: str) -> list[Volo]:
+        dati = self._get("/search", {
+            "fly_from": da, "fly_to": a,
+            "date_from": self._kiwi_data(f"{mese}-01"),
+            "date_to": self._kiwi_data(f"{mese}-28"),
+            "curr": "EUR", "limit": 200, "sort": "price",
+        })
+        voli: list[Volo] = []
+        for v in dati.get("data") or []:
+            if v.get("price") is None:
+                continue
+            dep = v.get("local_departure") or ""
+            voli.append(Volo(da=da, a=a, giorno=dep[:10], partenza=dep,
+                             arrivo=v.get("local_arrival") or "",
+                             prezzo=float(v["price"]), vettore=self.nome))
         return voli

@@ -20,12 +20,14 @@ Uso:
 """
 from .aeroporti import AEROPORTI, cerca_aeroporto, vicini
 from .costi import ParametriCosto
-from .fonti import FonteRyanair
+from .fonti import FonteKiwi, FonteRyanair, fonti_disponibili
 from .memoria import Memoria
 from .motore import Itinerario, MetaPossibile, caccia, ovunque
+from .oracolo import Responso, consulta
 
 __all__ = [
     "AEROPORTI", "cerca_aeroporto", "vicini",
-    "ParametriCosto", "FonteRyanair", "Memoria",
+    "ParametriCosto", "FonteRyanair", "FonteKiwi", "fonti_disponibili", "Memoria",
     "Itinerario", "MetaPossibile", "caccia", "ovunque",
+    "Responso", "consulta",
 ]

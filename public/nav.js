@@ -6,6 +6,7 @@
     ["alpha.html", "Alpha"],
     ["viaggi.html", "Viaggi"],
     ["flight_hunter.html", "Flight"],
+    ["oracolo.html", "Oracolo"],
     ["parfums.html", "Parfums"],
     ["organo.html", "Organo"],
     ["spesa.html", "Dispensa"],
