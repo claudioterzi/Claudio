@@ -38,6 +38,15 @@ class Memoria:
                 totale     REAL NOT NULL,   -- costo reale stimato
                 rilevato   TEXT NOT NULL    -- timestamp ISO della rilevazione
             )""")
+        self._db.execute("""
+            CREATE TABLE IF NOT EXISTS osservazioni (
+                rotta               TEXT NOT NULL,  -- singola tratta, es. "BGY-TIA"
+                giorno_volo         TEXT NOT NULL,  -- YYYY-MM-DD
+                prezzo              REAL NOT NULL,  -- tariffa nuda della tratta
+                vettore             TEXT NOT NULL,
+                giorni_alla_partenza INTEGER,       -- anticipo della rilevazione
+                rilevato            TEXT NOT NULL
+            )""")
         self._db.commit()
 
     def registra(self, rotta: str, mese: str, giorno: str, totale: float) -> float | None:
@@ -54,6 +63,30 @@ class Memoria:
         if vecchio is None or totale < vecchio - 0.5:
             return vecchio if vecchio is not None else float("inf")
         return None
+
+    def osserva(self, rotta: str, giorno_volo: str, prezzo: float,
+                vettore: str, giorni_alla_partenza: int | None = None) -> None:
+        """Registra una singola osservazione ricca (la miniera dati nel tempo).
+
+        Dopo mesi di raccolta questa tabella permette analisi vere: curva
+        prezzo/anticipo, giorno migliore per comprare, stagionalità per rotta.
+        """
+        self._db.execute(
+            "INSERT INTO osservazioni "
+            "(rotta, giorno_volo, prezzo, vettore, giorni_alla_partenza, rilevato) "
+            "VALUES (?,?,?,?,?,?)",
+            (rotta, giorno_volo, prezzo, vettore, giorni_alla_partenza,
+             datetime.now().isoformat(timespec="seconds")))
+        self._db.commit()
+
+    def curva_anticipo(self, rotta: str) -> list[tuple[int, float]]:
+        """(giorni_alla_partenza, prezzo_medio) — la curva che dice quando comprare."""
+        righe = self._db.execute(
+            "SELECT giorni_alla_partenza, AVG(prezzo) FROM osservazioni "
+            "WHERE rotta=? AND giorni_alla_partenza IS NOT NULL "
+            "GROUP BY giorni_alla_partenza ORDER BY giorni_alla_partenza DESC",
+            (rotta,)).fetchall()
+        return [(int(g), round(pr, 2)) for g, pr in righe]
 
     def consiglio(self, rotta: str, mese: str, totale_attuale: float) -> Consiglio:
         righe = self._db.execute(

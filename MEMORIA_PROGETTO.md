@@ -97,6 +97,27 @@ in `flight_hunter/README.md`) quella in zona grigia o infattibile.
   (anti-bot) o Kiwi/Amadeus con chiave — prossimo passo naturale.
 - **CLI**: `python3 -m flight_hunter MXP TIA --mese 2026-09`.
 
+### Flight Hunter v0.2 (2026-07-23) — grafo + obiettivo + miniera dati
+
+Estensioni su feedback di ChatGPT (due diligence: 8,8/10 oggi, 9,8 potenziale).
+Tre proposte fattibili SENZA chiavi API, implementate e testate live:
+
+- **`grafo.py`** — la rete come grafo, percorsa con **Dijkstra pigro**: un nodo
+  si espande (1 richiesta) solo quando la frontiera più economica lo raggiunge.
+  `caccia(..., profondo=True)` / `--profondo` costruisce itinerari 2-3 tratte
+  auto-organizzati. Test live: Trapani→Riga → TPS→BGY→RIX 72,54€, e il grafo
+  ha proposto anche TPS→MLA→BGY→RIX. Niente scarico dell'intera rete.
+- **`motore.ovunque()`** — ricerca per OBIETTIVO, non per rotta: "dove posso
+  andare nel mese, entro budget?". `--ovunque --budget 60`. Test live: da MXP
+  15+ mete sotto 60€ in una manciata di richieste.
+- **Miniera dati** (`memoria.osserva` + `curva_anticipo`): ogni tratta salvata
+  con l'anticipo di prenotazione → emerge la curva prezzo/anticipo per rotta
+  (il dato che dice *quando* comprare). Tabella `osservazioni` in SQLite.
+- **Resta il vero limite**: una sola fonte live (Ryanair). Il grafo e
+  l'obiettivo brillano quanto la rete su cui girano — con Kiwi/Amadeus
+  diventano mondiali. L'architettura è già pronta (interfaccia `Fonte`).
+- **CLI nuove**: `--profondo`, `--ovunque --budget N`.
+
 ---
 
 ## Prossimo passo concordato

@@ -22,10 +22,10 @@ from .aeroporti import AEROPORTI, cerca_aeroporto, vicini
 from .costi import ParametriCosto
 from .fonti import FonteRyanair
 from .memoria import Memoria
-from .motore import Itinerario, caccia
+from .motore import Itinerario, MetaPossibile, caccia, ovunque
 
 __all__ = [
     "AEROPORTI", "cerca_aeroporto", "vicini",
     "ParametriCosto", "FonteRyanair", "Memoria",
-    "Itinerario", "caccia",
+    "Itinerario", "MetaPossibile", "caccia", "ovunque",
 ]

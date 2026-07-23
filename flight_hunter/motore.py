@@ -112,41 +112,57 @@ def _gap_ore(voli: list[Volo]) -> float | None:
     return min(gaps) if gaps else None
 
 
-def _combina_split(cal1: list[Volo], cal2: list[Volo],
-                   p: ParametriCosto) -> list[tuple[list[Volo], int]]:
-    """Accoppia i minimi giornalieri delle due tratte.
+def _prosegui(prec: Volo, per_giorno: dict[str, Volo]) -> list[tuple[Volo, int]]:
+    """Voli plausibili dopo `prec`: stesso giorno di arrivo se gli orari reali
+    lo permettono (scalo ≥ 2h), oppure il giorno successivo (+1 notte)."""
+    try:
+        arr = datetime.fromisoformat(prec.arrivo)
+    except ValueError:
+        return []
+    opzioni: list[tuple[Volo, int]] = []
+    stesso = per_giorno.get(arr.strftime("%Y-%m-%d"))
+    if stesso:
+        try:
+            if datetime.fromisoformat(stesso.partenza) >= arr + timedelta(hours=2):
+                opzioni.append((stesso, 0))
+        except ValueError:
+            pass
+    dopo = per_giorno.get((arr + timedelta(days=1)).strftime("%Y-%m-%d"))
+    if dopo:
+        opzioni.append((dopo, 1))
+    return opzioni
 
-    Stesso giorno solo se gli orari reali dei voli più economici lo permettono
-    (partenza tratta 2 dopo l'arrivo tratta 1 + scalo minimo); altrimenti
-    notte all'hub e volo del giorno dopo.
+
+def _concatena(calendari: list[list[Volo]]) -> list[tuple[list[Volo], int]]:
+    """Concatena N tratte sui minimi giornalieri, orari reali alla mano.
+
+    Per ogni giorno di partenza della prima tratta costruisce al più una
+    catena per ramo (stesso giorno / notte), quindi il ventaglio resta piccolo.
     """
-    per_giorno2 = {v.giorno: v for v in cal2}
-    combo: list[tuple[list[Volo], int]] = []
-    for v1 in cal1:
-        stesso = per_giorno2.get(v1.giorno)
-        if stesso:
-            try:
-                arr = datetime.fromisoformat(v1.arrivo)
-                dep = datetime.fromisoformat(stesso.partenza)
-                if dep >= arr + timedelta(hours=2):
-                    combo.append(([v1, stesso], 0))
-            except ValueError:
-                pass
-        giorno_dopo = (datetime.fromisoformat(v1.giorno) + timedelta(days=1)).strftime("%Y-%m-%d")
-        dopo = per_giorno2.get(giorno_dopo)
-        if dopo:
-            combo.append(([v1, dopo], 1))
-    return combo
+    if not calendari or not all(calendari):
+        return []
+    indici = [{v.giorno: v for v in cal} for cal in calendari[1:]]
+    catene: list[tuple[list[Volo], int]] = [([v], 0) for v in calendari[0]]
+    for per_giorno in indici:
+        nuove: list[tuple[list[Volo], int]] = []
+        for voli, notti in catene:
+            for seguente, notte in _prosegui(voli[-1], per_giorno):
+                nuove.append((voli + [seguente], notti + notte))
+        catene = nuove
+    return catene
 
 
 def caccia(origine: str, destinazione: str, mese: str, *,
            raggio_origine: float = 250.0, raggio_destinazione: float = 150.0,
            bagaglio: bool = False, hub_max: int = 6, top: int = 20,
+           profondo: bool = False,
            fonte: Fonte | None = None, parametri: ParametriCosto | None = None,
            log=None) -> list[Itinerario]:
     """Caccia al minimo per un one-way nel mese indicato (YYYY-MM).
 
     Andata e ritorno = due cacce (anche da aeroporti diversi: open-jaw gratis).
+    Con profondo=True esplora anche il grafo della rete (fino a 3 tratte,
+    Dijkstra pigro — più richieste, itinerari che nessun comparatore propone).
     """
     p = parametri or ParametriCosto()
     fonte = fonte or FonteRyanair()
@@ -222,7 +238,7 @@ def caccia(origine: str, destinazione: str, mese: str, *,
     for o, h, d, _ in candidati[:_MAX_COMBO_HUB]:
         cal1 = fonte.calendario(o, h, mese)
         cal2 = fonte.calendario(h, d, mese)
-        combos = sorted(_combina_split(cal1, cal2, p),
+        combos = sorted(_concatena([cal1, cal2]),
                         key=lambda c: sum(v.prezzo for v in c[0]))[:2]
         for voli, notti in combos:
             note = [f"self-transfer a {h} — biglietti separati, coincidenza NON protetta"]
@@ -233,6 +249,33 @@ def caccia(origine: str, destinazione: str, mese: str, *,
             risultati.append(_valuta(voli, "split via hub", km_o[o], km_d[d],
                                      notti, bagaglio, p, note))
 
+    # ── 3b. Modalità profonda: Dijkstra sul grafo della rete ──────────────
+    if profondo:
+        from .grafo import esplora
+        percorsi = esplora(origini, set(iata_desti), dal, al, fonte, p,
+                           max_espansioni=hub_max * 3, max_tratte=3)
+        dire("Grafo: " + ("; ".join(str(pc) for pc in percorsi) or "nessun percorso"))
+        for pc in percorsi:
+            if len(pc.scali) < 3:
+                continue    # i diretti li copre già la fase 2
+            coppie_pc = list(zip(pc.scali, pc.scali[1:]))
+            calendari = [fonte.calendario(a, b, mese) for a, b in coppie_pc]
+            combos = sorted(_concatena(calendari),
+                            key=lambda c: sum(v.prezzo for v in c[0]))[:2]
+            for voli, notti in combos:
+                scali_intermedi = pc.scali[1:-1]
+                note = ["percorso dal grafo: " + " → ".join(pc.scali),
+                        "biglietti separati, coincidenze NON protette"]
+                if notti:
+                    nomi = [AEROPORTI[s].citta if s in AEROPORTI else s
+                            for s in scali_intermedi]
+                    note.append(f"{notti} notte/i lungo il percorso ({', '.join(nomi)})")
+                o_iata, d_iata = pc.scali[0], pc.scali[-1]
+                risultati.append(_valuta(
+                    voli, f"grafo ({len(voli)} tratte)",
+                    km_o.get(o_iata, 0.0), km_d.get(d_iata, 0.0),
+                    notti, bagaglio, p, note))
+
     # ── 4. Dedup + Top N ──────────────────────────────────────────────────
     visti: set[str] = set()
     unici = []
@@ -242,3 +285,62 @@ def caccia(origine: str, destinazione: str, mese: str, *,
             unici.append(it)
     dire(f"Richieste HTTP totali: {getattr(fonte, 'richieste_fatte', '?')}")
     return unici[:top]
+
+
+@dataclass(frozen=True)
+class MetaPossibile:
+    """Una destinazione raggiungibile: risposta alla domanda 'dove posso andare?'."""
+    iata: str
+    nome: str
+    paese: str
+    da: str
+    prezzo_volo: float
+    costo_terra: float
+    costo_bagagli: float
+    totale: float
+
+
+def ovunque(origine: str, mese: str, *, budget: float | None = None,
+            raggio_origine: float = 250.0, bagaglio: bool = False,
+            fonte: Fonte | None = None, parametri: ParametriCosto | None = None,
+            top: int = 40, log=None) -> list[MetaPossibile]:
+    """Ricerca per obiettivo, non per rotta: TUTTE le mete raggiungibili nel
+    mese, col costo reale, ordinate dal minimo — opzionalmente entro un budget.
+
+    Costa una manciata di richieste (una mappa tariffe per aeroporto di
+    partenza): è la domanda più economica che si possa fare alla rete.
+    """
+    p = parametri or ParametriCosto()
+    fonte = fonte or FonteRyanair()
+    dire = log or (lambda *a: None)
+
+    anchor = cerca_aeroporto(origine)
+    if not anchor:
+        raise ValueError(f"origine non riconosciuta: {origine!r}")
+    anno, num_mese = int(mese[:4]), int(mese[5:7])
+    dal, al = f"{mese}-01", f"{mese}-{_cal.monthrange(anno, num_mese)[1]:02d}"
+
+    origini = vicini(anchor, raggio_origine, max_n=5)
+    dire(f"Aeroporti di partenza: {', '.join(a.iata for a, _ in origini)}")
+
+    migliore_per_meta: dict[str, MetaPossibile] = {}
+    for a, km in origini:
+        c_terra = costo_terra(km, p)
+        c_bag = p.bagaglio_stiva if bagaglio else 0.0
+        for dest, prezzo in fonte.mappa_tariffe(a.iata, dal, al).items():
+            info = AEROPORTI.get(dest)
+            totale = round(prezzo + c_terra + c_bag, 2)
+            attuale = migliore_per_meta.get(dest)
+            if attuale is None or totale < attuale.totale:
+                migliore_per_meta[dest] = MetaPossibile(
+                    iata=dest,
+                    nome=info.nome if info else dest,
+                    paese=info.paese if info else "—",
+                    da=a.iata, prezzo_volo=prezzo,
+                    costo_terra=c_terra, costo_bagagli=c_bag, totale=totale)
+
+    mete = sorted(migliore_per_meta.values(), key=lambda m: m.totale)
+    if budget is not None:
+        mete = [m for m in mete if m.totale <= budget]
+    dire(f"Richieste HTTP totali: {getattr(fonte, 'richieste_fatte', '?')}")
+    return mete[:top]
