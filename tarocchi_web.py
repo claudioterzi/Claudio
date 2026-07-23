@@ -37,6 +37,7 @@ from flight_hunter import (
     occasioni as fh_occasioni,
     ovunque as fh_ovunque,
     piu_vicino as fh_piu_vicino,
+    tipi_di as fh_tipi_di,
 )
 
 app = Flask(__name__, static_folder="public", static_url_path="")
@@ -326,7 +327,7 @@ def flight_occasioni():
         return jsonify({"errore": str(e)}), 400
     voli = [{
         "nome": m.nome, "paese": m.paese, "iata": m.iata, "da": m.da,
-        "giorno": m.giorno, "prezzo": round(m.prezzo_volo, 2), "vettore": m.vettore,
+        "giorno": m.giorno, "prezzo": round(m.prezzo_volo, 2), "vettore": m.vettore, "tipi": list(fh_tipi_di(m.iata)),
         "prenota": _link_prenota(m.vettore, m.da, m.iata, m.giorno),
     } for m in mete]
     return jsonify({"origine": origine, "voli": voli})
