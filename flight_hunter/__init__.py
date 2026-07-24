@@ -21,7 +21,7 @@ Uso:
 from .aeroporti import AEROPORTI, cerca_aeroporto, piu_vicino, vicini
 from .categorie import CATEGORIE, tipi_di
 from .costi import ParametriCosto
-from .fonti import FonteKiwi, FonteRyanair, fonti_disponibili
+from .fonti import FonteKiwi, FonteRyanair, FonteTravelpayouts, fonti_disponibili
 from .memoria import Memoria
 from .motore import Itinerario, MetaPossibile, caccia, occasioni, ovunque
 from .oracolo import Responso, consulta
@@ -29,7 +29,8 @@ from .oracolo import Responso, consulta
 __all__ = [
     "AEROPORTI", "cerca_aeroporto", "piu_vicino", "vicini",
     "CATEGORIE", "tipi_di",
-    "ParametriCosto", "FonteRyanair", "FonteKiwi", "fonti_disponibili", "Memoria",
+    "ParametriCosto", "FonteRyanair", "FonteKiwi", "FonteTravelpayouts",
+    "fonti_disponibili", "Memoria",
     "Itinerario", "MetaPossibile", "caccia", "occasioni", "ovunque",
     "Responso", "consulta",
 ]
