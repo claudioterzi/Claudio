@@ -310,10 +310,17 @@ class FonteTravelpayouts(Fonte):
         return dati
 
     @staticmethod
-    def _vettore(codice: str | None) -> str:
-        if not codice:
-            return "Travelpayouts"
-        return _COMPAGNIE.get(codice, codice)
+    def _vettore(v: dict) -> str:
+        """Nome da mostrare per questo prezzo. La risposta reale di /v2/prices/*
+        non include sempre 'airline' (a differenza della doc): quando manca,
+        usa il 'gate' (motore di prenotazione, es. Farera) come indicazione
+        onesta della fonte — non è la compagnia aerea, ma è più informativo
+        del generico 'Travelpayouts'."""
+        codice = v.get("airline")
+        if codice:
+            return _COMPAGNIE.get(codice, codice)
+        gate = v.get("gate")
+        return f"Travelpayouts · {gate}" if gate else "Travelpayouts"
 
     def offerte(self, da: str, dal: str, al: str) -> list[Offerta]:
         """Prezzi più bassi trovati di recente da `da`, filtrati sul range
@@ -333,8 +340,7 @@ class FonteTravelpayouts(Fonte):
                 orario = v.get("departure_at") or dep
                 migliori[arrivo] = Offerta(
                     da=da, a=arrivo, prezzo=prezzo,
-                    giorno=dep[:10], partenza=orario,
-                    vettore=self._vettore(v.get("airline")))
+                    giorno=dep[:10], partenza=orario, vettore=self._vettore(v))
         return list(migliori.values())
 
     def calendario(self, da: str, a: str, mese: str) -> list[Volo]:
@@ -351,5 +357,5 @@ class FonteTravelpayouts(Fonte):
             orario = v.get("departure_at") or dep
             voli.append(Volo(
                 da=da, a=a, giorno=dep[:10], partenza=orario, arrivo="",
-                prezzo=float(prezzo), vettore=self._vettore(v.get("airline"))))
+                prezzo=float(prezzo), vettore=self._vettore(v)))
         return voli
