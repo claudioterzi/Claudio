@@ -50,7 +50,8 @@ python3 -m flight_hunter.monitor cacce.json --intervallo 3600
 | Compra o aspetta | ✅* | euristica su storico osservato + distanza dalla partenza — statistica, non profezia |
 | Ryanair | ✅ | API pubblica farfnd (la stessa del loro sito), con cache e rate-limit educato |
 | Wizz / easyJet / legacy | 🔌 | interfaccia `Fonte` pronta; Wizz ha anti-bot, serve manutenzione dedicata |
-| Kiwi / Amadeus / Travelpayouts | 🔌 | API ufficiali con chiave gratuita: si agganciano a `Fonte` quando le chiavi ci sono |
+| Kiwi Tequila | 🔌 | scritta, dormiente — programma diventato invitation-only (verificato 07/2026), serve una chiave da partnership |
+| Travelpayouts Data API | 🔌 | scritta, dormiente — si attiva con `TRAVELPAYOUTS_TOKEN` (registrazione libera e gratuita, verificata raggiungibile) |
 
 \* = versione onesta della voce "AI" del progetto: niente magia, euristica dichiarata.
 

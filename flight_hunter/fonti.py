@@ -1,8 +1,11 @@
 """Fonti tariffarie. Solo API pubbliche o con chiave — niente scraping.
 
-Oggi implementata: Ryanair (API pubblica farfnd, la stessa usata dal loro sito).
-L'interfaccia `Fonte` permette di aggiungere provider (Kiwi Tequila, Amadeus
-Self-Service, Travelpayouts) quando ci sono le chiavi API.
+Attive:
+    FonteRyanair        sempre attiva (API pubblica farfnd, nessuna chiave)
+    FonteKiwi            dormiente, si attiva con KIWI_API_KEY
+    FonteTravelpayouts   dormiente, si attiva con TRAVELPAYOUTS_TOKEN
+
+`fonti_disponibili()` restituisce quelle davvero utilizzabili adesso.
 """
 from __future__ import annotations
 
@@ -59,12 +62,13 @@ def _contesto_ssl() -> ssl.SSLContext | None:
 
 
 def fonti_disponibili() -> list["Fonte"]:
-    """Le fonti realmente utilizzabili adesso: Ryanair sempre, Kiwi se c'è la
-    chiave. Aggiungere qui altri provider man mano che diventano attivi."""
+    """Le fonti realmente utilizzabili adesso: Ryanair sempre, le altre se
+    hanno la chiave/token. Aggiungere qui altri provider quando si attivano."""
     attive: list[Fonte] = [FonteRyanair()]
-    kiwi = FonteKiwi()
-    if kiwi.attiva():
-        attive.append(kiwi)
+    for cls in (FonteKiwi, FonteTravelpayouts):
+        fonte = cls()
+        if fonte.attiva():
+            attive.append(fonte)
     return attive
 
 
@@ -250,4 +254,102 @@ class FonteKiwi(Fonte):
             voli.append(Volo(da=da, a=a, giorno=dep[:10], partenza=dep,
                              arrivo=v.get("local_arrival") or "",
                              prezzo=float(v["price"]), vettore=self.nome))
+        return voli
+
+
+# Codici IATA compagnia → nome leggibile, solo per i vettori più comuni sulle
+# rotte europee: Travelpayouts restituisce il codice, non il nome esteso.
+_COMPAGNIE = {
+    "FR": "Ryanair", "W6": "Wizz Air", "U2": "easyJet", "VY": "Vueling",
+    "LH": "Lufthansa", "AF": "Air France", "KL": "KLM", "IB": "Iberia",
+    "AZ": "ITA Airways", "BA": "British Airways", "TP": "TAP Portugal",
+    "SN": "Brussels Airlines", "LX": "Swiss", "OS": "Austrian",
+    "A3": "Aegean", "PC": "Pegasus", "TK": "Turkish Airlines",
+    "WZZ": "Wizz Air", "DY": "Norwegian", "SK": "SAS",
+}
+
+
+class FonteTravelpayouts(Fonte):
+    """Adattatore Travelpayouts Data API (dati aggregati Aviasales — molte
+    compagnie oltre ai soli low cost). PRONTO ma dormiente finché non c'è il
+    token: esporta TRAVELPAYOUTS_TOKEN (gratuito su travelpayouts.com,
+    sezione Sviluppatori → API Data) e si attiva da solo.
+
+    Endpoint pubblici, verificati raggiungibili (rispondono 401 senza
+    token, non 404): https://api.travelpayouts.com/v2/prices/latest e
+    /v2/prices/month-matrix. Prezzi cache (aggregati dalle ricerche altrui
+    nelle ultime ore), non quotazioni in tempo reale come Ryanair: ottimi
+    per scoprire destinazioni, da verificare poi sul vettore prima di comprare.
+    """
+    nome = "Travelpayouts"
+    _BASE = "https://api.travelpayouts.com"
+
+    def __init__(self, token: str | None = None) -> None:
+        self.token = token or os.environ.get("TRAVELPAYOUTS_TOKEN", "")
+        self._ctx = _contesto_ssl()
+        self._ultima = 0.0
+        self.richieste_fatte = 0
+
+    def attiva(self) -> bool:
+        return bool(self.token)
+
+    def _get(self, path: str, params: dict) -> dict:
+        if not self.token:
+            raise RuntimeError("TRAVELPAYOUTS_TOKEN assente: FonteTravelpayouts è dormiente")
+        attesa = PAUSA_RICHIESTE - (time.monotonic() - self._ultima)
+        if attesa > 0:
+            time.sleep(attesa)
+        query = "&".join(f"{k}={urllib.parse.quote(str(v))}" for k, v in params.items())
+        req = urllib.request.Request(
+            f"{self._BASE}{path}?{query}",
+            headers={"X-Access-Token": self.token, "User-Agent": "flight-hunter/0.2"})
+        with urllib.request.urlopen(req, timeout=20, context=self._ctx) as r:
+            dati = json.load(r)
+        self._ultima = time.monotonic()
+        self.richieste_fatte += 1
+        return dati
+
+    @staticmethod
+    def _vettore(codice: str | None) -> str:
+        if not codice:
+            return "Travelpayouts"
+        return _COMPAGNIE.get(codice, codice)
+
+    def offerte(self, da: str, dal: str, al: str) -> list[Offerta]:
+        """Prezzi più bassi trovati di recente da `da`, filtrati sul range
+        di partenza [dal, al]. Cache aggregata, non tempo reale."""
+        dati = self._get("/v2/prices/latest", {
+            "origin": da, "currency": "eur", "limit": 300, "sorting": "price",
+        })
+        migliori: dict[str, Offerta] = {}
+        for v in dati.get("data") or []:
+            arrivo, prezzo = v.get("destination"), v.get("value")
+            dep = v.get("depart_date") or ""
+            if not arrivo or prezzo is None or not (dal <= dep[:10] <= al):
+                continue
+            prezzo = float(prezzo)
+            attuale = migliori.get(arrivo)
+            if attuale is None or prezzo < attuale.prezzo:
+                orario = v.get("departure_at") or dep
+                migliori[arrivo] = Offerta(
+                    da=da, a=arrivo, prezzo=prezzo,
+                    giorno=dep[:10], partenza=orario,
+                    vettore=self._vettore(v.get("airline")))
+        return list(migliori.values())
+
+    def calendario(self, da: str, a: str, mese: str) -> list[Volo]:
+        dati = self._get("/v2/prices/month-matrix", {
+            "origin": da, "destination": a, "month": f"{mese}-01",
+            "currency": "eur",
+        })
+        voli: list[Volo] = []
+        for v in dati.get("data") or []:
+            prezzo = v.get("value")
+            if prezzo is None:
+                continue
+            dep = v.get("depart_date") or ""
+            orario = v.get("departure_at") or dep
+            voli.append(Volo(
+                da=da, a=a, giorno=dep[:10], partenza=orario, arrivo="",
+                prezzo=float(prezzo), vettore=self._vettore(v.get("airline"))))
         return voli
