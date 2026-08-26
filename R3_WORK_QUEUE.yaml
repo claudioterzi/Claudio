@@ -1,4 +1,4 @@
-version: 2
+version: 3
 name: R3_INFINITY_WORK_QUEUE
 updated: 2026-08-26
 status: ACTIVE
@@ -11,6 +11,7 @@ principles:
   - never_claim_external_execution_without_evidence
   - prefer_reversible_changes
   - measure_progress_longitudinally
+  - benchmark_before_claiming_improvement
 
 states:
   - IDEA
@@ -61,8 +62,9 @@ queue:
     priority: testing
   - id: R3-008
     title: Benchmark baseline
-    state: IDEA
+    state: DEVELOPMENT
     priority: reproducibility
+    evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md
   - id: R3-009
     title: Consolidation gate
     state: IDEA
@@ -113,9 +115,10 @@ queue:
     objective: Establish grounding, observability and validation requirements before physical deployment.
   - id: R3-019
     title: Longitudinal capability benchmark
-    state: CRITICAL
+    state: DEVELOPMENT
     priority: reproducibility
     objective: Measure whether R3 actually improves over time on fixed and novel tasks.
+    evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md
   - id: R3-020
     title: Self-improvement safety gate
     state: IDEA
@@ -145,8 +148,10 @@ user_authorization:
     - financial_transactions
 
 last_cycle:
-  completed: R3-002
-  result: VERIFIED
-  evidence: R3_DEPENDENCY_MAP_2026-08-26.md
-  commit: 00fa8470f0947fbdcca3fa97b9cbe782bfc888d7
-next_action: R3-019
+  completed: R3-019-foundation
+  result: DEVELOPMENT
+  evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md
+  commits:
+    - 48a7a527832305692544a233f7bdc6cec0cf1c2b
+    - 4bfdee8364f0f4894618ea09f8522078627fb0f8
+next_action: R3-019-baseline-execution
