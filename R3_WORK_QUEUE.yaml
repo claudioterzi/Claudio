@@ -1,0 +1,125 @@
+version: 1
+name: R3_INFINITY_WORK_QUEUE
+updated: 2026-08-26
+status: ACTIVE
+
+# Persistent operating contract
+principles:
+  - preserve_history
+  - distinguish_fact_hypothesis_simulation
+  - verify_before_consolidation
+  - never_expose_credentials
+  - never_claim_external_execution_without_evidence
+  - prefer_reversible_changes
+
+states:
+  - IDEA
+  - DEVELOPMENT
+  - VERIFIED
+  - CONSOLIDATED
+  - WAITING_USER
+  - BLOCKED
+
+priority_order:
+  - security
+  - integrity
+  - reproducibility
+  - architecture
+  - testing
+  - performance
+  - new_capabilities
+
+queue:
+  - id: R3-001
+    title: Repository inventory
+    state: VERIFIED
+    priority: architecture
+    objective: Map files, modules, workflows, entry points and responsibilities.
+    completion: Every major subsystem has an owner, inputs, outputs and dependencies.
+
+  - id: R3-002
+    title: Dependency graph
+    state: DEVELOPMENT
+    priority: architecture
+    objective: Build file-to-module-to-system-to-workflow dependency map.
+    completion: Major dependency paths are documented and duplication risks identified.
+
+  - id: R3-003
+    title: SDQ-1 audit
+    state: DEVELOPMENT
+    priority: architecture
+    objective: Audit agents, router, orchestration, memory, SAR, persistence and monitoring.
+    completion: Current capabilities and gaps are tested or explicitly classified.
+
+  - id: R3-004
+    title: Memory unification
+    state: DEVELOPMENT
+    priority: integrity
+    objective: Define a common model for episodic, semantic, operational and epistemic memory.
+    completion: A single documented memory contract exists without deleting historical stores.
+
+  - id: R3-005
+    title: Scacchiera meta-reflexive layer
+    state: IDEA
+    priority: new_capabilities
+    objective: Add explicit self-evaluation of reasoning process, errors, strategy and system evolution.
+    completion: Reflection produces auditable records rather than claims of consciousness.
+
+  - id: R3-006
+    title: Nine-node reality audit
+    state: DEVELOPMENT
+    priority: integrity
+    objective: Identify which of the historical nine-node claims are implemented, simulated or only documented.
+    completion: Each node has evidence status and no synchronization claim is accepted without a real test.
+
+  - id: R3-007
+    title: Verification harness
+    state: IDEA
+    priority: testing
+    objective: Create repeatable tests for model routing, memory, orchestration, tools and safety boundaries.
+    completion: Tests produce machine-readable results and regression baselines.
+
+  - id: R3-008
+    title: Benchmark baseline
+    state: IDEA
+    priority: reproducibility
+    objective: Measure isolated models versus the complete R3 system on representative tasks.
+    completion: Baseline metrics and methodology are versioned.
+
+  - id: R3-009
+    title: Consolidation gate
+    state: IDEA
+    priority: integrity
+    objective: Define the automatic checklist required before material enters the official Hub layer.
+    completion: Consolidation requires tests, documentation, provenance and reversibility.
+
+  - id: R3-010
+    title: SDQ-2 architecture
+    state: IDEA
+    priority: architecture
+    objective: Design the next generation only after the existing system is mapped and benchmarked.
+    completion: Architecture is derived from measured gaps rather than assumptions.
+
+consolidation_gate:
+  required:
+    - documented_change
+    - provenance
+    - tests_or_explicit_reason_unavailable
+    - security_review
+    - regression_check
+    - rollback_path
+    - fact_hypothesis_simulation_labels
+  destination: GitHub_Hub
+  rule: Never promote an unverified experiment to consolidated status.
+
+user_authorization:
+  general_project_authorization: true
+  scope: R3∞ project work that is technically available and non-destructive
+  still_requires_explicit_confirmation:
+    - credentials_or_secrets
+    - external_account_authorization
+    - irreversible_or_destructive_actions
+    - public_release_with_material_consequences
+    - financial_transactions
+
+next_action: R3-002
