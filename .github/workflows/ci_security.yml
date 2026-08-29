@@ -1,0 +1,84 @@
+name: CI & Security Scans
+
+on:
+  push:
+    paths:
+      - '**.py'
+      - 'requirements.txt'
+      - '.github/workflows/**'
+  workflow_dispatch: {}
+
+jobs:
+  ci_security:
+    name: CI + Security
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies + tools
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
+          pip install --no-cache-dir ruff mypy pytest coverage bandit pip-audit detect-secrets
+
+      - name: Run ruff (lint)
+        continue-on-error: true
+        run: |
+          ruff check . --format=github > ruff.txt || true
+
+      - name: Run mypy (typing)
+        continue-on-error: true
+        run: |
+          mypy sdq1 --show-error-codes || true
+
+      - name: Run pytest (tests)
+        continue-on-error: true
+        run: |
+          pytest -q || true
+          coverage run -m pytest || true
+          coverage xml -i || true
+
+      - name: Run pip-audit (vulns)
+        continue-on-error: true
+        run: |
+          if [ -f requirements.txt ]; then pip-audit -r requirements.txt -f json -o pip_audit.json || true; fi
+
+      - name: Run bandit (security static)
+        continue-on-error: true
+        run: |
+          bandit -r sdq1 -f json -o bandit.json || true
+
+      - name: Run detect-secrets (quick scan)
+        continue-on-error: true
+        run: |
+          detect-secrets scan --all-files > detect_secrets.out || true
+
+      - name: Upload scan artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-security-artifacts
+          path: |
+            ruff.txt
+            pip_audit.json
+            bandit.json
+            detect_secrets.out
+            coverage.xml
+
+      - name: Commit minimal CI report to output/ (optional)
+        if: always()
+        run: |
+          mkdir -p output/ci-reports
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo "CI run at $TIMESTAMP" > output/ci-reports/last_run.txt
+          git config user.name "sdq1-bot"
+          git config user.email "sdq1-bot@local"
+          git add output/ci-reports/last_run.txt || true
+          git commit -m "CI reports: $TIMESTAMP" || true
+          git push || true
