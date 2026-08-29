@@ -12,7 +12,7 @@ stessa disciplina:
   applica_valutazione(). La conferma resta un atto esterno.
 
 Id delle ipotesi generate dalla SAR: S1, S2, S3... (distinte dalle H*
-mane), calcolati sul contenuto del registro caricato, cosi' i run
+umane), calcolati sul contenuto del registro caricato, cosi' i run
 successivi non collidono.
 """
 
