@@ -1,0 +1,2708 @@
+{
+ "mappa": [
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "A1",
+   "n": 1,
+   "materia": "Arancia dolce EO",
+   "fam": "Agrumi",
+   "ml": 15
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "A2",
+   "n": 2,
+   "materia": "Bergamotto EO (Calabria)",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "A3",
+   "n": 3,
+   "materia": "Dihydromyrcenol",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "A4",
+   "n": 4,
+   "materia": "Limone EO (Sicilia)",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "A5",
+   "n": 5,
+   "materia": "Petitgrain bigarade EO",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "A6",
+   "n": 49,
+   "materia": "Arancia amara EO",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "A7",
+   "n": 50,
+   "materia": "Citrale",
+   "fam": "Agrumi",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "B1",
+   "n": 51,
+   "materia": "Lime distillato EO",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "B2",
+   "n": 52,
+   "materia": "Litsea cubeba EO",
+   "fam": "Agrumi",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "B3",
+   "n": 53,
+   "materia": "Mandarino rosso EO",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "B4",
+   "n": 54,
+   "materia": "Methyl pamplemousse",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "B5",
+   "n": 55,
+   "materia": "Neroli EO",
+   "fam": "Agrumi",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "B6",
+   "n": 56,
+   "materia": "Pompelmo EO",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "B7",
+   "n": 57,
+   "materia": "d-Limonene",
+   "fam": "Agrumi",
+   "ml": 15
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "C1",
+   "n": 133,
+   "materia": "Citrathal V",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "C2",
+   "n": 134,
+   "materia": "Citronellale",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "C3",
+   "n": 135,
+   "materia": "Lemongrass EO",
+   "fam": "Agrumi",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "C4",
+   "n": 136,
+   "materia": "Orange terpenes",
+   "fam": "Agrumi",
+   "ml": 15
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "C5",
+   "n": 137,
+   "materia": "Verbena (Lippia) EO",
+   "fam": "Agrumi",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "C6",
+   "n": 138,
+   "materia": "Yuzu (base/EO)",
+   "fam": "Agrumi",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "C7",
+   "n": 6,
+   "materia": "Aldeide C-14 (g-undecalattone)",
+   "fam": "Aldeidi",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "D1",
+   "n": 58,
+   "materia": "Aldeide C-10 (decanale)",
+   "fam": "Aldeidi",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "D2",
+   "n": 59,
+   "materia": "Aldeide C-11 undecilenica",
+   "fam": "Aldeidi",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "D3",
+   "n": 60,
+   "materia": "Aldeide C-12 MNA",
+   "fam": "Aldeidi",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "D4",
+   "n": 61,
+   "materia": "Aldeide C-12 laurica",
+   "fam": "Aldeidi",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "D5",
+   "n": 139,
+   "materia": "Adoxal",
+   "fam": "Aldeidi",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "D6",
+   "n": 140,
+   "materia": "Aldeide C-11 undecanale",
+   "fam": "Aldeidi",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "D7",
+   "n": 141,
+   "materia": "Aldeide C-16 (fragola)",
+   "fam": "Aldeidi",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "E1",
+   "n": 142,
+   "materia": "Aldeide C-8 (ottanale)",
+   "fam": "Aldeidi",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "E2",
+   "n": 143,
+   "materia": "Aldeide C-9 (nonanale)",
+   "fam": "Aldeidi",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "E3",
+   "n": 117,
+   "materia": "Calone 1951",
+   "fam": "Marini/Ozonici",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "E4",
+   "n": 118,
+   "materia": "Floralozone",
+   "fam": "Marini/Ozonici",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "E5",
+   "n": 262,
+   "materia": "Aldron",
+   "fam": "Marini/Ozonici",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "E6",
+   "n": 263,
+   "materia": "Alghe assoluta (seaweed)",
+   "fam": "Marini/Ozonici",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "E7",
+   "n": 264,
+   "materia": "Azurone",
+   "fam": "Marini/Ozonici",
+   "ml": 2
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "F1",
+   "n": 265,
+   "materia": "Cascalone",
+   "fam": "Marini/Ozonici",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "F2",
+   "n": 266,
+   "materia": "Helional (dove permesso)",
+   "fam": "Marini/Ozonici",
+   "ml": 10
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "F3",
+   "n": 267,
+   "materia": "Ozofleur",
+   "fam": "Marini/Ozonici",
+   "ml": 5
+  },
+  {
+   "cas": "C1",
+   "nome_cas": "Testa / Freschi",
+   "slot": "F4",
+   "n": 268,
+   "materia": "Ultrazur",
+   "fam": "Marini/Ozonici",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "A1",
+   "n": 12,
+   "materia": "Lavanda EO (Provenza)",
+   "fam": "Aromatiche/Verdi",
+   "ml": 10
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "A2",
+   "n": 13,
+   "materia": "cis-3-Hexenol",
+   "fam": "Aromatiche/Verdi",
+   "ml": 2
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "A3",
+   "n": 74,
+   "materia": "Foglie di violetta ass.",
+   "fam": "Aromatiche/Verdi",
+   "ml": 2
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "A4",
+   "n": 75,
+   "materia": "Galbano EO/resinoide",
+   "fam": "Aromatiche/Verdi",
+   "ml": 2
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "A5",
+   "n": 76,
+   "materia": "Rosmarino EO",
+   "fam": "Aromatiche/Verdi",
+   "ml": 10
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "A6",
+   "n": 77,
+   "materia": "Salvia sclarea EO",
+   "fam": "Aromatiche/Verdi",
+   "ml": 10
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "A7",
+   "n": 78,
+   "materia": "Stemone",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "B1",
+   "n": 79,
+   "materia": "Triplal (Ligustral)",
+   "fam": "Aromatiche/Verdi",
+   "ml": 2
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "B2",
+   "n": 80,
+   "materia": "cis-3-Hexenyl acetate",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "B3",
+   "n": 167,
+   "materia": "Artemisia EO",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "B4",
+   "n": 168,
+   "materia": "Basilico EO",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "B5",
+   "n": 169,
+   "materia": "Eucalipto globulus EO",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "B6",
+   "n": 170,
+   "materia": "Eucaliptolo (1,8-cineolo)",
+   "fam": "Aromatiche/Verdi",
+   "ml": 10
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "B7",
+   "n": 171,
+   "materia": "Fieno assoluta (Foin)",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "C1",
+   "n": 172,
+   "materia": "Foglie di pomodoro (base)",
+   "fam": "Aromatiche/Verdi",
+   "ml": 10
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "C2",
+   "n": 173,
+   "materia": "Lavandino EO",
+   "fam": "Aromatiche/Verdi",
+   "ml": 10
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "C3",
+   "n": 174,
+   "materia": "Liffarome",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "C4",
+   "n": 175,
+   "materia": "Menta piperita EO",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "C5",
+   "n": 176,
+   "materia": "Menta verde EO",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "C6",
+   "n": 177,
+   "materia": "Mentolo",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "C7",
+   "n": 178,
+   "materia": "Timo EO",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "D1",
+   "n": 179,
+   "materia": "Undecavertol",
+   "fam": "Aromatiche/Verdi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "D2",
+   "n": 14,
+   "materia": "Evernyl (Veramoss)",
+   "fam": "Chypre/Terrosi",
+   "ml": 10
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "D3",
+   "n": 81,
+   "materia": "Muschio di quercia ass. (IFRA)",
+   "fam": "Chypre/Terrosi",
+   "ml": 2
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "D4",
+   "n": 82,
+   "materia": "Tabacco assoluta",
+   "fam": "Chypre/Terrosi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "D5",
+   "n": 180,
+   "materia": "1-Otten-3-olo (fungo)",
+   "fam": "Chypre/Terrosi",
+   "ml": 2
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "D6",
+   "n": 181,
+   "materia": "Akigalawood",
+   "fam": "Chypre/Terrosi",
+   "ml": 10
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "D7",
+   "n": 182,
+   "materia": "Angelica radice EO",
+   "fam": "Chypre/Terrosi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "E1",
+   "n": 183,
+   "materia": "Carota semi EO",
+   "fam": "Chypre/Terrosi",
+   "ml": 10
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "E2",
+   "n": 184,
+   "materia": "Geosmina 1%",
+   "fam": "Chypre/Terrosi",
+   "ml": 2
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "E3",
+   "n": 185,
+   "materia": "Immortelle (elicriso) ass.",
+   "fam": "Chypre/Terrosi",
+   "ml": 2
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "E4",
+   "n": 186,
+   "materia": "Lentisco EO",
+   "fam": "Chypre/Terrosi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "E5",
+   "n": 187,
+   "materia": "Mate' assoluta",
+   "fam": "Chypre/Terrosi",
+   "ml": 5
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "E6",
+   "n": 188,
+   "materia": "Mousse de Saxe (tipo, base)",
+   "fam": "Chypre/Terrosi",
+   "ml": 10
+  },
+  {
+   "cas": "C2",
+   "nome_cas": "Aromatici & Chypre",
+   "slot": "E7",
+   "n": 189,
+   "materia": "Treemoss (muschio d'albero)",
+   "fam": "Chypre/Terrosi",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "A1",
+   "n": 15,
+   "materia": "Eugenolo",
+   "fam": "Fiorali vari",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "A2",
+   "n": 16,
+   "materia": "Ionone alfa",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "A3",
+   "n": 17,
+   "materia": "Ionone beta",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "A4",
+   "n": 18,
+   "materia": "Metil ionone gamma",
+   "fam": "Fiorali vari",
+   "ml": 15
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "A5",
+   "n": 83,
+   "materia": "Aldeide anisica",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "A6",
+   "n": 84,
+   "materia": "Eliotropina (piperonale)",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "A7",
+   "n": 85,
+   "materia": "Iris (base)",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "B1",
+   "n": 86,
+   "materia": "Irone alfa",
+   "fam": "Fiorali vari",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "B2",
+   "n": 87,
+   "materia": "Isoeugenolo",
+   "fam": "Fiorali vari",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "B3",
+   "n": 88,
+   "materia": "Osmanthus assoluta",
+   "fam": "Fiorali vari",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "B4",
+   "n": 89,
+   "materia": "Terpineolo alfa",
+   "fam": "Fiorali vari",
+   "ml": 15
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "B5",
+   "n": 190,
+   "materia": "Anisyl acetato",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "B6",
+   "n": 191,
+   "materia": "Benzil alcol",
+   "fam": "Fiorali vari",
+   "ml": 15
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "B7",
+   "n": 192,
+   "materia": "Cassie assoluta",
+   "fam": "Fiorali vari",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "C1",
+   "n": 193,
+   "materia": "Champaca assoluta",
+   "fam": "Fiorali vari",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "C2",
+   "n": 194,
+   "materia": "Farnesolo",
+   "fam": "Fiorali vari",
+   "ml": 15
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "C3",
+   "n": 195,
+   "materia": "Fenilacetaldeide 50%",
+   "fam": "Fiorali vari",
+   "ml": 2
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "C4",
+   "n": 196,
+   "materia": "Florhydral",
+   "fam": "Fiorali vari",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "C5",
+   "n": 197,
+   "materia": "Frangipani assoluta",
+   "fam": "Fiorali vari",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "C6",
+   "n": 198,
+   "materia": "Giacinto (base)",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "C7",
+   "n": 199,
+   "materia": "Ginestra (broom) assoluta",
+   "fam": "Fiorali vari",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "D1",
+   "n": 200,
+   "materia": "Iris/Orris butter (concreta)",
+   "fam": "Fiorali vari",
+   "ml": 2
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "D2",
+   "n": 201,
+   "materia": "Magnolia EO",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "D3",
+   "n": 202,
+   "materia": "Mimosa assoluta",
+   "fam": "Fiorali vari",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "D4",
+   "n": 203,
+   "materia": "Narciso assoluta",
+   "fam": "Fiorali vari",
+   "ml": 2
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "D5",
+   "n": 204,
+   "materia": "Nerolidolo",
+   "fam": "Fiorali vari",
+   "ml": 15
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "D6",
+   "n": 205,
+   "materia": "Peonile",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "D7",
+   "n": 206,
+   "materia": "Petalia",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "E1",
+   "n": 207,
+   "materia": "Tiglio (base)",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "E2",
+   "n": 208,
+   "materia": "Violetta (base)",
+   "fam": "Fiorali vari",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "E3",
+   "n": 40,
+   "materia": "Alcol feniletilico (PEA)",
+   "fam": "Rosa",
+   "ml": 15
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "E4",
+   "n": 41,
+   "materia": "Citronellolo",
+   "fam": "Rosa",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "E5",
+   "n": 42,
+   "materia": "Geranio bourbon EO",
+   "fam": "Rosa",
+   "ml": 5
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "E6",
+   "n": 43,
+   "materia": "Geraniolo",
+   "fam": "Rosa",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "E7",
+   "n": 120,
+   "materia": "Damascenone",
+   "fam": "Rosa",
+   "ml": 2
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "F1",
+   "n": 121,
+   "materia": "Damascone alfa",
+   "fam": "Rosa",
+   "ml": 2
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "F2",
+   "n": 122,
+   "materia": "Palmarosa EO",
+   "fam": "Rosa",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "F3",
+   "n": 123,
+   "materia": "Rose oxide",
+   "fam": "Rosa",
+   "ml": 2
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "F4",
+   "n": 278,
+   "materia": "Feniletil acetato",
+   "fam": "Rosa",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "F5",
+   "n": 279,
+   "materia": "Feniletil fenilacetato",
+   "fam": "Rosa",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "F6",
+   "n": 280,
+   "materia": "Geranil acetato",
+   "fam": "Rosa",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "F7",
+   "n": 281,
+   "materia": "Nerolo",
+   "fam": "Rosa",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "G1",
+   "n": 282,
+   "materia": "Rodinol",
+   "fam": "Rosa",
+   "ml": 10
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "G2",
+   "n": 283,
+   "materia": "Rosa centifolia assoluta",
+   "fam": "Rosa",
+   "ml": 2
+  },
+  {
+   "cas": "C3",
+   "nome_cas": "Fiori & Rosa",
+   "slot": "G3",
+   "n": 284,
+   "materia": "Rosa damascena EO (otto)",
+   "fam": "Rosa",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "A1",
+   "n": 19,
+   "materia": "Benzil acetato",
+   "fam": "Fiori bianchi",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "A2",
+   "n": 20,
+   "materia": "Benzil salicilato",
+   "fam": "Fiori bianchi",
+   "ml": 15
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "A3",
+   "n": 21,
+   "materia": "Hedione",
+   "fam": "Fiori bianchi",
+   "ml": 15
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "A4",
+   "n": 22,
+   "materia": "Linalil acetato",
+   "fam": "Fiori bianchi",
+   "ml": 15
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "A5",
+   "n": 23,
+   "materia": "Linalolo",
+   "fam": "Fiori bianchi",
+   "ml": 15
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "A6",
+   "n": 24,
+   "materia": "Ylang ylang extra EO",
+   "fam": "Fiori bianchi",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "A7",
+   "n": 90,
+   "materia": "Amil salicilato",
+   "fam": "Fiori bianchi",
+   "ml": 15
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "B1",
+   "n": 91,
+   "materia": "Aurantiol",
+   "fam": "Fiori bianchi",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "B2",
+   "n": 92,
+   "materia": "Ciclamen aldeide",
+   "fam": "Fiori bianchi",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "B3",
+   "n": 93,
+   "materia": "Florosa",
+   "fam": "Fiori bianchi",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "B4",
+   "n": 94,
+   "materia": "Gelsomino grandiflorum ass.",
+   "fam": "Fiori bianchi",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "B5",
+   "n": 95,
+   "materia": "Idrossicitronellale",
+   "fam": "Fiori bianchi",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "B6",
+   "n": 96,
+   "materia": "Indolo",
+   "fam": "Fiori bianchi",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "B7",
+   "n": 97,
+   "materia": "Metil antranilato",
+   "fam": "Fiori bianchi",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "C1",
+   "n": 98,
+   "materia": "cis-Jasmone",
+   "fam": "Fiori bianchi",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "C2",
+   "n": 209,
+   "materia": "Benzil propionato",
+   "fam": "Fiori bianchi",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "C3",
+   "n": 210,
+   "materia": "Fiori d'arancio assoluta",
+   "fam": "Fiori bianchi",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "C4",
+   "n": 211,
+   "materia": "Gelsomino sambac ass.",
+   "fam": "Fiori bianchi",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "C5",
+   "n": 212,
+   "materia": "Hedione HC",
+   "fam": "Fiori bianchi",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "C6",
+   "n": 213,
+   "materia": "Lilyflore",
+   "fam": "Fiori bianchi",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "C7",
+   "n": 214,
+   "materia": "Mayol",
+   "fam": "Fiori bianchi",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "D1",
+   "n": 215,
+   "materia": "Nerolina (yara yara)",
+   "fam": "Fiori bianchi",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "D2",
+   "n": 216,
+   "materia": "Styrallyl acetato",
+   "fam": "Fiori bianchi",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "D3",
+   "n": 217,
+   "materia": "Tuberosa assoluta",
+   "fam": "Fiori bianchi",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "D4",
+   "n": 218,
+   "materia": "p-Cresil acetato",
+   "fam": "Fiori bianchi",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "D5",
+   "n": 25,
+   "materia": "Etil maltolo",
+   "fam": "Fruttati",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "D6",
+   "n": 26,
+   "materia": "g-Nonalattone",
+   "fam": "Fruttati",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "D7",
+   "n": 99,
+   "materia": "Allyl amyl glycolate",
+   "fam": "Fruttati",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "E1",
+   "n": 100,
+   "materia": "Cassis base (bourgeons)",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "E2",
+   "n": 101,
+   "materia": "Fico (base)",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "E3",
+   "n": 102,
+   "materia": "Frambinone (raspberry ketone)",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "E4",
+   "n": 103,
+   "materia": "Fructone",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "E5",
+   "n": 104,
+   "materia": "Manzanate",
+   "fam": "Fruttati",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "E6",
+   "n": 105,
+   "materia": "g-Decalattone",
+   "fam": "Fruttati",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "E7",
+   "n": 219,
+   "materia": "Allile caproato",
+   "fam": "Fruttati",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "F1",
+   "n": 220,
+   "materia": "Davana EO",
+   "fam": "Fruttati",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "F2",
+   "n": 221,
+   "materia": "Dynascone 10%",
+   "fam": "Fruttati",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "F3",
+   "n": 222,
+   "materia": "Etil 2-metilbutirrato",
+   "fam": "Fruttati",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "F4",
+   "n": 223,
+   "materia": "Etil decadienoato (pera)",
+   "fam": "Fruttati",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "F5",
+   "n": 224,
+   "materia": "Furaneol",
+   "fam": "Fruttati",
+   "ml": 2
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "F6",
+   "n": 225,
+   "materia": "Isoamil acetato",
+   "fam": "Fruttati",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "F7",
+   "n": 226,
+   "materia": "Melonal",
+   "fam": "Fruttati",
+   "ml": 5
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "G1",
+   "n": 227,
+   "materia": "Nectaryl",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "G2",
+   "n": 228,
+   "materia": "Pesca (base)",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "G3",
+   "n": 229,
+   "materia": "Prunol/Prugna (base)",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "G4",
+   "n": 230,
+   "materia": "Veloutone",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "G5",
+   "n": 231,
+   "materia": "Verdox",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "G6",
+   "n": 232,
+   "materia": "d-Decalattone",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C4",
+   "nome_cas": "Fiori bianchi & Fruttati",
+   "slot": "G7",
+   "n": 233,
+   "materia": "g-Ottalattone",
+   "fam": "Fruttati",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "A1",
+   "n": 29,
+   "materia": "Cashmeran",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "A2",
+   "n": 30,
+   "materia": "Cedro Atlas EO",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "A3",
+   "n": 31,
+   "materia": "Cedro Virginia EO",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "A4",
+   "n": 32,
+   "materia": "Iso E Super",
+   "fam": "Legni",
+   "ml": 15
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "A5",
+   "n": 33,
+   "materia": "Patchouli EO",
+   "fam": "Legni",
+   "ml": 5
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "A6",
+   "n": 34,
+   "materia": "Sandalore",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "A7",
+   "n": 35,
+   "materia": "Vetiver Haiti EO",
+   "fam": "Legni",
+   "ml": 5
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "B1",
+   "n": 107,
+   "materia": "Amber Xtreme",
+   "fam": "Legni",
+   "ml": 2
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "B2",
+   "n": 108,
+   "materia": "Cedramber",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "B3",
+   "n": 109,
+   "materia": "Clearwood",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "B4",
+   "n": 110,
+   "materia": "Cypriol (nagarmotha) EO",
+   "fam": "Legni",
+   "ml": 5
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "B5",
+   "n": 111,
+   "materia": "Javanol",
+   "fam": "Legni",
+   "ml": 2
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "B6",
+   "n": 112,
+   "materia": "Kephalis",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "B7",
+   "n": 113,
+   "materia": "Norlimbanol/Timberol",
+   "fam": "Legni",
+   "ml": 5
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "C1",
+   "n": 114,
+   "materia": "Oud (base sintetica)",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "C2",
+   "n": 115,
+   "materia": "Vertofix coeur",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "C3",
+   "n": 116,
+   "materia": "Vetiveryl acetato",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "C4",
+   "n": 249,
+   "materia": "Abete balsamico ass.",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "C5",
+   "n": 250,
+   "materia": "Bacdanol",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "C6",
+   "n": 251,
+   "materia": "Bois de rose (palissandro) EO",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "C7",
+   "n": 252,
+   "materia": "Boisambrene forte",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "D1",
+   "n": 253,
+   "materia": "Cedryl acetato",
+   "fam": "Legni",
+   "ml": 15
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "D2",
+   "n": 254,
+   "materia": "Cipresso EO",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "D3",
+   "n": 255,
+   "materia": "Ebanol",
+   "fam": "Legni",
+   "ml": 5
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "D4",
+   "n": 256,
+   "materia": "Guaiacwood EO",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "D5",
+   "n": 257,
+   "materia": "Okoumal",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "D6",
+   "n": 258,
+   "materia": "Patchouli coeur (frazionato)",
+   "fam": "Legni",
+   "ml": 5
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "D7",
+   "n": 259,
+   "materia": "Pino silvestre EO",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "E1",
+   "n": 260,
+   "materia": "Sandalo EO (album/austrocal.)",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "E2",
+   "n": 261,
+   "materia": "Ysamber K",
+   "fam": "Legni",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "E3",
+   "n": 36,
+   "materia": "Ethylene brassylate",
+   "fam": "Muschi",
+   "ml": 15
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "E4",
+   "n": 37,
+   "materia": "Exaltolide",
+   "fam": "Muschi",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "E5",
+   "n": 38,
+   "materia": "Galaxolide 50% (IPM)",
+   "fam": "Muschi",
+   "ml": 15
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "E6",
+   "n": 39,
+   "materia": "Habanolide",
+   "fam": "Muschi",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "E7",
+   "n": 119,
+   "materia": "Ambrettolide",
+   "fam": "Muschi",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "F1",
+   "n": 269,
+   "materia": "Applelide",
+   "fam": "Muschi",
+   "ml": 15
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "F2",
+   "n": 270,
+   "materia": "Cosmone",
+   "fam": "Muschi",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "F3",
+   "n": 271,
+   "materia": "Helvetolide",
+   "fam": "Muschi",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "F4",
+   "n": 272,
+   "materia": "Muscenone",
+   "fam": "Muschi",
+   "ml": 5
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "F5",
+   "n": 273,
+   "materia": "Nirvanolide",
+   "fam": "Muschi",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "F6",
+   "n": 274,
+   "materia": "Romandolide",
+   "fam": "Muschi",
+   "ml": 15
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "F7",
+   "n": 275,
+   "materia": "Semi di ambretta EO/ass.",
+   "fam": "Muschi",
+   "ml": 5
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "G1",
+   "n": 276,
+   "materia": "Serenolide",
+   "fam": "Muschi",
+   "ml": 15
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "G2",
+   "n": 277,
+   "materia": "Velvione",
+   "fam": "Muschi",
+   "ml": 10
+  },
+  {
+   "cas": "C5",
+   "nome_cas": "Legni & Muschi",
+   "slot": "G3",
+   "n": 287,
+   "materia": "Tonalide (Fixolide)",
+   "fam": "Solventi/Fissativi",
+   "ml": 15
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "A1",
+   "n": 7,
+   "materia": "Ambroxan",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "A2",
+   "n": 8,
+   "materia": "Benzoino resinoide (Siam)",
+   "fam": "Ambrati/Resine",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "A3",
+   "n": 9,
+   "materia": "Cumarina",
+   "fam": "Ambrati/Resine",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "A4",
+   "n": 10,
+   "materia": "Incenso (olibano) EO",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "A5",
+   "n": 11,
+   "materia": "Labdano assoluta",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "A6",
+   "n": 62,
+   "materia": "Ambra (base)",
+   "fam": "Ambrati/Resine",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "A7",
+   "n": 63,
+   "materia": "Cetalox",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "B1",
+   "n": 64,
+   "materia": "Fava tonka assoluta",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "B2",
+   "n": 65,
+   "materia": "Mirra EO/resinoide",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "B3",
+   "n": 66,
+   "materia": "Opoponax resinoide",
+   "fam": "Ambrati/Resine",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "B4",
+   "n": 144,
+   "materia": "Ambermax",
+   "fam": "Ambrati/Resine",
+   "ml": 2
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "B5",
+   "n": 145,
+   "materia": "Ambra fossile (attar fumoso)",
+   "fam": "Ambrati/Resine",
+   "ml": 2
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "B6",
+   "n": 146,
+   "materia": "Ambrettolide",
+   "fam": "Ambrati/Resine",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "B7",
+   "n": 147,
+   "materia": "Ambrinol 10%",
+   "fam": "Ambrati/Resine",
+   "ml": 2
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "C1",
+   "n": 148,
+   "materia": "Balsamo Tolu'",
+   "fam": "Ambrati/Resine",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "C2",
+   "n": 149,
+   "materia": "Balsamo del Peru'",
+   "fam": "Ambrati/Resine",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "C3",
+   "n": 150,
+   "materia": "Cisto EO",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "C4",
+   "n": 151,
+   "materia": "Cisto ladanifer (Spagna) EO",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "C5",
+   "n": 152,
+   "materia": "Galbanum resinoide",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "C6",
+   "n": 153,
+   "materia": "Labdano assoluta chiara",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "C7",
+   "n": 154,
+   "materia": "Olibanum resinoide",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "D1",
+   "n": 155,
+   "materia": "Sclareolide",
+   "fam": "Ambrati/Resine",
+   "ml": 15
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "D2",
+   "n": 156,
+   "materia": "Storace (styrax) resinoide",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "D3",
+   "n": 157,
+   "materia": "Sylvamber",
+   "fam": "Ambrati/Resine",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "D4",
+   "n": 158,
+   "materia": "Trisamber",
+   "fam": "Ambrati/Resine",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "D5",
+   "n": 67,
+   "materia": "Betulla (birch tar) EO rett.",
+   "fam": "Animalic/Cuoio",
+   "ml": 2
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "D6",
+   "n": 68,
+   "materia": "Castoreum (base/ass.)",
+   "fam": "Animalic/Cuoio",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "D7",
+   "n": 69,
+   "materia": "Cera d'api assoluta",
+   "fam": "Animalic/Cuoio",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "E1",
+   "n": 70,
+   "materia": "Civetta (base sintetica)",
+   "fam": "Animalic/Cuoio",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "E2",
+   "n": 71,
+   "materia": "Cuoio (base)",
+   "fam": "Animalic/Cuoio",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "E3",
+   "n": 72,
+   "materia": "Isobutil chinolina (IBQ)",
+   "fam": "Animalic/Cuoio",
+   "ml": 2
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "E4",
+   "n": 73,
+   "materia": "Suederal",
+   "fam": "Animalic/Cuoio",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "E5",
+   "n": 159,
+   "materia": "Ambra grigia (tintura sint.)",
+   "fam": "Animalic/Cuoio",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "E6",
+   "n": 160,
+   "materia": "Animalis (tipo)",
+   "fam": "Animalic/Cuoio",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "E7",
+   "n": 161,
+   "materia": "Cade EO rettificato",
+   "fam": "Animalic/Cuoio",
+   "ml": 2
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "F1",
+   "n": 162,
+   "materia": "Civetone",
+   "fam": "Animalic/Cuoio",
+   "ml": 5
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "F2",
+   "n": 163,
+   "materia": "Costus (sostituto)",
+   "fam": "Animalic/Cuoio",
+   "ml": 10
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "F3",
+   "n": 164,
+   "materia": "Hyraceum (tintura/ass.)",
+   "fam": "Animalic/Cuoio",
+   "ml": 2
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "F4",
+   "n": 165,
+   "materia": "Para-cresolo 10%",
+   "fam": "Animalic/Cuoio",
+   "ml": 2
+  },
+  {
+   "cas": "C6",
+   "nome_cas": "Ambra & Animalic",
+   "slot": "F5",
+   "n": 166,
+   "materia": "Skatolo 1%",
+   "fam": "Animalic/Cuoio",
+   "ml": 2
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "A1",
+   "n": 47,
+   "materia": "Cardamomo EO",
+   "fam": "Speziati",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "A2",
+   "n": 48,
+   "materia": "Pepe nero EO",
+   "fam": "Speziati",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "A3",
+   "n": 126,
+   "materia": "Cannella corteccia EO",
+   "fam": "Speziati",
+   "ml": 2
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "A4",
+   "n": 127,
+   "materia": "Chiodi di garofano EO",
+   "fam": "Speziati",
+   "ml": 2
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "A5",
+   "n": 128,
+   "materia": "Elemi EO",
+   "fam": "Speziati",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "A6",
+   "n": 129,
+   "materia": "Noce moscata EO",
+   "fam": "Speziati",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "A7",
+   "n": 130,
+   "materia": "Pepe rosa EO",
+   "fam": "Speziati",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "B1",
+   "n": 131,
+   "materia": "Safraleine",
+   "fam": "Speziati",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "B2",
+   "n": 132,
+   "materia": "Zenzero EO",
+   "fam": "Speziati",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "B3",
+   "n": 288,
+   "materia": "Anetolo",
+   "fam": "Speziati",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "B4",
+   "n": 289,
+   "materia": "Anice stellato EO",
+   "fam": "Speziati",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "B5",
+   "n": 290,
+   "materia": "Bacche di ginepro EO",
+   "fam": "Speziati",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "B6",
+   "n": 291,
+   "materia": "Cannella foglia EO",
+   "fam": "Speziati",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "B7",
+   "n": 292,
+   "materia": "Cascarilla EO",
+   "fam": "Speziati",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "C1",
+   "n": 293,
+   "materia": "Cinnamaldeide",
+   "fam": "Speziati",
+   "ml": 2
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "C2",
+   "n": 294,
+   "materia": "Coriandolo EO",
+   "fam": "Speziati",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "C3",
+   "n": 295,
+   "materia": "Cumino EO",
+   "fam": "Speziati",
+   "ml": 2
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "C4",
+   "n": 296,
+   "materia": "Curcuma EO",
+   "fam": "Speziati",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "C5",
+   "n": 297,
+   "materia": "Metil diantilis",
+   "fam": "Speziati",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "C6",
+   "n": 298,
+   "materia": "Pepe di Sichuan EO",
+   "fam": "Speziati",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "C7",
+   "n": 299,
+   "materia": "Pimento (allspice) EO",
+   "fam": "Speziati",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "D1",
+   "n": 300,
+   "materia": "Sotolone 1%",
+   "fam": "Speziati",
+   "ml": 2
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "D2",
+   "n": 27,
+   "materia": "Etil vanillina",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "D3",
+   "n": 28,
+   "materia": "Vanillina",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "D4",
+   "n": 106,
+   "materia": "Vaniglia assoluta (bourbon)",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "D5",
+   "n": 234,
+   "materia": "Acetanisolo",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "D6",
+   "n": 235,
+   "materia": "Acido fenilacetico",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "D7",
+   "n": 236,
+   "materia": "Benzaldeide",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "E1",
+   "n": 237,
+   "materia": "Bicyclononalactone",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "E2",
+   "n": 238,
+   "materia": "Cacao assoluta",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "E3",
+   "n": 239,
+   "materia": "Caffe' assoluta",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "E4",
+   "n": 240,
+   "materia": "Ciclotene (corylone)",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "E5",
+   "n": 241,
+   "materia": "Filbertone 1%",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 2
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "E6",
+   "n": 242,
+   "materia": "Isobutavan",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "E7",
+   "n": 243,
+   "materia": "Lattone della quercia (whisky)",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 5
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "F1",
+   "n": 244,
+   "materia": "Maltolo",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "F2",
+   "n": 245,
+   "materia": "Miele (base)",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "F3",
+   "n": 246,
+   "materia": "Pralina (base)",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "F4",
+   "n": 247,
+   "materia": "Rhum (base boozy)",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 10
+  },
+  {
+   "cas": "C7",
+   "nome_cas": "Speziati & Gourmand",
+   "slot": "F5",
+   "n": 248,
+   "materia": "d-Dodecalattone (latteo)",
+   "fam": "Gourmand/Vaniglia",
+   "ml": 10
+  }
+ ],
+ "casetti": {
+  "C1": {
+   "nome": "Testa / Freschi",
+   "n": 39
+  },
+  "C2": {
+   "nome": "Aromatici & Chypre",
+   "n": 35
+  },
+  "C3": {
+   "nome": "Fiori & Rosa",
+   "n": 45
+  },
+  "C4": {
+   "nome": "Fiori bianchi & Fruttati",
+   "n": 49
+  },
+  "C5": {
+   "nome": "Legni & Muschi",
+   "n": 45
+  },
+  "C6": {
+   "nome": "Ambra & Animalic",
+   "n": 40
+  },
+  "C7": {
+   "nome": "Speziati & Gourmand",
+   "n": 40
+  }
+ },
+ "solventi": [
+  {
+   "n": 44,
+   "materia": "Alcol etilico profumeria 96%",
+   "ml": 250
+  },
+  {
+   "n": 45,
+   "materia": "Dipropilenglicole (DPG)",
+   "ml": 250
+  },
+  {
+   "n": 46,
+   "materia": "Isopropil miristato (IPM)",
+   "ml": 250
+  },
+  {
+   "n": 124,
+   "materia": "Benzil benzoato",
+   "ml": 250
+  },
+  {
+   "n": 125,
+   "materia": "Trietil citrato (TEC)",
+   "ml": 250
+  },
+  {
+   "n": 285,
+   "materia": "Glucam P-20",
+   "ml": 250
+  },
+  {
+   "n": 286,
+   "materia": "Hercolyn D",
+   "ml": 250
+  }
+ ]
+}

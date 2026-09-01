@@ -151,6 +151,15 @@ Struttura la risposta con intestazioni: BISOGNO UMANO, FATTIBILITÀ, POTENZA, ET
         desiderio["ultima_iterazione"] = ricerca["timestamp"]
         d_file.write_text(json.dumps(desiderio, ensure_ascii=False, indent=2), encoding="utf-8")
 
+        try:
+            from sdq1.notifiche import notifica_completato
+            notifica_completato(f"Desiderio #{desiderio_id} — iter #{n}", [
+                f"💫 {desiderio['titolo'][:50]}",
+                f"Salvato: {ricerca_file.name}",
+            ])
+        except Exception:
+            pass
+
         return ricerca
 
     def sintetizza(self, desiderio_id: int) -> str:
@@ -221,6 +230,11 @@ Poi indica il primo passo concreto che Claudio può fare domani mattina."""
             f.write(f"\n---\n\n## Desiderio {nuovo_id} — {time.strftime('%d %B %Y')}\n\n**{titolo}**\n\n{testo}\n\n*Registrato il {time.strftime('%d/%m/%Y')} — Claudio Terzi, [CT-LGAI-001]*\n")
 
         print(f"[DESIDERI] Desiderio #{nuovo_id} aggiunto: {titolo}")
+        try:
+            from sdq1.notifiche import invia
+            invia(f"💫 <b>Nuovo desiderio #{nuovo_id}</b>\n  {titolo}")
+        except Exception:
+            pass
         return nuovo_id
 
 

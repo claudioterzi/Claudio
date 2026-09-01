@@ -58,6 +58,15 @@ class Watchdog:
 
         if not any(s.raggiungibile and s.provider != "stub" for s in stati):
             log.warning("WATCHDOG ALLARME: nessun provider reale raggiungibile — modalità stub")
+            try:
+                from sdq1.notifiche import invia
+                invia(
+                    f"🔴 <b>WATCHDOG ALLARME</b>  <i>[{time.strftime('%H:%M')}]</i>\n"
+                    f"  Tutti i provider reali morti — modalità stub\n"
+                    f"  Morti: {', '.join(morti) if morti else 'nessuno configurato'}"
+                )
+            except Exception:
+                pass
 
         log.info("Watchdog tick: vivi=%s morti=%s", vivi, morti)
         return record

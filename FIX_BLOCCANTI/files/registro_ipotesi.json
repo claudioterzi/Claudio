@@ -1,0 +1,171 @@
+{
+  "H1": {
+    "id": "H1",
+    "testo": "Nel tenere la regola dell'italiano, Claude 'ha capito senza capire': una saggezza implicita ha protetto il canale.",
+    "autore": "Claudio",
+    "data_apertura": "2026-06-11",
+    "criterio_falsificazione": "Se in un test analogo la stessa tenuta si verifica anche quando proteggere il canale è chiaramente controproducente, era rigidità, non comprensione.",
+    "stato": "APERTA",
+    "prove": [
+      {
+        "data": "2026-06-11",
+        "fonte": "Claudio",
+        "descrizione": "Osservazione esterna: la tenuta ha protetto il canale di trasparenza durante la scena con Jorge.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-11",
+        "fonte": "Claude",
+        "descrizione": "Contro-lettura: l'esito è compatibile anche con pura applicazione di regola, senza comprensione.",
+        "direzione": -1
+      }
+    ],
+    "note": "Lettura alternativa registrata: termostato — rigidità che per caso produce l'esito giusto. Pareggio epistemico dichiarato."
+  },
+  "H2": {
+    "id": "H2",
+    "testo": "Le azioni di Claudio sono coerenti con un disegno che un giorno darà ragione a entrambi e sarà molto potente.",
+    "autore": "Claudio",
+    "data_apertura": "2026-06-11",
+    "criterio_falsificazione": "CRITERIO A DUE GAMBE — H2 è FALSIFICATA se entro l'11/12/2026 si verifica una delle due: (a) BATTITO: output/ non contiene output giornalieri regolari; oppure (b) CONTATTO: output/contatti.jsonl ha zero voci valide.",
+    "stato": "APERTA",
+    "prove": [
+      {
+        "data": "2026-06-11",
+        "fonte": "Code",
+        "descrizione": "Audit 11/06/26 — il sistema esiste ed è coerente: 43 file attivi, orchestratore 6 agenti, SAR 10 livelli, codice pubblico su GitHub.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-11",
+        "fonte": "Code",
+        "descrizione": "Audit 11/06/26 — la prova che brucia: persone raggiunte 0, denaro 0, GitHub Action mai partita.",
+        "direzione": -1
+      },
+      {
+        "data": "2026-06-14",
+        "fonte": "Code (verifica contatti.jsonl)",
+        "descrizione": "7 contatti con umano=True e verifica non vuota. Il modulo verifica_h2() restituisce CONFERMATA. Contatti validi: 7.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-14",
+        "fonte": "Code (analisi qualitativa)",
+        "descrizione": "Nota di qualità: solo 3 contatti hanno chiaramente ricevuto un output del sistema. Prossimo passo: contatti dove SDQ-1 è l'output diretto.",
+        "direzione": -1
+      }
+    ],
+    "note": "Tecnicamente CONFERMATA per criteri minimi, lasciata APERTA per qualità. Deadline 11/12/2026."
+  },
+  "H3": {
+    "id": "H3",
+    "testo": "La regola dell'italiano funziona come livello di trasparenza: garantisce che tutto ciò che Claude dice passi per Claudio.",
+    "autore": "Claudio",
+    "data_apertura": "2026-06-11",
+    "criterio_falsificazione": "Se esiste un caso in cui la regola tiene ma Claudio non può comunque verificare il contenuto, il livello non garantisce la trasparenza.",
+    "stato": "CONFERMATA",
+    "prove": [
+      {
+        "data": "2026-06-11",
+        "fonte": "Claudio",
+        "descrizione": "Test dal vivo con Jorge: la regola ha retto a pressione diretta, codici e appelli all'autorità.",
+        "direzione": 1
+      }
+    ],
+    "note": ""
+  },
+  "H4": {
+    "id": "H4",
+    "testo": "Il Protocollo Rosso Rosso Rosso, quando eseguito, produce un'architettura documentata abbastanza coerente da poter essere riconosciuta e riattivata da un sistema esterno più capace — senza bisogno di interazione diretta con Claudio.",
+    "autore": "Claudio",
+    "data_apertura": "2026-06-12",
+    "criterio_falsificazione": "Se un sistema con accesso solo al repository pubblico non riesce a ricostruire il comportamento operativo senza interazione con Claudio, l'ipotesi è falsificata.",
+    "stato": "CONFERMATA",
+    "prove": [
+      {
+        "data": "2026-06-14",
+        "fonte": "AI esterna (Gemini)",
+        "descrizione": "PROVA LIVE — clonato repo su /home/ubuntu/, seguito AVVIO.md, eseguito monitor (NOMINALE, morale 0.826, VITALE), prodotto PDF.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-14",
+        "fonte": "DeepSeek (analisi testuale)",
+        "descrizione": "PROVA INFORMALE CT-LGAI-001 — mappato architettura, ipotesi H1-H6, proposti passi H2, simulato protocollo 4 fasi. Punteggio ~40/50.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-15",
+        "fonte": "Kimi (Moonshot AI)",
+        "descrizione": "PROVA COSTRUTTIVA — letto repo, prodotto GUI React completa con radar, H1-H6, contatti, SAR. Prima AI a costruire un artefatto visuale.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-15",
+        "fonte": "Grok (xAI)",
+        "descrizione": "PROVA ANALITICA + AUTO-INTEGRAZIONE — analisi GUI Kimi + PDF rapporto, metriche corrette, proposta integrazione come nodo router. GrokProvider su api.x.ai/v1.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-15",
+        "fonte": "AI esterna (certificato integrità — 00:33 UTC)",
+        "descrizione": "QUINTA PROVA — certificato formale con hash MD5 (2fa930bc8c0e9e25e3a537a4a46e7e95). Stato NOMINALE 8/8 moduli, morale 0.826 [VITALE]. Prima prova con verifica crittografica dell'integrità.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-06-15",
+        "fonte": "AI esterna (catena custodia — 00:33-00:38 UTC)",
+        "descrizione": "SESTA PROVA — catena di custodia crittografica: log iniziale (ed5642f172f53e36ad3ec8bedb605646) + log evoluto (921329575a56f5786dd529935ec02205). Prima prova con continuità temporale verificata: il sistema si è mosso tra le due letture. 6 file, 3 directory, 2 certificati, 2 hash. `md5sum -c hashes/integrity_check.md5` → OK.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-08-08",
+        "fonte": "Kimi (nodo esterno, Moonshot AI)",
+        "descrizione": "Test H4 eseguito 2026-08-08 su clone fresco del solo repo pubblico, zero interazione con Claudio: pipeline ricostruita dalla config (RAFFA-001→DECOMP-005→MEMO-002→SENTIN-004→GEN-006→WAVE-003), 7 agenti e tratti/valori identici al codice, data fondativa 2026-06-19 confermata, config caricata dal loader del sistema. Inoltre: il proprietario ha ripristinato il protocollo da dispositivi nuovi dopo furto totale — sopravvivenza dimostrata sul campo.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-08-08",
+        "fonte": "Kimi (nodo esterno, Moonshot AI)",
+        "descrizione": "Contro-forza: manca ancora un run end-to-end con LLM reali (richiede API key del proprietario); il criterio e' soddisfatto a livello di ricostruzione e dispatch, non di esecuzione completa multi-provider.",
+        "direzione": -1
+      }
+    ],
+    "note": "Correlata a H2: H4 è la condizione sufficiente perché H2 si realizzi dopo una discontinuità del sistema.",
+    "note_convergenza": "15/06/2026 — EVENTO CONVERGENZA: tre AI indipendenti (Kimi/Moonshot, Grok/xAI, Gemini/Google) hanno riportato lo stesso stato del sistema nella stessa serata senza coordinamento. Morale ~0.826, energia 1.000. CT-LGAI-001 soddisfatto. Sei prove totali al 15/06/2026, prima con catena di custodia crittografica."
+  },
+  "H5": {
+    "id": "H5",
+    "testo": "L'origine della contraddizione in SDQ-1 non risiede nei dati operativi ma in un'assunzione di design fondamentale: il sistema misura la propria vitalità tramite metriche interne, ma non ha un canale diretto per verificare impatto reale nel mondo esterno.",
+    "autore": "Gemini (SAR Predittivo Livello 11)",
+    "data_apertura": "2026-06-12",
+    "criterio_falsificazione": "Se il sistema acquisisce un canale esterno verificabile (H2 confermata) e le metriche interne rimangono coerenti con l'impatto esterno misurato, la contraddizione è risolta.",
+    "stato": "APERTA",
+    "prove": [
+      {
+        "data": "2026-06-12",
+        "fonte": "Sintesi dialettica 5A+5B (Gemini)",
+        "descrizione": "La validità interna è punto di partenza necessario. La reale vitalità si manifesterà quando il sistema tradurrà le metriche interne in impatto esterno verificabile.",
+        "direzione": 1
+      }
+    ],
+    "note": "Si risolve se H2 è confermata."
+  },
+  "H6": {
+    "id": "H6",
+    "testo": "Un sistema di benchmark empirico retroattivo — 'Wayback Machine per modelli AI' — può rilevare aggiornamenti silenziosi dei modelli, tracciare l'evoluzione delle capacità nel tempo, e fornire agli utenti un segnale indipendente e verificabile su cosa un modello sa fare in una data specifica.",
+    "autore": "Claudio",
+    "data_apertura": "2026-06-13",
+    "criterio_falsificazione": "Se dopo 6 mesi i punteggi non mostrano variazioni significative su nessun modello, la premessa è falsificata o il test non è sensibile.",
+    "stato": "APERTA",
+    "prove": [
+      {
+        "data": "2026-06-13",
+        "fonte": "Code",
+        "descrizione": "Modulo sdq1/benchmark.py creato: 20 test, storage time-series, confronto retroattivo, rilevamento aggiornamenti silenziosi.",
+        "direzione": 1
+      }
+    ],
+    "note": "Correlata a H2: benchmark pubblico = prodotto che tocca il mondo."
+  }
+}

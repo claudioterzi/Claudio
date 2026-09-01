@@ -5,7 +5,14 @@ services:
     volumes: ["./data/node-a:/data"]
     environment:
       R3_API_TOKEN: ${R3_API_TOKEN:-changeme}
+      R3_NODE_ID: node-a
       R3_PEERS: "http://node-b:8000,http://archive:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
 
   node-b:
     build: .
@@ -13,7 +20,14 @@ services:
     volumes: ["./data/node-b:/data"]
     environment:
       R3_API_TOKEN: ${R3_API_TOKEN:-changeme}
+      R3_NODE_ID: node-b
       R3_PEERS: "http://node-a:8000,http://archive:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
 
   archive:
     build: .
@@ -21,4 +35,15 @@ services:
     volumes: ["./data/archive:/data"]
     environment:
       R3_API_TOKEN: ${R3_API_TOKEN:-changeme}
+      R3_NODE_ID: archive
       R3_PEERS: "http://node-a:8000,http://node-b:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+# Nota: node-nas (porta 8004) gira sul Synology DS223 (192.168.1.188)
+# configurato separatamente con docker-compose-nas.yml (vedi NAS-010)
+# I tre nodi qui + node-nas = 4 nodi ridondanti totali

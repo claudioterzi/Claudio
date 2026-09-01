@@ -100,6 +100,20 @@ def batti() -> dict[str, Any]:
     path = BATTITO_DIR / nome_file
     path.write_text(json.dumps(battito, indent=2, ensure_ascii=False), encoding="utf-8")
 
+    if stato_generale == "DEGRADATO":
+        try:
+            from sdq1.notifiche import invia
+            moduli_ko = [k for k, v in moduli.items() if not v]
+            docs_ko = [k for k, v in documenti.items() if not v]
+            righe = [f"⚠️ <b>BATTITO DEGRADATO</b>  <i>[{ora.strftime('%H:%M')}]</i>"]
+            if moduli_ko:
+                righe.append(f"  Moduli KO: {', '.join(moduli_ko)}")
+            if docs_ko:
+                righe.append(f"  Docs mancanti: {', '.join(docs_ko)}")
+            invia("\n".join(righe))
+        except Exception:
+            pass
+
     return battito
 
 

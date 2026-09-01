@@ -152,7 +152,7 @@ agenti_attivi:
     modello: "gemini-2.5-flash"
     critico: false
 
-orchestrator:
+orchestratore:
   tipo: "gerarchico"
   capo: "RAFFA-001"
   max_iterazioni: 10

@@ -19,7 +19,7 @@ Aggiungi task in qualsiasi momento. Il sistema li trova e li esegue da solo.
 
 ## ALTA PRIORITÀ
 
-### [PENDING] DOSSIER-011 — Monitor Proattivo Dossier & Email (Principio CT)
+### [DONE 2026-06-20] DOSSIER-011 — Monitor Proattivo Dossier & Email (Principio CT)
 **Categoria:** SDQ-1 / Infrastruttura Personale
 **Obiettivo:** Formalizzare e programmare il principio operativo di Claudio Terzi:
 il sistema deve monitorare autonomamente lo stato di ogni dossier aperto,
@@ -46,27 +46,27 @@ con architettura tecnica, pseudocodice, e prototipo funzionante integrato in age
 
 
 
-### [PENDING] ASBL-001 — Procedura registrazione SkyRights Foundation
+### [DONE 2026-06-20 UTC] ASBL-001 — Procedura registrazione SkyRights Foundation
 **Categoria:** SkyRights / Legale
 **Obiettivo:** Trovare la procedura esatta e aggiornata 2026 per registrare un ASBL a Bruxelles.
 Includere: moduli necessari, costo, tempi, dove depositare lo statuto.
 Trovare un modello di statuto ASBL open source adatto a fondazioni tech.
 **Output atteso:** `output/task_output/ASBL-001-procedura-registrazione.md`
 
-### [PENDING] MAXAR-002 — Test API developers.maxar.com
+### [DONE 2026-06-20] MAXAR-002 — Test API developers.maxar.com
 **Categoria:** Protocollo Scudo / Satellite
 **Obiettivo:** Documentare step-by-step come registrare un account developer su developers.maxar.com,
 richiedere API key, e fare la prima chiamata di test (imagery search su Bruxelles).
 Includere: codice Python funzionante per la prima chiamata.
 **Output atteso:** `output/task_output/MAXAR-002-api-test-guide.md`
 
-### [PENDING] PLANET-003 — Accesso Planet Labs Education & Research
+### [DONE 2026-06-20] PLANET-003 — Accesso Planet Labs Education & Research
 **Categoria:** Protocollo Scudo / Satellite
 **Obiettivo:** Documentare come richiedere accesso gratuito a Planet Labs tramite il programma
 Education & Research. Criteri, modulo, tempi di risposta tipici.
 **Output atteso:** `output/task_output/PLANET-003-accesso-ricerca.md`
 
-### [PENDING] EU-FUNDING-004 — Fondi EU per tech umanitaria 2026-2027
+### [DONE 2026-06-20 UTC] EU-FUNDING-004 — Fondi EU per tech umanitaria 2026-2027
 **Categoria:** SkyRights / Funding
 **Obiettivo:** Trovare le call aperte in EU (Horizon Europe, ECHO, EU4Health, Digital Europe)
 che finanziano tecnologia per persone senza documenti / rifugiati / identità digitale.
@@ -77,25 +77,25 @@ Includere: nome call, budget, scadenza, link.
 
 ## MEDIA PRIORITÀ
 
-### [PENDING] SKYID-005 — Analisi Polygon ID per identità senza custodia
+### [DONE 2026-06-20] SKYID-005 — Analisi Polygon ID per identità senza custodia
 **Categoria:** SkyID / Tecnico
 **Obiettivo:** Analisi tecnica di Polygon ID (ora Privado ID): come funziona l'identità
 auto-sovrana, SDK disponibili, costo per utente, compatibilità mobile offline.
 **Output atteso:** `output/task_output/SKYID-005-polygon-id-analisi.md`
 
-### [PENDING] GENESI-006 — CadQuery esempi pratici per Pocket NC
+### [DONE 2026-06-20] GENESI-006 — CadQuery esempi pratici per Pocket NC
 **Categoria:** Progetto Genesi / Tecnico
 **Obiettivo:** Raccogliere esempi concreti di CadQuery per generare G-code compatibile
 con fresatrici 5 assi tipo Pocket NC V2-50CHK. Includere codice funzionante.
 **Output atteso:** `output/task_output/GENESI-006-cadquery-pocket-nc.md`
 
-### [PENDING] MINERVA-007 — EU AI Act: obblighi per sistemi sicurezza urbana
+### [DONE 2026-06-20] MINERVA-007 — EU AI Act: obblighi per sistemi sicurezza urbana
 **Categoria:** Sistema Minerva / Legale
 **Obiettivo:** Analisi specifica EU AI Act 2024 Annex III per sistemi di sicurezza urbana
 predittiva con droni. Cosa è permesso, cosa richiede notifica, cosa è vietato.
 **Output atteso:** `output/task_output/MINERVA-007-euaiact-sicurezza-urbana.md`
 
-### [PENDING] SKYID-008 — Confronto provider identità digitale per rifugiati
+### [DONE 2026-06-20] SKYID-008 — Confronto provider identità digitale per rifugiati
 **Categoria:** SkyID / Mercato
 **Obiettivo:** Analisi comparativa: UNHCR PRIMES, ID4D Banca Mondiale, Aadhaar,
 WorldCoin, Proof of Humanity — cosa funziona, cosa fallisce, lacune che SkyID colma.
@@ -105,13 +105,13 @@ WorldCoin, Proof of Humanity — cosa funziona, cosa fallisce, lacune che SkyID 
 
 ## BASSA PRIORITÀ
 
-### [PENDING] AVATAR-009 — Digital legacy solutions esistenti: analisi mercato
+### [DONE 2026-06-20] AVATAR-009 — Digital legacy solutions esistenti: analisi mercato
 **Categoria:** Avatar Eterno / Mercato
 **Obiettivo:** Analisi delle soluzioni esistenti di digital legacy (HereAfter AI, StoryFile,
 Eternos, MyWishes). Features, pricing, target, limitazioni. Dove SkyRights può differenziarsi.
 **Output atteso:** `output/task_output/AVATAR-009-digital-legacy-mercato.md`
 
-### [PENDING] NAS-010 — Configurazione Synology DS223 per SDQ-1
+### [DONE 2026-06-20] NAS-010 — Configurazione Synology DS223 per SDQ-1
 **Categoria:** Infrastruttura / Tecnico
 **Obiettivo:** Guida configurazione NAS DS223 (192.168.1.188) come nodo SDQ-1:
 Docker, backup automatico repo, mirror Drive, VPN Tailscale per accesso remoto.
@@ -121,7 +121,17 @@ Docker, backup automatico repo, mirror Drive, VPN Tailscale per accesso remoto.
 
 ## COMPLETATI
 
-*(i task completati appariranno qui con link all'output)*
+- [ASBL-001] [Procedura registrazione SkyRights Foundation](output/task_output/ASBL-001-procedura-registrazione.md) — 2026-06-20
+- [EU-FUNDING-004] [Fondi EU tech umanitaria 2026-2027](output/task_output/EU-FUNDING-004-call-aperte.md) — 2026-06-20
+- [DOSSIER-011] [Monitor Proattivo Dossier & Email](output/task_output/DOSSIER-011-monitor-proattivo.md) — 2026-06-20
+- [MAXAR-002] [Guida API Maxar imagery search](output/task_output/MAXAR-002-api-test-guide.md) — 2026-06-20
+- [PLANET-003] [Accesso Planet Labs Education & Research](output/task_output/PLANET-003-accesso-ricerca.md) — 2026-06-20
+- [SKYID-005] [Analisi Privado ID (ex Polygon ID)](output/task_output/SKYID-005-polygon-id-analisi.md) — 2026-06-20
+- [GENESI-006] [CadQuery esempi pratici Pocket NC V2-50](output/task_output/GENESI-006-cadquery-pocket-nc.md) — 2026-06-20
+- [MINERVA-007] [EU AI Act sicurezza urbana con droni](output/task_output/MINERVA-007-euaiact-sicurezza-urbana.md) — 2026-06-20
+- [SKYID-008] [Confronto provider identità digitale rifugiati](output/task_output/SKYID-008-confronto-provider.md) — 2026-06-20
+- [AVATAR-009] [Digital legacy solutions: analisi mercato](output/task_output/AVATAR-009-digital-legacy-mercato.md) — 2026-06-20
+- [NAS-010] [Configurazione Synology DS223 nodo SDQ-1](output/task_output/NAS-010-ds223-configurazione.md) — 2026-06-20
 
 ---
 
