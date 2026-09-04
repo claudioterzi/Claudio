@@ -8,6 +8,7 @@ studio/web/dist/
 data/
 *.json
 !registro_ipotesi.json
+!vss_state.json.sample
 !output/contatti.jsonl
 !output/benchmark/
 !output/benchmark/*.json
