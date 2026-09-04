@@ -717,15 +717,28 @@ def main(argv: list[str]) -> int:
 
     if args.sar:
         from .sar import ScacchieraAutoRiflessiva, report_ciclo
+        from .sar.ponte_registro import PonteRegistroSAR
 
         def _llm(sistema: str, utente: str) -> str:
             return router.chiama(sistema, utente, profilo="default").risposta.testo
 
-        sar = ScacchieraAutoRiflessiva(llm_fn=_llm, vss=vss, soggetto="Claudio")
+        # P5/P6: le conclusioni SAR entrano nel Registro come S* (mai auto-confermate)
+        ponte = PonteRegistroSAR(percorso="registro_ipotesi.json", llm_fn=_llm)
+        sar = ScacchieraAutoRiflessiva(
+            llm_fn=_llm, vss=vss, soggetto="Claudio", ponte_registro=ponte,
+        )
         if testo:
             sar.osserva(testo, tag=["input"])
         report = sar.ciclo_completo(args.sar)
         print(report_ciclo(report, soggetto="Claudio"))
+        reg = report.get("registro_ipotesi") or {}
+        if reg.get("registrata"):
+            print(
+                f"REGISTRO IPOTESI: {reg.get('id')} → {reg.get('stato')} "
+                f"(falsificabile={reg.get('falsificabile')})"
+            )
+        elif reg:
+            print(f"REGISTRO IPOTESI: non registrata ({reg.get('motivo', 'n/d')})")
         azione = sar.genera_azione(report.get("sintesi", ""))
         print("AZIONE CONCRETA (Livello 9)\n" + "─" * 60)
         print(azione)
