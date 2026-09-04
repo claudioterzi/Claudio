@@ -82,12 +82,17 @@ class ScacchieraAutoRiflessiva:
         vss: VectorStateStore | None = None,
         soggetto: str = "Claudio",
         persistenza: bool = True,
+        ponte_registro: "PonteRegistroSAR | None" = None,
     ):
         self._llm = llm_fn
         self.soggetto = soggetto
         self.mappa = MappaTeensioni()
         self.memoria = MemoriaEvolutiva(vss=vss, soggetto=soggetto)
         self.coerenza = IndiceCoerenza()
+        # Fase 3.1: se presente, le conclusioni del ciclo entrano nel
+        # Registro Ipotesi come APERTE/NON_FALSIFICABILI (P5/P6).
+        # La SAR non conferma mai le proprie conclusioni.
+        self._ponte = ponte_registro
         self._report_history: list[ReportSAR] = []
         self._persistenza: PersistenzaSAR | None = (
             PersistenzaSAR(soggetto=soggetto) if persistenza else None
@@ -162,10 +167,17 @@ class ScacchieraAutoRiflessiva:
         ]
 
         self._report_history.append(report)
+        out = report.to_dict()
+        if self._ponte and report.sintesi:
+            # Fase 3.1 — la conclusione diventa ipotesi nel Registro (sempre
+            # APERTA o NON_FALSIFICABILE: mai confermata dalla SAR stessa).
+            out["registro_ipotesi"] = self._ponte.registra_conclusione(
+                report.sintesi, tensione.label
+            )
         if self._persistenza:
             self._persistenza.salva_stato(self.mappa, self.memoria, self.coerenza)
-            self._persistenza.salva_report(report.to_dict())
-        return report.to_dict()
+            self._persistenza.salva_report(out)
+        return out
 
     # ------------------------------------------------------------------ #
     # Livello 9 — Contatto col Reale                                      #
