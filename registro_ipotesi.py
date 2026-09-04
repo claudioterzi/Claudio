@@ -20,7 +20,7 @@ Principi incorporati:
 import json
 from datetime import date
 from enum import Enum
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field, asdict, fields
 
 
 class Stato(Enum):
@@ -79,7 +79,8 @@ class Ipotesi:
         # Falsificazione: una prova contraria decisiva basta a chiudere
         # solo se nessuna prova a favore la supera in numero (regola semplice v1)
         if contrarie and len(contrarie) > len(a_favore):
-            self.stato = Stato.FALSIFICATA
+            # valuta() e' pura: propone, non muta. La transizione di stato
+            # richiede una chiamata esplicita a applica_valutazione().
             return f"[{self.id}] FALSIFICATA: le prove contrarie prevalgono."
 
         # P5: niente auto-conferma — serve almeno una fonte diversa dall'autore
@@ -88,14 +89,24 @@ class Ipotesi:
         controforza = len(contrarie) >= 1
 
         if len(a_favore) >= 2 and occhio_esterno and controforza:
-            self.stato = Stato.CONFERMATA
-            return f"[{self.id}] CONFERMATA (P5 ok, P6 ok, prove sufficienti)."
+            return f"[{self.id}] CONFERMABILE (P5 ok, P6 ok, prove sufficienti)."
 
         manca = []
         if len(a_favore) < 2: manca.append("prove a favore (min 2)")
         if not occhio_esterno: manca.append("secondo occhio (P5)")
         if not controforza: manca.append("tentativo di falsificazione (P6)")
         return f"[{self.id}] APERTA. Manca: {', '.join(manca)}."
+
+    def applica_valutazione(self) -> str:
+        """Esegue valuta() e applica la transizione di stato proposta.
+        Esplicita: la mutazione non avviene mai come effetto collaterale
+        di una stampa o di un'ispezione."""
+        esito = self.valuta()
+        if "FALSIFICATA:" in esito:
+            self.stato = Stato.FALSIFICATA
+        elif "CONFERMABILE" in esito:
+            self.stato = Stato.CONFERMATA
+        return esito
 
 
 class Registro:
@@ -104,7 +115,12 @@ class Registro:
         self.ipotesi: dict[str, Ipotesi] = {}
 
     def apri(self, ip: Ipotesi):
+        # Non distruttiva: un id gia' presente (es. caricato da disco) non
+        # viene sovrascritto dalla ridefinizione del seme.
+        if ip.id in self.ipotesi:
+            return self.ipotesi[ip.id]
         self.ipotesi[ip.id] = ip
+        return ip
 
     def stato_generale(self) -> str:
         righe = ["REGISTRO IPOTESI APERTE — R³∞", "=" * 40]
@@ -117,6 +133,8 @@ class Registro:
         for k, ip in self.ipotesi.items():
             d = asdict(ip)
             d["stato"] = ip.stato.value
+            # preserva i campi extra caricati da versioni piu' recenti del JSON
+            d.update(getattr(ip, "_extra", {}))
             dati[k] = d
         with open(self.percorso, "w", encoding="utf-8") as f:
             json.dump(dati, f, ensure_ascii=False, indent=2)
@@ -127,11 +145,17 @@ class Registro:
                 dati = json.load(f)
         except FileNotFoundError:
             return
+        campi = {f.name for f in fields(Ipotesi)}
         for k, d in dati.items():
             prove = [Prova(**p) for p in d.pop("prove", [])]
             stato = Stato(d.pop("stato"))
+            # tollera e preserva campi aggiuntivi delle versioni piu'
+            # recenti del JSON (es. note_convergenza), rimettendoli in salva()
+            extra = {kk: vv for kk, vv in d.items() if kk not in campi}
+            d = {kk: vv for kk, vv in d.items() if kk in campi}
             ip = Ipotesi(**d)
             ip.prove, ip.stato = prove, stato
+            ip._extra = extra
             self.ipotesi[k] = ip
 
 
@@ -140,6 +164,7 @@ class Registro:
 # ============================================================
 if __name__ == "__main__":
     r = Registro()
+    r.carica()  # preserva H5, H6 e le prove accumulate prima di riseminare
 
     # H1 — la lettura di Claudio sulla scena con Jorge
     h1 = Ipotesi(

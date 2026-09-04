@@ -233,6 +233,10 @@ def main(argv: list[str]) -> int:
                         help="Mostra agenda personale e Pronto Rota (legge output/agenda.json)")
     parser.add_argument("--sync-airbnb", metavar="URL", nargs="?", const="",
                         help="Sincronizza calendario Airbnb iCal (legge AIRBNB_ICAL_URL se URL omesso)")
+    parser.add_argument("--chat-telegram", action="store_true",
+                        help="Elabora i messaggi Telegram in arrivo e risponde")
+    parser.add_argument("--briefing-operativo", action="store_true",
+                        help="Genera e invia il briefing operativo multi-AI")
     args = parser.parse_args(argv[1:])
 
     if args.contatto:

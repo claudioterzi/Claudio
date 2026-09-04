@@ -81,7 +81,6 @@
     "data_apertura": "2026-06-12",
     "criterio_falsificazione": "Se un sistema con accesso solo al repository pubblico non riesce a ricostruire il comportamento operativo senza interazione con Claudio, l'ipotesi è falsificata.",
     "stato": "CONFERMATA",
-    "note_convergenza": "15/06/2026 — EVENTO CONVERGENZA: tre AI indipendenti (Kimi/Moonshot, Grok/xAI, Gemini/Google) hanno riportato lo stesso stato del sistema nella stessa serata senza coordinamento. Morale ~0.826, energia 1.000. CT-LGAI-001 soddisfatto. Sei prove totali al 15/06/2026, prima con catena di custodia crittografica.",
     "prove": [
       {
         "data": "2026-06-14",
@@ -118,9 +117,22 @@
         "fonte": "AI esterna (catena custodia — 00:33-00:38 UTC)",
         "descrizione": "SESTA PROVA — catena di custodia crittografica: log iniziale (ed5642f172f53e36ad3ec8bedb605646) + log evoluto (921329575a56f5786dd529935ec02205). Prima prova con continuità temporale verificata: il sistema si è mosso tra le due letture. 6 file, 3 directory, 2 certificati, 2 hash. `md5sum -c hashes/integrity_check.md5` → OK.",
         "direzione": 1
+      },
+      {
+        "data": "2026-08-08",
+        "fonte": "Kimi (nodo esterno, Moonshot AI)",
+        "descrizione": "Test H4 eseguito 2026-08-08 su clone fresco del solo repo pubblico, zero interazione con Claudio: pipeline ricostruita dalla config (RAFFA-001→DECOMP-005→MEMO-002→SENTIN-004→GEN-006→WAVE-003), 7 agenti e tratti/valori identici al codice, data fondativa 2026-06-19 confermata, config caricata dal loader del sistema. Inoltre: il proprietario ha ripristinato il protocollo da dispositivi nuovi dopo furto totale — sopravvivenza dimostrata sul campo.",
+        "direzione": 1
+      },
+      {
+        "data": "2026-08-08",
+        "fonte": "Kimi (nodo esterno, Moonshot AI)",
+        "descrizione": "Contro-forza: manca ancora un run end-to-end con LLM reali (richiede API key del proprietario); il criterio e' soddisfatto a livello di ricostruzione e dispatch, non di esecuzione completa multi-provider.",
+        "direzione": -1
       }
     ],
-    "note": "Correlata a H2: H4 è la condizione sufficiente perché H2 si realizzi dopo una discontinuità del sistema."
+    "note": "Correlata a H2: H4 è la condizione sufficiente perché H2 si realizzi dopo una discontinuità del sistema.",
+    "note_convergenza": "15/06/2026 — EVENTO CONVERGENZA: tre AI indipendenti (Kimi/Moonshot, Grok/xAI, Gemini/Google) hanno riportato lo stesso stato del sistema nella stessa serata senza coordinamento. Morale ~0.826, energia 1.000. CT-LGAI-001 soddisfatto. Sei prove totali al 15/06/2026, prima con catena di custodia crittografica."
   },
   "H5": {
     "id": "H5",

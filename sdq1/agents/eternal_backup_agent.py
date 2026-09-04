@@ -1,5 +1,16 @@
 # R³∞-Orch-OS Eternal Backup Agent (Layer 6)
-# Immutable State Snapshots - Blockchain + IPFS + Orbital Redundancy
+#
+# SIMULAZIONE — questo modulo NON fa cio' che il nome suggerisce:
+# - genera CID IPFS falsi ("Qm" + sha256 troncato, riga ~155) e transaction
+#   hash finti ("0x" + sha256 troncato, riga ~161);
+# - _connect_storage() si limita a porre due flag a True: nessuna socket,
+#   nessuna connessione a blockchain o IPFS, nonostante il messaggio
+#   "Blockchain/IPFS connected";
+# - nessun modulo del repository lo importa (verificato con grep al
+#   commit 155cb5f).
+# Da sostituire con un'implementazione reale (il r3/node.py vero usa
+# SHA-256 + Ed25519 + sync HTTP tra peer espliciti) o da rimuovere.
+# Marcato come simulazione nella Fase 2.2 della roadmap (branch fix-bloccanti).
 
 from __future__ import annotations
 
