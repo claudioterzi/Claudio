@@ -1,4 +1,5 @@
 from .sar import ScacchieraAutoRiflessiva, ReportSAR
+from .ponte_registro import PonteRegistroSAR
 from .tensioni import MappaTeensioni, Tensione, Polo, Osservazione
 from .ciclo import CicloAutoriflessione, EsitoCiclo
 from .memoria_evolutiva import MemoriaEvolutiva
@@ -12,6 +13,7 @@ from .radar_emozionale import RadarEmozionale
 from .sognatore import SognatoreSDQ, VisioneSognatrice
 
 __all__ = [
+    "PonteRegistroSAR",
     "ScacchieraAutoRiflessiva",
     "ReportSAR",
     "MappaTeensioni",
