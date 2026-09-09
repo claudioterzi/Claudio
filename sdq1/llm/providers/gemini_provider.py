@@ -25,7 +25,7 @@ class GeminiProvider(ProviderBase):
 
     def _completa_impl(self, sistema: str, utente: str) -> tuple[str, dict[str, Any]]:
         modello = self.modello or "gemini-2.5-flash"
-        url = f"{_BASE_URL}/{modello}:generateContent"
+        url = f"{_BASE_URL}/{modello}:generateContent?key={self.api_key}"
 
         gen = {
             "temperature": self.opts.get("temperatura", 0.7),
@@ -49,7 +49,7 @@ class GeminiProvider(ProviderBase):
         req = urllib.request.Request(
             url,
             data=data,
-            headers={"Content-Type": "application/json", "x-goog-api-key": self.api_key},
+            headers={"Content-Type": "application/json"},
             method="POST",
         )
 
