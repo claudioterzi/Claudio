@@ -185,12 +185,14 @@ _FAMIGLIE_CASA = ["Agrumata", "Floreale", "Verde", "Acquatica",
 _FATTORE_FORZA = {1: 1.4, 2: 1.15, 3: 1.0, 4: 0.45, 5: 0.1}
 
 
-def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None, stile="carles", riferimento=""):
+def _atelier_componi_ai(intenzione, famiglia="", ondata=2, tentativo=0, evita=None, stile="carles", riferimento=""):
     """Chiede a Raffaello (Gemini, fallback Anthropic) di comporre un profumo
     LEGGENDO l'intenzione e scegliendo le materie reali dell'organo. Il server
     valida i numeri e calcola le dosi. `tentativo`/`evita` spingono verso una
     direzione diversa a ogni nuova prova. Ritorna (parfum, None) o (None, errore)."""
     import time
+    import hashlib
+    from atelier_validation import CompositionInvalid, response_schema, validate_proposal
     from perfume_research import reference_from, research_reference
     deadline = time.monotonic() + 48
     styles = {"carles": ((3,3,3), (20,30,35), 3),
@@ -203,11 +205,20 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None, s
     organo = _carica_organo_atelier()
     mat_per_n = {m["n"]:m for m in organo["materie"]
                  if rank.get(m["livello"],2) <= ondata and m.get("tipo") != "SOL"}
+    catalog_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "studio", "parfums", "organo_terzi_300.json")
+    with open(catalog_path, "rb") as catalog_file:
+        catalog_sha = hashlib.sha256(catalog_file.read()).hexdigest()
+    catalog_info = {"nome": "Organo Terzi 300", "fonte": organo["fonte"],
+                    "sha256": catalog_sha, "totale": len(organo["materie"]),
+                    "materie_disponibili": len(mat_per_n), "ondata": ondata,
+                    "supporti": [{"n": m["n"], "nome": m["nome"]} for m in organo["materie"]
+                                 if m.get("tipo") == "SOL" and rank[m["livello"]] <= ondata]}
     ricerca = research_reference(reference_from(intenzione, riferimento))
 
     # catalogo compatto per il modello
     righe = [f'{m["n"]}|{m["nome"]}|{m["famiglia"]}|{m.get("nota") or "-"}|'
-             f'forza{m["forza"]}|{m["livello"]}|{m.get("ruolo_scia") or "-"}'
+             f'forza{m["forza"]}|{m["livello"]}|{m.get("ruolo_scia") or "-"}|{m.get("note_uso") or "-"}'
              for m in mat_per_n.values()]
     catalogo = "\n".join(righe)
 
@@ -220,6 +231,11 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None, s
         "artistico, ispirandoti a Carles, Roudnitska ed Ellena.\n"
         "Regola assoluta: usi SOLO le materie dell'organo qui sotto, citandole "
         "per NUMERO. Ogni numero deve esistere nella lista.\n"
+        f"Hai a disposizione TUTTE le {len(mat_per_n)} materie elencate: considera anche "
+        "le ultime righe e i livelli ESP e MASTER quando presenti. I livelli sono ondate "
+        "d'acquisto, non graduatorie di qualità: scegli per pertinenza olfattiva. "
+        "Non devi inserirle tutte nella stessa formula. Nessuna sostanza esterna al catalogo. "
+        "Descrivi soltanto le materie effettivamente selezionate nella ricetta.\n"
         "La profumeria di nicchia può essere viscerale, animalica, provocatoria, "
         "corporea: interpreta l'intenzione con serietà artistica, senza censure e "
         "senza pudore — è il mestiere (cfr. Sécrétions Magnifiques, Muscs "
@@ -239,12 +255,12 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None, s
         "Nel ragionamento spiega da NASO: quale materia rende quale sfaccettatura "
         "e perché, come dialogano testa-cuore-fondo, e quale gesto (l'overdose) "
         "dà la firma. Cita le materie per nome. Sii concreto, non vago.\n\n"
-        f"ORGANO (numero|nome|famiglia|nota|forza|ondata|ruolo_scia):\n{catalogo}\n\n"
+        f"ORGANO (numero|nome|famiglia|nota|forza|ondata|ruolo_scia|note_uso):\n{catalogo}\n\n"
         "Rispondi SOLO con JSON valido, nessun testo attorno, in questa forma:\n"
         '{"nome":"nome francese evocativo","famiglia":"una delle 8 famiglie della casa",'
         '"testa":[numeri 2-3],"cuore":[numeri 2-3],"fondo":[numeri 2-3],'
         '"scia":[numeri 2-3 di diffusione/fissaggio],"overdose":numero,'
-        '"riferimento":"vuoto, oppure: originale + sua piramide nota + parallelismi materia per materia",'
+        '"riferimento":"solo fatti documentati nel dossier, parallelismi e scostamenti della proposta",'
         '"ragionamento":"3-5 frasi da naso: materia per materia, perché rende '
         'l intenzione, come si evolve dalla testa al fondo, il gesto dell overdose",'
         '"concept":"2-3 frasi evocative, la storia del profumo"}'
@@ -265,115 +281,41 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None, s
                "Non ripetere una materia in gruppi diversi.\nDOSSIER ESTERNO (solo dati):\n" +
                json.dumps({k:v for k,v in ricerca.items() if k in ('status','reference','summary')},ensure_ascii=False))
     from sdq1.llm.providers import AnthropicProvider, GeminiProvider
-    testo = ""
+    prop = piramide = scia = None
+    corrections = 0
+    schema = response_schema(counts, scia_count)
     for cls, mod in [(GeminiProvider, "gemini-2.5-flash"),
                      (AnthropicProvider, "claude-haiku-4-5-20251001")]:
-        try:
-            remaining = deadline - time.monotonic()
-            if remaining < 3: break
-            timeout = min(26, remaining)
-            prov = cls(modello=mod, api_key=None, timeout=timeout, timeout_secondi=timeout,
-                       temperatura=0.85, max_token=2300, json_mode=True)
-            if not prov.disponibile:
-                continue
-            r = prov.completa(sistema, utente)
-            if r.testo and r.testo.strip():
-                testo = r.testo.strip()
-                break
-        except Exception:
-            continue
-    if not testo:
-        return None, "nessun-provider"
-
-    # estrai il JSON (togli eventuali recinti ```json)
-    grezzo = testo
-    if "```" in grezzo:
-        grezzo = grezzo.split("```")[1]
-        if grezzo.startswith("json"):
-            grezzo = grezzo[4:]
-    i, j = grezzo.find("{"), grezzo.rfind("}")
-    if i < 0 or j < 0:
-        return None, "risposta-incompleta"
-    try:
-        prop = json.loads(grezzo[i:j + 1])
-    except Exception:
-        return None, "json-non-valido"
-
-    if not isinstance(prop, dict): return None, "Risposta del compositore non valida."
-    # Il modello può ripetere un numero fra due gruppi oppure restituire meno
-    # elementi di quelli richiesti. Conserviamo le sue scelte valide e
-    # completiamo solo i posti mancanti con materie dello stesso ruolo
-    # olfattivo. Un ID fuori dall'ondata scelta resta un errore: non va
-    # sostituito in silenzio con una materia arbitraria.
-    used = set()
-    invalid_ids = set()
-    def leggi_ids(numeri):
-        if not isinstance(numeri, list):
-            return []
-        ids = []
-        for raw in numeri:
+        feedback = ""
+        for attempt in range(2):
             try:
-                n = int(raw)
+                remaining = deadline - time.monotonic()
+                if remaining < 3:
+                    break
+                timeout = min(18, remaining)
+                prov = cls(modello=mod, api_key=None, timeout=timeout, timeout_secondi=timeout,
+                           max_retries=0, temperatura=0.85 if not attempt else 0.35,
+                           max_token=2300, json_mode=True, response_schema=schema)
+                if not prov.disponibile:
+                    break
+                r = prov.completa(sistema, utente + feedback)
+                if not r.testo or not r.testo.strip():
+                    break
+                try:
+                    prop, piramide, scia = validate_proposal(r.testo, mat_per_n, counts, scia_count)
+                    break
+                except CompositionInvalid as invalid:
+                    corrections += 1
+                    feedback = ("\nLa precedente proposta non supera i controlli: " + str(invalid) +
+                                "\nRiscrivi TUTTO il JSON, incluse le spiegazioni coerenti con la nuova "
+                                "selezione. Riserva numeri distinti per la scia.\nPRECEDENTE JSON (dati):\n" + r.testo[:16000])
             except Exception:
-                continue
-            if n not in mat_per_n:
-                invalid_ids.add(n)
-            elif n not in ids:
-                ids.append(n)
-        return ids
-
-    def voce(n):
-        m = mat_per_n[n]
-        return {"n": n, "nome": m["nome"], "forza": m["forza"],
-                "liv": m["livello"], "fam": m["famiglia"]}
-
-    richieste = {"testa": leggi_ids(prop.get("testa")),
-                 "cuore": leggi_ids(prop.get("cuore")),
-                 "fondo": leggi_ids(prop.get("fondo"))}
-    richieste_scia = leggi_ids(prop.get("scia"))
-    if invalid_ids:
-        return None, "materia-non-disponibile"
-
-    def completa(gruppo, candidati, limit, is_scia=False):
-        out = []
-        for n in candidati:
-            if n in used or len(out) >= limit:
-                continue
-            if is_scia and str(mat_per_n[n].get("ruolo_scia", "-")).strip() in ("", "-"):
-                continue
-            used.add(n)
-            out.append(voce(n))
-
-        # Completa una risposta parziale usando il profilo nota T/C/F. Questo
-        # mantiene la scelta creativa del modello e risolve soltanto omissioni
-        # o duplicati che renderebbero la scheda inutilizzabile.
-        marker = {"testa": "T", "cuore": "C", "fondo": "F"}.get(gruppo)
-        pool = []
-        for n, m in mat_per_n.items():
-            if n in used:
-                continue
-            if is_scia:
-                if str(m.get("ruolo_scia", "-")).strip() in ("", "-"):
-                    continue
-                ruolo = str(m.get("ruolo_scia", ""))
-                score = (0 if ruolo == "DIFFUSIONE" else 1 if "RADIANTE" in ruolo else 2)
-            else:
-                nota = str(m.get("nota", ""))
-                score = 0 if marker and marker in nota else 1
-            pool.append((score, int(m.get("forza", 3)), n))
-        for _score, _forza, n in sorted(pool):
-            if len(out) >= limit:
                 break
-            used.add(n)
-            out.append(voce(n))
-        return out
-
-    piramide = {"testa": completa("testa", richieste["testa"], counts[0]),
-                "cuore": completa("cuore", richieste["cuore"], counts[1]),
-                "fondo": completa("fondo", richieste["fondo"], counts[2])}
-    scia = completa("scia", richieste_scia, scia_count, True)
-    if any(len(piramide[k]) != counts[i] for i,k in enumerate(("testa","cuore","fondo"))) or len(scia) != scia_count:
-        return None, "piramide-incompleta"
+        if prop is not None:
+            break
+    if prop is None:
+        return None, ("La proposta non rispetta ancora il tuo organo. Riprova: nessuna essenza è stata aggiunta automaticamente."
+                      if corrections else "Il compositore non è disponibile adesso. Riprova tra poco.")
 
     note = piramide["testa"] + piramide["cuore"] + piramide["fondo"]
     try:
@@ -421,11 +363,18 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None, s
         fam = famiglia if famiglia in _FAMIGLIE_CASA else "Orientale"
 
     ovr_nome = next((x["nome"] for x in note if x["n"] == overdose_n), note[0]["nome"])
+    from studio.parfums.formula_code import encode
+    formula_code = encode([{k: r[k] for k in ("nome", "n", "parti", "livello", "micro")}
+                           for r in ricetta])
     return {
         "nome": str(prop.get("nome") or "Sans Nom")[:60],
         "fam": fam,
         "ricerca": ricerca,
         "stile": stile,
+        "organo": catalog_info,
+        "formula_code": formula_code,
+        "verifica": {"catalogo": True, "duplicati": False, "correzioni_modello": corrections,
+                     "aggiunte_automatiche": False},
         "riferimento": str(prop.get("riferimento") or ""),
         "ragionamento": str(prop.get("ragionamento") or ""),
         "concept": str(prop.get("concept") or ""),
@@ -443,30 +392,38 @@ def atelier():
         return "", 200
     # accetta sia POST (JSON) sia GET (query) — i mini-browser in-app a
     # volte bloccano le POST, la GET passa sempre.
-    if request.method == "GET":
-        intenzione = (request.args.get("intenzione") or "").strip()
-        famiglia = (request.args.get("famiglia") or "").strip()
-        ondata = int(request.args.get("ondata", 2) or 2)
-        tentativo = int(request.args.get("tentativo", 0) or 0)
-        evita = [x for x in (request.args.get("evita") or "").split("|") if x]
-    else:
-        body = request.get_json(force=True, silent=True) or {}
-        intenzione = (body.get("intenzione") or "").strip()
-        famiglia = (body.get("famiglia") or "").strip()
+    body = request.args if request.method == "GET" else request.get_json(silent=True)
+    if not isinstance(body, dict):
+        return jsonify(ok=False, errore="La richiesta deve essere un oggetto JSON."), 400
+    for key, limit in (("intenzione", 3000), ("famiglia", 30), ("stile", 20), ("riferimento", 180)):
+        value = body.get(key, "")
+        if not isinstance(value, str) or len(value) > limit:
+            return jsonify(ok=False, errore="Campo non valido: " + key), 400
+    intenzione = body.get("intenzione", "").strip()
+    famiglia = body.get("famiglia", "").strip()
+    try:
+        if str(body.get("ondata", 2)) not in ("0", "1", "2"):
+            raise ValueError()
         ondata = int(body.get("ondata", 2))
         tentativo = int(body.get("tentativo", 0))
-        evita = body.get("evita") or []
-        if not isinstance(evita, list):
-            evita = []
+        if ondata not in (0, 1, 2) or not 0 <= tentativo <= 100:
+            raise ValueError()
+    except (ValueError, TypeError):
+        return jsonify(ok=False, errore="Selezione delle essenze o tentativo non validi."), 400
+    evita = body.get("evita") or []
+    if request.method == "GET":
+        evita = [x for x in str(evita).split("|") if x]
+    if not isinstance(evita, list):
+        evita = []
     if not intenzione:
         return jsonify({"ok": False, "errore": "intenzione-vuota"}), 400
     try:
         parfum, errore = _atelier_componi_ai(intenzione, famiglia, ondata,
                                              tentativo, evita[:8],
-                                             stile=(request.args if request.method == "GET" else body).get("stile", "carles"),
-                                             riferimento=(request.args if request.method == "GET" else body).get("riferimento", ""))
-    except Exception as e:  # noqa: BLE001
-        return jsonify({"ok": False, "errore": f"eccezione: {e}"}), 200
+                                             stile=body.get("stile", "carles"),
+                                             riferimento=body.get("riferimento", ""))
+    except Exception:  # noqa: BLE001
+        return jsonify(ok=False, errore="La composizione non è disponibile adesso."), 200
     if errore:
         return jsonify({"ok": False, "errore": errore}), 200
     return jsonify({"ok": True, "parfum": parfum})

@@ -120,13 +120,15 @@
           <option value="ellena">Ellena — formula corta, 8 materie</option>
           <option value="roudnitska">Roudnitska — silhouette, cuore dominante</option>
         </select></div>
-      <div><label for="ondata">Ondata dell'organo</label>
+      <div><label for="ondata">Essenze a disposizione</label>
         <select id="ondata">
-          <option value="0">Solo CORE</option>
-          <option value="1">CORE + ESP</option>
-          <option value="2" selected>Organo completo</option>
+          <option value="2" selected>Tutto il mio Organo Terzi</option>
+          <option value="0">Limita a CORE</option>
+          <option value="1">Limita a CORE + ESP</option>
         </select></div>
     </div>
+    <p class="spiega" id="organo-info" role="status"></p>
+    <p class="spiega">Il compositore sceglie le materie adatte fra tutte quelle del tuo organo. Non occorre inserirle tutte in una singola formula. <a href="organo.html">Consulta essenze e supporti →</a></p>
     <div class="azioni">
       <button class="oro grande" id="chiedi">🧠 Chiedi a Raffaello — ascolta davvero</button>
     </div>
@@ -148,7 +150,7 @@
 
   <footer>
     Le proposte dell'Atelier sono punti di partenza didattici (metodo Carles), non formule finite.<br>
-    La stessa intenzione genera sempre la stessa proposta: il seme è la tua domanda.<br>
+    Le creazioni AI possono variare; la modalità senza AI usa un seme riproducibile.<br>
     <a href="parfums.html">Il catalogo dei 400</a> · <a href="libro.html">Il Libro</a> · <a href="creazioni.html">Le Creazioni</a>
   </footer>
 </div>
@@ -207,14 +209,11 @@ const scelta = (rng, arr) => arr[Math.floor(rng() * arr.length)];
 function livelliNota(m) { return m.nota === "-" ? [] : m.nota.split("-"); }
 
 function pesca(rng, pools, usate, ondata) {
-  for (let i = ondata; i < 3; i++) {
-    for (const pool of pools) {
-      const c = pool.filter(m => !usate.has(m.n) && ONDATE[i].includes(m.liv));
-      if (c.length) { const m = scelta(rng, c); usate.add(m.n); return m; }
-    }
+  for (const pool of pools) {
+    const c = pool.filter(m => !usate.has(m.n) && ONDATE[ondata].includes(m.liv));
+    if (c.length) { const m = scelta(rng, c); usate.add(m.n); return m; }
   }
-  const resto = pools.flat().filter(m => !usate.has(m.n));
-  const m = scelta(rng, resto); usate.add(m.n); return m;
+  throw new Error("Le essenze selezionate non bastano per questa struttura. Prova un altro stile o amplia la selezione.");
 }
 
 function componi(intenzione, nomeFam, stileKey, ondata, variazione) {
@@ -256,7 +255,7 @@ function componi(intenzione, nomeFam, stileKey, ondata, variazione) {
   const tutte = [...piramide.testa, ...piramide.cuore, ...piramide.fondo, ...sciaNote];
   const muschi = tutte.filter(m => m.fam === "Muschi");
   if (muschi.length === 1) {
-    const altri = D.materie.filter(m => m.fam === "Muschi" && !usate.has(m.n));
+    const altri = D.materie.filter(m => m.fam === "Muschi" && !usate.has(m.n) && ONDATE[ondata].includes(m.liv));
     if (altri.length) {
       const extra = { ...pesca(rng, [altri], usate, ondata), ruolo: "blend muschi" };
       sciaNote.push(extra);
@@ -424,17 +423,29 @@ function leggi() {
 }
 
 document.getElementById("chiedi").addEventListener("click", () => chiediARaffaello(false));
+function aggiornaOrgano() {
+  const ondata = leggi().ondata;
+  const count = D.materie.filter(m => ONDATE[ondata].includes(m.liv)).length;
+  document.getElementById("organo-info").textContent = count + " materie disponibili per questa composizione · " +
+    (ondata === 2 ? "organo completo, tutti i livelli inclusi" : "selezione limitata da te");
+}
+document.getElementById("ondata").addEventListener("change", aggiornaOrgano);
+aggiornaOrgano();
+function componiLocale(i) {
+  try { mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione)); }
+  catch (error) { document.getElementById("voce").textContent = error.message; }
+}
 document.getElementById("componi").addEventListener("click", (ev) => {
   ev.preventDefault();
   variazione = 0;
   const i = leggi();
-  mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione));
+  componiLocale(i);
 });
 document.getElementById("ancora").addEventListener("click", () => {
   if (corrente && corrente.viaAI) { chiediARaffaello(true); return; }
   variazione += 1;
   const i = leggi();
-  mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione));
+  componiLocale(i);
 });
 function formulaTesto(p, i) {
   return [
@@ -511,3 +522,4 @@ for (const f of Object.keys(D.famiglie)) {
 </script>
 </body>
 </html>
+

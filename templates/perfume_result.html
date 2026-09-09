@@ -29,8 +29,11 @@
 {% else %}<p>{{ archive_error or 'Questa è una bozza. Scarica la scheda per conservarla.' }}</p>{% endif %}</div></aside>
 </section>
 <section class="formula"><div class="section-head"><div><p class="eyebrow">IL REGISTRO DEL NASO</p><h2>La formula</h2></div><button id="download-record" class="action">Scarica scheda e formula</button></div>
-<p>Parti su 100 di concentrato · {{ p.liv }}</p><div class="table-wrap"><table><thead><tr><th scope="col">Nota</th><th scope="col">Materia</th><th scope="col">Parti</th></tr></thead><tbody>
-{% for name,number,parts,level,micro in p.ricetta %}<tr><td>{{ level }}</td><td>{{ name }}{% if micro %}<small>Forza 5 · diluizione 1%</small>{% endif %}</td><td>{{ parts }}</td></tr>{% endfor %}
+{% if p.organo %}<p>Scelta fra {{ p.organo.materie_disponibili }} materie del tuo {{ p.organo.nome }}{% if p.organo.ondata == 2 %} completo{% endif %}. Ogni ingrediente è verificato nel catalogo.</p>
+<details><summary>Solventi e supporti del tuo organo</summary><p>{% for m in p.organo.supporti %}{{ m.nome }}{% if not loop.last %} · {% endif %}{% endfor %}</p><p>Disponibili per preparazione e diluizione; non aggiunti automaticamente alla piramide olfattiva.</p></details>{% endif %}
+{% if p.formula_code %}<p><a href="/formula.html#{{ p.formula_code }}">Apri il codice di questa formula e il calcolo delle parti →</a></p>{% endif %}
+<p>Parti relative su 100 · {{ p.liv }} · proposta didattica</p><div class="table-wrap"><table><thead><tr><th scope="col">Nota</th><th scope="col">Materia del tuo organo</th><th scope="col">Parti</th></tr></thead><tbody>
+{% for name,number,parts,level,micro in p.ricetta %}<tr><td>{{ level }}</td><td><small>N° {{ number }}</small> {{ name }}{% if micro %}<small>Forza 5 · preparazione in diluizione da precisare</small>{% endif %}</td><td>{{ parts }}</td></tr>{% endfor %}
 </tbody></table></div><p class="caption">Punto di partenza didattico, non formula finita: lavorare in diluizione e correggere col naso. Verificare i requisiti applicabili prima della vendita.</p></section>
 <footer><p>Concept e direzione creativa: Claudio Terzi · Terzi Parfums</p><a href="/atelier.html">Componi un’altra creazione →</a></footer>
 <dialog id="image-dialog" aria-label="Flacone ingrandito"><button id="close-dialog" class="action">Chiudi</button><div id="large-bottle"></div></dialog>
