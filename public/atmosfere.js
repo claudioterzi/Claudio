@@ -26,7 +26,7 @@
   const path = location.pathname.replace(base.pathname, '').replace(/\/$/, '').replace(/\.html$/, '');
   const aliases = {'': 'index', profumo: 'atelier', flight: 'flight_hunter', 'atelier/archivio': 'libro', 'atelier/esempio': 'opera'};
   const key = aliases[path] || path;
-  const available = ["alpha", "atelier", "formula", "home", "index", "libro", "organo", "parfums", "viaggi"];
+  const available = ["alpha", "atelier", "creazioni", "flight_hunter", "formula", "home", "index", "libro", "opera", "opuscolo", "oracolo", "organo", "parfums", "parti", "spesa", "valigia", "viaggi"];
   const scene = available.includes(key) ? scenes[key] : null;
   if (!scene) return;
   const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = new URL('atmosfere.css', base); document.head.appendChild(css);

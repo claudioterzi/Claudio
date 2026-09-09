@@ -561,8 +561,11 @@ def profumo():
             return render_result('', error=str(invalid)), 400
     elif example:
         from pathlib import Path
-        with (Path(__file__).parent / 'public/images/ispirazione-cantiere.jpg').open('rb') as image_file:
-            foto = prepare_photo(image_file)
+        try:
+            with (Path(__file__).parent / 'studio/parfums/examples/cantiere.jpg').open('rb') as image_file:
+                foto = prepare_photo(image_file)
+        except (OSError, PhotoInvalid):
+            return render_result('', error='La fotografia di esempio non è disponibile adesso. Puoi scegliere una tua foto.'), 503, {'X-Terzi-Photo-Status':'example_unavailable'}
     intenzione = (source.get("q") or source.get("intenzione") or "").strip()
     if not intenzione and foto:
         intenzione = PHOTO_INTENTION
@@ -600,7 +603,7 @@ def profumo():
             parfum, errore = _atelier_componi_ai(intenzione, famiglia, ondata,
                 stile=source.get("stile", "carles"), riferimento=source.get("riferimento", ""), **photo_options)
         except PhotoUnavailable as unavailable:
-            return render_result(intenzione, error=str(unavailable), customer=cliente), 503
+            return render_result(intenzione, error=str(unavailable), customer=cliente), 503, {'X-Terzi-Photo-Status':unavailable.code, 'Cache-Control':'no-store'}
         except Exception:
             parfum, errore = None, "La composizione non è disponibile adesso. Riprova dall’Atelier."
         record = None

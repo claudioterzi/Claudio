@@ -12,7 +12,9 @@
   body[data-atmosfera] .copertina{background:rgba(8,12,18,.68)}
   body[data-atmosfera] label{font-size:max(.875rem,14px);letter-spacing:.065em}
   body[data-atmosfera] .spiega{font-size:.875rem}
-  body[data-atmosfera] .creation-notes,body[data-atmosfera] .formula{background:rgba(8,12,17,.88);padding:24px;border:1px solid #514936;border-radius:6px}
+  body[data-atmosfera] .creation-notes,body[data-atmosfera] .studio .formula{background:rgba(8,12,17,.88);padding:24px;border:1px solid #514936;border-radius:6px}
+  body[data-atmosfera] header a,body[data-atmosfera] footer a{color:#e5c991}
+  body[data-atmosfera="atelier"] #cliente{background:#0c1016;color:#eee4d4;border:1px solid #59503d;border-radius:8px}
   body[data-atmosfera] .creation-notes section{margin-bottom:1.5rem}
   body[data-atmosfera] .creation-notes li{margin:.6rem 0}
   body[data-atmosfera] .creation-notes ul{padding-left:1.1rem}
@@ -35,7 +37,7 @@
     body[data-atmosfera] .banco{padding:1.2rem}
     body[data-atmosfera] .col-tx{min-width:0}
     .terzi-atmosfera-nota{margin:1rem 0 1.2rem}
-    body[data-atmosfera] .creation-notes,body[data-atmosfera] .formula{padding:16px}
+    body[data-atmosfera] .creation-notes,body[data-atmosfera] .studio .formula{padding:16px}
   }
 }
 @media print{.terzi-atmosfera,.terzi-atmosfera-nota,.terzi-raffaello,.terzi-raffaello-dialog{display:none!important}}

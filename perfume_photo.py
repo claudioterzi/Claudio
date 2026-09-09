@@ -9,6 +9,7 @@ import hashlib
 import io
 import json
 import os
+import socket
 import urllib.error
 import urllib.request
 from urllib.parse import quote
@@ -22,7 +23,9 @@ class PhotoInvalid(ValueError):
 
 
 class PhotoUnavailable(RuntimeError):
-    pass
+    def __init__(self, message, code='vision_unavailable'):
+        super().__init__(message)
+        self.code = code
 
 
 def prepare_photo(upload):
@@ -55,7 +58,7 @@ def prepare_photo(upload):
         raise PhotoInvalid('Non riesco a leggere questa foto. Prova un JPEG, PNG o WebP valido.') from exc
 
 
-def analyze_photo(photo, timeout=12):
+def analyze_photo(photo, timeout=18):
     key = os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY')
     if not key:
         raise PhotoUnavailable('L’analisi delle foto non è configurata. Puoi descrivere l’immagine nell’intenzione.')
@@ -114,6 +117,10 @@ def analyze_photo(photo, timeout=12):
                     osservazioni=observations,
                     associazioni=[{k: x[k] for k in ('elemento', 'evocazione')} for x in associations],
                     direzione=analysis['direzione'], incertezze=analysis['incertezze'])
+    except urllib.error.HTTPError as exc:
+        raise PhotoUnavailable('Il servizio di analisi delle foto non ha accettato la richiesta. La foto non è stata usata per inventare una formula.', 'provider_http_' + str(exc.code)) from exc
+    except (TimeoutError, socket.timeout) as exc:
+        raise PhotoUnavailable('L’analisi della foto ha impiegato troppo tempo. Riprova fra poco.', 'vision_timeout') from exc
     except Exception as exc:
         # No retries or text-only substitution: the photo must actually be analyzed.
-        raise PhotoUnavailable('Non sono riuscito ad analizzare la foto. Riprova oppure descrivila nell’intenzione senza allegarla.') from exc
+        raise PhotoUnavailable('Non sono riuscito ad analizzare la foto. Riprova oppure descrivila nell’intenzione senza allegarla.', 'vision_invalid_response' if isinstance(exc, (ValueError, KeyError, TypeError, IndexError)) else 'vision_connection') from exc
