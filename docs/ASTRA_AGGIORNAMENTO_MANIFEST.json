@@ -2,16 +2,16 @@
   "version": "1.0.0",
   "date": "2026-09-09",
   "repositories": [
-    "Claudioterzi/Claudio",
-    "Claudioterzi82/Claudio"
+    "Claudioterzi/Claudio"
   ],
   "branch": "codex/rrr-astra-20260909",
-  "status": "candidate_pending_review",
+  "status": "reviewed_candidate_PR_27",
   "unavailable_repository": "Claudioterzi82/Raffaello-R3-Infinity: 404",
   "files": {
     "MEMORIA_PROGETTO.md": "9447c248de2d611507d301c42286562ab770833924db9677aae974e8f46fa75b",
     "R3_BENCHMARK_PROTOCOL_v1.md": "12541a4f59cc65512949970093868e3045d09739f1ba3230a422f455b9d8d571",
     "README.md": "3d5d76a9d8648fa275ce298e4305d720df2732d14c1f1afd4d298910ddefb1ce",
+    "docs/ALLINEAMENTO_DRIVE_ASTRA.md": "b7635c61c0621a62da495fdad53678e40f5adcd42188b05bd1966235a20a6e98",
     "docs/ASTRA_CAPACITA.md": "5e163ac2e07dc85c9bc6933e09210d9811ecd07ab2fc84eff8ffd5c9b8e15004",
     "docs/ASTRA_TEST_REPORT.json": "1a11d5ee3ed4d0e3b8abb3d89dae1ffb5010033cc37a674512ee72bddf551e34",
     "docs/PROTOCOLLO_RRR_ASTRA.md": "1681eda8ee4908ec64d08ccd50390cccafcb9c7d114cc1ba8a9c94ec906b440c",
@@ -22,9 +22,13 @@
   },
   "historical_identity": "preserved",
   "astra_api": "not tested",
-  "drive_native_documents": "addenda planned; see actual sync readback in delivery",
+  "drive_native_documents": {
+    "index": "403 PERMISSION_DENIED; unchanged",
+    "other_documents": "not attempted; addenda retained in docs/ALLINEAMENTO_DRIVE_ASTRA.md"
+  },
   "repository_status": {
-    "Claudioterzi/Claudio": "branch created; commit pending",
-    "Claudioterzi82/Claudio": "blocked: 403 Resource not accessible by integration"
-  }
+    "Claudioterzi/Claudio": "single canonical target; PR 27",
+    "Claudioterzi82/Claudio": "not targeted after user requested one repository"
+  },
+  "canonical_repository": "Claudioterzi/Claudio"
 }
