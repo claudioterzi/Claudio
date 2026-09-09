@@ -911,22 +911,34 @@ def viaggi_pianifica():
     if request.method == "OPTIONS":
         return "", 200
     body = request.get_json(force=True, silent=True) or {}
+    if not isinstance(body, dict):
+        return jsonify({"errore": "serve un oggetto JSON"}), 400
     try:
         budget = int(body.get("budget", 0))
         giorni = int(body.get("giorni", 3))
     except (TypeError, ValueError):
         return jsonify({"errore": "budget e giorni devono essere numeri"}), 400
+    if budget <= 0 or giorni <= 0:
+        return jsonify({"errore": "budget e giorni devono essere positivi"}), 400
     mese = body.get("mese")
-    mese = int(mese) if mese not in (None, "", 0, "0") else None
+    try:
+        mese = int(mese) if mese not in (None, "", 0, "0") else None
+    except (TypeError, ValueError):
+        return jsonify({"errore": "mese deve essere un numero tra 1 e 12"}), 400
     if mese is not None and not 1 <= mese <= 12:
         return jsonify({"errore": "mese deve essere tra 1 e 12"}), 400
     tipo = body.get("tipo") or ()
     if isinstance(tipo, str):
         tipo = (tipo,)
+    if not isinstance(tipo, (list, tuple)) or any(not isinstance(t, str) for t in tipo):
+        return jsonify({"errore": "tipo deve contenere nomi di categorie"}), 400
     tipo = tuple(t for t in tipo if t in TIPI)
 
     # ── Prezzi REALI dalla città dell'utente (se indicata) ────────────────
-    origine = (body.get("origine") or "").strip()
+    origine = body.get("origine") or ""
+    if not isinstance(origine, str):
+        return jsonify({"errore": "origine deve essere una città o aeroporto"}), 400
+    origine = origine.strip()
     override_volo = None
     origine_ok = False
     nota_origine = None
