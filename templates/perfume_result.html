@@ -15,7 +15,13 @@
 </button><p class="caption" id="image-caption">Flacone Atelier · visualizzazione di progetto</p>
 <div class="actions">{% if image_token %}<button id="generate-image" class="action" data-token="{{ image_token }}">Crea il ritratto olfattivo</button>{% endif %}<button id="download-image" class="action">Scarica immagine</button><button id="print-label" class="action">Stampa etichetta</button></div>
 <p role="status" id="image-status" class="status"></p></div>
-<aside class="creation-notes"><p class="eyebrow">IL CARATTERE</p><p class="concept">{{ p.concept }}</p>
+<aside class="creation-notes">{% if p.ricerca and p.ricerca.reference %}
+<section aria-label="Ricerca del riferimento"><h2>Il riferimento, prima della creazione</h2>
+{% if p.ricerca.status == 'sourced' %}<p>Ricerca web del {{ p.ricerca.consulted_at[:10] }} · {{ p.ricerca.reference }}</p><p style="white-space:pre-wrap">{{ p.ricerca.summary }}</p><ul>{% for source in p.ricerca.sources %}<li><a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }}</a></li>{% endfor %}</ul>
+{% if p.ricerca.suggestions %}<iframe title="Suggerimenti di ricerca Google" sandbox="allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer" srcdoc="{{ p.ricerca.suggestions }}" style="width:100%;height:180px;border:0;background:white"></iframe>{% endif %}
+{% else %}<p>Fonti non disponibili per questo riferimento. La proposta seguente è un’interpretazione creativa non verificata rispetto all’originale.</p>{% endif %}</section>
+{% endif %}
+<p class="eyebrow">IL CARATTERE</p><p class="concept">{{ p.concept }}</p>
 {% if p.ragionamento %}<h2>Perché queste materie</h2><p>{{ p.ragionamento }}</p>{% endif %}
 {% if p.riferimento %}<h2>Riferimento olfattivo</h2><p>{{ p.riferimento }}</p>{% endif %}
 <div class="record-state"><span class="eyebrow">{{ 'FORMULA ARCHIVIATA' if record else 'FORMULA NON ARCHIVIATA' }}</span>
