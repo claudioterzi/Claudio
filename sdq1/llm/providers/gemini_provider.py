@@ -17,7 +17,8 @@ class GeminiProvider(ProviderBase):
     nome = "gemini"
 
     def _inizializza(self) -> bool:
-        key = self.api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+        key = ((self.api_key or '').strip() or os.getenv("GOOGLE_API_KEY", '').strip()
+               or os.getenv("GEMINI_API_KEY", '').strip())
         if not key:
             return False
         self.api_key = key
@@ -25,7 +26,7 @@ class GeminiProvider(ProviderBase):
 
     def _completa_impl(self, sistema: str, utente: str) -> tuple[str, dict[str, Any]]:
         modello = self.modello or "gemini-2.5-flash"
-        url = f"{_BASE_URL}/{modello}:generateContent?key={self.api_key}"
+        url = f"{_BASE_URL}/{modello}:generateContent"
 
         gen = {
             "temperature": self.opts.get("temperatura", 0.7),
@@ -49,7 +50,7 @@ class GeminiProvider(ProviderBase):
         req = urllib.request.Request(
             url,
             data=data,
-            headers={"Content-Type": "application/json"},
+            headers={"Content-Type": "application/json", "x-goog-api-key": self.api_key},
             method="POST",
         )
 

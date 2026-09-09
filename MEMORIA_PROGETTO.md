@@ -46,9 +46,21 @@ Esiti verificati dopo la ripresa:
 - Diagnostica perfezionata con codici limitati, senza dati o segreti: distingue
   output mancante, troncamento e blocco del fornitore. Non aggirare un blocco.
 
-Prossimo passo: attendere la pubblicazione di d1e834dd957293ae6aee1ec89117c8aabfca9f06,
-leggere il codice della prova foto e risolvere il difetto specifico; aggiornare
-questo punto con l’esito. Nuovo Gateway ancora bloccato, non è stato attivato.
+Diagnosi e soluzione verificate: errore nella preparazione della richiesta,
+risolto normalizzando gli spazi/ritorni a capo esterni alle chiavi e usando
+l’intestazione x-goog-api-key. Commit foto f3a52461ff37368deb3f079565f0d4013b1c2156.
+Prova browser del 2026-09-09 14:34 UTC RIUSCITA: Ciel de Forges, foto realmente
+interpretata da Gemini 2.5 Flash, 5 osservazioni e 5 associazioni, 12 materie
+canoniche/100 parti. Impronta della foto e decoder TRZ1 corrispondenti.
+Evidenza: docs/evidenze/PHOTO_TEST_2026-09-09.json.
+
+La nuova chiave AI Gateway non è necessaria per questo ripristino: non è stata
+attivata dopo il blocco dell’approvazione automatica. Nessun nuovo servizio
+acquistato. Archivio privato/guest e generazione automatica dei flaconi restano
+incompleti e non vengono presentati come attivi.
+La stessa correzione credenziali è applicata anche al compositore Gemini e
+alla ricerca dei profumi di riferimento: verificare il relativo collaudo online.
+
 
 ## Sessione 2026-09-09 — Organo completo, gusti e flaconi
 

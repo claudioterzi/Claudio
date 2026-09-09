@@ -42,6 +42,19 @@ class ResearchTests(unittest.TestCase):
    r=research_reference('Test');self.assertEqual(r['status'],'sourced');self.assertEqual(len(r['sources']),1)
    payload=json.loads(net.call_args.args[0].data)
    self.assertEqual(payload['tools'],[{'google_search':{}}])
+ def test_pasted_credentials_work_for_both_research_and_composer(self):
+  from sdq1.llm.providers import GeminiProvider
+  body=json.dumps({'candidates':[{'content':{'parts':[{'text':'Test'}]}}]}).encode()
+  with patch.dict('os.environ',{'GOOGLE_API_KEY':' test-only\n'},clear=True),patch('urllib.request.urlopen') as net:
+   net.return_value.__enter__.return_value.read.return_value=body
+   research_reference('Chanel N° 5')
+   self.assertEqual(net.call_args.args[0].get_header('X-goog-api-key'),'test-only')
+   self.assertNotIn('key=',net.call_args.args[0].full_url)
+   provider=GeminiProvider(modello='gemini-2.5-flash',api_key=None,max_retries=0)
+   self.assertTrue(provider.disponibile)
+   provider._completa_impl('Sistema','Intenzione')
+   self.assertEqual(net.call_args.args[0].get_header('X-goog-api-key'),'test-only')
+   self.assertNotIn('key=',net.call_args.args[0].full_url)
  def test_reference_passed_from_page(self):
   with patch('tarocchi_web._atelier_componi_ai',return_value=(None,'test')) as compose:
    with w.app.test_client() as client:

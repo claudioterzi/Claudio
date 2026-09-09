@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-09-09T14:34:54.061919+00:00",
+  "commit": "f3a52461ff37368deb3f079565f0d4013b1c2156",
+  "flow": "Browser pubblico → foto esempio → invio nativo POST /profumo → analisi Gemini → formula",
+  "image_loaded": true,
+  "overflow": false,
+  "record": {
+    "archived": false,
+    "customer": "",
+    "intention": "Un profumo ispirato alla fotografia.",
+    "perfume": {
+      "concept": "Un tramonto operaio, dove il cielo infuocato si fonde con il ferro rovente. Le scintille danzano nell'aria umida, profumo di metallo, fumo e la promessa di un riposo meritato. Una fragranza che è forza, calore e mistero, l'epica del lavoro al crepuscolo.",
+      "fam": "Orientale",
+      "flacone": {
+        "accenti": [
+          "Pompelmo EO",
+          "Cisto EO",
+          "Storace (styrax) resinoide",
+          "Ambroxan"
+        ],
+        "attribution": "Concept e direzione: Claudio Terzi · © 2026 Claudio Terzi",
+        "forma": "volume a goccia allungata, fronte piano e tappo in cristallo",
+        "luce": "chiaroscuro caldo, profondità resinosa",
+        "palette": "ambra intensa e oro brunito",
+        "prompt": "Use case: product-mockup. Create ONE original, photorealistic niche perfume bottle. Art direction by Claudio Terzi. Do not copy a commercial bottle, logo or packaging. Bottle silhouette: volume a goccia allungata, fronte piano e tappo in cristallo. Palette: ambra intensa e oro brunito. Lighting: chiaroscuro caldo, profondità resinosa. Translate these olfactory accents into tactile glass, cap finish and abstract light, not literal ingredients inside the bottle: Pompelmo EO, Cisto EO, Storace (styrax) resinoide, Ambroxan. Refine the geometry and surface details creatively. Thick optical glass, credible refraction, premium materials, exquisite editorial product photography. Square image, front view, full bottle and cap visible, bottle occupies x=25%..75%, y=12%..86%. Keep a flat front face with a blank dark rectangular plaque at x=37%..63%, y=47%..65% so a precise typographic label can be applied separately. No text, letters, logos, watermark, people, additional bottles, advertising layouts or health claims. This is a visual concept, not a manufacturing drawing.",
+        "recipe_fingerprint": "0208f8db0b813bd7f220d0ce139f87ccdfd19f73f32f73077165bf5474fcc2e8",
+        "version": "terzi-visual-2"
+      },
+      "formula_code": "TRZ1.13aff1815ecef350.56:115:T:0-131:80:T:0-75:5:T:1-150:190:C:0-94:70:C:1-166:40:C:1-156:220:F:0-67:80:F:1-107:50:F:1-7:80:S:0-39:40:S:0-144:30:S:1.383dfb9a4cca",
+      "foto": {
+        "analyzed_at": "2026-09-09T14:34:54.061919+00:00",
+        "associazioni": [
+          {
+            "elemento": "Cielo crepuscolare arancio e rosa",
+            "evocazione": "Accordo caldo e avvolgente, con note speziate e ambrate, un tocco di dolcezza fruttata o floreale per l'alba/tramonto"
+          },
+          {
+            "elemento": "Scintille di saldatura e fumo",
+            "evocazione": "Sentore metallico, affumicato, minerale, con una punta di calore e intensità, forse note di incenso o legni bruciati"
+          },
+          {
+            "elemento": "Superficie bagnata e riflessi",
+            "evocazione": "Sensazione acquatica, umida, con un tocco di freschezza minerale o salmastra, che evoca la rugiada o la pioggia"
+          },
+          {
+            "elemento": "Strutture metalliche e ruggine",
+            "evocazione": "Accordo robusto, terroso, con sfumature metalliche e un carattere leggermente ossidato, legni scuri o muschi"
+          },
+          {
+            "elemento": "Atmosfera di lavoro e industria",
+            "evocazione": "Profumo energico, con note di cuoio, resine o catrame, che richiamano l'ambiente di produzione e la fatica"
+          }
+        ],
+        "direzione": "Un profumo che catturi l'energia e la poesia di un cantiere navale al crepuscolo. Dovrebbe evocare il contrasto tra il calore delle scintille e la freschezza umida dell'aria, bilanciando note metalliche e affumicate con la dolcezza e la profondità di un cielo che si spegne. Un'essenza robusta ma raffinata, che suggerisca la forza del lavoro umano e la grandezza delle strutture, con un fondo ambrato e legnoso che conferisca persistenza e mistero.",
+        "esempio_pubblico": "cantiere",
+        "image_sha256": "1946cd4d7031e1e18a8d0ace17b3a49a3f6a8ef466e4a94d9882ea3c051e078f",
+        "incertezze": "Non è possibile determinare la temperatura esatta o la presenza di odori specifici legati ai materiali (es. vernici, oli) che potrebbero essere presenti nell'ambiente reale del cantiere.",
+        "model": "gemini-2.5-flash",
+        "osservazioni": [
+          "Cielo crepuscolare con nuvole striate, tonalità arancio, rosa e grigio",
+          "Grandi strutture industriali e navi in un cantiere navale, con gru e impalcature",
+          "Operaio che salda una nave, generando scintille luminose e fumo",
+          "Superficie bagnata che riflette le luci artificiali e il cielo",
+          "Colori dominanti: ruggine, grigio scuro, arancio del cielo e bagliori metallici"
+        ],
+        "provider": "gemini",
+        "status": "interpreted"
+      },
+      "gusti_cliente": "",
+      "liv": "MASTER",
+      "nome": "Ciel de Forges",
+      "organo": {
+        "fonte": "Organo_Terzi_300.xlsx",
+        "materie_disponibili": 293,
+        "nome": "Organo Terzi 300",
+        "ondata": 2,
+        "sha256": "13aff1815ecef35044352b0baa4709be5484597836e6aba25d87af17179309d5",
+        "supporti": [
+          {
+            "n": 44,
+            "nome": "Alcol etilico profumeria 96%"
+          },
+          {
+            "n": 45,
+            "nome": "Dipropilenglicole (DPG)"
+          },
+          {
+            "n": 46,
+            "nome": "Isopropil miristato (IPM)"
+          },
+          {
+            "n": 124,
+            "nome": "Benzil benzoato"
+          },
+          {
+            "n": 125,
+            "nome": "Trietil citrato (TEC)"
+          },
+          {
+            "n": 285,
+            "nome": "Glucam P-20"
+          },
+          {
+            "n": 286,
+            "nome": "Hercolyn D"
+          }
+        ],
+        "totale": 300
+      },
+      "ovr": "Safraleine",
+      "preferenze": {
+        "items": [],
+        "origin": "context",
+        "status": "none"
+      },
+      "ragionamento": "Per catturare l'energia e la poesia del cantiere al crepuscolo, ho aperto la testa con Pompelmo EO (56) per una freschezza metallica iniziale e Galbano EO/resinoide (75) che introduce una nota verde-resinosa, quasi di metallo ossidato. La Safraleine (131) si innalza subito con la sua sfaccettatura metallica, speziata e cuoiata, evocando le scintille e il calore. Nel cuore, il Gelsomino grandiflorum ass. (94) apporta una dolcezza floreale intensa che richiama i colori del cielo al tramonto, mentre il Cisto EO (150) aggiunge un sentore ambrato e resinoso, terroso. Lo Skatolo 1% (166) è il cuore pulsante, viscerale, che introduce un'animalità sottile, quasi il fumo denso e la fatica umana. Il fondo è ancorato al Betulla (birch tar) EO rett. (67) che sigilla l'accordo con il suo carattere affumicato, catramoso, di cuoio bruciato, richiamando l'industria, all'Amber Xtreme (107) per una persistenza legnosa e ambrata estrema, e allo Storace (styrax) resinoide (156) che aggiunge una nota balsamica, dolce e leggermente cuoiata. L'overdose di Safraleine (131) amplifica il carattere metallico, speziato e leggermente cuoiato, rendendo l'impatto delle scintille quasi tangibile. Per la scia, ho selezionato Ambroxan (7) per la sua profondità ambrata e la sua scia potente, Habanolide (39) per un muschio pulito e radiante, e Ambermax (144) per un'ulteriore amplificazione ambrata e legnosa.",
+      "ricerca": {
+        "reference": "",
+        "sources": [],
+        "status": "not_requested",
+        "summary": ""
+      },
+      "ricetta": [
+        [
+          "Pompelmo EO",
+          56,
+          11.5,
+          "testa",
+          0
+        ],
+        [
+          "Safraleine",
+          131,
+          8,
+          "testa",
+          0
+        ],
+        [
+          "Galbano EO/resinoide",
+          75,
+          0.5,
+          "testa",
+          1
+        ],
+        [
+          "Cisto EO",
+          150,
+          19,
+          "cuore",
+          0
+        ],
+        [
+          "Gelsomino grandiflorum ass.",
+          94,
+          7,
+          "cuore",
+          1
+        ],
+        [
+          "Skatolo 1%",
+          166,
+          4,
+          "cuore",
+          1
+        ],
+        [
+          "Storace (styrax) resinoide",
+          156,
+          22,
+          "fondo",
+          0
+        ],
+        [
+          "Betulla (birch tar) EO rett.",
+          67,
+          8,
+          "fondo",
+          1
+        ],
+        [
+          "Amber Xtreme",
+          107,
+          5,
+          "fondo",
+          1
+        ],
+        [
+          "Ambroxan",
+          7,
+          8,
+          "scia",
+          0
+        ],
+        [
+          "Habanolide",
+          39,
+          4,
+          "scia",
+          0
+        ],
+        [
+          "Ambermax",
+          144,
+          3,
+          "scia",
+          1
+        ]
+      ],
+      "riferimento": "Nessun riferimento a profumi esistenti è stato fornito, la creazione è interamente ispirata all'immagine e alle intenzioni di Claudio, puntando a un'interpretazione artistica del contrasto tra calore industriale e crepuscolo.",
+      "scia": [
+        "Ambroxan",
+        "Habanolide",
+        "Ambermax"
+      ],
+      "stile": "carles",
+      "verifica": {
+        "aggiunte_automatiche": false,
+        "catalogo": true,
+        "correzioni_modello": 1,
+        "duplicati": false
+      }
+    },
+    "schema_version": 1
+  }
+}
