@@ -5,12 +5,12 @@
     ['Simboli', [['index.html', 'Tarocchi'], ['alpha.html', 'Alpha'], ['opuscolo.html', 'Opuscolo']]],
     ['Viaggi', [['viaggi.html', 'Viaggi'], ['parti.html', 'Parti'], ['flight_hunter.html', 'Flight'], ['oracolo.html', 'Oracolo']]],
     ['Profumi', [['atelier.html', 'Atelier'], ['parfums.html', 'Parfums'], ['organo.html', 'Organo'], ['spesa.html', 'Dispensa'], ['valigia.html', 'Valigia'], ['libro.html', 'Libro']]],
-    ['Progetto', [['creazioni.html', 'Creazioni'], ['opera.html', 'Opera'], ['home.html', 'Agorà']]]
+    ['Progetto', [['creazioni.html', 'Creazioni'], ['opera.html', 'Opera'], ['opera-viva.html', 'Opera Viva'], ['home.html', 'Agorà']]]
   ];
   // Mantiene il prefisso anche quando il sito è servito da GitHub Pages.
   var base = new URL('.', document.currentScript.src);
   if (base.pathname === '/') gruppi[3][1].push(['custode/', 'Custode']);
-  var aliases = {'': 'index.html', home: 'home.html', alpha: 'alpha.html',
+  var aliases = {'opera-viva': 'opera-viva.html', '': 'index.html', home: 'home.html', alpha: 'alpha.html',
     viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html'};
   var relativo = location.pathname.indexOf(base.pathname) === 0 ? location.pathname.slice(base.pathname.length) : '';
   var qui = aliases[relativo] || relativo;
@@ -73,3 +73,4 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', monta);
   else monta();
 })();
+

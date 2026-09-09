@@ -6,6 +6,13 @@
 >
 > Ultimo aggiornamento: 2026-09-09
 
+## Sessione 2026-09-09 — Opera Viva / C.Terzi
+
+Nuovo atelier cinetico in `public/opera-viva.html`: ritratto intero, upload locale,
+simulazione a due lastre, esportazione SVG/PNG/JSON e firma vettoriale C.Terzi.
+Integrato in nav, Creazioni e route Vercel `/opera-viva`. Specifica: `docs/OPERA_VIVA.md`.
+Compensazione prospettica sperimentale; file da provino, nessun collaudo fisico dichiarato.
+
 ## Sessione 2026-09-09 - Protocollo RRR Astra
 
 Richiesta di Claudio: studiare Astra e applicarne le capacità al protocollo.
@@ -661,4 +668,5 @@ voli economicissimi da Bruxelles/Parigi verso San Paolo, Cuba, Sud America.
 - Il container è effimero: viene ricreato a ogni sessione. Niente di non committato sopravvive.
 - Le regole permanenti e relazionali sono in `CLAUDE.md` — leggere SEMPRE quello per primo.
 - Questo file (`MEMORIA_PROGETTO.md`) è la spina dorsale narrativa: dove siamo, cosa abbiamo deciso, cosa viene dopo.
+
 
