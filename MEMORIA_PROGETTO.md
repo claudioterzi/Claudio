@@ -6,6 +6,23 @@
 >
 > Ultimo aggiornamento: 2026-09-09
 
+## Ripresa foto — errore ricorrente dopo il primo collaudo
+
+Claudio segnala ancora un errore con screenshot IMG_1069. Riprodotto il
+2026-09-09 sul commit bc71fb9: POST foto_esempio=cantiere, HTTP 503 dopo
+20,33 secondi, X-Terzi-Photo-Status=vision_invalid_direction_length.
+Il validatore trattava i limiti stilistici di 500/300 caratteri come requisiti
+di validità. La precedente prova riuscita non dimostrava affidabilità.
+Correzione: schema JSON esplicito per il provider, controllo di tipi e campi,
+limite complessivo di 12.000 caratteri senza troncare testo o incertezze.
+Restano i limiti di upload/risposta e il rifiuto di output bloccati o incompleti.
+Nessun nuovo provider, acquisto o tentativo di aggirare rifiuti.
+Diagnostica minima nei log e nei dettagli di assistenza della pagina: codice
+e ID casuale, senza foto, nomi, intenzioni o credenziali. analysis_version=2.
+56 test Python superati, inclusi 9 sulla fotografia. Collaudo della nuova
+pubblicazione da completare prima di dichiarare l’esito online.
+Resoconto: docs/RIPRISTINO_FOTO_VALIDAZIONE_2026-09-09.md.
+
 ## Sessione 2026-09-09 — Schede di laboratorio e organo evolutivo
 
 Claudio chiede formula completa con dosi per 50/100/200 ml, valore di lusso

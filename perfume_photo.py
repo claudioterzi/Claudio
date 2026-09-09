@@ -15,6 +15,22 @@ import urllib.request
 
 PHOTO_INTENTION = 'Un profumo ispirato alla fotografia.'
 MAX_UPLOAD = 3_000_000
+# A stylistic request for short prose must not invalidate a real interpretation.
+# Bound the whole retained analysis, without cutting off caveats mid-sentence.
+MAX_ANALYSIS_CHARS = 12_000
+ANALYSIS_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        'osservazioni': {'type': 'array', 'maxItems': 5, 'items': {'type': 'string'}},
+        'associazioni': {'type': 'array', 'maxItems': 5, 'items': {
+            'type': 'object', 'properties': {
+                'elemento': {'type': 'string'}, 'evocazione': {'type': 'string'}},
+            'required': ['elemento', 'evocazione'], 'additionalProperties': False}},
+        'direzione': {'type': 'string'},
+        'incertezze': {'type': 'string'}},
+    'required': ['osservazioni', 'associazioni', 'direzione', 'incertezze'],
+    'additionalProperties': False,
+}
 
 
 class PhotoInvalid(ValueError):
@@ -83,6 +99,7 @@ def analyze_photo(photo, timeout=18):
         {'inline_data': {'mime_type': photo['mime_type'], 'data': base64.b64encode(photo['data']).decode()}},
         {'text': prompt}]}],
         'generationConfig': {'responseMimeType': 'application/json', 'temperature': 0.3,
+                             'responseJsonSchema': ANALYSIS_SCHEMA,
                              'maxOutputTokens': 1500, 'thinkingConfig': {'thinkingBudget': 0}}}
     req = urllib.request.Request(
         'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
@@ -115,27 +132,34 @@ def analyze_photo(photo, timeout=18):
         stage = 'text'
         analysis = json.loads(''.join(x.get('text', '') for x in parts if not x.get('thought')))
         stage = 'fields'
+        if not isinstance(analysis, dict):
+            raise ValueError('invalid analysis')
         observations, associations = analysis.get('osservazioni'), analysis.get('associazioni')
         if not isinstance(observations, list) or not 1 <= len(observations) <= 5:
             raise ValueError('invalid observations')
-        if any(not isinstance(x, str) or not x.strip() or len(x) > 160 for x in observations):
+        if any(not isinstance(x, str) or not x.strip() for x in observations):
             raise ValueError('invalid observation')
         if not isinstance(associations, list) or not 1 <= len(associations) <= 5:
             raise ValueError('invalid associations')
         for x in associations:
             if not isinstance(x, dict):
                 raise ValueError('invalid association')
-            for field, maximum in (('elemento', 160), ('evocazione', 220)):
-                if not isinstance(x.get(field), str) or not x[field].strip() or len(x[field]) > maximum:
+            for field in ('elemento', 'evocazione'):
+                if not isinstance(x.get(field), str) or not x[field].strip():
                     raise ValueError('invalid association')
-        for field, maximum in (('direzione', 500), ('incertezze', 300)):
-            if not isinstance(analysis.get(field), str) or len(analysis[field]) > maximum:
+        for field in ('direzione', 'incertezze'):
+            if not isinstance(analysis.get(field), str):
                 raise ValueError('invalid direction')
         if not analysis['direzione'].strip():
             raise ValueError('no direction')
+        text_size = sum(map(len, observations)) + sum(
+            len(x['elemento']) + len(x['evocazione']) for x in associations
+        ) + len(analysis['direzione']) + len(analysis['incertezze'])
+        if text_size > MAX_ANALYSIS_CHARS:
+            raise ValueError('oversize analysis')
         # Whitelist the returned fields; never persist raw upload or arbitrary model keys.
         stage = 'metadata'
-        return dict(status='interpreted', provider='gemini', model='gemini-2.5-flash',
+        return dict(status='interpreted', analysis_version=2, provider='gemini', model='gemini-2.5-flash',
                     analyzed_at=datetime.now(timezone.utc).isoformat(), image_sha256=photo['sha256'],
                     osservazioni=observations,
                     associazioni=[{k: x[k] for k in ('elemento', 'evocazione')} for x in associations],
@@ -146,9 +170,10 @@ def analyze_photo(photo, timeout=18):
         raise PhotoUnavailable('L’analisi della foto ha impiegato troppo tempo. Riprova fra poco.', 'vision_timeout') from exc
     except Exception as exc:
         # No retries or text-only substitution: the photo must actually be analyzed.
-        known = {'oversize response':'oversize', 'invalid observations':'observations',
-                 'invalid observation':'observation_length', 'invalid associations':'associations',
-                 'invalid association':'association_length', 'invalid direction':'direction_length',
+        known = {'oversize response':'oversize', 'oversize analysis':'analysis_size',
+                 'invalid analysis':'analysis', 'invalid observations':'observations',
+                 'invalid observation':'observation_type', 'invalid associations':'associations',
+                 'invalid association':'association_type', 'invalid direction':'direction_type',
                  'no direction':'empty_direction', 'invalid envelope':'envelope',
                  'missing candidates':'no_candidates', 'missing parts':'no_parts',
                  'truncated output':'truncated', 'provider blocked':'provider_blocked'}

@@ -99,13 +99,14 @@ def _image_signer():
     return URLSafeTimedSerializer(os.environ['OPENAI_API_KEY'], salt='terzi-image-v1')
 
 
-def render_result(intention, perfume=None, error=None, customer='', record=None, archive_error=None):
+def render_result(intention, perfume=None, error=None, customer='', record=None, archive_error=None,
+                  diagnostic=None):
     token = _image_signer().dumps(record['serial']) if record and images_ready() else None
     from perfume_visual import bottle_brief
     visual = perfume.get('flacone') or bottle_brief(perfume) if perfume else None
     return render_template('perfume_result.html', intention=intention, p=perfume, error=error,
                            customer=customer, record=record, archive_error=archive_error,
-                           image_token=token, visual=visual)
+                           image_token=token, visual=visual, diagnostic=diagnostic)
 
 
 @studio.get('/atelier/esempio')

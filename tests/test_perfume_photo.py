@@ -8,7 +8,7 @@ from unittest.mock import patch
 from uuid import uuid4
 from PIL import Image
 
-from perfume_photo import prepare_photo, analyze_photo, PhotoInvalid, PhotoUnavailable, PHOTO_INTENTION
+from perfume_photo import prepare_photo, analyze_photo, PhotoInvalid, PhotoUnavailable, PHOTO_INTENTION, MAX_ANALYSIS_CHARS
 from tarocchi_web import app
 
 def picture():
@@ -43,10 +43,43 @@ class PhotoTests(unittest.TestCase):
             self.assertNotIn('key=', urlopen.call_args.args[0].full_url)
             self.assertEqual(urlopen.call_args.args[0].get_header('X-goog-api-key'), 'test-only')
             self.assertTrue(payload['contents'][0]['parts'][0]['inline_data']['data'])
+            schema = payload['generationConfig']['responseJsonSchema']
+            self.assertEqual(schema['required'], ['osservazioni', 'associazioni', 'direzione', 'incertezze'])
+            self.assertEqual(schema['properties']['associazioni']['maxItems'], 5)
             self.assertEqual(result['osservazioni'], ANALYSIS['osservazioni'])
             self.assertNotIn('private_upload', result)
             self.assertNotIn('data', result)
             self.assertEqual(result['image_sha256'], photo['sha256'])
+
+    def test_long_valid_visual_prose_and_uncertainty_are_preserved_in_full(self):
+        # Regression: a real image interpretation used to fail with
+        # vision_invalid_direction_length solely for exceeding a style hint.
+        reply = dict(osservazioni=['Una luce dorata illumina la superficie. ' * 5],
+            associazioni=[dict(elemento='Il riflesso sulla superficie. ' * 7,
+                               evocazione='Potrebbe suggerire un accordo luminoso. ' * 7)],
+            direzione='Un contrasto creativo tra legni asciutti e aria luminosa. ' * 11,
+            incertezze='La foto non dimostra la composizione reale dei materiali. ' * 7)
+        body = json.dumps({'candidates':[{'finishReason':'STOP', 'content':{'parts':[{'text':json.dumps(reply)}]}}]}).encode()
+        with patch.dict(os.environ, {'GOOGLE_API_KEY':'test-only'}, clear=True), patch('perfume_photo.urllib.request.urlopen') as net:
+            net.return_value.__enter__.return_value.read.return_value = body
+            result = analyze_photo(prepare_photo(io.BytesIO(picture())))
+            for field in reply: self.assertEqual(result[field], reply[field])
+            self.assertEqual(result['analysis_version'], 2)
+            self.assertEqual(net.call_count, 1)
+
+    def test_larger_text_budget_still_rejects_wrong_shapes_and_excessive_content(self):
+        cases = [dict(ANALYSIS, direzione=['invalid type']),
+                 dict(ANALYSIS, osservazioni=[''] ),
+                 dict(ANALYSIS, associazioni=[dict(elemento='Riflesso', evocazione=None)]),
+                 dict(ANALYSIS, incertezze='x' * (MAX_ANALYSIS_CHARS + 1)),
+                 dict(ANALYSIS, osservazioni=['Un riflesso'] * 6),
+                 []]
+        for reply in cases:
+            with self.subTest(reply_type=type(reply).__name__), patch.dict(os.environ, {'GOOGLE_API_KEY':'test-only'}, clear=True), patch('perfume_photo.urllib.request.urlopen') as net:
+                net.return_value.__enter__.return_value.read.return_value = json.dumps({'candidates':[{'content':{'parts':[{'text':json.dumps(reply)}]}}]}).encode()
+                with self.assertRaises(PhotoUnavailable):
+                    analyze_photo(prepare_photo(io.BytesIO(picture())))
+                self.assertEqual(net.call_count, 1)
 
     def test_pasted_key_whitespace_is_removed_and_blank_primary_uses_configured_secondary(self):
         photo = prepare_photo(io.BytesIO(picture()))
@@ -103,6 +136,10 @@ class PhotoTests(unittest.TestCase):
                 response=client.post('/profumo',data={'foto':(io.BytesIO(picture()),'x.jpg')})
                 self.assertEqual(response.status_code,503)
                 self.assertIn('Analisi non disponibile',response.text)
+                self.assertIn('Dettagli per assistenza',response.text)
+                self.assertIn(response.headers['X-Terzi-Photo-Request'],response.text)
+                self.assertIn('vision_unavailable',response.text)
+                self.assertEqual(response.headers['Cache-Control'],'no-store')
                 self.assertEqual(client.post('/profumo',data={'foto_esempio':'../../private'}).status_code,400)
                 self.assertEqual(compose.call_count,1)
 

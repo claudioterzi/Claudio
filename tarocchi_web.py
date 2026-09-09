@@ -605,7 +605,14 @@ def profumo():
             parfum, errore = _atelier_componi_ai(intenzione, famiglia, ondata,
                 stile=source.get("stile", "carles"), riferimento=source.get("riferimento", ""), **photo_options)
         except PhotoUnavailable as unavailable:
-            return render_result(intenzione, error=str(unavailable), customer=cliente), 503, {'X-Terzi-Photo-Status':unavailable.code, 'Cache-Control':'no-store'}
+            diagnostic = {'code': unavailable.code, 'request_id': uuid.uuid4().hex[:12]}
+            # Diagnostic only: never log the photograph, customer, intention or key.
+            app.logger.warning(json.dumps({'event': 'perfume_photo_failed', **diagnostic}))
+            return render_result(intenzione, error=str(unavailable), customer=cliente,
+                                 diagnostic=diagnostic), 503, {
+                'X-Terzi-Photo-Status': unavailable.code,
+                'X-Terzi-Photo-Request': diagnostic['request_id'],
+                'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer'}
         except Exception:
             parfum, errore = None, "La composizione non è disponibile adesso. Riprova dall’Atelier."
         record = None
