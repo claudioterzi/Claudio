@@ -74,3 +74,23 @@ Sono opportunità da confrontare con l’organo esistente, non miglioramenti
 sensoriali già dimostrati. Disponibilità commerciale, lotti, documenti e
 preparazione vanno confermati prima dell’ammissione. Il pannello pubblico è
 un registro leggibile; non espone comandi amministrativi al visitatore.
+
+## Collaudo della pubblicazione
+
+Commit applicativo be46f7c87b59a3ead25f9b1165e3f5a42f68d73e: Vercel success.
+54 test Python superati, più test Node del bilancio di massa.
+Browser Chrome sul sito pubblico: dosi ml e grammi corrette, preparazioni
+mancanti aggiornate, densità cancellata con tastiera disabilita le azioni e
+azzera le pesate. Il decoder TRZ1 recupera le 12 materie di Ferro di Luce e
+apre lo stesso laboratorio. Registro evolutivo con tre proposte e 300 voci
+storiche, senza overflow orizzontale dell’intera pagina a 1348 px.
+
+Scaricata realmente la scheda JSON dal decoder alle 14:57 UTC; verificati
+formula, 12 ingredienti, lotti 50/100/200 g, bilanci di massa e indicazione
+production_validated=false. L’attesa automatica dell’evento download è scaduta,
+ma il file è stato ricevuto correttamente e verificato nel filesystem condiviso.
+La densità 0,85 g/ml usata per la prova in volume è un dato sintetico di test,
+non una misura del profumo. Il valore predefinito pubblico resta vuoto.
+Nessun collaudo fisico, stampa cartacea o verifica su iPhone è stato eseguito.
+
+Evidenza: docs/evidenze/LABORATORIO_TEST_2026-09-09.json.

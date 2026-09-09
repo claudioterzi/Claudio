@@ -26,6 +26,16 @@ solo il catalogo attivo. Nessun comando amministrativo esposto al pubblico.
 Catalogo attuale: 293 materie olfattive e 7 supporti, nessuna rimossa/acquistata.
 Resoconto: docs/LABORATORIO_ORGANO_EVOLUTIVO_2026-09-09.md.
 
+Pubblicazione e collaudo conclusi: commit applicativo
+be46f7c87b59a3ead25f9b1165e3f5a42f68d73e, Vercel success. Verificati nel
+browser i lotti in volume e massa, l’azzeramento delle dosi quando manca la
+densità, il conteggio delle preparazioni mancanti e il decoder TRZ1. Scaricato
+e verificato il JSON di laboratorio: 12 materie, tre lotti con bilancio di
+massa corretto, production_validated=false. Le tre proposte sono visibili
+nell’organo pubblico, che conserva tutte le 300 voci. Evidenza in
+docs/evidenze/LABORATORIO_TEST_2026-09-09.json. Nessun test fisico del profumo
+né collaudo su iPhone effettuato in questa sessione; i test browser sono Chrome.
+
 ## Punto di ripresa 2026-09-09 — Atmosfere e fotografia
 
 Claudio richiede continuità dopo le interruzioni: ripartire dall’ultimo commit,
