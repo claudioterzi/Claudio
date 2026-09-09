@@ -6,6 +6,20 @@
 >
 > Ultimo aggiornamento: 2026-09-09
 
+## Ripresa richiesta — attivazione database pronta, 2026-09-09
+
+Verificato main 7911b58e e Vercel success. API Vercel con token autorizzato:
+HTTP 200 per installazioni (nessuna), prodotto Upstash Redis e piani. Piano
+Free disponibile senza carta; configurazione proposta fra1, eviction false,
+autoUpgrade false, prodPack false. Dettagli e IDs in
+docs/ATTIVAZIONE_ARCHIVIO_UPSTASH.md. Nessuna risorsa o credenziale creata.
+Il percorso ufficiale CLI richiede accettazione delle condizioni nel browser
+dell’utente per la prima installazione (userActionRequired); la skill Vercel
+Marketplace richiede questo passaggio dell’account. Attendere tale accettazione,
+poi verificare se è già stata creata una risorsa prima di procedere. Non ripetere
+la creazione AI Gateway precedentemente respinta. Nessun nuovo test applicativo
+necessario in questa ripresa: solo letture remote e documentazione.
+
 ## Continuità dopo chiusure accidentali — richiesta di Claudio, 2026-09-09
 
 Claudio chiede di preservare il lavoro anche quando chiude per sbaglio l’app.
