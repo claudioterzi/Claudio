@@ -49,7 +49,7 @@
         const base=[(hex>>16)&255,(hex>>8)&255,hex&255];
         const strength=material==='glass'?.22+lambert*.66:.2+lambert*.95;
         const rgb=base.map((x,k)=>Math.min(255,Math.round(x*strength+shine*(material==='glass'?185:95)+edge*[88,101,104][k])));
-        polys.push({points,depth:mid[2],fill:'rgb('+rgb.join(',')+')',edge:material==='glass'});
+        polys.push({points,depth:mid[2],rgb,fill:'rgb('+rgb.join(',')+')',edge:material==='glass'});
       }
     }
     surface([[0,-1.43],[1.35,-1.43],[1.24,-1.28],[0,-1.28]],96,0,0x34414a,'metal');
@@ -63,7 +63,14 @@
       surface([[spec.capRadius+.006,y],[spec.capRadius+.006,y+.008]],64,0,spec.metal,'metal');
     }
     polys.sort((a,b)=>a.depth-b.depth);
-    for(const p of polys){const points=p.points.map(project);ctx.beginPath();points.forEach((v,i)=>i?ctx.lineTo(...v):ctx.moveTo(...v));ctx.closePath();ctx.fillStyle=p.fill;ctx.fill();ctx.strokeStyle=p.fill;ctx.lineWidth=.6;ctx.stroke();}
+    const left=project([-w,0,0])[0],right=project([w,0,0])[0];
+    const reflection=ctx.createLinearGradient(left,0,right,0);
+    for(const [at,alpha] of [[0,0],[.045,.9],[.065,.08],[.13,.02],[.18,.65],[.205,.03],[.55,0],[.77,.015],[.88,.68],[.904,.025],[.98,.5],[1,0]])reflection.addColorStop(at,'rgba(255,241,204,'+alpha+')');
+    for(const p of polys){const points=p.points.map(project);ctx.beginPath();points.forEach((v,i)=>i?ctx.lineTo(...v):ctx.moveTo(...v));ctx.closePath();
+      if(p.edge){const gradient=ctx.createLinearGradient(0,220,0,960);const tone=(scale,extra=0)=>'rgb('+p.rgb.map(x=>Math.min(255,Math.round(x*scale+extra))).join(',')+')';gradient.addColorStop(0,tone(1.15,22));gradient.addColorStop(.23,tone(.57));gradient.addColorStop(.6,tone(.82));gradient.addColorStop(.87,tone(.39));gradient.addColorStop(1,tone(1.25,32));ctx.fillStyle=gradient;}else ctx.fillStyle=p.fill;
+      ctx.fill();ctx.strokeStyle=p.fill;ctx.lineWidth=.5;ctx.stroke();
+      if(p.edge){ctx.save();ctx.clip();ctx.globalCompositeOperation='screen';ctx.fillStyle=reflection;ctx.fillRect(left-20,100,right-left+40,950);ctx.restore();}
+    }
     return {url:canvas.toDataURL('image/png'),spec:{...spec,renderer:'cpu-illustration'}};
   }
   async function render(perfume, variant=0) {
