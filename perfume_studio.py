@@ -5,14 +5,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 import base64
 import hashlib
-import hmac
 import json
 import os
 import secrets
 import sqlite3
 import uuid
 
-from flask import Blueprint, Response, jsonify, redirect, render_template, request
+from flask import Blueprint, Response, jsonify, redirect, render_template, request, make_response
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 studio = Blueprint('perfume_studio', __name__)
@@ -100,14 +99,33 @@ def _image_signer():
 
 
 def render_result(intention, perfume=None, error=None, customer='', record=None, archive_error=None,
-                  diagnostic=None):
+                  diagnostic=None, reopened=False, restored_variant=None):
     token = _image_signer().dumps(record['serial']) if record and images_ready() else None
     from perfume_visual import bottle_brief, personal_dedication
     visual = perfume.get('flacone') or bottle_brief(perfume) if perfume else None
     return render_template('perfume_result.html', intention=intention, p=perfume, error=error,
                            customer=customer, record=record, archive_error=archive_error,
                            image_token=token, visual=visual, diagnostic=diagnostic,
-                           dedication=personal_dedication(perfume, customer))
+                           dedication=personal_dedication(perfume, customer), reopened=reopened,
+                           restored_variant=restored_variant)
+
+
+@studio.route('/atelier/riapri', methods=['GET', 'POST'])
+def reopen_creation():
+    if request.method == 'GET':
+        return render_template('perfume_restore.html')
+    from perfume_restore import restore, MAX_FILE_BYTES
+    if request.content_length and request.content_length > MAX_FILE_BYTES + 8192:
+        return render_template('perfume_restore.html', error='La scheda supera 300 KB.'), 413
+    uploads = request.files.getlist('scheda')
+    if len(uploads) != 1:
+        return render_template('perfume_restore.html', error='Scegli una scheda JSON.'), 400
+    try:
+        creation = restore(uploads[0].read(MAX_FILE_BYTES + 1))
+    except (ValueError, UnicodeError):
+        return render_template('perfume_restore.html', error='Scheda non valida: controlla di aver scelto il file “scheda e formula”, senza modificarne materie o dosi.'), 400
+    return render_result(**creation, reopened=True,
+                         archive_error='Scheda riaperta dal tuo file. La registrazione nell’archivio non è stata verificata.')
 
 
 @studio.get('/atelier/esempio')
@@ -120,38 +138,49 @@ def public_example():
 
 
 def _archive_signer():
-    secret = os.getenv('PERFUME_ARCHIVE_SECRET', '')
-    if len(secret) < 32 or not os.getenv('PERFUME_ARCHIVE_PASSWORD'):
-        raise ArchiveUnavailable('Accesso all’archivio non configurato')
-    return URLSafeTimedSerializer(secret, salt='terzi-archive-v1')
+    from perfume_archive_auth import signer
+    return signer()
 
 
 def _authorized():
-    try:
-        return _archive_signer().loads(request.cookies.get('terzi_archive', ''), max_age=3600) == 'owner'
-    except (BadSignature, SignatureExpired):
-        return False
+    from perfume_archive_auth import authorized
+    return authorized()
+
+
+def _archive_page(status=200, **context):
+    from perfume_archive_auth import csrf_token, cookie
+    token = csrf_token('login' if context.get('login') else 'logout')
+    response = make_response(render_template('perfume_archive.html', csrf_token=token, **context), status)
+    return cookie(response, 'terzi_archive_csrf', token, 600)
 
 
 @studio.route('/atelier/archivio', methods=['GET', 'POST'])
 def archive():
+    from perfume_archive_auth import valid_csrf, allow_login, password_matches, new_session, cookie
     try:
-        signer = _archive_signer()
+        _archive_signer()
         if request.method == 'POST':
+            if request.content_length and request.content_length > 4096:
+                return _archive_page(413, login=True, error='Richiesta troppo grande.')
+            if not valid_csrf('login'):
+                return _archive_page(403, login=True, error='La pagina di accesso è scaduta. Riprova da qui.')
+            if not allow_login():
+                response = _archive_page(429, login=True, error='Troppi tentativi. Riprova fra 15 minuti.')
+                response.headers['Retry-After'] = '900'
+                return response
             supplied = request.form.get('password', '')
-            if not hmac.compare_digest(supplied.encode(), os.environ['PERFUME_ARCHIVE_PASSWORD'].encode()):
-                return render_template('perfume_archive.html', login=True, error='Accesso non riuscito.'), 401
+            if not password_matches(supplied):
+                return _archive_page(401, login=True, error='Accesso non riuscito.')
             response = redirect('/atelier/archivio')
-            response.set_cookie('terzi_archive', signer.dumps('owner'), max_age=3600,
-                                httponly=True, secure=bool(os.getenv('VERCEL')), samesite='Strict', path='/atelier')
-            return response
+            response.delete_cookie('terzi_archive_csrf', path='/atelier')
+            return cookie(response, 'terzi_archive', new_session(), 3600)
         if not _authorized():
-            return render_template('perfume_archive.html', login=True)
+            return _archive_page(login=True)
         serial = request.args.get('serial', '').strip().upper()
         if serial:
             record = read_record(serial)
             if not record:
-                return render_template('perfume_archive.html', error='Numero di serie non trovato.', records=[]), 404
+                return _archive_page(404, error='Numero di serie non trovato.', records=[])
             return render_result(record['intention'], record['perfume'], customer=record['customer'], record=record)
         # Bounded listing; records remain addressable by serial even outside the latest 100.
         client = _redis()
@@ -166,9 +195,25 @@ def archive():
             with _db() as db:
                 records = [json.loads(row[0]) for row in db.execute('SELECT body FROM perfumes ORDER BY rowid DESC LIMIT 100')]
         records.sort(key=lambda x: x['created_at'], reverse=True)
-        return render_template('perfume_archive.html', records=records)
-    except ArchiveUnavailable:
+        return _archive_page(records=records)
+    except Exception:
+        # Redis/network failures must never reveal private records or a traceback.
         return render_template('perfume_archive.html', error='L’archivio deve essere configurato prima di poterlo consultare.', unavailable=True), 503
+
+
+@studio.post('/atelier/archivio/esci')
+def archive_logout():
+    from perfume_archive_auth import valid_csrf, revoke_session
+    try:
+        if not valid_csrf('logout'):
+            return 'Richiesta di uscita non valida. Riapri l’archivio.', 403
+        revoke_session()
+        response = redirect('/atelier/archivio')
+        for name in ('terzi_archive', 'terzi_archive_csrf'):
+            response.delete_cookie(name, path='/atelier', secure=bool(os.getenv('VERCEL')), httponly=True, samesite='Strict')
+        return response
+    except Exception:
+        return 'Uscita non confermata. Riprova.', 503
 
 
 @studio.after_request

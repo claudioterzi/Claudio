@@ -7,6 +7,7 @@ from unittest.mock import patch, MagicMock
 from uuid import uuid4
 from types import SimpleNamespace
 import base64
+import re
 
 from tarocchi_web import app
 import perfume_studio as studio
@@ -22,6 +23,10 @@ class PerfumeStudioTests(unittest.TestCase):
         self.env.start(); self.client = app.test_client(); self.creation_id = str(uuid4())
     def tearDown(self):
         self.env.stop(); self.temp.cleanup()
+    def archive_login(self, password):
+        page = self.client.get('/atelier/archivio')
+        token = re.search(r'name="csrf_token" value="([^"]+)"', page.text).group(1)
+        return self.client.post('/atelier/archivio', data={'password':password, 'csrf_token':token})
     def test_save_survives_reopen_and_is_immutable(self):
         r = studio.save_record(self.creation_id,'Cliente prova','Ambra',FORMULA)
         self.assertEqual(studio.read_record(r['serial']),r)
@@ -53,12 +58,62 @@ class PerfumeStudioTests(unittest.TestCase):
         r=studio.save_record(self.creation_id,'Cliente riservato','Ambra',FORMULA)
         unauth=self.client.get('/atelier/archivio')
         self.assertNotIn('Cliente riservato',unauth.text)
-        self.assertEqual(self.client.post('/atelier/archivio',data={'password':'wrong'}).status_code,401)
-        self.assertEqual(self.client.post('/atelier/archivio',data={'password':'test-only-password'}).status_code,302)
+        self.assertEqual(self.archive_login('wrong').status_code,401)
+        self.assertEqual(self.archive_login('test-only-password').status_code,302)
         self.assertIn('Cliente riservato',self.client.get('/atelier/archivio').text)
         detail=self.client.get('/atelier/archivio',query_string={'serial':r['serial']})
         self.assertIn(FORMULA['nome'],detail.text)
         self.assertEqual(detail.headers['Cache-Control'],'no-store')
+        self.assertNotIn('Access-Control-Allow-Origin', detail.headers)
+
+    def test_archive_rejects_missing_csrf_and_cross_origin_login(self):
+        response = self.client.post('/atelier/archivio',data={'password':'test-only-password'})
+        self.assertEqual(response.status_code,403)
+        token = re.search(r'name="csrf_token" value="([^"]+)"', response.text).group(1)
+        response = self.client.post('/atelier/archivio',data={'password':'test-only-password','csrf_token':token},headers={'Origin':'https://untrusted.example'})
+        self.assertEqual(response.status_code,403)
+        self.assertIsNone(self.client.get_cookie('terzi_archive', path='/atelier'))
+
+    def test_shared_login_limit_cannot_be_reset_by_new_browser_cookie(self):
+        for _ in range(5):
+            self.client = app.test_client()
+            self.assertEqual(self.archive_login('wrong').status_code,401)
+        blocked = self.archive_login('test-only-password')
+        self.assertEqual(blocked.status_code,429)
+        self.assertEqual(blocked.headers['Retry-After'],'900')
+
+    def test_logout_revokes_copied_cookie_server_side(self):
+        self.assertEqual(self.archive_login('test-only-password').status_code,302)
+        cookie = self.client.get_cookie('terzi_archive',path='/atelier').value
+        page = self.client.get('/atelier/archivio')
+        token = re.search(r'name="csrf_token" value="([^"]+)"',page.text).group(1)
+        self.assertEqual(self.client.post('/atelier/archivio/esci',data={'csrf_token':token}).status_code,302)
+        self.client.set_cookie('terzi_archive',cookie,path='/atelier')
+        self.assertIn('Password archivio',self.client.get('/atelier/archivio').text)
+
+    def test_password_hash_supported_and_rotation_invalidates_session(self):
+        from werkzeug.security import generate_password_hash
+        with patch.dict(os.environ,{'PERFUME_ARCHIVE_PASSWORD_HASH':generate_password_hash('test-hashed-password')}):
+            response = self.archive_login('test-hashed-password')
+            self.assertEqual(response.status_code,302)
+            self.assertIn('HttpOnly',response.headers.get('Set-Cookie') + str(response.headers.getlist('Set-Cookie')))
+            self.assertNotIn('Password archivio',self.client.get('/atelier/archivio').text)
+        self.assertIn('Password archivio',self.client.get('/atelier/archivio').text)
+
+    def test_session_expires_and_legacy_owner_cookie_is_rejected(self):
+        import time
+        self.assertEqual(self.archive_login('test-only-password').status_code,302)
+        with patch('perfume_archive_auth.time.time',return_value=time.time()+3601):
+            self.assertIn('Password archivio',self.client.get('/atelier/archivio').text)
+        self.client.set_cookie('terzi_archive',studio._archive_signer().dumps('owner'),path='/atelier')
+        self.assertIn('Password archivio',self.client.get('/atelier/archivio').text)
+
+    def test_archive_storage_outage_does_not_issue_owner_session(self):
+        with patch.object(studio,'_redis',side_effect=ConnectionError('private details')):
+            response=self.archive_login('test-only-password')
+        self.assertEqual(response.status_code,503)
+        self.assertNotIn('private details',response.text)
+        self.assertIsNone(self.client.get_cookie('terzi_archive',path='/atelier'))
     def test_images_disabled_without_explicit_configuration(self):
         self.assertEqual(self.client.post('/api/profumo/immagine',json={'token':'x'}).status_code,503)
     def test_image_tokens_reject_forgery(self):

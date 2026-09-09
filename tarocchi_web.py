@@ -101,6 +101,14 @@ def _itinerario_web(it) -> dict:
 
 @app.after_request
 def _cors(response):
+    if request.path.startswith(('/atelier/', '/api/profumo/')) or request.path == '/profumo':
+        for header in ('Access-Control-Allow-Origin', 'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'):
+            response.headers.pop(header, None)
+        response.headers['Cache-Control'] = 'no-store'
+        response.headers['Referrer-Policy'] = 'no-referrer'
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        return response
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"

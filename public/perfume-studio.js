@@ -22,7 +22,8 @@
   const slug = text => text.normalize('NFKD').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').slice(0,70).toLowerCase();
   const filename = slug(data.serial || data.name+'-'+(perfume.flacone?.recipe_fingerprint||'bozza').slice(0,10));
   document.getElementById('download-record').onclick = () => {
-    const record = {...data.record,presentation:{dedication:data.dedication||null,bottle:selected}};
+    const record = {...data.record,presentation:{dedication:data.dedication||null,bottle:selected},
+      laboratory:window.TerziLab?.snapshot?.() || null};
     save(new Blob([JSON.stringify(record, null, 2)], {type:'application/json'}), filename + '.json');
   };
   for (const [id,kind] of [['print-label','label'],['print-recipe','recipe'],['print-inspiration','inspiration']]) {
@@ -47,7 +48,8 @@
   }
   variants.forEach((button,i)=>button.onclick=()=>showVariant(i));
   if (originalButton) originalButton.onclick=()=>{image.src=original.url;caption.textContent=original.caption;selected=null;pressed(originalButton);delete image.dataset.bottleVersion;status.textContent='Flacone originale.';};
-  if (!perfume.esempio) showVariant(0);
+  if (data.restored_variant) showVariant(data.restored_variant === 'Essenza' ? 1 : 0);
+  else if (!perfume.esempio) showVariant(0);
   document.getElementById('enlarge').onclick = () => {
     const copy = document.getElementById('enlarge').cloneNode(true);
     copy.removeAttribute('id'); copy.querySelector('img').removeAttribute('id'); copy.tabIndex = -1;

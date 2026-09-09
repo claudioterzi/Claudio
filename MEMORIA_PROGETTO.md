@@ -6,6 +6,21 @@
 >
 > Ultimo aggiornamento: 2026-09-09
 
+## Avanzamento autonomo — recupero e archivio, 2026-09-09
+
+Nuova riapertura `/atelier/riapri`: file JSON esportati dall’Atelier, formula
+TRZ1 verificata senza ricomposizione AI, dedica e variante del flacone. Nuove
+esportazioni salvano anche impostazioni del laboratorio. Importazione non
+concede seriale verificato, accesso immagini o registrazione nell’archivio.
+Backend archivio completato con password hash, sessioni revocabili di un’ora,
+CSRF e limite tentativi condiviso; corretta riaggiunta CORS globale alle route
+private. 70 test Python e 3 file test JavaScript superati. Collaudo pubblico
+ancora in corso al primo commit. Dettagli: docs/RIPRESA_ARCHIVIO_2026-09-09.md.
+Lettura env Vercel HTTP 200 con token: ancora assenti storage, chiave immagini
+e credenziali archivio. Nessuna variabile modificata. Connettore progetto 403;
+scoperta CLI Upstash interrotta da autorizzazione rete annullata, nessuna risorsa
+creata. Non riprovata l’attivazione AI Gateway già respinta; Drive invariato.
+
 ## Flaconi, dedica, stampa e ricerca Astra — 2026-09-09
 
 Implementate due varianti native 3D per formula: Scultura ed Essenza,

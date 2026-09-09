@@ -3,11 +3,12 @@
 <meta name="referrer" content="no-referrer"><title>{{ p.nome if p else 'La tua creazione' }} · Terzi Parfums</title>
 <link rel="stylesheet" href="/perfume-studio.css"><script src="/perfume-bottle.js" defer></script><script src="/perfume-print.js" defer></script><script src="/perfume-studio.js" defer></script><script src="/atmosfere.js" defer></script><link rel="stylesheet" href="/perfume-lab.css"><link rel="stylesheet" href="/perfume-print.css"><script src="/perfume-lab.js" defer></script></head>
 <body><main class="studio">
-<nav class="studio-nav" aria-label="Atelier"><a href="/atelier.html">← Atelier</a><span>TERZI PARFUMS</span><a href="/atelier/archivio">Archivio</a></nav>
+<nav class="studio-nav" aria-label="Atelier"><a href="/atelier.html">← Atelier</a><a href="/atelier/riapri">Riapri una scheda</a><a href="/atelier/archivio">Archivio</a></nav>
 {% if not p %}<section class="empty"><p class="eyebrow">L’ATELIER DI RAFFAELLO</p><h1>La tua creazione</h1><p>{{ error or 'Scrivi un’intenzione nell’Atelier per iniziare.' }}</p><a class="action" href="/atelier.html">Torna all’Atelier</a>
 {% if diagnostic %}<details class="caption"><summary>Dettagli per assistenza</summary><p>Codice: <code>{{ diagnostic.code }}</code><br>Richiesta: <code>{{ diagnostic.request_id }}</code></p></details>{% endif %}</section>
 {% else %}
 <header class="identity"><p class="eyebrow">CREAZIONE PERSONALE · {{ p.fam }}</p><h1>{{ p.nome }}</h1>{% if customer %}<p class="dedication">Creato per <strong>{{ customer }}</strong></p>{% endif %}
+{% if reopened %}<p class="caption" role="status">Scheda riaperta dal file · nessuna nuova composizione AI. Testi e provenienza appartengono alla scheda caricata.</p>{% endif %}
 <p class="intention">{{ intention }}</p>{% if dedication %}<p class="personal-dedication">{{ dedication }}</p>{% endif %}{% if p.esempio %}<p class="caption">{{ p.esempio.provenienza }}</p>{% endif %}
 <div class="print-actions"><button class="action" id="print-recipe" type="button">Stampa ricetta</button><button class="action" id="print-inspiration" type="button">Stampa ispirazione e dedica</button></div></header>
 <section class="portrait-grid" aria-label="Il tuo profumo">
@@ -58,6 +59,6 @@
 <footer><p>Concept e direzione creativa: Claudio Terzi · Terzi Parfums</p><a href="/atelier.html">Componi un’altra creazione →</a></footer>
 <dialog id="image-dialog" aria-label="Flacone ingrandito"><button id="close-dialog" class="action">Chiudi</button><div id="large-bottle"></div></dialog>
 <section class="print-only"><p>TERZI PARFUMS</p><h1>{{ p.nome }}</h1><p>{{ customer }}</p><p>{{ record.serial if record else 'BOZZA · NON ARCHIVIATA' }}</p></section>
-<script type="application/json" id="perfume-data">{{ {'name':p.nome, 'customer':customer, 'dedication':dedication, 'serial':record.serial if record else None, 'record':record or {'schema_version':1, 'archived':False, 'customer':customer, 'intention':intention, 'perfume':p}}|tojson }}</script>
+<script type="application/json" id="perfume-data">{{ {'name':p.nome, 'customer':customer, 'dedication':dedication, 'restored_variant':restored_variant, 'serial':record.serial if record else None, 'record':record or {'schema_version':1, 'archived':False, 'customer':customer, 'intention':intention, 'perfume':p}}|tojson }}</script>
 {% endif %}
 </main></body></html>
