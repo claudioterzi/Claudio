@@ -101,8 +101,11 @@ def _image_signer():
 
 def render_result(intention, perfume=None, error=None, customer='', record=None, archive_error=None):
     token = _image_signer().dumps(record['serial']) if record and images_ready() else None
+    from perfume_visual import bottle_brief
+    visual = perfume.get('flacone') or bottle_brief(perfume) if perfume else None
     return render_template('perfume_result.html', intention=intention, p=perfume, error=error,
-                           customer=customer, record=record, archive_error=archive_error, image_token=token)
+                           customer=customer, record=record, archive_error=archive_error,
+                           image_token=token, visual=visual)
 
 
 def _archive_signer():
@@ -188,6 +191,10 @@ def perfume_image():
         cached = client.get(cache_key)
         if cached:
             return Response(cached, mimetype='image/webp')
+        if body.get('action') == 'read':
+            return jsonify(error='Nessun ritratto salvato per questa formula.'), 404
+        if body.get('action', 'generate') != 'generate':
+            return jsonify(error='Azione non valida.'), 400
         # Atomic lock + global UTC daily cap, shared across Vercel instances.
         quota_key = 'terzi:image-quota:' + datetime.now(timezone.utc).strftime('%Y-%m-%d')
         limit = max(1, min(100, int(os.getenv('PERFUME_IMAGES_DAILY_LIMIT', '10'))))
@@ -202,29 +209,37 @@ def perfume_image():
             return jsonify(error='Immagine in preparazione: riprova tra poco.' if admitted == 0 else 'Le creazioni visive di oggi sono esaurite.'), 429
     except Exception:
         return jsonify(error='La creazione visiva non è disponibile adesso.'), 503
-    p = record['perfume']
-    # Do not transmit customer identity, personal intention, formula or record identifier.
-    family = p.get('fam', 'Orientale')
-    palette = {'Agrumata':'citrus gold','Floreale':'rose gold','Verde':'deep green',
-               'Acquatica':'ocean blue','Legnosa':'warm cedar','Orientale':'amber gold',
-               'Speziata':'copper','Gourmand':'cocoa brown'}.get(family, 'amber gold')
-    prompt = ('Luxury product photo. Preserve exactly the reference bottle geometry, camera angle, '
-              'bottle position and front label rectangle. Change only background lighting and glass tint '
-              'to an elegant ' + palette + ' perfume atmosphere. Keep a dark blank label at the same '
-              'coordinates. No text, no letters, no logos, no other objects. Full bottle, square composition.')
+    from perfume_visual import bottle_brief
+    # Rebuild from trusted catalogue fields even for old stored records.
+    visual = bottle_brief(record['perfume'])
+    prompt = visual['prompt']
+    model = os.getenv('OPENAI_IMAGE_MODEL', 'gpt-image-2')
+    metadata = dict(id=str(uuid.uuid4()), serial=serial, status='pending', model=model,
+                    created_at=datetime.now(timezone.utc).isoformat(), visual=visual,
+                    estimated_cost=None)
     try:
+        client.set(cache_key + ':metadata', json.dumps(metadata, ensure_ascii=False))
         from openai import OpenAI
         with OpenAI(api_key=os.environ['OPENAI_API_KEY'], timeout=45, max_retries=0) as api:
-            with (ROOT / 'public/images/terzi-atelier.webp').open('rb') as reference:
-                result = api.images.edit(model=os.getenv('OPENAI_IMAGE_MODEL', 'gpt-image-2'),
-                                         image=reference, prompt=prompt, size='1024x1024',
+            result = api.images.generate(model=model, prompt=prompt, size='1024x1024',
                                          quality='high', output_format='webp', n=1)
         raw = base64.b64decode(result.data[0].b64_json, validate=True)
         if len(raw) > 3_000_000 or raw[:4] != b'RIFF' or raw[8:12] != b'WEBP':
             raise ValueError('Image format or size invalid')
-        client.set(cache_key, raw, ex=30 * 86400)
+        # No expiry: it is an asset, not a disposable 30-day cache.
+        # Production Redis must have durable persistence/backups and no eviction.
+        client.set(cache_key, raw)
+        usage = getattr(result, 'usage', None)
+        metadata.update(status='complete', image_sha256=hashlib.sha256(raw).hexdigest(),
+                        usage=usage.model_dump() if hasattr(usage, 'model_dump') else None)
+        client.set(cache_key + ':metadata', json.dumps(metadata, ensure_ascii=False))
         return Response(raw, mimetype='image/webp')
     except Exception:
+        try:
+            metadata.update(status='error_or_unconfirmed')
+            client.set(cache_key + ':metadata', json.dumps(metadata, ensure_ascii=False))
+        except Exception:
+            pass
         # No automatic retries after a timeout: the provider may have charged the attempt.
         return jsonify(error='Il ritratto non è pronto. La formula è salva e il flacone Atelier resta disponibile.'), 502
     finally:

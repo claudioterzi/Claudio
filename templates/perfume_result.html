@@ -13,13 +13,22 @@
 <img id="bottle-image" src="/images/terzi-atelier.webp" width="1024" height="1024" alt="Flacone Terzi Parfums di {{ p.nome }}{% if customer %}, creato per {{ customer }}{% endif %}" fetchpriority="high">
 <span class="bottle-label" aria-hidden="true"><span class="brand">TERZI PARFUMS</span><span class="label-name">{{ p.nome }}</span><span class="label-client">{{ customer or 'Atelier' }}</span><span class="label-serial">{{ record.serial if record else 'CREAZIONE · BOZZA' }}</span></span>
 </button><p class="caption" id="image-caption">Flacone Atelier · visualizzazione di progetto</p>
-<div class="actions">{% if image_token %}<button id="generate-image" class="action" data-token="{{ image_token }}">Crea il ritratto olfattivo</button>{% endif %}<button id="download-image" class="action">Scarica immagine</button><button id="print-label" class="action">Stampa etichetta</button></div>
+<div class="actions">{% if image_token %}<button id="generate-image" class="action" data-token="{{ image_token }}">Crea il flacone di questa ricetta</button>{% endif %}<button id="download-image" class="action">Scarica immagine</button><button id="print-label" class="action">Stampa etichetta</button></div>
+{% if visual %}<details><summary>Il progetto del tuo flacone</summary><p>{{ visual.forma|capitalize }}. {{ visual.palette|capitalize }}; {{ visual.luce }}.</p><p>Accenti della ricetta: {{ visual.accenti|join(', ') }}.</p><p class="caption">{{ visual.attribution }}. Il progetto non è ancora un’immagine generata né un disegno di produzione.</p>{% if not image_token %}<p>La generazione del flacone su misura non è attiva per questa scheda. L’immagine mostrata è il modello Atelier.</p>{% endif %}</details>{% endif %}
 <p role="status" id="image-status" class="status"></p></div>
-<aside class="creation-notes">{% if p.ricerca and p.ricerca.reference %}
+<aside class="creation-notes">
+{% if p.preferenze and (p.preferenze['items'] or p.preferenze.status == 'unavailable') %}
+<section aria-label="Gusti del cliente"><h2>I gusti, prima della formula</h2>
+{% if p.preferenze.origin == 'field' %}<p>Profumi indicati nel campo ispirazioni:</p>{% elif p.preferenze.status == 'recognized' %}<p>Riferimenti riconosciuti nel racconto:</p>{% endif %}
+{% if p.preferenze.status == 'unavailable' %}<p>Riconoscimento automatico non disponibile. Per essere sicuro che i tuoi riferimenti entrino nella ricerca, inseriscili nel campo ispirazioni dell’Atelier.</p>{% endif %}
+<ul>{% for item in p.preferenze['items'] %}<li><strong>{{ item.name }}</strong> · {{ item.relation }}{% if item.clarification %}<br>Da chiarire: {{ item.clarification }}{% endif %}</li>{% endfor %}</ul>
+{% if p.gusti_cliente %}<p style="white-space:pre-wrap">{{ p.gusti_cliente }}</p>{% endif %}</section>
+{% endif %}
+{% if p.ricerca and p.ricerca.reference %}
 <section aria-label="Ricerca del riferimento"><h2>Il riferimento, prima della creazione</h2>
 {% if p.ricerca.status == 'sourced' %}<p>Ricerca web del {{ p.ricerca.consulted_at[:10] }} · {{ p.ricerca.reference }}</p><p style="white-space:pre-wrap">{{ p.ricerca.summary }}</p><ul>{% for source in p.ricerca.sources %}<li><a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }}</a></li>{% endfor %}</ul>
 {% if p.ricerca.suggestions %}<iframe title="Suggerimenti di ricerca Google" sandbox="allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer" srcdoc="{{ p.ricerca.suggestions }}" style="width:100%;height:180px;border:0;background:white"></iframe>{% endif %}
-{% else %}<p>Fonti non disponibili per questo riferimento. La proposta seguente è un’interpretazione creativa non verificata rispetto all’originale.</p>{% endif %}</section>
+{% else %}<p>Fonti non disponibili per: {{ p.ricerca.reference }}. I nomi restano indicazioni di gusto; le caratteristiche degli originali non sono verificate.</p>{% endif %}</section>
 {% endif %}
 <p class="eyebrow">IL CARATTERE</p><p class="concept">{{ p.concept }}</p>
 {% if p.ragionamento %}<h2>Perché queste materie</h2><p>{{ p.ragionamento }}</p>{% endif %}

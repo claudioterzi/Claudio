@@ -2,6 +2,8 @@
 
 © Claudio Terzi · 9 settembre 2026
 
+Documento storico: descrive lo stato prima delle correzioni successive dello stesso giorno. Per lo stato corrente vedere `REVISIONE_ORGANO_COMPLETO_2026-09-09.md` e `ATELIER_RESEARCH.md`.
+
 ## Esito
 
 La creazione funziona dopo la correzione del nome cliente obbligatorio. Il percorso ricerca fonti → lettura → confronto → composizione non è implementato. Il compositore usa le conoscenze del modello. Un risultato plausibile non prova ricerca, correttezza delle note o somiglianza olfattiva.

@@ -2,7 +2,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const html=fs.readFileSync('public/atelier.html','utf8');
 const source=html.slice(html.indexOf('function chiediARaffaello('),html.indexOf('window.addEventListener("pageshow"'));
 for(const crypto of [undefined,{randomUUID:()=> '12345678-1234-4234-8234-123456789abc'}]){
- const elements={voce:{},cliente:{value:''},riferimento:{value:'Chanel N° 5 Eau de Parfum'},chiedi:{disabled:false}};
+ const elements={voce:{},cliente:{value:''},riferimento:{value:'Chanel N° 5 Eau de Parfum\nDior J’adore'},chiedi:{disabled:false}};
  let submitted;
  const document={getElementById:id=>elements[id],body:{appendChild:()=>{}},createElement:tag=>tag==='form'?{inputs:[],appendChild(x){this.inputs.push(x)},submit(){submitted=this}}:{}};
  vm.runInNewContext(source+';chiediARaffaello(false)',{document,window:{crypto},leggi:()=>({intenzione:'Ispirato a Chanel N° 5',ondata:2,stile:'ellena',fam:null})});
@@ -12,8 +12,9 @@ for(const crypto of [undefined,{randomUUID:()=> '12345678-1234-4234-8234-1234567
  assert.equal(submitted.inputs.find(x=>x.name==='cliente').value,'');
  assert.equal(submitted.inputs.find(x=>x.name==='ondata').value,'2');
  assert.equal(submitted.inputs.find(x=>x.name==='stile').value,'ellena');
- assert.equal(submitted.inputs.find(x=>x.name==='riferimento').value,'Chanel N° 5 Eau de Parfum');
+ assert.equal(submitted.inputs.find(x=>x.name==='riferimento').value,'Chanel N° 5 Eau de Parfum\nDior J’adore');
 }
+assert.match(html, /<textarea id="riferimento" maxlength="1000"/);
 const canonical=JSON.parse(fs.readFileSync('studio/parfums/organo_terzi_300.json','utf8')).materie;
 const offline=html.slice(html.indexOf('const D = '),html.indexOf('function flacone('));
 vm.runInNewContext(offline+`

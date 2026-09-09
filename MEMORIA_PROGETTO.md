@@ -6,12 +6,20 @@
 >
 > Ultimo aggiornamento: 2026-09-09
 
-## Sessione 2026-09-09 — Opera Viva / C.Terzi
+## Sessione 2026-09-09 — Organo completo, gusti e flaconi
 
-Nuovo atelier cinetico in `public/opera-viva.html`: ritratto intero, upload locale,
-simulazione a due lastre, esportazione SVG/PNG/JSON e firma vettoriale C.Terzi.
-Integrato in nav, Creazioni e route Vercel `/opera-viva`. Specifica: `docs/OPERA_VIVA.md`.
-Compensazione prospettica sperimentale; file da provino, nessun collaudo fisico dichiarato.
+Atelier predefinito su tutte le 293 materie dell'Organo Terzi; 7 supporti separati.
+Validazione senza riempimento automatico e codici TRZ1 per le creazioni nuove.
+Prova organo dal vivo: Iris Céleste, 12 voci/100 parti, decoder corrispondente.
+Estensione successiva: campo 5 preferiti, estrazione contestuale con citazioni
+verificate e distinzione preferito/evitare, gusti come criteri di composizione.
+Brief del flacone legato alla ricetta e percorso immagini originali con
+metadata e conservazione senza scadenza; attivazione immagini/archivio ancora
+da configurare/verificare, non dichiarata riuscita. 43 test locali superati.
+Resoconti: `docs/REVISIONE_ORGANO_COMPLETO_2026-09-09.md` e
+`docs/ATELIER_GUSTI_FLACONI_2026-09-09.md`.
+Copia Drive sospesa dopo rifiuto del controllo autorizzazioni; lettura Vercel
+respinta con 403. Nessun aggiramento e nessuna diagnosi di chiavi mancanti.
 
 ## Sessione 2026-09-09 - Protocollo RRR Astra
 
@@ -668,5 +676,3 @@ voli economicissimi da Bruxelles/Parigi verso San Paolo, Cuba, Sud America.
 - Il container è effimero: viene ricreato a ogni sessione. Niente di non committato sopravvive.
 - Le regole permanenti e relazionali sono in `CLAUDE.md` — leggere SEMPRE quello per primo.
 - Questo file (`MEMORIA_PROGETTO.md`) è la spina dorsale narrativa: dove siamo, cosa abbiamo deciso, cosa viene dopo.
-
-

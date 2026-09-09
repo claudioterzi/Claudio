@@ -5,6 +5,8 @@ import tempfile
 import unittest
 from unittest.mock import patch, MagicMock
 from uuid import uuid4
+from types import SimpleNamespace
+import base64
 
 from tarocchi_web import app
 import perfume_studio as studio
@@ -73,5 +75,41 @@ class PerfumeStudioTests(unittest.TestCase):
                 self.assertEqual(response.status_code,200)
                 self.assertEqual(response.data,cached)
                 redis.eval.assert_not_called()
+
+    def test_read_missing_image_never_starts_generation(self):
+        record=studio.save_record(self.creation_id,'Private Client','Private intention',FORMULA)
+        with patch.dict(os.environ,{'OPENAI_API_KEY':'test','REDIS_URL':'redis://test','PERFUME_IMAGES_ENABLED':'1'}):
+            redis=MagicMock();redis.get.return_value=None
+            token=studio._image_signer().dumps(record['serial'])
+            with patch.object(studio,'read_record',return_value=record),patch.object(studio,'_redis',return_value=redis):
+                response=self.client.post('/api/profumo/immagine',json={'token':token,'action':'read'})
+                self.assertEqual(response.status_code,404);redis.eval.assert_not_called();redis.set.assert_not_called()
+
+    def test_original_generation_is_recipe_bound_private_and_saved_without_expiry(self):
+        record=studio.save_record(self.creation_id,'PRIVATE CLIENT','PRIVATE STORY',FORMULA)
+        raw=b'RIFFxxxxWEBPtest'
+        with patch.dict(os.environ,{'OPENAI_API_KEY':'test','REDIS_URL':'redis://test','PERFUME_IMAGES_ENABLED':'1'}):
+            redis=MagicMock();redis.get.return_value=None;redis.eval.return_value=1
+            token=studio._image_signer().dumps(record['serial'])
+            API=MagicMock()
+            with patch.object(studio,'read_record',return_value=record),patch.object(studio,'_redis',return_value=redis),patch.dict('sys.modules',{'openai':SimpleNamespace(OpenAI=API)}):
+                api=API.return_value.__enter__.return_value
+                api.images.generate.return_value=SimpleNamespace(data=[SimpleNamespace(b64_json=base64.b64encode(raw).decode())],usage=None)
+                response=self.client.post('/api/profumo/immagine',json={'token':token})
+                self.assertEqual(response.status_code,200);api.images.edit.assert_not_called()
+                prompt=api.images.generate.call_args.kwargs['prompt']
+                for private in ('PRIVATE CLIENT','PRIVATE STORY',record['serial']):self.assertNotIn(private,prompt)
+                self.assertIn('original',prompt);self.assertIn('Claudio Terzi',prompt)
+                redis.set.assert_any_call('terzi:image:'+record['serial'],raw)
+                metadata=json.loads(redis.set.call_args.args[1]);self.assertEqual(metadata['status'],'complete')
+                self.assertEqual(len(metadata['image_sha256']),64)
+
+    def test_visual_changes_with_formula_and_ignores_customer_data(self):
+        from perfume_visual import bottle_brief
+        a=bottle_brief(FORMULA)
+        b=bottle_brief(dict(FORMULA,ricetta=[['Anything',21,100,'cuore',False]]))
+        self.assertNotEqual(a['recipe_fingerprint'],b['recipe_fingerprint'])
+        self.assertNotEqual(a['accenti'],b['accenti'])
+        self.assertEqual(a,bottle_brief(dict(FORMULA,customer='PRIVATE',concept='PRIVATE',nome='PRIVATE')))
 
 if __name__ == '__main__':unittest.main()

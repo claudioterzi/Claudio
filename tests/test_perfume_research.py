@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
 import tarocchi_web as w
-from perfume_research import reference_from,research_reference
+from perfume_research import reference_from,research_reference,resolve_references
 
 class ResearchTests(unittest.TestCase):
  def test_detect_and_explicit(self):
@@ -48,3 +48,56 @@ class ResearchTests(unittest.TestCase):
     client.post('/profumo',data={'q':'un omaggio','stile':'ellena','riferimento':'Chanel N° 5 EDP'})
    self.assertEqual(compose.call_args.kwargs['stile'],'ellena')
    self.assertEqual(compose.call_args.kwargs['riferimento'],'Chanel N° 5 EDP')
+
+class PreferenceTests(unittest.TestCase):
+ def response(self, items):
+  return json.dumps({'candidates':[{'content':{'parts':[{'text':json.dumps({'items':items})}]}}]}).encode()
+ def test_explicit_list_deduplicated_without_provider(self):
+  with patch('urllib.request.urlopen') as net:
+   r=resolve_references('Un ricordo','Chanel N° 5\nDior J’adore;Chanel N° 5')
+   self.assertEqual([x['name'] for x in r['items']],['Chanel N° 5','Dior J’adore'])
+   self.assertEqual(r['origin'],'field');net.assert_not_called()
+ def test_explicit_limits_not_silently_truncated(self):
+  for value in (';'.join(str(i) for i in range(6)), 'a'*181):
+   with self.assertRaises(ValueError):resolve_references('x',value)
+ def test_context_positive_and_negative_kept_separate(self):
+  intention='Adoro Chanel N° 5 ma non amo Dior Sauvage; desidero più freschezza.'
+  items=[dict(name='Chanel N° 5',evidence='Adoro Chanel N° 5',relation='preferito',clarification=''),
+         dict(name='Dior Sauvage',evidence='non amo Dior Sauvage',relation='evitare',clarification='Quale versione?')]
+  with patch.dict('os.environ',{'GOOGLE_API_KEY':'test'}),patch('urllib.request.urlopen') as net:
+   net.return_value.__enter__.return_value.read.return_value=self.response(items)
+   r=resolve_references(intention)
+   self.assertEqual(r['status'],'recognized');self.assertEqual(r['items'],items)
+   self.assertNotIn('tools',json.loads(net.call_args.args[0].data))
+   self.assertEqual(net.call_args.kwargs['timeout'],6)
+ def test_no_mention_is_not_a_reference(self):
+  with patch.dict('os.environ',{'GOOGLE_API_KEY':'test'}),patch('urllib.request.urlopen') as net:
+   net.return_value.__enter__.return_value.read.return_value=self.response([])
+   self.assertEqual(resolve_references('come un giardino di rose')['items'],[])
+   self.assertEqual(reference_from('come un giardino di rose'),'')
+ def test_invented_name_rejected_and_failure_does_not_block(self):
+  with patch.dict('os.environ',{'GOOGLE_API_KEY':'test'}),patch('urllib.request.urlopen') as net:
+   net.return_value.__enter__.return_value.read.return_value=self.response([
+    dict(name='Chanel N° 5',evidence='Un giardino',relation='preferito',clarification='')])
+   r=resolve_references('Un giardino');self.assertEqual(r['items'],[]);self.assertEqual(r['status'],'unavailable')
+   net.side_effect=TimeoutError()
+   self.assertEqual(resolve_references('Un giardino')['status'],'unavailable')
+ def test_multiple_references_reach_composition_and_result(self):
+  prop=dict(nome='Essai',famiglia='Floreale',testa=[2,4],cuore=[21,40],fondo=[36,7],scia=[32,38],
+            overdose=21,concept='Luce',ragionamento='Materie selezionate',riferimento='Non verificato',
+            gusti_cliente='Preferenze dichiarate, interpretazione prudente.')
+  calls=[]
+  class Fake:
+   disponibile=True
+   def __init__(self,**kw):pass
+   def completa(self,s,u):calls.append((s,u));return SimpleNamespace(testo=json.dumps(prop))
+  with patch('sdq1.llm.providers.GeminiProvider',Fake),patch('perfume_research.research_reference',return_value={'status':'unavailable','reference':'Chanel N° 5\nDior J’adore'}) as research:
+   p,err=w._atelier_componi_ai('Più fresco',stile='ellena',riferimento='Chanel N° 5\nDior J’adore')
+   self.assertIsNone(err);research.assert_called_once_with('Chanel N° 5\nDior J’adore')
+   self.assertIn('Dior J’adore',calls[0][1]);self.assertIn('non è un modello positivo',calls[0][0])
+   self.assertEqual(p['gusti_cliente'],prop['gusti_cliente']);self.assertEqual(len(p['preferenze']['items']),2)
+   self.assertIn('flacone',p);self.assertEqual(sum(r[2] for r in p['ricetta']),100)
+   with w.app.test_request_context():
+    page=w.render_result('Più fresco',p)
+    self.assertIn('I gusti, prima della formula',page);self.assertIn('Chanel N° 5',page)
+    self.assertIn('non sono verificate',page)

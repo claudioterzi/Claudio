@@ -106,11 +106,13 @@
   </header>
 
   <div class="banco">
+    <label for="intenzione">L'intenzione — racconta cosa vuoi trasformare in profumo</label>
+    <textarea id="intenzione" maxlength="3000" placeholder="Es.: un profumo per chi torna a casa dopo tanti anni…"></textarea>
     <label for="cliente">Nome del cliente — facoltativo, sull’etichetta</label>
     <input id="cliente" type="text" maxlength="60" autocomplete="off" placeholder="Nome o dedica per questa creazione" style="width:100%;padding:.75rem;margin-bottom:1rem;font-size:1rem">
-    <label for="riferimento">Profumo di riferimento (facoltativo: marca, nome, versione)</label><input id="riferimento" maxlength="180" placeholder="Es.: Chanel N° 5 Eau de Parfum" style="width:100%;padding:.75rem;margin-bottom:1rem;font-size:1rem">
-    <label for="intenzione">L'intenzione — di' a Raffaello cosa deve diventare profumo</label>
-    <textarea id="intenzione" placeholder="Es.: un profumo per chi torna a casa dopo tanti anni…"></textarea>
+    <label for="riferimento">Ispirazioni e profumi amati dal cliente — facoltativo</label>
+    <textarea id="riferimento" maxlength="1000" rows="3" aria-describedby="preferenze-aiuto" placeholder="Un profumo per riga, con marca e versione se le conosci.&#10;Es.: Chanel N° 5 Eau de Parfum&#10;Dior J’adore Eau de Parfum"></textarea>
+    <p id="preferenze-aiuto" class="spiega">Fino a 5 profumi, uno per riga o separati da punto e virgola. Servono a capire i gusti, non a copiare formule. Puoi anche citarli nel racconto: il riconoscimento automatico proverà a individuarli. Scrivi nell’intenzione cosa ami e cosa vuoi evitare.</p>
     <div class="riga-opzioni">
       <div><label for="famiglia">Famiglia</label>
         <select id="famiglia"><option value="">Scelga Raffaello</option></select></div>
@@ -522,4 +524,3 @@ for (const f of Object.keys(D.famiglie)) {
 </script>
 </body>
 </html>
-

@@ -43,12 +43,14 @@
     } catch (_) { status.textContent = 'Non riesco a scaricare l’immagine adesso. Riprova.'; }
   };
   const generate = document.getElementById('generate-image');
-  if (generate) generate.onclick = async () => {
-    generate.disabled = true; status.textContent = 'Creo il ritratto olfattivo. La formula è già al sicuro.';
+  async function loadPortrait(action) {
+    generate.disabled = true;
+    if (action === 'generate') status.textContent = 'Creo il flacone a tema della ricetta. La formula è già al sicuro.';
     const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 55000);
     try {
       const response = await fetch('/api/profumo/immagine', {method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({token:generate.dataset.token}),signal:controller.signal});
+        body:JSON.stringify({token:generate.dataset.token, action}),signal:controller.signal});
+      if (action === 'read' && response.status === 404) return;
       if (!response.ok) {
         let message = 'Immagine non disponibile adesso.';
         try { message = (await response.json()).error || message; } catch (_) {}
@@ -58,10 +60,15 @@
       const blob = await response.blob();
       if (imageObjectUrl) URL.revokeObjectURL(imageObjectUrl);
       imageObjectUrl = URL.createObjectURL(blob); image.src = imageObjectUrl; await image.decode();
-      document.getElementById('image-caption').textContent = 'Ritratto olfattivo generato · visualizzazione di progetto';
-      status.textContent = 'Il ritratto è pronto. Scaricalo per conservarlo.';
-      generate.textContent = 'Ricarica il ritratto';
-    } catch (error) { status.textContent = error.name === 'AbortError' ? 'Il ritratto richiede più tempo. Il flacone Atelier e la formula restano disponibili.' : error.message; }
+      document.getElementById('image-caption').textContent = 'Flacone a tema generato · etichetta tipografica separata · concept Claudio Terzi';
+      status.textContent = 'Il ritratto salvato è pronto. Puoi scaricarlo con nome e dedica.';
+      generate.textContent = 'Ricarica il flacone salvato';
+    } catch (error) { if (action === 'generate') status.textContent = error.name === 'AbortError' ? 'Il ritratto richiede più tempo. Il flacone Atelier e la formula restano disponibili.' : error.message; }
     finally { clearTimeout(timer); generate.disabled = false; }
-  };
+  }
+  if (generate) {
+    generate.onclick = () => loadPortrait('generate');
+    // Reading an existing asset never starts a paid generation.
+    loadPortrait('read');
+  }
 })();
