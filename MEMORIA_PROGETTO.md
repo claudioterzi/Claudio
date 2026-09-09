@@ -19,7 +19,9 @@ da configurare/verificare, non dichiarata riuscita. 44 test locali superati.
 Prima prova online con lista esplicita riuscita (Lumière Éclatante, 8 materie,
 100 parti); riconoscimento e ricerca con fonti indisponibili nella prima prova.
 Introdotto ripiego sul secondo provider per il riconoscimento e avviso di
-lettura ipotetica dei gusti quando le fonti mancano. Stato finale nei resoconti.
+lettura ipotetica dei gusti quando le fonti mancano. Seconda prova online:
+L'Aube Claire, riconoscimento riuscito tramite Gemini (Chanel N° 5 preferito,
+Dior Sauvage da evitare), 8 materie/100 parti. Stato finale nei resoconti.
 Resoconti: `docs/REVISIONE_ORGANO_COMPLETO_2026-09-09.md` e
 `docs/ATELIER_GUSTI_FLACONI_2026-09-09.md`.
 Copia Drive sospesa dopo rifiuto del controllo autorizzazioni; lettura Vercel
