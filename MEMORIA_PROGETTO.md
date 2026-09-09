@@ -19,8 +19,15 @@ Restano i limiti di upload/risposta e il rifiuto di output bloccati o incompleti
 Nessun nuovo provider, acquisto o tentativo di aggirare rifiuti.
 Diagnostica minima nei log e nei dettagli di assistenza della pagina: codice
 e ID casuale, senza foto, nomi, intenzioni o credenziali. analysis_version=2.
-56 test Python superati, inclusi 9 sulla fotografia. Collaudo della nuova
-pubblicazione da completare prima di dichiarare l’esito online.
+56 test Python superati, inclusi 9 sulla fotografia. Commit 64ce256f7939188f9584054d371b62037b0868e6
+pubblicato con successo. DUE prove native browser riuscite: esempio pubblico
+Chantier Crépusculaire (12 materie), caricamento JPEG attraverso il selettore
+Chantier Naval au Crépuscule (8 materie). Entrambe analysis_version=2, 100 parti.
+La prima direzione è lunga 703 caratteri: il vecchio controllo l’avrebbe
+respinta. Conservati testo e incertezze integrali. Evidenza in
+docs/evidenze/PHOTO_REGRESSION_TEST_2026-09-09.json. Nessuna prova su iPhone.
+Nuova richiesta: flacone diverso per creazione, stampa ricetta/etichetta/
+ispirazioni e dedica personale quando il nome è presente. Da completare.
 Resoconto: docs/RIPRISTINO_FOTO_VALIDAZIONE_2026-09-09.md.
 
 ## Sessione 2026-09-09 — Schede di laboratorio e organo evolutivo

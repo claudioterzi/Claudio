@@ -43,4 +43,13 @@ al provider. Tipi errati, liste oltre cinque elementi e dimensioni eccessive
 continuano a essere respinti. Confermati controllo dei bytes e rimozione EXIF,
 chiavi normalizzate, blocchi del provider, POST nativo e replay dell’archivio.
 
-Collaudo della nuova versione online: in corso.
+Collaudo online concluso sul commit 64ce256f7939188f9584054d371b62037b0868e6,
+Vercel success. Due prove native browser Chrome riuscite, senza nuovi tentativi
+di composizione dopo il successo: esempio pubblico, Chantier Crépusculaire,
+12 materie; caricamento JPEG dal selettore, Chantier Naval au Crépuscule,
+8 materie. In entrambi i casi analysis_version=2 e totale 100 parti.
+Il primo testo di direzione contiene 703 caratteri: prova reale di un risultato
+che il vecchio validatore avrebbe scartato. L’attesa dell’evento navigazione
+del browser è scaduta, ma il successivo controllo ha confermato pagina finale,
+analisi e formula già ricevute; nessun invio duplicato.
+Evidenza: docs/evidenze/PHOTO_REGRESSION_TEST_2026-09-09.json.

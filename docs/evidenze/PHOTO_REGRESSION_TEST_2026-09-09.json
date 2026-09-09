@@ -1,0 +1,258 @@
+{
+  "date": "2026-09-09",
+  "application_commit": "64ce256f7939188f9584054d371b62037b0868e6",
+  "previous_error": {
+    "http_status": 503,
+    "code": "vision_invalid_direction_length",
+    "elapsed_seconds": 20.33
+  },
+  "python_tests_passed": 56,
+  "browser": "Chrome cloud",
+  "iphone_test": false,
+  "tests": [
+    {
+      "path": "public_example",
+      "name": "Chantier Crépusculaire",
+      "photo": {
+        "analysis_version": 2,
+        "analyzed_at": "2026-09-09T16:10:59.161766+00:00",
+        "associazioni": [
+          {
+            "elemento": "Scintille della saldatura",
+            "evocazione": "Un'esplosione di note metalliche e calde, forse con un tocco di fumo e ozono."
+          },
+          {
+            "elemento": "Cielo al tramonto con nuvole",
+            "evocazione": "Un accordo ambrato e speziato, con sfumature dolci e leggermente polverose, che evoca la transizione del giorno."
+          },
+          {
+            "elemento": "Terreno bagnato e riflettente",
+            "evocazione": "Una sensazione di freschezza umida, quasi acquatica, con un sottofondo minerale o terroso."
+          },
+          {
+            "elemento": "Strutture industriali e metallo",
+            "evocazione": "Note robuste e austere, forse legnose o cuoiate, con un accenno di freddo metallo o catrame."
+          },
+          {
+            "elemento": "L'atmosfera generale di lavoro e crepuscolo",
+            "evocazione": "Un profumo che bilancia la forza e la fatica con la quiete e la bellezza del momento, forse con un contrasto tra note vivaci e profonde."
+          }
+        ],
+        "direzione": "Un profumo che cattura l'essenza di un cantiere navale al crepuscolo, unendo la robustezza del lavoro industriale con la bellezza effimera del tramonto. Potrebbe aprirsi con note frizzanti e metalliche, che ricordano le scintille e l'ozono, evolvendo poi in un cuore più caldo e avvolgente di ambra e spezie, evocando i colori del cielo. Il fondo potrebbe essere ancorato da accordi legnosi, cuoiati o minerali, che richiamano la struttura della nave e il terreno bagnato, con un tocco di umidità per riflettere l'ambiente. L'obiettivo è creare una fragranza che sia al tempo stesso potente e contemplativa, un omaggio alla forza umana e alla bellezza naturale che si fondono in un ambiente inaspettato.",
+        "esempio_pubblico": "cantiere",
+        "image_sha256": "1946cd4d7031e1e18a8d0ace17b3a49a3f6a8ef466e4a94d9882ea3c051e078f",
+        "incertezze": "Non è possibile determinare il tipo specifico di metallo o i materiali esatti della nave. Non si possono dedurre i suoni specifici del cantiere o gli odori precisi dei materiali usati, come vernici o oli.",
+        "model": "gemini-2.5-flash",
+        "osservazioni": [
+          "Un operaio salda la fiancata di una grande nave, generando scintille luminose.",
+          "Il cielo al tramonto mostra sfumature di arancione, rosa e grigio, con nuvole sparse.",
+          "Il terreno è bagnato e riflette le luci artificiali e i colori del cielo.",
+          "Sono presenti gru e altre strutture industriali sullo sfondo, suggerendo un cantiere navale.",
+          "Due altri operai, con elmetti di sicurezza, osservano o prendono appunti vicino alla nave."
+        ],
+        "provider": "gemini",
+        "status": "interpreted"
+      },
+      "recipe": [
+        [
+          "Safraleine",
+          131,
+          15.5,
+          "testa",
+          0
+        ],
+        [
+          "Menta piperita EO",
+          175,
+          4,
+          "testa",
+          0
+        ],
+        [
+          "Calone 1951",
+          117,
+          1,
+          "testa",
+          1
+        ],
+        [
+          "Incenso (olibano) EO",
+          10,
+          19,
+          "cuore",
+          0
+        ],
+        [
+          "Betulla (birch tar) EO rett.",
+          67,
+          7,
+          "cuore",
+          1
+        ],
+        [
+          "Indolo",
+          96,
+          4,
+          "cuore",
+          1
+        ],
+        [
+          "Geosmina 1%",
+          184,
+          15.5,
+          "fondo",
+          1
+        ],
+        [
+          "Amber Xtreme",
+          107,
+          9.5,
+          "fondo",
+          1
+        ],
+        [
+          "Javanol",
+          111,
+          9.5,
+          "fondo",
+          1
+        ],
+        [
+          "Ambroxan",
+          7,
+          8,
+          "scia",
+          0
+        ],
+        [
+          "Iso E Super",
+          32,
+          4,
+          "scia",
+          0
+        ],
+        [
+          "Ambermax",
+          144,
+          3,
+          "scia",
+          1
+        ]
+      ],
+      "formula_code": "TRZ1.13aff1815ecef350.131:155:T:0-175:40:T:0-117:10:T:1-10:190:C:0-67:70:C:1-96:40:C:1-184:155:F:1-107:95:F:1-111:95:F:1-7:80:S:0-32:40:S:0-144:30:S:1.9052e9507e57",
+      "parts_sum": 100,
+      "archived": false,
+      "production_validated": false
+    },
+    {
+      "path": "native_file_upload",
+      "name": "Chantier Naval au Crépuscule",
+      "photo": {
+        "analysis_version": 2,
+        "analyzed_at": "2026-09-09T16:11:53.747219+00:00",
+        "associazioni": [
+          {
+            "elemento": "Scintille di saldatura",
+            "evocazione": "Un'esplosione di note metalliche e calde, forse con un tocco di fumo e ozono, che evoca energia e trasformazione."
+          },
+          {
+            "elemento": "Fiancata della nave arrugginita",
+            "evocazione": "Un accordo robusto di note ferrose e terrose, con sentori di muschio e sale marino, che richiama la storia e la resistenza."
+          },
+          {
+            "elemento": "Cielo al tramonto",
+            "evocazione": "Una miscela di note calde e avvolgenti, come ambra e resine, con un tocco etereo di aldeidi o muschi chiari, per un'atmosfera malinconica e speranzosa."
+          },
+          {
+            "elemento": "Terreno bagnato e riflettente",
+            "evocazione": "Un'evocazione di umidità e mineralità, con note acquatiche e un fondo di patchouli o vetiver, che simboleggia la forza della natura e il lavoro umano."
+          },
+          {
+            "elemento": "Atmosfera industriale",
+            "evocazione": "Un accordo di note legnose scure, cuoio e un pizzico di spezie, che suggerisce un ambiente di lavoro intenso e la presenza di macchinari pesanti."
+          }
+        ],
+        "direzione": "Un profumo che catturi l'essenza di un cantiere navale al tramonto, unendo la forza e la grinta del lavoro industriale con la bellezza effimera della natura. Dovrebbe essere una fragranza audace e complessa, con un'apertura luminosa e metallica che si evolve in un cuore caldo e terroso, per poi assestarsi su un fondo profondo e leggermente salmastro. L'obiettivo è evocare un senso di trasformazione, resilienza e la poesia nascosta nel duro lavoro.",
+        "image_sha256": "7dda13f91d64483423754750ae55f2033eb7e14fd36020f3c4a84664e84c5a1c",
+        "incertezze": "Non è possibile determinare il tipo specifico di metallo o il materiale esatto della nave. Non è chiaro se il terreno sia bagnato dalla pioggia o da altre fonti. La natura precisa delle strutture sullo sfondo non è completamente definibile.",
+        "model": "gemini-2.5-flash",
+        "osservazioni": [
+          "Un operaio sta saldando la fiancata di una grande nave, generando scintille luminose.",
+          "Il cielo al tramonto presenta sfumature di arancione, rosa e grigio, con nuvole sparse.",
+          "Il terreno è bagnato e riflette la luce del cielo e delle scintille.",
+          "Sono presenti gru e altre strutture industriali sullo sfondo, suggerendo un cantiere navale.",
+          "Due altri operai in caschi e tute sono visibili, uno osserva e l'altro prende appunti."
+        ],
+        "provider": "gemini",
+        "status": "interpreted"
+      },
+      "recipe": [
+        [
+          "Safraleine",
+          131,
+          11.5,
+          "testa",
+          0
+        ],
+        [
+          "Calone 1951",
+          117,
+          10.5,
+          "testa",
+          1
+        ],
+        [
+          "Cypriol (nagarmotha) EO",
+          110,
+          25,
+          "cuore",
+          0
+        ],
+        [
+          "Betulla (birch tar) EO rett.",
+          67,
+          9,
+          "cuore",
+          1
+        ],
+        [
+          "Patchouli EO",
+          33,
+          26.5,
+          "fondo",
+          0
+        ],
+        [
+          "Amber Xtreme",
+          107,
+          3.5,
+          "fondo",
+          1
+        ],
+        [
+          "Iso E Super",
+          32,
+          8,
+          "scia",
+          0
+        ],
+        [
+          "Exaltolide",
+          37,
+          6,
+          "scia",
+          0
+        ]
+      ],
+      "formula_code": "TRZ1.13aff1815ecef350.131:115:T:0-117:105:T:1-110:250:C:0-67:90:C:1-33:265:F:0-107:35:F:1-32:80:S:0-37:60:S:0.6806c1509f4d",
+      "parts_sum": 100,
+      "archived": false,
+      "production_validated": false
+    }
+  ],
+  "regression_confirmed": {
+    "accepted_direction_chars": 703,
+    "old_limit": 500,
+    "old_validator_would_reject": true
+  }
+}
