@@ -51,13 +51,28 @@ automatiche necessitano ancora di accesso al servizio immagini e archiviazione.
 
 ## Verifica
 
-70 test Python superati. Tre file di test JavaScript superati: invio Atelier,
+72 test Python superati. Tre file di test JavaScript superati: invio Atelier,
 flaconi e laboratorio. Il file Ferro di Luce scaricato nella sessione precedente
 è leggibile, conserva le 12 materie e la variante Essenza. I test verificano
 anche codice/ricetta discordanti, materiale sconosciuto, dose NaN, file grande,
 markup e URL pericolosi, false attestazioni di accesso, CSRF, revoca della
 sessione copiata, scadenza, rotazione password e indisponibilità del database.
-Collaudo pubblico in corso al momento del primo commit; risultati da aggiungere.
+Collaudo pubblico completato. Il primo commit `9ab6cbea` è stato pubblicato;
+la prima importazione live ha respinto la scheda valida. Correzione `7a450aff`:
+il catalogo già incluso nel compositore viene usato solo quando coincide con
+la revisione TRZ1; gli snapshot storici restano vincolanti e sono inclusi nella
+funzione. Due test aggiunti coprono l’assenza della directory statica e una
+revisione storica. Entrambi i commit hanno ricevuto Vercel success.
+
+Prova Chrome completa dopo la correzione: caricamento nativo del vecchio JSON,
+riapertura, modifica di dati fittizi di laboratorio, nuova esportazione e
+seconda riapertura. Ricetta, codice, dedica e geometria Essenza sono identici
+ai dati del file precedente. Recuperati 20%, densità fittizia 0,85, supporto
+scelto e una preparazione di prova; le altre 11 rimangono da dichiarare.
+Anteprima stampa ricetta verificata con 50/100/200 ml e pesate coerenti.
+Nessuna nuova verifica di stampante fisica, Safari/iPhone o WebGL GPU.
+La nuova pagina usa l’atmosfera Memoria. L’archivio cloud rimane non attivo.
+Evidenze: `docs/evidenze/RECUPERO_TEST_2026-09-09.json` e screenshot associato.
 
 Fonti operative consultate:
 - [Vercel: variabili progetto](https://vercel.com/docs/rest-api/projects/retrieve-the-environment-variables-of-a-project-by-id-or-name)

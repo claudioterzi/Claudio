@@ -16,6 +16,13 @@ Backend archivio completato con password hash, sessioni revocabili di un’ora,
 CSRF e limite tentativi condiviso; corretta riaggiunta CORS globale alle route
 private. 70 test Python e 3 file test JavaScript superati. Collaudo pubblico
 ancora in corso al primo commit. Dettagli: docs/RIPRESA_ARCHIVIO_2026-09-09.md.
+Collaudo poi concluso: commit 9ab6cbea e correzione pacchetto cataloghi 7a450aff,
+entrambi Vercel success. Due test aggiunti per decodifica senza directory
+statica e recupero delle revisioni storiche. Due importazioni native riuscite:
+vecchio JSON → modifica laboratorio → esportazione → riapertura. Ricetta,
+codice, dedica e geometria Essenza identici; dati di prova recuperati. Stampa
+ricetta verificata in anteprima. Suite finale: 72 test Python superati.
+Evidenza RECUPERO_TEST_2026-09-09.json.
 Lettura env Vercel HTTP 200 con token: ancora assenti storage, chiave immagini
 e credenziali archivio. Nessuna variabile modificata. Connettore progetto 403;
 scoperta CLI Upstash interrotta da autorizzazione rete annullata, nessuna risorsa
