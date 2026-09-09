@@ -27,6 +27,18 @@ SHAPES = (
 )
 
 
+def personal_dedication(perfume, customer):
+    """A dedication, not an inference about the recipient's personality."""
+    if not customer or not perfume:
+        return ''
+    accents = (perfume.get('flacone') or bottle_brief(perfume)).get('accenti', [])[:3]
+    notes = ', '.join(accents)
+    detail = f' Un incontro tra {notes}.' if notes else ''
+    return (f'{customer}, questa creazione è dedicata a te. '
+            f'{perfume.get("nome", "Il tuo profumo")} custodisce l’ispirazione da cui è nato.'
+            f'{detail} Una traccia personale da scoprire, indossare e fare tua.')
+
+
 def bottle_brief(perfume):
     catalog = json.loads((Path(__file__).parent / 'studio/parfums/organo_terzi_300.json').read_text())
     by_id = {m['n']: m for m in catalog['materie'] if m.get('tipo') != 'SOL'}

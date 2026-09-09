@@ -112,4 +112,18 @@ class PerfumeStudioTests(unittest.TestCase):
         self.assertNotEqual(a['accenti'],b['accenti'])
         self.assertEqual(a,bottle_brief(dict(FORMULA,customer='PRIVATE',concept='PRIVATE',nome='PRIVATE')))
 
+    def test_dedication_and_print_controls_are_personalized_and_escaped(self):
+        from perfume_visual import personal_dedication
+        self.assertEqual(personal_dedication(FORMULA,''),'')
+        text=personal_dedication(FORMULA,'Claudio')
+        self.assertIn('Claudio, questa creazione è dedicata a te.',text)
+        self.assertIn(FORMULA['nome'],text)
+        with patch('tarocchi_web._atelier_componi_ai',return_value=(FORMULA,None)):
+            response=self.client.post('/profumo',data={'q':'Ambra','cliente':'<script>prova</script>','creation_id':self.creation_id})
+        self.assertEqual(response.status_code,200)
+        self.assertNotIn('<script>prova</script>',response.text)
+        self.assertIn('&lt;script&gt;prova&lt;/script&gt;',response.text)
+        for control in ('print-recipe','print-inspiration','print-label','bottle-sculpture','bottle-essence'):
+            self.assertIn('id="'+control+'"',response.text)
+
 if __name__ == '__main__':unittest.main()

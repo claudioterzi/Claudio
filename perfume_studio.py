@@ -102,11 +102,12 @@ def _image_signer():
 def render_result(intention, perfume=None, error=None, customer='', record=None, archive_error=None,
                   diagnostic=None):
     token = _image_signer().dumps(record['serial']) if record and images_ready() else None
-    from perfume_visual import bottle_brief
+    from perfume_visual import bottle_brief, personal_dedication
     visual = perfume.get('flacone') or bottle_brief(perfume) if perfume else None
     return render_template('perfume_result.html', intention=intention, p=perfume, error=error,
                            customer=customer, record=record, archive_error=archive_error,
-                           image_token=token, visual=visual, diagnostic=diagnostic)
+                           image_token=token, visual=visual, diagnostic=diagnostic,
+                           dedication=personal_dedication(perfume, customer))
 
 
 @studio.get('/atelier/esempio')

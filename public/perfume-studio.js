@@ -6,17 +6,48 @@
   const image = document.getElementById('bottle-image');
   const status = document.getElementById('image-status');
   const dialog = document.getElementById('image-dialog');
+  const perfume = data.record.perfume;
+  const caption = document.getElementById('image-caption');
+  const original = {url:image.src, caption:caption.textContent};
+  const variants = [document.getElementById('bottle-sculpture'),document.getElementById('bottle-essence')];
+  const originalButton = document.getElementById('bottle-original');
+  const renders = new Map();
+  let selected = null;
   let imageObjectUrl = null;
   function save(blob, name) {
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 60000);
   }
-  const filename = (data.serial || 'terzi-bozza').toLowerCase();
+  const slug = text => text.normalize('NFKD').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').slice(0,70).toLowerCase();
+  const filename = slug(data.serial || data.name+'-'+(perfume.flacone?.recipe_fingerprint||'bozza').slice(0,10));
   document.getElementById('download-record').onclick = () => {
-    save(new Blob([JSON.stringify(data.record, null, 2)], {type:'application/json'}), filename + '.json');
+    const record = {...data.record,presentation:{dedication:data.dedication||null,bottle:selected}};
+    save(new Blob([JSON.stringify(record, null, 2)], {type:'application/json'}), filename + '.json');
   };
-  document.getElementById('print-label').onclick = () => window.print();
+  for (const [id,kind] of [['print-label','label'],['print-recipe','recipe'],['print-inspiration','inspiration']]) {
+    document.getElementById(id).onclick = () => window.TerziPrint.open(kind);
+  }
+  function pressed(button) {
+    [...variants,originalButton].filter(Boolean).forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+  }
+  async function showVariant(variant) {
+    [...variants,originalButton].filter(Boolean).forEach(b=>b.disabled=true);
+    status.textContent = 'Disegno il vetro e la luce della tua creazione…';
+    try {
+      if (!renders.has(variant)) renders.set(variant,await window.TerziBottle.render(perfume,variant));
+      const rendering = renders.get(variant); image.src = rendering.url; await image.decode();
+      selected = rendering.spec; pressed(variants[variant]);
+      image.dataset.bottleVersion = selected.label;
+      caption.textContent = selected.label+' · flacone 3D legato alla ricetta · concept Claudio Terzi';
+      status.textContent = 'Versione '+selected.label+' pronta. Scarica il flacone con nome'+(data.customer?' e dedica.':'.');
+    } catch (_) {
+      status.textContent = 'Il disegno 3D non è disponibile in questo browser. La formula e la stampa restano disponibili.';
+    } finally { [...variants,originalButton].filter(Boolean).forEach(b=>b.disabled=false); }
+  }
+  variants.forEach((button,i)=>button.onclick=()=>showVariant(i));
+  if (originalButton) originalButton.onclick=()=>{image.src=original.url;caption.textContent=original.caption;selected=null;pressed(originalButton);delete image.dataset.bottleVersion;status.textContent='Flacone originale.';};
+  if (!perfume.esempio) showVariant(0);
   document.getElementById('enlarge').onclick = () => {
     const copy = document.getElementById('enlarge').cloneNode(true);
     copy.removeAttribute('id'); copy.querySelector('img').removeAttribute('id'); copy.tabIndex = -1;
@@ -38,8 +69,8 @@
         ctx.fillText(text,800,y);
       }
       line('TERZI PARFUMS',800,24); line(data.name,860,34);
-      line(data.customer || 'Atelier',920,27); line(data.serial || 'BOZZA · NON ARCHIVIATA',985,13);
-      canvas.toBlob(blob => { if (blob) save(blob, filename + '.png'); }, 'image/png');
+      line(data.customer ? 'Per '+data.customer : 'Atelier',920,27); line(data.serial || 'BOZZA · NON ARCHIVIATA',985,13);
+      canvas.toBlob(blob => { if (blob) save(blob, filename + '-'+slug(selected?.label||'originale')+'.png'); }, 'image/png');
     } catch (_) { status.textContent = 'Non riesco a scaricare l’immagine adesso. Riprova.'; }
   };
   const generate = document.getElementById('generate-image');

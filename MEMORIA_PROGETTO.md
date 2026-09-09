@@ -6,6 +6,27 @@
 >
 > Ultimo aggiornamento: 2026-09-09
 
+## Flaconi, dedica, stampa e ricerca Astra — 2026-09-09
+
+Implementate due varianti native 3D per formula: Scultura ed Essenza,
+Three.js 0.186.0 servito dal sito; nessuna chiamata a pagamento per il rendering.
+L'esempio Ferro di Luce conserva anche il flacone originale. Le nuove creazioni
+avviano Scultura; cambio versione e PNG con nome/dedica disponibili. Firma
+e versione del design incluse nell'esportazione JSON, formula preservata.
+Nuove anteprime ricetta/lotti, etichetta, ispirazione/dedica; stampa o HTML
+stampabile scaricabile. Il tasto laboratorio richiama la stampa della ricetta.
+Dedica quando il cliente è presente, con nome del profumo e accenti reali.
+57 test Python e 3 file di test JavaScript superati. Collaudo browser e
+pubblicazione di queste modifiche ancora in corso: non dichiararli conclusi.
+
+Claudio chiede ricerca online delle skill e novità Astra. Fonti e selezione
+salvate in docs/SKILL_ASTRA_RICERCA_2026-09-09.md. Il catalogo openai/skills
+rimanda ora a openai/plugins. Consultate istruzioni per interfacce, test,
+creatività e persistenza; nessuna installazione massiva o migrazione API.
+Verificate le guide ufficiali GPT-6 Astra e novità iOS dell'8 settembre.
+Archivio persistente, autenticazione e fotografie AI automatiche restano
+funzioni da attivare con infrastruttura appropriata, non già operative.
+
 ## Ripresa foto — errore ricorrente dopo il primo collaudo
 
 Claudio segnala ancora un errore con screenshot IMG_1069. Riprodotto il

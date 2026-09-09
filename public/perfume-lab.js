@@ -68,7 +68,7 @@
     }
     for(const control of [basis,concentration,density,support])control.addEventListener('input',render);
     exportButton.onclick=()=>{if(!current)return;const documentData={schema_version:1,type:'terzi_laboratory_draft',created_at:new Date().toISOString(),name:perfume.nome||'Formula da codice',formula_code:perfume.formula_code,concentration_of_preparations_percent_mass:Number(concentration.value),density_g_ml:basis.value==='ml'?Number(density.value):null,support:support.value||null,preparations:recipe.map((r,i)=>({n:r[1],name:r[0],parts:r[2],preparation:preparations[i].value.trim()||null})),batches:current,prices_eur:VOLUMES.map((v,i)=>({ml:v,eur:PRICES[i]})),production_validated:false,attribution:'Concept e direzione: Claudio Terzi · © 2026'};const url=URL.createObjectURL(new Blob([JSON.stringify(documentData,null,2)],{type:'application/json'}));const a=el('a');a.href=url;a.download='terzi-scheda-laboratorio.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);};
-    printButton.onclick=()=>{document.body.classList.add('lab-print');window.addEventListener('afterprint',()=>document.body.classList.remove('lab-print'),{once:true});window.print();};
+    printButton.onclick=()=>{if(window.TerziPrint&&document.getElementById('perfume-data')){window.TerziPrint.open('recipe');return;}document.body.classList.add('lab-print');window.addEventListener('afterprint',()=>document.body.classList.remove('lab-print'),{once:true});window.print();};
     render();
   }
   root.TerziLab={calculate,mount};
