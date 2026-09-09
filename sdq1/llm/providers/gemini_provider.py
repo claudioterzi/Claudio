@@ -38,8 +38,6 @@ class GeminiProvider(ProviderBase):
             # spegne il "thinking" di Gemini 2.5: tutto il budget di token va
             # all'output JSON, che altrimenti si tronca a metà
             gen["thinkingConfig"] = {"thinkingBudget": 0}
-            if self.opts.get("response_schema"):
-                gen["responseJsonSchema"] = self.opts["response_schema"]
         payload = {
             "contents": [{"role": "user", "parts": [{"text": utente}]}],
             "generationConfig": gen,

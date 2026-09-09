@@ -192,7 +192,7 @@ def _atelier_componi_ai(intenzione, famiglia="", ondata=2, tentativo=0, evita=No
     direzione diversa a ogni nuova prova. Ritorna (parfum, None) o (None, errore)."""
     import time
     import hashlib
-    from atelier_validation import CompositionInvalid, response_schema, validate_proposal
+    from atelier_validation import CompositionInvalid, validate_proposal
     from perfume_research import reference_from, research_reference
     deadline = time.monotonic() + 48
     styles = {"carles": ((3,3,3), (20,30,35), 3),
@@ -218,7 +218,7 @@ def _atelier_componi_ai(intenzione, famiglia="", ondata=2, tentativo=0, evita=No
 
     # catalogo compatto per il modello
     righe = [f'{m["n"]}|{m["nome"]}|{m["famiglia"]}|{m.get("nota") or "-"}|'
-             f'forza{m["forza"]}|{m["livello"]}|{m.get("ruolo_scia") or "-"}|{m.get("note_uso") or "-"}'
+             f'forza{m["forza"]}|{m["livello"]}|{m.get("ruolo_scia") or "-"}'
              for m in mat_per_n.values()]
     catalogo = "\n".join(righe)
 
@@ -255,7 +255,7 @@ def _atelier_componi_ai(intenzione, famiglia="", ondata=2, tentativo=0, evita=No
         "Nel ragionamento spiega da NASO: quale materia rende quale sfaccettatura "
         "e perché, come dialogano testa-cuore-fondo, e quale gesto (l'overdose) "
         "dà la firma. Cita le materie per nome. Sii concreto, non vago.\n\n"
-        f"ORGANO (numero|nome|famiglia|nota|forza|ondata|ruolo_scia|note_uso):\n{catalogo}\n\n"
+        f"ORGANO (numero|nome|famiglia|nota|forza|ondata|ruolo_scia):\n{catalogo}\n\n"
         "Rispondi SOLO con JSON valido, nessun testo attorno, in questa forma:\n"
         '{"nome":"nome francese evocativo","famiglia":"una delle 8 famiglie della casa",'
         '"testa":[numeri 2-3],"cuore":[numeri 2-3],"fondo":[numeri 2-3],'
@@ -283,7 +283,6 @@ def _atelier_componi_ai(intenzione, famiglia="", ondata=2, tentativo=0, evita=No
     from sdq1.llm.providers import AnthropicProvider, GeminiProvider
     prop = piramide = scia = None
     corrections = 0
-    schema = response_schema(counts, scia_count)
     for cls, mod in [(GeminiProvider, "gemini-2.5-flash"),
                      (AnthropicProvider, "claude-haiku-4-5-20251001")]:
         feedback = ""
@@ -292,10 +291,10 @@ def _atelier_componi_ai(intenzione, famiglia="", ondata=2, tentativo=0, evita=No
                 remaining = deadline - time.monotonic()
                 if remaining < 3:
                     break
-                timeout = min(18, remaining)
+                timeout = min(26, remaining)
                 prov = cls(modello=mod, api_key=None, timeout=timeout, timeout_secondi=timeout,
                            max_retries=0, temperatura=0.85 if not attempt else 0.35,
-                           max_token=2300, json_mode=True, response_schema=schema)
+                           max_token=2300, json_mode=True)
                 if not prov.disponibile:
                     break
                 r = prov.completa(sistema, utente + feedback)

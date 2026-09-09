@@ -7,16 +7,6 @@ class CompositionInvalid(ValueError):
     pass
 
 
-def response_schema(counts, scia_count):
-    properties = {key: {"type": "string"} for key in
-                  ("nome", "famiglia", "riferimento", "ragionamento", "concept")}
-    for key, count in zip(("testa", "cuore", "fondo", "scia"), (*counts, scia_count)):
-        properties[key] = {"type": "array", "minItems": count, "maxItems": count,
-                           "items": {"type": "integer", "minimum": 1}}
-    properties["overdose"] = {"type": "integer", "minimum": 1}
-    return {"type": "object", "properties": properties, "required": list(properties)}
-
-
 def validate_proposal(text, materials, counts, scia_count):
     """Reject incomplete/foreign selections; never add or silently drop a material."""
     raw = text.strip()
