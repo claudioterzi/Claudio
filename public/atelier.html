@@ -101,10 +101,13 @@
     <h1>L'Atelier di Raffaello</h1>
     <p>Terzi Parfums · il banco dove nascono le ricette nuove, dall'Organo 300 e dalle regole del Grimorio</p>
     <p class="formula">Intenzione + Organo + Regole = Proposta</p>
-    <p class="versione">✦ Raffaello AI · v10 — il bottone apre il profumo 🧠 ✦</p>
+    <p class="versione">✦ Una formula, un flacone, una creazione personale ✦</p>
+    <p><a href="/atelier/archivio">Archivio delle creazioni →</a></p>
   </header>
 
   <div class="banco">
+    <label for="cliente">Nome del cliente — sull’etichetta</label>
+    <input id="cliente" type="text" maxlength="60" autocomplete="off" placeholder="Nome o dedica per questa creazione" style="width:100%;padding:.75rem;margin-bottom:1rem;font-size:1rem">
     <label for="intenzione">L'intenzione — di' a Raffaello cosa deve diventare profumo</label>
     <textarea id="intenzione" placeholder="Es.: un profumo per chi torna a casa dopo tanti anni…"></textarea>
     <div class="riga-opzioni">
@@ -398,10 +401,21 @@ function chiediARaffaello(rilancio) {
   }
   document.getElementById("voce").textContent =
     "\ud83e\udde0 Raffaello sta componendo\u2026 (si apre tra pochi secondi)";
-  let url = "/profumo?q=" + encodeURIComponent(i.intenzione) + "&ondata=" + i.ondata;
-  if (i.fam) url += "&famiglia=" + encodeURIComponent(i.fam);
-  window.location.href = url;
+  const customer = document.getElementById("cliente").value.trim();
+  if (!customer) {
+    document.getElementById("voce").textContent = "Per chi componiamo? Scrivi il nome da mettere sul flacone.";
+    document.getElementById("cliente").focus(); return;
+  }
+  document.getElementById("chiedi").disabled = true;
+  const form = document.createElement("form"); form.method = "POST"; form.action = "/profumo";
+  const values = {q:i.intenzione,cliente:customer,ondata:String(i.ondata),famiglia:i.fam || "",creation_id:crypto.randomUUID()};
+  Object.entries(values).forEach(([name,value]) => {
+    const input = document.createElement("input"); input.type = "hidden"; input.name = name; input.value = value; form.appendChild(input);
+  });
+  document.body.appendChild(form); form.submit();
 }
+
+window.addEventListener("pageshow", () => { document.getElementById("chiedi").disabled = false; });
 
 function leggi() {
   return {
