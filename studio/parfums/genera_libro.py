@@ -18,6 +18,9 @@ Uso:
     python3 studio/parfums/genera_libro.py
 """
 
+import sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parents[2]))
+from studio.parfums.formula_code import encode
 import html
 import json
 from collections import Counter
@@ -82,6 +85,7 @@ def scheda(p):
         + (' <span class="micro">⚠ 1%</span>' if r["micro"] else "")
         + f'</td><td class="parti">{str(r["parti"]).replace(".", ",")}</td></tr>'
         for r in p["ricetta"])
+    code = encode(p["ricetta"])
     pk = p["packaging"]
     return f'''
 <div class="scheda">
@@ -96,6 +100,7 @@ def scheda(p):
     <p class="concept">{e(p["concept"])}</p>
     <div class="etichetta-sezione">Ricetta — parti su 100 di concentrato</div>
     <table class="ricetta">{righe}</table>
+    <div class="codice-ricetta" style="margin:12px 0;font-size:12px;overflow-wrap:anywhere"><strong>Codice di ricostruzione</strong><br><code>{code}</code><br><a href="formula.html#{code}">Ricostruisci formula →</a></div>
     <div class="etichetta-sezione">Packaging</div>
     <p class="pack">{e(pk["flacone"])} · tappo: {e(pk["tappo"])} ·
     astuccio: {e(pk["astuccio"])}<br>etichetta: {e(pk["etichetta"])}</p>
