@@ -4,7 +4,7 @@
     {
       "src": "tarocchi_web.py",
       "use": "@vercel/python",
-      "config": { "maxDuration": 60, "includeFiles": "studio/parfums/**" }
+      "config": { "maxDuration": 60, "includeFiles": "{studio/parfums/**,public/formule/organo-*.json}" }
     },
     {
       "src": "public/**",

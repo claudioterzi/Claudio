@@ -31,7 +31,12 @@ def decode(code):
     body='.'.join([version,revision,payload])
     if version!='TRZ1' or hashlib.sha256(body.encode()).hexdigest()[:12]!=checksum:
         raise ValueError('Codice non valido')
-    raw=(ROOT/'public/formule'/f'organo-{revision}.json').read_bytes()
+    # The current catalogue is already bundled with the Python compositor.
+    # Use it only when its exact revision matches; historical codes still
+    # require their immutable snapshot, never a newer catalogue by default.
+    raw=catalog_bytes()
+    if hashlib.sha256(raw).hexdigest()[:16]!=revision:
+        raw=(ROOT/'public/formule'/f'organo-{revision}.json').read_bytes()
     if hashlib.sha256(raw).hexdigest()[:16]!=revision:raise ValueError('Catalogo alterato')
     materials={m['n']:m for m in json.loads(raw)['materie']}
     rows=[]

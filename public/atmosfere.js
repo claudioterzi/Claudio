@@ -24,7 +24,7 @@
     alpha: ['L’intuizione', 'Ascoltare prima di dare un nome.', 'Carte coperte, una candela e un tavolo di legno nell’ombra.']
   };
   const path = location.pathname.replace(base.pathname, '').replace(/\/$/, '').replace(/\.html$/, '');
-  const aliases = {'': 'index', profumo: 'atelier', flight: 'flight_hunter', 'atelier/archivio': 'libro', 'atelier/esempio': 'opera'};
+  const aliases = {'': 'index', profumo: 'atelier', flight: 'flight_hunter', 'atelier/archivio': 'libro', 'atelier/riapri': 'libro', 'atelier/esempio': 'opera'};
   const key = aliases[path] || path;
   const available = ["alpha", "atelier", "creazioni", "flight_hunter", "formula", "home", "index", "libro", "opera", "opuscolo", "oracolo", "organo", "parfums", "parti", "spesa", "valigia", "viaggi"];
   const scene = available.includes(key) ? scenes[key] : null;
