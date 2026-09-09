@@ -37,6 +37,8 @@ IFRA_CRITICHE = ["quercia", "oakmoss", "isoeugenolo", "cannella", "citrale",
 
 def genera():
     organo = json.loads((BASE / "organo_terzi_300.json").read_text(encoding="utf-8"))
+    from organo_evolution import composition_catalog
+    organo = composition_catalog(organo)
 
     materie = []
     for m in organo["materie"]:

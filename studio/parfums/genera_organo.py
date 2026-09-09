@@ -21,6 +21,10 @@ REPO = BASE.parent.parent
 
 def genera():
     organo = json.loads((BASE / "organo_terzi_300.json").read_text(encoding="utf-8"))
+    from organo_evolution import load_registry, composition_catalog
+    registry = load_registry()
+    composition_catalog(organo, registry)  # Validate before publishing.
+    (REPO / 'public/organo-evoluzione.json').write_text(json.dumps(registry, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     materie = [{
         "n": m["n"], "nome": m["nome"], "tipo": m["tipo"], "fam": m["famiglia"],
         "nota": m["nota"] or "-", "forza": m["forza"] or 0,
@@ -106,6 +110,8 @@ PAGINA = """<!DOCTYPE html>
     <p>Le materie prime — famiglia, nota, forza, ondata d'acquisto e note d'uso dall'Excel di Claudio</p>
   </header>
 
+  <section id="organo-evoluzione" aria-label="Evoluzione dell’organo"></section>
+
   <div class="filtri">
     <input id="cerca" type="search" placeholder="Cerca materia o nota d'uso…">
     <select id="f-fam"><option value="">Tutte le famiglie</option></select>
@@ -134,10 +140,13 @@ PAGINA = """<!DOCTYPE html>
 
   <footer>
     Fonte: <em>Organo_Terzi_300.xlsx</em> di Claudio Terzi, nel repository.<br>
-    Forza 5 = tracce o microdosi (diluizione 1%). I ruoli in rosso sono il motore della scia.<br>
+    Forza 5 = materia molto intensa. Le diluizioni di studio non definiscono automaticamente la preparazione delle ricette. I ruoli in rosso sono il motore della scia.<br>
     Da qui nascono i <a href="parfums.html">400 profumi</a> e le proposte dell'<a href="atelier.html">Atelier</a>.
   </footer>
 </div>
+
+<link rel="stylesheet" href="organo-evoluzione.css">
+<script src="organo-evoluzione.js" defer></script>
 
 <script>
 const M = __DATI__;

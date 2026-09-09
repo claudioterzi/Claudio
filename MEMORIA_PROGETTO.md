@@ -6,6 +6,26 @@
 >
 > Ultimo aggiornamento: 2026-09-09
 
+## Sessione 2026-09-09 — Schede di laboratorio e organo evolutivo
+
+Claudio chiede formula completa con dosi per 50/100/200 ml, valore di lusso
+fisso e possibilità proattiva di aggiungere/sospendere materie nell’organo.
+Implementati calcolo in massa con densità misurata per conversione dei ml,
+modalità prove in grammi, preparazioni dichiarate per ingrediente, supporto,
+esportazione e stampa della scheda. Nessuna falsa equivalenza grammi/ml o
+assunzione che una microdose implichi una diluizione produttiva già nota.
+Listino di progetto scelto: 50 ml 220 EUR, 100 ml 340 EUR, 200 ml 590 EUR;
+preventivo effettivo ancora da validare rispetto a costi e imposte.
+
+Registro evolutivo con proposte documentate Nympheal, Dreamwood Base e Paradise
+Molecule. Le proposte non sono possesso o acquisti; non entrano nelle ricette.
+Ammissione richiede disponibilità confermata e specifica della fornitura;
+assegna un nuovo ID e preserva snapshot TRZ1 vecchi e nuovi. Sospensioni e
+ripristini hanno motivazione e cronologia. Backend e generatore Atelier usano
+solo il catalogo attivo. Nessun comando amministrativo esposto al pubblico.
+Catalogo attuale: 293 materie olfattive e 7 supporti, nessuna rimossa/acquistata.
+Resoconto: docs/LABORATORIO_ORGANO_EVOLUTIVO_2026-09-09.md.
+
 ## Punto di ripresa 2026-09-09 — Atmosfere e fotografia
 
 Claudio richiede continuità dopo le interruzioni: ripartire dall’ultimo commit,
@@ -59,7 +79,11 @@ attivata dopo il blocco dell’approvazione automatica. Nessun nuovo servizio
 acquistato. Archivio privato/guest e generazione automatica dei flaconi restano
 incompleti e non vengono presentati come attivi.
 La stessa correzione credenziali è applicata anche al compositore Gemini e
-alla ricerca dei profumi di riferimento: verificare il relativo collaudo online.
+alla ricerca dei profumi di riferimento. Collaudo online RIUSCITO: Aube
+Aldéhydée, Chanel N° 5 Eau de Parfum riconosciuto nel racconto tramite Gemini,
+ricerca con fonti (sourced), 8 materie/100 parti. Evidenza separata in
+docs/evidenze/REFERENCE_TEST_2026-09-09.json. Test Python completi: 54 superati;
+calcolatore lotti: bilancio di massa e conversione verificati con Node.
 
 
 ## Sessione 2026-09-09 — Organo completo, gusti e flaconi

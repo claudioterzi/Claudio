@@ -177,7 +177,8 @@ def _carica_organo_atelier():
                          "studio", "parfums", "organo_terzi_300.json")
         with open(p, encoding="utf-8") as f:
             _ORGANO_CACHE = json.load(f)
-    return _ORGANO_CACHE
+    from studio.parfums.organo_evolution import composition_catalog
+    return composition_catalog(_ORGANO_CACHE)
 
 
 _FAMIGLIE_CASA = ["Agrumata", "Floreale", "Verde", "Acquatica",
@@ -211,7 +212,8 @@ def _atelier_componi_ai(intenzione, famiglia="", ondata=2, tentativo=0, evita=No
                                 "studio", "parfums", "organo_terzi_300.json")
     with open(catalog_path, "rb") as catalog_file:
         catalog_sha = hashlib.sha256(catalog_file.read()).hexdigest()
-    catalog_info = {"nome": "Organo Terzi 300", "fonte": organo["fonte"],
+    catalog_info = {"nome": "Organo Terzi", "fonte": organo["fonte"],
+                    "evolution_revision": organo.get('evolution_revision'),
                     "sha256": catalog_sha, "totale": len(organo["materie"]),
                     "materie_disponibili": len(mat_per_n), "ondata": ondata,
                     "supporti": [{"n": m["n"], "nome": m["nome"]} for m in organo["materie"]

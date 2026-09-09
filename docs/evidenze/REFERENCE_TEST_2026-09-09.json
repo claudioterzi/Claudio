@@ -1,0 +1,97 @@
+{
+  "tested_at": "2026-09-09",
+  "input": "Adoro Chanel N° 5 Eau de Parfum. Vorrei una creazione più fresca e luminosa, personale.",
+  "name": "Aube Aldéhydée",
+  "preferences": {
+    "items": [
+      {
+        "clarification": "",
+        "evidence": "Adoro Chanel N° 5 Eau de Parfum.",
+        "name": "Chanel N° 5 Eau de Parfum",
+        "relation": "preferito"
+      }
+    ],
+    "origin": "context",
+    "provider": "gemini",
+    "status": "recognized"
+  },
+  "research_status": "sourced",
+  "sources": [
+    {
+      "title": "chanel.com",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF8-4GdBfWLhT5O3hHrBUCFnA6PU0AdgnKfgbP7-k5alUajhcemgKGl7i47i6l5Ddt1BNobtdeDWM26OcjCjy0NTOAG3WAEcevSe7HlnWGa8effEgYl5PvyAksGRXnCcpG-zgKHkeVnIQD56ZwCaO2YfOpfHfl31CUeNH0Lvvh4vMhNEUdgG3YpOA=="
+    },
+    {
+      "title": "chanel.com",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHw6HN-fz4FBxIpJ_abUwY4uRlXQXQzD1X5gZDA-OlR08GDVzSaz2YbW6z4Hk2GqLT96RmRGcIoQhLoQ5YTAUiEUEID7I1gOZC89G8pqbs63EbQK17ODVuErZEREip2N3UMXu_9s5HIDLWWzKrxS5XMqybfOPdDQVhQdRQ218EN"
+    },
+    {
+      "title": "youtube.com",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGIZjvlZ6zlKamP_Ys_Cqo1Pke1rEZzDZyW_bqYNbdt-hbXnkMPkJGURJyCIleWC6lEIICBzK9Z-kKKcLN6IWX-Pxq_zvJCN8DAvWh3hCszpP9DOrl1m9oANrzko6OJwnPbwbAXwTg="
+    },
+    {
+      "title": "youtube.com",
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH74DRzwz3jMTT72IlaIvTUvTP3Tud3Sl6waQL2VvKSj6ynjdPsE2OPhrhPtWkAVtJiWk0Y7rHdRZmAggAwBxc8-WODhcp_v2xFQCch9UyeVz3yfY2lNkmxu4CuZYdGUqxQ47dfyUY="
+    }
+  ],
+  "formula_code": "TRZ1.13aff1815ecef350.2:190:T:0-59:30:T:1-21:320:C:0-94:20:C:1-34:235:F:0-106:65:F:0-32:80:S:0-39:60:S:0.c87e16e1d02c",
+  "recipe": [
+    [
+      "Bergamotto EO (Calabria)",
+      2,
+      19.0,
+      "testa",
+      0
+    ],
+    [
+      "Aldeide C-11 undecilenica",
+      59,
+      3.0,
+      "testa",
+      1
+    ],
+    [
+      "Hedione",
+      21,
+      32.0,
+      "cuore",
+      0
+    ],
+    [
+      "Gelsomino grandiflorum ass.",
+      94,
+      2.0,
+      "cuore",
+      1
+    ],
+    [
+      "Sandalore",
+      34,
+      23.5,
+      "fondo",
+      0
+    ],
+    [
+      "Vaniglia assoluta (bourbon)",
+      106,
+      6.5,
+      "fondo",
+      0
+    ],
+    [
+      "Iso E Super",
+      32,
+      8.0,
+      "scia",
+      0
+    ],
+    [
+      "Habanolide",
+      39,
+      6.0,
+      "scia",
+      0
+    ]
+  ],
+  "total_parts": 100.0
+}

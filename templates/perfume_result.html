@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer"><title>{{ p.nome if p else 'La tua creazione' }} · Terzi Parfums</title>
-<link rel="stylesheet" href="/perfume-studio.css"><script src="/perfume-studio.js" defer></script><script src="/atmosfere.js" defer></script></head>
+<link rel="stylesheet" href="/perfume-studio.css"><script src="/perfume-studio.js" defer></script><script src="/atmosfere.js" defer></script><link rel="stylesheet" href="/perfume-lab.css"><script src="/perfume-lab.js" defer></script></head>
 <body><main class="studio">
 <nav class="studio-nav" aria-label="Atelier"><a href="/atelier.html">← Atelier</a><span>TERZI PARFUMS</span><a href="/atelier/archivio">Archivio</a></nav>
 {% if not p %}<section class="empty"><p class="eyebrow">L’ATELIER DI RAFFAELLO</p><h1>La tua creazione</h1><p>{{ error or 'Scrivi un’intenzione nell’Atelier per iniziare.' }}</p><a class="action" href="/atelier.html">Torna all’Atelier</a></section>
@@ -51,6 +51,7 @@
 <p>Parti relative su 100 · {{ p.liv }} · proposta didattica</p><div class="table-wrap"><table><thead><tr><th scope="col">Nota</th><th scope="col">Materia del tuo organo</th><th scope="col">Parti</th></tr></thead><tbody>
 {% for name,number,parts,level,micro in p.ricetta %}<tr><td>{{ level }}</td><td><small>N° {{ number }}</small> {{ name }}{% if micro %}<small>Forza 5 · preparazione in diluizione da precisare</small>{% endif %}</td><td>{{ parts }}</td></tr>{% endfor %}
 </tbody></table></div><p class="caption">Punto di partenza didattico, non formula finita: lavorare in diluizione e correggere col naso. Verificare i requisiti applicabili prima della vendita.</p></section>
+<section id="perfume-lab" aria-label="Dosi e valore della creazione"></section>
 <footer><p>Concept e direzione creativa: Claudio Terzi · Terzi Parfums</p><a href="/atelier.html">Componi un’altra creazione →</a></footer>
 <dialog id="image-dialog" aria-label="Flacone ingrandito"><button id="close-dialog" class="action">Chiudi</button><div id="large-bottle"></div></dialog>
 <section class="print-only"><p>TERZI PARFUMS</p><h1>{{ p.nome }}</h1><p>{{ customer }}</p><p>{{ record.serial if record else 'BOZZA · NON ARCHIVIATA' }}</p></section>
