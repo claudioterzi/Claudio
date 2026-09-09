@@ -91,7 +91,23 @@ def analyze_photo(photo, timeout=18):
             raw = response.read(100_001)
         if len(raw) > 100_000:
             raise ValueError('oversize response')
-        parts = json.loads(raw)['candidates'][0]['content']['parts']
+        envelope = json.loads(raw)
+        if not isinstance(envelope, dict):
+            raise ValueError('invalid envelope')
+        if envelope.get('promptFeedback', {}).get('blockReason'):
+            raise ValueError('provider blocked')
+        candidates = envelope.get('candidates')
+        if not isinstance(candidates, list) or not candidates:
+            raise ValueError('missing candidates')
+        candidate = candidates[0]
+        if candidate.get('finishReason') in ('SAFETY', 'BLOCKLIST', 'PROHIBITED_CONTENT', 'IMAGE_SAFETY'):
+            raise ValueError('provider blocked')
+        if candidate.get('finishReason') == 'MAX_TOKENS':
+            raise ValueError('truncated output')
+        content = candidate.get('content')
+        if not isinstance(content, dict) or not isinstance(content.get('parts'), list):
+            raise ValueError('missing parts')
+        parts = content['parts']
         analysis = json.loads(''.join(x.get('text', '') for x in parts if not x.get('thought')))
         observations, associations = analysis.get('osservazioni'), analysis.get('associazioni')
         if not isinstance(observations, list) or not 1 <= len(observations) <= 5:
@@ -126,7 +142,9 @@ def analyze_photo(photo, timeout=18):
         known = {'oversize response':'oversize', 'invalid observations':'observations',
                  'invalid observation':'observation_length', 'invalid associations':'associations',
                  'invalid association':'association_length', 'invalid direction':'direction_length',
-                 'no direction':'empty_direction'}
+                 'no direction':'empty_direction', 'invalid envelope':'envelope',
+                 'missing candidates':'no_candidates', 'missing parts':'no_parts',
+                 'truncated output':'truncated', 'provider blocked':'provider_blocked'}
         detail = 'json' if isinstance(exc, json.JSONDecodeError) else known.get(str(exc), 'shape')
         code = ('vision_invalid_' + detail if isinstance(exc, (ValueError, KeyError, TypeError, IndexError))
                 else 'vision_connection')
