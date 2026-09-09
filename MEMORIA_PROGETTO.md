@@ -6,6 +6,35 @@
 >
 > Ultimo aggiornamento: 2026-09-09
 
+## Continuità dopo chiusure accidentali — richiesta di Claudio, 2026-09-09
+
+Claudio chiede di preservare il lavoro anche quando chiude per sbaglio l’app.
+La chiusura non annulla l’obiettivo né richiede di ripartire da zero.
+
+Alla ripresa:
+1. Leggere questa memoria e l’ultimo commit; distinguere modifiche salvate,
+   pubblicazioni confermate, operazioni in corso e dipendenze bloccate.
+2. Prima di ripetere una pubblicazione, generazione AI o scrittura, verificarne
+   l’esito usando commit, identificativo o numero di serie già disponibile.
+   Un’interruzione del collegamento non prova che l’operazione sia fallita.
+3. Continuare le attività già autorizzate senza richiedere nuovamente consenso;
+   rispettare i blocchi e le autorizzazioni effettive registrati nella memoria.
+4. A ogni traguardo significativo salvare codice, stato verificato, operazioni
+   non confermate e prossimo passo. Escludere token, password e dati dei clienti.
+
+Questo è un metodo di ripresa persistente, non un servizio in background:
+la chat non può impedire la chiusura dell’app né garantire che il lavoro
+continui mentre la sessione è interrotta. Le creazioni del sito non sono ancora
+salvate automaticamente in un archivio cloud; il recupero attuale richiede
+la scheda JSON scaricata. Non dichiarare risolto il recupero di una formula
+che non era stata salvata.
+
+Punto verificato: applicazione 7a450aff pubblicata con successo, evidenze
+158f7eaa salvate, 72 test Python; recupero schede e laboratorio collaudato.
+Prossimo passo infrastrutturale: collegare un database persistente e collaudare
+l’archivio privato fra dispositivi. Resta il precedente blocco sulla creazione
+delle credenziali AI; non ripeterla come tentativo di recupero.
+
 ## Avanzamento autonomo — recupero e archivio, 2026-09-09
 
 Nuova riapertura `/atelier/riapri`: file JSON esportati dall’Atelier, formula
