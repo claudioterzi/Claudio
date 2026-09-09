@@ -57,6 +57,19 @@ class PhotoTests(unittest.TestCase):
             with self.assertRaises(PhotoUnavailable): analyze_photo(photo)
             self.assertEqual(urlopen.call_count, 1)
 
+    def test_incomplete_or_blocked_provider_response_never_becomes_success(self):
+        photo = prepare_photo(io.BytesIO(picture()))
+        cases = [({'promptFeedback':{'blockReason':'SAFETY'}}, 'vision_invalid_provider_blocked'),
+                 ({'candidates':[{'finishReason':'MAX_TOKENS'}]}, 'vision_invalid_truncated'),
+                 ({'candidates':[]}, 'vision_invalid_no_candidates')]
+        for reply, expected in cases:
+            with self.subTest(expected=expected), patch.dict(os.environ, {'GOOGLE_API_KEY':'test-only'}, clear=True), patch('perfume_photo.urllib.request.urlopen') as net:
+                net.return_value.__enter__.return_value.read.return_value = json.dumps(reply).encode()
+                with self.assertRaises(PhotoUnavailable) as failure:
+                    analyze_photo(photo)
+                self.assertEqual(failure.exception.code, expected)
+                self.assertEqual(net.call_count, 1)
+
     def test_photo_only_native_post_archives_interpretation_and_replays(self):
         with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {'PERFUME_DB_PATH':str(Path(directory)/'archive.db')}, clear=True):
             client = app.test_client(); creation = str(uuid4()); photo = prepare_photo(io.BytesIO(picture()))

@@ -86,11 +86,13 @@ def analyze_photo(photo, timeout=18):
         'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
         data=json.dumps(payload).encode(),
         headers={'Content-Type': 'application/json', 'x-goog-api-key': key})
+    stage = 'response'
     try:
         with urllib.request.urlopen(req, timeout=timeout) as response:
             raw = response.read(100_001)
         if len(raw) > 100_000:
             raise ValueError('oversize response')
+        stage = 'envelope'
         envelope = json.loads(raw)
         if not isinstance(envelope, dict):
             raise ValueError('invalid envelope')
@@ -108,7 +110,9 @@ def analyze_photo(photo, timeout=18):
         if not isinstance(content, dict) or not isinstance(content.get('parts'), list):
             raise ValueError('missing parts')
         parts = content['parts']
+        stage = 'text'
         analysis = json.loads(''.join(x.get('text', '') for x in parts if not x.get('thought')))
+        stage = 'fields'
         observations, associations = analysis.get('osservazioni'), analysis.get('associazioni')
         if not isinstance(observations, list) or not 1 <= len(observations) <= 5:
             raise ValueError('invalid observations')
@@ -128,6 +132,7 @@ def analyze_photo(photo, timeout=18):
         if not analysis['direzione'].strip():
             raise ValueError('no direction')
         # Whitelist the returned fields; never persist raw upload or arbitrary model keys.
+        stage = 'metadata'
         return dict(status='interpreted', provider='gemini', model='gemini-2.5-flash',
                     analyzed_at=datetime.now(timezone.utc).isoformat(), image_sha256=photo['sha256'],
                     osservazioni=observations,
@@ -146,6 +151,8 @@ def analyze_photo(photo, timeout=18):
                  'missing candidates':'no_candidates', 'missing parts':'no_parts',
                  'truncated output':'truncated', 'provider blocked':'provider_blocked'}
         detail = 'json' if isinstance(exc, json.JSONDecodeError) else known.get(str(exc), 'shape')
+        if detail == 'shape':
+            detail += '_' + stage + '_' + type(exc).__name__.lower()
         code = ('vision_invalid_' + detail if isinstance(exc, (ValueError, KeyError, TypeError, IndexError))
                 else 'vision_connection')
         raise PhotoUnavailable('Non sono riuscito ad analizzare la foto. Riprova oppure descrivila nell’intenzione senza allegarla.', code) from exc

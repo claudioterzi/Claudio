@@ -35,8 +35,20 @@ Non promettere di poter impedire interruzioni dell’app.
   non garantisce protezione server. Token e password esclusi dai salvataggi.
 - Copia Drive ancora sospesa per precedente rifiuto dell’approvazione.
 
-Prossimo passo: verificare deployment di questa correzione, una prova foto reale,
-il collegamento Viaggi→Atelier e l’esempio pubblico; registrare gli esiti qui.
+Esiti verificati dopo la ripresa:
+- Commit 72e806eb07b65bb363f7923d98e94f1d45076c10: Vercel success.
+- Viaggi→Raffaello→Atelier resta sul sito e precompila la scena corretta.
+- Ferro di Luce online: immagine caricata, nome corretto, nessun overflow;
+  provenienza testuale esplicita e codice TRZ1 validato su 12 materie/100 parti.
+- Tutte le 17 immagini mobili rispondono HTTP 200.
+- 16 test mirati superati. Dopo il cambio intestazione, foto non più HTTP 401,
+  ma risposta senza struttura valida; nessuna falsa composizione.
+- Diagnostica perfezionata con codici limitati, senza dati o segreti: distingue
+  output mancante, troncamento e blocco del fornitore. Non aggirare un blocco.
+
+Prossimo passo: attendere la pubblicazione di d1e834dd957293ae6aee1ec89117c8aabfca9f06,
+leggere il codice della prova foto e risolvere il difetto specifico; aggiornare
+questo punto con l’esito. Nuovo Gateway ancora bloccato, non è stato attivato.
 
 ## Sessione 2026-09-09 — Organo completo, gusti e flaconi
 
