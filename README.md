@@ -1,5 +1,7 @@
 # Claudio — R³∞ Framework
 
+[Indice verificato del sito — pagine, collegamenti e problemi rilevati](docs/SITE_INDEX.md) · [Indice JSON](docs/SITE_INDEX.json).
+
 ## Aggiornamento Astra e autoriflessione verificabile
 
 [Protocollo RRR Astra](docs/PROTOCOLLO_RRR_ASTRA.md) · [Capacità e limiti](docs/ASTRA_CAPACITA.md).
