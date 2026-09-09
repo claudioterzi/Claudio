@@ -48,6 +48,17 @@ class PhotoTests(unittest.TestCase):
             self.assertNotIn('data', result)
             self.assertEqual(result['image_sha256'], photo['sha256'])
 
+    def test_pasted_key_whitespace_is_removed_and_blank_primary_uses_configured_secondary(self):
+        photo = prepare_photo(io.BytesIO(picture()))
+        body = json.dumps({'candidates':[{'content':{'parts':[{'text':json.dumps(ANALYSIS)}]}}]}).encode()
+        for env in ({'GOOGLE_API_KEY':' test-only\n'},
+                    {'GOOGLE_API_KEY':' \n', 'GEMINI_API_KEY':'test-only'}):
+            with self.subTest(env=list(env)), patch.dict(os.environ, env, clear=True), patch('perfume_photo.urllib.request.urlopen') as net:
+                net.return_value.__enter__.return_value.read.return_value = body
+                result = analyze_photo(photo)
+                self.assertEqual(net.call_args.args[0].get_header('X-goog-api-key'), 'test-only')
+                self.assertEqual(result['status'], 'interpreted')
+
     def test_invalid_or_unavailable_analysis_never_becomes_invented_success(self):
         photo = prepare_photo(io.BytesIO(picture()))
         with patch.dict(os.environ, {}, clear=True):

@@ -58,7 +58,9 @@ def prepare_photo(upload):
 
 
 def analyze_photo(photo, timeout=18):
-    key = os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY')
+    # Vercel values pasted from a terminal can include surrounding newlines.
+    # Normalize only whitespace around the credential; never rewrite its body.
+    key = (os.getenv('GOOGLE_API_KEY', '').strip() or os.getenv('GEMINI_API_KEY', '').strip())
     if not key:
         raise PhotoUnavailable('L’analisi delle foto non è configurata. Puoi descrivere l’immagine nell’intenzione.')
     prompt = (
