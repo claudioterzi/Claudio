@@ -67,19 +67,12 @@ def defs_svg(famiglie_palette):
 
 
 def flacone(p):
-    forma = p["packaging"]["forma"]
-    fam = p["famiglia"]
-    nome = p["nome"] if len(p["nome"]) <= 18 else p["nome"][:17] + "…"
     return (
-        f'<svg viewBox="0 0 160 230" class="flacone" aria-label="Flacone N° {p["numero"]}">'
-        f'<use href="#corpo-{forma}" fill="url(#g-{fam})" opacity="0.9"/>'
-        f'<use href="#corpo-{forma}" fill="none" stroke="#8a6f2e" stroke-width="1.2"/>'
-        f'<use href="#tappo-{forma}" fill="#2c2c34" stroke="#8a6f2e" stroke-width="0.8"/>'
-        f'<rect x="45" y="128" width="70" height="50" rx="2" fill="#efe8d8" opacity="0.97"/>'
-        f'<text x="80" y="144" text-anchor="middle" font-family="Georgia" font-size="9.5" fill="#8a6f2e">N° {p["numero"]}</text>'
-        f'<text x="80" y="157" text-anchor="middle" font-family="Georgia" font-size="7.5" fill="#2c2418">{e(nome)}</text>'
-        f'<text x="80" y="169" text-anchor="middle" font-family="Georgia" font-size="5.5" letter-spacing="1" fill="#8a6f2e">TERZI PARFUMS</text>'
-        f'</svg>')
+        '<figure class="flacone-fotonico">'
+        f'<img src="images/libro-photonic.webp" width="640" height="960" '
+        f'loading="lazy" decoding="async" alt="Flacone artistico Terzi Parfums — N° {p["numero"]}">'
+        f'<figcaption><span>N° {p["numero"]}</span><strong>{e(p["nome"])}</strong></figcaption>'
+        '</figure>')
 
 
 def scheda(p):
@@ -241,6 +234,14 @@ def genera():
     .copertina {{ page-break-before: avoid; border-color: #8a6f2e; }}
     @page {{ size: A4; margin: 16mm; }}
   }}
+
+  .colonna-flacone {{ flex-basis: 180px; }}
+  .flacone-fotonico {{ margin: 0 0 12px; position: relative; overflow: hidden; border-radius: 8px; background: #080909; }}
+  .flacone-fotonico img {{ display: block; width: 100%; height: auto; }}
+  .flacone-fotonico figcaption {{ padding: 10px 8px 14px; color: #ebcc86; background: #080909; }}
+  .flacone-fotonico span {{ display: block; font-size: 12px; letter-spacing: .1em; }}
+  .flacone-fotonico strong {{ display: block; font-size: 16px; line-height: 1.3; font-weight: normal; overflow-wrap: anywhere; }}
+  @media(max-width: 600px) {{ .scheda {{ flex-direction: column; padding: 16px; }} .colonna-flacone {{ flex: auto; width: min(240px,100%); margin: auto; }} }}
 </style>
 </head>
 <body>
