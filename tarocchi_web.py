@@ -12,6 +12,7 @@ Endpoint:
 from __future__ import annotations
 
 import json
+from functools import lru_cache
 import os
 import sys
 import urllib.request
@@ -113,6 +114,36 @@ def index():
 def home():
     """SDQ-1 Mini App — dashboard Raffaello per Telegram."""
     return send_from_directory(_PUBLIC, "home.html")
+
+
+# Canone Alpha: stati simbolici del documento originale, senza generazione AI.
+@lru_cache(maxsize=1)
+def _carte_alpha():
+    percorso = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "tarocchi_quantici_alpha.json")
+    with open(percorso, encoding="utf-8") as fonte:
+        return json.load(fonte)["carte"]
+
+
+@app.route("/api/alpha")
+def alpha_mazzo():
+    return jsonify(_carte_alpha())
+
+
+@app.route("/api/alpha/collasso")
+def alpha_collasso():
+    nome = request.args.get("carta", "").strip()
+    asse = request.args.get("asse", "").strip().lower()
+    polarita = request.args.get("polarita", "").strip().lower()
+    if not nome or asse not in ("nord", "est", "sud", "ovest") or polarita not in ("luce", "ombra"):
+        return jsonify(errore="Scegli una carta, un asse e luce oppure ombra."), 400
+    carta = next((c for c in _carte_alpha() if c["nome"] == nome), None)
+    if carta is None:
+        return jsonify(errore="Carta non presente nel Canone Alpha."), 404
+    return jsonify(carta=carta["nome"], simbolo=carta["simbolo"],
+                   asse=asse, polarita=polarita,
+                   formula=f"{nome} · {asse.capitalize()} · {polarita.capitalize()}",
+                   significato=carta[polarita][asse])
 
 
 @app.route("/api/mazzo")

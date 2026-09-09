@@ -86,3 +86,7 @@ Agorà usa il ponte Telegram WebApp per inviare comandi; l’apertura in Safari 
 Per aggiornare: enumerare `public/*.html`, leggere `vercel.json` e le rotte Flask/Blueprint, normalizzare i link sullo stesso dominio, interrogare con GET pagine e dipendenze di lettura, quindi registrare data, stato e limiti. Deduplicare `/` e l’URL senza percorso. Tenere separate raggiungibilità HTTP e verifica delle interazioni. Non invocare automaticamente endpoint che generano contenuti, modificano dati o inviano messaggi.
 
 Questo aggiornamento salva la fotografia verificata e le priorità; non applica le correzioni funzionali elencate. Il [JSON dell’indice](SITE_INDEX.json) contiene collegamenti, form, script e metadati per successive verifiche.
+
+## Miglioramenti preparati dopo la scansione
+
+Vedi [Orizzonte 2400](ORIZZONTE_2400.md) per il ripristino delle API Alpha e la navigazione accessibile. Gli esiti HTTP sopra restano la fotografia della produzione alla data indicata, non una verifica delle modifiche pubblicate.

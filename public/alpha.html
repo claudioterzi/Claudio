@@ -331,7 +331,9 @@
         </select>
       </div>
     </div>
-    <button class="btn-collassa" onclick="collassa()">Collassa il significato</button>
+    <p id="alpha-stato" role="status" aria-live="polite">Carico il canone…</p>
+    <button id="alpha-riprova" type="button" onclick="location.reload()" hidden>Riprova il caricamento</button>
+    <button id="alpha-collassa" type="button" class="btn-collassa" onclick="collassa()" disabled>Collassa il significato</button>
   </div>
 
   <!-- Risultato collasso -->
@@ -367,9 +369,24 @@ let CARTE = [];
 let cartaAttiva = null;
 let facciaAttiva = 'luce';
 
+async function leggiJSON(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20000);
+  try {
+    const res = await fetch(url, {signal: controller.signal});
+    if (!res.ok) throw new Error('Servizio non disponibile');
+    return await res.json();
+  } finally { clearTimeout(timer); }
+}
+
+function statoAlpha(testo) {
+  document.getElementById('alpha-stato').textContent = testo;
+}
+
 async function init() {
-  const res = await fetch('/api/alpha');
-  CARTE = await res.json();
+  try {
+  CARTE = await leggiJSON('/api/alpha');
+  if (!Array.isArray(CARTE) || !CARTE.length) throw new Error('Canone vuoto');
 
   // Popola select carta
   const sel = document.getElementById('sel-carta');
@@ -382,6 +399,12 @@ async function init() {
 
   // Costruisci cicli
   costruisciCicli();
+  document.getElementById('alpha-collassa').disabled = false;
+  statoAlpha('Scegli una carta: ogni direzione apre una lettura diversa.');
+  } catch (errore) {
+    statoAlpha('Il canone non si è caricato. Controlla la connessione e riprova.');
+    document.getElementById('alpha-riprova').hidden = false;
+  }
 }
 
 function aggiornaPrev() {
@@ -396,13 +419,17 @@ async function collassa() {
   const asse     = document.getElementById('sel-asse').value;
   const polarita = document.getElementById('sel-polarita').value;
 
-  if (!nome) { alert('Scegli una carta.'); return; }
+  if (!nome) { statoAlpha('Scegli una carta per iniziare.'); document.getElementById('sel-carta').focus(); return; }
+  const bottone = document.getElementById('alpha-collassa');
+  bottone.disabled = true;
+  document.getElementById('risultato').classList.remove('visible');
+  statoAlpha('Apro questa lettura…');
+  try {
 
   const url = `/api/alpha/collasso?carta=${encodeURIComponent(nome)}&asse=${asse}&polarita=${polarita}`;
-  const res = await fetch(url);
-  const data = await res.json();
+  const data = await leggiJSON(url);
 
-  if (data.errore) { alert(data.errore); return; }
+  if (data.errore) throw new Error(data.errore);
 
   cartaAttiva = CARTE.find(c => c.nome === data.carta);
   facciaAttiva = polarita;
@@ -416,7 +443,11 @@ async function collassa() {
 
   const el = document.getElementById('risultato');
   el.classList.add('visible');
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  statoAlpha('Lettura aperta. Puoi confrontare luce e ombra, oppure cambiare asse.');
+  el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  } catch (errore) {
+    statoAlpha('La lettura non è disponibile adesso. Riprova: la tua scelta è rimasta qui.');
+  } finally { bottone.disabled = false; }
 }
 
 function aggiornaAssi(asseAttivo, polAttiva) {
