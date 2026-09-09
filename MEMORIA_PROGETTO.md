@@ -15,7 +15,11 @@ Estensione successiva: campo 5 preferiti, estrazione contestuale con citazioni
 verificate e distinzione preferito/evitare, gusti come criteri di composizione.
 Brief del flacone legato alla ricetta e percorso immagini originali con
 metadata e conservazione senza scadenza; attivazione immagini/archivio ancora
-da configurare/verificare, non dichiarata riuscita. 43 test locali superati.
+da configurare/verificare, non dichiarata riuscita. 44 test locali superati.
+Prima prova online con lista esplicita riuscita (Lumière Éclatante, 8 materie,
+100 parti); riconoscimento e ricerca con fonti indisponibili nella prima prova.
+Introdotto ripiego sul secondo provider per il riconoscimento e avviso di
+lettura ipotetica dei gusti quando le fonti mancano. Stato finale nei resoconti.
 Resoconti: `docs/REVISIONE_ORGANO_COMPLETO_2026-09-09.md` e
 `docs/ATELIER_GUSTI_FLACONI_2026-09-09.md`.
 Copia Drive sospesa dopo rifiuto del controllo autorizzazioni; lettura Vercel

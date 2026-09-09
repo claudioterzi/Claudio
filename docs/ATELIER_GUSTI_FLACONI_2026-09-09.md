@@ -6,7 +6,7 @@ Ricerca tecnologica: 9 settembre 2026. Distinzione fra implementazione, collaudo
 ## Cosa cambia
 
 - Campo facoltativo con fino a 5 profumi, uno per riga o separati da punto e virgola. Non si tronca silenziosamente una lista più lunga. Il campo prevale sull'estrazione automatica.
-- Se il campo è vuoto, un modello estrae le citazioni dal racconto. Ogni nome richiede una citazione presente nel testo. Distingue preferito, ispirazione, evitare e semplice citazione. È fallibile: in caso di errore il campo separato rimane la via esplicita.
+- Se il campo è vuoto, un modello estrae le citazioni dal racconto. Ogni nome richiede una citazione presente nel testo. Distingue preferito, ispirazione, evitare e semplice citazione. Dopo il primo insuccesso live, riusati gli adattatori del compositore con ripiego Gemini → Anthropic (6s per tentativo, senza retry SDK nella fase di riconoscimento). È fallibile: in caso di errore il campo separato rimane la via esplicita.
 - La ricerca riceve solo i riferimenti, non il campo nome del cliente. Ambiguità e versioni mancanti vanno dichiarate, non risolte inventando. I gusti entrano nel prompt come criteri: tratti comuni, contrasti, aspetti da evitare e trasformazioni desiderate. La scheda mostra riferimenti riconosciuti e lettura dei gusti.
 - Le formule scelgono esclusivamente nel catalogo dell'Organo Terzi: 293 materie, 7 supporti separati. Il riconoscimento di gusti non equivale a una prova olfattiva o a una formula originale di un marchio.
 - La ricetta produce un brief visivo: impronta, forma, palette, luce e accenti canonici di testa/cuore/fondo/scia. Il generatore di immagini crea un originale, non modifica soltanto la tinta del vecchio flacone. Le forme di partenza sono sei direzioni artistiche, non 400 stampi unici certificati.
@@ -41,9 +41,10 @@ Evoluzione consigliata: coda asincrona, object storage privato per i file, archi
 
 ## Verifiche e limiti
 
-- 43 test Python superati, con risposte API simulate per estrazione e generazione immagini. Copertura: citazioni positive/negative, lista multipla, limiti, nomi inventati, metafore, fallback, inoltro alla composizione, HTML risultato, privacy del prompt visivo, generazione originale anziché editing, cache senza scadenza, lettura senza spesa.
+- 44 test Python superati, con risposte API simulate per estrazione e generazione immagini. Copertura: citazioni positive/negative, lista multipla, limiti, nomi inventati, metafore, ripiego sul secondo provider, inoltro alla composizione, HTML risultato, privacy del prompt visivo, generazione originale anziché editing, cache senza scadenza, lettura senza spesa.
 - JavaScript: campo multilinea e invio POST senza cliente/UUID; 293 identità canoniche e 72 combinazioni locali; sintassi del codice immagini valida.
 - Il rendering AI automatico resta condizionato a `OPENAI_API_KEY`, archivio Redis e `PERFUME_IMAGES_ENABLED=1`, oltre a disponibilità e credito del servizio. Non è stato attivato o fatturato un nuovo abbonamento. Il piano ChatGPT non configura questi parametri del sito.
 - L'ultimo accesso al progetto Vercel tramite connettore era stato respinto con 403: non sono stati letti log né modificate credenziali/configurazioni. Non sono stati aggirati i blocchi. Anche la copia aggiuntiva dei sorgenti su Drive resta sospesa dopo il precedente rifiuto di autorizzazione.
 - Nessun benchmark comparativo immagini, nessuna verifica di confezione fabbricabile, nessun completamento dei 400 flaconi individuali dichiarato. I codici formula e il libro preesistenti non vengono riscritti in questa modifica.
-- Verifica online della nuova revisione: da registrare dopo il rilascio. I risultati locali non sono presentati come prova live.
+- Prima verifica online, commit `5acbe9b`: pagina con textarea pubblicata e due composizioni riuscite. **Lumière Éclatante**, lista Chanel N° 5 EDP + Dior J’adore EDP: entrambi i riferimenti presenti, 8 materie dell'organo, 100 parti, brief visivo presente. **L'Aube Irisée**, nomi nel racconto: formula riuscita, ma estrazione automatica indisponibile. Nessuno dei due casi ha fornito fonti verificate; archivio e immagini non attivi. Queste prove hanno motivato il ripiego sul secondo provider e l'etichetta esplicita «lettura ipotetica dei gusti».
+- Verifica successiva al ripiego: da registrare dopo il rilascio. Non si dichiara già riuscita.

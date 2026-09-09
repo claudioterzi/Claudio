@@ -101,3 +101,17 @@ class PreferenceTests(unittest.TestCase):
     page=w.render_result('Più fresco',p)
     self.assertIn('I gusti, prima della formula',page);self.assertIn('Chanel N° 5',page)
     self.assertIn('non sono verificate',page)
+ def test_second_provider_recovers_recognition(self):
+  from unittest.mock import MagicMock
+  item=dict(name='Chanel N° 5',evidence='Adoro Chanel N° 5',relation='preferito',clarification='')
+  class Fallback:
+   disponibile=True;nome='anthropic'
+   def __init__(self,**kw):
+    self._client=MagicMock();self._client.with_options.return_value=self._client
+   def completa(self,*args):
+    self._client.with_options.assert_called_once_with(max_retries=0)
+    return SimpleNamespace(testo=json.dumps({'items':[item]}))
+  with patch.dict('os.environ',{'GOOGLE_API_KEY':'test','ANTHROPIC_API_KEY':'test'}),patch('urllib.request.urlopen',side_effect=TimeoutError()),patch('sdq1.llm.providers.AnthropicProvider',Fallback):
+   r=resolve_references('Adoro Chanel N° 5')
+   self.assertEqual(r['status'],'recognized');self.assertEqual(r['provider'],'anthropic')
+   self.assertEqual(r['items'],[item])

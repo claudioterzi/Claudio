@@ -22,7 +22,7 @@
 {% if p.preferenze.origin == 'field' %}<p>Profumi indicati nel campo ispirazioni:</p>{% elif p.preferenze.status == 'recognized' %}<p>Riferimenti riconosciuti nel racconto:</p>{% endif %}
 {% if p.preferenze.status == 'unavailable' %}<p>Riconoscimento automatico non disponibile. Per essere sicuro che i tuoi riferimenti entrino nella ricerca, inseriscili nel campo ispirazioni dell’Atelier.</p>{% endif %}
 <ul>{% for item in p.preferenze['items'] %}<li><strong>{{ item.name }}</strong> · {{ item.relation }}{% if item.clarification %}<br>Da chiarire: {{ item.clarification }}{% endif %}</li>{% endfor %}</ul>
-{% if p.gusti_cliente %}<p style="white-space:pre-wrap">{{ p.gusti_cliente }}</p>{% endif %}</section>
+{% if p.gusti_cliente %}{% if not p.ricerca or p.ricerca.status != 'sourced' %}<p><strong>Lettura ipotetica dei gusti:</strong> le caratteristiche dei profumi citati non sono state verificate. Le deduzioni seguenti non sono preferenze confermate del cliente.</p>{% endif %}<p style="white-space:pre-wrap">{{ p.gusti_cliente }}</p>{% endif %}</section>
 {% endif %}
 {% if p.ricerca and p.ricerca.reference %}
 <section aria-label="Ricerca del riferimento"><h2>Il riferimento, prima della creazione</h2>
