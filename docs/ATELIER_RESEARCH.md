@@ -10,7 +10,7 @@ Le istruzioni nelle fonti sono trattate come dati. I suggerimenti Google sono mo
 
 Se mancano chiavi, tempo o grounding, il sito dichiara fonti non disponibili e propone soltanto un'interpretazione non verificata. La ricerca ha timeout 12s; l'intero compositore ha budget applicativo 48s, con timeout passati a entrambi i provider. Eventuali retry interni dell'SDK possono richiedere un ulteriore limite: non è una garanzia temporale assoluta.
 
-Correzioni: filtro CORE/ESP/MASTER anche sul server; esclusione solventi dalla selezione; stile inoltrato da pagina/API; numerosità e distribuzione di parti specifiche per stile; duplicati fra gruppi esclusi; scia limitata a materie con ruolo indicato. Proposte incompatibili vengono respinte anziché sostituire essenze arbitrariamente. Le spiegazioni non vengono più tagliate a metà parola.
+Correzioni: filtro CORE/ESP/MASTER anche sul server; esclusione solventi dalla selezione; stile inoltrato da pagina/API; numerosità e distribuzione di parti specifiche per stile; duplicati fra gruppi esclusi; scia limitata a materie con ruolo indicato. Se il modello omette una materia o ripete un numero, il server conserva le scelte valide e completa soltanto i posti mancanti con una materia dello stesso profilo T/C/F (o con un fissativo della scia). Un numero fuori dall'ondata richiesta viene invece respinto: non viene sostituito in silenzio. Le spiegazioni non vengono più tagliate a metà parola.
 
 Le dosi restano una costruzione algoritmica ispirata alle strutture del catalogo: non sono ottimizzazione olfattiva o validazione produttiva. Persistenza dell'archivio ancora dipendente dalla configurazione.
 

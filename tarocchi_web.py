@@ -300,27 +300,78 @@ def _atelier_componi_ai(intenzione, famiglia, ondata, tentativo=0, evita=None, s
         return None, "json-non-valido"
 
     if not isinstance(prop, dict): return None, "Risposta del compositore non valida."
+    # Il modello può ripetere un numero fra due gruppi oppure restituire meno
+    # elementi di quelli richiesti. Conserviamo le sue scelte valide e
+    # completiamo solo i posti mancanti con materie dello stesso ruolo
+    # olfattivo. Un ID fuori dall'ondata scelta resta un errore: non va
+    # sostituito in silenzio con una materia arbitraria.
     used = set()
-    def valida(numeri, limit, is_scia=False):
-        out = []
-        for n in (numeri if isinstance(numeri, list) else []):
+    invalid_ids = set()
+    def leggi_ids(numeri):
+        if not isinstance(numeri, list):
+            return []
+        ids = []
+        for raw in numeri:
             try:
-                n = int(n)
+                n = int(raw)
             except Exception:
                 continue
-            if n in mat_per_n and n not in used:
-                if len(out) >= limit: break
-                if is_scia and str(mat_per_n[n].get("ruolo_scia", "-")).strip() in ("", "-"): continue
-                used.add(n)
-                m = mat_per_n[n]
-                out.append({"n": n, "nome": m["nome"], "forza": m["forza"],
-                            "liv": m["livello"], "fam": m["famiglia"]})
+            if n not in mat_per_n:
+                invalid_ids.add(n)
+            elif n not in ids:
+                ids.append(n)
+        return ids
+
+    def voce(n):
+        m = mat_per_n[n]
+        return {"n": n, "nome": m["nome"], "forza": m["forza"],
+                "liv": m["livello"], "fam": m["famiglia"]}
+
+    richieste = {"testa": leggi_ids(prop.get("testa")),
+                 "cuore": leggi_ids(prop.get("cuore")),
+                 "fondo": leggi_ids(prop.get("fondo"))}
+    richieste_scia = leggi_ids(prop.get("scia"))
+    if invalid_ids:
+        return None, "materia-non-disponibile"
+
+    def completa(gruppo, candidati, limit, is_scia=False):
+        out = []
+        for n in candidati:
+            if n in used or len(out) >= limit:
+                continue
+            if is_scia and str(mat_per_n[n].get("ruolo_scia", "-")).strip() in ("", "-"):
+                continue
+            used.add(n)
+            out.append(voce(n))
+
+        # Completa una risposta parziale usando il profilo nota T/C/F. Questo
+        # mantiene la scelta creativa del modello e risolve soltanto omissioni
+        # o duplicati che renderebbero la scheda inutilizzabile.
+        marker = {"testa": "T", "cuore": "C", "fondo": "F"}.get(gruppo)
+        pool = []
+        for n, m in mat_per_n.items():
+            if n in used:
+                continue
+            if is_scia:
+                if str(m.get("ruolo_scia", "-")).strip() in ("", "-"):
+                    continue
+                ruolo = str(m.get("ruolo_scia", ""))
+                score = (0 if ruolo == "DIFFUSIONE" else 1 if "RADIANTE" in ruolo else 2)
+            else:
+                nota = str(m.get("nota", ""))
+                score = 0 if marker and marker in nota else 1
+            pool.append((score, int(m.get("forza", 3)), n))
+        for _score, _forza, n in sorted(pool):
+            if len(out) >= limit:
+                break
+            used.add(n)
+            out.append(voce(n))
         return out
 
-    piramide = {"testa": valida(prop.get("testa"), counts[0]),
-                "cuore": valida(prop.get("cuore"), counts[1]),
-                "fondo": valida(prop.get("fondo"), counts[2])}
-    scia = valida(prop.get("scia"), scia_count, True)
+    piramide = {"testa": completa("testa", richieste["testa"], counts[0]),
+                "cuore": completa("cuore", richieste["cuore"], counts[1]),
+                "fondo": completa("fondo", richieste["fondo"], counts[2])}
+    scia = completa("scia", richieste_scia, scia_count, True)
     if any(len(piramide[k]) != counts[i] for i,k in enumerate(("testa","cuore","fondo"))) or len(scia) != scia_count:
         return None, "piramide-incompleta"
 
