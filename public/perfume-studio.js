@@ -39,7 +39,7 @@
       const rendering = renders.get(variant); image.src = rendering.url; await image.decode();
       selected = rendering.spec; pressed(variants[variant]);
       image.dataset.bottleVersion = selected.label;
-      caption.textContent = selected.label+' · flacone 3D legato alla ricetta · concept Claudio Terzi';
+      caption.textContent = selected.label+' · '+(selected.renderer==='cpu-illustration'?'illustrazione compatibile dalla geometria 3D':'flacone 3D legato alla ricetta')+' · concept Claudio Terzi';
       status.textContent = 'Versione '+selected.label+' pronta. Scarica il flacone con nome'+(data.customer?' e dedica.':'.');
     } catch (_) {
       status.textContent = 'Il disegno 3D non è disponibile in questo browser. La formula e la stampa restano disponibili.';
