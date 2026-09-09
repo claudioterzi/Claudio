@@ -90,3 +90,6 @@ guardian/
 
 # Motore caccia voli
 !sdq1/voli/package.json
+
+# Registro clienti locale: mai nel repository
+output/perfume_registry.sqlite3*
