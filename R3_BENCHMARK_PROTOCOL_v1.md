@@ -39,3 +39,15 @@ Improvement is a measured delta, not a narrative. When metrics conflict, preserv
 
 ## Safety boundary
 Self-modification remains candidate generation plus sandboxed evaluation. No autonomous modification is considered validated solely by the system that proposed it.
+
+## Astra integration (2026-09-09)
+
+Use the same frozen CORE/NOVEL/ADVERSARIAL tasks for Astra and the baseline.
+Record actual model ID, reasoning configuration, latency, tool calls and cost;
+leave unavailable metrics unknown. V3 random scores are excluded.
+`sdq1/sar/evidence_review.py` validates evidence records and blocks missing,
+failed or unknown acceptance, countercheck and regression checks. It does not
+verify source authenticity, replace external evaluation, or authorize promotion.
+The supplied example is deliberately unverified; offline validator tests are
+not evidence of Astra outperforming another model.
+

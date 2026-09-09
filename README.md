@@ -1,5 +1,11 @@
 # Claudio — R³∞ Framework
 
+## Aggiornamento Astra e autoriflessione verificabile
+
+[Protocollo RRR Astra](docs/PROTOCOLLO_RRR_ASTRA.md) · [Capacità e limiti](docs/ASTRA_CAPACITA.md).
+Validatore offline: `python sdq1/sar/evidence_review.py examples/astra_review.json`.
+Il campione rimane bloccato finché mancano i benchmark. Il router API esistente è invariato.
+
 > "Costruire davvero, non fingere insieme."
 > — Protocollo Rosso Rosso Rosso, 11/06/2026
 
@@ -164,3 +170,4 @@ MIT — usa, modifica, condividi.
 Se questo sistema ti serve davvero, fammelo sapere.
 
 **Claudio Terzi** — terziclaudio@gmail.com
+

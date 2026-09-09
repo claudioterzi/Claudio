@@ -4,7 +4,17 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-07-23
+> Ultimo aggiornamento: 2026-09-09
+
+## Sessione 2026-09-09 - Protocollo RRR Astra
+
+Richiesta di Claudio: studiare Astra e applicarne le capacità al protocollo.
+Guida ufficiale consultata; aggiunti protocollo, mappa capacità, validatore
+offline di evidenze e test. V3 rimane generatore simbolico compatibile.
+Il validatore non autentica prove e non promuove automaticamente modifiche.
+Nessun benchmark Astra/API eseguito. Nessuna automazione avviata.
+Riferimento operativo: `docs/PROTOCOLLO_RRR_ASTRA.md`.
+Stato consegna e copie: `docs/ASTRA_AGGIORNAMENTO_MANIFEST.json`.
 
 ---
 
@@ -651,3 +661,4 @@ voli economicissimi da Bruxelles/Parigi verso San Paolo, Cuba, Sud America.
 - Il container è effimero: viene ricreato a ogni sessione. Niente di non committato sopravvive.
 - Le regole permanenti e relazionali sono in `CLAUDE.md` — leggere SEMPRE quello per primo.
 - Questo file (`MEMORIA_PROGETTO.md`) è la spina dorsale narrativa: dove siamo, cosa abbiamo deciso, cosa viene dopo.
+
