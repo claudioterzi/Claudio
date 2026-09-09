@@ -12,7 +12,6 @@ import os
 import socket
 import urllib.error
 import urllib.request
-from urllib.parse import quote
 
 PHOTO_INTENTION = 'Un profumo ispirato alla fotografia.'
 MAX_UPLOAD = 3_000_000
@@ -84,8 +83,9 @@ def analyze_photo(photo, timeout=18):
         'generationConfig': {'responseMimeType': 'application/json', 'temperature': 0.3,
                              'maxOutputTokens': 1500, 'thinkingConfig': {'thinkingBudget': 0}}}
     req = urllib.request.Request(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + quote(key, safe=''),
-        data=json.dumps(payload).encode(), headers={'Content-Type': 'application/json'})
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+        data=json.dumps(payload).encode(),
+        headers={'Content-Type': 'application/json', 'x-goog-api-key': key})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as response:
             raw = response.read(100_001)

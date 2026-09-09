@@ -1,0 +1,182 @@
+{
+  "concept": "Ferro di Luce è l'odore del crepuscolo che accarezza l'acciaio rovente, una sinfonia di contrasti dove la fredda maestosità del metallo si fonde con il respiro caldo della sera. È la promessa di nuove rotte, forgiata tra scintille e l'eco di un lavoro millenario. Un profumo che cattura la forza e la poesia di un'imbarcazione in costruzione, pronta a sfidare l'orizzonte.",
+  "fam": "Legnosa",
+  "flacone": {
+    "accenti": [
+      "Pompelmo EO",
+      "Lavanda EO (Provenza)",
+      "Cedro Atlas EO",
+      "Iso E Super"
+    ],
+    "attribution": "Concept e direzione: Claudio Terzi · © 2026 Claudio Terzi",
+    "forma": "ovale scultoreo con base massiccia e tappo in metallo satinato",
+    "luce": "luce calda radente, ombre architettoniche",
+    "palette": "ambra fumé e bronzo",
+    "prompt": "Use case: product-mockup. Create ONE original, photorealistic niche perfume bottle. Art direction by Claudio Terzi. Do not copy a commercial bottle, logo or packaging. Bottle silhouette: ovale scultoreo con base massiccia e tappo in metallo satinato. Palette: ambra fumé e bronzo. Lighting: luce calda radente, ombre architettoniche. Translate these olfactory accents into tactile glass, cap finish and abstract light, not literal ingredients inside the bottle: Pompelmo EO, Lavanda EO (Provenza), Cedro Atlas EO, Iso E Super. Refine the geometry and surface details creatively. Thick optical glass, credible refraction, premium materials, exquisite editorial product photography. Square image, front view, full bottle and cap visible, bottle occupies x=25%..75%, y=12%..86%. Keep a flat front face with a blank dark rectangular plaque at x=37%..63%, y=47%..65% so a precise typographic label can be applied separately. No text, letters, logos, watermark, people, additional bottles, advertising layouts or health claims. This is a visual concept, not a manufacturing drawing.",
+    "recipe_fingerprint": "6bea3b93e0530bf08ad3effa3f1318da3f375c9ffb57a0b4f6ed1e10d3c2994d",
+    "version": "terzi-visual-2"
+  },
+  "formula_code": "TRZ1.13aff1815ecef350.56:115:T:0-131:80:T:0-79:5:T:1-12:155:C:0-77:100:C:0-110:45:C:0-30:260:F:0-156:75:F:0-67:15:F:1-32:80:S:0-39:40:S:0-113:30:S:0.399cbec2c3a1",
+  "foto": null,
+  "gusti_cliente": "Claudio desidera un profumo che evochi un cantiere navale al tramonto, enfatizzando il contrasto tra freschezza minerale e calore secco. L'apertura deve essere luminosa e leggermente metallica, il cuore secco aromatico, e il fondo con legni scuri e una traccia fumosa controllata. Ha esplicitamente richiesto di evitare rese letterali di gasolio, fumi tossici o odore di bruciato, guidando la scelta verso sfumature più astratte e artistiche del tema.",
+  "liv": "MASTER",
+  "nome": "Ferro di Luce",
+  "organo": {
+    "fonte": "Organo_Terzi_300.xlsx",
+    "materie_disponibili": 293,
+    "nome": "Organo Terzi 300",
+    "ondata": 2,
+    "sha256": "13aff1815ecef35044352b0baa4709be5484597836e6aba25d87af17179309d5",
+    "supporti": [
+      {
+        "n": 44,
+        "nome": "Alcol etilico profumeria 96%"
+      },
+      {
+        "n": 45,
+        "nome": "Dipropilenglicole (DPG)"
+      },
+      {
+        "n": 46,
+        "nome": "Isopropil miristato (IPM)"
+      },
+      {
+        "n": 124,
+        "nome": "Benzil benzoato"
+      },
+      {
+        "n": 125,
+        "nome": "Trietil citrato (TEC)"
+      },
+      {
+        "n": 285,
+        "nome": "Glucam P-20"
+      },
+      {
+        "n": 286,
+        "nome": "Hercolyn D"
+      }
+    ],
+    "totale": 300
+  },
+  "ovr": "Safraleine",
+  "preferenze": {
+    "items": [],
+    "origin": "context",
+    "provider": "gemini",
+    "status": "none"
+  },
+  "ragionamento": "Per la testa, il Pompelmo EO (56) offre una freschezza luminosa e quasi metallica, mentre il Triplal (79) aggiunge una sfaccettatura verde e aerea che ricorda l'aria aperta. La Safraleine (131), in overdose, introduce la scintilla metallica e un calore speziato, creando il contrasto desiderato. Nel cuore, la Lavanda EO (12) e la Salvia sclarea EO (77) formano un accordo aromatico secco e pulito, richiamando l'ambiente lavorativo. Il Cypriol EO (110) apporta una profondità terrosa e leggermente affumicata, anticipando il fondo. Il fondo è ancorato dal Cedro Atlas EO (30), per i legni scuri e robusti. La Betulla (birch tar) EO rett. (67) contribuisce alla traccia fumosa controllata e a un'impressione di cuoio, mentre lo Storace (styrax) resinoide (156) lega il tutto con un calore resinoso e balsamico. La scia è garantita da Iso E Super (32) e Norlimbanol (113) per la diffusione legnosa e ambrata, e Habanolide (39) per un muschio pulito e persistente che avvolge e amplifica la composizione.",
+  "ricerca": {
+    "reference": "",
+    "sources": [],
+    "status": "not_requested",
+    "summary": ""
+  },
+  "ricetta": [
+    [
+      "Pompelmo EO",
+      56,
+      11.5,
+      "testa",
+      0
+    ],
+    [
+      "Safraleine",
+      131,
+      8.0,
+      "testa",
+      0
+    ],
+    [
+      "Triplal (Ligustral)",
+      79,
+      0.5,
+      "testa",
+      1
+    ],
+    [
+      "Lavanda EO (Provenza)",
+      12,
+      15.5,
+      "cuore",
+      0
+    ],
+    [
+      "Salvia sclarea EO",
+      77,
+      10.0,
+      "cuore",
+      0
+    ],
+    [
+      "Cypriol (nagarmotha) EO",
+      110,
+      4.5,
+      "cuore",
+      0
+    ],
+    [
+      "Cedro Atlas EO",
+      30,
+      26.0,
+      "fondo",
+      0
+    ],
+    [
+      "Storace (styrax) resinoide",
+      156,
+      7.5,
+      "fondo",
+      0
+    ],
+    [
+      "Betulla (birch tar) EO rett.",
+      67,
+      1.5,
+      "fondo",
+      1
+    ],
+    [
+      "Iso E Super",
+      32,
+      8.0,
+      "scia",
+      0
+    ],
+    [
+      "Habanolide",
+      39,
+      4.0,
+      "scia",
+      0
+    ],
+    [
+      "Norlimbanol/Timberol",
+      113,
+      3.0,
+      "scia",
+      0
+    ]
+  ],
+  "riferimento": "Nessun riferimento a profumi esistenti è stato fornito da Claudio. La composizione si ispira direttamente all'intenzione di un cantiere navale al tramonto, puntando a un contrasto tra freschezza minerale e calore secco, con note luminose, metalliche, legnose e fumose controllate, come richiesto.",
+  "scia": [
+    "Iso E Super",
+    "Habanolide",
+    "Norlimbanol/Timberol"
+  ],
+  "stile": "carles",
+  "verifica": {
+    "aggiunte_automatiche": false,
+    "catalogo": true,
+    "correzioni_modello": 0,
+    "duplicati": false
+  },
+  "esempio": {
+    "slug": "cantiere",
+    "titolo": "Ferro di Luce",
+    "provenienza": "Composizione generata dalla descrizione della fotografia preparata per questo esempio. Questa scheda non è il risultato del servizio automatico di analisi delle foto.",
+    "intenzione": "Scintille nel crepuscolo, acciaio caldo, aria aperta e riflessi sul terreno bagnato. Un contrasto tra freschezza luminosa e legni scuri.",
+    "immagine": "/images/ferro-di-luce.webp"
+  }
+}

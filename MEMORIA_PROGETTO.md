@@ -6,6 +6,38 @@
 >
 > Ultimo aggiornamento: 2026-09-09
 
+## Punto di ripresa 2026-09-09 — Atmosfere e fotografia
+
+Claudio richiede continuità dopo le interruzioni: ripartire dall’ultimo commit,
+verificare gli esiti e non ripetere azioni bloccate senza nuova autorizzazione.
+Non promettere di poter impedire interruzioni dell’app.
+
+- Pubblicate 17 atmosfere fotografiche distinte, versioni mobili e guida
+  contestuale Raffaello. Raffaello è una guida del sito, non una chat autonoma.
+- Produzione verificata sul commit CI dfcbcf113d1e39b7d7a3d3cd87670da8e19eecb4.
+- Foto ricevuta dal server; analisi Gemini restituisce HTTP 401. Nessuna formula
+  è presentata falsamente come derivata da una foto non analizzata.
+- Correzione in verifica: autenticazione foto tramite intestazione
+  x-goog-api-key secondo documentazione Google; nessuna nuova credenziale.
+- Rimosso lo script Travelpayouts che nel test browser di Viaggi intercettava
+  il collegamento interno Raffaello→Atelier e apriva Kiwi. Link espliciti ai
+  servizi di viaggio conservati. Non ci sono prove di sabotaggio.
+- Esempio pubblico Ferro di Luce: formula da descrizione testuale della foto,
+  12 materie canoniche e 100 parti, codice TRZ1; flacone originale generato.
+  Provenienza esplicita; la lettura dell’esempio non genera chiamate AI.
+- Accesso manuale Vercel con token verificato in lettura; connettore log 403.
+  La creazione di AI Gateway + segreto produzione con budget cumulativo 1 USD
+  è stata bloccata dall’approvazione automatica (nuovo accesso e possibili costi).
+  Non riprovare né aggirare. Ultima lettura precedente: nessuna chiave Gateway.
+  Verifica successiva annullata: non dichiarare modifiche remote confermate.
+- Archivio privato, quote guest e immagini automatiche per ogni ricetta:
+  configurazione persistente ancora incompleta. Il vecchio codice lato browser
+  non garantisce protezione server. Token e password esclusi dai salvataggi.
+- Copia Drive ancora sospesa per precedente rifiuto dell’approvazione.
+
+Prossimo passo: verificare deployment di questa correzione, una prova foto reale,
+il collegamento Viaggi→Atelier e l’esempio pubblico; registrare gli esiti qui.
+
 ## Sessione 2026-09-09 — Organo completo, gusti e flaconi
 
 Atelier predefinito su tutte le 293 materie dell'Organo Terzi; 7 supporti separati.

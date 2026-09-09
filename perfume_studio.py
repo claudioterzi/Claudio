@@ -108,6 +108,15 @@ def render_result(intention, perfume=None, error=None, customer='', record=None,
                            image_token=token, visual=visual)
 
 
+@studio.get('/atelier/esempio')
+def public_example():
+    """A curated public example: reading it never starts an AI call."""
+    perfume = json.loads((ROOT / 'studio/parfums/examples/cantiere.json').read_text(encoding='utf-8'))
+    return render_result(perfume['esempio']['intenzione'], perfume=perfume,
+                         customer='Claudio Terzi',
+                         archive_error='Esempio pubblico conservato con il sito. Scarica la scheda e il codice della formula.')
+
+
 def _archive_signer():
     secret = os.getenv('PERFUME_ARCHIVE_SECRET', '')
     if len(secret) < 32 or not os.getenv('PERFUME_ARCHIVE_PASSWORD'):

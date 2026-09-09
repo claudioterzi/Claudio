@@ -7,16 +7,17 @@
 {% if not p %}<section class="empty"><p class="eyebrow">L’ATELIER DI RAFFAELLO</p><h1>La tua creazione</h1><p>{{ error or 'Scrivi un’intenzione nell’Atelier per iniziare.' }}</p><a class="action" href="/atelier.html">Torna all’Atelier</a></section>
 {% else %}
 <header class="identity"><p class="eyebrow">CREAZIONE PERSONALE · {{ p.fam }}</p><h1>{{ p.nome }}</h1>{% if customer %}<p class="dedication">Creato per <strong>{{ customer }}</strong></p>{% endif %}
-<p class="intention">{{ intention }}</p></header>
+<p class="intention">{{ intention }}</p>{% if p.esempio %}<p class="caption">{{ p.esempio.provenienza }}</p>{% endif %}</header>
 <section class="portrait-grid" aria-label="Il tuo profumo">
 <div><button class="bottle-view" id="enlarge" aria-label="Ingrandisci il flacone" type="button">
-<img id="bottle-image" src="/images/terzi-atelier.webp" width="1024" height="1024" alt="Flacone Terzi Parfums di {{ p.nome }}{% if customer %}, creato per {{ customer }}{% endif %}" fetchpriority="high">
+<img id="bottle-image" src="{{ '/images/ferro-di-luce.webp' if p.esempio else '/images/terzi-atelier.webp' }}" width="1024" height="1024" alt="Flacone Terzi Parfums di {{ p.nome }}{% if customer %}, creato per {{ customer }}{% endif %}" fetchpriority="high">
 <span class="bottle-label" aria-hidden="true"><span class="brand">TERZI PARFUMS</span><span class="label-name">{{ p.nome }}</span><span class="label-client">{{ customer or 'Atelier' }}</span><span class="label-serial">{{ record.serial if record else 'CREAZIONE · BOZZA' }}</span></span>
-</button><p class="caption" id="image-caption">Flacone Atelier · visualizzazione di progetto</p>
+</button><p class="caption" id="image-caption">{{ 'Flacone originale Ferro di Luce · immagine generata · concept Claudio Terzi' if p.esempio else 'Flacone Atelier · visualizzazione di progetto' }}</p>
 <div class="actions">{% if image_token %}<button id="generate-image" class="action" data-token="{{ image_token }}">Crea il flacone di questa ricetta</button>{% endif %}<button id="download-image" class="action">Scarica immagine</button><button id="print-label" class="action">Stampa etichetta</button></div>
-{% if visual %}<details><summary>Il progetto del tuo flacone</summary><p>{{ visual.forma|capitalize }}. {{ visual.palette|capitalize }}; {{ visual.luce }}.</p><p>Accenti della ricetta: {{ visual.accenti|join(', ') }}.</p><p class="caption">{{ visual.attribution }}. Il progetto non è ancora un’immagine generata né un disegno di produzione.</p>{% if not image_token %}<p>La generazione del flacone su misura non è attiva per questa scheda. L’immagine mostrata è il modello Atelier.</p>{% endif %}</details>{% endif %}
+{% if visual and not p.esempio %}<details><summary>Il progetto del tuo flacone</summary><p>{{ visual.forma|capitalize }}. {{ visual.palette|capitalize }}; {{ visual.luce }}.</p><p>Accenti della ricetta: {{ visual.accenti|join(', ') }}.</p><p class="caption">{{ visual.attribution }}. Il progetto non è ancora un’immagine generata né un disegno di produzione.</p>{% if not image_token %}<p>La generazione del flacone su misura non è attiva per questa scheda. L’immagine mostrata è il modello Atelier.</p>{% endif %}</details>{% endif %}
 <p role="status" id="image-status" class="status"></p></div>
 <aside class="creation-notes">
+{% if p.esempio %}<section aria-label="La fotografia di Claudio"><h2>Il calore del ferro</h2><img src="/images/ispirazione-cantiere.jpg" width="1536" height="1024" style="width:100%;height:auto" alt="Cantiere navale al tramonto con scintille e riflessi"><p>Il bagliore diventa un’apertura luminosa; il contrasto tra metallo, legno e acqua suggerisce una struttura asciutta, fumé e ariosa.</p></section>{% endif %}
 {% if p.foto %}<section aria-label="Dalla foto al profumo"><h2>Dalla foto al profumo</h2>
 {% if p.foto.esempio_pubblico == 'cantiere' %}<img src="/images/ispirazione-cantiere.jpg" width="1536" height="1024" style="width:100%;height:auto;border-radius:8px" alt="La fotografia di cantiere scelta da Claudio come ispirazione">{% endif %}
 <h3>Ciò che si vede</h3><ul>{% for observation in p.foto.osservazioni %}<li>{{ observation }}</li>{% endfor %}</ul>

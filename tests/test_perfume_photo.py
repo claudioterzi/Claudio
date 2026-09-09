@@ -40,6 +40,8 @@ class PhotoTests(unittest.TestCase):
             urlopen.return_value.__enter__.return_value.read.return_value = body
             result = analyze_photo(photo)
             payload = json.loads(urlopen.call_args.args[0].data)
+            self.assertNotIn('key=', urlopen.call_args.args[0].full_url)
+            self.assertEqual(urlopen.call_args.args[0].get_header('X-goog-api-key'), 'test-only')
             self.assertTrue(payload['contents'][0]['parts'][0]['inline_data']['data'])
             self.assertEqual(result['osservazioni'], ANALYSIS['osservazioni'])
             self.assertNotIn('private_upload', result)
