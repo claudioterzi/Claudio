@@ -16,8 +16,24 @@ e versione del design incluse nell'esportazione JSON, formula preservata.
 Nuove anteprime ricetta/lotti, etichetta, ispirazione/dedica; stampa o HTML
 stampabile scaricabile. Il tasto laboratorio richiama la stampa della ricetta.
 Dedica quando il cliente è presente, con nome del profumo e accenti reali.
-57 test Python e 3 file di test JavaScript superati. Collaudo browser e
-pubblicazione di queste modifiche ancora in corso: non dichiararli conclusi.
+57 test Python e 3 file di test JavaScript superati. Pubblicazione e collaudo
+browser conclusi. Commit iniziale 2d64b714c40e8b105e9d3e70c4d0cd1997181f4a.
+Nel browser cloud WebGL è disabilitato: aggiunta proiezione CPU della stessa
+geometria con luci semplificate, identificata come illustrazione compatibile.
+Commit compatibilità 3dea29f88ed72ad8d9169004200efa49f2ee410e; riflessi
+e716df86b3e40034dfa730f5119cfb1fcf030d4e. Vercel success per tutti e tre.
+Scultura ed Essenza selezionate, ingrandite e scaricate a 1600 × 1600 px,
+PNG distinti; JSON conserva renderer, variante e dedica. Tre anteprime e
+HTML scaricati verificati; ricetta contiene 2 tabelle, nessun input, codice
+e pesate corrette nei 3 formati con densità fittizia di test 0,85 g/ml.
+Comando Stampa / Salva PDF attivato; stampante fisica e PDF del sistema non
+ispezionati. Nessun test su iPhone o WebGL GPU: non dichiararli verificati.
+Prova completa aggiuntiva con foto pubblica e cliente fittizio Cliente Prova:
+Coucher de Soleil Industriel, analisi foto v2, 12 materie, 100 parti,
+dedica e Scultura automatica. La connessione del controllo browser è scaduta
+durante l'invio ma la pagina è stata recuperata senza ripetere il POST.
+Evidenze: docs/evidenze/FOTO_DEDICA_FLACONE_TEST_2026-09-09.json e 4 immagini.
+Resoconto: docs/FLACONI_STAMPA_DEDICA_2026-09-09.md.
 
 Claudio chiede ricerca online delle skill e novità Astra. Fonti e selezione
 salvate in docs/SKILL_ASTRA_RICERCA_2026-09-09.md. Il catalogo openai/skills
@@ -47,8 +63,8 @@ Chantier Naval au Crépuscule (8 materie). Entrambe analysis_version=2, 100 part
 La prima direzione è lunga 703 caratteri: il vecchio controllo l’avrebbe
 respinta. Conservati testo e incertezze integrali. Evidenza in
 docs/evidenze/PHOTO_REGRESSION_TEST_2026-09-09.json. Nessuna prova su iPhone.
-Nuova richiesta: flacone diverso per creazione, stampa ricetta/etichetta/
-ispirazioni e dedica personale quando il nome è presente. Da completare.
+Richiesta successiva su flaconi, stampa e dedica completata nella sezione
+più recente sopra; nessuna riattivazione del generatore fotografico a pagamento.
 Resoconto: docs/RIPRISTINO_FOTO_VALIDAZIONE_2026-09-09.md.
 
 ## Sessione 2026-09-09 — Schede di laboratorio e organo evolutivo
