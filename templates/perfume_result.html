@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer"><title>{{ p.nome if p else 'La tua creazione' }} · Terzi Parfums</title>
-<link rel="stylesheet" href="/perfume-studio.css"><script src="/perfume-studio.js" defer></script></head>
+<link rel="stylesheet" href="/perfume-studio.css"><script src="/perfume-studio.js" defer></script><script src="/atmosfere.js" defer></script></head>
 <body><main class="studio">
 <nav class="studio-nav" aria-label="Atelier"><a href="/atelier.html">← Atelier</a><span>TERZI PARFUMS</span><a href="/atelier/archivio">Archivio</a></nav>
 {% if not p %}<section class="empty"><p class="eyebrow">L’ATELIER DI RAFFAELLO</p><h1>La tua creazione</h1><p>{{ error or 'Scrivi un’intenzione nell’Atelier per iniziare.' }}</p><a class="action" href="/atelier.html">Torna all’Atelier</a></section>
@@ -17,6 +17,12 @@
 {% if visual %}<details><summary>Il progetto del tuo flacone</summary><p>{{ visual.forma|capitalize }}. {{ visual.palette|capitalize }}; {{ visual.luce }}.</p><p>Accenti della ricetta: {{ visual.accenti|join(', ') }}.</p><p class="caption">{{ visual.attribution }}. Il progetto non è ancora un’immagine generata né un disegno di produzione.</p>{% if not image_token %}<p>La generazione del flacone su misura non è attiva per questa scheda. L’immagine mostrata è il modello Atelier.</p>{% endif %}</details>{% endif %}
 <p role="status" id="image-status" class="status"></p></div>
 <aside class="creation-notes">
+{% if p.foto %}<section aria-label="Dalla foto al profumo"><h2>Dalla foto al profumo</h2>
+{% if p.foto.esempio_pubblico == 'cantiere' %}<img src="/images/ispirazione-cantiere.jpg" width="1536" height="1024" style="width:100%;height:auto;border-radius:8px" alt="La fotografia di cantiere scelta da Claudio come ispirazione">{% endif %}
+<h3>Ciò che si vede</h3><ul>{% for observation in p.foto.osservazioni %}<li>{{ observation }}</li>{% endfor %}</ul>
+<h3>Le associazioni creative</h3><ul>{% for association in p.foto.associazioni %}<li><strong>{{ association.elemento }}</strong> · {{ association.evocazione }}</li>{% endfor %}</ul>
+<p>{{ p.foto.direzione }}</p>{% if p.foto.incertezze %}<p class="caption">{{ p.foto.incertezze }}</p>{% endif %}
+<p class="caption">Interpretazione visiva e olfattiva creativa. Gli odori non sono misurati dalla fotografia.</p></section>{% endif %}
 {% if p.preferenze and (p.preferenze['items'] or p.preferenze.status == 'unavailable') %}
 <section aria-label="Gusti del cliente"><h2>I gusti, prima della formula</h2>
 {% if p.preferenze.origin == 'field' %}<p>Profumi indicati nel campo ispirazioni:</p>{% elif p.preferenze.status == 'recognized' %}<p>Riferimenti riconosciuti nel racconto:</p>{% endif %}

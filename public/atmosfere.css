@@ -1,0 +1,41 @@
+/* Photographic atmospheres, never printed over book pages or formula labels. */
+@media screen{
+  body[data-atmosfera]{isolation:isolate;background:#0a0c10!important;--surface:rgba(15,17,21,.9);--text-dim:#bdb7aa;--gold-dim:#baa471;--border:#59503d;padding-bottom:max(5rem,env(safe-area-inset-bottom))}
+  .terzi-atmosfera{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#0a0c10}
+  .terzi-atmosfera picture,.terzi-atmosfera img{display:block;width:100%;height:100%}
+  .terzi-atmosfera img{object-fit:cover;object-position:center}
+  .terzi-atmosfera::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,8,13,.22),rgba(4,8,13,.65) 33%,rgba(4,8,13,.65) 67%,rgba(4,8,13,.25)),linear-gradient(0deg,rgba(5,8,12,.85),transparent 75%)}
+  body[data-atmosfera] .nav-costellazione{background:rgba(9,13,17,.93);border-color:#6e5d3d}
+  body[data-atmosfera]>.container,body[data-atmosfera]>.libro,body[data-atmosfera]>.studio{min-width:0}
+  body[data-atmosfera] .banco,body[data-atmosfera] .sala,body[data-atmosfera] .scheda,body[data-atmosfera] form{background:rgba(11,15,20,.91);box-shadow:0 12px 44px #0003}
+  body[data-atmosfera] header,body[data-atmosfera] .copertina{text-shadow:0 2px 14px #000}
+  body[data-atmosfera] .copertina{background:rgba(8,12,18,.68)}
+  body[data-atmosfera] label{font-size:max(.875rem,14px);letter-spacing:.065em}
+  body[data-atmosfera] .spiega{font-size:.875rem}
+  body[data-atmosfera] .creation-notes,body[data-atmosfera] .formula{background:rgba(8,12,17,.88);padding:24px;border:1px solid #514936;border-radius:6px}
+  body[data-atmosfera] .creation-notes section{margin-bottom:1.5rem}
+  body[data-atmosfera] .creation-notes li{margin:.6rem 0}
+  body[data-atmosfera] .creation-notes ul{padding-left:1.1rem}
+  body[data-atmosfera="home"]{--surface:rgba(13,17,23,.92);--card:rgba(17,21,28,.93)}
+  body[data-atmosfera="opuscolo"]>.terzi-atmosfera-nota{color:#eee4d5;text-align:center}
+  .terzi-atmosfera-nota{margin:1.2rem 0 1.6rem;color:#eee4d5;text-shadow:0 2px 15px #000;line-height:1.5;text-align:inherit}
+  .terzi-atmosfera-nota span{display:block;text-transform:uppercase;letter-spacing:.22em;font: .875rem/1.5 Georgia,serif;color:#e8c995}
+  .terzi-atmosfera-nota p{font:italic clamp(1.1rem,2.3vw,1.45rem)/1.5 Georgia,serif;margin:.45rem 0 0;color:#f1e8da}
+  .terzi-raffaello{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));z-index:210;background:#141a21;color:#efd4a1;border:1px solid #b39a66;box-shadow:0 4px 24px #0006;border-radius:24px;padding:12px 22px;min-height:48px;font:1rem/1.4 Georgia,serif;cursor:pointer}
+  .terzi-raffaello-dialog{position:fixed;inset:0;margin:auto;width:min(530px,calc(100vw - 32px));max-height:calc(100dvh - 40px);overflow:auto;background:#10171f;color:#eee4d4;border:1px solid #b19c72;border-radius:8px;padding:28px;font:1rem/1.7 Georgia,serif;text-align:left;box-shadow:0 25px 100px #000a}
+  .terzi-raffaello-dialog::backdrop{background:rgba(2,6,11,.78)}
+  .terzi-raffaello-dialog h2{font:1.6rem/1.35 Georgia,serif;color:#ecd1a0;margin:28px 0 20px}
+  .terzi-raffaello-dialog p{margin:1rem 0;font-size:1rem}
+  .terzi-raffaello-dialog .terzi-raffaello-credit{font-size:.875rem;color:#bdb5a5;margin-bottom:0}
+  .terzi-raffaello-close{display:block;margin-left:auto;color:#ead9bc;background:transparent;border:1px solid #766c57;padding:8px 16px;min-height:44px;font:inherit;cursor:pointer}
+  .terzi-raffaello-action{display:block;border:1px solid #c1a974;background:#24221c;color:#f4e1b9;padding:13px 16px;text-decoration:none;margin:24px 0}
+  .terzi-raffaello:focus-visible,.terzi-raffaello-dialog :focus-visible{outline:2px solid #fff0c9;outline-offset:4px}
+  @media(max-width:700px){
+    .terzi-atmosfera::after{background:linear-gradient(180deg,rgba(4,8,13,.4),rgba(4,8,13,.78) 55%,rgba(4,8,13,.93))}
+    body[data-atmosfera] .banco{padding:1.2rem}
+    body[data-atmosfera] .col-tx{min-width:0}
+    .terzi-atmosfera-nota{margin:1rem 0 1.2rem}
+    body[data-atmosfera] .creation-notes,body[data-atmosfera] .formula{padding:16px}
+  }
+}
+@media print{.terzi-atmosfera,.terzi-atmosfera-nota,.terzi-raffaello,.terzi-raffaello-dialog{display:none!important}}

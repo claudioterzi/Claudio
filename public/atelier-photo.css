@@ -1,0 +1,14 @@
+.photo-inspiration{margin:1.8rem 0;padding:1.4rem 0;border-top:1px solid #76613d;border-bottom:1px solid #76613d}
+.photo-inspiration h2{font-size:1.4rem;font-weight:normal;color:#efd9a4;margin-bottom:.7rem}
+.photo-inspiration p{font-size:1rem;line-height:1.65;color:#e1dcd1;margin:.7rem 0}
+.photo-inspiration label{font-size:.875rem;letter-spacing:.06em;color:#e1c88c}
+.photo-inspiration input{max-width:100%;font-size:1rem;color:#e1dcd1;padding:.6rem 0}
+.photo-inspiration input::file-selector-button{padding:.75rem 1rem;border:1px solid #aa8e55;border-radius:5px;background:#23201c;color:#f0e1c5;font:inherit;margin-right:.7rem;cursor:pointer}
+.photo-inspiration #foto-aiuto{font-size:.875rem;color:#c0b8a9}
+.photo-inspiration img{display:block;width:100%;height:auto;max-height:400px;object-fit:cover;border-radius:6px;margin:1rem 0}
+.photo-inspiration figcaption{font-size:.875rem;color:#d3b984;margin:.6rem 0}
+.photo-inspiration [hidden]{display:none!important}
+.photo-example{margin-top:1.2rem;padding-top:.8rem;border-top:1px solid #504534}
+.photo-example summary{cursor:pointer;min-height:44px;line-height:1.5;color:#efd9a4;padding:.6rem 0}
+.photo-inspiration button.oro{min-height:44px;margin:.5rem 0;letter-spacing:normal}
+@media print{.photo-inspiration{display:none}}

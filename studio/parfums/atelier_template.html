@@ -92,6 +92,8 @@
            font-size: 0.8rem; line-height: 1.8; }
   footer a { color: var(--gold-dim); }
 </style>
+<link rel="stylesheet" href="/atelier-photo.css">
+<script src="/atelier-photo.js" defer></script>
 </head>
 <body>
 <script src="soglia.js"></script>
@@ -113,6 +115,21 @@
     <label for="riferimento">Ispirazioni e profumi amati dal cliente — facoltativo</label>
     <textarea id="riferimento" maxlength="1000" rows="3" aria-describedby="preferenze-aiuto" placeholder="Un profumo per riga, con marca e versione se le conosci.&#10;Es.: Chanel N° 5 Eau de Parfum&#10;Dior J’adore Eau de Parfum"></textarea>
     <p id="preferenze-aiuto" class="spiega">Fino a 5 profumi, uno per riga o separati da punto e virgola. Servono a capire i gusti, non a copiare formule. Puoi anche citarli nel racconto: il riconoscimento automatico proverà a individuarli. Scrivi nell’intenzione cosa ami e cosa vuoi evitare.</p>
+    <section class="photo-inspiration" aria-labelledby="foto-titolo">
+      <h2 id="foto-titolo">Un’immagine può essere l’inizio.</h2>
+      <p>Luce, materia, paesaggio: Raffaello li interpreta e cerca una direzione olfattiva nel tuo organo. Puoi partire anche soltanto da una foto.</p>
+      <label for="foto">La tua fotografia — facoltativa</label>
+      <input id="foto" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" aria-describedby="foto-aiuto foto-stato">
+      <p id="foto-aiuto">La foto viene ridotta sul dispositivo e inviata al servizio AI per questa creazione. Nell’archivio rimane l’interpretazione, non la tua immagine. Le associazioni olfattive sono creative: una foto non misura gli odori.</p>
+      <figure id="foto-anteprima" hidden><img id="foto-preview" alt="La fotografia scelta per questa creazione"><figcaption id="foto-didascalia"></figcaption></figure>
+      <button type="button" class="oro" id="foto-rimuovi" hidden>Rimuovi la foto</button>
+      <p id="foto-stato" role="status" aria-live="polite"></p>
+      <details class="photo-example"><summary>L’esempio di Claudio · Il calore del ferro</summary>
+        <img src="/images/ispirazione-cantiere.jpg" width="1536" height="1024" loading="lazy" alt="Un cantiere navale al tramonto: scintille di saldatura, acciaio e riflessi sul suolo bagnato">
+        <p>Il ferro, le scintille, l’aria aperta. Il calore del lavoro incontra la freschezza della sera. Questa fotografia, scelta da Claudio, resta qui come punto di partenza.</p>
+        <button type="button" class="oro" id="foto-esempio">Crea dalla foto di Claudio</button>
+      </details>
+    </section>
     <div class="riga-opzioni">
       <div><label for="famiglia">Famiglia</label>
         <select id="famiglia"><option value="">Scelga Raffaello</option></select></div>
@@ -396,10 +413,14 @@ function daAI(res, intenzione) {
 // funziona in ogni browser perche' e' un semplice caricamento di pagina.
 function chiediARaffaello(rilancio) {
   const i = leggi();
+  const hasPhoto = window.TerziPhoto && window.TerziPhoto.selected();
   if (!i.intenzione || i.intenzione === "senza intenzione") {
+    if (hasPhoto) i.intenzione = "Un profumo ispirato alla fotografia.";
+    else {
     document.getElementById("voce").textContent =
-      "\u2192 Scrivi prima la tua intenzione qui sopra.";
+      "Scrivi un’intenzione oppure scegli una fotografia.";
     return;
+    }
   }
   document.getElementById("voce").textContent =
     "\ud83e\udde0 Raffaello sta componendo\u2026 (si apre tra pochi secondi)";
@@ -410,7 +431,15 @@ function chiediARaffaello(rilancio) {
   Object.entries(values).forEach(([name,value]) => {
     const input = document.createElement("input"); input.type = "hidden"; input.name = name; input.value = value; form.appendChild(input);
   });
-  document.body.appendChild(form); form.submit();
+  const send = (photoInput) => {
+    if (photoInput) { form.enctype = "multipart/form-data"; form.appendChild(photoInput); }
+    document.body.appendChild(form); form.submit();
+  };
+  if (hasPhoto) window.TerziPhoto.prepareInput().then(send).catch(() => {
+    document.getElementById("voce").textContent = "La foto non è pronta. Scegli un JPEG, PNG o WebP e riprova.";
+    document.getElementById("chiedi").disabled = false;
+  });
+  else send();
 }
 
 window.addEventListener("pageshow", () => { document.getElementById("chiedi").disabled = false; });
