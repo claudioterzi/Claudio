@@ -123,4 +123,11 @@ def analyze_photo(photo, timeout=18):
         raise PhotoUnavailable('L’analisi della foto ha impiegato troppo tempo. Riprova fra poco.', 'vision_timeout') from exc
     except Exception as exc:
         # No retries or text-only substitution: the photo must actually be analyzed.
-        raise PhotoUnavailable('Non sono riuscito ad analizzare la foto. Riprova oppure descrivila nell’intenzione senza allegarla.', 'vision_invalid_response' if isinstance(exc, (ValueError, KeyError, TypeError, IndexError)) else 'vision_connection') from exc
+        known = {'oversize response':'oversize', 'invalid observations':'observations',
+                 'invalid observation':'observation_length', 'invalid associations':'associations',
+                 'invalid association':'association_length', 'invalid direction':'direction_length',
+                 'no direction':'empty_direction'}
+        detail = 'json' if isinstance(exc, json.JSONDecodeError) else known.get(str(exc), 'shape')
+        code = ('vision_invalid_' + detail if isinstance(exc, (ValueError, KeyError, TypeError, IndexError))
+                else 'vision_connection')
+        raise PhotoUnavailable('Non sono riuscito ad analizzare la foto. Riprova oppure descrivila nell’intenzione senza allegarla.', code) from exc
