@@ -1,8 +1,8 @@
-# Archivio persistente — configurazione pronta per l’attivazione
+# Archivio persistente — collegamento e collaudo
 
 Claudio Terzi · Protocollo Rosso Rosso Rosso · verifica 2026-09-09.
 
-## Aggiornamento 2026-09-10 — collegamento completato, test online in corso
+## Aggiornamento 2026-09-10 — collegamento e test online riusciti
 
 Dopo «Fatto» dell’utente, installazione e database esistente verificati.
 Risorsa `store_04ygMomSUbCgQkT3`, nome `upstash-kv-coffee-lens`, installazione
@@ -16,9 +16,17 @@ Nessun database duplicato; nessun piano a pagamento attivato.
 La documentazione sotto conserva la proposta precedente fra1, che non è stata
 applicata perché il database era già stato creato dall’utente in iad1.
 25 test archivio/recupero e 4 sottotest superati. Ping TCP dal laboratorio
-non riuscito (ConnectionError): attendere il collaudo del runtime Vercel prima
-di dichiarare attivo il salvataggio. Non sono ancora verificati backup e
-ripristino del provider.
+non riuscito (ConnectionError); il successivo collaudo del runtime Vercel è
+riuscito: foto, salvataggio, recupero da due sessioni, ripetizione immutabile,
+revoca logout e isolamento anonimo. 17 controlli HTTPS superati, evidenza in
+docs/evidenze/ARCHIVIO_LIVE_2026-09-10.json. Pubblicazione b4499ed: Vercel success.
+Non sono ancora verificati backup e ripristino del provider.
+
+La parola scelta come accesso compare nei contenuti creativi pubblici: va
+sostituita con una credenziale privata distinta prima di usare l’archivio
+per dati dei clienti. Il collaudo contiene solo un cliente fittizio. Le
+funzioni di autenticazione funzionano; questo non rende segreta una parola
+già pubblicata. Non inserire password nei documenti o nella chat.
 
 ## Stato verificato in questa ripresa
 

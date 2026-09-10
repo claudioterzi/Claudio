@@ -6,7 +6,7 @@
 >
 > Ultimo aggiornamento: 2026-09-10
 
-## Upstash collegato — collaudo produzione in corso, 2026-09-10
+## Upstash collegato — archivio verificato in produzione, 2026-09-10
 
 Claudio ha confermato «Fatto» dopo l’accettazione richiesta. Verificata via API
 l’installazione marketplace `icfg_9piBJI2TaOe0EPLxV5EtGc1M` e la risorsa già
@@ -23,6 +23,28 @@ REDIS_URL usa TLS (rediss). Il ping dal laboratorio remoto ha restituito
 ConnectionError: non prova un guasto sul runtime Vercel. Da verificare dopo
 la nuova pubblicazione con salvataggio e riapertura effettivi sul sito.
 Nessuna attivazione immagini AI o modifica dei precedenti blocchi.
+
+Pubblicazione b4499ed24568107f7f41a2dfc3654d5f4faadc16: Vercel success.
+Collaudo HTTPS reale completato per foto → formula → salvataggio → accesso:
+Forge Crépusculaire, cliente fittizio Collaudo Archivio, seriale
+TP-484C7E9CE3634FCCB24E2A2B2E02FB3E. Analisi foto versione 2, ricetta 100
+parti. Ripetizione richiesta conserva record e checksum esatti. Due sessioni
+indipendenti riaprono formula e dedica identiche; anonimo non legge il record;
+no cache/CORS pubblico; cookie Secure/HttpOnly/Strict; uscita revoca sul server
+anche una copia del cookie senza invalidare la seconda sessione. 17 controlli
+HTTPS superati. La connessione dal runtime Vercel è quindi confermata.
+Evidenza docs/evidenze/ARCHIVIO_LIVE_2026-09-10.json; script opt-in
+scripts/check_perfume_archive_live.py. La creazione fittizia resta nell’archivio.
+Controllo browser: pagina accesso visibile, esempio Ferro di Luce, variante
+Scultura selezionata e anteprima etichetta con nome/dedica. Accesso privato
+verificato via HTTPS, non con ingresso nativo nel browser; iPhone non testato.
+
+Punto concreto da risolvere prima dei dati clienti: la parola scelta dall’utente
+per l’accesso compare già nei contenuti creativi pubblici di sei pagine. Non
+trattarla come un segreto né dichiarare l’archivio pronto per dati riservati.
+Serve una credenziale privata distinta, scelta/consegnata attraverso un canale
+sicuro, non incollata in chat. Non è stata cambiata unilateralmente la parola
+espressamente scelta dall’utente. Backup/ripristino del provider non collaudati.
 
 
 ## Ripresa richiesta — attivazione database pronta, 2026-09-09
@@ -55,7 +77,9 @@ Alla ripresa:
 4. A ogni traguardo significativo salvare codice, stato verificato, operazioni
    non confermate e prossimo passo. Escludere token, password e dati dei clienti.
 
-Questo è un metodo di ripresa persistente, non un servizio in background:
+Stato storico al 2026-09-09, superato dal collaudo Upstash sopra per il
+salvataggio cloud delle nuove creazioni. Questo è un metodo di ripresa
+persistente, non un servizio in background:
 la chat non può impedire la chiusura dell’app né garantire che il lavoro
 continui mentre la sessione è interrotta. Le creazioni del sito non sono ancora
 salvate automaticamente in un archivio cloud; il recupero attuale richiede
