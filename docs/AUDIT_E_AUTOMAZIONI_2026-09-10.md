@@ -104,11 +104,28 @@ va configurata sul progetto con accesso amministrativo disponibile.
 
 ## Verifiche e stato della pubblicazione
 
-Prima della pubblicazione: 32 test Python superati, controllo del renderer superato,
+Verifica conclusiva: 32 test Python superati, controllo del renderer superato,
 400 geometrie e raster distinti, formule/QR/mouillette preservati. Campione di stampa:
-otto ricette su otto pagine, controllate visivamente. Il verbale conclusivo riporterà
-gli identificativi delle esecuzioni reali, i commit e l'esito online.
+otto ricette su otto pagine, controllate visivamente. Dopo l'importazione della foto,
+la scheda P001 è stata nuovamente stampata: una pagina, immagine, formula e QR leggibili.
 
 L'autonomia attiva deve restare verificabile: rilevare, classificare, correggere
 solo casi previsti, ricontrollare, registrare. Le azioni esterne della Fabbrica
 richiedono connettori, consenso e conferme reali; non vengono presentate come eseguite.
+
+
+### Esito online consolidato
+
+- Pubblicazione principale: `6682c8068b4e075ef6e36cb9fe93842c57835c94`, Vercel riuscito.
+- Controlli rigorosi eseguiti da GitHub: [esecuzione 34519082868](https://github.com/claudioterzi/Claudio/actions/runs/34519082868), riuscita.
+- Prova foto reale: commit con la sola immagine P001; [workflow 34519271634](https://github.com/claudioterzi/Claudio/actions/runs/34519271634) riuscito.
+- Il workflow ha prodotto autonomamente `f8a6524e69a9753bc8b6489f67d1377506b70412`: solo registro foto e libro. Vercel ha pubblicato anche questo aggiornamento.
+- Monitor di produzione eseguito realmente dopo il deployment: [esecuzione 34519396136](https://github.com/claudioterzi/Claudio/actions/runs/34519396136), riuscita.
+- Controllo diretto: **38 verifiche, nessun errore**. Home, Soglia, progetti, Fabbrica, libro, due script, otto disegni e nuova foto rispondono 200 con byte identici ai file pubblicati.
+- Nuova immagine principale di P001 verificata; il disegno originale resta disponibile. Gli altri 399 disegni sono principali nelle rispettive schede.
+- Cron configurato ogni 15 minuti: verificata la configurazione e l'esecuzione post-deployment, non ancora un'intera giornata di esecuzioni pianificate.
+- La vecchia pubblicazione indicata da Claudio resta **non cancellata** per il limite di accesso Vercel 403 già descritto.
+
+Evidenze: `docs/evidenze/SITO_AUTOMAZIONI_LIVE_2026-09-10.json` e
+`docs/evidenze/FLACONI_400_2026-09-10.json`. I risultati non implicano assenza
+assoluta di guasti futuri: documentano copertura, controlli e limiti effettivi.

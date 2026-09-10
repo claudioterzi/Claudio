@@ -19,8 +19,11 @@ Fabbrica riparata con commit 1db30ee: i percorsi brevi cercavano un HTML nel
 pacchetto Python, mentre il file è statico. Verificati quattro indirizzi 200.
 Analizzate tutte le 21 pagine pubbliche e riferimenti locali. Implementati
 monitor ogni 15 minuti e dopo deployment, controlli rigorosi e riparazione limitata
-agli indirizzi registrati. Verifiche reali delle nuove automazioni da registrare
-nel verbale conclusivo; non dichiarare Deployment Checks Vercel già configurati.
+agli indirizzi registrati. Pubblicato 6682c806, Vercel success. Controlli GitHub 34519082868 riusciti.
+Foto P001 importata nel commit 677e4a09: il workflow 34519271634 ha aggiornato
+registro e libro nel commit f8a6524e, anch’esso pubblicato da Vercel. Monitor reale
+34519396136 riuscito; 38 verifiche pubbliche senza errori. Deployment Checks
+Vercel non ancora configurati. Evidenze in SITO_AUTOMAZIONI_LIVE_2026-09-10.json.
 GET diagnostico Telegram reso privo di invio messaggi; log Fabbrica sanitizzati;
 eliminati commit di soli timestamp CI. 32 test locali superati.
 Analisi, priorità e limiti: docs/AUDIT_E_AUTOMAZIONI_2026-09-10.md.

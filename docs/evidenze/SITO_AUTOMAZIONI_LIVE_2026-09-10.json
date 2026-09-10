@@ -1,0 +1,368 @@
+{
+  "public_commit": "6682c8068b4e075ef6e36cb9fe93842c57835c94",
+  "seed_photo_commit": "677e4a096be320409ae0472178bac69665b3d862",
+  "automatic_book_commit": "f8a6524e69a9753bc8b6489f67d1377506b70412",
+  "deploy_state": "success",
+  "photo_workflow": {
+    "run_id": 34519271634,
+    "conclusion": "success"
+  },
+  "strict_checks": {
+    "run_id": 34519082868,
+    "conclusion": "success",
+    "python_tests": 32
+  },
+  "production_monitor": {
+    "run_id": 34519396136,
+    "conclusion": "success"
+  },
+  "live": {
+    "kind": "live",
+    "origin": "https://claudio-ebon.vercel.app",
+    "checks": [
+      {
+        "path": "/alpha.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 7680
+      },
+      {
+        "path": "/atelier.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 7765
+      },
+      {
+        "path": "/creazioni.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 7621
+      },
+      {
+        "path": "/esperienza.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 7694
+      },
+      {
+        "path": "/fabbrica.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 7589
+      },
+      {
+        "path": "/flight_hunter.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 11066
+      },
+      {
+        "path": "/formula.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 11088
+      },
+      {
+        "path": "/home.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 11018
+      },
+      {
+        "path": "/index.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 11028
+      },
+      {
+        "path": "/libro.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 11109
+      },
+      {
+        "path": "/magazine.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 10863
+      },
+      {
+        "path": "/opera-viva.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 10863
+      },
+      {
+        "path": "/opera.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 11167
+      },
+      {
+        "path": "/opuscolo.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 10953
+      },
+      {
+        "path": "/oracolo.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 10740
+      },
+      {
+        "path": "/organo.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8891
+      },
+      {
+        "path": "/parfums.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 9090
+      },
+      {
+        "path": "/parti.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8862
+      },
+      {
+        "path": "/spesa.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 9008
+      },
+      {
+        "path": "/valigia.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8741
+      },
+      {
+        "path": "/viaggi.html",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 9029
+      },
+      {
+        "path": "/",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8630
+      },
+      {
+        "path": "/soglia",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8205
+      },
+      {
+        "path": "/soglia/",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8347
+      },
+      {
+        "path": "/home",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8212
+      },
+      {
+        "path": "/alpha",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8471
+      },
+      {
+        "path": "/viaggi",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8548
+      },
+      {
+        "path": "/flight",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8288
+      },
+      {
+        "path": "/oracolo",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8360
+      },
+      {
+        "path": "/parti",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 7975
+      },
+      {
+        "path": "/fabbrica",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8595
+      },
+      {
+        "path": "/fabbrica/",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8561
+      },
+      {
+        "path": "/fabbrica-dei-desideri",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8550
+      },
+      {
+        "path": "/progetti",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8513
+      },
+      {
+        "path": "/api/fabbrica/status",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 8524
+      },
+      {
+        "path": "/api/mazzo",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 9510
+      },
+      {
+        "path": "/api/alpha",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 9685
+      },
+      {
+        "path": "/api/viaggi/destinazioni",
+        "ok": true,
+        "status": 200,
+        "duration_ms": 9676
+      }
+    ],
+    "failures": [],
+    "checked_at": "2026-09-10T19:15:23.142950+00:00",
+    "repaired_aliases": []
+  },
+  "published_files": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 15422,
+      "matches_local": true
+    },
+    {
+      "path": "/soglia",
+      "status": 200,
+      "bytes": 15422,
+      "matches_local": true
+    },
+    {
+      "path": "/progetti",
+      "status": 200,
+      "bytes": 15422,
+      "matches_local": true
+    },
+    {
+      "path": "/fabbrica",
+      "status": 200,
+      "bytes": 17292,
+      "matches_local": true
+    },
+    {
+      "path": "/libro.html",
+      "status": 200,
+      "bytes": 1931353,
+      "matches_local": true,
+      "photo_primary": true,
+      "original_drawing_retained": true,
+      "individual_drawings": 399,
+      "photo_check_source": "HTML locale identico byte per byte alla risposta HTTP verificata"
+    },
+    {
+      "path": "/soglia.js",
+      "status": 200,
+      "bytes": 3599,
+      "matches_local": true
+    },
+    {
+      "path": "/site-version.js",
+      "status": 200,
+      "bytes": 1371,
+      "matches_local": true
+    },
+    {
+      "path": "/images/flaconi-400/P001.svg",
+      "status": 200,
+      "bytes": 65856,
+      "matches_local": true
+    },
+    {
+      "path": "/images/flaconi-400/P051.svg",
+      "status": 200,
+      "bytes": 72793,
+      "matches_local": true
+    },
+    {
+      "path": "/images/flaconi-400/P101.svg",
+      "status": 200,
+      "bytes": 62641,
+      "matches_local": true
+    },
+    {
+      "path": "/images/flaconi-400/P151.svg",
+      "status": 200,
+      "bytes": 78408,
+      "matches_local": true
+    },
+    {
+      "path": "/images/flaconi-400/P201.svg",
+      "status": 200,
+      "bytes": 51639,
+      "matches_local": true
+    },
+    {
+      "path": "/images/flaconi-400/P251.svg",
+      "status": 200,
+      "bytes": 71424,
+      "matches_local": true
+    },
+    {
+      "path": "/images/flaconi-400/P301.svg",
+      "status": 200,
+      "bytes": 57325,
+      "matches_local": true
+    },
+    {
+      "path": "/images/flaconi-400/P400.svg",
+      "status": 200,
+      "bytes": 76133,
+      "matches_local": true
+    },
+    {
+      "path": "/images/foto-profumi/P001--20260910T191349954551Z--studio-ia--a26386b998f8.webp",
+      "status": 200,
+      "bytes": 91770,
+      "matches_local": true
+    }
+  ],
+  "old_deployment_removal": {
+    "state": "blocked",
+    "reason": "Vercel API 403 requires re-authentication to project team",
+    "deleted": false
+  },
+  "print_photo_sample": {
+    "recipe": 1,
+    "pages": 1,
+    "file": "verifica/stampa-P001-foto.pdf"
+  }
+}
