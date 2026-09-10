@@ -1,0 +1,29 @@
+{
+  "commit": "1533f06a2ffd12dc11f6aa16b32f846210c8432b",
+  "url": "https://claudio-ebon.vercel.app/fabbrica.html",
+  "status": {
+    "ai_available": true,
+    "external_actions_available": false,
+    "latest_id": null,
+    "retention_days": 30,
+    "storage_available": true
+  },
+  "checks": [
+    "AI real generation",
+    "same-session reload identical",
+    "progress persisted on Redis",
+    "stale version rejected",
+    "other browser denied",
+    "test record deleted"
+  ],
+  "plan_id": "a645f789dd684840860fb5243ecc372a",
+  "provider_output_title": "Prova di Canto Privata a Bruxelles",
+  "actions_count": 4,
+  "test_record_deleted": true,
+  "cookie_secure": true,
+  "cache_control": "no-store",
+  "cors_header": null,
+  "published_assets_verified": 7,
+  "local_tests_passed": 15,
+  "browser_qa_performed": false
+}

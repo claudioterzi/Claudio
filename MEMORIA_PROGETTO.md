@@ -31,7 +31,11 @@ versione per conflitti e limiti sulle chiamate. Nessun accesso a rubriche o mess
 Test locali: 15 casi con archivio/provider di test; cinque esempi validati contro
 lo schema reale, confini di accesso, dipendenze e ripresa verificati. Controllati
 controlli HTML, riferimenti e sintassi. Verifica browser non richiesta e non eseguita.
-Pubblicazione e collaudo IA in produzione da confermare nel diario di fine attività.
+Pubblicato il commit 1533f06a su Vercel (success). Collaudo HTTPS reale riuscito:
+generazione IA, riapertura identica, aggiornamento su Redis, rifiuto della versione
+stale, isolamento da altro browser e cancellazione verificata del record fittizio.
+Cookie Secure, risposte no-store e CORS assente. Sette file pubblici con hash
+identico al commit. Evidenze: docs/evidenze/FABBRICA_LIVE_2026-09-10.json.
 
 Il sistema attuale propone e rivede piani e conserva avanzamento dichiarato.
 Chiamate, WhatsApp, inviti, pagamenti, prenotazioni, conferme di fornitori e regia

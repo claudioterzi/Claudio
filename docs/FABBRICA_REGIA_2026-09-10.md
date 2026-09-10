@@ -106,7 +106,8 @@ mancante rimane esplicita; non viene sostituita da un successo narrato dall’IA
 
 La documentazione ufficiale Booking.com Demand API descrive integrazioni dalla
 ricerca con rinvio fino alla prenotazione integrata e gestione successiva. L’accesso
-ha prerequisiti e non è stato ottenuto per questo progetto. [Booking.com Demand API](https://developers.booking.com/demand/docs).
+richiede il programma Managed Affiliate Partner, un contratto e credenziali
+dedicate; non è stato ottenuto per questo progetto. [Prerequisiti ufficiali](https://developers.booking.com/demand/docs/getting-started/prerequisites). [Booking.com Demand API](https://developers.booking.com/demand/docs).
 Google Routes offre percorsi e matrici di tempi/distanze: può contribuire alla
 logistica, ma non costituisce un servizio di prenotazione di passaggi.
 [Google Routes API](https://developers.google.com/maps/documentation/routes).
@@ -137,6 +138,11 @@ il modello di marcare un’azione come eseguita. Cinque esempi validati con lo s
 usato in produzione. Controlli di sintassi JS/Python, ID dei controlli, link locali
 e presenza dei quattro percorsi e cinque livelli.
 
-L’archivio e le chiamate reali richiedono inoltre il collaudo dopo la pubblicazione.
-Il test locale usa un sostituto Redis e non prova il comportamento di Lua sul
-servizio reale. Nessuna verifica nel browser è stata richiesta o effettuata.
+Collaudo dopo la pubblicazione completato sul commit 1533f06a: generazione IA
+reale su brief fittizio, riapertura identica, aggiornamento effettivo su Redis,
+rifiuto della versione precedente, accesso negato da un altro browser e
+cancellazione del record di prova verificata. Le operazioni atomiche sul servizio
+reale hanno quindi superato il percorso provato. Cookie Secure, cache no-store e
+nessun CORS pubblico. Sette file online confrontati con hash identici ai locali.
+Evidenze: evidenze/FABBRICA_LIVE_2026-09-10.json. Nessuna verifica nel browser è
+stata richiesta o effettuata. Nessun contatto, acquisto o prenotazione eseguiti.
