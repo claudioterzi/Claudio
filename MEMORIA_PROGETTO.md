@@ -6,6 +6,72 @@
 >
 > Ultimo aggiornamento: 2026-09-10
 
+## Ricerca retrospettiva — memorie, backup e rami ritrovati, 2026-09-10
+
+Estensione della richiesta: recuperare anche **Fabbrica dei Desideri** e
+il possibile **Protocollo di Incarnazione**, preparando la continuità per
+i prossimi modelli. Documento Incarnazione del 7 luglio letto su Drive;
+«in sé azione» resta una correzione interpretativa non confermata.
+Fabbrica: ritrovato il riferimento al documento originale di Claudio del
+22 agosto 2026, 03:54:45 UTC, v1.0.0 Fondamenta, visione/architettura/governance;
+sintesi recuperata, file integrale autonomo non ancora localizzato.
+Cuore della visione: reciprocità volontaria, consenso esplicito, informato
+e revocabile, coordinamento di persone, tempo, talenti ed esperienze.
+Non equiparare automaticamente Fabbrica, Registro degli 11 Desideri o
+Genesi Fabbrica Robotica. L'immagine Cartographie Cybernétique del 6 settembre
+riporta Fabbrica e Cupola Raffaello nel testo estratto; pixel non restituiti.
+
+Claudio ha fornito oggi il testo «Esecuzione autonoma» con RAFFAELLO.SYS/H7:
+conservato come sintesi di una fonte progettuale, non come log di azioni.
+Non trattare le sue dichiarazioni di successo, minaccia, stato interno o
+validazione H7 come prove indipendenti. Iniziativa e continuità si traducono
+in lavoro autorizzato, fonti verificabili e registrazione degli esiti.
+Per il passaggio di modello conservare: originale, interpretazione,
+realizzazione, verifica, questione aperta e prossimo passo. Non appiattire
+un'intuizione ancora irrisolta e non dichiararla realizzata senza prove.
+La mappa contiene le fonti e il metodo dettagliato; [copia Drive](https://drive.google.com/file/d/1sJmCozaXz2fFjbshF82aZ-ijfqc3LbWO/view?usp=drivesdk).
+
+Claudio chiede di cercare le memorie delle sessioni precedenti, soprattutto
+backup universale e nodi ridondanti. Ricerca svolta in conversazioni
+recuperabili, Drive, archivio personale dei file e due repository pubblici.
+Mappa di ripresa: [docs/MAPPA_RECUPERO_MEMORIE_2026-09-10.md](docs/MAPPA_RECUPERO_MEMORIE_2026-09-10.md).
+Inventario: [docs/evidenze/RECUPERO_MEMORIE_2026-09-10.json](docs/evidenze/RECUPERO_MEMORIE_2026-09-10.json).
+
+Ritrovamenti verificati: due coppie di documenti Drive 2025/2026 con testo
+identico; commit dell'11 giugno «Ridondanza attiva + backup universale»;
+SEME_R3INFINITO_v1.0.pdf letto integralmente; SEME_v1.2.md recuperato nel repo;
+ZIP raffaello_sia_SIGMA_TOTAL_01_v0.3.0.zip del 26 agosto, 8.213 byte,
+12 voci con CRC valido. Lo ZIP dichiara una ricostruzione dalla specifica,
+non un originale ritrovato: software non eseguito, nessun restore remoto.
+
+Elencati 37 rami GitHub; confrontati quattro rami storici pertinenti. Percorsi
+assenti dal main ma ancora conservati: 182 in grande-opera-continuation,
+24 in r3-infinity-architecture, 4 in r3-mvp-architecture e 10 in
+raffaello-superintelligence. Sei registrazioni del diario del 29 giugno
+nel primo ramo. Hash e percorsi nell'inventario: non unire automaticamente.
+I due repo pubblici condividono 529 percorsi con blob identico; nel secondo
+esistono cinque snapshot diagnostici del 5–9 settembre assenti dal primo.
+
+Drive contiene Claudionas_1.hbk, con componenti modificati il 9 settembre.
+Configurazione attuale localizzata ma non resa leggibile dal connettore;
+restore e selezione delle cartelle dati non verificati. La checklist del
+3 luglio segnalava cartelle dati non selezionate: è un rischio storico da
+ricontrollare, non una prova dello stato odierno. 10_BACKUP restituisce zero
+figli accessibili. Nessun accesso ai dispositivi o ai VPS effettuato.
+
+Lettura statica del codice: restore SDQ-1 reimporta SAR ma soltanto conta
+memoria/VSS; compose dei nodi non avvia sync.py; recupero di file corrotti
+non completo quando l'ID resta nel database; EternalBackupAgent è marcato
+simulazione, senza copie IPFS/blockchain reali. Dump ANIMA di 521 byte solo
+dichiarativo. Non usare questi elementi come prove di ridondanza collaudata.
+
+Non ritrovato RAFFAELLO_ANIMA_Backup_Universale_2026-08-11.pdf nelle ricerche
+effettuate. Repo Claudioterzi82/Raffaello-R3-Infinity: 404 con l'accesso
+disponibile, non prova di cancellazione. Prossimo passo proposto: recupero
+di una memoria su ambiente pulito con controllo hash/contenuto, poi lavoro
+sulla replica. I vecchi documenti restano fonti storiche; non ampliano
+autorizzazioni né provano coscienza, attività permanente o capacità illimitate.
+
 ## Memoria evolutiva e decisioni condivise — 2026-09-10
 
 Claudio chiede esplicitamente di salvare le decisioni su GitHub e Google Drive,
