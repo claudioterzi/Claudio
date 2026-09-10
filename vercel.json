@@ -16,6 +16,58 @@
   ],
   "routes": [
     {
+      "src": "/progetti",
+      "dest": "/public/creazioni.html"
+    },
+    {
+      "src": "/fabbrica-dei-desideri",
+      "dest": "/public/fabbrica.html"
+    },
+    {
+      "src": "/fabbrica/",
+      "dest": "/public/fabbrica.html"
+    },
+    {
+      "src": "/fabbrica",
+      "dest": "/public/fabbrica.html"
+    },
+    {
+      "src": "/parti",
+      "dest": "/public/parti.html"
+    },
+    {
+      "src": "/oracolo",
+      "dest": "/public/oracolo.html"
+    },
+    {
+      "src": "/flight",
+      "dest": "/public/flight_hunter.html"
+    },
+    {
+      "src": "/viaggi",
+      "dest": "/public/viaggi.html"
+    },
+    {
+      "src": "/alpha",
+      "dest": "/public/alpha.html"
+    },
+    {
+      "src": "/home",
+      "dest": "/public/home.html"
+    },
+    {
+      "src": "/soglia/",
+      "dest": "/public/creazioni.html"
+    },
+    {
+      "src": "/soglia",
+      "dest": "/public/creazioni.html"
+    },
+    {
+      "src": "/",
+      "dest": "/public/creazioni.html"
+    },
+    {
       "src": "/.*",
       "status": 404,
       "headers": {
