@@ -8,13 +8,14 @@ from __future__ import annotations
 from datetime import datetime, timezone
 import hashlib
 import json
+import logging
 import os
 import re
 import secrets
 import time
 import uuid
 
-from flask import Blueprint, jsonify, request, send_from_directory
+from flask import Blueprint, g, jsonify, request, send_from_directory
 
 fabbrica = Blueprint('fabbrica', __name__)
 TTL = 30 * 86400
@@ -22,6 +23,22 @@ COOKIE = 'fabbrica_session'
 PREFIX = 'terzi:fabbrica:v1:'
 ID = re.compile(r'^[a-f0-9]{32}$')
 SESSION = re.compile(r'^[a-f0-9]{64}$')
+LOGGER = logging.getLogger('terzi.fabbrica')
+
+
+def record_failure(event, error):
+    """Log an operational diagnosis without user text, IDs or exception bodies."""
+    LOGGER.warning(json.dumps({'event': event, 'endpoint': request.endpoint,
+                              'method': request.method, 'error_class': type(error).__name__}))
+
+
+@fabbrica.after_request
+def observe_failure(response):
+    if response.status_code >= 500:
+        LOGGER.warning(json.dumps({'event': 'request_failed', 'endpoint': request.endpoint,
+                                  'method': request.method, 'status': response.status_code,
+                                  'duration_ms': round((time.monotonic() - getattr(g, 'fabbrica_started', time.monotonic())) * 1000)}))
+    return response
 
 SYSTEM = '''Sei Raffaello, il regista IA della Fabbrica dei Desideri di Claudio Terzi.
 Scrivi in italiano naturale, preciso e caloroso. Studia un desiderio e prepara un
@@ -170,6 +187,7 @@ def public_record(record):
 
 @fabbrica.before_request
 def protect():
+    g.fabbrica_started = time.monotonic()
     if not request.path.startswith('/api/fabbrica/'):
         return None
     if request.content_length and request.content_length > 16000:
@@ -200,8 +218,8 @@ def status():
         storage = bool(db.ping())
         latest_raw = db.get(PREFIX + 'latest:' + sid)
         latest = latest_raw.decode() if isinstance(latest_raw, bytes) else latest_raw
-    except Exception:
-        pass
+    except Exception as exc:
+        record_failure('storage_status_failed', exc)
     response = jsonify(ai_available=available and storage, storage_available=storage,
                        external_actions_available=False, latest_id=latest, retention_days=30)
     response.set_cookie(COOKIE, sid, max_age=TTL, secure=request.is_secure or bool(os.getenv('VERCEL')),
@@ -311,8 +329,9 @@ def generate():
             return jsonify(public_record(record))
         db.delete(cachekey)
         return jsonify(error='La regia non ha prodotto un copione valido. Riprova tra poco.', id=pid), 503
-    except Exception:
+    except Exception as exc:
         # No prompts, keys or provider error bodies are written to logs or the response.
+        record_failure('generation_or_storage_failed', exc)
         return jsonify(error='Non riesco a confermare la preparazione e il salvataggio. Riapri il copione prima di riprovare.'), 503
 
 
@@ -356,5 +375,6 @@ def plan_resource(pid):
         if not changed:
             return jsonify(error='Il copione è stato aggiornato altrove. Riaprilo per continuare.'), 409
         return jsonify(public_record(record))
-    except Exception:
+    except Exception as exc:
+        record_failure('plan_storage_failed', exc)
         return jsonify(error='Il salvataggio non è confermato. Riprova tra poco.'), 503

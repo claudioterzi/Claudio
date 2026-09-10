@@ -182,5 +182,25 @@ class TestFabbrica(unittest.TestCase):
         self.assertEqual(plan['scenes'][0]['actions'][0]['status'],'proposed')
         self.assertIsNone(plan['scenes'][0]['actions'][0]['reported_at'])
 
+    def test_failure_logs_diagnosis_without_private_text_or_exception_body(self):
+        with patch('fabbrica.client', side_effect=RuntimeError('SECRET_CONNECTION_STRING')):
+            with self.assertLogs('terzi.fabbrica', level='WARNING') as logs:
+                response = self.generate(dream='Una richiesta privata che deve restare riservata.')
+        self.assertEqual(response.status_code, 503)
+        text = '\n'.join(logs.output)
+        self.assertIn('RuntimeError', text)
+        self.assertIn('generation_or_storage_failed', text)
+        self.assertNotIn('SECRET_CONNECTION_STRING', text)
+        self.assertNotIn('richiesta privata', text)
+
+    def test_telegram_debug_get_never_sends_messages(self):
+        with patch.dict('os.environ', {'TELEGRAM_BOT_TOKEN': 'PRIVATE_TOKEN', 'TELEGRAM_CHAT_ID': 'PRIVATE_CHAT'}):
+            with patch('urllib.request.urlopen') as network:
+                response = self.http.get('/api/telegram/debug')
+        network.assert_not_called()
+        self.assertEqual(response.json['mode'], 'configuration_only')
+        self.assertFalse(response.json['connection_tested'])
+        self.assertNotIn('PRIVATE_', response.get_data(as_text=True))
+
 
 if __name__=='__main__': unittest.main()

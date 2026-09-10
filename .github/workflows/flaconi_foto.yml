@@ -1,0 +1,47 @@
+name: Foto dei profumi
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/images/foto-profumi/**'
+      - 'studio/parfums/sincronizza_foto.py'
+      - 'studio/parfums/genera_libro.py'
+      - '.github/workflows/flaconi_foto.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: foto-profumi-main
+  cancel-in-progress: false
+
+jobs:
+  aggiorna-libro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Dipendenze editoriali
+        run: python -m pip install -r studio/parfums/requirements-editoriale.txt
+      - name: Associa le nuove foto e rigenera il libro
+        run: python studio/parfums/genera_libro.py
+      - name: Conserva il nuovo registro e il libro
+        run: |
+          git add -f studio/parfums/foto_400.json public/libro.html
+          if git diff --cached --quiet; then
+            echo "Foto e libro sono già aggiornati."
+            exit 0
+          fi
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git commit -m "Aggiorna automaticamente le foto dei profumi"
+          git pull --rebase origin main
+          git push origin HEAD:main

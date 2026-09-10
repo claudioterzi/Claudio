@@ -4,7 +4,10 @@
     {
       "src": "tarocchi_web.py",
       "use": "@vercel/python",
-      "config": { "maxDuration": 60, "includeFiles": "{studio/parfums/**,public/formule/organo-*.json}" }
+      "config": {
+        "maxDuration": 60,
+        "includeFiles": "{studio/parfums/**,public/formule/organo-*.json}"
+      }
     },
     {
       "src": "public/**",
@@ -12,17 +15,65 @@
     }
   ],
   "routes": [
-    { "src": "/", "dest": "/public/index.html" },
-    { "src": "/home", "dest": "/public/home.html" },
-    { "src": "/alpha", "dest": "/public/alpha.html" },
-    { "src": "/viaggi", "dest": "/public/viaggi.html" },
-    { "src": "/flight", "dest": "/public/flight_hunter.html" },
-    { "src": "/oracolo", "dest": "/public/oracolo.html" },
-    { "src": "/parti", "dest": "/public/parti.html" },
-    { "src": "/fabbrica/?", "dest": "/public/fabbrica.html" },
-    { "src": "/fabbrica-dei-desideri/?", "dest": "/public/fabbrica.html" },
-    { "src": "/(.+\\.(html|js|css|svg|png|jpg|webp|ico|json|txt|pdf))", "dest": "/public/$1" },
-    { "src": "/cards/(.*)", "dest": "/public/cards/$1" },
-    { "src": "/(.*)", "dest": "tarocchi_web.py" }
+    {
+      "src": "/soglia/",
+      "dest": "/public/creazioni.html"
+    },
+    {
+      "src": "/soglia",
+      "dest": "/public/creazioni.html"
+    },
+    {
+      "src": "/",
+      "dest": "/public/creazioni.html"
+    },
+    {
+      "src": "/progetti",
+      "dest": "/public/creazioni.html"
+    },
+    {
+      "src": "/home",
+      "dest": "/public/home.html"
+    },
+    {
+      "src": "/alpha",
+      "dest": "/public/alpha.html"
+    },
+    {
+      "src": "/viaggi",
+      "dest": "/public/viaggi.html"
+    },
+    {
+      "src": "/flight",
+      "dest": "/public/flight_hunter.html"
+    },
+    {
+      "src": "/oracolo",
+      "dest": "/public/oracolo.html"
+    },
+    {
+      "src": "/parti",
+      "dest": "/public/parti.html"
+    },
+    {
+      "src": "/fabbrica/?",
+      "dest": "/public/fabbrica.html"
+    },
+    {
+      "src": "/fabbrica-dei-desideri/?",
+      "dest": "/public/fabbrica.html"
+    },
+    {
+      "src": "/(.+\\.(html|js|css|svg|png|jpg|webp|ico|json|txt|pdf))",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/cards/(.*)",
+      "dest": "/public/cards/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "tarocchi_web.py"
+    }
   ]
 }

@@ -23,13 +23,16 @@
   }
   // A CPU projection of the same 3D surfaces keeps the concept available without WebGL.
   // It is an illustration with simplified lighting, not a photographic ray trace.
-  function renderCompatible(spec,variant) {
-    const canvas=document.createElement('canvas');canvas.width=canvas.height=1200;
+  function renderCompatible(spec,variant,options={}) {
+    const canvas=options.canvas||document.createElement('canvas');canvas.width=canvas.height=1200;
     const ctx=canvas.getContext('2d');
     if(!ctx)throw Error('Canvas non disponibile');
+    if(options.paper){ctx.fillStyle='#f6f2e9';ctx.fillRect(0,0,1200,1200);}else{
     const bg=ctx.createLinearGradient(0,0,1200,1200);bg.addColorStop(0,variant?'#34444d':'#233743');bg.addColorStop(.55,'#0b1119');bg.addColorStop(1,'#080a10');ctx.fillStyle=bg;ctx.fillRect(0,0,1200,1200);
     const halo=ctx.createRadialGradient(335,330,25,420,530,600);halo.addColorStop(0,'#c4a56a36');halo.addColorStop(1,'#c4a56a00');ctx.fillStyle=halo;ctx.fillRect(0,0,1200,1200);
     const shadow=ctx.createRadialGradient(600,1020,50,600,1020,420);shadow.addColorStop(0,'#000d');shadow.addColorStop(1,'#0000');ctx.fillStyle=shadow;ctx.fillRect(100,850,1000,350);
+    }
+    if(options.paper){ctx.save();ctx.translate(600,1010);ctx.scale(1,.18);const sh=ctx.createRadialGradient(0,0,35,0,0,420);sh.addColorStop(0,'#41372b55');sh.addColorStop(1,'#41372b00');ctx.fillStyle=sh;ctx.fillRect(-450,-450,900,900);ctx.restore();}
     const project=v=>{const y=v[1]-.04,z=v[2]-7.2;const yy=y*.999-z*.039,zz=y*.039+z*.999;return [600+v[0]*2100/-zz,590-yy*2100/-zz];};
     const normalize=v=>{const l=Math.hypot(...v)||1;return v.map(x=>x/l);};
     const dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0);
@@ -52,12 +55,13 @@
         polys.push({points,depth:mid[2],rgb,fill:'rgb('+rgb.join(',')+')',edge:material==='glass'});
       }
     }
-    surface([[0,-1.43],[1.35,-1.43],[1.24,-1.28],[0,-1.28]],96,0,0x34414a,'metal');
-    surface(bottleProfile(spec,variant),spec.facets,variant?0:Math.PI/spec.facets+spec.rotation,spec.color,'glass');
+    if(!options.paper)surface([[0,-1.43],[1.35,-1.43],[1.24,-1.28],[0,-1.28]],96,0,0x34414a,'metal');
+    surface(spec.profile||bottleProfile(spec,variant),spec.facets,variant?0:Math.PI/spec.facets+spec.rotation,spec.color,'glass');
     const w=spec.width;
-    surface([[0,-1.27],[w*.93,-1.27],[w*.95,-1.215],[0,-1.215]],spec.facets,0,spec.metal,'metal');
+    const foot=options.paper?spec.profile[1][0]:w*.95;
+    surface([[0,-1.27],[foot*.98,-1.27],[foot,-1.215],[0,-1.215]],spec.facets,0,spec.metal,'metal');
     surface([[0,.97],[.27,.97],[.245,1.1],[0,1.1]],48,0,spec.metal,'metal');
-    surface([[0,1.15],[spec.capRadius,1.15],[spec.capRadius*(variant?1.25:1),1.15+spec.capHeight],[0,1.15+spec.capHeight]],variant?64:spec.facets,spec.rotation,variant?spec.metal:0x34424b,'metal');
+    surface(spec.capProfile||[[0,1.15],[spec.capRadius,1.15],[spec.capRadius*(variant?1.25:1),1.15+spec.capHeight],[0,1.15+spec.capHeight]],spec.capSegments||(variant?64:spec.facets),spec.rotation,spec.capColor??(variant?spec.metal:0x34424b),'metal');
     for(let i=0;i<spec.bands;i++) {
       const y=1.195+i*.037;
       surface([[spec.capRadius+.006,y],[spec.capRadius+.006,y+.008]],64,0,spec.metal,'metal');
@@ -120,5 +124,5 @@
     finally {scene.traverse(o=>{o.geometry?.dispose();if(o.material){for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}});env.dispose();environment.dispose();pmrem.dispose();renderer.dispose();renderer.forceContextLoss();}
   }
   root.TerziBottle={design,render};
-  if(typeof module!=='undefined'&&module.exports)module.exports={design};
+  if(typeof module!=='undefined'&&module.exports)module.exports={design,renderCompatible};
 })(typeof window!=='undefined'?window:globalThis);

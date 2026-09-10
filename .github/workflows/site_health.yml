@@ -1,0 +1,88 @@
+name: Salute del sito
+
+on:
+  push:
+    branches: [main]
+    paths: ['public/**', 'config/site_monitor.json', 'scripts/site_monitor.py', 'vercel.json', 'fabbrica.py', 'tarocchi_web.py', '.github/workflows/site_health.yml']
+  pull_request:
+    paths: ['public/**', 'config/site_monitor.json', 'scripts/site_monitor.py', 'vercel.json', 'fabbrica.py', 'tarocchi_web.py', '.github/workflows/site_health.yml']
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  deployment_status:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  controlli:
+    if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Pagine, risorse, indirizzi e JavaScript
+        run: python scripts/site_monitor.py --output output/site-monitor/local.json
+      - name: Dipendenze dei controlli funzionali
+        run: python -m pip install Flask Pillow redis pyyaml
+      - name: Associazioni immagini, cronologia e regia
+        run: |
+          python -m unittest tests.test_sincronizza_foto tests.test_fabbrica tests.test_site_monitor -v
+          node tests/test_perfume_bottle.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sito-controlli
+          path: output/site-monitor/
+          retention-days: 30
+
+  monitor:
+    needs: controlli
+    if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success')) && (needs.controlli.result == 'success' || needs.controlli.result == 'skipped')
+    permissions:
+      contents: write
+    concurrency:
+      group: terzi-site-maintenance-main
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Ripara solo gli indirizzi registrati
+        run: |
+          python scripts/site_monitor.py --repair-known-links --output output/site-monitor/routing.json
+          git add vercel.json
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git commit -m "Ripristina automaticamente i collegamenti registrati del sito"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Controlla la produzione con tentativi limitati
+        run: |
+          for attempt in 1 2 3; do
+            if python scripts/site_monitor.py --live --output output/site-monitor/live.json; then exit 0; fi
+            if [ "$attempt" -lt 3 ]; then sleep 10; fi
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sito-monitor
+          path: output/site-monitor/
+          retention-days: 30

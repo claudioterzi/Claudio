@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-10",
+  "canonical_sha256": "92267da787743607ff6b613ccb0e80f58e289bcd0df0942b1756142ff659ef79",
+  "book_sha256": "f8d79fb8954e9aa2f35cde91698ae0dfa27739315d93a56fb48a009ccc9439ce",
+  "recipes_verified": 400,
+  "bottle_images": 400,
+  "distinct_geometries": 400,
+  "distinct_pixels_excluding_labels": 400,
+  "recipe_codes_verified": 400,
+  "recipe_rows_verified": 4800,
+  "qr_in_sheets": 400,
+  "mouillette_insert_present": true,
+  "failures": [],
+  "photos_associated": 0,
+  "visual_scope": "400 native 3D illustrations; one separately identified AI artistic example.",
+  "browser_qa": "Not requested; not performed."
+}

@@ -6,6 +6,49 @@
 >
 > Ultimo aggiornamento: 2026-09-10
 
+## Audit del sito, ingresso stabile e monitor — 2026-09-10
+
+Claudio chiede un sito più autonomo, il recupero della Fabbrica e un solo ingresso
+con la Soglia; segnala un URL Vercel di una vecchia pubblicazione e ne chiede la
+rimozione. La home serve il catalogo progetti, /soglia riapre il velo originale.
+I Tarocchi restano in index.html. Dominio stabile: https://claudio-ebon.vercel.app/.
+La vecchia URL richiede login; API Vercel 403 sul team, cancellazione non eseguita.
+Non confondere un indirizzo immutabile di versione con il dominio aggiornato.
+
+Fabbrica riparata con commit 1db30ee: i percorsi brevi cercavano un HTML nel
+pacchetto Python, mentre il file è statico. Verificati quattro indirizzi 200.
+Analizzate tutte le 21 pagine pubbliche e riferimenti locali. Implementati
+monitor ogni 15 minuti e dopo deployment, controlli rigorosi e riparazione limitata
+agli indirizzi registrati. Verifiche reali delle nuove automazioni da registrare
+nel verbale conclusivo; non dichiarare Deployment Checks Vercel già configurati.
+GET diagnostico Telegram reso privo di invio messaggi; log Fabbrica sanitizzati;
+eliminati commit di soli timestamp CI. 32 test locali superati.
+Analisi, priorità e limiti: docs/AUDIT_E_AUTOMAZIONI_2026-09-10.md.
+
+## Un flacone per ciascuna delle 400 ricette — 2026-09-10
+
+Richiesta di Claudio: disegnare un flacone per ogni profumo. Sostituita la stessa
+immagine ripetuta con 400 illustrazioni da geometrie 3D individuali, estendendo
+il renderer già presente. Collezione parametrica in quattro forme e otto famiglie,
+nome/numero/firma C.Terzi, apertura dell'immagine dalla scheda e stampa su carta.
+Non descriverle come 400 fotografie IA. Un solo esempio fotorealistico separato
+di Lettre de Midi è generato con IA e dichiarato come interpretazione artistica.
+Restano concept estetici: ingegnerizzazione e produzione fisica non eseguite.
+
+Manifesto `studio/parfums/flaconi_400.json`, generatore `genera_flaconi.cjs`,
+400 risorse in `public/images/flaconi-400/`. Il libro si ferma se una ricetta
+cambia senza aggiornare i flaconi. Verificati 400 raster/400 geometrie distinti
+anche escludendo i nomi, 400 formule/codici, 4.800 righe e 400 QR. Otto schede
+stampate su otto pagine e controllate visivamente. Nessun test browser richiesto.
+Specifica: `docs/FLACONI_400_2026-09-10.md`. Diario Drive: messaggi 26–27.
+Estensione: importazione delle nuove foto per numero esplicito di profumo;
+registro foto_400.json con cronologia e immagine principale più recente.
+Workflow Foto dei profumi rigenera registro e libro quando arrivano nuove foto
+nel progetto. Conserva disegni e vecchie immagini; non assegna file ambigui.
+Nove test su associazioni, duplicati e protezione della cronologia superati.
+Nessun monitoraggio del telefono o di foto in altre applicazioni.
+Pagina: https://claudio-ebon.vercel.app/libro.html#flaconi
+
 ## Fabbrica dei Desideri — pagina e regia IA, 2026-09-10
 
 Richiesta di Claudio: pagina dedicata su Vercel, in italiano, con Raffaello regista

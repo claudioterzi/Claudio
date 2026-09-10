@@ -7,7 +7,7 @@
   var CHIAVE = "soglia_terzi";
 
   try {
-    if (localStorage.getItem(CHIAVE) === ATTESO) return;
+    if (!/^\/soglia\/?$/.test(location.pathname) && localStorage.getItem(CHIAVE) === ATTESO) return;
   } catch (e) { /* storage negato: si chiede a ogni visita */ }
 
   document.documentElement.style.visibility = "hidden";

@@ -885,30 +885,16 @@ def _gestisci_update(upd: dict) -> None:
 
 @app.route("/api/telegram/debug")
 def telegram_debug():
-    """Verifica env vars e connessione Telegram."""
+    """Read-only configuration status; visiting a URL must never send a message."""
     token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
     chat  = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
     token_ok = bool(token)
     chat_ok  = bool(chat)
 
-    send_ok = False
-    if token_ok and chat_ok:
-        try:
-            payload = json.dumps({
-                "chat_id": chat,
-                "text": "🔍 Debug: Vercel → Telegram OK",
-                "parse_mode": "HTML"
-            }).encode()
-            req = urllib.request.Request(
-                f"https://api.telegram.org/bot{token}/sendMessage",
-                data=payload, headers={"Content-Type": "application/json"}, method="POST",
-            )
-            with urllib.request.urlopen(req, timeout=8) as r:
-                send_ok = json.loads(r.read()).get("ok", False)
-        except Exception as e:
-            return jsonify({"token": token_ok, "chat": chat_ok, "send_error": str(e)})
-
-    return jsonify({"token": token_ok, "chat": chat_ok, "send_ok": send_ok})
+    response = jsonify({"token": token_ok, "chat": chat_ok,
+                        "mode": "configuration_only", "connection_tested": False})
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 
 @app.route("/api/telegram", methods=["POST"])
