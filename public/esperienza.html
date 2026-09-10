@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esperienze olfattive · Claudio Terzi</title>
+<meta name="description" content="Dall'immagine al profumo e dal profumo alle immagini: percorsi editoriali del Libro dei 400 e del magazine Mouillette.">
+<link rel="stylesheet" href="mouillette.css"><link rel="stylesheet" href="esperienza.css">
+<script src="esperienza.js" defer></script></head>
+<body><script src="soglia.js"></script><script src="nav.js"></script>
+<main class="experience">
+<p class="olf-eyebrow">Terzi Parfums · Immagine ↔ Profumo</p>
+<h1 id="experience-title">Il ponte fra i sensi</h1>
+<p id="experience-status" role="status">Caricamento del percorso…</p>
+<div id="experience-content" hidden>
+  <p id="experience-concept" class="lead"></p>
+  <p id="experience-materials"></p>
+  <section aria-labelledby="scenes-title"><h2 id="scenes-title">Dal profumo alle immagini</h2>
+    <p>Questa è una sceneggiatura editoriale da sviluppare in immagini, suono e ambienti.
+    Il documentario 3D generato dall'AI non è ancora disponibile.</p>
+    <ol id="experience-scenes" class="scene-list"></ol>
+  </section>
+  <section class="return-path" aria-labelledby="return-title"><h2 id="return-title">Dalle immagini a un nuovo profumo</h2>
+    <p>Porta una scena nell'Atelier, aggiungi la tua fotografia e sviluppa una nuova interpretazione olfattiva.</p>
+    <label for="scene-intention">La scena da trasformare</label>
+    <textarea id="scene-intention" rows="4" maxlength="2800"></textarea>
+    <div class="olf-actions"><a id="atelier-scene" href="atelier.html">Porta la scena nell'Atelier</a><a id="source-link" href="libro.html">Torna alla pagina</a></div>
+  </section>
+  <section aria-labelledby="vr-title"><h2 id="vr-title">Il documentario immersivo</h2>
+    <p>Il progetto prevede luoghi documentati, riprese autorizzate, ricostruzioni AI dichiarate,
+    narrazione e inviti a esplorare la mouillette collegata all'articolo.</p>
+    <p id="xr-status" class="support-status">Verifica della disponibilità WebXR…</p>
+    <p>Il percorso attuale si legge nel browser. Il player immersivo e la generazione dei documentari
+    sono la fase successiva; un browser compatibile da solo non li rende disponibili.</p>
+    <p>Meta Quest è il dispositivo di riferimento. La lettura diretta dei QR con le sue telecamere
+    resta da verificare sul modello utilizzato: il collegamento può essere aperto anche dal telefono
+    e poi nel browser del visore. Nessuna fotocamera viene attivata da questa pagina.</p>
+    <a href="https://developers.meta.com/horizon/documentation/web/webxr-overview/" target="_blank" rel="noopener">Documentazione Meta su WebXR</a>
+  </section>
+</div>
+<noscript>Per aprire il percorso collegato al QR è necessario JavaScript. Il progetto è leggibile anche nel <a href="magazine.html#ponte-immersivo">magazine</a>.</noscript>
+<footer>Ideazione e direzione: Claudio Terzi · <span class="olf-signature">C.Terzi</span></footer>
+</main></body></html>

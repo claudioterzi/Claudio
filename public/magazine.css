@@ -1,0 +1,40 @@
+/* Mouillette — maquette editoriale, Claudio Terzi. */
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#101014;color:#ece8df;font:1rem/1.55 Georgia,'Times New Roman',serif}
+.magazine{width:min(100% - 2rem,900px);margin:0 auto 4rem}.magazine .olf-toolbar{margin:1.5rem 0}
+.mag-page{display:flex;flex-direction:column;background:#fff;color:#1d1b18;padding:clamp(1.1rem,5vw,3.5rem);margin:1.5rem 0 2.5rem;min-height:1040px;border-top:5px solid #a5833c;box-shadow:0 10px 45px #0004;scroll-margin-top:1rem}
+.magazine .olf-note{color:#615b50}.mag-page>*{flex-shrink:0}
+.mag-form thead th{width:auto!important}.mag-form thead th:first-child{width:28%!important}
+.mag-running,.mag-footer{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;font:.875rem/1.4 Arial,sans-serif;border-bottom:1px solid #b9ae94;padding-bottom:.65rem}
+.mag-kicker{font:.875rem/1.5 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6e541f;margin:2rem 0 .6rem}
+.mag-page h1{font-size:clamp(3rem,10vw,6rem);font-weight:normal;letter-spacing:-.05em;line-height:1;margin:0 0 1rem}
+.mag-page h2{font-size:clamp(2rem,6vw,3.2rem);font-weight:normal;line-height:1.12;letter-spacing:-.025em;margin:0 0 1.1rem}
+.mag-page h3{font-size:1.2rem;line-height:1.3;margin:1.25rem 0 .5rem;color:#694f1e;font-weight:normal}
+.mag-page p{font-size:1rem;margin:0 0 1rem}.mag-page .mag-deck{font-size:1.45rem;line-height:1.3}.mag-intro{font-size:1.2rem!important}
+.mag-image{margin:.7rem 0 1.5rem}.mag-image img{width:100%;height:300px;display:block;object-fit:cover}.mag-image figcaption{font:.875rem/1.4 Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;margin-top:.6rem}
+.mag-cover-lines,.mag-columns{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}.mag-cover-lines strong{display:inline-block;margin-bottom:.4rem}.mag-status{font:.875rem/1.5 Arial,sans-serif!important;color:#5f5543;border-top:1px solid #b9ae94;padding-top:.9rem;margin-top:1rem!important}
+.mag-callout{border-left:3px solid #a5833c;background:#f4f0e7;padding:1rem 1.2rem;margin:.8rem 0 1.2rem}.mag-callout p{margin:.5rem 0 0}
+.mag-table{width:100%;border-collapse:collapse;font:.9375rem/1.4 Arial,sans-serif;margin:.7rem 0 1.2rem;table-layout:fixed}.mag-table caption{text-align:left;font:.875rem/1.4 Arial,sans-serif;margin-bottom:.65rem;color:#65583a}
+.mag-table th,.mag-table td{text-align:left;vertical-align:top;border-bottom:1px solid #c8c1b3;padding:.65rem .5rem;overflow-wrap:anywhere}.mag-table thead{background:#eee8d9}.mag-table th{font-weight:600}.mag-table th:first-child{width:23%}.mag-table td:first-child{width:23%}.mag-form td,.mag-form th{padding:.75rem .4rem}.mag-form th{width:52%!important}
+.mag-coordinates th:first-child{width:auto}.mag-coordinates th,.mag-coordinates td{text-align:center;border:1px solid #c8c1b3}.mag-coordinates .mag-selected{background:#2b2313;color:#fff;font-weight:bold}
+.mag-fields{border-top:1px solid #a5833c;border-bottom:1px solid #a5833c;padding:1.1rem 0;margin:1rem 0}.mag-fields p{font-size:.9375rem;overflow-wrap:anywhere;margin:.5rem 0}
+.mag-writing{margin:1rem 0}.mag-lines{height:110px;background:repeating-linear-gradient(to bottom,transparent 0,transparent 26px,#c8c1b3 26px,#c8c1b3 27px)}.mag-lines-short{height:55px}
+.mag-observations td{height:72px;border:1px solid #c8c1b3}.mag-observations th{border:1px solid #c8c1b3}.mag-small{font:.875rem/1.5 Arial,sans-serif!important;color:#615b50}
+.mag-footer{margin-top:auto;padding-top:1.2rem;border-bottom:0;border-top:1px solid #b9ae94}.mag-footer .olf-signature{color:#6e541f;white-space:nowrap}.mag-footer>span:last-child{white-space:nowrap}
+@media(max-width:600px){.magazine{width:calc(100% - 1rem)}.mag-page{min-height:0}.mag-running,.mag-footer{font-size:.75rem;gap:.6rem}.mag-cover-lines,.mag-columns{grid-template-columns:1fr;gap:0}.mag-image img{height:220px}.mag-table{font-size:.875rem}.mag-table th,.mag-table td{padding:.5rem .3rem}.mag-footer{margin-top:1.5rem}.mag-fields span{display:block}}
+@media print{
+  @page{size:A4;margin:0}
+  html{scroll-behavior:auto}body{background:#fff;color:#111;margin:0;padding:0}
+  .magazine{width:100%;margin:0}.mag-page{width:210mm;height:297mm;min-height:297mm;margin:0;padding:15mm 17mm 12mm;border:0;box-shadow:none;break-after:page;page-break-after:always;overflow:visible}
+  .mag-page:last-child{break-after:auto;page-break-after:auto}.mag-running,.mag-footer{font-size:9pt}.mag-kicker{font-size:9pt;margin:7mm 0 3mm}
+  .mag-page h1{font-size:60pt}.mag-page h2{font-size:32pt;margin:0 0 5mm}.mag-page h3{font-size:13pt;margin:4mm 0 2mm;break-after:avoid}
+  .mag-page p{font-size:10.5pt;line-height:1.4;margin-bottom:3.5mm}.mag-page .mag-deck{font-size:17pt}.mag-intro{font-size:13pt!important}
+  .mag-image{margin:2mm 0 5mm}.mag-image img{height:76mm}.mag-image figcaption{font-size:9pt}
+  .mag-columns,.mag-cover-lines{grid-template-columns:1fr 1fr;gap:7mm}.mag-small,.mag-status{font-size:9pt!important}
+  .mag-table{font-size:9.5pt;margin:2mm 0 4mm;break-inside:avoid}.mag-table caption{font-size:9pt}.mag-table th,.mag-table td{padding:2mm 2mm}
+  .mag-form thead th{width:auto!important}.mag-form thead th:first-child{width:28%!important}
+  .mag-callout{padding:3mm 4mm;margin:3mm 0 4mm}.mag-fields{padding:3mm 0;margin:3mm 0}.mag-fields p{font-size:10pt;margin:2mm 0}.mag-fields span{display:inline}
+  .mag-observations td{height:18mm}.mag-lines{height:18mm}.mag-lines-short{height:13mm}.mag-footer{padding-top:3mm;margin-top:auto}
+  .mag-page p{margin-bottom:3mm}.mag-kicker{margin-top:5mm}.mag-page h2{font-size:30pt;margin-bottom:3mm}
+  .mag-fields{padding:2mm 0;margin:2mm 0}.mag-writing{margin:2mm 0}.mag-page .olf-qr{margin:2mm 0}.mag-page .olf-qr img{width:25mm;height:25mm}
+  .mag-coordinates .mag-selected{background:#eee;color:#111;border:2px solid #111}
+}

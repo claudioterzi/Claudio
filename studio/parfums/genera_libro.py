@@ -21,6 +21,7 @@ Uso:
 import sys
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parents[2]))
 from studio.parfums.formula_code import encode
+from studio.parfums.editoriale_olfattivo import rubrica_libro, riferimento_campione
 import html
 import json
 from collections import Counter
@@ -88,7 +89,7 @@ def scheda(p):
     code = encode(p["ricetta"])
     pk = p["packaging"]
     return f'''
-<div class="scheda">
+<div class="scheda" id="profumo-{p['numero']:03d}">
   <div class="colonna-flacone">{flacone(p)}
     <div class="meta">{e(p["stagione"])} · {e(p["momento"])}<br>
     {e(p["concentrazione"])} · sillage {e(p["sillage"])}<br>
@@ -104,6 +105,7 @@ def scheda(p):
     <div class="etichetta-sezione">Packaging</div>
     <p class="pack">{e(pk["flacone"])} · tappo: {e(pk["tappo"])} ·
     astuccio: {e(pk["astuccio"])}<br>etichetta: {e(pk["etichetta"])}</p>
+    {riferimento_campione(p['numero'])}
   </div>
 </div>'''
 
@@ -154,6 +156,9 @@ def genera():
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Parfums 400 — Il Libro · Terzi Parfums</title>
+<meta name="description" content="Il Libro dei 400 profumi di Claudio Terzi: ricette, codici formula e progetto di rubrica con mouillette estraibili, anche in stampa.">
+<link rel="stylesheet" href="mouillette.css">
+<script src="mouillette.js" defer></script>
 <style>
   *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
   :root {{
@@ -234,7 +239,16 @@ def genera():
     body {{ background: #fff; color: #1c1810; padding: 0; }}
     :root {{ --surface: #fff; --border: #ccc; --text: #1c1810;
             --text-dim: #666; --gold: #6b5312; --gold-dim: #8a6f2e; }}
-    .scheda {{ page-break-inside: avoid; }}
+    .scheda {{ page-break-inside: avoid; padding:4mm; gap:5mm; }}
+    .scheda .colonna-flacone {{ flex-basis:30mm; }}
+    .scheda .concept {{ font-size:9pt; line-height:1.35; margin-bottom:2mm; }}
+    .scheda .colonna-testo>p {{ margin-bottom:2mm; }}
+    .scheda .etichetta-sezione {{ margin-top:2mm; }}
+    .scheda table.ricetta {{ font-size:8.5pt; }}
+    .scheda table.ricetta td {{ padding:0.5mm 1mm; }}
+    .scheda .olf-sample {{ margin-top:2mm; padding-top:2mm; }}
+    .scheda .olf-sample p {{ line-height:1.25; margin:1mm 0; }}
+    .scheda .olf-qr {{ margin:2mm 0 0; }}
     h1.capitolo, h1.parte, .copertina {{ page-break-before: always; }}
     .copertina {{ page-break-before: avoid; border-color: #8a6f2e; }}
     @page {{ size: A4; margin: 16mm; }}
@@ -254,6 +268,12 @@ def genera():
 <script src="nav.js"></script>
 {defs_svg(palette)}
 <div class="libro">
+
+<nav class="olf-toolbar" aria-label="Libro e stampa">
+  <button type="button" data-olf-print="book">Stampa il libro</button>
+  <a href="#rubrica-olfattiva">Mouillette estraibili</a>
+  <a href="magazine.html">Magazine mensile</a>
+</nav>
 
 <div class="copertina">
   <div class="casa">Terzi Parfums</div>
@@ -392,6 +412,8 @@ partenza, non formule finite.</p>
 {accordi}
 </div>
 
+{rubrica_libro()}
+
 <h1 class="parte">Parte IV — I quattrocento</h1>
 <p class="parte-sotto">otto capitoli, cinquanta schede ciascuno</p>
 
@@ -408,7 +430,7 @@ ALAKTA ANEN</p>
 '''
 
     out = REPO / "public" / "libro.html"
-    out.write_text(pagina, encoding="utf-8")
+    out.write_text('\n'.join(line.rstrip() for line in pagina.splitlines()) + '\n', encoding="utf-8")
     kb = out.stat().st_size // 1024
     print(f"✓ {out.relative_to(REPO)} — {kb} KB, "
           f"{len(doc['parfums'])} schede in {len(per_famiglia)} capitoli")

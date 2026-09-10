@@ -1,0 +1,40 @@
+/* Libro dei 400 e magazine: progetto editoriale di Claudio Terzi. */
+.olf-insert{margin:3rem 0;padding:1.5rem;border:1px solid #b99c56;background:#151519;color:#eee8dc;border-radius:6px;scroll-margin-top:1rem}
+.olf-insert h1{font:normal clamp(1.8rem,5vw,2.7rem)/1.15 Georgia,serif;color:#dfc37d;margin:.65rem 0 1rem;letter-spacing:0}
+.olf-insert h2{font:normal 1.35rem/1.3 Georgia,serif;color:#dfc37d;margin:1.7rem 0 .65rem}
+.olf-insert p,.olf-insert li{font-size:1rem;line-height:1.6}
+.olf-insert a,.olf-toolbar a{color:#ead496}
+.olf-eyebrow{font:500 .875rem/1.5 Arial,sans-serif;text-transform:uppercase;letter-spacing:.13em;color:#d4bf8e}
+.olf-lead{font-size:1.15rem!important}
+.olf-actions,.olf-toolbar{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;margin:1rem 0}
+.olf-actions button,.olf-actions a,.olf-toolbar button,.olf-toolbar a{font:1rem/1.3 Arial,sans-serif;min-height:44px;padding:.75rem 1rem;border:1px solid #9e8957;border-radius:3px;background:#222127;color:#f2deb0;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center}
+.olf-actions button:hover,.olf-actions a:hover,.olf-toolbar button:hover,.olf-toolbar a:hover{background:#3b3426}
+.olf-actions :focus-visible,.olf-toolbar :focus-visible{outline:3px solid #dfc37d;outline-offset:3px}
+.olf-signature{font:italic 1.35rem/1.2 'Brush Script MT','Segoe Script',Georgia,serif;color:inherit}
+.olf-note{font-size:.875rem!important;color:#c6bca8;margin-top:.8rem}
+.olf-steps{padding-left:1.4rem}.olf-steps li{margin:.65rem 0;padding-left:.3rem}
+.olf-table-wrap{overflow-x:auto;max-width:100%}
+.olf-table,.olf-grid{width:100%;border-collapse:collapse;margin:.7rem 0;font-size:.875rem;line-height:1.45}
+.olf-table th,.olf-table td,.olf-grid th,.olf-grid td{border:1px solid #76694b;padding:.6rem;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.olf-grid{table-layout:fixed}.olf-grid th:first-child{width:3rem}.olf-grid td strong{display:block;color:#efd390}
+.olf-grid caption{text-align:left;font-size:.875rem;margin-bottom:.6rem;color:#d3c6aa}
+.olf-blank{display:block;font-size:.75rem;line-height:1.5;margin-top:.4rem;overflow-wrap:anywhere}
+.olf-register td{height:2.5rem}
+.olf-qr{display:flex;align-items:center;gap:1rem;margin:1rem 0;break-inside:avoid;min-width:0}
+.olf-qr>a{flex:0 0 94px}.olf-qr img{display:block;width:94px;height:94px;background:#fff}
+.olf-qr>div{min-width:0}.olf-qr strong{font-size:.875rem}.olf-qr p{font-size:.875rem!important;margin:.3rem 0!important;overflow-wrap:anywhere}.olf-qr a{color:inherit}
+.olf-sample{border-top:1px solid var(--border,#666);padding-top:.7rem;margin-top:1rem;color:var(--text,#1c1810);font-size:.875rem;line-height:1.5}
+.olf-sample>strong{font-size:.875rem}.olf-sample p{font-size:.875rem;line-height:1.5;margin:.3rem 0;overflow-wrap:anywhere}
+@media(max-width:600px){.olf-insert{padding:1rem}.olf-grid th,.olf-grid td{padding:.35rem .2rem}.olf-grid th:first-child{width:2.5rem}.olf-blank{font-size:.75rem}.olf-actions>*{flex:1 1 auto;justify-content:center}}
+@media print{
+  .olf-no-print,.olf-toolbar,.olf-actions{display:none!important}
+  .olf-insert{background:#fff!important;color:#171717!important;border:0;padding:0;border-radius:0;break-before:page;break-after:page;box-shadow:none!important}
+  .olf-insert h1,.olf-insert h2,.olf-insert a,.olf-insert .olf-eyebrow,.olf-insert .olf-note,.olf-grid td strong,.olf-grid caption{color:#171717!important}
+  .olf-insert h1{font-size:23pt}.olf-insert h2{font-size:14pt;break-after:avoid;margin-top:6mm}
+  .olf-insert p,.olf-insert li{font-size:10.5pt;line-height:1.4}.olf-note{font-size:9pt!important}
+  .olf-grid,.olf-table{font-size:9pt;break-inside:avoid}.olf-table th,.olf-table td,.olf-grid th,.olf-grid td{border-color:#aaa;padding:2mm}
+  .olf-sample{color:#171717;font-size:9pt;break-inside:avoid}.olf-sample p,.olf-sample>strong{font-size:9pt}
+  .olf-qr{gap:3mm;margin:3mm 0}.olf-qr>a{flex-basis:27mm}.olf-qr img{width:27mm;height:27mm}.olf-qr .olf-note,.olf-qr p{font-size:8pt!important;color:#333!important}
+  body[data-olf-print="insert"] .libro>:not(#rubrica-olfattiva){display:none!important}
+  body[data-olf-print="insert"] #rubrica-olfattiva{break-before:auto;break-after:auto}
+}

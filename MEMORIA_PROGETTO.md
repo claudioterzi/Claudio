@@ -6,6 +6,23 @@
 >
 > Ultimo aggiornamento: 2026-09-10
 
+## Libro dei 400, magazine e Immagine ↔ Profumo — 2026-09-10
+
+Claudio corregge: la rubrica con mouillette è parte del Libro dei 400, anche
+stampabile. Nuovo progetto del mensile «Mouillette» (titolo proposto), industria,
+nicchia e materie prime. Numero zero di 9 pagine; mensile proposto 24 pagine / 6 campioni.
+400 schede con campi per campione e QR,404 percorsi editoriali in totale.
+Principio dell’autore: immagine ↔ profumo. Scena guida: lavanda nel sud della Francia.
+Le pagine mostrano sceneggiature e portano una descrizione all’Atelier. Documentari
+AI/3D, player immersivo e scansione diretta Meta/Oculus restano da sviluppare.
+Specifiche e verifiche: [progetto editoriale](docs/PROGETTO_MOUILLETTE_IMMAGINE_PROFUMO_2026-09-10.md).
+
+Richiesta permanente di continuità: salvare il diario dopo i messaggi e ai passaggi
+importanti; mantenere distinti originale, interpretazione e verifica. Autorizzati
+salvataggi e completamento del progetto. Rimuovere copie provvisorie solo dopo
+consolidamento verificato, conservando le idee. Non promettere attività a sessione
+chiusa. [Diario Drive](https://drive.google.com/file/d/1f8V8de2OymvJbCUeWnKztA8PZI1Yhjrj/view).
+
 ## Ricerca retrospettiva — memorie, backup e rami ritrovati, 2026-09-10
 
 Estensione della richiesta: recuperare anche **Fabbrica dei Desideri** e
