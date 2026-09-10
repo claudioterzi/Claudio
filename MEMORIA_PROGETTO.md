@@ -4,7 +4,26 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-09-09
+> Ultimo aggiornamento: 2026-09-10
+
+## Upstash collegato — collaudo produzione in corso, 2026-09-10
+
+Claudio ha confermato «Fatto» dopo l’accettazione richiesta. Verificata via API
+l’installazione marketplace `icfg_9piBJI2TaOe0EPLxV5EtGc1M` e la risorsa già
+creata `store_04ygMomSUbCgQkT3` (upstash-kv-coffee-lens). Non duplicata.
+Piano Free; regione scelta nell’account iad1; eviction, autoUpgrade e prodPack
+false. Collegata soltanto alla produzione di Claudio. La prima risposta della
+connessione aveva corpo vuoto: non ripetuta; successiva lettura delle variabili
+ha confermato KV_URL, REDIS_URL e variabili REST in produzione.
+Creati PERFUME_ARCHIVE_SECRET e PERFUME_ARCHIVE_PASSWORD_HASH come variabili
+sensitive, produzione soltanto. Nessun valore salvato nei file o mostrato.
+La credenziale scelta dall’utente viene verificata con hash Werkzeug sul server.
+25 test Python dell’archivio e recupero, più 4 sottotest, superati.
+REDIS_URL usa TLS (rediss). Il ping dal laboratorio remoto ha restituito
+ConnectionError: non prova un guasto sul runtime Vercel. Da verificare dopo
+la nuova pubblicazione con salvataggio e riapertura effettivi sul sito.
+Nessuna attivazione immagini AI o modifica dei precedenti blocchi.
+
 
 ## Ripresa richiesta — attivazione database pronta, 2026-09-09
 

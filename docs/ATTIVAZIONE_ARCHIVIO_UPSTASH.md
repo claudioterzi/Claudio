@@ -2,6 +2,24 @@
 
 Claudio Terzi · Protocollo Rosso Rosso Rosso · verifica 2026-09-09.
 
+## Aggiornamento 2026-09-10 — collegamento completato, test online in corso
+
+Dopo «Fatto» dell’utente, installazione e database esistente verificati.
+Risorsa `store_04ygMomSUbCgQkT3`, nome `upstash-kv-coffee-lens`, installazione
+`icfg_9piBJI2TaOe0EPLxV5EtGc1M`. Piano Free, regione iad1 selezionata
+nell’account, eviction false, autoUpgrade false, prodPack false.
+Collegata al progetto Claudio, esclusivamente in produzione. Le variabili
+REDIS_URL, KV_URL e REST sono state iniettate dall’integrazione. REDIS_URL
+usa TLS. Creati due segreti server sensitive per hash password e sessioni.
+Nessun database duplicato; nessun piano a pagamento attivato.
+
+La documentazione sotto conserva la proposta precedente fra1, che non è stata
+applicata perché il database era già stato creato dall’utente in iad1.
+25 test archivio/recupero e 4 sottotest superati. Ping TCP dal laboratorio
+non riuscito (ConnectionError): attendere il collaudo del runtime Vercel prima
+di dichiarare attivo il salvataggio. Non sono ancora verificati backup e
+ripristino del provider.
+
 ## Stato verificato in questa ripresa
 
 - GitHub main: `7911b58e5c6357d86949f8a3e0abb02ca0766e4e`; stato Vercel success.
