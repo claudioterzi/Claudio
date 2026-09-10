@@ -6,6 +6,23 @@
 >
 > Ultimo aggiornamento: 2026-09-10
 
+## Studio del libro delle 400 formule — 2026-09-10
+
+Claudio chiede di studiare il libro esistente. Analizzato integralmente il
+canone, le 400 schede HTML e i 400 codici; file live identico alla copia locale.
+400 ricette diverse, tutte 100 parti e 12 righe; nomi/ID/dosi/codici coerenti.
+Ripetizione editoriale: 48 frasi iniziali, 5 schemi narrativi, 8 packaging,
+una sola immagine ripetuta 400 volte, nome sotto la foto e targhetta vuota.
+15 schede usano supporti nella scia: riallineare alla separazione attuale
+dell’Atelier prima di una revisione; nessuna dose o codice modificato.
+Resa diagnostica WeasyPrint A4: 408 pagine; non collaudo stampa Chrome/iPhone.
+Mancano indice, paginazione e laboratorio 50/100/200 ml nel libro.
+Rapporto docs/STUDIO_LIBRO_400_2026-09-10.md, audit e immagine in docs/evidenze,
+script riproducibile scripts/studia_libro_400.py. Proposta: 8 schede campione,
+una per famiglia, poi estensione a 400 con immagini/testi davvero individuali.
+La richiesta di studio non approva la sostituzione della password archivio
+proposta nel turno precedente: tale punto rimane aperto.
+
 ## Upstash collegato — archivio verificato in produzione, 2026-09-10
 
 Claudio ha confermato «Fatto» dopo l’accettazione richiesta. Verificata via API
