@@ -6,6 +6,38 @@
 >
 > Ultimo aggiornamento: 2026-09-10
 
+## Fabbrica dei Desideri — pagina e regia IA, 2026-09-10
+
+Richiesta di Claudio: pagina dedicata su Vercel, in italiano, con Raffaello regista
+di desideri, condizioni e microazioni. Carta bianca delimitata da budget, persone,
+esclusioni e sorprese gradite. Successiva correzione: formulare esempi originali
+e non ripetere pubblicamente le sue parole. Le parole originali restano nel diario
+privato Drive, messaggi 15–20.
+
+Nuova pagina `public/fabbrica.html`, CSS e JS dedicati. Leva di regia 1–5:
+Essenziale, Curata, Coordinata, Ambiziosa, Straordinaria. Cinque copioni originali
+dalla prova privata a uno spettacolo che attraversa cinque città; scenari espliciti,
+non eventi prenotabili. Ingressi matrimonio, festa/addio al celibato o nubilato,
+viaggio e desiderio personale. Il livello influenza il prompt; non cambia modello.
+
+`fabbrica.py` registra il blueprint nell’app Flask. Riusa Gemini/Anthropic già
+configurati, senza nuovi segreti o integrazioni a pagamento. Copioni privati in
+Redis, scadenza dichiarata 30 giorni, sessione HttpOnly/SameSite, URL con ID,
+esportazione JSON, revisioni separate e cancellazione. Richieste duplicate dedotte
+dai contenuti, output e metadati conservati; costo stimato non disponibile, mai
+inventato. Dipendenze acicliche, conferme dichiarate, invalidazione transitiva,
+versione per conflitti e limiti sulle chiamate. Nessun accesso a rubriche o messaggi.
+
+Test locali: 15 casi con archivio/provider di test; cinque esempi validati contro
+lo schema reale, confini di accesso, dipendenze e ripresa verificati. Controllati
+controlli HTML, riferimenti e sintassi. Verifica browser non richiesta e non eseguita.
+Pubblicazione e collaudo IA in produzione da confermare nel diario di fine attività.
+
+Il sistema attuale propone e rivede piani e conserva avanzamento dichiarato.
+Chiamate, WhatsApp, inviti, pagamenti, prenotazioni, conferme di fornitori e regia
+temporale autonoma richiedono connettori e un esecutore durevole: non implementati
+né simulati come reali. Specifica: `docs/FABBRICA_REGIA_2026-09-10.md`.
+
 ## Libro dei 400, magazine e Immagine ↔ Profumo — 2026-09-10
 
 Claudio corregge: la rubrica con mouillette è parte del Libro dei 400, anche

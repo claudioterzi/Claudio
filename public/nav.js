@@ -5,7 +5,7 @@
     ['Simboli', [['index.html', 'Tarocchi'], ['alpha.html', 'Alpha'], ['opuscolo.html', 'Opuscolo']]],
     ['Viaggi', [['viaggi.html', 'Viaggi'], ['parti.html', 'Parti'], ['flight_hunter.html', 'Flight'], ['oracolo.html', 'Oracolo']]],
     ['Profumi', [['atelier.html', 'Atelier'], ['parfums.html', 'Parfums'], ['organo.html', 'Organo'], ['spesa.html', 'Dispensa'], ['valigia.html', 'Valigia'], ['libro.html', 'Libro'], ['magazine.html', 'Magazine']]],
-    ['Progetto', [['creazioni.html', 'Creazioni'], ['opera.html', 'Opera'], ['home.html', 'Agorà']]]
+    ['Progetto', [['creazioni.html', 'Creazioni'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['opera.html', 'Opera'], ['home.html', 'Agorà']]]
   ];
   // Mantiene il prefisso anche quando il sito è servito da GitHub Pages.
   var base = new URL('.', document.currentScript.src);

@@ -41,6 +41,8 @@ _PUBLIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
 app = Flask(__name__, static_folder=_PUBLIC, static_url_path="")
 from perfume_studio import studio, render_result, read_record, save_record, serial_for, ArchiveUnavailable
 app.register_blueprint(studio)
+from fabbrica import fabbrica
+app.register_blueprint(fabbrica)
 
 # CUSTODE (sistema per host Airbnb) montato su /custode — non deve mai
 # impedire ai Tarocchi di andare online.
@@ -101,7 +103,7 @@ def _itinerario_web(it) -> dict:
 
 @app.after_request
 def _cors(response):
-    if request.path.startswith(('/atelier/', '/api/profumo/')) or request.path == '/profumo':
+    if request.path.startswith(('/atelier/', '/api/profumo/', '/api/fabbrica/')) or request.path == '/profumo':
         for header in ('Access-Control-Allow-Origin', 'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'):
             response.headers.pop(header, None)
         response.headers['Cache-Control'] = 'no-store'
