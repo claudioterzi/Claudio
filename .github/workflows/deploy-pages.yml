@@ -21,12 +21,29 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Prepara la pagina temporanea
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/private-site"
+          cat > "$RUNNER_TEMP/private-site/index.html" <<'HTML'
+          <!doctype html>
+          <html lang="it">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="robots" content="noindex,nofollow,noarchive">
+            <title>Sito temporaneamente non disponibile</title>
+          </head>
+          <body><main><h1>Sito temporaneamente non disponibile</h1></main></body>
+          </html>
+          HTML
+          cp "$RUNNER_TEMP/private-site/index.html" "$RUNNER_TEMP/private-site/404.html"
+          printf 'User-agent: *\nDisallow: /\n' > "$RUNNER_TEMP/private-site/robots.txt"
 
-      - name: Upload public/ to GitHub Pages
+      - name: Pubblica solo la pagina temporanea
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: ${{ runner.temp }}/private-site
 
       - id: deployment
         uses: actions/deploy-pages@v4
