@@ -70,9 +70,22 @@ def destination(path, routes):
     return None
 
 
+def privacy_hold_active(root=ROOT):
+    """Respect the explicit site-wide publication hold requested by the owner."""
+    settings = json.loads((Path(root) / 'vercel.json').read_text())
+    return any(
+        rule.get('src') in ('/.*', '/(.*)')
+        and rule.get('status') in (403, 404, 503)
+        and not rule.get('dest')
+        for rule in settings.get('routes', [])
+    )
+
+
 def repair_aliases(root=ROOT):
     """Only the explicit aliases in the reviewed registry can be repaired."""
     root = Path(root)
+    if privacy_hold_active(root):
+        return []
     file = root / 'vercel.json'
     settings, changed = json.loads(file.read_text()), []
     for alias, page in configuration(root)['aliases'].items():
@@ -190,8 +203,13 @@ def main():
     parser.add_argument('--repair-known-links', action='store_true')
     parser.add_argument('--output', type=Path, default=Path('output/site-monitor/result.json'))
     args = parser.parse_args()
-    repaired = repair_aliases() if args.repair_known_links else []
-    report = live_checks() if args.live else local_checks()
+    if privacy_hold_active():
+        repaired = []
+        report = {'kind': 'privacy-hold', 'failures': [],
+                  'message': 'Pubblicazione sospesa: nessuna riparazione o verifica pubblica eseguita.'}
+    else:
+        repaired = repair_aliases() if args.repair_known_links else []
+        report = live_checks() if args.live else local_checks()
     report.update(checked_at=datetime.now(timezone.utc).isoformat(), repaired_aliases=repaired)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
