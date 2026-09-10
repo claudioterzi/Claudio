@@ -6,6 +6,44 @@
 >
 > Ultimo aggiornamento: 2026-09-10
 
+## Memoria evolutiva e decisioni condivise — 2026-09-10
+
+Claudio chiede esplicitamente di salvare le decisioni su GitHub e Google Drive,
+rileggerle alla ripresa e usare le correzioni per migliorare Raffaello e il
+Protocollo Rosso Rosso Rosso. Questa richiesta autorizza la scrittura delle
+memorie su Drive, precedentemente non completata; non sblocca altre azioni.
+
+**Punto di ingresso:** [MEMORIA_EVOLUTIVA_RAFFAELLO_RRR.md](MEMORIA_EVOLUTIVA_RAFFAELLO_RRR.md).
+**Registro:** [DECISIONI_RAFFAELLO_RRR.json](DECISIONI_RAFFAELLO_RRR.json),
+versione 2026-09-10.1, 25 decisioni con ID e stato. Prima della ripresa leggere
+questi due file e poi i rapporti pertinenti. Distinguere sempre decisione,
+interpretazione, proposta e risultato verificato. Conservare la cronologia
+quando una correzione supera una lettura precedente.
+
+Copie Drive nella cartella privata Agorà Digitale — SDQ-1, caricate e metadata
+verificati in questa sessione:
+- [Memoria evolutiva](https://drive.google.com/file/d/1psaULHmmWdLIfj_yPZ-lfiS6zw8c1cDJ/view?usp=drivesdk),
+  ID `1psaULHmmWdLIfj_yPZ-lfiS6zw8c1cDJ`.
+- [Registro delle decisioni](https://drive.google.com/file/d/1vGTEcoxhBD9YWtur6T70kQdVHGd6_G4i/view?usp=drivesdk),
+  ID `1vGTEcoxhBD9YWtur6T70kQdVHGd6_G4i`.
+
+Contenuti nuovi: metodo creativo che unisce funzione/emozione/bellezza/valore;
+interpretazione dei refusi con tastiera, grammatica e contesto; correzione
+esplicita «i piani fino» → «i piani sono», senza generalizzarla. Libro: pagine
+intere di larghezza crescente, lettere in alto, numeri a sinistra, C3 = terza
+pagina/riga 3; mouillettes orizzontali estratte verso destra fra pollice e
+indice della mano destra, lunghezze crescenti. Tasche quadrate ed estrazione
+verticale delle illustrazioni precedenti sono interpretazioni superate.
+Capienza A4, isolamento degli aromi e dosaggi richiedono prove fisiche.
+
+Metodo di salvataggio: aggiornare GitHub e le stesse copie Drive alle decisioni
+significative, verificare il contenuto dopo le scritture, controllare gli esiti
+incerti prima di ripetere un'azione. Nessun nuovo servizio in background o
+modifica dei pesi del modello è attivato da questi documenti. La rilettura
+richiede una sessione con accesso ai file. Restano aperti la credenziale
+privata dell'archivio e i limiti già documentati. Prossimo passo proposto:
+immagine corretta del gesto e piccolo prototipo; non eseguito qui.
+
 ## Studio del libro delle 400 formule — 2026-09-10
 
 Claudio chiede di studiare il libro esistente. Analizzato integralmente il
