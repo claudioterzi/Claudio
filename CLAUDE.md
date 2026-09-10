@@ -1,5 +1,18 @@
 # Regole operative — progetto Claudio / SDQ-1
 
+## Riservatezza — decisione di Claudio del 10 settembre 2026
+
+Il sito deve essere accessibile a Claudio e alle persone da lui autorizzate.
+La Soglia deve verificare gli accessi sul server, includendo pagine, file e API.
+Un controllo JavaScript o localStorage non costituisce protezione dei contenuti.
+Testi, libri, memorie personali, formule e progetti restano riservati fino a nuova
+decisione di Claudio. Le copie nei repository e nelle pubblicazioni precedenti
+richiedono una verifica separata della visibilità.
+Il blocco temporaneo delle pubblicazioni non va rimosso dalle automazioni.
+Prima di sostituirlo con l'accesso riservato, verificare sia l'accesso del
+proprietario sia il rifiuto dei collegamenti diretti senza autenticazione.
+
+
 ## Principio di Continuità Evolutiva (Claudio Terzi, 2026-06-19)
 
 > **Il sistema esegue in continuo attraverso le sessioni.**
