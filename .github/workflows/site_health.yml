@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   controlli:
-    if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    if: ${{ false }} # Sospeso: riservatezza richiesta da Claudio.
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -44,7 +44,7 @@ jobs:
 
   monitor:
     needs: controlli
-    if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success')) && (needs.controlli.result == 'success' || needs.controlli.result == 'skipped')
+    if: ${{ false }} # Sospeso: riservatezza richiesta da Claudio.
     permissions:
       contents: write
     concurrency:
