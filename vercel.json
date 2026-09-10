@@ -16,14 +16,6 @@
   ],
   "routes": [
     {
-      "src": "/.*",
-      "status": 404,
-      "headers": {
-        "Cache-Control": "no-store",
-        "X-Robots-Tag": "noindex, nofollow, noarchive"
-      }
-    },
-    {
       "src": "/progetti",
       "dest": "/public/creazioni.html"
     },
@@ -74,6 +66,14 @@
     {
       "src": "/",
       "dest": "/public/creazioni.html"
+    },
+    {
+      "src": "/.*",
+      "status": 404,
+      "headers": {
+        "Cache-Control": "no-store",
+        "X-Robots-Tag": "noindex, nofollow, noarchive"
+      }
     }
   ]
 }
