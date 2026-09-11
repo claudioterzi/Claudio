@@ -17,7 +17,9 @@
     "/scritti": "scritti.html",
     "/scritti/": "scritti.html",
     "/musica": "musica.html",
-    "/musica/": "musica.html"
+    "/musica/": "musica.html",
+    "/codice-gaia": "codice-gaia.html",
+    "/codice-gaia/": "codice-gaia.html"
   },
   "safe_get": [
     {"path": "/api/fabbrica/status", "equals": {"storage_available": true, "ai_available": true}},

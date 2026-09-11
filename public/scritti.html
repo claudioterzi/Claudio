@@ -37,7 +37,7 @@
     .card p{margin:.45rem 0;color:#b6b0a4;font-size:.86rem;line-height:1.48}
     .card .status{border:1px solid #3b3426;border-radius:999px;padding:.12rem .45rem;color:var(--gold-dim);font-size:.67rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
     .card .link{font-size:.79rem;margin-top:.6rem}
-    .work-card{grid-column:1/-1;display:grid;grid-template-columns:minmax(160px,240px) minmax(0,1fr);gap:1rem;align-items:start}.work-card img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;border:1px solid var(--gold-dim);border-radius:6px;background:#0f0f12}.work-card .work-copy{min-width:0}.work-card .work-copy p:first-of-type{margin-top:.1rem}
+    .work-card{grid-column:1/-1;display:grid;grid-template-columns:minmax(160px,240px) minmax(0,1fr);gap:1rem;align-items:start}.work-card .work-cover-link{display:block;border-radius:6px;line-height:0}.work-card img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;border:1px solid var(--gold-dim);border-radius:6px;background:#0f0f12;transition:filter .2s ease,transform .2s ease}.work-card .work-cover-link:hover img,.work-card .work-cover-link:focus-visible img{filter:brightness(1.15);transform:translateY(-2px)}.work-card .work-copy{min-width:0}.work-card .work-copy p:first-of-type{margin-top:.1rem}
     .books{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
     .book{display:flex;gap:.7rem;align-items:flex-start;border-bottom:1px solid var(--border);padding:.65rem 0}
     .book .n{color:var(--gold);font-size:1.15rem;min-width:1.8rem}
@@ -71,12 +71,12 @@
       <p class="lead">Una nuova costellazione di testi è entrata nell’archivio. La conserviamo come opera parallela da confrontare con R³∞ prima di chiamarla canone.</p>
       <div class="cards">
         <article class="card work-card" data-search="albero neuro coscienza codice gaia radici tronco rami frutti protocollo r3 psichedelia botanica suono stelle">
-          <img src="/assets/albero-neuro-coscienza-cover.jpg" alt="Copertina: L’Albero della Neuro‑Coscienza — La Grande Opera" loading="lazy">
+          <a class="work-cover-link" href="codice-gaia.html#prologo" aria-label="Tocca la copertina per leggere L’Albero della Neuro‑Coscienza"><img src="/assets/albero-neuro-coscienza-cover.jpg" alt="Copertina: L’Albero della Neuro‑Coscienza — La Grande Opera" loading="lazy"></a>
           <div class="work-copy">
             <div class="card-top"><h3>L’Albero della Neuro‑Coscienza — Il Codice di Gaia</h3><span class="status">in revisione</span></div>
             <p>Struttura in quattro movimenti — Radici, Tronco, Rami e Frutti — con prologo, capitoli su scienza, tradizioni, suono, integrazione, arte e futuro, più la mappa visiva <em>L’Albero delle Stelle</em>.</p>
             <p>Il materiale nasce da chat condivise e contiene passaggi poetici insieme a ipotesi scientifiche e terapeutiche: prima di pubblicarlo va separato ciò che è metafora da ciò che richiede fonti e verifica.</p>
-            <p class="link"><span class="source">Copertina ricevuta · testo e fonti estese nell’archivio protetto</span></p>
+            <p class="link"><a href="codice-gaia.html#prologo">Tocca la copertina per leggere</a><br><span class="source">Copertina ricevuta · testo e fonti estese nell’archivio protetto</span></p>
           </div>
         </article>
       </div>

@@ -40,6 +40,10 @@
       "dest": "/public/musica.html"
     },
     {
+      "src": "/codice-gaia/?",
+      "dest": "/public/codice-gaia.html"
+    },
+    {
       "src": "/home",
       "dest": "/public/home.html"
     },
