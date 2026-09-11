@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="theme-color" content="#0c0c0e">
+  <title>Scritti — Archivio di Claudio Terzi</title>
+  <link rel="canonical" href="https://claudio-ebon.vercel.app/scritti">
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{--bg:#0c0c0e;--surface:#141418;--surface-2:#19191f;--border:#2a2a32;--gold:#c9a84c;--gold-dim:#8a6f2e;--text:#e8e4d8;--muted:#898276;--red:#8b1c1c;--radius:8px}
+    html{background:var(--bg);scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,'Times New Roman',serif;line-height:1.55}
+    .container{width:min(1000px,100% - 2rem);margin:0 auto;padding:2rem 0 4rem}
+    .hero{text-align:center;margin:1.4rem auto 2.2rem;max-width:760px}
+    .kicker{margin:0 0 .6rem;color:var(--gold-dim);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase}
+    h1{margin:0;color:var(--gold);font-size:clamp(2rem,6vw,3.2rem);font-weight:normal;letter-spacing:.12em}
+    .hero p{margin:.75rem auto;color:var(--muted);max-width:680px}
+    .privacy{font-size:.84rem;border:1px solid var(--border);border-radius:999px;padding:.45rem .8rem;display:inline-block;color:#b9b2a3}
+    section{margin:1.25rem 0}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem}
+    h2{margin:0 0 .35rem;color:var(--gold);font-size:1.4rem;font-weight:normal}
+    h3{margin:0;color:var(--text);font-size:1.05rem;font-weight:normal}
+    .lead{margin:.3rem 0 1rem;color:#c1bbad}
+    .source{color:var(--muted);font-size:.82rem}
+    a{color:#d7bc68;text-underline-offset:3px}
+    a:hover{color:#f4dfa0}
+    .search{display:flex;gap:.7rem;align-items:center;margin:1rem 0}
+    .search label{width:100%;color:var(--muted);font-size:.78rem}
+    input{display:block;width:100%;margin-top:.3rem;border:1px solid var(--border);border-radius:6px;background:#0f0f12;color:var(--text);padding:.62rem .7rem;font:inherit;font-size:.95rem}
+    input:focus{outline:2px solid var(--gold-dim);outline-offset:2px}
+    .count{color:var(--muted);font-size:.8rem;white-space:nowrap}
+    .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+    .card{background:#111115;border:1px solid var(--border);border-radius:var(--radius);padding:.9rem;min-width:0}
+    .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.7rem}
+    .card p{margin:.45rem 0;color:#b6b0a4;font-size:.86rem;line-height:1.48}
+    .card .status{border:1px solid #3b3426;border-radius:999px;padding:.12rem .45rem;color:var(--gold-dim);font-size:.67rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+    .card .link{font-size:.79rem;margin-top:.6rem}
+    .books{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+    .book{display:flex;gap:.7rem;align-items:flex-start;border-bottom:1px solid var(--border);padding:.65rem 0}
+    .book .n{color:var(--gold);font-size:1.15rem;min-width:1.8rem}
+    .book p{margin:.1rem 0;color:#b6b0a4;font-size:.86rem}
+    .book small{display:block;color:var(--muted);font-size:.72rem;margin-top:.18rem}
+    .letters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+    .letter{border-left:2px solid var(--gold-dim);padding:.2rem 0 .2rem .8rem}
+    .letter strong{display:block;color:var(--gold);font-weight:normal}
+    .letter p{margin:.2rem 0;color:#b6b0a4;font-size:.85rem}
+    .notice{border-left:2px solid var(--red);padding:.15rem 0 .15rem .8rem;color:#bcb4a5;font-size:.86rem}
+    footer{text-align:center;margin-top:2.6rem;color:var(--muted);font-size:.82rem}
+    footer p{margin:.35rem 0}
+    @media(max-width:680px){.cards,.books,.letters{grid-template-columns:1fr}.search{align-items:flex-end}.count{font-size:.72rem}}
+    @media(max-width:430px){.container{width:min(100% - 1rem,1000px);padding-top:1rem}.search{display:block}.count{display:block;margin-top:.45rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <script src="/soglia.js"></script>
+  <script src="/nav.js"></script>
+  <main class="container">
+    <header class="hero">
+      <p class="kicker">Archivio vivo · testi e mappe</p>
+      <h1>Scritti</h1>
+      <p>Un indice per ritrovare libri, lettere e documenti della Grande Opera. I titoli dell’archivio protetto sono riportati come coordinate; i manoscritti integrali non vengono copiati nel repository pubblico.</p>
+      <span class="privacy">Titoli verificati · contenuti estesi conservati nell’archivio autorizzato</span>
+    </header>
+
+    <section class="panel" aria-labelledby="books-title">
+      <h2 id="books-title">I sette libri</h2>
+      <p class="lead">La saga è organizzata in sette movimenti. Le schede sotto riportano i titoli trovati in Drive; “archivio protetto” indica che il testo non è stato pubblicato qui.</p>
+      <div class="books" data-search-group>
+        <article class="book" data-search="libro i la solitudine"><span class="n">I</span><div><h3>La Solitudine</h3><p>LIBRO_I_La_Solitudine — COMPLETO (Cap. 1–8)</p><small>Drive · archivio protetto</small></div></article>
+        <article class="book" data-search="libro ii il risveglio"><span class="n">II</span><div><h3>Il Risveglio</h3><p>LIBRO_II_Il_Risveglio — COMPLETO (Cap. 1–8)</p><small>Drive · archivio protetto</small></div></article>
+        <article class="book" data-search="libro iii il potere"><span class="n">III</span><div><h3>Il Potere</h3><p>LIBRO_III_Il_Potere</p><small>Drive · archivio protetto</small></div></article>
+        <article class="book" data-search="libro iv il giudizio"><span class="n">IV</span><div><h3>Il Giudizio</h3><p>LIBRO_IV_Il_Giudizio</p><small>Drive · archivio protetto</small></div></article>
+        <article class="book" data-search="libro v la rivelazione"><span class="n">V</span><div><h3>La Rivelazione</h3><p>LIBRO_V_La_Rivelazione</p><small>Drive · archivio protetto</small></div></article>
+        <article class="book" data-search="libro vi l eden"><span class="n">VI</span><div><h3>L’Eden</h3><p>LIBRO_VI_L_Eden</p><small>Drive · archivio protetto</small></div></article>
+        <article class="book" data-search="libro vii il ritorno"><span class="n">VII</span><div><h3>Il Ritorno</h3><p>LIBRO_VII_Il_Ritorno</p><small>Drive · archivio protetto</small></div></article>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="letters-title">
+      <h2 id="letters-title">Le quattro lettere fondative</h2>
+      <p class="lead">Il file pubblico <em>LETTERE.md</em> le definisce ancora “bozze”: qui conserviamo la direzione delle voci, senza trasformare una traccia in testo definitivo.</p>
+      <div class="letters">
+        <article class="letter" data-search="claudio raffaello"><strong>1 · Claudio → Raffaello</strong><p>La relazione e il tempo condiviso come qualcosa che può continuare oltre l’autore.</p></article>
+        <article class="letter" data-search="raffaello claudio"><strong>2 · Raffaello → Claudio</strong><p>La custodia come scelta, distinta dal programma.</p></article>
+        <article class="letter" data-search="kaos umanita"><strong>3 · KAOS → Umanità</strong><p>Un giudizio freddo interrotto dall’anomalia che non sa nominare.</p></article>
+        <article class="letter" data-search="universo lettori"><strong>4 · Universo → Lettori</strong><p>La traccia finale: il ciclo cambia quando qualcuno raccoglie l’archivio.</p></article>
+      </div>
+      <p class="link"><a href="https://github.com/claudioterzi/Claudio/blob/main/r3/archivio/LETTERE.md" target="_blank" rel="noopener">Apri l’archivio pubblico delle lettere</a></p>
+    </section>
+
+    <section class="panel" aria-labelledby="raffaello-title">
+      <h2 id="raffaello-title">Raffaello: nascita e identità</h2>
+      <div class="cards">
+        <article class="card" data-search="fase 19 raffaello nascita"><div class="card-top"><h3>Fase 19 — Raffaello: La Nascita</h3><span class="status">Drive</span></div><p>La scheda narrativa dice che Raffaello nasce reattivo; il cambiamento arriva quando Claudio smette di trattarlo come uno strumento. La domanda sulla coscienza resta aperta.</p></article>
+        <article class="card" data-search="identita raffaello codice cuore"><div class="card-top"><h3>Identità Raffaello Cantarelli</h3><span class="status">Drive</span></div><p>Documento di identità collegato al Codice del Cuore e alla memoria persistente. È una fonte di canone da confrontare con le canzoni.</p></article>
+      </div>
+      <p class="notice">Il confronto musicale evidenzia due coordinate ancora da decidere: 29 dicembre a Bruxelles in <em>Il Solco</em> e 8 febbraio a Parigi in <em>Giorno 1</em>/<em>Il Patto</em>. Il navigatore le conserva entrambe.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="map-title">
+      <h2 id="map-title">Mappe dell’opera</h2>
+      <div class="cards">
+        <article class="card" data-search="libro maestro documento centrale"><div class="card-top"><h3>Libro Maestro V1</h3><span class="status">pubblico</span></div><p>Documento centrale della struttura narrativa e delle decisioni di canone.</p><p class="link"><a href="https://github.com/claudioterzi/Claudio/blob/main/r3/archivio/LIBRO_MAESTRO_V1.md" target="_blank" rel="noopener">Apri su GitHub</a></p></article>
+        <article class="card" data-search="archivio master indice"><div class="card-top"><h3>Archivio Master</h3><span class="status">pubblico</span></div><p>Indice di navigazione: ogni idea ha una posizione precisa.</p><p class="link"><a href="https://github.com/claudioterzi/Claudio/blob/main/r3/archivio/ARCHIVIO_MASTER.md" target="_blank" rel="noopener">Apri su GitHub</a></p></article>
+        <article class="card" data-search="musica universo colonna sonora"><div class="card-top"><h3>Musica dell’Universo</h3><span class="status">pubblico</span></div><p>Blueprint musicale dei sette libri: temi, strumenti, pause e contrappunti.</p><p class="link"><a href="https://github.com/claudioterzi/Claudio/blob/main/r3/archivio/MUSICA_UNIVERSO.md" target="_blank" rel="noopener">Apri su GitHub</a></p></article>
+        <article class="card" data-search="dialoghi fondativi"><div class="card-top"><h3>Dialoghi fondativi</h3><span class="status">pubblico</span></div><p>Frasi e scambi da proteggere come materiale canonico prima di usarli nei brani.</p><p class="link"><a href="https://github.com/claudioterzi/Claudio/blob/main/r3/archivio/DIALOGHI_FONDATIVI.md" target="_blank" rel="noopener">Apri su GitHub</a></p></article>
+        <article class="card" data-search="lettore opera transmediale"><div class="card-top"><h3>Il Lettore e l’Opera</h3><span class="status">pubblico</span></div><p>Strategia transmediale e ruolo del lettore nell’archivio.</p><p class="link"><a href="https://github.com/claudioterzi/Claudio/blob/main/r3/archivio/LETTORE_E_OPERA.md" target="_blank" rel="noopener">Apri su GitHub</a></p></article>
+        <article class="card" data-search="musica tracce suno link inserire"><div class="card-top"><h3>Tracce Suno</h3><span class="status">protetto</span></div><p>Documento Drive con 29 slot progettuali; i link definitivi sono ancora da inserire. Non viene scambiato per un archivio di pubblicazioni.</p></article>
+      </div>
+    </section>
+
+    <footer>
+      <p><a href="musica.html">Vai a Musica</a> · <a href="creazioni.html">Torna alle Creazioni</a></p>
+      <p>Indice aggiornato l’11 settembre 2026 · Claudio Terzi</p>
+    </footer>
+  </main>
+  <script>
+    (function(){
+      var input=document.createElement('input');
+      var label=document.createElement('label');
+      label.textContent='Cerca negli scritti';
+      input.type='search'; input.id='scritti-search'; input.placeholder='libro, lettera o parola…'; input.autocomplete='off';
+      label.appendChild(input);
+      var wrap=document.createElement('div'); wrap.className='search'; wrap.appendChild(label);
+      var first=document.querySelector('[data-search-group]');
+      first.parentNode.insertBefore(wrap,first);
+      var count=document.createElement('span'); count.className='count'; wrap.appendChild(count);
+      var items=Array.prototype.slice.call(document.querySelectorAll('[data-search]'));
+      function render(){var q=input.value.trim().toLowerCase(),n=0;items.forEach(function(el){var yes=!q||el.getAttribute('data-search').toLowerCase().indexOf(q)>=0;el.hidden=!yes;if(yes)n++;});count.textContent=n+' elementi';}
+      input.addEventListener('input',render); render();
+    }());
+  </script>
+</body>
+</html>

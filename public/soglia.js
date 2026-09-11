@@ -1,13 +1,15 @@
-/* La Soglia — velo d'ingresso del sito.
-   Chiede la parola una volta per browser (localStorage).
-   Nota di coscienza: è una soglia rituale, non una cassaforte —
-   il contenuto resta nel repository pubblico. */
+/* La Soglia — interfaccia d'ingresso del sito.
+   La home dedicata mostra sempre l'ingresso e poi apre il catalogo interno.
+   Nelle pagine interne mantiene il passaggio già effettuato nel browser.
+   La protezione server di pagine, file e API è Vercel Authentication
+   su All Deployments: questo JavaScript non la sostituisce. */
 (function () {
   var ATTESO = "8d81f19b997ea6e0e4032eb9b33d8cbeb488aa4dd98ac932610bc31d923183ff";
   var CHIAVE = "soglia_terzi";
+  var paginaIngresso = document.documentElement.getAttribute("data-soglia-ingresso") === "true";
 
   try {
-    if (!/^\/soglia\/?$/.test(location.pathname) && localStorage.getItem(CHIAVE) === ATTESO) return;
+    if (!paginaIngresso && !/^\/soglia\/?$/.test(location.pathname) && localStorage.getItem(CHIAVE) === ATTESO) return;
   } catch (e) { /* storage negato: si chiede a ogni visita */ }
 
   document.documentElement.style.visibility = "hidden";
@@ -22,6 +24,10 @@
 
   function apri(velo) {
     try { localStorage.setItem(CHIAVE, ATTESO); } catch (e) {}
+    if (paginaIngresso) {
+      location.replace("/progetti");
+      return;
+    }
     velo.remove();
     document.body.style.overflow = "";
   }
@@ -41,7 +47,7 @@
       'margin:1rem 0 0.4rem">La Soglia</div>' +
       '<div style="color:#7a7468;font-style:italic;font-size:0.9rem;' +
       'margin-bottom:1.6rem">Di&rsquo; la parola.</div>' +
-      '<input id="soglia-parola" type="password" autocomplete="off" ' +
+      '<input id="soglia-parola" type="password" autocomplete="off" aria-label="Parola di accesso" ' +
       'style="background:#141418;border:1px solid #2a2a32;color:#e8e4d8;' +
       'border-radius:8px;padding:0.6rem 1rem;width:100%;font-family:inherit;' +
       'font-size:1rem;text-align:center;letter-spacing:0.2em;outline:none">' +
@@ -49,7 +55,7 @@
       'border:1px solid #8a6f2e;color:#c9a84c;border-radius:999px;' +
       'padding:0.45rem 1.6rem;font-family:inherit;font-size:0.9rem;' +
       'letter-spacing:0.1em;cursor:pointer">Entra</button></div>' +
-      '<div id="soglia-msg" style="min-height:1.4em;margin-top:0.9rem;' +
+      '<div id="soglia-msg" role="status" aria-live="polite" style="min-height:1.4em;margin-top:0.9rem;' +
       'color:#8b1c1c;font-size:0.85rem;font-style:italic"></div>' +
       '</div>';
     document.body.appendChild(velo);

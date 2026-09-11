@@ -17,19 +17,27 @@
   "routes": [
     {
       "src": "/soglia/",
-      "dest": "/public/creazioni.html"
+      "dest": "/public/soglia.html"
     },
     {
       "src": "/soglia",
-      "dest": "/public/creazioni.html"
+      "dest": "/public/soglia.html"
     },
     {
       "src": "/",
-      "dest": "/public/creazioni.html"
+      "dest": "/public/soglia.html"
     },
     {
       "src": "/progetti",
       "dest": "/public/creazioni.html"
+    },
+    {
+      "src": "/scritti/?",
+      "dest": "/public/scritti.html"
+    },
+    {
+      "src": "/musica/?",
+      "dest": "/public/musica.html"
     },
     {
       "src": "/home",

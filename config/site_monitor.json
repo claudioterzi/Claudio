@@ -1,9 +1,9 @@
 {
   "origin": "https://claudio-ebon.vercel.app",
   "aliases": {
-    "/": "creazioni.html",
-    "/soglia": "creazioni.html",
-    "/soglia/": "creazioni.html",
+    "/": "soglia.html",
+    "/soglia": "soglia.html",
+    "/soglia/": "soglia.html",
     "/home": "home.html",
     "/alpha": "alpha.html",
     "/viaggi": "viaggi.html",
@@ -13,7 +13,11 @@
     "/fabbrica": "fabbrica.html",
     "/fabbrica/": "fabbrica.html",
     "/fabbrica-dei-desideri": "fabbrica.html",
-    "/progetti": "creazioni.html"
+    "/progetti": "creazioni.html",
+    "/scritti": "scritti.html",
+    "/scritti/": "scritti.html",
+    "/musica": "musica.html",
+    "/musica/": "musica.html"
   },
   "safe_get": [
     {"path": "/api/fabbrica/status", "equals": {"storage_available": true, "ai_available": true}},

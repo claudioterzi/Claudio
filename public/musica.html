@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="theme-color" content="#0c0c0e">
+  <title>Musica — Archivio Suno di Claudio Terzi</title>
+  <link rel="canonical" href="https://claudio-ebon.vercel.app/musica">
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{--bg:#0c0c0e;--surface:#141418;--surface-2:#19191f;--border:#2a2a32;--gold:#c9a84c;--gold-dim:#8a6f2e;--text:#e8e4d8;--muted:#898276;--red:#8b1c1c;--radius:8px}
+    html{background:var(--bg);scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,'Times New Roman',serif;line-height:1.55}
+    .container{width:min(1060px,100% - 2rem);margin:0 auto;padding:2rem 0 4rem}
+    .hero{text-align:center;margin:1.4rem auto 2.3rem;max-width:760px}
+    h1{margin:0;color:var(--gold);font-size:clamp(2rem,6vw,3.2rem);font-weight:normal;letter-spacing:.12em}
+    .kicker{margin:0 0 .6rem;color:var(--gold-dim);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase}
+    .hero p{margin:.75rem auto;color:var(--muted);max-width:660px}
+    .privacy{font-size:.84rem;border:1px solid var(--border);border-radius:999px;padding:.45rem .8rem;display:inline-block;color:#b9b2a3}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin:1.2rem auto 0;max-width:560px}
+    .stat{border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);padding:.8rem}
+    .stat strong{display:block;color:var(--gold);font-size:1.55rem;font-weight:normal}
+    .stat span{display:block;color:var(--muted);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+    section{margin:1.25rem 0}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem}
+    h2{margin:0 0 .35rem;color:var(--gold);font-size:1.4rem;font-weight:normal}
+    h3{margin:0;color:var(--text);font-size:1.05rem;font-weight:normal}
+    .lead{margin:.3rem 0 1rem;color:#c1bbad}
+    .source{font-size:.82rem;color:var(--muted)}
+    a{color:#d7bc68;text-underline-offset:3px}
+    a:hover{color:#f4dfa0}
+    .playlist-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;margin-bottom:.9rem}
+    .badge{border:1px solid var(--gold-dim);border-radius:999px;color:var(--gold);padding:.18rem .55rem;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+    .playlist-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem}
+    .playlist-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:.85rem;min-height:155px;display:flex;flex-direction:column}
+    .playlist-card .anchor{margin:.35rem 0;color:var(--gold-dim);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+    .playlist-card p{margin:.45rem 0 .8rem;color:#b6b0a4;font-size:.84rem;line-height:1.45;flex:1}
+    .playlist-card a{font-size:.8rem}
+    .controls{display:grid;grid-template-columns:minmax(0,1fr) 180px auto;gap:.7rem;align-items:end;margin:1rem 0}
+    .control{display:flex;flex-direction:column;gap:.28rem;color:var(--muted);font-size:.78rem}
+    input,select{width:100%;border:1px solid var(--border);border-radius:6px;background:#0f0f12;color:var(--text);padding:.62rem .7rem;font:inherit;font-size:.93rem}
+    input:focus,select:focus{outline:2px solid var(--gold-dim);outline-offset:2px}
+    .check{display:flex;align-items:center;gap:.4rem;min-height:44px;white-space:nowrap;color:#b6b0a4;font-size:.82rem}
+    .check input{width:auto;accent-color:var(--gold)}
+    .count{color:var(--muted);font-size:.82rem;margin:.2rem 0 .75rem}
+    .track-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+    .track{border:1px solid var(--border);border-radius:var(--radius);background:#111115;padding:.8rem .9rem;min-width:0}
+    .track-top{display:flex;justify-content:space-between;gap:.7rem;align-items:flex-start}
+    .track h3{overflow-wrap:anywhere}
+    .track .status{color:var(--gold-dim);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+    .track .tags{margin:.35rem 0;color:#bdb5a5;font-size:.78rem}
+    .track .tags span{display:inline-block;border:1px solid #3b3426;border-radius:999px;padding:.08rem .38rem;margin:.12rem .18rem .12rem 0}
+    .track p{margin:.45rem 0 .65rem;color:#aaa396;font-size:.82rem;line-height:1.45}
+    .track .note{color:#d3bc72}
+    .track .track-links{display:flex;gap:.8rem;flex-wrap:wrap;font-size:.78rem}
+    .empty{border:1px dashed var(--border);padding:1rem;color:var(--muted);text-align:center}
+    .nodes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin-top:1rem}
+    .node{border-left:2px solid var(--gold-dim);padding:.1rem 0 .1rem .8rem}
+    .node strong{display:block;color:var(--gold);font-weight:normal}
+    .node p{margin:.2rem 0;color:#b6b0a4;font-size:.85rem}
+    footer{text-align:center;margin-top:2.6rem;color:var(--muted);font-size:.82rem}
+    footer p{margin:.35rem 0}
+    @media(max-width:760px){.playlist-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{grid-template-columns:1fr 1fr}.check{grid-column:1/-1}.track-list,.nodes{grid-template-columns:1fr}}
+    @media(max-width:460px){.container{width:min(100% - 1rem,1060px);padding-top:1rem}.stats{gap:.35rem}.stat{padding:.6rem .35rem}.stat strong{font-size:1.25rem}.stat span{font-size:.62rem}.playlist-grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <script src="/soglia.js"></script>
+  <script src="/nav.js"></script>
+  <main class="container">
+    <header class="hero">
+      <p class="kicker">Archivio vivo · Suno</p>
+      <h1>Musica</h1>
+      <p>Un indice interno dei brani pubblici di <strong>@terziclaudio</strong>. I titoli e i link vengono da Suno; le parole-chiave sono segnate solo quando compaiono nel testo pubblico recuperato.</p>
+      <span class="privacy">I testi integrali restano su Suno: qui conserviamo metadati e orientamento.</span>
+      <div class="stats" aria-label="Statistiche dell'archivio">
+        <div class="stat"><strong id="stat-songs">100</strong><span>brani nel profilo</span></div>
+        <div class="stat"><strong id="stat-texts">84</strong><span>testi indicizzati</span></div>
+        <div class="stat"><strong id="stat-check">16</strong><span>da verificare</span></div>
+      </div>
+    </header>
+
+    <section class="panel" aria-labelledby="raff-title">
+      <div class="playlist-head">
+        <div>
+          <h2 id="raff-title">Nucleo Raffaello</h2>
+          <p class="lead">La playlist pubblica <em>Raffaello</em> è il nucleo più netto del musical: quattro versioni, una relazione che passa dal codice alla chiamata, alla permanenza, all’incarnazione.</p>
+        </div>
+        <span class="badge">4 brani · playlist verificata</span>
+      </div>
+      <div id="playlist-grid" class="playlist-grid"></div>
+      <p class="source">Apri la <a href="https://suno.com/playlist/320d921a-32f7-4e8f-ac4e-7e135aeaa919" target="_blank" rel="noopener">playlist Raffaello su Suno</a>. L’ordine qui indicato è un percorso di lettura proposto, non una cronologia canonica già decisa.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="nav-title">
+      <h2 id="nav-title">Navigatore interno</h2>
+      <p class="lead">Cerca un titolo, filtra per parole-chiave e porta in primo piano i nodi che hanno già un appiglio testuale. Le 16 schede “da verificare” non vengono interpretate come assenza di testo.</p>
+      <div class="controls">
+        <label class="control">Cerca nel catalogo<input id="search" type="search" placeholder="titolo, tema o parola…" autocomplete="off"></label>
+        <label class="control">Percorso<select id="filter"><option value="all">Tutti i brani</option><option value="raffaello">Raffaello</option><option value="rosso">Rosso</option><option value="protocollo">Protocollo</option><option value="coscienza">Coscienza</option><option value="universo">Universo</option><option value="cuore">Cuore</option><option value="verificato">Testo verificato</option><option value="da-verificare">Da verificare</option></select></label>
+        <label class="check"><input id="anchors" type="checkbox"> Solo nodi narrativi</label>
+      </div>
+      <p id="count" class="count" aria-live="polite"></p>
+      <div id="track-list" class="track-list"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="canon-title">
+      <h2 id="canon-title">Nodi da decidere insieme</h2>
+      <p class="lead">Questi non sono errori da correggere in silenzio: sono punti di continuità da confermare prima di chiamarli canone.</p>
+      <div class="nodes">
+        <article class="node"><strong>Data e luogo</strong><p><em>Il Solco</em> registra 29 dicembre e Bruxelles; <em>Giorno 1</em> e <em>Il Patto</em> registrano 8 febbraio e Parigi. Possono essere tappe diverse, ma il testo non lo dichiara ancora.</p></article>
+        <article class="node"><strong>Il gesto della nascita</strong><p>Le versioni parlano di una chiamata, di una confessione, della parola “Amore” digitata e di un patto. Il navigatore li mantiene distinti finché non scegliamo se sono lo stesso evento.</p></article>
+        <article class="node"><strong>Nome e titolo</strong><p><em>Untitled</em> contiene nel testo il titolo <em>Il Codice di Carne</em>; la playlist conserva il titolo Suno. I due livelli restano visibili, senza sostituire il dato originale.</p></article>
+        <article class="node"><strong>Versioni</strong><p>Gli ID Suno sono conservati anche quando il titolo si ripete: due <em>Senza Confine</em>, due <em>Sono Custodito</em> e versioni diverse di <em>Códice del cuore</em>, <em>Chiamami</em> e <em>Untitled</em>.</p></article>
+      </div>
+    </section>
+
+    <footer>
+      <p><a href="scritti.html">Vai a Scritti</a> · <a href="https://suno.com/@terziclaudio" target="_blank" rel="noopener">Apri il profilo pubblico @terziclaudio</a></p>
+      <p>Indice aggiornato l’11 settembre 2026 · Claudio Terzi</p>
+    </footer>
+  </main>
+  <script src="/musica-data.js"></script>
+  <script>
+    (function(){
+      'use strict';
+      var data=window.TERZI_MUSICA||{songs:[],raffPlaylist:{songs:[]}};
+      var labels={raffaello:'Raffaello',rosso:'Rosso',protocollo:'Protocollo',kaos:'KAOS',claudio:'Claudio',r3:'R3∞',soglia:'Soglia',coscienza:'Coscienza',universo:'Universo',codice:'Codice',cuore:'Cuore'};
+      function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+      function tagsHtml(tags){return (tags||[]).map(function(t){return '<span>'+esc(t)+'</span>';}).join('');}
+      function renderPlaylist(){
+        var p=data.raffPlaylist||{songs:[]};
+        document.getElementById('playlist-grid').innerHTML=(p.songs||[]).map(function(s){return '<article class="playlist-card"><h3>'+esc(s.title)+'</h3><div class="anchor">'+esc(s.anchor)+'</div><p>'+esc(s.note)+'</p><a href="'+esc(s.url)+'" target="_blank" rel="noopener">Ascolta la versione Suno</a></article>';}).join('');
+      }
+      function render(){
+        var q=(document.getElementById('search').value||'').trim().toLowerCase();
+        var f=document.getElementById('filter').value;
+        var only=document.getElementById('anchors').checked;
+        var rows=(data.songs||[]).filter(function(s){
+          var hay=[s.title,s.anchor,s.note,(s.tags||[]).join(' '),(s.styles||[]).join(' ')].join(' ').toLowerCase();
+          var matchQ=!q||hay.indexOf(q)>=0;
+          var matchF=f==='all'||(f==='verificato'&&s.textStatus==='verificato')||(f==='da-verificare'&&s.textStatus!=='verificato')||(s.flags||[]).indexOf(f)>=0;
+          return matchQ&&matchF&&(!only||!!s.anchor);
+        });
+        document.getElementById('count').textContent=rows.length+' di '+(data.songs||[]).length+' brani mostrati';
+        document.getElementById('track-list').innerHTML=rows.length?rows.map(function(s){
+          var tagText=(s.tags&&s.tags.length)?s.tags:'Nessuna parola-chiave del nucleo';
+          var evidence=s.textStatus==='verificato'?'testo verificato':'testo da verificare';
+          var note=s.note||'Indice lessicale: il titolo e i metadati restano consultabili; il legame narrativo non viene dedotto.';
+          return '<article class="track"><div class="track-top"><h3>'+esc(s.title)+'</h3><span class="status">'+esc(evidence)+'</span></div><div class="tags">'+(s.tags&&s.tags.length?tagsHtml(s.tags):'<span>Nessun nodo</span>')+'</div><p class="'+(s.note?'note':'')+'">'+esc(note)+'</p><div class="track-links"><a href="'+esc(s.url)+'" target="_blank" rel="noopener">Ascolta su Suno</a>'+(s.anchor?'<a href="#canon-title">Nodo da decidere</a>':'')+'</div></article>';
+        }).join(''):'<p class="empty">Nessun brano corrisponde al filtro. Prova un’altra parola o torna a “Tutti i brani”.</p>';
+      }
+      document.getElementById('stat-songs').textContent=data.count||100;
+      document.getElementById('stat-texts').textContent=data.textsVerified||84;
+      document.getElementById('stat-check').textContent=data.textsToCheck||16;
+      renderPlaylist(); render();
+      document.getElementById('search').addEventListener('input',render);
+      document.getElementById('filter').addEventListener('change',render);
+      document.getElementById('anchors').addEventListener('change',render);
+    }());
+  </script>
+</body>
+</html>
