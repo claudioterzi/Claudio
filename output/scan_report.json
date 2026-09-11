@@ -1,5 +1,5 @@
 {
-  "ts": "2026-09-10T10:36:02.198134",
+  "ts": "2026-09-11T10:36:02.325210",
   "score_sistema": 92,
   "sicurezza": {
     "agente": "CODE_SCANNER",
@@ -17,7 +17,7 @@
     ],
     "pattern_scansionati": 14,
     "ok": true,
-    "tempo_s": 0.138
+    "tempo_s": 0.205
   },
   "qualita": {
     "agente": "CODE_SCANNER",
@@ -50,7 +50,7 @@
     ],
     "pattern_analizzati": 11,
     "file_py_analizzati": 86,
-    "tempo_s": 0.215
+    "tempo_s": 0.181
   },
   "dipendenze": {
     "agente": "CODE_SCANNER",
@@ -119,23 +119,21 @@
         "from .store import MemoriaVettoriale, Ricordo, RisultatoRice",
         "from .vss import VectorStateStore"
       ],
-      "orchestrator.gerarchico": [
-        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
-        "from ..config.loader import SDQ1Config",
-        "from ..persistence.store import StatoStore"
-      ],
-      "voli.__main__": [
-        "from .caccia import main"
-      ],
       "sar.persistence": [
         "from .coerenza import IndiceCoerenza, CoppiaCoerenza",
         "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
         "from .tensioni import MappaTeensioni, Polo, Tensione, Osserv"
       ],
-      "voli.agenti": [
-        "from .. import notifiche",
-        "from .ambiente import telegram_pronto",
-        "from .rotte import Rotta"
+      "orchestrator.gerarchico": [
+        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
+        "from ..config.loader import SDQ1Config",
+        "from ..persistence.store import StatoStore"
+      ],
+      "sar.agenti_autonomi": [
+        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
+      ],
+      "voli.__main__": [
+        "from .caccia import main"
       ],
       "agents.implementazioni": [
         "from ..config.loader import AgenteConfig",
@@ -145,16 +143,21 @@
         "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
         "from .registry import registra"
       ],
+      "voli.agenti": [
+        "from .. import notifiche",
+        "from .ambiente import telegram_pronto",
+        "from .rotte import Rotta"
+      ],
       "agents.__init__": [
         "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
         "from .registry import costruisci_agenti, registra"
       ],
-      "sar.agenti_autonomi": [
-        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
-      ],
       "agents.registry": [
         "from ..config.loader import AgenteConfig, SDQ1Config",
         "from .base import AgenteBase"
+      ],
+      "sar.ciclo": [
+        "from .tensioni import Tensione"
       ],
       "voli.caccia": [
         "from . import lowcost, radar",
@@ -173,15 +176,9 @@
       "monitoring.metrics": [
         "from ..persistence.store import StatoStore"
       ],
-      "sar.ciclo": [
-        "from .tensioni import Tensione"
-      ],
       "monitoring.__init__": [
         "from .health import HealthChecker, StatoSalute",
         "from .metrics import MetricsCollector, MetricaChiamata"
-      ],
-      "config.__init__": [
-        "from .loader import SDQ1Config, AgenteConfig, carica_config"
       ],
       "sar.sar": [
         "from ..memory.vss import VectorStateStore",
@@ -208,6 +205,9 @@
         "from .sar import ScacchieraAutoRiflessiva, ReportSAR",
         "from .sognatore import SognatoreSDQ, VisioneSognatrice",
         "from .tensioni import MappaTeensioni, Tensione, Polo, Osserv"
+      ],
+      "config.__init__": [
+        "from .loader import SDQ1Config, AgenteConfig, carica_config"
       ]
     },
     "dipendenze_esterne": {
@@ -221,7 +221,7 @@
       "xml"
     ],
     "circolari_sospette": [],
-    "tempo_s": 0.04
+    "tempo_s": 0.036
   },
   "metriche": {
     "agente": "CODE_SCANNER",
@@ -1058,7 +1058,7 @@
         "complessita": 3.2
       }
     },
-    "tempo_s": 0.072
+    "tempo_s": 0.078
   },
-  "tempo_totale_s": 0.465
+  "tempo_totale_s": 0.499
 }
