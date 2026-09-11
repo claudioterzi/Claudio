@@ -393,8 +393,10 @@ function mostra(p) {
     '<section class="internal-image" aria-label="Creatore interno del flacone">' +
     '<p>Immagine della ricetta · etichetta applicata internamente</p>' +
     '<button type="button" class="oro" id="crea-immagine-interna">Crea il flacone etichettato</button>' +
+    '<button type="button" class="oro" id="crea-tavola-grafica">Crea tavola grafica</button>' +
     '<p class="internal-image-status" id="immagine-interna-stato" role="status"></p>' +
     '<figure id="immagine-interna-figura" hidden><img id="immagine-interna" alt="Flacone etichettato di ' + p.nome + '"><figcaption><a id="scarica-immagine-interna" download>Scarica immagine PNG</a></figcaption></figure>' +
+    '<figure id="tavola-grafica-figura" hidden><img id="tavola-grafica" alt="Tavola grafica di ' + p.nome + '"><figcaption><a id="scarica-tavola-grafica" download>Scarica tavola grafica</a></figcaption></figure>' +
     '</section>' +
     (p.notaBlend ? '<p class="nota-regola">Regola del Grimorio applicata: mai un muschio solo \u2014 aggiunto ' + p.notaBlend + ' al blend.</p>' : "") +
     '<p class="avvertenza">Punto di partenza didattico, non formula finita: lavorare in diluizione, ' +
@@ -424,6 +426,30 @@ function mostra(p) {
     } catch (error) {
       internalStatus.textContent = error.message || "Il creatore interno non è disponibile adesso.";
     } finally { internalImageButton.disabled = false; }
+  });
+  const graphicButton = document.getElementById("crea-tavola-grafica");
+  if (graphicButton) graphicButton.addEventListener("click", async () => {
+    graphicButton.disabled = true;
+    const graphicStatus = document.getElementById("immagine-interna-stato");
+    graphicStatus.textContent = "Compongo la tavola grafica della ricetta…";
+    try {
+      if (!window.TerziLabel) throw new Error("Creatore interno non caricato. Ricarica la pagina.");
+      const card = await window.TerziLabel.fromRecipeCard({
+        name: p.nome, perfume: p,
+        fingerprint: p.formula_code || ("locale-" + (p.seme || 0) + "-" + (p.fam || ""))
+      });
+      const graphicImage = document.getElementById("tavola-grafica");
+      graphicImage.src = card.url;
+      graphicImage.alt = "Tavola grafica di " + p.nome;
+      document.getElementById("tavola-grafica-figura").hidden = false;
+      const downloadGraphic = document.getElementById("scarica-tavola-grafica");
+      downloadGraphic.href = card.url;
+      downloadGraphic.download = (p.nome || "creazione").toLowerCase().replace(/[^a-z0-9]+/g, "_") + "-tavola-grafica.png";
+      graphicStatus.textContent = "Tavola grafica pronta: immagine editoriale separata dalla ricetta.";
+      graphicButton.textContent = "Rigenera la tavola grafica";
+    } catch (error) {
+      graphicStatus.textContent = error.message || "La tavola grafica non è disponibile adesso.";
+    } finally { graphicButton.disabled = false; }
   });
   document.getElementById("seme").textContent = p.viaAI
     ? "composto in ascolto \u2014 ogni chiamata pu\u00f2 variare, come un naso vero"

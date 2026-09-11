@@ -133,6 +133,31 @@
       }
     } finally { clearTimeout(timer); generate.disabled = false; }
   }
+  const graphicButton = document.getElementById('generate-card');
+  const graphicPanel = document.getElementById('graphic-card');
+  const graphicImage = document.getElementById('graphic-card-image');
+  const graphicStatus = document.getElementById('graphic-card-status');
+  const graphicDownload = document.getElementById('download-graphic-card');
+  async function createGraphicCard() {
+    if (!graphicButton) return;
+    graphicButton.disabled = true;
+    if (graphicStatus) graphicStatus.textContent = 'Compongo la tavola grafica della ricetta…';
+    try {
+      if (!window.TerziLabel) throw new Error('Creatore interno non caricato. Ricarica la pagina.');
+      const card = await window.TerziLabel.fromRecipeCard(imageMeta);
+      if (graphicImage) graphicImage.src = card.url;
+      if (graphicPanel) graphicPanel.hidden = false;
+      if (graphicDownload) {
+        graphicDownload.href = card.url;
+        graphicDownload.download = filename + '-tavola-grafica.png';
+      }
+      if (graphicStatus) graphicStatus.textContent = 'Tavola grafica pronta: immagine editoriale separata dalla ricetta.';
+    } catch (error) {
+      if (graphicStatus) graphicStatus.textContent = error.message || 'La tavola grafica non è disponibile adesso.';
+    } finally { graphicButton.disabled = false; }
+  }
+  if (graphicButton) graphicButton.onclick = createGraphicCard;
+
   if (generate) {
     generate.onclick = () => loadPortrait('generate');
     if (generate.dataset.token) loadPortrait('read');

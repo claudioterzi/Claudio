@@ -71,6 +71,15 @@
     return kept;
   }
 
+  function accentNames(meta) {
+    const perfume = meta && meta.perfume;
+    const direct = perfume && perfume.flacone && Array.isArray(perfume.flacone.accenti)
+      ? perfume.flacone.accenti : [];
+    const rows = perfume && Array.isArray(perfume.ricetta) ? perfume.ricetta : [];
+    const fromRows = rows.map(row => Array.isArray(row) ? row[0] : row && (row.nome || row.name)).filter(Boolean);
+    return [...new Set([...direct, ...fromRows].map(value => text(value, '')).filter(Boolean))].slice(0, 4);
+  }
+
   function metadata(meta) {
     const perfume = meta && meta.perfume;
     const fingerprint = text(meta && meta.fingerprint,
@@ -79,6 +88,9 @@
       name: text(meta && meta.name, text(perfume && perfume.nome, 'Creazione Terzi')),
       customer: text(meta && meta.customer, 'Atelier'),
       serial: text(meta && meta.serial, `BOZZA · ${fingerprint.slice(0, 8).toUpperCase()}`),
+      family: text(meta && (meta.family || meta.fam), text(perfume && perfume.fam, 'Atelier')),
+      concept: text(meta && meta.concept, text(perfume && perfume.concept, 'Una traccia personale da scoprire.')),
+      accents: accentNames(meta),
       fingerprint,
     };
   }
@@ -226,6 +238,70 @@
     return {url, blob: await canvasBlob(canvas), renderer: 'internal-label'};
   }
 
+  function drawCardText(ctx, info, colors, x, y, width) {
+    const family = 'Georgia, Times New Roman, serif';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillStyle = colors[1]; ctx.font = `normal 22px ${family}`;
+    ctx.fillText('TERZI PARFUMS  ·  TAVOLA DELLA CREAZIONE', x, y);
+    ctx.fillStyle = '#f3ead8';
+    const titleSize = fitFont(ctx, info.name, width, 62, family, 'normal');
+    const titleLines = wrap(ctx, info.name, width, 3, titleSize, family, 'normal');
+    ctx.font = `normal ${titleSize}px ${family}`;
+    titleLines.forEach((line, index) => ctx.fillText(line, x, y + 58 + index * (titleSize * 1.08)));
+    let cursor = y + 78 + titleLines.length * (titleSize * 1.08);
+    ctx.fillStyle = colors[1]; ctx.font = `normal 24px ${family}`;
+    ctx.fillText(info.family.toUpperCase(), x, cursor); cursor += 48;
+    ctx.fillStyle = '#d3c8b5'; ctx.font = `italic 25px ${family}`;
+    const conceptLines = wrap(ctx, info.concept, width, 5, 25, family, 'italic');
+    conceptLines.forEach(line => { ctx.fillText(line, x, cursor); cursor += 34; });
+    cursor += 24;
+    ctx.fillStyle = colors[1]; ctx.font = `normal 18px ${family}`;
+    ctx.fillText('ACCENTI DELLA RICETTA', x, cursor); cursor += 32;
+    ctx.fillStyle = '#d3c8b5'; ctx.font = `normal 21px ${family}`;
+    const accents = info.accents.length ? info.accents.join('  ·  ') : 'Materia e memoria';
+    wrap(ctx, accents, width, 3, 21, family, 'normal').forEach(line => { ctx.fillText(line, x, cursor); cursor += 30; });
+    cursor += 26;
+    ctx.strokeStyle = `${colors[1]}99`; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, cursor); ctx.lineTo(x + width, cursor); ctx.stroke(); cursor += 26;
+    ctx.fillStyle = '#d3c8b5'; ctx.font = `normal 19px ${family}`;
+    ctx.fillText(info.customer, x, cursor); cursor += 32;
+    ctx.fillStyle = colors[1]; ctx.font = 'normal 16px monospace';
+    ctx.fillText(info.serial, x, cursor); cursor += 34;
+    ctx.fillStyle = '#f3ead8'; ctx.font = `italic 22px ${family}`;
+    ctx.fillText('C.Terzi', x, cursor);
+    ctx.fillStyle = '#a9a090'; ctx.font = `normal 14px ${family}`;
+    ctx.fillText('Concept e direzione creativa · © Claudio Terzi', x, cursor + 34);
+  }
+
+  async function composeCard(source, meta) {
+    const image = await loadImage(source);
+    const info = metadata(meta);
+    const colors = PALETTE[hash(info.fingerprint) % PALETTE.length];
+    const canvas = document.createElement('canvas');
+    canvas.width = 1600; canvas.height = 1000;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Canvas non disponibile');
+    const bg = ctx.createLinearGradient(0, 0, 1600, 1000);
+    bg.addColorStop(0, colors[0]); bg.addColorStop(.5, '#0b0e14'); bg.addColorStop(1, '#17120f');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, 1600, 1000);
+    const glow = ctx.createRadialGradient(480, 450, 30, 500, 500, 610);
+    glow.addColorStop(0, `${colors[1]}55`); glow.addColorStop(1, `${colors[1]}00`);
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, 960, 1000);
+    ctx.save(); roundedRect(ctx, 60, 60, 780, 880, 24); ctx.clip();
+    ctx.fillStyle = '#10141a'; ctx.fillRect(60, 60, 780, 880);
+    const iw = image.naturalWidth || image.width || 1200, ih = image.naturalHeight || image.height || 1200;
+    const scale = Math.min(740 / iw, 840 / ih);
+    const dw = iw * scale, dh = ih * scale;
+    ctx.drawImage(image, 450 - dw / 2, 500 - dh / 2, dw, dh);
+    ctx.restore();
+    roundedRect(ctx, 60, 60, 780, 880, 24); ctx.strokeStyle = `${colors[1]}aa`; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fillRect(70, 70, 8, 860);
+    drawCardText(ctx, info, colors, 930, 100, 560);
+    ctx.fillStyle = `${colors[1]}cc`; ctx.font = 'normal 16px monospace'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+    ctx.fillText('R³∞  ·  OGGETTO NARRATIVO', 1510, 950);
+    const url = canvas.toDataURL('image/png');
+    return {url, blob: await canvasBlob(canvas), renderer: 'tavola-grafica-interna'};
+  }
+
   async function fromRecipe(meta) {
     let source;
     let renderer = 'fallback-procedurale';
@@ -242,5 +318,12 @@
     return result;
   }
 
-  root.TerziLabel = {compose, composeBlob: (blob, meta) => compose(blob, meta), fromRecipe, fallbackCanvas};
+  async function fromRecipeCard(meta) {
+    const bottle = await fromRecipe(meta);
+    const card = await composeCard(bottle.url, meta);
+    card.bottle = bottle;
+    return card;
+  }
+
+  root.TerziLabel = {compose, composeBlob: (blob, meta) => compose(blob, meta), fromRecipe, fromRecipeCard, composeCard, fallbackCanvas};
 })(typeof window !== 'undefined' ? window : globalThis);

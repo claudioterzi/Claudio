@@ -17,9 +17,15 @@
 <span class="bottle-label" aria-hidden="true"><span class="brand">TERZI PARFUMS</span><span class="label-name">{{ p.nome }}</span><span class="label-client">{{ customer or 'Atelier' }}</span><span class="label-serial">{{ record.serial if record else 'CREAZIONE · BOZZA' }}</span></span>
 </button><p class="caption" id="image-caption">{{ 'Flacone originale Ferro di Luce · immagine generata · concept Claudio Terzi' if p.esempio else 'Flacone Atelier · visualizzazione di progetto' }}</p>
 <div class="bottle-variants" role="group" aria-label="Versioni del flacone">{% if p.esempio %}<button class="action" id="bottle-original" type="button" aria-pressed="true">Originale</button>{% endif %}<button class="action" id="bottle-sculpture" type="button" aria-pressed="false">Versione Scultura</button><button class="action" id="bottle-essence" type="button" aria-pressed="false">Versione Essenza</button></div>
-<div class="actions"><button id="generate-image" class="action" data-token="{{ image_token or '' }}">Crea immagine interna della ricetta</button><button id="download-image" class="action">Scarica immagine</button><button id="print-label" class="action">Stampa etichetta</button></div>
+<div class="actions"><button id="generate-image" class="action" data-token="{{ image_token or '' }}">Crea immagine interna della ricetta</button><button id="download-image" class="action">Scarica immagine</button><button id="print-label" class="action">Stampa etichetta</button><button id="generate-card" class="action" type="button">Crea tavola grafica</button></div>
 {% if visual and not p.esempio %}<details><summary>Il progetto del tuo flacone</summary><p>{{ visual.palette|capitalize }}; {{ visual.luce }}.</p><p>Accenti della ricetta: {{ visual.accenti|join(', ') }}.</p><p>Le versioni Scultura ed Essenza sono visualizzazioni 3D costruite dalla firma della ricetta. Sono concept da sviluppare con un produttore di flaconi.</p><p class="caption">{{ visual.attribution }}.</p>{% if not image_token %}<p>Il creatore interno funziona anche senza AI: compone il flacone e l’etichetta direttamente nel browser. La fotografia AI aggiuntiva è un passaggio facoltativo.</p>{% endif %}</details>{% endif %}
-<p role="status" id="image-status" class="status"></p></div>
+<p role="status" id="image-status" class="status"></p>
+<section id="graphic-card" class="graphic-card" hidden aria-labelledby="graphic-card-title">
+<h2 id="graphic-card-title">Tavola grafica della creazione</h2>
+<figure><img id="graphic-card-image" alt="Tavola grafica di {{ p.nome }}"><figcaption><a id="download-graphic-card" download>Scarica la tavola grafica</a></figcaption></figure>
+<p role="status" id="graphic-card-status" class="status"></p>
+</section>
+</div>
 <aside class="creation-notes">
 {% if p.esempio %}<section aria-label="La fotografia di Claudio"><h2>Il calore del ferro</h2><img src="/images/ispirazione-cantiere.jpg" width="1536" height="1024" style="width:100%;height:auto" alt="Cantiere navale al tramonto con scintille e riflessi"><p>Il bagliore diventa un’apertura luminosa; il contrasto tra metallo, legno e acqua suggerisce una struttura asciutta, fumé e ariosa.</p></section>{% endif %}
 {% if p.foto %}<section aria-label="Dalla foto al profumo"><h2>Dalla foto al profumo</h2>
