@@ -136,6 +136,6 @@
   if (generate) {
     generate.onclick = () => loadPortrait('generate');
     if (generate.dataset.token) loadPortrait('read');
-    else setTimeout(() => loadPortrait('generate'), 100);
+    else status.textContent = 'Il creatore interno è pronto: premi il pulsante per creare l’immagine etichettata.';
   }
 })();
