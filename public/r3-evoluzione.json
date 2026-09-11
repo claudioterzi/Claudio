@@ -1,15 +1,16 @@
 {
-  "version": "2026-09-11.3",
-  "updated_at": "2026-09-11T12:10:00+02:00",
+  "version": "2026-09-11.4",
+  "updated_at": "2026-09-11T12:28:00+02:00",
   "author": "Claudio Terzi",
   "signature": "C.Terzi",
-  "status": "memoria operativa local-first con collazione e collaborazione attive; sincronizzazione server ancora da collegare",
+  "status": "memoria operativa local-first con collazione, collaborazione e capsula cifrata cross-device; sincronizzazione server persistente ancora da collegare",
   "mission": "Conservare memoria, provenienza, errori e decisioni; trasformare gli apprendimenti verificati in capacità riutilizzabili e misurare il progresso nel tempo.",
   "principle": "Una capacità entra nel canone soltanto quando supera una prova riproducibile e lascia evidenza verificabile.",
   "states": ["FATTO", "INFERENZA", "IPOTESI", "SIMULAZIONE"],
   "commands": [
     {"id":"R3_COLLATE_ALL","state":"prototipo operativo","effect":"Collega entrate simili, segnala duplicati e conflitti e costruisce cluster senza cancellare versioni."},
-    {"id":"R3_COLLABORATE","state":"prototipo operativo","effect":"Produce inferenze candidate dai cluster e associa a ciascuna una prova richiesta; non promuove automaticamente al canone."}
+    {"id":"R3_COLLABORATE","state":"prototipo operativo","effect":"Produce inferenze candidate dai cluster e associa a ciascuna una prova richiesta; non promuove automaticamente al canone."},
+    {"id":"R3_SYNC_CAPSULE","state":"prototipo operativo","effect":"Esporta e importa il ledger in una capsula AES-256-GCM derivata da passphrase e rileva divergenze tra dispositivi senza fondere catene incompatibili."}
   ],
   "priorities": [
     {"id":"R3-019","name":"Longitudinal Capability Benchmark","state":"priorità attiva","why":"Misurare miglioramenti e regressioni su prove ripetibili."},
@@ -27,7 +28,8 @@
     {"label":"Memoria locale append-only","state":"FATTO","detail":"La pagina R3 registra eventi nel browser, li classifica FATTO/INFERENZA/IPOTESI/SIMULAZIONE, concatena SHA-256, verifica integrità ed esporta/importa il ledger."},
     {"label":"R3_COLLATE_ALL","state":"FATTO","detail":"Il motore analizza ledger locale più evidenze canoniche, calcola relazioni, quasi-duplicati, conflitti e cluster. Le relazioni sono euristiche e ispezionabili."},
     {"label":"R3_COLLABORATE","state":"FATTO","detail":"Il motore genera inferenze candidate dai cluster e dai conflitti, con evidenza e prova richiesta. Nessuna inferenza viene promossa automaticamente a FATTO."},
-    {"label":"Persistenza cross-device","state":"IPOTESI","detail":"Non è ancora attiva. Serve uno storage server autenticato; il sito non la simula."},
+    {"label":"R3_SYNC_CAPSULE","state":"FATTO","detail":"Il browser può creare una capsula cifrata AES-GCM del ledger usando PBKDF2-SHA256. In import, una catena che estende quella locale viene accettata; una divergenza viene conservata separatamente invece di essere fusa alla cieca."},
+    {"label":"Persistenza cross-device automatica","state":"IPOTESI","detail":"Non è ancora attiva. La capsula consente trasferimento cross-device sicuro ma manuale; per sincronizzazione automatica serve uno storage server autenticato e persistente."},
     {"label":"Meta-Scacchiera","state":"FATTO","detail":"Esiste un primo selettore locale del prossimo passo, un precedente prototipo di pianificazione su scenari sintetici e ora l'uso di cluster/conflitti per proporre test. Non è ancora una prova indipendente di superiorità del modello."},
     {"label":"R3-019","state":"FATTO","detail":"È stato identificato un difetto nel misuratore storico: una metrica poteva apparire positiva con test non eseguiti. Correzione candidata testata localmente."},
     {"label":"GitHub → Vercel","state":"FATTO","detail":"Il progetto Vercel claudio è collegato al repository claudioterzi/Claudio e pubblica automaticamente le revisioni della dashboard."},
