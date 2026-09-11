@@ -1,6 +1,19 @@
-/* A version-specific preview must clearly point to the stable public site. */
+/* Version notice for previews + route-specific feature loader. */
 (function () {
   'use strict';
+
+  function loadR3SecureSync() {
+    if (!/^\/r3-evoluzione(?:\.html)?\/?$/.test(location.pathname)) return;
+    if (document.querySelector('script[data-r3-secure-sync]')) return;
+    var script = document.createElement('script');
+    script.src = '/r3-secure-sync.js';
+    script.defer = true;
+    script.dataset.r3SecureSync = '1';
+    document.head.appendChild(script);
+  }
+
+  loadR3SecureSync();
+
   if (!/^claudio-[a-z0-9-]+-claudio-terzi-s-projects\.vercel\.app$/.test(location.hostname)) return;
   function showVersionLink() {
     if (document.getElementById('site-version-notice')) return;
