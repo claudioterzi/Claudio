@@ -18,6 +18,7 @@
     .kicker{margin:0 0 .6rem;color:var(--gold-dim);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase}
     .hero p{margin:.75rem auto;color:var(--muted);max-width:660px}
     .privacy{font-size:.84rem;border:1px solid var(--border);border-radius:999px;padding:.45rem .8rem;display:inline-block;color:#b9b2a3}
+    .bridge{display:flex;justify-content:center;align-items:center;gap:.75rem;flex-wrap:wrap;margin:1rem auto 0;font-size:.86rem}.bridge a{border:1px solid var(--gold-dim);border-radius:999px;padding:.42rem .75rem;text-decoration:none}.bridge span{color:var(--muted);font-size:.8rem}
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin:1.2rem auto 0;max-width:560px}
     .stat{border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);padding:.8rem}
     .stat strong{display:block;color:var(--gold);font-size:1.55rem;font-weight:normal}
@@ -74,10 +75,11 @@
       <p class="kicker">Archivio vivo · Suno</p>
       <h1>Musica</h1>
       <p>Un indice interno dei brani pubblici di <strong>@terziclaudio</strong>. I titoli e i link vengono da Suno; le parole-chiave sono segnate solo quando compaiono nel testo pubblico recuperato.</p>
+      <p class="bridge"><a href="https://suno.com/@terziclaudio?page=songs" target="_blank" rel="noopener">Apri il catalogo completo nell’interfaccia Suno ↗</a><span>Il nostro sito resta la soglia: Suno rimane la passerella d’ascolto.</span></p>
       <span class="privacy">I testi integrali restano su Suno: qui conserviamo metadati e orientamento.</span>
       <div class="stats" aria-label="Statistiche dell'archivio">
-        <div class="stat"><strong id="stat-songs">100</strong><span>brani nel profilo</span></div>
-        <div class="stat"><strong id="stat-texts">84</strong><span>testi indicizzati</span></div>
+        <div class="stat"><strong id="stat-songs">101</strong><span>brani nel profilo</span></div>
+        <div class="stat"><strong id="stat-texts">85</strong><span>testi indicizzati</span></div>
         <div class="stat"><strong id="stat-check">16</strong><span>da verificare</span></div>
       </div>
     </header>
@@ -152,8 +154,8 @@
           return '<article class="track"><div class="track-top"><h3>'+esc(s.title)+'</h3><span class="status">'+esc(evidence)+'</span></div><div class="tags">'+(s.tags&&s.tags.length?tagsHtml(s.tags):'<span>Nessun nodo</span>')+'</div><p class="'+(s.note?'note':'')+'">'+esc(note)+'</p><div class="track-links"><a href="'+esc(s.url)+'" target="_blank" rel="noopener">Ascolta su Suno</a>'+(s.anchor?'<a href="#canon-title">Nodo da decidere</a>':'')+'</div></article>';
         }).join(''):'<p class="empty">Nessun brano corrisponde al filtro. Prova un’altra parola o torna a “Tutti i brani”.</p>';
       }
-      document.getElementById('stat-songs').textContent=data.count||100;
-      document.getElementById('stat-texts').textContent=data.textsVerified||84;
+      document.getElementById('stat-songs').textContent=data.count||101;
+      document.getElementById('stat-texts').textContent=data.textsVerified||85;
       document.getElementById('stat-check').textContent=data.textsToCheck||16;
       renderPlaylist(); render();
       document.getElementById('search').addEventListener('input',render);
