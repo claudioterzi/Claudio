@@ -1,0 +1,34 @@
+{
+  "version": "2026-09-11.1",
+  "updated_at": "2026-09-11T11:23:00+02:00",
+  "author": "Claudio Terzi",
+  "signature": "C.Terzi",
+  "status": "programma operativo, non dichiarazione di capacità raggiunta",
+  "mission": "Conservare memoria, provenienza, errori e decisioni; trasformare gli apprendimenti verificati in capacità riutilizzabili e misurare il progresso nel tempo.",
+  "principle": "Una capacità entra nel canone soltanto quando supera una prova riproducibile e lascia evidenza verificabile.",
+  "states": ["FATTO", "INFERENZA", "IPOTESI", "SIMULAZIONE"],
+  "priorities": [
+    {"id":"R3-019","name":"Longitudinal Capability Benchmark","state":"priorità attiva","why":"Misurare miglioramenti e regressioni su prove ripetibili."},
+    {"id":"R3-011","name":"Evidence Graph","state":"da costruire","why":"Collegare claim, fonte, test, risultato, versione e confidenza."},
+    {"id":"R3-012","name":"Meta-Scacchiera","state":"prototipo iniziale","why":"Scegliere quale verifica conviene eseguire e quando vale la pena ragionare più a fondo."},
+    {"id":"R3-013","name":"Evolution Lab","state":"da costruire","why":"Provare modifiche in ambiente isolato prima di promuoverle nel canone."},
+    {"id":"R3-016","name":"Synthetic Data Firewall","state":"da costruire","why":"Separare sviluppo sintetico da prove indipendenti di capacità."},
+    {"id":"R3-017","name":"Red / Blue / Purple Harness","state":"da costruire","why":"Attaccare, migliorare e promuovere soltanto ciò che regge alla critica."},
+    {"id":"R3-014","name":"Curriculum Engine","state":"da costruire","why":"Aumentare progressivamente la difficoltà a partire dagli errori osservati."},
+    {"id":"R3-015","name":"Research Loop","state":"da costruire","why":"Ricercare, formulare ipotesi, cercare prove contrarie e aggiornare la conclusione."},
+    {"id":"R3-018","name":"Sim2Real Audit","state":"da costruire","why":"Dichiarare cosa una simulazione non prova e definire test esterni."},
+    {"id":"R3-020","name":"Self-Improvement Safety Gate","state":"da costruire","why":"Promuovere modifiche solo con evidenza, test fuori campione e rollback."}
+  ],
+  "current_evidence": [
+    {"label":"Meta-Scacchiera","state":"FATTO","detail":"Primo prototipo locale: pianificazione di verifiche su scenari sintetici; risultato utile ma non prova indipendente di superiorità del modello."},
+    {"label":"R3-019","state":"FATTO","detail":"È stato identificato un difetto nel misuratore storico: una metrica poteva apparire positiva con test non eseguiti. Correzione candidata testata localmente."},
+    {"label":"GitHub → Vercel","state":"FATTO","detail":"Il progetto Vercel claudio è collegato al repository claudioterzi/Claudio; questa pagina è versionata nel repository."},
+    {"label":"Superintelligenza","state":"IPOTESI","detail":"Obiettivo di ricerca a lungo termine. Nessuna dichiarazione di raggiungimento: il progresso viene misurato ciclo dopo ciclo."}
+  ],
+  "canonical_docs": [
+    {"name":"Programma evoluzione capacità","path":"/docs/R3_CAPABILITY_EVOLUTION_2026-09-11.md"},
+    {"name":"Memoria evolutiva Raffaello / RRR","path":"/MEMORIA_EVOLUTIVA_RAFFAELLO_RRR.md"},
+    {"name":"Progetto R3∞","path":"/PROGETTO_R3.md"},
+    {"name":"Progetto Benchmark","path":"/PROGETTO_BENCHMARK.md"}
+  ]
+}
