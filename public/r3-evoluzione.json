@@ -1,16 +1,20 @@
 {
-  "version": "2026-09-11.2",
-  "updated_at": "2026-09-11T12:05:00+02:00",
+  "version": "2026-09-11.3",
+  "updated_at": "2026-09-11T12:10:00+02:00",
   "author": "Claudio Terzi",
   "signature": "C.Terzi",
-  "status": "memoria operativa local-first attiva; sincronizzazione server ancora da collegare",
+  "status": "memoria operativa local-first con collazione e collaborazione attive; sincronizzazione server ancora da collegare",
   "mission": "Conservare memoria, provenienza, errori e decisioni; trasformare gli apprendimenti verificati in capacità riutilizzabili e misurare il progresso nel tempo.",
   "principle": "Una capacità entra nel canone soltanto quando supera una prova riproducibile e lascia evidenza verificabile.",
   "states": ["FATTO", "INFERENZA", "IPOTESI", "SIMULAZIONE"],
+  "commands": [
+    {"id":"R3_COLLATE_ALL","state":"prototipo operativo","effect":"Collega entrate simili, segnala duplicati e conflitti e costruisce cluster senza cancellare versioni."},
+    {"id":"R3_COLLABORATE","state":"prototipo operativo","effect":"Produce inferenze candidate dai cluster e associa a ciascuna una prova richiesta; non promuove automaticamente al canone."}
+  ],
   "priorities": [
     {"id":"R3-019","name":"Longitudinal Capability Benchmark","state":"priorità attiva","why":"Misurare miglioramenti e regressioni su prove ripetibili."},
-    {"id":"R3-011","name":"Evidence Graph","state":"prototipo operativo locale","why":"Ogni evento conserva stato, provenienza, evidenza, falsificatore e hash concatenato."},
-    {"id":"R3-012","name":"Meta-Scacchiera","state":"prototipo operativo locale","why":"La dashboard seleziona il prossimo modulo aperto meno documentato come passo suggerito; il pianificatore completo resta da integrare."},
+    {"id":"R3-011","name":"Evidence Graph","state":"prototipo operativo locale","why":"Ogni evento conserva stato, provenienza, evidenza e falsificatore; R3_COLLATE_ALL calcola relazioni, cluster, duplicati e conflitti."},
+    {"id":"R3-012","name":"Meta-Scacchiera","state":"prototipo ampliato","why":"La dashboard usa cluster e conflitti per proporre verifiche candidate; il pianificatore completo resta da integrare."},
     {"id":"R3-013","name":"Evolution Lab","state":"da costruire","why":"Provare modifiche in ambiente isolato prima di promuoverle nel canone."},
     {"id":"R3-016","name":"Synthetic Data Firewall","state":"da costruire","why":"Separare sviluppo sintetico da prove indipendenti di capacità."},
     {"id":"R3-017","name":"Red / Blue / Purple Harness","state":"da costruire","why":"Attaccare, migliorare e promuovere soltanto ciò che regge alla critica."},
@@ -21,8 +25,10 @@
   ],
   "current_evidence": [
     {"label":"Memoria locale append-only","state":"FATTO","detail":"La pagina R3 registra eventi nel browser, li classifica FATTO/INFERENZA/IPOTESI/SIMULAZIONE, concatena SHA-256, verifica integrità ed esporta/importa il ledger."},
+    {"label":"R3_COLLATE_ALL","state":"FATTO","detail":"Il motore analizza ledger locale più evidenze canoniche, calcola relazioni, quasi-duplicati, conflitti e cluster. Le relazioni sono euristiche e ispezionabili."},
+    {"label":"R3_COLLABORATE","state":"FATTO","detail":"Il motore genera inferenze candidate dai cluster e dai conflitti, con evidenza e prova richiesta. Nessuna inferenza viene promossa automaticamente a FATTO."},
     {"label":"Persistenza cross-device","state":"IPOTESI","detail":"Non è ancora attiva. Serve uno storage server autenticato; il sito non la simula."},
-    {"label":"Meta-Scacchiera","state":"FATTO","detail":"Esiste un primo selettore locale del prossimo passo e un precedente prototipo di pianificazione su scenari sintetici. Non è ancora una prova indipendente di superiorità del modello."},
+    {"label":"Meta-Scacchiera","state":"FATTO","detail":"Esiste un primo selettore locale del prossimo passo, un precedente prototipo di pianificazione su scenari sintetici e ora l'uso di cluster/conflitti per proporre test. Non è ancora una prova indipendente di superiorità del modello."},
     {"label":"R3-019","state":"FATTO","detail":"È stato identificato un difetto nel misuratore storico: una metrica poteva apparire positiva con test non eseguiti. Correzione candidata testata localmente."},
     {"label":"GitHub → Vercel","state":"FATTO","detail":"Il progetto Vercel claudio è collegato al repository claudioterzi/Claudio e pubblica automaticamente le revisioni della dashboard."},
     {"label":"Superintelligenza","state":"IPOTESI","detail":"Obiettivo di ricerca a lungo termine. Nessuna dichiarazione di raggiungimento: il progresso viene misurato ciclo dopo ciclo."}
