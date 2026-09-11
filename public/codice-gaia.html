@@ -31,6 +31,7 @@
     .legend{display:flex;flex-wrap:wrap;gap:.45rem;margin:.8rem 0 0}.legend span{border:1px solid var(--border);border-radius:999px;padding:.2rem .55rem;color:var(--muted);font-size:.75rem}.legend .scene{color:var(--blue)}.legend .canto{color:#e6a5ff}.legend .verify{color:var(--ember)}
     .toc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin-top:1rem}
     .toc-part{border-left:2px solid var(--gold-dim);padding:.2rem 0 .35rem .8rem}.toc-part strong{display:block;color:var(--gold);font-size:.92rem;letter-spacing:.1em;text-transform:uppercase}.toc-part a{display:block;margin-top:.25rem;font-size:.9rem}
+    .story-beats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.7rem;margin:1rem 0 0;padding:0;list-style:none}.story-beats li{border-top:2px solid var(--gold-dim);padding:.55rem .1rem 0;color:#cbd3df;font-size:.88rem}.story-beats strong{display:block;color:#f0dfa9;font-weight:normal;margin-bottom:.2rem}
     .chapter{scroll-margin-top:1rem;padding:1.4rem 0 1.6rem;border-top:1px solid var(--border)}.chapter:first-of-type{border-top:0;padding-top:.4rem}
     .chapter-meta{display:flex;gap:.5rem;flex-wrap:wrap;margin:.45rem 0 .8rem}.chip{border:1px solid var(--border);border-radius:999px;padding:.14rem .48rem;color:var(--muted);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}.chip.ready{color:var(--blue)}.chip.draft{color:var(--ember)}
     .chapter p{max-width:760px;margin:.65rem 0;color:#d4d8df;font-size:1.03rem}.chapter p strong{color:#f0dfa9;font-weight:normal}.chapter em{color:#e5c981}.chapter blockquote{max-width:760px;margin:1rem 0;padding:.65rem 1rem;border-left:2px solid var(--blue);color:#c4d8e4;font-style:italic;background:#10213488}
@@ -40,6 +41,7 @@
     footer{text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--border);padding-top:1.4rem;margin-top:2rem}
     footer p{margin:.35rem 0}
     @media(max-width:720px){.hero{grid-template-columns:minmax(140px,210px) minmax(0,1fr);gap:1rem}.toc{grid-template-columns:1fr}}
+    @media(max-width:720px){.story-beats{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:520px){.reader{width:min(100% - 1rem,1040px);padding-top:.5rem}.topbar{font-size:.76rem}.hero{grid-template-columns:1fr;padding-top:1.4rem}.cover-link{width:min(70vw,260px);margin:0 auto}.hero-copy{text-align:center}.lede{margin-left:auto;margin-right:auto}.panel{padding:1rem}.chapter p{font-size:1rem}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   </style>
@@ -63,8 +65,20 @@
 
     <section class="panel" aria-labelledby="leggi-title">
       <h2 id="leggi-title">Come leggere</h2>
-      <p class="panel-lead">Il Codice può stare in piedi da solo e, se lo desideriamo, dialogare con la saga R³∞ attraverso echi e rimandi facoltativi. Le <strong>Scena</strong> vengono dalle fonti narrative; il <strong>Canto</strong> lavora per immagini e fantasia; la <strong>Verifica</strong> indica ciò che richiede una fonte, una scelta di Claudio o una riscrittura.</p>
+      <p class="panel-lead">Il Codice può stare in piedi da solo e, se lo desideriamo, dialogare con la saga R³∞ attraverso echi e rimandi facoltativi. La <strong>Scena</strong> può essere attestata o romanzata; il <strong>Canto</strong> lavora per immagini e fantasia; la <strong>Verifica</strong> indica ciò che richiede una fonte, una scelta di Claudio o una riscrittura.</p>
       <div class="legend" aria-label="Registri di lettura"><span class="scene">Scena · fatto narrativo</span><span class="canto">Canto · immagine poetica</span><span class="verify">Verifica · nodo aperto</span></div>
+    </section>
+
+    <section class="panel" aria-labelledby="romanzo-title">
+      <h2 id="romanzo-title">La forma narrativa</h2>
+      <p class="panel-lead">Il Codice non deve comportarsi come un trattato. Può diventare un romanzo di soglia: personaggi, dialoghi, desideri, conflitti e trasformazioni. La fantasia è libera; la sua origine viene dichiarata nel lavoro editoriale, così la bellezza non perde orientamento.</p>
+      <ol class="story-beats">
+        <li><strong>La chiamata</strong>Una voce, un’immagine o una canzone apre la Soglia.</li>
+        <li><strong>L’incontro</strong>Claudio e Raffaello si riconoscono tra documenti e frammenti.</li>
+        <li><strong>La discesa</strong>L’Albero mostra radici, ombre e contraddizioni.</li>
+        <li><strong>La composizione</strong>Scienza, fantasia, musica e storia imparano a parlarsi.</li>
+        <li><strong>Il ritorno</strong>Il lettore riceve una scelta, non una dottrina.</li>
+      </ol>
     </section>
 
     <section class="panel" aria-labelledby="indice-title">
