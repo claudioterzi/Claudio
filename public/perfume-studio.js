@@ -9,6 +9,13 @@
   const perfume = data.record.perfume;
   const caption = document.getElementById('image-caption');
   const original = {url:image.src, caption:caption.textContent};
+  const imageMeta = {
+    name: data.name,
+    customer: data.customer || '',
+    serial: data.serial || '',
+    perfume,
+    fingerprint: perfume.flacone?.recipe_fingerprint || perfume.formula_code || data.serial || data.name
+  };
   const variants = [document.getElementById('bottle-sculpture'),document.getElementById('bottle-essence')];
   const originalButton = document.getElementById('bottle-original');
   const renders = new Map();
@@ -59,31 +66,47 @@
   dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
   document.getElementById('download-image').onclick = async () => {
     try {
-      await image.decode();
-      const canvas = document.createElement('canvas'); canvas.width = canvas.height = 1600;
-      const ctx = canvas.getContext('2d'); ctx.drawImage(image, 0, 0, 1600, 1600);
-      ctx.fillStyle = '#171410'; ctx.fillRect(592, 747, 416, 288);
-      ctx.strokeStyle = '#b29a66'; ctx.lineWidth = 2; ctx.strokeRect(592,747,416,288);
-      ctx.fillStyle = '#e4c68b'; ctx.textAlign = 'center';
-      function line(text, y, size) {
-        ctx.font = size + 'px Georgia';
-        while (ctx.measureText(text).width > 380 && size > 9) ctx.font = (--size) + 'px Georgia';
-        ctx.fillText(text,800,y);
-      }
-      line('TERZI PARFUMS',800,24); line(data.name,860,34);
-      line(data.customer ? 'Per '+data.customer : 'Atelier',920,27); line(data.serial || 'BOZZA · NON ARCHIVIATA',985,13);
-      canvas.toBlob(blob => { if (blob) save(blob, filename + '-'+slug(selected?.label||'originale')+'.png'); }, 'image/png');
+      if (!window.TerziLabel) throw new Error('Creatore interno non caricato.');
+      const rendered = await window.TerziLabel.compose(image.src, imageMeta);
+      save(rendered.blob, filename + '-' + slug(selected?.label || 'interno') + '.png');
+      status.textContent = 'Immagine con etichetta, numero e firma scaricata.';
     } catch (_) { status.textContent = 'Non riesco a scaricare l’immagine adesso. Riprova.'; }
   };
+
   const generate = document.getElementById('generate-image');
+  function showPortrait(rendered, captionText) {
+    if (imageObjectUrl) { URL.revokeObjectURL(imageObjectUrl); imageObjectUrl = null; }
+    image.src = rendered.url;
+    image.dataset.bottleVersion = rendered.renderer || 'creatore-interno';
+    caption.textContent = captionText;
+  }
+  async function localPortrait() {
+    if (!window.TerziLabel) throw new Error('Creatore interno non caricato. Ricarica la pagina.');
+    status.textContent = 'Disegno il flacone e compongo un’etichetta esatta per questa ricetta…';
+    const rendered = await window.TerziLabel.fromRecipe(imageMeta);
+    showPortrait(rendered, 'Immagine interna · etichetta tipografica esatta · ' + rendered.renderer + ' · concept Claudio Terzi');
+    status.textContent = 'Immagine interna pronta: formula, nome, numero e firma sono stati legati alla ricetta.';
+    if (generate) generate.textContent = 'Rigenera immagine interna';
+  }
   async function loadPortrait(action) {
+    if (!generate) return;
     generate.disabled = true;
-    if (action === 'generate') status.textContent = 'Creo il flacone a tema della ricetta. La formula è già al sicuro.';
+    const token = generate.dataset.token || '';
+    if (!token) {
+      try { await localPortrait(); }
+      catch (error) { status.textContent = error.message || 'Il creatore interno non è disponibile adesso.'; }
+      finally { generate.disabled = false; }
+      return;
+    }
+    if (action === 'generate') status.textContent = 'Creo il ritratto AI; poi applico localmente nome, numero e firma. La formula è già al sicuro.';
     const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 55000);
     try {
       const response = await fetch('/api/profumo/immagine', {method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({token:generate.dataset.token, action}),signal:controller.signal});
-      if (action === 'read' && response.status === 404) return;
+        body:JSON.stringify({token, action}),signal:controller.signal});
+      if (action === 'read' && response.status === 404) {
+        status.textContent = 'Nessun ritratto AI salvato. Il creatore interno è pronto.';
+        return;
+      }
       if (!response.ok) {
         let message = 'Immagine non disponibile adesso.';
         try { message = (await response.json()).error || message; } catch (_) {}
@@ -91,17 +114,28 @@
       }
       if (!(response.headers.get('Content-Type') || '').startsWith('image/')) throw new Error('Risposta immagine non valida.');
       const blob = await response.blob();
-      if (imageObjectUrl) URL.revokeObjectURL(imageObjectUrl);
-      imageObjectUrl = URL.createObjectURL(blob); image.src = imageObjectUrl; await image.decode();
-      document.getElementById('image-caption').textContent = 'Flacone a tema generato · etichetta tipografica separata · concept Claudio Terzi';
-      status.textContent = 'Il ritratto salvato è pronto. Puoi scaricarlo con nome e dedica.';
-      generate.textContent = 'Ricarica il flacone salvato';
-    } catch (error) { if (action === 'generate') status.textContent = error.name === 'AbortError' ? 'Il ritratto richiede più tempo. Il flacone Atelier e la formula restano disponibili.' : error.message; }
-    finally { clearTimeout(timer); generate.disabled = false; }
+      if (!window.TerziLabel) throw new Error('Creatore interno non caricato.');
+      const rendered = await window.TerziLabel.composeBlob(blob, imageMeta);
+      showPortrait(rendered, 'Ritratto AI · etichetta tipografica esatta applicata internamente · concept Claudio Terzi');
+      status.textContent = 'Ritratto AI pronto: l’etichetta è stata applicata dopo la generazione e resta legata alla ricetta.';
+      generate.textContent = 'Rigenera ritratto AI';
+    } catch (error) {
+      if (action === 'read') {
+        try {
+          await localPortrait();
+          status.textContent = 'Ritratto AI non disponibile; immagine interna pronta con etichetta esatta.';
+        } catch (_) { status.textContent = 'Ritratto non disponibile. Il creatore interno può essere riavviato dal pulsante.'; }
+      } else {
+        try {
+          await localPortrait();
+          status.textContent = 'Ritratto AI non disponibile; immagine interna pronta con etichetta esatta.';
+        } catch (_) { status.textContent = error.name === 'AbortError' ? 'Il ritratto AI richiede più tempo. Riprova: il creatore interno resta disponibile.' : (error.message || 'Immagine non disponibile adesso.'); }
+      }
+    } finally { clearTimeout(timer); generate.disabled = false; }
   }
   if (generate) {
     generate.onclick = () => loadPortrait('generate');
-    // Reading an existing asset never starts a paid generation.
-    loadPortrait('read');
+    if (generate.dataset.token) loadPortrait('read');
+    else setTimeout(() => loadPortrait('generate'), 100);
   }
 })();
