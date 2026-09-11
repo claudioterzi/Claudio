@@ -1,103 +1,28 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b0c10">
-  <meta name="description" content="R³∞ — Memoria Evolutiva: continuità, prove, benchmark e progresso verificabile del progetto Claudio Terzi.">
-  <link rel="canonical" href="https://claudio-ebon.vercel.app/r3-evoluzione">
-  <title>R³∞ — Memoria Evolutiva</title>
-  <style>
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#0b0c10;color:#f1eee7;font-family:Georgia,'Times New Roman',serif;line-height:1.6}
-    :root{--gold:#d4b861;--gold2:#9b7d32;--ink:#f1eee7;--muted:#9d988c;--panel:#13151b;--panel2:#181b22;--line:#2b2e38;--green:#68bf8e;--amber:#e1b45d;--blue:#7ca4e8;--red:#d46a6a}
-    a{color:var(--gold)}.wrap{max-width:1120px;margin:auto;padding:0 1rem 4rem}.hero{padding:6rem 0 3rem;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:2rem;align-items:end;border-bottom:1px solid var(--line)}
-    .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:.73rem;color:var(--gold2)}h1{font-weight:normal;font-size:clamp(2.6rem,7vw,6.4rem);line-height:.94;margin:.5rem 0 1.4rem;letter-spacing:-.035em}h1 em{color:var(--gold);font-style:normal}.lead{font-size:clamp(1.05rem,2vw,1.35rem);max-width:48rem;color:#d7d2c7}.signature{color:var(--gold2);font-style:italic;margin-top:1.5rem}.hero-card{background:linear-gradient(145deg,#17191f,#0f1014);border:1px solid var(--line);border-radius:18px;padding:1.3rem;box-shadow:0 30px 80px rgba(0,0,0,.25)}.hero-card .big{font-size:2.2rem;color:var(--gold);line-height:1}.hero-card small{display:block;color:var(--muted);margin-top:.35rem}
-    section{padding:3rem 0;border-bottom:1px solid var(--line)}h2{font-weight:normal;font-size:clamp(1.8rem,4vw,3.2rem);margin:.2rem 0 1rem}.intro{max-width:62rem;color:#c8c2b7}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1.4rem}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.15rem}.card h3{font-size:1.02rem;font-weight:normal;color:var(--gold);margin:.15rem 0 .45rem}.card p{margin:0;color:#c6c1b6;font-size:.94rem}.tag{display:inline-flex;align-items:center;gap:.4rem;border:1px solid var(--line);border-radius:999px;padding:.26rem .58rem;font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}.tag::before{content:'';width:.5rem;height:.5rem;border-radius:50%;background:var(--muted)}.tag.fatto::before{background:var(--green)}.tag.inferenza::before{background:var(--blue)}.tag.ipotesi::before{background:var(--amber)}.tag.simulazione::before{background:var(--red)}
-    .principle{font-size:clamp(1.3rem,3vw,2.15rem);line-height:1.35;border-left:3px solid var(--gold);padding-left:1.2rem;max-width:58rem}.priority-list{display:grid;gap:.7rem;margin-top:1.5rem}.priority{display:grid;grid-template-columns:92px 1fr auto;gap:1rem;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem}.priority .id{font-family:'Courier New',monospace;color:var(--gold);font-size:.9rem}.priority strong{display:block;font-size:.98rem}.priority span{display:block;color:var(--muted);font-size:.85rem}.state{white-space:nowrap;color:var(--gold2);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
-    .evidence{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.evidence article{padding:1rem 1.1rem;border:1px solid var(--line);border-radius:12px;background:#101217}.evidence h3{margin:.55rem 0 .4rem;font-size:1rem}.evidence p{margin:0;color:#bbb5aa;font-size:.9rem}.footer-note{color:var(--muted);font-size:.86rem;max-width:58rem}.toolbar{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.25rem}.button{display:inline-flex;align-items:center;gap:.45rem;text-decoration:none;border:1px solid var(--gold2);border-radius:999px;padding:.6rem .85rem;color:var(--gold);background:transparent}.button:hover{background:#201c11}.button.secondary{border-color:var(--line);color:#d8d2c7}.meta{display:flex;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.8rem;margin-top:.75rem}.statusline{padding:.8rem 1rem;background:#0f1512;border:1px solid #244532;border-radius:10px;color:#bdd8c5;margin-top:1rem}
-    @media(max-width:760px){.hero{grid-template-columns:1fr;padding-top:3.5rem}.grid,.evidence{grid-template-columns:1fr}.priority{grid-template-columns:80px 1fr}.priority .state{grid-column:2}.wrap{padding-bottom:2rem}}
-  </style>
-  <script src="/site-version.js" defer></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0c10"><meta name="description" content="R³∞ — Memoria Evolutiva: continuità, prove, benchmark e progresso verificabile.">
+<link rel="canonical" href="https://claudio-ebon.vercel.app/r3-evoluzione"><title>R³∞ — Memoria Evolutiva</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b0c10;color:#f1eee7;font-family:Georgia,'Times New Roman',serif;line-height:1.55}:root{--gold:#d4b861;--gold2:#9b7d32;--muted:#9d988c;--panel:#14171d;--line:#2b2e38;--green:#68bf8e;--blue:#7ca4e8;--amber:#e1b45d;--red:#d46a6a}a{color:var(--gold)}.wrap{max-width:1120px;margin:auto;padding:0 1rem 4rem}.hero{padding:5rem 0 2.5rem;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1.4fr .6fr;gap:2rem;align-items:end}.kicker{letter-spacing:.19em;text-transform:uppercase;font-size:.72rem;color:var(--gold2)}h1{font-weight:normal;font-size:clamp(2.5rem,7vw,6.2rem);line-height:.95;margin:.4rem 0 1rem}h1 em{font-style:normal;color:var(--gold)}h2{font-weight:normal;font-size:clamp(1.7rem,4vw,3rem);margin:.2rem 0 .8rem}h3{font-weight:normal}.lead{max-width:52rem;color:#d2ccc1;font-size:1.08rem}.hero-card,.card,.memory-event,.next-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1rem}.hero-card .big{font-size:2.1rem;color:var(--gold);margin:.6rem 0}.status{color:#bdd8c5;background:#0f1512;border:1px solid #244532;padding:.7rem;border-radius:9px}.tag{display:inline-flex;align-items:center;gap:.35rem;border:1px solid var(--line);border-radius:999px;padding:.25rem .55rem;font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.tag::before{content:'';width:.48rem;height:.48rem;border-radius:50%;background:var(--muted)}.tag.fatto::before{background:var(--green)}.tag.inferenza::before{background:var(--blue)}.tag.ipotesi::before{background:var(--amber)}.tag.simulazione::before{background:var(--red)}section{padding:2.8rem 0;border-bottom:1px solid var(--line)}.principle{font-size:clamp(1.25rem,3vw,2.1rem);border-left:3px solid var(--gold);padding-left:1rem;max-width:60rem}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.priority-list{display:grid;gap:.7rem}.priority{display:grid;grid-template-columns:90px 1fr auto;gap:1rem;align-items:center;background:#171a21;border:1px solid var(--line);border-radius:12px;padding:.85rem}.priority .id{font-family:monospace;color:var(--gold)}.priority span{color:var(--muted);font-size:.86rem}.priority .state{text-transform:uppercase;font-size:.72rem;color:var(--gold2)}.next-box strong{display:block;color:var(--gold)}.next-box span{display:block;color:#cbc5ba;margin-top:.35rem}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}.field{display:grid;gap:.3rem}.field.full{grid-column:1/-1}label{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}input,select,textarea{width:100%;background:#0e1015;color:#f1eee7;border:1px solid var(--line);border-radius:8px;padding:.72rem;font:inherit}textarea{min-height:88px;resize:vertical}.actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}.btn{border:1px solid var(--gold2);background:transparent;color:var(--gold);border-radius:999px;padding:.62rem .9rem;font:inherit;cursor:pointer}.btn.secondary{border-color:var(--line);color:#d8d2c7}.ledger{display:grid;gap:.8rem;margin-top:1rem}.memory-event h3{margin:.5rem 0}.memory-event p{margin:.28rem 0;color:#c8c2b7;font-size:.92rem}.memory-event small,.muted,time,code{color:var(--muted)}.event-top{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}.event-top time{margin-left:auto}.notice{margin-top:1rem;padding:.8rem 1rem;border-left:3px solid var(--amber);background:#17140e;color:#d5c8a6}.footer{font-size:.86rem;color:var(--muted)}
+@media(max-width:760px){.hero,.grid,.form-grid{grid-template-columns:1fr}.priority{grid-template-columns:72px 1fr}.priority .state{grid-column:2}.field.full{grid-column:auto}.event-top time{margin-left:0}}
+</style>
+<script src="/site-version.js" defer></script>
 </head>
 <body>
-<script src="/soglia.js"></script>
-<script src="/nav.js"></script>
+<script src="/soglia.js"></script><script src="/nav.js"></script>
 <div class="wrap">
-  <header class="hero">
-    <div>
-      <p class="kicker">R³∞ · Memoria Evolutiva</p>
-      <h1>Ricordare.<br><em>Capire meglio.</em><br>Progredire.</h1>
-      <p class="lead">Un progetto per conservare l’intenzione di Claudio, le prove, gli errori, le versioni e le capacità che reggono alla verifica. Non una promessa di onnipotenza: una traiettoria misurabile.</p>
-      <p class="signature">Claudio Terzi · C.Terzi</p>
-    </div>
-    <aside class="hero-card" aria-label="Stato del progetto">
-      <span class="tag fatto">programma attivo</span>
-      <p class="big">R³∞</p>
-      <small id="version-label">caricamento stato…</small>
-      <div class="statusline">GitHub è il canone tecnico. Questa pagina ne rende leggibile l’evoluzione.</div>
-    </aside>
-  </header>
-
-  <section>
-    <p class="kicker">Principio fondante</p>
-    <p class="principle" id="principle">Una capacità entra nel canone soltanto quando supera una prova riproducibile e lascia evidenza verificabile.</p>
-    <p class="intro">Ogni miglioramento deve poter dire da dove viene, come è stato testato, cosa potrebbe smentirlo e come tornare alla versione precedente. FATTO, INFERENZA, IPOTESI e SIMULAZIONE restano separati.</p>
-  </section>
-
-  <section>
-    <p class="kicker">Architettura cognitiva</p>
-    <h2>Dieci moduli per trasformare memoria in capacità.</h2>
-    <div class="priority-list" id="priorities"></div>
-  </section>
-
-  <section>
-    <p class="kicker">Evidenza attuale</p>
-    <h2>Quello che sappiamo davvero, oggi.</h2>
-    <div class="evidence" id="evidence"></div>
-  </section>
-
-  <section>
-    <p class="kicker">Ciclo operativo</p>
-    <h2>Dal ricordo al miglioramento verificato.</h2>
-    <div class="grid">
-      <article class="card"><h3>1 · Ricostruire l’intenzione</h3><p>Recuperare decisioni, correzioni e obiettivi senza chiedere a Claudio di ricominciare ogni volta.</p></article>
-      <article class="card"><h3>2 · Formulare alternative</h3><p>Generare più spiegazioni e più strategie, invece di innamorarsi della prima risposta plausibile.</p></article>
-      <article class="card"><h3>3 · Scegliere la prova</h3><p>Usare la Meta-Scacchiera per decidere quale verifica riduce maggiormente l’incertezza al costo giusto.</p></article>
-      <article class="card"><h3>4 · Correggere</h3><p>Quando un dato smentisce il sistema, aggiornare il modello del problema e conservare la correzione.</p></article>
-      <article class="card"><h3>5 · Trasferire</h3><p>Provare l’apprendimento su un problema nuovo, non soltanto sul caso da cui è nato.</p></article>
-      <article class="card"><h3>6 · Promuovere con rollback</h3><p>Solo ciò che supera test dichiarati diventa canonico; la versione precedente resta recuperabile.</p></article>
-    </div>
-  </section>
-
-  <section>
-    <p class="kicker">Canone e continuità</p>
-    <h2>Documenti che tengono il filo.</h2>
-    <p class="footer-note">La pagina non sostituisce il repository e non finge un processo autonomo continuo. Visualizza il programma operativo; la persistenza reale vive nelle versioni Git, nei documenti canonici e nelle prove registrate.</p>
-    <div class="toolbar">
-      <a class="button" href="/progetti">Tutti i progetti</a>
-      <a class="button secondary" href="https://github.com/claudioterzi/Claudio" rel="noopener">Repository GitHub</a>
-    </div>
-    <div class="meta"><span id="updated-at"></span><span>Firma: C.Terzi</span></div>
-  </section>
+<header class="hero"><div><p class="kicker">R³∞ · Memoria Evolutiva</p><h1>Ricordare.<br><em>Verificare.</em><br>Progredire.</h1><p class="lead">Il Protocollo Rosso Rosso Rosso trasformato in infrastruttura operativa: memoria, provenienza, falsificazione, continuità e scelta del prossimo esperimento.</p><p style="color:var(--gold2);font-style:italic">Claudio Terzi · C.Terzi</p></div><aside class="hero-card"><span class="tag fatto">attivo</span><div class="big">R³∞</div><div id="version-label" class="muted">caricamento canone…</div><div id="r3-integrity" class="status">verifica memoria locale…</div></aside></header>
+<section><p class="kicker">Principio fondante</p><p class="principle" id="principle">Una capacità entra nel canone soltanto quando supera una prova riproducibile e lascia evidenza verificabile.</p><div class="notice">La memoria operativa di questa pagina è <strong>local-first</strong>: sopravvive ai refresh e conserva una catena hash nel browser. Il canone pubblico resta GitHub. Finché non è collegato uno storage server persistente, non presentiamo la memoria locale come sincronizzata tra dispositivi.</div></section>
+<section><p class="kicker">Meta-Scacchiera</p><h2>Il prossimo passo più utile.</h2><div id="r3-next-action" class="next-box"><span>Calcolo dalla coda canonica…</span></div></section>
+<section><p class="kicker">Architettura cognitiva</p><h2>Dal benchmark alla promozione sicura.</h2><div id="priorities" class="priority-list"></div></section>
+<section><p class="kicker">Memoria operativa</p><h2>Registra ciò che deve sopravvivere.</h2><p class="muted">Ogni evento viene classificato come FATTO, INFERENZA, IPOTESI o SIMULAZIONE e concatenato al precedente tramite SHA-256.</p><form id="r3-memory-form"><div class="form-grid"><div class="field"><label>Stato</label><select name="state"><option>FATTO</option><option>INFERENZA</option><option>IPOTESI</option><option>SIMULAZIONE</option></select></div><div class="field"><label>Priorità</label><select name="priority"><option>R3-019</option><option>R3-011</option><option>R3-012</option><option>R3-013</option><option>R3-016</option><option>R3-017</option><option>R3-014</option><option>R3-015</option><option>R3-018</option><option>R3-020</option></select></div><div class="field full"><label>Claim / decisione / apprendimento</label><textarea name="claim" required placeholder="Che cosa deve essere ricordato?"></textarea></div><div class="field"><label>Evidenza</label><textarea name="evidence" placeholder="Test, commit, osservazione, risultato…"></textarea></div><div class="field"><label>Cade se…</label><textarea name="falsifier" placeholder="Quale prova smentirebbe questa conclusione?"></textarea></div><div class="field full"><label>Fonte / provenienza</label><input name="source" placeholder="GitHub commit, test, conversazione, URL, file…"></div></div><div class="actions"><button class="btn" type="submit">Registra nella memoria locale</button><button class="btn secondary" type="button" id="r3-export">Esporta memoria</button><label class="btn secondary" for="r3-import" style="cursor:pointer">Importa memoria</label><input id="r3-import" type="file" accept="application/json" hidden></div></form><p class="muted"><strong id="r3-ledger-count">0</strong> eventi locali registrati.</p><div id="r3-ledger-list" class="ledger"></div></section>
+<section><p class="kicker">Evidenza canonica</p><h2>Quello che sappiamo davvero.</h2><div id="evidence" class="grid"></div></section>
+<section><p class="kicker">Continuità</p><h2>Non perdere il filo.</h2><p class="footer">GitHub resta il canone tecnico versionato. L'export della memoria locale permette di trasferire gli eventi fra dispositivi senza fingere una sincronizzazione server che non esiste ancora. Il passo successivo è collegare uno storage persistente autenticato e promuovere soltanto eventi verificati.</p><div class="actions"><a class="btn" href="/progetti">Tutti i progetti</a><a class="btn secondary" href="https://github.com/claudioterzi/Claudio" rel="noopener">Repository GitHub</a></div><p id="updated-at" class="muted"></p></section>
 </div>
 <script>
-(async function(){
-  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  try{
-    const r=await fetch('/r3-evoluzione.json',{cache:'no-store'}); if(!r.ok) throw new Error('stato non disponibile');
-    const d=await r.json();
-    document.getElementById('version-label').textContent='Versione '+d.version+' · '+d.status;
-    document.getElementById('principle').textContent=d.principle;
-    document.getElementById('updated-at').textContent='Aggiornato: '+new Date(d.updated_at).toLocaleString('it-IT');
-    const p=document.getElementById('priorities');
-    d.priorities.forEach(x=>{const a=document.createElement('article');a.className='priority';a.innerHTML=`<div class="id">${esc(x.id)}</div><div><strong>${esc(x.name)}</strong><span>${esc(x.why)}</span></div><div class="state">${esc(x.state)}</div>`;p.appendChild(a)});
-    const e=document.getElementById('evidence');
-    d.current_evidence.forEach(x=>{const a=document.createElement('article');const cls=(x.state||'').toLowerCase();a.innerHTML=`<span class="tag ${esc(cls)}">${esc(x.state)}</span><h3>${esc(x.label)}</h3><p>${esc(x.detail)}</p>`;e.appendChild(a)});
-  }catch(err){
-    document.getElementById('version-label').textContent='Stato del canone non caricato';
-    document.getElementById('updated-at').textContent='Verifica il repository per lo stato più recente.';
-  }
-})();
+(async function(){const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));try{const d=await (await fetch('/r3-evoluzione.json',{cache:'no-store'})).json();document.getElementById('version-label').textContent='Versione '+d.version+' · '+d.status;document.getElementById('principle').textContent=d.principle;document.getElementById('updated-at').textContent='Canone aggiornato: '+new Date(d.updated_at).toLocaleString('it-IT')+' · firma C.Terzi';const p=document.getElementById('priorities');d.priorities.forEach(x=>{const a=document.createElement('article');a.className='priority';a.innerHTML=`<div class="id">${esc(x.id)}</div><div><strong>${esc(x.name)}</strong><span>${esc(x.why)}</span></div><div class="state">${esc(x.state)}</div>`;p.appendChild(a)});const e=document.getElementById('evidence');d.current_evidence.forEach(x=>{const a=document.createElement('article');a.className='card';a.innerHTML=`<span class="tag ${esc((x.state||'').toLowerCase())}">${esc(x.state)}</span><h3>${esc(x.label)}</h3><p>${esc(x.detail)}</p>`;e.appendChild(a)});}catch{document.getElementById('version-label').textContent='Canone non caricato';}})();
 </script>
-</body>
-</html>
+<script src="/r3-memory.js" defer></script>
+</body></html>
