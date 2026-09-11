@@ -88,12 +88,20 @@
            border-radius: 4px; padding: 0 0.35em; font-size: 0.85em; }
   .seme { text-align: center; margin-top: 0.9rem; font-size: 0.72rem;
           color: var(--text-dim); font-style: italic; }
+  .internal-image { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .internal-image > p:first-child { color: var(--gold-dim); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+  .internal-image figure { margin: .8rem 0 0; max-width: 360px; }
+  .internal-image img { display: block; width: 100%; height: auto; border: 1px solid var(--gold-dim); border-radius: 6px; background: #10131a; }
+  .internal-image figcaption { margin-top: .5rem; font-size: .78rem; color: var(--text-dim); }
+  .internal-image figcaption a { color: var(--gold); }
+  .internal-image-status { min-height: 1.4em; font-size: .8rem; color: var(--text-dim); margin-top: .45rem; }
   footer { text-align: center; margin-top: 2.5rem; color: var(--text-dim);
            font-size: 0.8rem; line-height: 1.8; }
   footer a { color: var(--gold-dim); }
 </style>
 <link rel="stylesheet" href="/atelier-photo.css">
 <script src="/atelier-photo.js" defer></script>
+<script src="perfume-bottle.js"></script><script src="perfume-label.js"></script>
 <script src="atelier-scena.js" defer></script>
 </head>
 <body>
@@ -382,11 +390,41 @@ function mostra(p) {
     '<div class="etich">Concept</div><p class="concept">' + p.concept + '</p>' +
     '<div class="etich">Ricetta \u2014 parti su 100 di concentrato</div>' +
     '<table class="ricetta">' + righe + '</table>' +
+    '<section class="internal-image" aria-label="Creatore interno del flacone">' +
+    '<p>Immagine della ricetta · etichetta applicata internamente</p>' +
+    '<button type="button" class="oro" id="crea-immagine-interna">Crea il flacone etichettato</button>' +
+    '<p class="internal-image-status" id="immagine-interna-stato" role="status"></p>' +
+    '<figure id="immagine-interna-figura" hidden><img id="immagine-interna" alt="Flacone etichettato di ' + p.nome + '"><figcaption><a id="scarica-immagine-interna" download>Scarica immagine PNG</a></figcaption></figure>' +
+    '</section>' +
     (p.notaBlend ? '<p class="nota-regola">Regola del Grimorio applicata: mai un muschio solo \u2014 aggiunto ' + p.notaBlend + ' al blend.</p>' : "") +
     '<p class="avvertenza">Punto di partenza didattico, non formula finita: lavorare in diluizione, ' +
     'correggere col naso, registrare nel diario. Le materie \u26a0 IFRA hanno limiti severi per uso su pelle. ' +
     'Verificare IFRA/CPSR prima di qualunque vendita.</p></div>';
   document.getElementById("scheda").classList.add("viva");
+  const internalImageButton = document.getElementById("crea-immagine-interna");
+  if (internalImageButton) internalImageButton.addEventListener("click", async () => {
+    internalImageButton.disabled = true;
+    const internalStatus = document.getElementById("immagine-interna-stato");
+    internalStatus.textContent = "Disegno il flacone e applico nome, numero e firma…";
+    try {
+      if (!window.TerziLabel) throw new Error("Creatore interno non caricato. Ricarica la pagina.");
+      const rendered = await window.TerziLabel.fromRecipe({
+        name: p.nome, perfume: p,
+        fingerprint: p.formula_code || ("locale-" + (p.seme || 0) + "-" + (p.fam || ""))
+      });
+      const internalImage = document.getElementById("immagine-interna");
+      internalImage.src = rendered.url;
+      internalImage.alt = "Flacone etichettato di " + p.nome;
+      document.getElementById("immagine-interna-figura").hidden = false;
+      const downloadInternal = document.getElementById("scarica-immagine-interna");
+      downloadInternal.href = rendered.url;
+      downloadInternal.download = (p.nome || "creazione").toLowerCase().replace(/[^a-z0-9]+/g, "_") + "-flacone.png";
+      internalStatus.textContent = "Immagine pronta: etichetta, numero e firma sono legati a questa ricetta.";
+      internalImageButton.textContent = "Rigenera il flacone etichettato";
+    } catch (error) {
+      internalStatus.textContent = error.message || "Il creatore interno non è disponibile adesso.";
+    } finally { internalImageButton.disabled = false; }
+  });
   document.getElementById("seme").textContent = p.viaAI
     ? "composto in ascolto \u2014 ogni chiamata pu\u00f2 variare, come un naso vero"
     : "seme " + p.seme + " \u00b7 variazione " + variazione + " \u2014 stessa intenzione, stessa proposta";
