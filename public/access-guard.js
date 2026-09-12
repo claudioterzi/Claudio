@@ -7,7 +7,7 @@ var p=location.pathname.replace(/\/+$/,'')||'/';
 var openRoutes=['/','/accesso','/accesso.html','/soglia','/soglia.html'];
 if(openRoutes.indexOf(p)!==-1)return;
 var privateRoutes=[
-  '/privato','/privato.html','/orchestratore','/orchestratore.html','/r3-evoluzione','/r3-evoluzione.html',
+  '/privato','/privato.html','/dati','/dati.html','/orchestratore','/orchestratore.html','/r3-evoluzione','/r3-evoluzione.html',
   '/home','/home.html','/progetti','/creazioni.html','/scritti','/scritti.html','/codice-gaia','/codice-gaia.html'
 ];
 var isPrivate=privateRoutes.indexOf(p)!==-1;
