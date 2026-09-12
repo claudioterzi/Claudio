@@ -15,10 +15,16 @@ const STATIC_SOURCES=[
   {path:'/atmosfere-disponibili.json',label:'Atmosfere disponibili',area:'Esperienza'},
   {path:'/esperienze-olfattive.json',label:'Esperienze olfattive',area:'Profumi'},
   {path:'/organo-evoluzione.json',label:'Organo · evoluzione',area:'Profumi'},
-  {path:'/r3-evoluzione.json',label:'Canone R³∞',area:'R³∞'}
+  {path:'/formule/codici-400.json',label:'Codici delle 400 formule',area:'Profumi'},
+  {path:'/formule/organo-13aff1815ecef350.json',label:'Organo formule',area:'Profumi'},
+  {path:'/r3-evoluzione.json',label:'Canone R³∞',area:'R³∞'},
+  {path:'/musica-data.js',label:'Archivio dati Musica',area:'Creazioni'},
+  {path:'/opera-viva-data.js',label:'Archivio dati Opera Viva',area:'Creazioni'}
 ];
 const STRUCTURAL_SOURCES=[
-  {path:'/formule/',label:'Archivio formule',area:'Profumi',state:'PRESENT_IN_REPO_NOT_ENUMERATED'}
+  {path:'/libro.html',label:'Libro · archivio ricette incorporato nella pagina',area:'Profumi',state:'EMBEDDED_CONTENT_NOT_DUPLICATED'},
+  {path:'/parfums.html',label:'Parfums · catalogo incorporato nella pagina',area:'Profumi',state:'EMBEDDED_CONTENT_NOT_DUPLICATED'},
+  {path:'/opera.html',label:'Opera · contenuto incorporato nella pagina',area:'Creazioni',state:'EMBEDDED_CONTENT_NOT_DUPLICATED'}
 ];
 const EXPLICIT_EDGES=[
   ['claudio.fabbrica.talent.intent.v1','claudio.talenti.requests.v1','Fabbrica ↔ richieste della Bottega'],
@@ -58,7 +64,7 @@ function classify(key){
   if(k.includes('opera')||k.includes('musica')||k.includes('taroc')||k.includes('alpha'))return 'Creazioni';
   return 'Sistema';
 }
-function parseRaw(raw){try{return {ok:true,value:JSON.parse(raw),type:'json'}}catch{return {ok:true,value:raw,type:'text'}}}
+function parseRaw(raw){try{return {value:JSON.parse(raw),type:'json'}}catch{return {value:raw,type:'text'}}}
 function itemCount(v){if(Array.isArray(v))return v.length;if(v&&typeof v==='object')return Object.keys(v).length;return v==null?0:1}
 function findTimestamp(v){
   if(!v||typeof v!=='object')return null;
@@ -96,11 +102,7 @@ function localDatasets(){
     let raw='';try{raw=localStorage.getItem(key)}catch(e){errors.push(key+': '+e.message);return}
     if(raw==null)return;
     const p=parseRaw(raw); parsedByKey.set(key,p.value);
-    nodes.push({
-      id:'storage:'+key,source:'localStorage',key,label:key,area:classify(key),type:p.type,
-      bytes:enc.encode(raw).length,items:itemCount(p.value),timestamp:findTimestamp(p.value),
-      facets:collectFacets(p.value,{},0),state:'PRESENTE'
-    });
+    nodes.push({id:'storage:'+key,source:'localStorage',key,label:key,area:classify(key),type:p.type,bytes:enc.encode(raw).length,items:itemCount(p.value),timestamp:findTimestamp(p.value),facets:collectFacets(p.value,{},0),state:'PRESENTE'});
   });
   return {nodes,errors};
 }
@@ -117,25 +119,19 @@ async function staticDatasets(){
 function hasNode(nodes,key){return nodes.some(n=>n.key===key)}
 function explicitRelations(nodes){
   const rel=[];
-  EXPLICIT_EDGES.forEach(([a,b,label])=>{
-    if(hasNode(nodes,a)&&hasNode(nodes,b))rel.push({from:a,to:b,label,state:'FATTO',basis:'collegamento esplicito già definito nel sistema'});
-  });
+  EXPLICIT_EDGES.forEach(([a,b,label])=>{if(hasNode(nodes,a)&&hasNode(nodes,b))rel.push({from:a,to:b,label,state:'FATTO',basis:'collegamento esplicito già definito nel sistema'})});
   return rel;
 }
 function sharedFacet(a,b){
   const common=[];
-  for(const field of FACET_FIELDS){
-    const A=a.facets?.[field],B=b.facets?.[field];if(!A||!B)continue;
-    let hit=false;A.forEach(v=>{if(B.has(v))hit=true});if(hit)common.push(field);
-  }
+  for(const field of FACET_FIELDS){const A=a.facets?.[field],B=b.facets?.[field];if(!A||!B)continue;let hit=false;A.forEach(v=>{if(B.has(v))hit=true});if(hit)common.push(field)}
   return common;
 }
 function inferredRelations(nodes,existing){
   const seen=new Set(existing.map(r=>[r.from,r.to].sort().join('|'))),rel=[];
   const candidates=nodes.filter(n=>n.source==='localStorage');
   for(let i=0;i<candidates.length;i++)for(let j=i+1;j<candidates.length;j++){
-    const a=candidates[i],b=candidates[j];if(a.area===b.area&&a.key===b.key)continue;
-    const fields=sharedFacet(a,b);if(!fields.length)continue;
+    const a=candidates[i],b=candidates[j];const fields=sharedFacet(a,b);if(!fields.length)continue;
     const pair=[a.key,b.key].sort().join('|');if(seen.has(pair))continue;
     seen.add(pair);rel.push({from:a.key,to:b.key,label:'Possibile relazione per campi condivisi: '+fields.join(', '),state:'INFERENZA',basis:'euristica locale; da confermare'});
   }
@@ -165,8 +161,6 @@ function exportSnapshot(){
   if(!latest)throw new Error('Aggiorna prima il Data Hub.');
   const blob=new Blob([JSON.stringify(latest,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='RAFFAELLO_DATA_HUB_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
-window.RaffaelloDataHub={refresh,snapshot,read,export:exportSnapshot,version:'1.0.0'};
-
-/* Sulle pagine private ordinarie aggiorna solo l'indice locale; /dati carica anche i JSON statici. */
+window.RaffaelloDataHub={refresh,snapshot,read,export:exportSnapshot,version:'1.1.0'};
 if(privateOK())refresh().catch(()=>{});
 })();
