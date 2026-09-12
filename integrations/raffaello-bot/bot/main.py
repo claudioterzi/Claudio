@@ -21,6 +21,7 @@ from telegram.ext import (
 )
 
 from bot.config import LOG_LEVEL, PERSISTENCE_PATH, require_token
+from bot.log_safety import RedactedFormatter
 from bot.corpo import cmd_corpo, corpo_tasto
 from bot.db import init_db
 from bot.handlers import build_command_handlers, build_conversation_handlers, cmd_unknown, messaggio_libero
@@ -38,11 +39,13 @@ from bot import sdq1
 from bot import raffaello, raffaello_http, raffaello_store
 from bot.terzo import build_terzo_conversations
 
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-    level=getattr(logging, LOG_LEVEL, logging.INFO),
-    stream=sys.stdout,
-)
+log_handler = logging.StreamHandler(sys.stdout)
+log_handler.setFormatter(RedactedFormatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
+logging.basicConfig(level=getattr(logging, LOG_LEVEL, logging.INFO), handlers=[log_handler])
+# Telegram puts the bot token in request URLs. HTTP transport logs must not
+# inherit the application's INFO/DEBUG level.
+for transport_logger in ("httpx", "httpcore", "telegram.request"):
+    logging.getLogger(transport_logger).setLevel(logging.WARNING)
 logger = logging.getLogger("protocollo")
 
 COMMANDS = [

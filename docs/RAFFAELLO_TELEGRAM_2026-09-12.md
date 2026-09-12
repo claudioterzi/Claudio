@@ -25,8 +25,8 @@ medesimo JSON, e il contesto iniziale rimane immutabile.
 
 ## Verifica
 
-- 45 test del bot: vecchi registri, migrazione additiva, identità, letture immutabili,
-  codici monouso, sessioni, lock, errori e analisi esplicita.
+- 48 test del bot: vecchi registri, migrazione additiva, identità, letture immutabili,
+  codici monouso, sessioni, lock, errori, analisi esplicita e token assenti dai log.
 - 19 test Python del sito, incluso un collaudo fra i due repository con HTTP/SQLite/
   Flask reali. Solo il provider AI e il trasporto verso gli host pubblici sono
   sostituiti. Nessuna conversazione Telegram live è stata inviata o letta.
@@ -51,12 +51,35 @@ del bot. Il runtime completo e verificato è quindi conservato in
 `integrations/raffaello-bot` in questo repository. Per distribuirlo da qui impostare
 la root directory Render su `integrations/raffaello-bot`, installazione
 `pip install -r requirements.txt` e avvio `python -m bot.main`.
-Il cambio va effettuato sul servizio esistente dopo backup e verifica del disco.
+Il cambio va effettuato sul servizio esistente dopo aver definito la conservazione
+dei dati; per la ripartenza senza vecchi registri autorizzata da Claudio, vedere
+la verifica del servizio riportata sotto.
 
 I nuovi registri sono additivi. Il bot non cancella più un webhook all'avvio e
 richiede `NETWORK_SECRET` per `/ask` e `/network/v1/*`. I peer esistenti devono
 ricevere la stessa configurazione prima del passaggio. Procedura e script di
 backup in [RAFFAELLO_2.md del bot](../integrations/raffaello-bot/docs/RAFFAELLO_2.md).
+
+## Verifica del servizio Render
+
+Il pannello autenticato conferma `protocollo-rosso-bot`, regione Frankfurt,
+repository `Claudioterzi82/protocollo-rosso-bot`, branch `main`, commit live
+`6fb9846a18c96f75ce7bce22ca205f1f3123155b`, avvio `python -m bot.main`.
+Il piano è Free, senza disco persistente né accesso shell. I percorsi configurati
+sono `protocollo.db` e `protocollo.persistence`, entrambi relativi. I log mostrano
+polling Telegram con risposte HTTP 200. I nomi delle variabili confermano che il
+ponte Raffaello non è ancora configurato.
+
+Durante questa verifica Claudio ha autorizzato esplicitamente a eliminare i vecchi
+registri e ripartire da zero. Il backup dei vecchi dati non blocca più il passaggio;
+questa autorizzazione non equivale a una cancellazione già eseguita. Non autorizza
+un abbonamento aggiuntivo o la perdita programmata delle nuove letture. Render Free
+perde i file locali a riavvio, redeploy e sospensione per inattività; il piano
+minimo a pagamento mostrato dal pannello è 7 USD/mese, più eventuale disco.
+
+Corretta anche la registrazione delle richieste Telegram: INFO/DEBUG dei trasporti
+sono disabilitati e il formatter oscura i token anche nelle eccezioni. Nessuna
+chiave reale è stata aggiunta al codice o alla documentazione.
 
 ## Limiti dichiarati
 
