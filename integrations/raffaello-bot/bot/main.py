@@ -14,6 +14,7 @@ from telegram import BotCommand, Update
 from telegram.ext import (
     Application,
     CommandHandler,
+    ConversationHandler,
     ContextTypes,
     MessageHandler,
     PicklePersistence,
@@ -241,11 +242,12 @@ def build_application() -> Application:
         .post_init(post_init)
         .build()
     )
-    conversations = [build_palestra_conversation(), build_libro_conversation(),
-                     build_scacchiera_conversation(), *build_terzo_conversations(),
-                     *build_conversation_handlers()]
-    for handler in conversations:
-        handler.fallbacks.insert(0, CommandHandler("nuovo", raffaello.new))
+    legacy_handlers = [build_palestra_conversation(), build_libro_conversation(),
+                       build_scacchiera_conversation(), *build_terzo_conversations(),
+                       *build_conversation_handlers()]
+    for handler in legacy_handlers:
+        if isinstance(handler, ConversationHandler):
+            handler.fallbacks.insert(0, CommandHandler("nuovo", raffaello.new))
         app.add_handler(handler)
     for h in raffaello.handlers():
         app.add_handler(h)
