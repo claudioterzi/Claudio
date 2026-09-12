@@ -29,6 +29,7 @@
     }
     if (/^\/orchestratore(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/orchestratore-proof.js', 'orchestratore-proof');
+      loadOnce('/orchestratore-audit.js', 'orchestratore-audit');
     }
     if (/^\/(?:creazioni|progetti)(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/creazioni-extra.js', 'creazioni-extra');
