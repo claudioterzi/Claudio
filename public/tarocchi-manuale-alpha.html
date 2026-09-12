@@ -1,1 +1,418 @@
-<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Raffaello · Canone Alpha 74</title><style>*{box-sizing:border-box}body{margin:0;background:#0b0b0e;color:#eee9dc;font-family:Georgia,serif}.wrap{max-width:1050px;margin:auto;padding:2rem 1rem 5rem}h1{font-weight:400;color:#d0b15b}.lead,.muted{color:#948d82;line-height:1.6}.panel{background:#141419;border:1px solid #2d2b31;border-radius:14px;padding:1rem;margin:1rem 0}.deck{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:.35rem}.back{aspect-ratio:120/206;border:1px solid #443a25;border-radius:6px;background:linear-gradient(145deg,#1a1711,#0c0c0f);color:#b99b4b;display:grid;place-items:center;font-size:1.4rem;cursor:pointer}.back:disabled{opacity:.18}.chosen{display:grid;grid-template-columns:90px 1fr;gap:1rem;align-items:center;border-top:1px solid #28262d;padding:.8rem 0}.face{width:90px;height:154px;border:1px solid #5c4a28;border-radius:8px;background:#121217;display:grid;place-items:center;text-align:center;padding:.6rem}.face .sym{font-size:2rem;color:#d0b15b}.face .name{font-size:.8rem;margin-top:.5rem}.tag{color:#d0b15b;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}.meaning{color:#d8d2c6;line-height:1.6}.grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}textarea,input{width:100%;background:#0d0d11;border:1px solid #3a3740;border-radius:8px;color:#eee;padding:.75rem;font:1rem Georgia,serif}button.primary{border:0;background:#b99843;color:#0b0b0e;border-radius:9px;padding:.8rem 1rem;font-weight:700;cursor:pointer}.message{background:#111116;border-left:3px solid #b99843;padding:1rem 1.1rem;line-height:1.8;font-size:1.05rem}.hidden{display:none}details{margin-top:1rem}.small{font-size:.75rem;color:#756f67}@media(max-width:700px){.deck{grid-template-columns:repeat(7,minmax(0,1fr))}.grid{grid-template-columns:1fr}}@media(max-width:450px){.deck{grid-template-columns:repeat(5,minmax(0,1fr))}}</style></head><body><script src="/nav.js"></script><div class="wrap"><header><div class="tag">RAFFAELLO · CANONE ALPHA</div><h1>Estrazione manuale · 74 carte</h1><p class="lead">Un solo mazzo. Tu scegli soltanto i dorsi; Raffaello assegna posizione, asse e polarità. <strong>Luce e Ombra hanno probabilità 50/50.</strong></p></header><section class="panel"><div class="grid"><div><label>Domanda (opzionale)</label><textarea id="q" rows="3" placeholder="Cosa vuoi capire?"></textarea></div><div><label>Contesto (opzionale)</label><textarea id="ctx" rows="3" placeholder="Quello che ritieni utile raccontare…"></textarea></div></div></section><section class="panel"><div class="tag">Mazzo coperto</div><p id="guide" class="muted">Scegli la prima carta.</p><div id="deck" class="deck"></div></section><section class="panel"><div class="tag">La tua stesa</div><div id="spread"></div><button id="read" class="primary" disabled>Leggi la stesa con Raffaello</button></section><section id="result" class="panel hidden"><div class="tag">Messaggio di Raffaello</div><div id="msg" class="message"></div><h3>Nodo centrale</h3><div id="node" class="meaning"></div><h3>Direzione</h3><div id="dir" class="meaning"></div><h3>La domanda che resta</h3><div id="fq" class="meaning"></div><details><summary>Perché la leggo così · carta per carta</summary><div id="why"></div></details><div id="engine" class="small"></div></section></div><script>const ORDER=[['passato','Passato','ovest'],['presente','Presente','sud'],['futuro','Futuro','est'],['ostacolo','Ostacolo','nord'],['potenziale','Potenziale','est'],['consiglio','Consiglio','nord'],['esito','Esito','est']];let cards=[],deck=[],picked=[];const $=id=>document.getElementById(id);function rnd(){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296}catch{return Math.random()}}function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function renderDeck(){const d=$('deck');d.innerHTML='';deck.forEach((c,i)=>{const b=document.createElement('button');b.className='back';b.type='button';b.textContent='✦';b.onclick=()=>pick(i,b);d.appendChild(b)})}function pick(i,b){if(b.disabled||picked.length>=7)return;const c=deck[i],cfg=ORDER[picked.length],pol=rnd()<.5?'luce':'ombra';const item={carta:c.nome,simbolo:c.simbolo,ciclo:c.ciclo,posizione:cfg[0],posizione_label:cfg[1],asse:cfg[2],polarita:pol,significato_canonico:c[pol][cfg[2]]};picked.push(item);b.disabled=true;renderSpread();$('read').disabled=false;$('guide').innerHTML=picked.length<7?`La prossima carta entrerà in <strong>${ORDER[picked.length][1]}</strong>. Puoi fermarti quando vuoi.`:'Stesa completa: 7 carte.'}function renderSpread(){const s=$('spread');s.innerHTML=picked.map((c,i)=>`<div class="chosen"><div class="face"><div><div class="sym">${esc(c.simbolo)}</div><div class="name">${esc(c.carta)}</div></div></div><div><div class="tag">${i+1}. ${esc(c.posizione_label)} · ${esc(c.asse)} · ${esc(c.polarita)}</div><div class="meaning">${esc(c.significato_canonico)}</div></div></div>`).join('')}async function load(){const r=await fetch('/api/alpha');cards=await r.json();deck=shuffle(cards);renderDeck()}$('read').onclick=async()=>{const btn=$('read');btn.disabled=true;btn.textContent='Raffaello sta leggendo…';try{const r=await fetch('/api/tarocchi/alpha-leggi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({domanda:$('q').value.trim(),contesto:$('ctx').value.trim(),carte_scelte:picked})});const d=await r.json();if(!r.ok)throw new Error(d.errore||'Errore');const x=d.lettura||{};$('msg').textContent=x.messaggio||'';$('node').textContent=x.nodo||'';$('dir').textContent=x.direzione||'';$('fq').textContent=x.domanda_finale||'';$('why').innerHTML=(x.carte||[]).map(c=>`<div class="chosen"><div><div class="tag">${esc(c.posizione)} · ${esc(c.carta)}</div><div class="meaning">${esc(c.lettura)}</div></div></div>`).join('');$('engine').textContent=`Sistema: ${d.sistema} · ${d.formula} · Motore: ${d.motore?.provider||'canonico'}`;$('result').classList.remove('hidden');$('result').scrollIntoView({behavior:'smooth'})}catch(e){alert(e.message)}finally{btn.disabled=false;btn.textContent='Leggi la stesa con Raffaello'}};load();</script></body></html>
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0b0e">
+  <title>Raffaello · Canone Alpha 74</title>
+  <style>
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:#0b0b0e;color:#eee9dc;font-family:Georgia,'Times New Roman',serif}
+    button,textarea{font:inherit}
+    button{min-height:44px}
+    button:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid #d0b15b;outline-offset:3px}
+    .wrap{width:min(1120px,100%);margin:auto;padding:1.5rem clamp(.75rem,3vw,2rem) 4rem}
+    h1,h2,h3{font-weight:400;color:#d0b15b}
+    h1{font-size:clamp(2rem,7vw,3.4rem);line-height:1.05;margin:.45rem 0 1rem}
+    h2{font-size:clamp(1.35rem,4vw,1.8rem);margin:.3rem 0 .75rem}
+    h3{margin:1.35rem 0 .45rem}
+    .lead,.muted{color:#a49c8f;line-height:1.65;text-wrap:pretty}
+    .panel{background:#141419;border:1px solid #2d2b31;border-radius:14px;padding:clamp(.85rem,2.5vw,1.25rem);margin:1rem 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+    label{display:block;margin-bottom:.45rem;color:#d8c68f}
+    textarea{width:100%;resize:vertical;background:#0d0d11;border:1px solid #3a3740;border-radius:9px;color:#eee;padding:.8rem;line-height:1.55;font-size:1rem}
+    .tag{color:#d0b15b;font-size:.76rem;line-height:1.45;letter-spacing:.08em;text-transform:uppercase}
+    .deck{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:.35rem}
+    .back{aspect-ratio:120/206;border:1px solid #443a25;border-radius:6px;background:linear-gradient(145deg,#1a1711,#0c0c0f);color:#b99b4b;display:grid;place-items:center;font-size:1.4rem;cursor:pointer;transition:transform .15s ease,border-color .15s ease,opacity .15s ease}
+    .back:hover:not(:disabled){transform:translateY(-3px);border-color:#b99b4b}
+    .back:disabled{opacity:.18;cursor:default}
+    .chosen{display:grid;grid-template-columns:82px minmax(0,1fr);gap:1rem;align-items:center;border-top:1px solid #28262d;padding:1rem 0}
+    .chosen:first-child{border-top:0}
+    .chosen>div:last-child{min-width:0}
+    .face{width:82px;height:140px;border:1px solid #5c4a28;border-radius:8px;background:#121217;display:grid;place-items:center;text-align:center;padding:.5rem}
+    .face .sym{font-size:1.9rem;color:#d0b15b}
+    .face .name{font-size:.77rem;line-height:1.2;margin-top:.45rem;overflow-wrap:normal;word-break:normal}
+    .meaning{width:100%;color:#d8d2c6;font-size:1rem;line-height:1.7;overflow-wrap:normal;word-break:normal;hyphens:none;text-wrap:pretty}
+    .primary,.listen{border:0;border-radius:999px;padding:.75rem 1.05rem;font-weight:700;cursor:pointer}
+    .primary{background:#b99843;color:#0b0b0e}
+    .primary:disabled{opacity:.5;cursor:wait}
+    .listen{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:transparent;color:#e1c873;border:1px solid #6a572c}
+    .listen[aria-pressed="true"]{background:#2a2417;border-color:#c2a24f}
+    .message{background:#111116;border-left:3px solid #b99843;padding:1rem 1.1rem;line-height:1.8;font-size:1.05rem;text-wrap:pretty}
+    .result-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.85rem}
+    .result-head .tag{margin:0}
+    details{margin-top:1.25rem;border-top:1px solid #2d2b31;padding-top:1rem}
+    summary{color:#d7bd70;cursor:pointer;line-height:1.5}
+    .why-card{display:block;width:100%;padding:1rem 0;border-top:1px solid #28262d}
+    .why-card:first-child{border-top:0}
+    .why-card .tag{margin-bottom:.35rem}
+    .why-card .meaning{max-width:none}
+    .small{font-size:.78rem;line-height:1.5;color:#817a70;margin-top:1rem}
+    .follow-up{margin-top:1.25rem;padding-top:1.2rem;border-top:1px solid #403824}
+    .follow-up label{font-size:clamp(1.15rem,3.5vw,1.45rem);color:#e4cd86}
+    .follow-help{margin:.2rem 0 .75rem;color:#928b7f;font-size:.9rem;line-height:1.55}
+    .follow-actions{display:flex;align-items:center;gap:.8rem;margin-top:.75rem;flex-wrap:wrap}
+    .follow-status{min-height:1.3rem;color:#a49c8f;font-size:.85rem}
+    .follow-answer{margin-top:1rem;padding:1rem 1.05rem;background:#101014;border:1px solid #363038;border-radius:11px}
+    .follow-question{margin:0 0 .65rem;color:#9f978a;font-size:.88rem;line-height:1.5}
+    .follow-response{margin:0;color:#e2dccf;font-size:1.02rem;line-height:1.75;text-wrap:pretty}
+    .hidden{display:none!important}
+    .signature{text-align:right;color:#8f7a47;font-style:italic;margin:1.75rem .25rem 0}
+    @media(max-width:700px){
+      .deck{grid-template-columns:repeat(7,minmax(0,1fr))}
+      .grid{grid-template-columns:1fr}
+      .result-head{align-items:flex-start;flex-direction:column}
+    }
+    @media(max-width:450px){
+      .wrap{padding-inline:.65rem}
+      .panel{padding:.8rem}
+      .deck{grid-template-columns:repeat(5,minmax(0,1fr));gap:.3rem}
+      .chosen{grid-template-columns:64px minmax(0,1fr);gap:.7rem;align-items:start}
+      .face{width:64px;height:110px;padding:.35rem}
+      .face .sym{font-size:1.45rem}
+      .face .name{font-size:.66rem}
+      .tag{font-size:.72rem}
+      .meaning{line-height:1.65}
+      .why-card{padding:.9rem 0}
+      .primary,.listen{width:100%}
+      .follow-actions{display:grid;grid-template-columns:1fr;width:100%}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.back{transition:none}}
+  </style>
+</head>
+<body>
+  <script src="/nav.js"></script>
+  <main class="wrap">
+    <header>
+      <div class="tag">Raffaello · Canone Alpha</div>
+      <h1>Estrazione manuale · 74 carte</h1>
+      <p class="lead">Un solo mazzo. Tu scegli soltanto i dorsi; Raffaello assegna posizione, asse e polarità. <strong>Luce e Ombra hanno probabilità 50/50.</strong></p>
+    </header>
+
+    <section class="panel" aria-label="Contesto della lettura">
+      <div class="grid">
+        <div>
+          <label for="q">Domanda (opzionale)</label>
+          <textarea id="q" rows="3" maxlength="1800" placeholder="Cosa vuoi capire?"></textarea>
+        </div>
+        <div>
+          <label for="ctx">Contesto (opzionale)</label>
+          <textarea id="ctx" rows="3" maxlength="3200" placeholder="Quello che ritieni utile raccontare…"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="deck-title">
+      <div id="deck-title" class="tag">Mazzo coperto</div>
+      <p id="guide" class="muted" role="status" aria-live="polite">Scegli la prima carta.</p>
+      <div id="deck" class="deck" aria-label="74 carte coperte"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="spread-title">
+      <div id="spread-title" class="tag">La tua stesa</div>
+      <div id="spread"></div>
+      <button id="read" class="primary" type="button" disabled>Leggi la stesa con Raffaello</button>
+    </section>
+
+    <section id="result" class="panel hidden" aria-labelledby="result-title">
+      <div class="result-head">
+        <div id="result-title" class="tag">Messaggio di Raffaello</div>
+        <button id="listen" class="listen" type="button" aria-pressed="false">🔊 Ascolta la lettura</button>
+      </div>
+      <div id="msg" class="message"></div>
+      <h3>Nodo centrale</h3>
+      <div id="node" class="meaning"></div>
+      <h3>Direzione</h3>
+      <div id="dir" class="meaning"></div>
+      <h3>La domanda che resta</h3>
+      <div id="fq" class="meaning"></div>
+      <details>
+        <summary>Perché la leggo così · carta per carta</summary>
+        <div id="why"></div>
+      </details>
+      <div id="engine" class="small"></div>
+
+      <section id="follow-up" class="follow-up hidden" aria-labelledby="follow-label">
+        <label id="follow-label" for="follow-question">Chiedi a Raffaello qualsiasi cosa su questa lettura.</label>
+        <p class="follow-help">La domanda è libera. Raffaello risponderà restando ancorato alle carte che hai realmente estratto.</p>
+        <textarea id="follow-question" rows="3" maxlength="1600" placeholder="Scrivi ciò che vuoi capire meglio…"></textarea>
+        <div class="follow-actions">
+          <button id="ask" class="primary" type="button">Chiedi a Raffaello</button>
+          <span id="follow-status" class="follow-status" role="status" aria-live="polite"></span>
+        </div>
+        <div id="follow-thread" aria-live="polite"></div>
+      </section>
+    </section>
+    <p class="signature">Claudio Terzi · C.Terzi</p>
+  </main>
+
+  <script>
+    const ORDER=[
+      ['passato','Passato','ovest'],
+      ['presente','Presente','sud'],
+      ['futuro','Futuro','est'],
+      ['ostacolo','Ostacolo','nord'],
+      ['potenziale','Potenziale','est'],
+      ['consiglio','Consiglio','nord'],
+      ['esito','Esito','est']
+    ];
+    let cards=[];
+    let deck=[];
+    let picked=[];
+    let lastReading=null;
+    let followHistory=[];
+    let speechQueue=[];
+    let speaking=false;
+
+    const $=id=>document.getElementById(id);
+    const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    function rnd(){
+      try{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296}
+      catch{return Math.random()}
+    }
+
+    function shuffle(source){
+      const result=source.slice();
+      for(let i=result.length-1;i>0;i--){
+        const j=Math.floor(rnd()*(i+1));
+        [result[i],result[j]]=[result[j],result[i]];
+      }
+      return result;
+    }
+
+    function renderDeck(){
+      const holder=$('deck');
+      holder.innerHTML='';
+      deck.forEach((card,index)=>{
+        const button=document.createElement('button');
+        button.className='back';
+        button.type='button';
+        button.textContent='✦';
+        button.setAttribute('aria-label','Scegli questa carta coperta');
+        button.addEventListener('click',()=>pick(index,button));
+        holder.appendChild(button);
+      });
+    }
+
+    function pick(index,button){
+      if(button.disabled||picked.length>=7)return;
+      const card=deck[index];
+      const config=ORDER[picked.length];
+      const polarity=rnd()<.5?'luce':'ombra';
+      picked.push({
+        carta:card.nome,
+        simbolo:card.simbolo,
+        ciclo:card.ciclo,
+        posizione:config[0],
+        posizione_label:config[1],
+        asse:config[2],
+        polarita:polarity,
+        significato_canonico:card[polarity][config[2]]
+      });
+      button.disabled=true;
+      renderSpread();
+      $('read').disabled=false;
+      $('guide').innerHTML=picked.length<7
+        ?`La prossima carta entrerà in <strong>${ORDER[picked.length][1]}</strong>. Puoi fermarti quando vuoi.`
+        :'Stesa completa: 7 carte.';
+    }
+
+    function renderSpread(){
+      $('spread').innerHTML=picked.map((card,index)=>`
+        <article class="chosen">
+          <div class="face" aria-hidden="true">
+            <div><div class="sym">${esc(card.simbolo)}</div><div class="name">${esc(card.carta)}</div></div>
+          </div>
+          <div>
+            <div class="tag">${index+1}. ${esc(card.posizione_label)} · ${esc(card.asse)} · ${esc(card.polarita)}</div>
+            <div class="meaning">${esc(card.significato_canonico)}</div>
+          </div>
+        </article>`).join('');
+    }
+
+    function renderReading(data){
+      stopSpeech();
+      lastReading=data;
+      followHistory=[];
+      $('follow-thread').replaceChildren();
+      const reading=data.lettura||{};
+      $('msg').textContent=reading.messaggio||'';
+      $('node').textContent=reading.nodo||'';
+      $('dir').textContent=reading.direzione||'';
+      $('fq').textContent=reading.domanda_finale||'';
+      $('why').innerHTML=(reading.carte||[]).map(card=>`
+        <article class="why-card">
+          <div class="tag">${esc(card.posizione)} · ${esc(card.carta)}</div>
+          <div class="meaning">${esc(card.lettura)}</div>
+        </article>`).join('');
+      $('engine').textContent=`Sistema: ${data.sistema} · ${data.formula} · Motore: ${data.motore?.provider||'canonico'}`;
+      $('follow-up').classList.remove('hidden');
+      $('result').classList.remove('hidden');
+      $('result').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+
+    async function readSpread(){
+      const button=$('read');
+      button.disabled=true;
+      button.textContent='Raffaello sta leggendo…';
+      try{
+        const response=await fetch('/api/tarocchi/alpha-leggi',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({domanda:$('q').value.trim(),contesto:$('ctx').value.trim(),carte_scelte:picked})
+        });
+        const data=await response.json();
+        if(!response.ok)throw new Error(data.errore||'La lettura non è riuscita.');
+        renderReading(data);
+      }catch(error){
+        alert(error.message);
+      }finally{
+        button.disabled=false;
+        button.textContent='Leggi la stesa con Raffaello';
+      }
+    }
+
+    function appendFollowUp(question,answer){
+      const article=document.createElement('article');
+      article.className='follow-answer';
+      const asked=document.createElement('p');
+      asked.className='follow-question';
+      asked.textContent=`La tua domanda: ${question}`;
+      const response=document.createElement('p');
+      response.className='follow-response';
+      response.textContent=answer;
+      article.append(asked,response);
+      $('follow-thread').appendChild(article);
+      article.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+
+    async function askRaffaello(){
+      const question=$('follow-question').value.trim();
+      if(!question){
+        $('follow-status').textContent='Scrivi prima la tua domanda.';
+        $('follow-question').focus();
+        return;
+      }
+      if(!lastReading)return;
+      const button=$('ask');
+      button.disabled=true;
+      button.textContent='Raffaello risponde…';
+      $('follow-status').textContent='Rileggo la domanda alla luce delle carte estratte.';
+      try{
+        const response=await fetch('/api/tarocchi/alpha-leggi',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            modalita:'approfondimento',
+            lettura_id:lastReading.lettura_id,
+            domanda_originale:$('q').value.trim(),
+            contesto:$('ctx').value.trim(),
+            domanda_utente:question,
+            carte_scelte:picked,
+            lettura_precedente:lastReading.lettura,
+            cronologia:followHistory.slice(-6)
+          })
+        });
+        const data=await response.json();
+        if(!response.ok)throw new Error(data.errore||'Non riesco ad approfondire la lettura.');
+        appendFollowUp(question,data.risposta);
+        followHistory.push({domanda:question,risposta:data.risposta});
+        $('follow-question').value='';
+        $('follow-status').textContent='Risposta ancorata alla stesa già estratta.';
+      }catch(error){
+        $('follow-status').textContent=error.message;
+      }finally{
+        button.disabled=false;
+        button.textContent='Chiedi a Raffaello';
+      }
+    }
+
+    function speechText(){
+      const parts=[
+        $('msg').textContent,
+        `Nodo centrale. ${$('node').textContent}`,
+        `Direzione. ${$('dir').textContent}`,
+        `La domanda che resta. ${$('fq').textContent}`
+      ];
+      $('why').querySelectorAll('.why-card').forEach(card=>parts.push(card.innerText));
+      $('follow-thread').querySelectorAll('.follow-answer').forEach(answer=>parts.push(answer.innerText));
+      return parts.filter(Boolean).join('. ');
+    }
+
+    function speechChunks(text){
+      const sentences=text.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g)||[text];
+      const chunks=[];
+      let current='';
+      sentences.forEach(sentence=>{
+        const next=(current+' '+sentence.trim()).trim();
+        if(next.length>240&&current){chunks.push(current);current=sentence.trim()}
+        else current=next;
+      });
+      if(current)chunks.push(current);
+      return chunks;
+    }
+
+    function updateListenButton(active){
+      speaking=active;
+      $('listen').setAttribute('aria-pressed',String(active));
+      $('listen').textContent=active?'■ Ferma ascolto':'🔊 Ascolta la lettura';
+    }
+
+    function stopSpeech(){
+      if('speechSynthesis' in window)window.speechSynthesis.cancel();
+      speechQueue=[];
+      updateListenButton(false);
+    }
+
+    function listenReading(){
+      if(!('speechSynthesis' in window))return;
+      if(speaking){stopSpeech();return}
+      const voices=window.speechSynthesis.getVoices();
+      const voice=voices.find(item=>/^it([-_]|$)/i.test(item.lang))||null;
+      const chunks=speechChunks(speechText());
+      if(!chunks.length)return;
+      updateListenButton(true);
+      speechQueue=chunks.map((chunk,index)=>{
+        const utterance=new SpeechSynthesisUtterance(chunk);
+        utterance.lang=voice?.lang||'it-IT';
+        if(voice)utterance.voice=voice;
+        utterance.rate=.96;
+        utterance.pitch=1;
+        if(index===chunks.length-1){
+          utterance.onend=()=>updateListenButton(false);
+          utterance.onerror=()=>updateListenButton(false);
+        }
+        return utterance;
+      });
+      speechQueue.forEach(utterance=>window.speechSynthesis.speak(utterance));
+    }
+
+    async function load(){
+      try{
+        const response=await fetch('/api/alpha');
+        if(!response.ok)throw new Error('Mazzo non disponibile.');
+        cards=await response.json();
+        deck=shuffle(cards);
+        renderDeck();
+      }catch(error){
+        $('guide').textContent=error.message;
+      }
+    }
+
+    $('read').addEventListener('click',readSpread);
+    $('ask').addEventListener('click',askRaffaello);
+    $('follow-question').addEventListener('keydown',event=>{
+      if((event.metaKey||event.ctrlKey)&&event.key==='Enter')askRaffaello();
+    });
+    $('listen').addEventListener('click',listenReading);
+    if(!('speechSynthesis' in window)){
+      $('listen').disabled=true;
+      $('listen').textContent='Ascolto non disponibile';
+    }
+    window.addEventListener('beforeunload',stopSpeech);
+    load();
+  </script>
+</body>
+</html>
