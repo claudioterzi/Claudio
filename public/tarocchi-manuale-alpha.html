@@ -24,15 +24,13 @@
     textarea{width:100%;resize:vertical;background:#0d0d11;border:1px solid #3a3740;border-radius:9px;color:#eee;padding:.8rem;line-height:1.55;font-size:1rem}
     .tag{color:#d0b15b;font-size:.76rem;line-height:1.45;letter-spacing:.08em;text-transform:uppercase}
     .deck{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:.35rem}
-    .back{aspect-ratio:120/206;border:1px solid #443a25;border-radius:6px;background:linear-gradient(145deg,#1a1711,#0c0c0f);color:#b99b4b;display:grid;place-items:center;font-size:1.4rem;cursor:pointer;transition:transform .15s ease,border-color .15s ease,opacity .15s ease}
+    .back{aspect-ratio:1;border:1px solid #443a25;border-radius:6px;background:linear-gradient(145deg,#1a1711,#0c0c0f);color:#b99b4b;display:grid;place-items:center;font-size:1.4rem;cursor:pointer;transition:transform .15s ease,border-color .15s ease,opacity .15s ease}
     .back:hover:not(:disabled){transform:translateY(-3px);border-color:#b99b4b}
     .back:disabled{opacity:.18;cursor:default}
-    .chosen{display:grid;grid-template-columns:82px minmax(0,1fr);gap:1rem;align-items:center;border-top:1px solid #28262d;padding:1rem 0}
+    .chosen{display:grid;grid-template-columns:80px minmax(0,1fr);gap:1rem;align-items:center;border-top:1px solid #28262d;padding:1rem 0}
     .chosen:first-child{border-top:0}
     .chosen>div:last-child{min-width:0}
-    .face{width:82px;height:140px;border:1px solid #5c4a28;border-radius:8px;background:#121217;display:grid;place-items:center;text-align:center;padding:.5rem}
-    .face .sym{font-size:1.9rem;color:#d0b15b}
-    .face .name{font-size:.77rem;line-height:1.2;margin-top:.45rem;overflow-wrap:normal;word-break:normal}
+    .face{border:1px solid #5c4a28;background:#121217;display:grid;place-items:center;text-align:center}
     .meaning{width:100%;color:#d8d2c6;font-size:1rem;line-height:1.7;overflow-wrap:normal;word-break:normal;hyphens:none;text-wrap:pretty}
     .primary,.listen{border:0;border-radius:999px;padding:.75rem 1.05rem;font-weight:700;cursor:pointer}
     .primary{background:#b99843;color:#0b0b0e}
@@ -68,10 +66,7 @@
       .wrap{padding-inline:.65rem}
       .panel{padding:.8rem}
       .deck{grid-template-columns:repeat(5,minmax(0,1fr));gap:.3rem}
-      .chosen{grid-template-columns:64px minmax(0,1fr);gap:.7rem;align-items:start}
-      .face{width:64px;height:110px;padding:.35rem}
-      .face .sym{font-size:1.45rem}
-      .face .name{font-size:.66rem}
+      .chosen{grid-template-columns:80px minmax(0,1fr);gap:.7rem;align-items:start}
       .tag{font-size:.72rem}
       .meaning{line-height:1.65}
       .why-card{padding:.9rem 0}
@@ -79,6 +74,16 @@
       .follow-actions{display:grid;grid-template-columns:1fr;width:100%}
     }
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.back{transition:none}}
+    .face{position:relative;width:80px;height:80px;padding:0;overflow:hidden;border-radius:6px;cursor:pointer;color:#d0b15b}
+    .face img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform:rotate(var(--card-turn));display:block}
+    .face .sym{font-size:2rem}
+    .card-name{font-size:1rem;color:#e6d5a6;margin:.2rem 0}
+    .art-dialog{width:min(94vw,470px);max-height:94dvh;overflow:auto;padding:1rem;background:#101015;color:#eee9dc;border:1px solid #8b7442;border-radius:12px}
+    .art-dialog::backdrop{background:rgb(0 0 0 / .8)}
+    .art-dialog header{display:flex;gap:1rem;align-items:center;justify-content:space-between}
+    .art-dialog h2{font-size:1.25rem}
+    .art-dialog img{display:block;width:100%;height:auto;aspect-ratio:1;transform:rotate(var(--card-turn));margin:1rem 0}
+    .art-dialog button{background:none;color:#e1c873;border:1px solid #6a572c;border-radius:6px;padding:.5rem}
   </style>
 </head>
 <body>
@@ -112,7 +117,7 @@
     <section class="panel" aria-labelledby="spread-title">
       <div id="spread-title" class="tag">La tua stesa</div>
       <div id="spread"></div>
-      <button id="read" class="primary" type="button" disabled>Leggi la stesa con Raffaello</button>
+      <button id="read" class="primary" type="button" disabled>Analizza la stesa</button>
     </section>
 
     <section id="result" class="panel hidden" aria-labelledby="result-title">
@@ -138,7 +143,7 @@
         <p class="follow-help">La domanda è libera. Raffaello risponderà restando ancorato alle carte che hai realmente estratto.</p>
         <textarea id="follow-question" rows="3" maxlength="1600" placeholder="Scrivi ciò che vuoi capire meglio…"></textarea>
         <div class="follow-actions">
-          <button id="ask" class="primary" type="button">Chiedi a Raffaello</button>
+          <button id="ask" class="primary" type="button">Analizza la domanda</button>
           <span id="follow-status" class="follow-status" role="status" aria-live="polite"></span>
         </div>
         <div id="follow-thread" aria-live="polite"></div>
@@ -147,6 +152,13 @@
     <p class="signature">Claudio Terzi · C.Terzi</p>
   </main>
 
+  <dialog id="art-dialog" class="art-dialog" aria-labelledby="art-title">
+    <header><h2 id="art-title"></h2><button id="art-close" type="button">Chiudi</button></header>
+    <div id="art-state" class="tag"></div>
+    <img id="art-image" alt="" width="640" height="640">
+    <p id="art-meaning" class="meaning"></p>
+  </dialog>
+  <script src="/alpha74-art.js"></script>
   <script>
     const ORDER=[
       ['passato','Passato','ovest'],
@@ -161,6 +173,8 @@
     let deck=[];
     let picked=[];
     let lastReading=null;
+    let readingContext=null;
+    let readingPending=false;
     let followHistory=[];
     let speechQueue=[];
     let speaking=false;
@@ -197,11 +211,19 @@
     }
 
     function pick(index,button){
-      if(button.disabled||picked.length>=7)return;
+      if(button.disabled||picked.length>=7||readingPending)return;
+      if(lastReading){
+        stopSpeech();
+        lastReading=null;
+        readingContext=null;
+        followHistory=[];
+        $('result').classList.add('hidden');
+      }
       const card=deck[index];
       const config=ORDER[picked.length];
       const polarity=rnd()<.5?'luce':'ombra';
       picked.push({
+        id:card.id,
         carta:card.nome,
         simbolo:card.simbolo,
         ciclo:card.ciclo,
@@ -220,21 +242,41 @@
     }
 
     function renderSpread(){
-      $('spread').innerHTML=picked.map((card,index)=>`
+      $('spread').innerHTML=picked.map((card,index)=>{
+        const art=Alpha74Art.resolve(card);
+        return `
         <article class="chosen">
-          <div class="face" aria-hidden="true">
-            <div><div class="sym">${esc(card.simbolo)}</div><div class="name">${esc(card.carta)}</div></div>
-          </div>
+          <button class="face" type="button" data-card-index="${index}" aria-label="Ingrandisci ${esc(card.carta)}, ${esc(card.asse)}, ${esc(card.polarita)}">
+            <span class="sym" aria-hidden="true">${esc(card.simbolo)}</span>
+            ${art?`<img src="${art.thumbnail}" alt="" width="160" height="160" loading="lazy" decoding="async" style="--card-turn:${art.rotation}deg">`:''}
+          </button>
           <div>
             <div class="tag">${index+1}. ${esc(card.posizione_label)} · ${esc(card.asse)} · ${esc(card.polarita)}</div>
+            <div class="card-name">${esc(card.carta)}</div>
             <div class="meaning">${esc(card.significato_canonico)}</div>
           </div>
-        </article>`).join('');
+        </article>`;
+      }).join('');
     }
 
-    function renderReading(data){
+    function showCard(index){
+      const card=picked[index];
+      if(!card)return;
+      const art=Alpha74Art.resolve(card);
+      if(!art)return;
+      $('art-title').textContent=card.carta;
+      $('art-state').textContent=`${card.posizione_label} · ${card.asse} · ${card.polarita}`;
+      $('art-meaning').textContent=card.significato_canonico;
+      $('art-image').alt=`${card.carta}, ${card.polarita}, orientata verso ${card.asse}`;
+      $('art-image').style.setProperty('--card-turn',art.rotation+'deg');
+      $('art-image').src=art.detail;
+      $('art-dialog').showModal();
+    }
+
+    function renderReading(data,context){
       stopSpeech();
       lastReading=data;
+      readingContext=context;
       followHistory=[];
       $('follow-thread').replaceChildren();
       const reading=data.lettura||{};
@@ -254,6 +296,9 @@
     }
 
     async function readSpread(){
+      if(readingPending||!picked.length)return;
+      readingPending=true;
+      const context={domanda:$('q').value.trim(),contesto:$('ctx').value.trim(),carte:picked.map(card=>({...card}))};
       const button=$('read');
       button.disabled=true;
       button.textContent='Raffaello sta leggendo…';
@@ -261,16 +306,17 @@
         const response=await fetch('/api/tarocchi/alpha-leggi',{
           method:'POST',
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({domanda:$('q').value.trim(),contesto:$('ctx').value.trim(),carte_scelte:picked})
+          body:JSON.stringify({domanda:context.domanda,contesto:context.contesto,carte_scelte:context.carte})
         });
         const data=await response.json();
         if(!response.ok)throw new Error(data.errore||'La lettura non è riuscita.');
-        renderReading(data);
+        renderReading(data,context);
       }catch(error){
         alert(error.message);
       }finally{
         button.disabled=false;
-        button.textContent='Leggi la stesa con Raffaello';
+        button.textContent='Analizza la stesa';
+        readingPending=false;
       }
     }
 
@@ -295,8 +341,11 @@
         $('follow-question').focus();
         return;
       }
-      if(!lastReading)return;
+      if(!lastReading||!readingContext)return;
+      const activeReading=lastReading;
+      const activeContext=readingContext;
       const button=$('ask');
+      if(button.disabled)return;
       button.disabled=true;
       button.textContent='Raffaello risponde…';
       $('follow-status').textContent='Rileggo la domanda alla luce delle carte estratte.';
@@ -306,17 +355,18 @@
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({
             modalita:'approfondimento',
-            lettura_id:lastReading.lettura_id,
-            domanda_originale:$('q').value.trim(),
-            contesto:$('ctx').value.trim(),
+            lettura_id:activeReading.lettura_id,
+            domanda_originale:activeContext.domanda,
+            contesto:activeContext.contesto,
             domanda_utente:question,
-            carte_scelte:picked,
-            lettura_precedente:lastReading.lettura,
+            carte_scelte:activeContext.carte,
+            lettura_precedente:activeReading.lettura,
             cronologia:followHistory.slice(-6)
           })
         });
         const data=await response.json();
         if(!response.ok)throw new Error(data.errore||'Non riesco ad approfondire la lettura.');
+        if(lastReading!==activeReading)return;
         appendFollowUp(question,data.risposta);
         followHistory.push({domanda:question,risposta:data.risposta});
         $('follow-question').value='';
@@ -325,7 +375,7 @@
         $('follow-status').textContent=error.message;
       }finally{
         button.disabled=false;
-        button.textContent='Chiedi a Raffaello';
+        button.textContent='Analizza la domanda';
       }
     }
 
@@ -401,6 +451,15 @@
       }
     }
 
+    $('spread').addEventListener('click',event=>{
+      const button=event.target.closest('[data-card-index]');
+      if(button)showCard(Number(button.dataset.cardIndex));
+    });
+    $('spread').addEventListener('error',event=>{
+      if(event.target.tagName==='IMG')event.target.remove();
+    },true);
+    $('art-close').addEventListener('click',()=>$('art-dialog').close());
+    $('art-dialog').addEventListener('close',()=>$('art-image').removeAttribute('src'));
     $('read').addEventListener('click',readSpread);
     $('ask').addEventListener('click',askRaffaello);
     $('follow-question').addEventListener('keydown',event=>{
