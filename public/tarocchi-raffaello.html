@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raffaello · Lettura dei Tarocchi</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b0b0e;color:#ece7dc;font-family:Georgia,'Times New Roman',serif;min-height:100vh}.wrap{max-width:1050px;margin:auto;padding:2rem 1rem 5rem}header{text-align:center;margin:1rem auto 2.5rem;max-width:820px}h1{font-weight:400;color:#d0b15b;letter-spacing:.08em;font-size:clamp(2rem,6vw,3.5rem);margin:.25rem 0}.lead{color:#a9a195;line-height:1.65;font-size:1.02rem}.seal{display:inline-block;color:#8d7840;border:1px solid #493f29;border-radius:999px;padding:.35rem .7rem;letter-spacing:.12em;font-size:.72rem}.panel{background:#141419;border:1px solid #2c2b32;border-radius:16px;padding:1.2rem;margin-bottom:1.2rem}.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.full{grid-column:1/-1}label{display:block;color:#b8aa7f;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem}textarea,input,select{width:100%;border:1px solid #38363f;background:#0d0d11;color:#f1ede2;border-radius:9px;padding:.75rem;font:1rem Georgia,'Times New Roman',serif;min-height:46px}textarea{min-height:115px;resize:vertical}.actions{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1rem}button{border:0;background:#b99843;color:#0b0b0e;border-radius:10px;padding:.8rem 1.2rem;min-height:46px;font:700 1rem Georgia,'Times New Roman',serif;cursor:pointer}button:disabled{opacity:.45;cursor:wait}.small{color:#817b72;font-size:.78rem;line-height:1.5}.status{text-align:center;padding:2rem;color:#8f887e}.reading{display:none}.reading.show{display:block}.meta{padding:.8rem 1rem;border-left:2px solid #9d8342;background:#101014;color:#a79f93;line-height:1.55;margin-bottom:1.25rem}.spread{display:flex;gap:.85rem;overflow-x:auto;padding:.8rem .15rem 1.3rem;scroll-snap-type:x proximity}.card{min-width:142px;max-width:142px;scroll-snap-align:center}.card img{width:142px;height:244px;object-fit:cover;border-radius:8px;border:1px solid #5d4c27;box-shadow:0 10px 28px #0008;background:#15151b}.card.reversed img{transform:rotate(180deg)}.card .pos{color:#d0b15b;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin:.6rem 0 .15rem}.card .name{font-size:.9rem;line-height:1.25}.card .orient{font-size:.72rem;color:#807a71;margin-top:.2rem}.section{margin:2rem 0}.section h2{font-weight:400;color:#d0b15b;font-size:1.25rem;letter-spacing:.05em;margin-bottom:.7rem}.opening{font-size:1.12rem;line-height:1.8;border-left:2px solid #b99843;padding-left:1rem}.context{color:#c7c1b5;line-height:1.75}.card-read{border-top:1px solid #2b2930;padding:1rem 0}.card-read:first-child{border-top:0}.card-read strong{color:#d6bc72}.card-read p{line-height:1.7;margin:.4rem 0;color:#cfc9bd}.thread{background:#111116;border:1px solid #2b2930;border-radius:12px;padding:1rem;line-height:1.8;color:#d7d0c3}.central{border-color:#5a4724}.finalq{font-style:italic;color:#dac47d;font-size:1.08rem;line-height:1.7}.foot{margin-top:2.5rem;color:#6f6a63;font-size:.73rem;text-align:center;line-height:1.6}@media(max-width:700px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.wrap{padding-top:1rem}.card{min-width:128px;max-width:128px}.card img{width:128px;height:220px}}
+</style>
+</head>
+<body>
+<script src="/nav.js"></script>
+<div class="wrap">
+<header>
+<span class="seal">RAFFAELLO · R³∞</span>
+<h1>Lettura dei Tarocchi</h1>
+<p class="lead">Tu porti la domanda. Raffaello decide quanto aprire la stesa, estrae le carte, le dispone e le interpreta una per una e come insieme, spiegandoti perché arriva a quella lettura.</p>
+</header>
+
+<section class="panel">
+<form id="reading-form">
+<div class="grid">
+<div class="full"><label for="question">La domanda</label><textarea id="question" maxlength="1800" placeholder="Scrivi ciò che vuoi davvero capire, anche in modo spontaneo…" required></textarea></div>
+<div class="full"><label for="context">Contesto che vuoi affidare a Raffaello <span style="text-transform:none;letter-spacing:0;color:#706b63">(opzionale)</span></label><textarea id="context" maxlength="3200" placeholder="Cosa è successo, cosa ti confonde, cosa temi o speri…"></textarea></div>
+<div><label for="focus">Area</label><select id="focus"><option value="">Raffaello decide dal testo</option><option value="amore">Amore</option><option value="relazioni">Relazioni</option><option value="lavoro">Lavoro</option><option value="denaro">Denaro</option><option value="crescita">Crescita</option><option value="creativita">Creatività</option><option value="salute">Salute</option><option value="altro">Altro</option></select></div>
+<div><label for="emotion">Emozione dichiarata</label><input id="emotion" maxlength="120" placeholder="es. dubbio, speranza, rabbia…"></div>
+<div><label for="depth">Profondità</label><select id="depth"><option value="auto" selected>Raffaello decide</option><option value="3">Essenziale · 3 carte</option><option value="5">Profonda · 5 carte</option><option value="7">Totale · 7 carte</option></select></div>
+<div><label>Metodo</label><input value="Estrazione automatica · interpretazione contestuale" readonly></div>
+</div>
+<div class="actions"><span class="small">Niente carta scelta a mano: la stesa nasce al momento della domanda.</span><button id="go" type="submit">Raffaello, fai la stesa</button></div>
+</form>
+</section>
+
+<div id="status" class="status">La stesa non è ancora stata aperta.</div>
+
+<main id="reading" class="reading">
+<div id="method" class="meta"></div>
+<div id="spread" class="spread" aria-label="Carte estratte"></div>
+<section class="section"><h2>Apertura</h2><div id="opening" class="opening"></div></section>
+<section class="section"><h2>Il contesto che Raffaello ha compreso</h2><div id="understood" class="context"></div></section>
+<section class="section"><h2>Le carte, una per una</h2><div id="card-readings"></div></section>
+<section class="section"><h2>La trama della stesa</h2><div id="thread" class="thread"></div></section>
+<section class="section"><h2>Il nodo centrale</h2><div id="central" class="thread central"></div></section>
+<section class="section"><h2>Sintesi</h2><div id="summary" class="thread"></div></section>
+<section class="section"><h2>Direzione</h2><div id="direction" class="context"></div></section>
+<section class="section"><h2>La domanda che resta</h2><div id="final-question" class="finalq"></div></section>
+<div id="engine" class="small"></div>
+</main>
+
+<p class="foot">La lettura è un'interpretazione simbolica, non una prova di fatti nascosti né una previsione certa. Per decisioni mediche, legali, finanziarie o di sicurezza, i dati reali hanno sempre priorità.</p>
+</div>
+<script>
+const $=id=>document.getElementById(id);const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function slug(nome){return String(nome||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,'_').replace(/'/g,'').replace(/[^a-z0-9_]/g,'')}
+function cardImage(c){return `/cards/${String(c.indice).padStart(2,'0')}_${slug(c.carta)}.svg`}
+function saveLocal(data){try{const key='claudio.tarocchi.raffaello.v1';const old=JSON.parse(localStorage.getItem(key)||'[]');const item={lettura_id:data.lettura_id,at:new Date().toISOString(),domanda:data.contesto?.domanda||null,focus:data.contesto?.focus||null,carte:data.carte,lettura:{contesto_compreso:data.lettura?.contesto_compreso,sintesi:data.lettura?.sintesi,direzione:data.lettura?.direzione}};localStorage.setItem(key,JSON.stringify([...(Array.isArray(old)?old:[]),item].slice(-20)))}catch(e){}}
+function render(data){
+ const r=data.lettura||{};$('status').style.display='none';$('reading').classList.add('show');
+ $('method').innerHTML=`<strong>${esc(data.metodo?.numero_carte)} carte</strong> · ${esc(data.metodo?.perche_questa_stesa||'')}<br><span class="small">${esc(data.epistemica||'')}</span>`;
+ $('spread').innerHTML=(data.carte||[]).map(c=>`<article class="card ${c.orientamento==='rovescia'?'reversed':''}"><img src="${esc(cardImage(c))}" alt="${esc(c.carta)}"><div class="pos">${esc(c.posizione_label)}</div><div class="name">${esc(c.carta)}</div><div class="orient">${esc(c.orientamento)} · ${esc(c.stato)}</div></article>`).join('');
+ $('opening').textContent=r.apertura||'';$('understood').textContent=r.contesto_compreso||'';
+ $('card-readings').innerHTML=(r.carte||[]).map(c=>`<div class="card-read"><strong>${esc(c.posizione)} · ${esc(c.carta)}</strong><p>${esc(c.significato)}</p><p>${esc(c.nel_contesto)}</p></div>`).join('');
+ $('thread').textContent=r.trama||'';$('central').textContent=r.tensione_centrale||'';$('summary').textContent=r.sintesi||'';$('direction').textContent=r.direzione||'';$('final-question').textContent=r.domanda_finale||'';
+ $('engine').textContent='Motore: '+(data.motore?.provider||'strutturale')+(data.motore?.modello?' · '+data.motore.modello:'');
+ saveLocal(data);$('reading').scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('reading-form').addEventListener('submit',async e=>{e.preventDefault();const btn=$('go');btn.disabled=true;btn.textContent='Sto aprendo la stesa…';$('reading').classList.remove('show');$('status').style.display='block';$('status').textContent='Raffaello sta scegliendo la stesa, estraendo le carte e leggendo le relazioni…';try{const res=await fetch('/api/tarocchi/raffaello',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({domanda:$('question').value.trim(),contesto:$('context').value.trim(),focus:$('focus').value,emozione:$('emotion').value.trim(),profondita:$('depth').value})});const data=await res.json();if(!res.ok)throw new Error(data.errore||('HTTP '+res.status));render(data)}catch(err){$('status').textContent='La lettura non è riuscita: '+err.message}finally{btn.disabled=false;btn.textContent='Raffaello, fai la stesa'}});
+</script>
+</body>
+</html>
