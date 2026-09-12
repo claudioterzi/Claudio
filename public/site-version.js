@@ -20,6 +20,7 @@
     }
     if (/^\/fabbrica(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/fabbrica-viaggi.js', 'fabbrica-viaggi');
+      loadOnce('/fabbrica-dialogo.js', 'fabbrica-dialogo');
     }
   }
 
