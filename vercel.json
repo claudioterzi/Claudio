@@ -25,7 +25,15 @@
     },
     {
       "src": "/",
-      "dest": "/public/raffaello.html"
+      "dest": "/public/accesso.html"
+    },
+    {
+      "src": "/accesso/?",
+      "dest": "/public/accesso.html"
+    },
+    {
+      "src": "/privato/?",
+      "dest": "/public/privato.html"
     },
     {
       "src": "/raffaello/?",
