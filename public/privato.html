@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#0c0c0e">
+<title>Raffaello — Area privata</title>
+<script src="/access-guard.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0c0c0e;color:#e8e4d8;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}main{max-width:1040px;margin:auto;padding:3rem 1rem 5rem}.eyebrow{font-size:.72rem;letter-spacing:.17em;text-transform:uppercase;color:#b79a50;font-weight:900}h1,h2,h3{font-family:Georgia,serif;font-weight:400}h1{font-size:clamp(3rem,9vw,6.5rem);line-height:.9;margin:.2rem 0 1rem;color:#f0e1b8}.lead{font-size:1.15rem;max-width:50rem;color:#bbb3a4}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:2rem}.card{display:block;text-decoration:none;color:inherit;background:#151519;border:1px solid #332f27;border-radius:18px;padding:1.1rem;min-height:155px}.card:hover{border-color:#8c7742}.card h3{font-size:1.6rem;margin:.2rem 0}.card p{color:#9f988b}.bar{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.3rem}.button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.65rem .9rem;border-radius:999px;border:1px solid #6b5a31;background:#c8aa54;color:#16130c;text-decoration:none;font-weight:900}.button.ghost{background:transparent;color:#d3bd7a}.warn{margin-top:2rem;padding:.9rem;border-left:4px solid #a17b2b;background:#1a1710;color:#c7bfae}.signature{margin-top:2rem;color:#8d783f;font:italic 1rem Georgia,serif}@media(max-width:700px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<p class="eyebrow">Raffaello · area privata</p>
+<h1>Cabina interna.</h1>
+<p class="lead">Qui restano gli strumenti che non appartengono al percorso pubblico: regia tecnica, continuità R³∞, audit, economia, stato del sistema e sviluppo.</p>
+<div class="grid">
+<a class="card" href="/orchestratore.html"><p class="eyebrow">Operazioni</p><h3>Cabina di regia</h3><p>Regia live, opportunità, audit, fiducia, economia e simulazioni operative.</p></a>
+<a class="card" href="/r3-evoluzione.html"><p class="eyebrow">Continuità</p><h3>R³∞</h3><p>Memoria, continuità, stato epistemico e strumenti di evoluzione.</p></a>
+<a class="card" href="/home.html"><p class="eyebrow">Sistema</p><h3>Agorà</h3><p>Vista tecnica del motore e dei componenti interni.</p></a>
+<a class="card" href="/creazioni.html"><p class="eyebrow">Canone</p><h3>Progetti interni</h3><p>Catalogo completo e collegamenti di sviluppo non destinati alla navigazione pubblica.</p></a>
+</div>
+<div class="bar"><a class="button" href="/raffaello.html">Apri il sito pubblico</a><button class="button ghost" id="private-exit" type="button">Chiudi sessione privata</button></div>
+<p class="warn"><strong>Protezione attuale:</strong> questa separazione impedisce l'accesso casuale e distingue nettamente i due percorsi. Prima del lancio commerciale, il nucleo riservato va spostato dietro autenticazione server-side e repository/deployment privati: un controllo JavaScript da solo non è un confine di sicurezza.</p>
+<p class="signature">Claudio Terzi · C.Terzi</p>
+</main>
+<script>document.getElementById('private-exit').addEventListener('click',function(){try{sessionStorage.removeItem('raffaello.private.session.v1');localStorage.setItem('raffaello.access.mode.v1','public')}catch(e){}location.replace('/')});</script>
+</body>
+</html>
