@@ -1,15 +1,14 @@
 """Raffaello Flight Hunter — ricerca adattiva del miglior risultato trovato.
 
 Non promette il minimo globale: confronta tutte le fonti attive, costo reale e
-rischio, amplia lo spazio di ricerca in modo controllato e restituisce il
-migliore trovato nel perimetro dichiarato.
+rischio, amplia SEMPRE il miglior ramo osservato e restituisce il migliore trovato
+nel perimetro dichiarato.
 
 Claudio Terzi · C.Terzi
 """
 from __future__ import annotations
 
 from datetime import datetime
-import math
 import re
 
 from flask import Flask, jsonify, request
@@ -112,7 +111,10 @@ def _score(items, objective):
             + float(item.get("margine_rischio") or 0)
         )
         ancillary_penalty = min(1.0, extras / max(1.0, float(item["totale"])))
-        duration_penalty = min(1.0, (item.get("durata_ore") or max_duration) / max(1.0, max_duration))
+        duration_penalty = min(
+            1.0,
+            (item.get("durata_ore") or max_duration) / max(1.0, max_duration),
+        )
 
         if objective == "price":
             # Prezzo = costo reale totale, non la tariffa pubblicitaria nuda.
@@ -166,8 +168,9 @@ def _search(body):
     requested_radius = _num(body.get("raggio"), 250.0, 0.0, 500.0)
     baggage = bool(body.get("bagaglio", False))
 
-    # La caccia lavora già sull'intero mese: la flessibilità data è quindi
-    # incorporata. Si amplia invece su aeroporti, hub e profondità del grafo.
+    # La caccia lavora già sull'intero mese. Primo passaggio: tutte le fonti
+    # attive nello stesso spazio ampio, così nessun provider configurato viene
+    # ignorato a priori.
     stages = [
         {
             "name": "ampia",
@@ -196,15 +199,16 @@ def _search(body):
 
     candidates = _dedupe(candidates)
     preliminary = _score([dict(x) for x in candidates], objective)
-    need_deep = objective == "price" or not preliminary or not any(
-        x.get("rischio") == "basso" for x in preliminary[:5]
-    )
 
-    # Secondo passaggio mirato: usa la fonte che finora ha prodotto il candidato
-    # migliore, conservando la cache del provider. Se non c'è nessun candidato,
-    # prova Ryanair/il primo provider disponibile con un perimetro più ampio.
-    deep_provider = preliminary[0]["provider_ricerca"] if preliminary else (successful_sources[0] if successful_sources else None)
-    if need_deep and deep_provider in source_objects:
+    # Secondo passaggio SEMPRE: il ramo che ha prodotto il miglior candidato
+    # viene approfondito nel grafo (aeroporti più lontani, più hub, fino a 3
+    # tratte). È il compromesso fra "cerca meglio" e una ricerca infinita.
+    deep_provider = (
+        preliminary[0]["provider_ricerca"]
+        if preliminary
+        else (successful_sources[0] if successful_sources else None)
+    )
+    if deep_provider in source_objects:
         deep = {
             "name": "profonda",
             "raggio_origine": max(350.0, requested_radius),
@@ -215,10 +219,19 @@ def _search(body):
         }
         stages.append(deep)
         try:
-            result = _run_stage(source_objects[deep_provider], origin, destination, month, baggage, deep)
+            result = _run_stage(
+                source_objects[deep_provider],
+                origin,
+                destination,
+                month,
+                baggage,
+                deep,
+            )
             candidates.extend(_serialize(it, deep_provider, "profonda") for it in result)
         except Exception as exc:
-            source_errors.append({"provider": deep_provider, "stage": "profonda", "error": type(exc).__name__})
+            source_errors.append(
+                {"provider": deep_provider, "stage": "profonda", "error": type(exc).__name__}
+            )
 
     ranked = _score(_dedupe(candidates), objective)
     best = ranked[0] if ranked else None
@@ -234,9 +247,9 @@ def _search(body):
         "best": best,
         "alternatives": alternatives,
         "why_best": (
-            "Miglior costo reale trovato nello spazio cercato; rischio e complessità restano penalizzati."
+            "Miglior costo reale trovato dopo confronto multi-fonte e approfondimento del ramo più promettente; rischio e complessità restano penalizzati."
             if objective == "price" and best
-            else "Miglior equilibrio trovato fra costo reale, rischio, complessità, extra e durata nello spazio cercato."
+            else "Miglior equilibrio trovato dopo confronto multi-fonte e approfondimento del ramo più promettente, considerando costo reale, rischio, complessità, extra e durata."
             if best
             else "Nessun itinerario verificabile trovato nello spazio cercato."
         ),
@@ -244,15 +257,16 @@ def _search(body):
             "whole_month": True,
             "providers_available": [s.nome for s in sources],
             "providers_successful": successful_sources,
+            "deep_provider": deep_provider,
             "stages": stages,
             "candidates": len(ranked),
             "global_optimum_claimed": False,
         },
         "provider_errors": source_errors,
         "assumptions": (
-            "Il punteggio bilanciato usa 55% costo reale, 20% rischio, 10% complessità, 10% extra e 5% durata."
+            "Il punteggio bilanciato usa 55% costo reale, 20% rischio, 10% complessità, 10% extra e 5% durata. I pesi sono un'ipotesi operativa modificabile."
             if objective == "balanced"
-            else "L'obiettivo prezzo usa 90% costo reale, 6% rischio e 4% complessità."
+            else "L'obiettivo prezzo usa 90% costo reale, 6% rischio e 4% complessità. I pesi sono un'ipotesi operativa modificabile."
         ),
     }, None
 
