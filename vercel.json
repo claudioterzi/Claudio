@@ -9,6 +9,13 @@
       }
     },
     {
+      "src": "api/tarot_raffaello.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxDuration": 60
+      }
+    },
+    {
       "src": "tarocchi_web.py",
       "use": "@vercel/python",
       "config": {
@@ -22,97 +29,31 @@
     }
   ],
   "routes": [
-    {
-      "src": "/soglia/",
-      "dest": "/public/soglia.html"
-    },
-    {
-      "src": "/soglia",
-      "dest": "/public/soglia.html"
-    },
-    {
-      "src": "/",
-      "dest": "/public/accesso.html"
-    },
-    {
-      "src": "/accesso/?",
-      "dest": "/public/accesso.html"
-    },
-    {
-      "src": "/privato/?",
-      "dest": "/public/privato.html"
-    },
-    {
-      "src": "/raffaello/?",
-      "dest": "/public/raffaello.html"
-    },
-    {
-      "src": "/progetti",
-      "dest": "/public/creazioni.html"
-    },
-    {
-      "src": "/r3-evoluzione/?",
-      "dest": "/public/r3-evoluzione.html"
-    },
-    {
-      "src": "/scritti/?",
-      "dest": "/public/scritti.html"
-    },
-    {
-      "src": "/musica/?",
-      "dest": "/public/musica.html"
-    },
-    {
-      "src": "/codice-gaia/?",
-      "dest": "/public/codice-gaia.html"
-    },
-    {
-      "src": "/home",
-      "dest": "/public/home.html"
-    },
-    {
-      "src": "/alpha",
-      "dest": "/public/alpha.html"
-    },
-    {
-      "src": "/viaggi",
-      "dest": "/public/viaggi.html"
-    },
-    {
-      "src": "/flight",
-      "dest": "/public/flight_hunter.html"
-    },
-    {
-      "src": "/oracolo",
-      "dest": "/public/oracolo.html"
-    },
-    {
-      "src": "/parti",
-      "dest": "/public/parti.html"
-    },
-    {
-      "src": "/fabbrica/?",
-      "dest": "/public/fabbrica.html"
-    },
-    {
-      "src": "/fabbrica-dei-desideri/?",
-      "dest": "/public/fabbrica.html"
-    },
-    {
-      "src": "/api/flight/migliore",
-      "dest": "/api/flight_best.py"
-    },
-    {
-      "src": "/(.+\\.(html|js|css|svg|png|jpg|webp|ico|json|txt|pdf))",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/cards/(.*)",
-      "dest": "/public/cards/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "tarocchi_web.py"
-    }
+    {"src": "/soglia/", "dest": "/public/soglia.html"},
+    {"src": "/soglia", "dest": "/public/soglia.html"},
+    {"src": "/", "dest": "/public/accesso.html"},
+    {"src": "/accesso/?", "dest": "/public/accesso.html"},
+    {"src": "/privato/?", "dest": "/public/privato.html"},
+    {"src": "/raffaello/?", "dest": "/public/raffaello.html"},
+    {"src": "/progetti", "dest": "/public/creazioni.html"},
+    {"src": "/r3-evoluzione/?", "dest": "/public/r3-evoluzione.html"},
+    {"src": "/scritti/?", "dest": "/public/scritti.html"},
+    {"src": "/musica/?", "dest": "/public/musica.html"},
+    {"src": "/codice-gaia/?", "dest": "/public/codice-gaia.html"},
+    {"src": "/home", "dest": "/public/home.html"},
+    {"src": "/alpha", "dest": "/public/alpha.html"},
+    {"src": "/tarocchi/?", "dest": "/public/tarocchi-raffaello.html"},
+    {"src": "/lettura-tarocchi/?", "dest": "/public/tarocchi-raffaello.html"},
+    {"src": "/viaggi", "dest": "/public/viaggi.html"},
+    {"src": "/flight", "dest": "/public/flight_hunter.html"},
+    {"src": "/oracolo", "dest": "/public/oracolo.html"},
+    {"src": "/parti", "dest": "/public/parti.html"},
+    {"src": "/fabbrica/?", "dest": "/public/fabbrica.html"},
+    {"src": "/fabbrica-dei-desideri/?", "dest": "/public/fabbrica.html"},
+    {"src": "/api/flight/migliore", "dest": "/api/flight_best.py"},
+    {"src": "/api/tarocchi/raffaello", "dest": "/api/tarot_raffaello.py"},
+    {"src": "/(.+\\.(html|js|css|svg|png|jpg|webp|ico|json|txt|pdf))", "dest": "/public/$1"},
+    {"src": "/cards/(.*)", "dest": "/public/cards/$1"},
+    {"src": "/(.*)", "dest": "tarocchi_web.py"}
   ]
 }
