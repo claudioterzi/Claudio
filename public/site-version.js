@@ -14,6 +14,14 @@
   /* Prima di caricare funzioni applicative, applica il livello di accesso. */
   loadOnce('/access-guard.js', 'access-guard');
 
+  /* In sessione proprietario costruisce un indice comune dei dati già esistenti.
+     È locale e non distruttivo: non sostituisce i dataset originali. */
+  var privateMode=false;
+  try{privateMode=sessionStorage.getItem('raffaello.private.session.v1')==='1'}catch(e){}
+  if(privateMode && !/^\/dati(?:\.html)?\/?$/.test(location.pathname)) {
+    loadOnce('/raffaello-datahub.js', 'raffaello-datahub');
+  }
+
   function loadRouteFeatures() {
     if (/^\/r3-evoluzione(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/r3-secure-sync.js', 'r3-secure-sync');
