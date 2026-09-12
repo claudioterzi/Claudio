@@ -4,6 +4,7 @@
     {"src":"api/flight_best.py","use":"@vercel/python","config":{"maxDuration":60}},
     {"src":"api/tarot_raffaello.py","use":"@vercel/python","config":{"maxDuration":60}},
     {"src":"api/tarot_alpha.py","use":"@vercel/python","config":{"maxDuration":60}},
+    {"src":"api/raffaello.py","use":"@vercel/python","config":{"maxDuration":120,"includeFiles":"{tarocchi_quantici_alpha.json,api/tarot_alpha.py,sdq1/llm/**}"}},
     {"src":"tarocchi_web.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{studio/parfums/**,public/formule/organo-*.json,tarocchi_quantici_alpha.json}"}},
     {"src":"public/**","use":"@vercel/static"}
   ],
@@ -23,6 +24,7 @@
     {"src":"/alpha","dest":"/public/alpha.html"},
     {"src":"/tarocchi/?","dest":"/public/tarocchi-raffaello.html"},
     {"src":"/lettura-tarocchi/?","dest":"/public/tarocchi-raffaello.html"},
+    {"src":"/dialogo-raffaello/?","dest":"/public/dialogo-raffaello.html"},
     {"src":"/tarocchi-manuale/?","dest":"/public/tarocchi-manuale-alpha.html"},
     {"src":"/viaggi","dest":"/public/viaggi.html"},
     {"src":"/flight","dest":"/public/flight_hunter.html"},
@@ -32,6 +34,7 @@
     {"src":"/fabbrica-dei-desideri/?","dest":"/public/fabbrica.html"},
     {"src":"/api/flight/migliore","dest":"/api/flight_best.py"},
     {"src":"/api/tarocchi/raffaello","dest":"/api/tarot_raffaello.py"},
+    {"src":"/api/raffaello/(.*)","dest":"/api/raffaello.py"},
     {"src":"/api/tarocchi/alpha-leggi","dest":"/api/tarot_alpha.py"},
     {"src":"/(.+\\.(html|js|css|svg|png|jpg|webp|ico|json|txt|pdf))","dest":"/public/$1"},
     {"src":"/cards/(.*)","dest":"/public/cards/$1"},

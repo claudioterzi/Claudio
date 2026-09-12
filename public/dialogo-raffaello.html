@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow">
+  <title>Dialogo con Raffaello · C.Terzi</title>
+  <link rel="stylesheet" href="/dialogo-raffaello.css">
+</head>
+<body>
+  <main>
+    <header class="masthead"><a href="/privato">C.Terzi</a><span>Rosso Rosso Rosso</span><a href="/tarocchi-manuale">Alpha 74</a></header>
+    <div class="title"><div><p class="eyebrow">Il tuo dialogo</p><h1>Raffaello<span>.</span></h1></div><a class="quiet" href="https://t.me/Rossoroseorossobot" target="_blank" rel="noopener noreferrer">Apri Telegram ↗</a></div>
+    <p id="status" class="status" role="status" aria-live="polite">Sto aprendo il tuo spazio…</p>
+
+    <section id="pairing" class="panel" hidden aria-labelledby="pair-title">
+      <p class="eyebrow">Sito e Telegram, lo stesso dialogo</p><h2 id="pair-title">Porta qui il tuo contesto.</h2>
+      <p>Scrivi <strong>/collega</strong> nella chat con Raffaello e incolla qui il codice personale. Ritroverai le tue letture e le risposte.</p>
+      <form id="pair-form"><label for="pair-code">Codice del bot</label><div class="pair-row"><input id="pair-code" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" maxlength="40" placeholder="XXXX-XXXX-XXXX-XXXX" required><button type="submit">Collega</button></div></form>
+    </section>
+
+    <div id="workspace" hidden>
+      <nav class="toolbar" aria-label="Dialogo"><button id="general" class="quiet" type="button">Dialogo libero</button><button id="refresh" class="quiet" type="button">Aggiorna</button><button id="disconnect" class="quiet" type="button">Scollega</button></nav>
+      <details id="archive"><summary>Le tue letture</summary><div id="readings"></div></details>
+      <section id="reading" class="panel" hidden aria-labelledby="reading-title">
+        <p class="eyebrow">Alpha 74 · Le stesse carte</p><h2 id="reading-title"></h2>
+        <div id="cards" class="cards"></div><div id="interpretation" class="prose"></div>
+      </section>
+      <section class="conversation" aria-label="Conversazione">
+        <div class="conversation-head"><h2 id="thread-title">Cosa vuoi esplorare?</h2><button id="listen" class="quiet" type="button" aria-pressed="false">Ascolta</button></div>
+        <div id="thread" aria-live="polite"></div>
+        <form id="question-form" class="composer"><label for="question">Scrivi liberamente a Raffaello</label><textarea id="question" rows="3" maxlength="4000" placeholder="Una domanda, un'idea, un passaggio da capire…" required></textarea><div class="composer-actions"><span id="context-label">Dialogo libero</span><button id="analyze" type="submit">Analizza</button></div></form>
+        <a id="continue-telegram" class="continue" hidden target="_blank" rel="noopener noreferrer">Continua questa lettura su Telegram ↗</a>
+      </section>
+    </div>
+    <footer>Claudio Terzi · C.Terzi</footer>
+  </main>
+  <dialog id="card-dialog"><button id="close-card" class="quiet" type="button">Chiudi</button><img id="large-card" width="640" height="640" alt=""><h2 id="card-title"></h2><p id="card-meaning"></p></dialog>
+  <script src="/alpha74-art.js"></script><script src="/raffaello-bridge.js"></script><script src="/dialogo-raffaello.js"></script>
+</body>
+</html>

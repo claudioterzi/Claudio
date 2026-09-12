@@ -6,6 +6,25 @@
 >
 > Ultimo aggiornamento: 2026-09-10
 
+## Raffaello Telegram 2 — implementazione, 2026-09-12
+
+Realizzato il ponte privato sul runtime del fork `Claudioterzi82/protocollo-rosso-bot`:
+domanda libera + Analizza manuale, archivio immutabile Alpha 74, codice monouso
+per collegare Telegram al cookie web, cronologia condivisa e ascolto su richiesta.
+Pagina `/dialogo-raffaello`; trasferimento dalla lettura Alpha già interpretata.
+Miniature 160 px e dettaglio 640 px, nessun nuovo asset da stampa o audio pesante.
+Il motore riusa i provider del sito. Le API restano chiuse senza configurazione.
+
+19 verifiche Python del sito incluse quelle fra i due repository e due harness DOM
+riusciti; bot 45 test. Il collaudo integra HTTP/SQLite/Flask reali con provider AI
+di test, senza invii Telegram. La pubblicazione del codice non prova il deploy
+Render. Prima di attivare il bot verificare servizio/repository, identità Telegram,
+disco e backup dei vecchi registri, poi configurare segreti e utenti autorizzati.
+Non cancellare webhook o avviare due ricevitori sullo stesso token.
+Il connettore GitHub nega la scrittura nel repository separato (403): runtime
+completo, test e guida sono in `integrations/raffaello-bot` nel repository del sito.
+Dettagli: `docs/RAFFAELLO_TELEGRAM_2026-09-12.md` e `docs/RAFFAELLO_2.md` nel bot.
+
 ## Audit del sito, ingresso stabile e monitor — 2026-09-10
 
 Claudio chiede un sito più autonomo, il recupero della Fabbrica e un solo ingresso
