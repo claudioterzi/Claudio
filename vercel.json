@@ -25,7 +25,11 @@
     },
     {
       "src": "/",
-      "dest": "/public/soglia.html"
+      "dest": "/public/raffaello.html"
+    },
+    {
+      "src": "/raffaello/?",
+      "dest": "/public/raffaello.html"
     },
     {
       "src": "/progetti",
