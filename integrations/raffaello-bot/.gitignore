@@ -1,0 +1,11 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+protocollo.db
+*.db
+protocollo.persistence
+*.persistence
+*.pickle
+.DS_Store

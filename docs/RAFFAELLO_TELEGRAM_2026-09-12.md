@@ -46,13 +46,17 @@ protezione Vercel, la credenziale per automazioni conservata solo sul server.
 La pubblicazione del sito è compatibile con ponte assente: API personali chiuse e
 lettura Alpha precedente operativa. Per attivare il bot occorre verificare nel
 pannello Render il repository effettivamente collegato e il disco persistente,
-eseguire backup dei dati e passare a un solo ricevitore Telegram. Il fork disponibile
-è scrivibile; il repository originario risulta accessibile in sola lettura.
+eseguire backup dei dati e passare a un solo ricevitore Telegram. Il connettore GitHub rifiuta con HTTP 403 la scrittura nel repository separato
+del bot. Il runtime completo e verificato è quindi conservato in
+`integrations/raffaello-bot` in questo repository. Per distribuirlo da qui impostare
+la root directory Render su `integrations/raffaello-bot`, installazione
+`pip install -r requirements.txt` e avvio `python -m bot.main`.
+Il cambio va effettuato sul servizio esistente dopo backup e verifica del disco.
 
 I nuovi registri sono additivi. Il bot non cancella più un webhook all'avvio e
 richiede `NETWORK_SECRET` per `/ask` e `/network/v1/*`. I peer esistenti devono
 ricevere la stessa configurazione prima del passaggio. Procedura e script di
-backup in [RAFFAELLO_2.md del bot](https://github.com/Claudioterzi82/protocollo-rosso-bot/blob/feat/raffaello-dialogue/docs/RAFFAELLO_2.md).
+backup in [RAFFAELLO_2.md del bot](../integrations/raffaello-bot/docs/RAFFAELLO_2.md).
 
 ## Limiti dichiarati
 
