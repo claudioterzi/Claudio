@@ -13,7 +13,7 @@
 
   /* L'area proprietario conserva la Costellazione precedente e aggiunge le nuove funzioni Raffaello. */
   var gruppiPrivati = [
-    ['Raffaello', [['privato.html', 'Area privata'], ['raffaello.html', 'Raffaello pubblico'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['talenti.html', 'Bottega dei Talenti'], ['orchestratore.html', 'Cabina di regia'], ['r3-evoluzione.html', 'R³∞ Evoluzione'], ['home.html', 'Agorà'], ['creazioni.html', 'Tutti i progetti'], ['scritti.html', 'Scritti'], ['codice-gaia.html', 'Codice Gaia']]],
+    ['Raffaello', [['privato.html', 'Area privata'], ['dati.html', 'Data Hub'], ['raffaello.html', 'Raffaello pubblico'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['talenti.html', 'Bottega dei Talenti'], ['orchestratore.html', 'Cabina di regia'], ['r3-evoluzione.html', 'R³∞ Evoluzione'], ['home.html', 'Agorà'], ['creazioni.html', 'Tutti i progetti'], ['scritti.html', 'Scritti'], ['codice-gaia.html', 'Codice Gaia']]],
     ['Simboli', [['index.html', 'Tarocchi'], ['alpha.html', 'Alpha'], ['opuscolo.html', 'Opuscolo']]],
     ['Viaggi', [['viaggi.html', 'Viaggi'], ['parti.html', 'Parti'], ['flight_hunter.html', 'Flight'], ['oracolo.html', 'Oracolo']]],
     ['Profumi', [['atelier.html', 'Atelier'], ['parfums.html', 'Parfums'], ['organo.html', 'Organo'], ['spesa.html', 'Dispensa'], ['valigia.html', 'Valigia'], ['libro.html', 'Libro'], ['magazine.html', 'Magazine'], ['musica.html', 'Musica'], ['opera.html', 'Opera']]]
@@ -26,7 +26,7 @@
   if (privateMode && base.pathname === '/') gruppi[3][1].push(['custode/', 'Custode']);
 
   var aliases = {'': privateMode?'privato.html':'raffaello.html', home: 'home.html', alpha: 'alpha.html', soglia: 'soglia.html',
-    viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html', progetti: 'creazioni.html', scritti: 'scritti.html', musica: 'musica.html', fabbrica: 'fabbrica.html', talenti: 'talenti.html', raffaello: 'raffaello.html', orchestratore: 'orchestratore.html', privato:'privato.html', 'r3-evoluzione': 'r3-evoluzione.html'};
+    viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html', progetti: 'creazioni.html', scritti: 'scritti.html', musica: 'musica.html', fabbrica: 'fabbrica.html', talenti: 'talenti.html', raffaello: 'raffaello.html', orchestratore: 'orchestratore.html', privato:'privato.html', dati:'dati.html', 'r3-evoluzione': 'r3-evoluzione.html'};
   var relativo = location.pathname.indexOf(base.pathname) === 0 ? location.pathname.slice(base.pathname.length) : '';
   var qui = aliases[relativo] || relativo;
   var titolo = privateMode ? 'Privato' : 'Esplora';
