@@ -2,17 +2,28 @@
 (function () {
   'use strict';
 
-  function loadR3SecureSync() {
-    if (!/^\/r3-evoluzione(?:\.html)?\/?$/.test(location.pathname)) return;
-    if (document.querySelector('script[data-r3-secure-sync]')) return;
+  function loadOnce(src, datasetKey) {
+    if (document.querySelector('script[data-' + datasetKey + ']')) return;
     var script = document.createElement('script');
-    script.src = '/r3-secure-sync.js';
+    script.src = src;
     script.defer = true;
-    script.dataset.r3SecureSync = '1';
+    script.setAttribute('data-' + datasetKey, '1');
     document.head.appendChild(script);
   }
 
-  loadR3SecureSync();
+  function loadRouteFeatures() {
+    if (/^\/r3-evoluzione(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/r3-secure-sync.js', 'r3-secure-sync');
+    }
+    if (/^\/viaggi(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/viaggi-pro.js', 'viaggi-pro');
+    }
+    if (/^\/fabbrica(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/fabbrica-viaggi.js', 'fabbrica-viaggi');
+    }
+  }
+
+  loadRouteFeatures();
 
   if (!/^claudio-[a-z0-9-]+-claudio-terzi-s-projects\.vercel\.app$/.test(location.hostname)) return;
   function showVersionLink() {
@@ -24,7 +35,7 @@
     notice.appendChild(document.createTextNode('Stai consultando una versione del sito. '));
     var link = document.createElement('a');
     link.textContent = 'Apri il sito ufficiale aggiornato';
-    link.href = 'https://claudio-ebon.vercel.app' + location.pathname;
+    link.href = 'https://claudio-ebon.vercel.app' + location.pathname + location.search + location.hash;
     link.style.cssText = 'color:#302000;text-decoration:underline;font-weight:700';
     notice.appendChild(link);
     document.body.insertBefore(notice, document.body.firstChild);
