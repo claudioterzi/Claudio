@@ -40,7 +40,7 @@
       label.append(name,document.createTextNode(card.posizione_label+' · '+card.asse+' · '+card.polarita));figure.append(button,label);$('cards').append(figure);
     }
     $('context-label').textContent='Sulle carte di questa lettura';$('thread-title').textContent='Continuiamo da qui.';
-    $('continue-telegram').href='https://t.me/Rossoroseorossobot?start=r3_'+id;$('continue-telegram').hidden=false;
+    $('continue-telegram').href='https://t.me/ProtocolloRossoBot?start=r3_'+id;$('continue-telegram').hidden=false;
     showTurns([...(item.snapshot.cronologia||[]),...item.cronologia]);
     history.replaceState(null,'','?lettura='+id);say('Lettura e dialogo aggiornati.');
   }

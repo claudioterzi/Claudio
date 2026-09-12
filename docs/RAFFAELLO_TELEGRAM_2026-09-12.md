@@ -81,6 +81,15 @@ Corretta anche la registrazione delle richieste Telegram: INFO/DEBUG dei traspor
 sono disabilitati e il formatter oscura i token anche nelle eccezioni. Nessuna
 chiave reale è stata aggiunta al codice o alla documentazione.
 
+La verifica diretta `getMe`, con il token fornito da Claudio e corrispondente a
+quello del servizio Render, identifica il bot `@ProtocolloRossoBot` (ID
+`8900249704`, nome visibile «Protocollo Rosso»). `getWebhookInfo` conferma assenza
+di webhook e zero aggiornamenti in attesa al momento del controllo. Queste
+richieste non hanno inviato messaggi né modificato il ricevitore Telegram.
+I due collegamenti della pagina `/dialogo-raffaello` ora usano questo username
+verificato: il nome indicato in precedenza portava a un altro bot. Il token non è
+salvato nel repository. L'attivazione del nuovo runtime resta da completare.
+
 ## Limiti dichiarati
 
 Il dialogo non accede autonomamente agli archivi Atelier/Fabbrica, non trascrive
