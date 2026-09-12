@@ -22,6 +22,7 @@
       loadOnce('/fabbrica-viaggi.js', 'fabbrica-viaggi');
       loadOnce('/fabbrica-dialogo.js', 'fabbrica-dialogo');
       loadOnce('/fabbrica-talenti.js', 'fabbrica-talenti');
+      loadOnce('/fabbrica-budget-fix.js', 'fabbrica-budget-fix');
     }
     if (/^\/talenti(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/talenti-pro.js', 'talenti-pro');
