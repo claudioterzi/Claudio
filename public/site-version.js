@@ -21,6 +21,13 @@
     if (/^\/fabbrica(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/fabbrica-viaggi.js', 'fabbrica-viaggi');
       loadOnce('/fabbrica-dialogo.js', 'fabbrica-dialogo');
+      loadOnce('/fabbrica-talenti.js', 'fabbrica-talenti');
+    }
+    if (/^\/talenti(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/talenti-pro.js', 'talenti-pro');
+    }
+    if (/^\/(?:creazioni|progetti)(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/creazioni-extra.js', 'creazioni-extra');
     }
   }
 
