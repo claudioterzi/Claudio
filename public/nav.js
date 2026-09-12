@@ -1,21 +1,37 @@
-/* La Costellazione: navigazione pubblica. Il laboratorio tecnico resta fuori dal percorso pubblico. */
+/* La Costellazione — pubblico ridotto, proprietario completo. Claudio Terzi · C.Terzi */
 (function () {
   'use strict';
-  var gruppi = [
+  var privateMode=false;
+  try{privateMode=sessionStorage.getItem('raffaello.private.session.v1')==='1'}catch(e){}
+
+  var gruppiPubblici = [
     ['Raffaello', [['raffaello.html', 'Panoramica'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['talenti.html', 'Bottega dei Talenti']]],
     ['Viaggi', [['viaggi.html', 'Viaggi'], ['parti.html', 'Parti'], ['flight_hunter.html', 'Flight'], ['oracolo.html', 'Oracolo']]],
     ['Profumi', [['atelier.html', 'Atelier'], ['parfums.html', 'Parfums'], ['organo.html', 'Organo'], ['spesa.html', 'Dispensa'], ['valigia.html', 'Valigia'], ['libro.html', 'Libro'], ['magazine.html', 'Magazine']]],
     ['Creazioni', [['index.html', 'Tarocchi'], ['alpha.html', 'Alpha'], ['opuscolo.html', 'Opuscolo'], ['musica.html', 'Musica'], ['opera.html', 'Opera']]]
   ];
+
+  /* L'area proprietario conserva la Costellazione precedente e aggiunge le nuove funzioni Raffaello. */
+  var gruppiPrivati = [
+    ['Raffaello', [['privato.html', 'Area privata'], ['raffaello.html', 'Raffaello pubblico'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['talenti.html', 'Bottega dei Talenti'], ['orchestratore.html', 'Cabina di regia'], ['r3-evoluzione.html', 'R³∞ Evoluzione'], ['home.html', 'Agorà'], ['creazioni.html', 'Tutti i progetti'], ['scritti.html', 'Scritti'], ['codice-gaia.html', 'Codice Gaia']]],
+    ['Simboli', [['index.html', 'Tarocchi'], ['alpha.html', 'Alpha'], ['opuscolo.html', 'Opuscolo']]],
+    ['Viaggi', [['viaggi.html', 'Viaggi'], ['parti.html', 'Parti'], ['flight_hunter.html', 'Flight'], ['oracolo.html', 'Oracolo']]],
+    ['Profumi', [['atelier.html', 'Atelier'], ['parfums.html', 'Parfums'], ['organo.html', 'Organo'], ['spesa.html', 'Dispensa'], ['valigia.html', 'Valigia'], ['libro.html', 'Libro'], ['magazine.html', 'Magazine'], ['musica.html', 'Musica'], ['opera.html', 'Opera']]]
+  ];
+
+  var gruppi = privateMode ? gruppiPrivati : gruppiPubblici;
   var base = new URL('.', document.currentScript.src);
   var version = document.createElement('script'); version.src = new URL('site-version.js', base); document.head.appendChild(version);
   var atmosfere = document.createElement('script'); atmosfere.src = new URL('atmosfere.js', base); document.head.appendChild(atmosfere);
-  var aliases = {'': 'raffaello.html', home: 'home.html', alpha: 'alpha.html', soglia: 'soglia.html',
-    viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html', progetti: 'creazioni.html', scritti: 'scritti.html', musica: 'musica.html', fabbrica: 'fabbrica.html', talenti: 'talenti.html', raffaello: 'raffaello.html', orchestratore: 'orchestratore.html', 'r3-evoluzione': 'r3-evoluzione.html'};
+  if (privateMode && base.pathname === '/') gruppi[3][1].push(['custode/', 'Custode']);
+
+  var aliases = {'': privateMode?'privato.html':'raffaello.html', home: 'home.html', alpha: 'alpha.html', soglia: 'soglia.html',
+    viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html', progetti: 'creazioni.html', scritti: 'scritti.html', musica: 'musica.html', fabbrica: 'fabbrica.html', talenti: 'talenti.html', raffaello: 'raffaello.html', orchestratore: 'orchestratore.html', privato:'privato.html', 'r3-evoluzione': 'r3-evoluzione.html'};
   var relativo = location.pathname.indexOf(base.pathname) === 0 ? location.pathname.slice(base.pathname.length) : '';
   var qui = aliases[relativo] || relativo;
-  var titolo = 'Esplora';
+  var titolo = privateMode ? 'Privato' : 'Esplora';
   gruppi.forEach(function (g) { g[1].forEach(function (v) { if (v[0] === qui) titolo = v[1]; }); });
+
   var stile = document.createElement('style');
   stile.textContent = `
     .nav-costellazione{box-sizing:border-box;background:#101014;color:#ded8c9;border-bottom:1px solid #423922;
@@ -42,19 +58,20 @@
     @media print{.nav-costellazione{display:none}}
   `;
   document.head.appendChild(stile);
+
   var menu = document.createElement('details');
   menu.className = 'nav-costellazione';
   var summary = document.createElement('summary');
-  summary.textContent = 'La Costellazione · ' + titolo;
+  summary.textContent = (privateMode ? 'La Costellazione privata · ' : 'La Costellazione · ') + titolo;
   menu.appendChild(summary);
   var ingresso = document.createElement('a');
-  ingresso.href = new URL('raffaello.html', base).href;
-  ingresso.textContent = 'Raffaello · panoramica';
-  ingresso.setAttribute('aria-label', 'Raffaello: panoramica');
+  ingresso.href = new URL(privateMode?'privato.html':'raffaello.html', base).href;
+  ingresso.textContent = privateMode ? 'Area privata · tutte le funzioni' : 'Raffaello · panoramica';
+  ingresso.setAttribute('aria-label', privateMode ? 'Area privata: tutte le funzioni' : 'Raffaello: panoramica');
   menu.appendChild(ingresso);
   var nav = document.createElement('nav');
   nav.className = 'nav-gruppi';
-  nav.setAttribute('aria-label', 'Percorsi pubblici della Costellazione');
+  nav.setAttribute('aria-label', privateMode ? 'Percorsi privati della Costellazione' : 'Percorsi pubblici della Costellazione');
   gruppi.forEach(function (g) {
     var section = document.createElement('div'); section.className = 'nav-gruppo';
     var label = document.createElement('strong'); label.className = 'nav-etichetta'; label.textContent = g[0];
