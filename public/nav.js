@@ -5,7 +5,7 @@
     ['Simboli', [['index.html', 'Tarocchi'], ['alpha.html', 'Alpha'], ['opuscolo.html', 'Opuscolo']]],
     ['Viaggi', [['viaggi.html', 'Viaggi'], ['parti.html', 'Parti'], ['flight_hunter.html', 'Flight'], ['oracolo.html', 'Oracolo']]],
     ['Profumi', [['atelier.html', 'Atelier'], ['parfums.html', 'Parfums'], ['organo.html', 'Organo'], ['spesa.html', 'Dispensa'], ['valigia.html', 'Valigia'], ['libro.html', 'Libro'], ['magazine.html', 'Magazine']]],
-    ['Progetto', [['creazioni.html', 'Tutti i progetti'], ['r3-evoluzione.html', 'R³∞ Evoluzione'], ['scritti.html', 'Scritti'], ['musica.html', 'Musica'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['talenti.html', 'Bottega dei Talenti'], ['orchestratore.html', 'Raffaello Orchestratore'], ['opera.html', 'Opera'], ['home.html', 'Agorà']]]
+    ['Progetto', [['creazioni.html', 'Tutti i progetti'], ['r3-evoluzione.html', 'R³∞ Evoluzione'], ['scritti.html', 'Scritti'], ['musica.html', 'Musica'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['talenti.html', 'Bottega dei Talenti'], ['orchestratore.html', 'Raffaello · Regia'], ['opera.html', 'Opera'], ['home.html', 'Agorà']]]
   ];
   var base = new URL('.', document.currentScript.src);
   var version = document.createElement('script'); version.src = new URL('site-version.js', base); document.head.appendChild(version);
