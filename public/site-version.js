@@ -25,6 +25,7 @@
     }
     if (/^\/talenti(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/talenti-pro.js', 'talenti-pro');
+      loadOnce('/talenti-ecosistema.js', 'talenti-ecosistema');
     }
     if (/^\/(?:creazioni|progetti)(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/creazioni-extra.js', 'creazioni-extra');
