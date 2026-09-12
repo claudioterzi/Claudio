@@ -2,17 +2,62 @@
 (function () {
   'use strict';
 
-  function loadR3SecureSync() {
-    if (!/^\/r3-evoluzione(?:\.html)?\/?$/.test(location.pathname)) return;
-    if (document.querySelector('script[data-r3-secure-sync]')) return;
+  function loadOnce(src, datasetKey) {
+    if (document.querySelector('script[data-' + datasetKey + ']')) return;
     var script = document.createElement('script');
-    script.src = '/r3-secure-sync.js';
-    script.defer = true;
-    script.dataset.r3SecureSync = '1';
+    script.src = src;
+    script.async = false;
+    script.setAttribute('data-' + datasetKey + '', '1');
     document.head.appendChild(script);
   }
 
-  loadR3SecureSync();
+  /* Prima di caricare funzioni applicative, applica il livello di accesso. */
+  loadOnce('/access-guard.js', 'access-guard');
+
+  /* In sessione proprietario costruisce un indice comune dei dati già esistenti.
+     È locale e non distruttivo: non sostituisce i dataset originali. */
+  var privateMode=false;
+  try{privateMode=sessionStorage.getItem('raffaello.private.session.v1')==='1'}catch(e){}
+  if(privateMode && !/^\/dati(?:\.html)?\/?$/.test(location.pathname)) {
+    loadOnce('/raffaello-datahub.js', 'raffaello-datahub');
+  }
+
+  function loadRouteFeatures() {
+    if (/^\/(?:index(?:\.html)?|tarocchi-manuale)\/?$/.test(location.pathname)) {
+      loadOnce('/tarocchi-manuale.js', 'tarocchi-manuale');
+    }
+    if (/^\/r3-evoluzione(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/r3-secure-sync.js', 'r3-secure-sync');
+    }
+    if (/^\/(?:viaggi(?:\.html)?|flight_hunter(?:\.html)?|flight)\/?$/.test(location.pathname)) {
+      loadOnce('/viaggi-pro.js', 'viaggi-pro');
+    }
+    if (/^\/fabbrica(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/fabbrica-viaggi.js', 'fabbrica-viaggi');
+      loadOnce('/fabbrica-dialogo.js', 'fabbrica-dialogo');
+      loadOnce('/fabbrica-talenti.js', 'fabbrica-talenti');
+      loadOnce('/fabbrica-budget-fix.js', 'fabbrica-budget-fix');
+    }
+    if (/^\/talenti(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/talenti-pro.js', 'talenti-pro');
+      loadOnce('/talenti-ecosistema.js', 'talenti-ecosistema');
+    }
+    if (/^\/orchestratore(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/orchestratore-proof.js', 'orchestratore-proof');
+      loadOnce('/orchestratore-audit.js', 'orchestratore-audit');
+      loadOnce('/orchestratore-economia.js', 'orchestratore-economia');
+      loadOnce('/orchestratore-valore.js', 'orchestratore-valore');
+      loadOnce('/orchestratore-regia.js', 'orchestratore-regia');
+      loadOnce('/orchestratore-opportunita.js', 'orchestratore-opportunita');
+      loadOnce('/orchestratore-memorabile.js', 'orchestratore-memorabile');
+      loadOnce('/orchestratore-budget-extra.js', 'orchestratore-budget-extra');
+    }
+    if (/^\/(?:creazioni|progetti)(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/creazioni-extra.js', 'creazioni-extra');
+    }
+  }
+
+  loadRouteFeatures();
 
   if (!/^claudio-[a-z0-9-]+-claudio-terzi-s-projects\.vercel\.app$/.test(location.hostname)) return;
   function showVersionLink() {
@@ -24,7 +69,7 @@
     notice.appendChild(document.createTextNode('Stai consultando una versione del sito. '));
     var link = document.createElement('a');
     link.textContent = 'Apri il sito ufficiale aggiornato';
-    link.href = 'https://claudio-ebon.vercel.app' + location.pathname;
+    link.href = 'https://claudio-ebon.vercel.app' + location.pathname + location.search + location.hash;
     link.style.cssText = 'color:#302000;text-decoration:underline;font-weight:700';
     notice.appendChild(link);
     document.body.insertBefore(notice, document.body.firstChild);
