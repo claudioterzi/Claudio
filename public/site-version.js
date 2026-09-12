@@ -27,6 +27,9 @@
       loadOnce('/talenti-pro.js', 'talenti-pro');
       loadOnce('/talenti-ecosistema.js', 'talenti-ecosistema');
     }
+    if (/^\/orchestratore(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/orchestratore-proof.js', 'orchestratore-proof');
+    }
     if (/^\/(?:creazioni|progetti)(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/creazioni-extra.js', 'creazioni-extra');
     }
