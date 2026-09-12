@@ -6,7 +6,7 @@
     if (document.querySelector('script[data-' + datasetKey + ']')) return;
     var script = document.createElement('script');
     script.src = src;
-    script.defer = true;
+    script.async = false;
     script.setAttribute('data-' + datasetKey, '1');
     document.head.appendChild(script);
   }
