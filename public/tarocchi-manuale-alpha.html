@@ -137,6 +137,10 @@
         <div id="why"></div>
       </details>
       <div id="engine" class="small"></div>
+      <div id="telegram-continuity" class="follow-actions hidden">
+        <button id="telegram-share" class="listen" type="button">Continua su Telegram</button>
+        <span id="telegram-status" class="follow-status" role="status" aria-live="polite"></span>
+      </div>
 
       <section id="follow-up" class="follow-up hidden" aria-labelledby="follow-label">
         <label id="follow-label" for="follow-question">Chiedi a Raffaello qualsiasi cosa su questa lettura.</label>
@@ -159,6 +163,7 @@
     <p id="art-meaning" class="meaning"></p>
   </dialog>
   <script src="/alpha74-art.js"></script>
+  <script src="/raffaello-bridge.js"></script>
   <script>
     const ORDER=[
       ['passato','Passato','ovest'],
@@ -350,6 +355,19 @@
       button.textContent='Raffaello risponde…';
       $('follow-status').textContent='Rileggo la domanda alla luce delle carte estratte.';
       try{
+        if(activeReading.shared_id && window.RaffaelloBridge){
+          if(!activeReading.pendingShared || activeReading.pendingShared.question!==question){
+            activeReading.pendingShared={question,id:crypto.randomUUID()};
+          }
+          const data=await window.RaffaelloBridge.analyze(question,activeReading.shared_id,activeReading.pendingShared.id);
+          if(lastReading!==activeReading)return;
+          appendFollowUp(question,data.risposta);
+          followHistory.push({domanda:question,risposta:data.risposta});
+          activeReading.pendingShared=null;
+          $('follow-question').value='';
+          $('follow-status').textContent='Risposta salvata anche nel dialogo Telegram.';
+          return;
+        }
         const response=await fetch('/api/tarocchi/alpha-leggi',{
           method:'POST',
           headers:{'Content-Type':'application/json'},
@@ -377,6 +395,35 @@
         button.disabled=false;
         button.textContent='Analizza la domanda';
       }
+    }
+
+    async function shareWithTelegram(){
+      if(!lastReading||!readingContext||!window.RaffaelloBridge)return;
+      const active=lastReading,button=$('telegram-share');
+      if(button.disabled)return;
+      button.disabled=true;
+      const snapshot={lettura_id:active.lettura_id,carte:readingContext.carte,
+        domanda:readingContext.domanda,contesto:readingContext.contesto,
+        lettura:active.lettura,cronologia:followHistory.slice()};
+      try{
+        if(!active.shared_id){
+          const saved=await window.RaffaelloBridge.request('/readings','POST',snapshot);
+          active.shared_id=saved.id;
+        }
+        if(lastReading===active)location.href='/dialogo-raffaello?lettura='+active.shared_id;
+      }catch(error){
+        if(error.status===401){
+          sessionStorage.setItem('r3-reading-transfer',JSON.stringify(snapshot));
+          location.href='/dialogo-raffaello#collega';
+        }else{$('telegram-status').textContent=error.message;}
+      }finally{button.disabled=false;}
+    }
+
+    $('telegram-share').addEventListener('click',shareWithTelegram);
+    if(window.RaffaelloBridge){
+      window.RaffaelloBridge.request('/status').then(status=>{
+        if(status.configured)$('telegram-continuity').classList.remove('hidden');
+      }).catch(()=>{});
     }
 
     function speechText(){

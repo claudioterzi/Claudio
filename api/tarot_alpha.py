@@ -230,7 +230,7 @@ def _follow_up_fallback(cards, question):
     }
 
 
-def _ai_follow_up(cards, question, original_question, context, previous, history):
+def _ai_follow_up(cards, question, original_question, context, previous, history, *, timeout_seconds=30, max_retries=2):
     system = """Sei Raffaello, interprete del Canone Alpha di Claudio Terzi.
 L'utente sta facendo una domanda libera DOPO una lettura già conclusa.
 
@@ -265,8 +265,8 @@ OUTPUT SOLO JSON valido:
     except Exception:
         return None, None
     providers = [
-        (GeminiProvider, "gemini-2.5-flash", {"json_mode": True, "temperatura": 0.45, "max_token": 2200, "timeout": 30}),
-        (AnthropicProvider, "claude-haiku-4-5-20251001", {"temperatura": 0.4, "max_token": 2200, "timeout_secondi": 30}),
+        (GeminiProvider, "gemini-2.5-flash", {"json_mode": True, "temperatura": 0.45, "max_token": 2200, "timeout": timeout_seconds}),
+        (AnthropicProvider, "claude-haiku-4-5-20251001", {"temperatura": 0.4, "max_token": 2200, "timeout_secondi": timeout_seconds, "max_retries": max_retries}),
     ]
     allowed = {c["carta"] for c in cards}
     for cls, model, opts in providers:

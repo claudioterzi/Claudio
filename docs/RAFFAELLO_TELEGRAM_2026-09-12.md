@@ -1,0 +1,68 @@
+# Raffaello · continuità fra sito e Telegram
+
+Claudio Terzi · C.Terzi · 12 settembre 2026
+
+Implementati il dialogo personale e il collegamento con Alpha 74. L'analisi resta
+manuale. Il testo libero del bot prepara una domanda; Analizza invoca il motore del
+sito con le carte della lettura selezionata e una cronologia limitata.
+
+Il bot conserva l'archivio SQLite e controlla il proprietario. Il sito usa un cookie
+HttpOnly/Secure/SameSite=Strict ottenuto con un codice monouso generato nella chat
+Telegram autorizzata. Non riceve il token Telegram e non accetta ID di proprietari
+come credenziali. Il segreto del ponte resta sui server. Nessuna protezione Vercel
+o Soglia esistente viene disabilitata.
+
+`/dialogo-raffaello` riapre la stessa lettura o risposta: le carte hanno miniature
+da 160 px e dettaglio da 640 px richiesto al tocco, con la rotazione corretta.
+Ascolta usa la voce del browser su richiesta; non crea file audio o nuovi costi TTS.
+Il contenuto personale viene recuperato soltanto dopo il collegamento.
+
+In Alpha 74 compare Continua su Telegram solo quando il ponte è configurato.
+Il trasferimento include domanda, contesto, carte, interpretazione e precedenti
+approfondimenti. Da quel momento i nuovi approfondimenti passano all'archivio
+condiviso. I significati canonici vengono ricalcolati sul server del bot dal
+medesimo JSON, e il contesto iniziale rimane immutabile.
+
+## Verifica
+
+- 45 test del bot: vecchi registri, migrazione additiva, identità, letture immutabili,
+  codici monouso, sessioni, lock, errori e analisi esplicita.
+- 19 test Python del sito, incluso un collaudo fra i due repository con HTTP/SQLite/
+  Flask reali. Solo il provider AI e il trasporto verso gli host pubblici sono
+  sostituiti. Nessuna conversazione Telegram live è stata inviata o letta.
+- Due harness DOM: selezione e trasferimento del contesto, pulsanti manuali,
+  isolamento delle risposte tardive, miniature/dettaglio; copertura delle 592
+  combinazioni Alpha e delle 296 immagini esistenti.
+- Il browser non può raggiungere il server locale in questo ambiente. Questi
+  harness verificano il comportamento del JavaScript, non il rendering iPhone.
+
+## Attivazione
+
+Su Vercel servono `RAFFAELLO_BOT_URL` e `RAFFAELLO_BRIDGE_SECRET`; i provider AI
+sono quelli già usati dal sito. Sul servizio Render esistente servono lo stesso
+segreto, `RAFFAELLO_ALLOWED_USERS`, l'indirizzo del sito e, se richiesto dalla
+protezione Vercel, la credenziale per automazioni conservata solo sul server.
+
+La pubblicazione del sito è compatibile con ponte assente: API personali chiuse e
+lettura Alpha precedente operativa. Per attivare il bot occorre verificare nel
+pannello Render il repository effettivamente collegato e il disco persistente,
+eseguire backup dei dati e passare a un solo ricevitore Telegram. Il fork disponibile
+è scrivibile; il repository originario risulta accessibile in sola lettura.
+
+I nuovi registri sono additivi. Il bot non cancella più un webhook all'avvio e
+richiede `NETWORK_SECRET` per `/ask` e `/network/v1/*`. I peer esistenti devono
+ricevere la stessa configurazione prima del passaggio. Procedura e script di
+backup in [RAFFAELLO_2.md del bot](https://github.com/Claudioterzi82/protocollo-rosso-bot/blob/feat/raffaello-dialogue/docs/RAFFAELLO_2.md).
+
+## Limiti dichiarati
+
+Il dialogo non accede autonomamente agli archivi Atelier/Fabbrica, non trascrive
+vocali e non invia audio nativo Telegram. Queste funzioni non sono simulate.
+La ripetizione di un pulsante riusa il risultato persistito; un crash durante la
+chiamata al provider può comportare un nuovo tentativo dopo la scadenza del lock.
+La pagina presenta gli ultimi 30 scambi, mentre il database conserva anche i
+precedenti. Nessuna cancellazione automatica dei registri personali.
+
+Le API e i parametri di hosting sono verificati sulla documentazione ufficiale
+[durata delle funzioni Vercel](https://vercel.com/docs/functions/configuring-functions/duration)
+e [credenziale per automazioni](https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation).
