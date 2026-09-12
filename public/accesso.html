@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0d0d0f">
+<meta name="robots" content="noindex,nofollow">
+<title>Raffaello — Accesso</title>
+<style>
+*{box-sizing:border-box}html,body{min-height:100%;margin:0}body{background:#0d0d0f;color:#ece7da;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:grid;place-items:center;padding:1.25rem}.box{width:min(520px,100%);background:#151519;border:1px solid #332f27;border-radius:24px;padding:1.5rem;box-shadow:0 24px 80px rgba(0,0,0,.35)}.eyebrow{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:#b99b51;font-weight:900}h1{font:400 clamp(2.7rem,10vw,5rem)/.95 Georgia,serif;margin:.3rem 0 1rem;color:#f1e5bf}p{line-height:1.55;color:#bdb6a7}.field{display:grid;gap:.45rem;margin:1.2rem 0}.field label{font-weight:800}.field input{width:100%;min-height:52px;border-radius:13px;border:1px solid #5f543d;background:#0f0f12;color:#fff;padding:.75rem 1rem;font:inherit;font-size:1.05rem;outline:none}.field input:focus{border-color:#d2b65f;box-shadow:0 0 0 3px rgba(210,182,95,.12)}button{width:100%;min-height:50px;border:0;border-radius:999px;background:#d0b35b;color:#17140d;font:inherit;font-weight:900;cursor:pointer}.micro{font-size:.82rem;color:#7f786c;margin-top:.8rem}.status{min-height:1.5rem;margin-top:.8rem;font-size:.9rem}.status.bad{color:#e39183}.status.good{color:#a9d09e}.split{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-top:1rem}.ghost{background:transparent;color:#cdbb83;border:1px solid #5f543d}.signature{text-align:center;margin-top:1rem;color:#8f7a47;font:italic 1rem Georgia,serif}@media(max-width:520px){.split{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="box" aria-labelledby="title">
+<p class="eyebrow">Raffaello · accesso</p>
+<h1 id="title">Una porta.<br>Due livelli.</h1>
+<p>Inserisci il tuo codice. Il codice proprietario apre l'area privata. Un nuovo codice personale crea invece il tuo accesso alla parte pubblica.</p>
+<form id="access-form">
+<div class="field"><label for="access-code">Il tuo codice</label><input id="access-code" name="code" type="password" minlength="4" maxlength="80" autocomplete="current-password" inputmode="text" required></div>
+<button type="submit">Entra in Raffaello</button>
+<p id="access-status" class="status" role="status" aria-live="polite"></p>
+</form>
+<div class="split"><button class="ghost" id="new-code" type="button">Scegli un nuovo codice pubblico</button><button class="ghost" id="forget-code" type="button">Dimentica questo dispositivo</button></div>
+<p class="micro">Nella versione attuale il codice pubblico identifica questo browser: viene conservato solo come impronta crittografica locale, non in chiaro. L'account condiviso tra dispositivi arriverà con il backend utenti.</p>
+<p class="signature">C.Terzi</p>
+</main>
+<script src="/accesso.js"></script>
+</body>
+</html>
