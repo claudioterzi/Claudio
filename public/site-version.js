@@ -34,6 +34,7 @@
       loadOnce('/orchestratore-valore.js', 'orchestratore-valore');
       loadOnce('/orchestratore-regia.js', 'orchestratore-regia');
       loadOnce('/orchestratore-opportunita.js', 'orchestratore-opportunita');
+      loadOnce('/orchestratore-memorabile.js', 'orchestratore-memorabile');
     }
     if (/^\/(?:creazioni|progetti)(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/creazioni-extra.js', 'creazioni-extra');
