@@ -2,6 +2,13 @@
   "version": 2,
   "builds": [
     {
+      "src": "api/flight_best.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxDuration": 60
+      }
+    },
+    {
       "src": "tarocchi_web.py",
       "use": "@vercel/python",
       "config": {
@@ -90,6 +97,10 @@
     {
       "src": "/fabbrica-dei-desideri/?",
       "dest": "/public/fabbrica.html"
+    },
+    {
+      "src": "/api/flight/migliore",
+      "dest": "/api/flight_best.py"
     },
     {
       "src": "/(.+\\.(html|js|css|svg|png|jpg|webp|ico|json|txt|pdf))",
