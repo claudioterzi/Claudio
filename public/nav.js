@@ -11,7 +11,7 @@
   var version = document.createElement('script'); version.src = new URL('site-version.js', base); document.head.appendChild(version);
   var atmosfere = document.createElement('script'); atmosfere.src = new URL('atmosfere.js', base); document.head.appendChild(atmosfere);
   if (base.pathname === '/') gruppi[3][1].push(['custode/', 'Custode']);
-  var aliases = {'': 'soglia.html', home: 'home.html', alpha: 'alpha.html', soglia: 'soglia.html',
+  var aliases = {'': 'raffaello.html', home: 'home.html', alpha: 'alpha.html', soglia: 'soglia.html',
     viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html', progetti: 'creazioni.html', scritti: 'scritti.html', musica: 'musica.html', fabbrica: 'fabbrica.html', talenti: 'talenti.html', raffaello: 'raffaello.html', orchestratore: 'orchestratore.html', 'r3-evoluzione': 'r3-evoluzione.html'};
   var relativo = location.pathname.indexOf(base.pathname) === 0 ? location.pathname.slice(base.pathname.length) : '';
   var qui = aliases[relativo] || relativo;
