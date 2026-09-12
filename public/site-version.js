@@ -23,6 +23,9 @@
   }
 
   function loadRouteFeatures() {
+    if (/^\/(?:index(?:\.html)?|tarocchi-manuale)\/?$/.test(location.pathname)) {
+      loadOnce('/tarocchi-manuale.js', 'tarocchi-manuale');
+    }
     if (/^\/r3-evoluzione(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/r3-secure-sync.js', 'r3-secure-sync');
     }
