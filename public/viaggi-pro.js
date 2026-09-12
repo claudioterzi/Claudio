@@ -1,0 +1,53 @@
+/* Viaggi Pro — Claudio Terzi · C.Terzi
+   Flight Desk local-first: confronta fonti, non inventa tariffe e collega i desideri ai viaggi necessari. */
+(function(){
+'use strict';
+const VERIFIED_KEY='claudio.flight.hunter.verified.v1';
+const INTENT_KEY='claudio.travel.intent.v1';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+function load(k,fallback){try{const x=JSON.parse(localStorage.getItem(k)||'null');return x??fallback}catch{return fallback}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}}
+function cleanCode(v){return String(v||'').trim().toUpperCase().replace(/[^A-Z]/g,'').slice(0,3)}
+function value(id){return $(id)?.value?.trim()||''}
+function route(){return {from:cleanCode(value('fh-da')),to:cleanCode(value('fh-a')),date:value('fh-data'),ret:value('fh-ritorno'),max:Number(value('fh-maxeur'))||0}}
+function query(r){return ['volo',r.from||'partenza',r.to||'destinazione',r.date||'',r.ret?('ritorno '+r.ret):'solo andata'].filter(Boolean).join(' ')}
+function googleFlights(r){return 'https://www.google.com/travel/flights?hl=it&q='+encodeURIComponent(query(r))}
+function kayak(r){if(r.from.length===3&&r.to.length===3&&r.date){const ret=r.ret?'/'+r.ret:'';return 'https://www.kayak.it/flights/'+r.from+'-'+r.to+'/'+r.date+ret+'?sort=price_a'}return 'https://www.kayak.it/flights'}
+function momondo(r){if(r.from.length===3&&r.to.length===3&&r.date){const ret=r.ret?'/'+r.ret:'';return 'https://www.momondo.it/flight-search/'+r.from+'-'+r.to+'/'+r.date+ret+'?sort=price_a'}return 'https://www.momondo.it/flight-search'}
+function providerCards(r){return [
+ ['Google Flights',googleFlights(r),'Metaricerca · calendario e confronto'],
+ ['KAYAK',kayak(r),'Metaricerca · ordina per prezzo'],
+ ['momondo',momondo(r),'Metaricerca · confronto alternativo'],
+ ['Skyscanner','https://www.skyscanner.it/','Metaricerca · verifica separata'],
+ ['Ryanair','https://www.ryanair.com/it/it','Compagnia diretta · utile per low cost'],
+ ['easyJet','https://www.easyjet.com/it','Compagnia diretta · verifica tariffa propria'],
+ ['Transavia','https://www.transavia.com/','Compagnia diretta · utile su FR/NL'],
+ ['Wizz Air','https://wizzair.com/it-it','Compagnia diretta · utile su Europa est']
+ ]}
+function verified(){const x=load(VERIFIED_KEY,[]);return Array.isArray(x)?x:[]}
+function sameRoute(x,r){return x.from===r.from&&x.to===r.to&&x.date===r.date&&(x.ret||'')===(r.ret||'')}
+function fmt(n){return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(n)}
+function decision(r,items){if(!items.length)return ['UNKNOWN','Nessun prezzo verificato salvato: confronta almeno 2 fonti.'];const best=items.slice().sort((a,b)=>a.price-b.price)[0];if(r.max&&best.price<=r.max)return ['CANDIDATO ACQUISTO','Miglior prezzo verificato '+fmt(best.price)+' ('+best.provider+'), entro il tetto '+fmt(r.max)+'. Ricontrolla condizioni e bagagli prima di acquistare.'];if(r.max)return ['MONITOR','Miglior prezzo verificato '+fmt(best.price)+' supera il tetto '+fmt(r.max)+'. Prova date flessibili o aeroporti alternativi.'];return ['CONFRONTA','Miglior prezzo verificato '+fmt(best.price)+' ('+best.provider+'). Imposta un budget massimo per una decisione più netta.']}
+function render(){
+ const host=$('flight-desk-pro'); if(!host)return; const r=route(); const matches=verified().filter(x=>sameRoute(x,r)); const [status,text]=decision(r,matches); const best=matches.slice().sort((a,b)=>a.price-b.price)[0];
+ host.querySelector('[data-route]').textContent=(r.from||'???')+' → '+(r.to||'???')+(r.date?' · '+r.date:'')+(r.ret?' → '+r.ret:'');
+ host.querySelector('[data-status]').textContent=status; host.querySelector('[data-decision]').textContent=text;
+ const links=host.querySelector('[data-providers]'); links.innerHTML=''; providerCards(r).forEach(([name,url,note])=>{const a=document.createElement('a');a.className='fd-provider';a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML='<strong>'+esc(name)+'</strong><span>'+esc(note)+'</span>';links.appendChild(a)});
+ const hist=host.querySelector('[data-prices]'); if(!matches.length)hist.innerHTML='<p class="fd-muted">Ancora nessuna tariffa verificata per questa combinazione.</p>'; else hist.innerHTML=matches.slice().sort((a,b)=>a.price-b.price).slice(0,8).map((x,i)=>'<div class="fd-price '+(i===0?'best':'')+'"><strong>'+fmt(x.price)+'</strong><span>'+esc(x.provider)+' · '+new Date(x.at).toLocaleString('it-IT')+'</span></div>').join('');
+ const bestNode=host.querySelector('[data-best]');bestNode.textContent=best?fmt(best.price):'—';
+}
+function prefill(){const p=new URLSearchParams(location.search);const saved=load(INTENT_KEY,null);const src=p.get('source')==='fabbrica'?Object.fromEntries(p.entries()):(saved&&saved.source==='fabbrica'?saved:null);if(!src)return;const map=[['from','fh-da'],['to','fh-a'],['date','fh-data'],['return','fh-ritorno'],['budget','fh-maxeur']];map.forEach(([k,id])=>{if(src[k]&&$(id)&&!$(id).value)$(id).value=src[k]});const purpose=src.purpose||src.dream||'';const note=document.getElementById('flight-desk-intent');if(note){note.hidden=false;note.querySelector('strong').textContent=purpose||'Viaggio necessario a un progetto della Fabbrica';note.querySelector('span').textContent=[src.people?('Persone: '+src.people):'',src.destination?('Meta: '+src.destination):''].filter(Boolean).join(' · ')}}
+function mount(){
+ const anchor=$('fh-da')?.closest('section')||$('fh-da')?.parentElement?.parentElement||document.querySelector('main')||document.body;
+ if(!anchor||$('flight-desk-pro'))return;
+ const wrap=document.createElement('section');wrap.id='flight-desk-pro';wrap.className='flight-desk-pro';wrap.innerHTML=`<div class="fd-head"><div><p class="fd-kicker">FLIGHT DESK · C.TERZI</p><h2>Cerca il prezzo più basso, senza fingere di averlo trovato.</h2><p class="fd-muted">Apri più fonti sulla stessa tratta. Il sito considera “migliore” solo un prezzo che registri dopo averlo verificato.</p></div><div class="fd-score"><span>Migliore verificato</span><strong data-best>—</strong></div></div><div id="flight-desk-intent" class="fd-intent" hidden><small>DALLA FABBRICA DEI DESIDERI</small><strong></strong><span></span></div><div class="fd-route"><strong data-route>??? → ???</strong><span data-status>UNKNOWN</span><p data-decision></p></div><div data-providers class="fd-providers"></div><form id="fd-price-form" class="fd-form"><label>Prezzo visto (€)<input id="fd-price" type="number" min="0" step="0.01" required placeholder="49.99"></label><label>Fonte<select id="fd-provider"><option>Google Flights</option><option>Skyscanner</option><option>KAYAK</option><option>momondo</option><option>Ryanair</option><option>easyJet</option><option>Transavia</option><option>Wizz Air</option><option>Altro</option></select></label><button type="submit">Registra prezzo verificato</button></form><div class="fd-flex"><label><input id="fd-flexible" type="checkbox"> Posso spostare le date ±3 giorni</label><button type="button" id="fd-copy-query">Copia ricerca</button></div><div data-prices class="fd-prices"></div><p class="fd-foot">Nessuna prenotazione automatica. Prezzi, bagagli e condizioni cambiano: verifica sempre il totale finale sul venditore prima dell’acquisto.</p>`;
+ anchor.appendChild(wrap);
+ const style=document.createElement('style');style.textContent=`.flight-desk-pro{margin:2rem auto;padding:1.25rem;max-width:1100px;border:1px solid #554725;border-radius:16px;background:#111217;color:#eee7d8;font-family:system-ui,-apple-system,sans-serif}.fd-head{display:grid;grid-template-columns:1fr auto;gap:1rem}.fd-head h2{margin:.25rem 0;font-size:clamp(1.5rem,4vw,2.4rem)}.fd-kicker{color:#d4b861;letter-spacing:.12em;font-size:.75rem}.fd-muted,.fd-foot{color:#aaa49a}.fd-score,.fd-route,.fd-intent{border:1px solid #34343c;border-radius:12px;padding:.9rem;background:#17181e}.fd-score{min-width:160px}.fd-score span,.fd-score strong,.fd-intent strong,.fd-intent span{display:block}.fd-score strong{font-size:1.6rem;color:#d4b861}.fd-intent{margin:1rem 0;border-color:#725e2b}.fd-intent small{color:#d4b861}.fd-route{margin:1rem 0}.fd-route>strong{font-size:1.15rem}.fd-route>span{float:right;color:#d4b861;font-weight:700}.fd-providers{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}.fd-provider{display:grid;gap:.2rem;padding:.8rem;border:1px solid #34343c;border-radius:10px;color:inherit;text-decoration:none}.fd-provider:hover{border-color:#d4b861}.fd-provider span{font-size:.78rem;color:#aaa49a}.fd-form{display:grid;grid-template-columns:1fr 1fr auto;gap:.7rem;margin-top:1rem}.fd-form label{display:grid;gap:.3rem}.fd-form input,.fd-form select,.fd-form button,#fd-copy-query{min-height:44px;border-radius:8px;border:1px solid #484852;padding:.6rem;background:#0c0d11;color:#fff}.fd-form button,#fd-copy-query{cursor:pointer;border-color:#927b3c;color:#e8ce82}.fd-flex{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin:1rem 0}.fd-prices{display:grid;gap:.4rem}.fd-price{display:flex;justify-content:space-between;padding:.55rem .7rem;border-bottom:1px solid #2b2b32}.fd-price.best{border:1px solid #6f5d2c;border-radius:8px}.fd-price span{color:#aaa49a}.fd-foot{font-size:.78rem;margin-bottom:0}@media(max-width:760px){.fd-head,.fd-form{grid-template-columns:1fr}.fd-providers{grid-template-columns:1fr 1fr}.fd-score{min-width:0}.fd-flex{align-items:flex-start;flex-direction:column}.fd-route>span{float:none;display:block;margin-top:.35rem}}`;document.head.appendChild(style);
+ ['fh-da','fh-a','fh-data','fh-ritorno','fh-maxeur'].forEach(id=>$(id)?.addEventListener('input',render));
+ $('fd-price-form').addEventListener('submit',e=>{e.preventDefault();const r=route(),price=Number($('fd-price').value),provider=$('fd-provider').value;if(r.from.length!==3||r.to.length!==3||!r.date){alert('Inserisci aeroporto di partenza, arrivo e data prima di salvare il prezzo.');return}if(!(price>0))return;const all=verified();all.push({...r,price,provider,at:new Date().toISOString(),verified_by:'manual'});save(VERIFIED_KEY,all.slice(-200));$('fd-price').value='';render()});
+ $('fd-copy-query').addEventListener('click',async()=>{const text=query(route())+($('fd-flexible').checked?' date flessibili ±3 giorni':'');try{await navigator.clipboard.writeText(text);$('fd-copy-query').textContent='Copiato';setTimeout(()=>$('fd-copy-query').textContent='Copia ricerca',1200)}catch{prompt('Copia questa ricerca:',text)}});
+ prefill();render();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
+})();
