@@ -5,14 +5,14 @@
     ['Simboli', [['index.html', 'Tarocchi'], ['alpha.html', 'Alpha'], ['opuscolo.html', 'Opuscolo']]],
     ['Viaggi', [['viaggi.html', 'Viaggi'], ['parti.html', 'Parti'], ['flight_hunter.html', 'Flight'], ['oracolo.html', 'Oracolo']]],
     ['Profumi', [['atelier.html', 'Atelier'], ['parfums.html', 'Parfums'], ['organo.html', 'Organo'], ['spesa.html', 'Dispensa'], ['valigia.html', 'Valigia'], ['libro.html', 'Libro'], ['magazine.html', 'Magazine']]],
-    ['Progetto', [['creazioni.html', 'Tutti i progetti'], ['r3-evoluzione.html', 'R³∞ Evoluzione'], ['scritti.html', 'Scritti'], ['musica.html', 'Musica'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['talenti.html', 'Bottega dei Talenti'], ['orchestratore.html', 'Raffaello · Regia'], ['opera.html', 'Opera'], ['home.html', 'Agorà']]]
+    ['Progetto', [['raffaello.html', 'Raffaello'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['talenti.html', 'Bottega dei Talenti'], ['orchestratore.html', 'Cabina di regia'], ['creazioni.html', 'Tutti i progetti'], ['r3-evoluzione.html', 'R³∞ Evoluzione'], ['scritti.html', 'Scritti'], ['musica.html', 'Musica'], ['opera.html', 'Opera'], ['home.html', 'Agorà']]]
   ];
   var base = new URL('.', document.currentScript.src);
   var version = document.createElement('script'); version.src = new URL('site-version.js', base); document.head.appendChild(version);
   var atmosfere = document.createElement('script'); atmosfere.src = new URL('atmosfere.js', base); document.head.appendChild(atmosfere);
   if (base.pathname === '/') gruppi[3][1].push(['custode/', 'Custode']);
   var aliases = {'': 'soglia.html', home: 'home.html', alpha: 'alpha.html', soglia: 'soglia.html',
-    viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html', progetti: 'creazioni.html', scritti: 'scritti.html', musica: 'musica.html', fabbrica: 'fabbrica.html', talenti: 'talenti.html', orchestratore: 'orchestratore.html', 'r3-evoluzione': 'r3-evoluzione.html'};
+    viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html', progetti: 'creazioni.html', scritti: 'scritti.html', musica: 'musica.html', fabbrica: 'fabbrica.html', talenti: 'talenti.html', raffaello: 'raffaello.html', orchestratore: 'orchestratore.html', 'r3-evoluzione': 'r3-evoluzione.html'};
   var relativo = location.pathname.indexOf(base.pathname) === 0 ? location.pathname.slice(base.pathname.length) : '';
   var qui = aliases[relativo] || relativo;
   var titolo = 'Esplora';
@@ -49,9 +49,9 @@
   summary.textContent = 'La Costellazione · ' + titolo;
   menu.appendChild(summary);
   var ingresso = document.createElement('a');
-  ingresso.href = base.href;
-  ingresso.textContent = 'Home · La Soglia';
-  ingresso.setAttribute('aria-label', 'Home: ingresso dalla Soglia');
+  ingresso.href = new URL('raffaello.html', base).href;
+  ingresso.textContent = 'Raffaello · panoramica';
+  ingresso.setAttribute('aria-label', 'Raffaello: panoramica dell’ecosistema');
   menu.appendChild(ingresso);
   var nav = document.createElement('nav');
   nav.className = 'nav-gruppi';
