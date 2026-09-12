@@ -7,7 +7,7 @@
     var script = document.createElement('script');
     script.src = src;
     script.async = false;
-    script.setAttribute('data-' + datasetKey, '1');
+    script.setAttribute('data-' + datasetKey + '', '1');
     document.head.appendChild(script);
   }
 
@@ -30,6 +30,7 @@
     if (/^\/orchestratore(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/orchestratore-proof.js', 'orchestratore-proof');
       loadOnce('/orchestratore-audit.js', 'orchestratore-audit');
+      loadOnce('/orchestratore-economia.js', 'orchestratore-economia');
     }
     if (/^\/(?:creazioni|progetti)(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/creazioni-extra.js', 'creazioni-extra');
