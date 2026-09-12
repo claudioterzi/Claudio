@@ -26,7 +26,7 @@
     if (/^\/r3-evoluzione(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/r3-secure-sync.js', 'r3-secure-sync');
     }
-    if (/^\/viaggi(?:\.html)?\/?$/.test(location.pathname)) {
+    if (/^\/(?:viaggi(?:\.html)?|flight_hunter(?:\.html)?|flight)\/?$/.test(location.pathname)) {
       loadOnce('/viaggi-pro.js', 'viaggi-pro');
     }
     if (/^\/fabbrica(?:\.html)?\/?$/.test(location.pathname)) {
