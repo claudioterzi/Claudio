@@ -52,6 +52,7 @@ logger = logging.getLogger("protocollo")
 COMMANDS = [
     BotCommand("start", "Dialoga con Raffaello"),
     BotCommand("letture", "Riprendi una lettura Alpha 74"),
+    BotCommand("progetti", "Apri tutti i progetti"),
     BotCommand("collega", "Collega il sito a questa chat"),
     BotCommand("nuovo", "Inizia un nuovo dialogo"),
     BotCommand("scollega", "Revoca i collegamenti al sito"),

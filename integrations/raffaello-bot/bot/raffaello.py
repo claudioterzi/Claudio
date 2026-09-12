@@ -42,6 +42,7 @@ def actions(did=None, rid=None):
         rows.append([InlineKeyboardButton("Analizza", callback_data="r3:a:" + did)])
     suffix = "?lettura=" + rid if rid else ""
     rows.append([InlineKeyboardButton("Apri sul sito", url=web_url() + suffix)])
+    rows.append([InlineKeyboardButton("Tutti i progetti", url=web_url("/privato"))])
     return InlineKeyboardMarkup(rows)
 
 
@@ -135,6 +136,20 @@ async def readings(update, context):
     await update.effective_message.reply_text("Quale lettura vuoi riprendere?", reply_markup=InlineKeyboardMarkup(keyboard))
 
 
+async def projects(update, context):
+    if not await private(update):
+        return
+    await update.effective_message.reply_text(
+        "La Costellazione completa è raccolta in un solo indice. "
+        "Da lì puoi aprire tutti i progetti e tornare al dialogo con Raffaello.",
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton("Tutti i progetti", url=web_url("/privato"))],
+            [InlineKeyboardButton("Dialogo con Raffaello", url=web_url())],
+            [InlineKeyboardButton("Alpha 74", url=web_url("/tarocchi-manuale"))],
+        ]),
+    )
+
+
 async def link(update, context):
     if not await private(update):
         return
@@ -160,4 +175,5 @@ async def new(update, context):
 def handlers():
     return [CommandHandler("start", start), CommandHandler("collega", link),
             CommandHandler("scollega", unlink), CommandHandler("letture", readings),
-            CommandHandler("nuovo", new), CallbackQueryHandler(callback, pattern=r"^r3:")]
+            CommandHandler("progetti", projects), CommandHandler("nuovo", new),
+            CallbackQueryHandler(callback, pattern=r"^r3:")]
