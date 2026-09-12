@@ -61,6 +61,10 @@ polling, invece di essere cancellato automaticamente.
 Il ponte rifiuta richieste senza segreto, proprietari non abilitati, sessioni
 scadute, payload eccessivi e accessi a letture altrui. Non segue redirect HTTP con
 credenziali. La protezione Vercel e la Soglia del sito restano attive.
+Per la prima abilitazione, `/start` in una chat privata non autorizzata mostra
+l'ID numerico dell'utente che ha scritto. Inserire quell'ID in
+`RAFFAELLO_ALLOWED_USERS`: il messaggio non concede accesso, non avvia analisi
+e non mostra identificativi di altre persone.
 La [credenziale Vercel per automazioni](https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation)
 consente l'accesso del servizio alla funzione protetta; non va messa nel browser.
 

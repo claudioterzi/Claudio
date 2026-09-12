@@ -27,7 +27,11 @@ async def private(update):
         if update.callback_query:
             await update.callback_query.answer("Account non abilitato a Raffaello.", show_alert=True)
         else:
-            await update.effective_message.reply_text("Questo account non è ancora abilitato al dialogo personale con Raffaello.")
+            await update.effective_message.reply_text(
+                "Questo account non è ancora abilitato al dialogo personale con Raffaello.\n\n"
+                f"Il tuo ID Telegram: {update.effective_user.id}\n"
+                "Comunica questo numero a chi configura il tuo accesso."
+            )
         return False
     return True
 
