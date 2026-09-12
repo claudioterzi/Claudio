@@ -11,6 +11,9 @@
     document.head.appendChild(script);
   }
 
+  /* Prima di caricare funzioni applicative, applica il livello di accesso. */
+  loadOnce('/access-guard.js', 'access-guard');
+
   function loadRouteFeatures() {
     if (/^\/r3-evoluzione(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/r3-secure-sync.js', 'r3-secure-sync');
