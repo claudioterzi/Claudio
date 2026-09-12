@@ -5,15 +5,14 @@
     ['Simboli', [['index.html', 'Tarocchi'], ['alpha.html', 'Alpha'], ['opuscolo.html', 'Opuscolo']]],
     ['Viaggi', [['viaggi.html', 'Viaggi'], ['parti.html', 'Parti'], ['flight_hunter.html', 'Flight'], ['oracolo.html', 'Oracolo']]],
     ['Profumi', [['atelier.html', 'Atelier'], ['parfums.html', 'Parfums'], ['organo.html', 'Organo'], ['spesa.html', 'Dispensa'], ['valigia.html', 'Valigia'], ['libro.html', 'Libro'], ['magazine.html', 'Magazine']]],
-    ['Progetto', [['creazioni.html', 'Tutti i progetti'], ['r3-evoluzione.html', 'R³∞ Evoluzione'], ['scritti.html', 'Scritti'], ['musica.html', 'Musica'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['opera.html', 'Opera'], ['home.html', 'Agorà']]]
+    ['Progetto', [['creazioni.html', 'Tutti i progetti'], ['r3-evoluzione.html', 'R³∞ Evoluzione'], ['scritti.html', 'Scritti'], ['musica.html', 'Musica'], ['fabbrica.html', 'Fabbrica dei Desideri'], ['talenti.html', 'Bottega dei Talenti'], ['opera.html', 'Opera'], ['home.html', 'Agorà']]]
   ];
-  // Mantiene il prefisso anche quando il sito è servito da GitHub Pages.
   var base = new URL('.', document.currentScript.src);
   var version = document.createElement('script'); version.src = new URL('site-version.js', base); document.head.appendChild(version);
   var atmosfere = document.createElement('script'); atmosfere.src = new URL('atmosfere.js', base); document.head.appendChild(atmosfere);
   if (base.pathname === '/') gruppi[3][1].push(['custode/', 'Custode']);
   var aliases = {'': 'soglia.html', home: 'home.html', alpha: 'alpha.html', soglia: 'soglia.html',
-    viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html', progetti: 'creazioni.html', scritti: 'scritti.html', musica: 'musica.html', fabbrica: 'fabbrica.html', 'r3-evoluzione': 'r3-evoluzione.html'};
+    viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html', progetti: 'creazioni.html', scritti: 'scritti.html', musica: 'musica.html', fabbrica: 'fabbrica.html', talenti: 'talenti.html', 'r3-evoluzione': 'r3-evoluzione.html'};
   var relativo = location.pathname.indexOf(base.pathname) === 0 ? location.pathname.slice(base.pathname.length) : '';
   var qui = aliases[relativo] || relativo;
   var titolo = 'Esplora';
