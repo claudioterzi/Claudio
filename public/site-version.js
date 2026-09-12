@@ -31,6 +31,7 @@
       loadOnce('/orchestratore-proof.js', 'orchestratore-proof');
       loadOnce('/orchestratore-audit.js', 'orchestratore-audit');
       loadOnce('/orchestratore-economia.js', 'orchestratore-economia');
+      loadOnce('/orchestratore-valore.js', 'orchestratore-valore');
     }
     if (/^\/(?:creazioni|progetti)(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/creazioni-extra.js', 'creazioni-extra');
