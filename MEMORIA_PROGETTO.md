@@ -4,9 +4,9 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-09-10
+> Ultimo aggiornamento: 2026-09-12
 
-## Raffaello Telegram 2 — implementazione, 2026-09-12
+## Raffaello Telegram 2 — avvio verificato, 2026-09-12
 
 Realizzato il ponte privato sul runtime del fork `Claudioterzi82/protocollo-rosso-bot`:
 domanda libera + Analizza manuale, archivio immutabile Alpha 74, codice monouso
@@ -15,15 +15,33 @@ Pagina `/dialogo-raffaello`; trasferimento dalla lettura Alpha già interpretata
 Miniature 160 px e dettaglio 640 px, nessun nuovo asset da stampa o audio pesante.
 Il motore riusa i provider del sito. Le API restano chiuse senza configurazione.
 
-19 verifiche Python del sito incluse quelle fra i due repository e due harness DOM
-riusciti; bot 45 test. Il collaudo integra HTTP/SQLite/Flask reali con provider AI
-di test, senza invii Telegram. La pubblicazione del codice non prova il deploy
-Render. Prima di attivare il bot verificare servizio/repository, identità Telegram,
-disco e backup dei vecchi registri, poi configurare segreti e utenti autorizzati.
-Non cancellare webhook o avviare due ricevitori sullo stesso token.
+49 test del bot, 19 verifiche Python del sito incluse quelle fra i due repository
+e due harness DOM riusciti. Il collaudo locale integra HTTP/SQLite/Flask reali con
+provider AI di test, senza invii Telegram. PR 36 corregge l'avvio con la lista
+mista di CommandHandler e ConversationHandler e mostra al solo mittente privato
+non abilitato il proprio ID numerico tramite /start.
+
+Render usa ora `claudioterzi/Claudio`, branch main, runtime in
+`integrations/raffaello-bot`. Health HTTP 200, versione 2.0.0 e commit
+`06f8795f971b6d091478ac8fe379916c7681a4ef` verificati. Vercel Production READY sullo
+stesso commit; `/api/raffaello/status` restituisce `configured: true` tramite
+accesso Vercel autenticato. Segreto condiviso e URL salvati su entrambi i servizi;
+credenziale Vercel dedicata alle automazioni aggiunta al solo Render. Nessuna
+protezione del sito disabilitata. Le risposte health/status non provano ancora
+un'analisi AI completa fra Telegram e sito.
+
+Bot verificato: @ProtocolloRossoBot, ID bot 8900249704. Manca l'ID personale di
+Claudio per `RAFFAELLO_ALLOWED_USERS`: chiedere /start al bot e il numero mostrato,
+senza confonderlo con l'ID del bot. Non aprire l'accesso a tutti. Il servizio resta
+Free, con SQLite su filesystem effimero: persistenza delle nuove letture e
+continuità del polling dopo la sospensione richiedono ancora una soluzione.
+Claudio ha autorizzato a scartare i vecchi registri; nessun nuovo piano a pagamento
+è autorizzato. Non cancellare webhook o avviare due ricevitori sullo stesso token.
 Il connettore GitHub nega la scrittura nel repository separato (403): runtime
 completo, test e guida sono in `integrations/raffaello-bot` nel repository del sito.
-Dettagli: `docs/RAFFAELLO_TELEGRAM_2026-09-12.md` e `docs/RAFFAELLO_2.md` nel bot.
+Dettagli: `docs/RAFFAELLO_TELEGRAM_2026-09-12.md` e
+`integrations/raffaello-bot/docs/RAFFAELLO_2.md`. Il segmento standalone preparato
+prima della configurazione è storico: per riprendere usare questo stato aggiornato.
 
 ## Audit del sito, ingresso stabile e monitor — 2026-09-10
 

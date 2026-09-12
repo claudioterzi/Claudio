@@ -25,8 +25,9 @@ medesimo JSON, e il contesto iniziale rimane immutabile.
 
 ## Verifica
 
-- 48 test del bot: vecchi registri, migrazione additiva, identità, letture immutabili,
-  codici monouso, sessioni, lock, errori, analisi esplicita e token assenti dai log.
+- 49 test del bot: vecchi registri, migrazione additiva, identità, letture immutabili,
+  codici monouso, sessioni, lock, errori, analisi esplicita, token assenti dai log
+  e costruzione dei veri handler all'avvio senza aprire un ricevitore Telegram.
 - 19 test Python del sito, incluso un collaudo fra i due repository con HTTP/SQLite/
   Flask reali. Solo il provider AI e il trasporto verso gli host pubblici sono
   sostituiti. Nessuna conversazione Telegram live è stata inviata o letta.
@@ -36,24 +37,22 @@ medesimo JSON, e il contesto iniziale rimane immutabile.
 - Il browser non può raggiungere il server locale in questo ambiente. Questi
   harness verificano il comportamento del JavaScript, non il rendering iPhone.
 
-## Attivazione
+## Attivazione: configurazione salvata e passaggi mancanti
 
-Su Vercel servono `RAFFAELLO_BOT_URL` e `RAFFAELLO_BRIDGE_SECRET`; i provider AI
-sono quelli già usati dal sito. Sul servizio Render esistente servono lo stesso
-segreto, `RAFFAELLO_ALLOWED_USERS`, l'indirizzo del sito e, se richiesto dalla
-protezione Vercel, la credenziale per automazioni conservata solo sul server.
+Il 12 settembre 2026 sono stati salvati su Vercel Production `RAFFAELLO_BOT_URL`
+e un nuovo `RAFFAELLO_BRIDGE_SECRET`. Su Render sono stati salvati lo stesso
+segreto, `RAFFAELLO_SITE_URL` e una nuova credenziale dedicata
+`RAFFAELLO_VERCEL_BYPASS_SECRET`. Gli altri segreti non sono stati letti o
+modificati. I provider AI restano quelli già usati dal sito. La protezione Vercel
+rimane attiva; l'accesso diretto anonimo alla route status restituisce un redirect.
 
-La pubblicazione del sito è compatibile con ponte assente: API personali chiuse e
-lettura Alpha precedente operativa. Per attivare il bot occorre verificare nel
-pannello Render il repository effettivamente collegato e il disco persistente,
-eseguire backup dei dati e passare a un solo ricevitore Telegram. Il connettore GitHub rifiuta con HTTP 403 la scrittura nel repository separato
-del bot. Il runtime completo e verificato è quindi conservato in
-`integrations/raffaello-bot` in questo repository. Per distribuirlo da qui impostare
-la root directory Render su `integrations/raffaello-bot`, installazione
-`pip install -r requirements.txt` e avvio `python -m bot.main`.
-Il cambio va effettuato sul servizio esistente dopo aver definito la conservazione
-dei dati; per la ripartenza senza vecchi registri autorizzata da Claudio, vedere
-la verifica del servizio riportata sotto.
+Manca `RAFFAELLO_ALLOWED_USERS`: /start nella chat privata con il bot mostra
+all'utente non ancora abilitato il proprio ID numerico. Occorre ricevere quello
+di Claudio e inserirlo nella lista autorizzata. Questo passaggio non può usare
+l'ID del bot, un nome utente del browser o un'autorizzazione aperta a tutti.
+Prima di affidare nuove letture all'archivio va risolta la persistenza descritta
+sotto. L'analisi completa Telegram → sito → risposta e la riapertura web
+devono ancora essere collaudate con l'account abilitato.
 
 I nuovi registri sono additivi. Il bot non cancella più un webhook all'avvio e
 richiede `NETWORK_SECRET` per `/ask` e `/network/v1/*`. I peer esistenti devono
@@ -63,12 +62,30 @@ backup in [RAFFAELLO_2.md del bot](../integrations/raffaello-bot/docs/RAFFAELLO_
 ## Verifica del servizio Render
 
 Il pannello autenticato conferma `protocollo-rosso-bot`, regione Frankfurt,
-repository `Claudioterzi82/protocollo-rosso-bot`, branch `main`, commit live
-`6fb9846a18c96f75ce7bce22ca205f1f3123155b`, avvio `python -m bot.main`.
+ora collegato al repository `claudioterzi/Claudio`, branch `main`. La root directory
+è vuota, build `pip install -r integrations/raffaello-bot/requirements.txt`,
+avvio `cd integrations/raffaello-bot && exec python -m bot.main`. Non semplificare
+i comandi senza impostare anche la root directory. Il filtro Included Paths
+`integrations/raffaello-bot/**` è salvato: le modifiche al solo sito non devono
+riavviare il bot.
+
+Il primo deploy del nuovo runtime è fallito perché la lista dei vecchi handler
+include anche CommandHandler, che non hanno `fallbacks`. La PR 36 applica
+l'inserimento del fallback /nuovo ai soli ConversationHandler e aggiunge una
+regressione d'avvio. Il deploy successivo è risultato Live. La health ha risposto
+HTTP 200 con versione `2.0.0`, `bridge_configured: true` e commit
+`06f8795f971b6d091478ac8fe379916c7681a4ef`.
+Anche il deploy successivo al salvataggio della credenziale Vercel,
+`dep-dairnutg1s2s738gqctg`, è risultato Live nel pannello Render.
+
+Vercel Production sullo stesso commit è READY, deployment
+`dpl_Ch32WrznjqvG4p7rJQ21D1JruDUa`. La route `/api/raffaello/status`, verificata
+tramite accesso Vercel autenticato, risponde HTTP 200 con `configured: true`.
+Queste verifiche provano avvio e presenza della configurazione, non la consegna
+di un messaggio Telegram né la risposta del provider AI.
+
 Il piano è Free, senza disco persistente né accesso shell. I percorsi configurati
-sono `protocollo.db` e `protocollo.persistence`, entrambi relativi. I log mostrano
-polling Telegram con risposte HTTP 200. I nomi delle variabili confermano che il
-ponte Raffaello non è ancora configurato.
+sono `protocollo.db` e `protocollo.persistence`, entrambi relativi.
 
 Durante questa verifica Claudio ha autorizzato esplicitamente a eliminare i vecchi
 registri e ripartire da zero. Il backup dei vecchi dati non blocca più il passaggio;
@@ -76,6 +93,10 @@ questa autorizzazione non equivale a una cancellazione già eseguita. Non autori
 un abbonamento aggiuntivo o la perdita programmata delle nuove letture. Render Free
 perde i file locali a riavvio, redeploy e sospensione per inattività; il piano
 minimo a pagamento mostrato dal pannello è 7 USD/mese, più eventuale disco.
+La sospensione dopo 15 minuti senza traffico in ingresso ferma inoltre il polling:
+un messaggio Telegram non risveglia da solo un servizio che riceve tramite polling.
+Non sono stati acquistati servizi né configurati ping artificiali per mantenerlo
+acceso. Questo piano è adatto al collaudo, non alla continuità promessa per il diario.
 
 Corretta anche la registrazione delle richieste Telegram: INFO/DEBUG dei trasporti
 sono disabilitati e il formatter oscura i token anche nelle eccezioni. Nessuna
@@ -88,7 +109,8 @@ di webhook e zero aggiornamenti in attesa al momento del controllo. Queste
 richieste non hanno inviato messaggi né modificato il ricevitore Telegram.
 I due collegamenti della pagina `/dialogo-raffaello` ora usano questo username
 verificato: il nome indicato in precedenza portava a un altro bot. Il token non è
-salvato nel repository. L'attivazione del nuovo runtime resta da completare.
+salvato nel repository. Il nuovo runtime si avvia; l'abilitazione personale e il
+collaudo completo restano da completare.
 
 ## Limiti dichiarati
 
@@ -102,3 +124,4 @@ precedenti. Nessuna cancellazione automatica dei registri personali.
 Le API e i parametri di hosting sono verificati sulla documentazione ufficiale
 [durata delle funzioni Vercel](https://vercel.com/docs/functions/configuring-functions/duration)
 e [credenziale per automazioni](https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation).
+Per i limiti del piano corrente: [Render Free](https://render.com/docs/free).
