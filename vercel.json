@@ -4,16 +4,12 @@
     {
       "src": "api/flight_best.py",
       "use": "@vercel/python",
-      "config": {
-        "maxDuration": 60
-      }
+      "config": {"maxDuration": 60}
     },
     {
       "src": "api/tarot_raffaello.py",
       "use": "@vercel/python",
-      "config": {
-        "maxDuration": 60
-      }
+      "config": {"maxDuration": 60}
     },
     {
       "src": "tarocchi_web.py",
@@ -23,10 +19,7 @@
         "includeFiles": "{studio/parfums/**,public/formule/organo-*.json}"
       }
     },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
+    {"src": "public/**", "use": "@vercel/static"}
   ],
   "routes": [
     {"src": "/soglia/", "dest": "/public/soglia.html"},
@@ -44,6 +37,7 @@
     {"src": "/alpha", "dest": "/public/alpha.html"},
     {"src": "/tarocchi/?", "dest": "/public/tarocchi-raffaello.html"},
     {"src": "/lettura-tarocchi/?", "dest": "/public/tarocchi-raffaello.html"},
+    {"src": "/tarocchi-manuale/?", "dest": "/public/index.html"},
     {"src": "/viaggi", "dest": "/public/viaggi.html"},
     {"src": "/flight", "dest": "/public/flight_hunter.html"},
     {"src": "/oracolo", "dest": "/public/oracolo.html"},
