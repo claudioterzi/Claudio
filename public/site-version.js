@@ -33,6 +33,7 @@
       loadOnce('/orchestratore-economia.js', 'orchestratore-economia');
       loadOnce('/orchestratore-valore.js', 'orchestratore-valore');
       loadOnce('/orchestratore-regia.js', 'orchestratore-regia');
+      loadOnce('/orchestratore-opportunita.js', 'orchestratore-opportunita');
     }
     if (/^\/(?:creazioni|progetti)(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/creazioni-extra.js', 'creazioni-extra');
