@@ -209,14 +209,14 @@ Mantieni esattamente i nomi canonici delle carte nel campo "carta"; traduci inve
 Le chiavi JSON devono restare quelle indicate qui sotto.
 
 OUTPUT SOLO JSON valido:
-{
+{{
  "messaggio":"un messaggio continuo di 6-12 frasi, in prima persona come Raffaello, che spiega la stesa nel suo insieme",
  "nodo":"il nodo centrale in 2-4 frasi",
  "direzione":"direzione concreta ma non prescrittiva in 2-4 frasi",
  "domanda_finale":"una sola domanda molto precisa",
- "carte":[{"posizione":"...","carta":"...","lettura":"spiegazione chiara del significato canonico nel contesto"}],
+ "carte":[{{"posizione":"...","carta":"...","lettura":"spiegazione chiara del significato canonico nel contesto"}}],
  "livello":"AI_ALPHA_CONTEXTUAL"
-}"""
+}}"""
     user = json.dumps({"domanda": question or None, "contesto": context or None, "lingua": language, "carte": cards}, ensure_ascii=False)
     try:
         from sdq1.llm.providers import GeminiProvider, AnthropicProvider
@@ -339,11 +339,11 @@ STILE:
 {target_language} naturale, caldo, diretto e preciso. Rispondi nella lingua richiesta alla domanda specifica senza menu, formule predefinite o digressioni tecniche.
 
 OUTPUT SOLO JSON valido:
-{
+{{
  "risposta":"risposta completa e contestuale in prima persona come Raffaello",
  "carte_richiamate":["solo nomi di carte realmente presenti nella stesa"],
  "livello":"AI_ALPHA_FOLLOW_UP"
-}"""
+}}"""
     user = json.dumps({
         "domanda_attuale": question,
         "domanda_originale": original_question or None,

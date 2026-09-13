@@ -174,17 +174,17 @@ STILE:
 {target_language} naturale, caldo, preciso. Prima persona come Raffaello. Niente gergo R³∞ nel messaggio principale. Deve sembrare un messaggio personale, non un report.
 
 OUTPUT SOLO JSON valido:
-{
+{{
  "apertura":"2-4 frasi molto chiare",
  "contesto_compreso":"cosa hai capito, senza inventare",
- "carte":[{"posizione":"...","carta":"...","significato":"spiegazione semplice","nel_contesto":"lettura specifica"}],
+ "carte":[{{"posizione":"...","carta":"...","significato":"spiegazione semplice","nel_contesto":"lettura specifica"}}],
  "trama":"come le carte costruiscono una storia unica",
  "tensione_centrale":"il nodo principale",
  "sintesi":"4-7 frasi chiare che potresti dire direttamente all'utente",
  "direzione":"una direzione concreta ma non prescrittiva",
  "domanda_finale":"una sola domanda molto mirata",
  "livello":"AI_CONTEXTUAL"
-}"""
+}}"""
     user=json.dumps({"domanda":question or None,"contesto_aggiuntivo":context or None,"focus":focus or None,"emozione_dichiarata":emotion or None,"lingua":language,"carte":cards,"strutturale":{"sinossi":structural.sinossi,"tensioni":structural.tensioni,"risorse":structural.risorse,"relazioni":structural.relazioni,"distribuzione_stati":structural.distribuzione_stati,"distribuzione_elementi":structural.distribuzione_elementi},"ponte_base":personal.ponte,"collasso_base":personal.punto_di_collasso,"domande_base":personal.domande_di_riflessione,"integrazione_base":personal.integrazione},ensure_ascii=False)
     try:from sdq1.llm.providers import AnthropicProvider,GeminiProvider
     except Exception:return None,None
