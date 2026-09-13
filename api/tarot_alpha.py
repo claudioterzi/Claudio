@@ -236,7 +236,12 @@ OUTPUT SOLO JSON valido:
                 continue
             data = _safe_json(r.testo)
             if isinstance(data, dict) and data.get("messaggio"):
-                return data, {"provider": r.provider, "modello": r.modello, "via_api": r.via_api}
+                return data, {
+                    "provider": r.provider,
+                    "modello": r.modello,
+                    "via_api": r.via_api,
+                    "tipo": "ai_contestuale",
+                }
         except Exception:
             continue
     return None, None
@@ -379,7 +384,12 @@ OUTPUT SOLO JSON valido:
             data["risposta"] = _clean(data["risposta"], 6000)
             data["carte_richiamate"] = [name for name in referenced if name in allowed]
             data["livello"] = "AI_ALPHA_FOLLOW_UP"
-            return data, {"provider": response.provider, "modello": response.modello, "via_api": response.via_api}
+            return data, {
+                "provider": response.provider,
+                "modello": response.modello,
+                "via_api": response.via_api,
+                "tipo": "ai_contestuale",
+            }
         except Exception:
             continue
     return None, None
@@ -401,7 +411,11 @@ def _follow_up(body):
     answer, engine = _ai_follow_up(cards, question, original_question, context, previous, history, language=language)
     if answer is None:
         answer = _follow_up_fallback(cards, question, language)
-        engine = {"provider": "canonical-fallback", "via_api": False}
+        engine = {
+            "provider": "canonical-fallback",
+            "via_api": False,
+            "tipo": "riserva_canonica",
+        }
     return {
         "approfondimento_id": str(uuid.uuid4()),
         "lettura_id": _clean(body.get("lettura_id"), 80) or None,
@@ -441,7 +455,11 @@ def _response():
     reading, engine = _ai(cards, question, context, language)
     if reading is None:
         reading = _fallback(cards, question, language)
-        engine = {"provider": "canonical-fallback", "via_api": False}
+        engine = {
+            "provider": "canonical-fallback",
+            "via_api": False,
+            "tipo": "riserva_canonica",
+        }
     reading.setdefault("lingua", language)
     resp = jsonify({
         "lettura_id": str(uuid.uuid4()),

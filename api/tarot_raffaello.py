@@ -196,7 +196,7 @@ OUTPUT SOLO JSON valido:
             r=p.completa(system,user)
             if r.errore:continue
             parsed=_safe_json(r.testo)
-            if isinstance(parsed,dict) and isinstance(parsed.get("carte"),list):return parsed,{"provider":r.provider,"modello":r.modello,"via_api":r.via_api,"latenza_ms":r.latenza_ms}
+            if isinstance(parsed,dict) and isinstance(parsed.get("carte"),list):return parsed,{"provider":r.provider,"modello":r.modello,"via_api":r.via_api,"latenza_ms":r.latenza_ms,"tipo":"ai_contestuale"}
         except Exception:continue
     return None,None
 
@@ -239,7 +239,7 @@ def _build(body):
     reading,provider_meta=_ai_reading(structural,personal,cards,question,context,focus,emotion,language)
     if reading is None:reading=_fallback(personal,cards,question,focus,language)
     reading.setdefault("lingua", language)
-    return {"lettura_id":str(uuid.uuid4()),"metodo":{"sistema":"Tarocchi R³∞ · Raffaello","numero_carte":count,"schema":spread.schema,"perche_questa_stesa":reason,"estrazione":extraction,"fatti_privati_inventati":False},"contesto":{"domanda":question or None,"focus":focus or None,"emozione":emotion or None,"lingua":language},"carte":cards,"strutturale":{"sinossi":structural.sinossi,"tensioni":structural.tensioni,"risorse":structural.risorse,"relazioni":structural.relazioni,"assiomi_attivati":structural.assiomi_attivati},"lettura":reading,"motore":provider_meta or {"provider":"deterministic-fallback","via_api":False},"epistemica":"INTERPRETAZIONE_SIMBOLICA_NON_PREVISIONE_CERTA","lingua":language},None
+    return {"lettura_id":str(uuid.uuid4()),"metodo":{"sistema":"Tarocchi R³∞ · Raffaello","numero_carte":count,"schema":spread.schema,"perche_questa_stesa":reason,"estrazione":extraction,"fatti_privati_inventati":False},"contesto":{"domanda":question or None,"focus":focus or None,"emozione":emotion or None,"lingua":language},"carte":cards,"strutturale":{"sinossi":structural.sinossi,"tensioni":structural.tensioni,"risorse":structural.risorse,"relazioni":structural.relazioni,"assiomi_attivati":structural.assiomi_attivati},"lettura":reading,"motore":provider_meta or {"provider":"deterministic-fallback","via_api":False,"tipo":"riserva_canonica"},"epistemica":"INTERPRETAZIONE_SIMBOLICA_NON_PREVISIONE_CERTA","lingua":language},None
 
 
 def _response():
