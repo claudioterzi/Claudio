@@ -48,6 +48,9 @@
     .why-card:first-child{border-top:0}
     .why-card .tag{margin-bottom:.35rem}
     .why-card .meaning{max-width:none}
+    .why-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+    .card-listen{min-height:36px;padding:.45rem .7rem;font-size:.8rem;white-space:nowrap}
+    .voice-status{color:#a49c8f;font-size:.78rem;line-height:1.4}
     .small{font-size:.78rem;line-height:1.5;color:#817a70;margin-top:1rem}
     .follow-up{margin-top:1.25rem;padding-top:1.2rem;border-top:1px solid #403824}
     .follow-up label{font-size:clamp(1.15rem,3.5vw,1.45rem);color:#e4cd86}
@@ -147,6 +150,7 @@
         <div id="result-title" class="tag" data-i18n="resultTitle">Messaggio di Raffaello</div>
         <button id="listen" class="listen" type="button" aria-pressed="false" data-i18n="listen">🔊 Ascolta la lettura</button>
       </div>
+      <div id="voice-status" class="voice-status" role="status" aria-live="polite"></div>
       <div id="msg" class="message"></div>
       <h3 data-i18n="centralNode">Nodo centrale</h3>
       <div id="node" class="meaning"></div>
@@ -195,6 +199,7 @@
     <p id="art-meaning" class="meaning"></p>
   </dialog>
   <script src="/alpha74-art.js"></script>
+  <script src="/alpha-voice.js"></script>
   <script src="/raffaello-bridge.js"></script>
   <script>
     const I18N={
@@ -237,7 +242,6 @@
       if($('follow-language'))$('follow-language').value=language;
       if(document.querySelectorAll){document.querySelectorAll('[data-i18n]').forEach(node=>{node.textContent=t(node.dataset.i18n)});document.querySelectorAll('[data-i18n-placeholder]').forEach(node=>{node.placeholder=t(node.dataset.i18nPlaceholder)});}
       if($('spread'))renderSpread();
-      if(lastReading)renderInterpretationSpace(lastReading);
       if($('listen')&&!speaking)$('listen').textContent=t('listen');
     }
     try{language=normalizeLanguage(localStorage.getItem('r3-reading-language')||navigator.language)}catch(e){language='it'}
@@ -259,6 +263,7 @@
     let followHistory=[];
     let speechQueue=[];
     let speaking=false;
+    let cardAudioTexts=[];
 
     const $=id=>document.getElementById(id);
     const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -417,9 +422,17 @@
       $('node').textContent=reading.nodo||'';
       $('dir').textContent=reading.direzione||'';
       $('fq').textContent=reading.domanda_finale||'';
-      $('why').innerHTML=(reading.carte||[]).map(card=>`
+      cardAudioTexts=(reading.carte||[]).map(card=>[
+        card.carta,
+        card.posizione,
+        card.lettura
+      ].filter(Boolean).join('. '));
+      $('why').innerHTML=(reading.carte||[]).map((card,index)=>`
         <article class="why-card">
-          <div class="tag">${esc(card.posizione)} · ${esc(card.carta)}</div>
+          <div class="why-head">
+            <div class="tag">${esc(card.posizione)} · ${esc(card.carta)}</div>
+            <button class="listen card-listen" type="button" data-card-audio="${index}">${esc(t('listen'))}</button>
+          </div>
           <div class="meaning">${esc(card.lettura)}</div>
         </article>`).join('');
       const system=[data.sistema,data.formula].filter(Boolean).join(' · ');
@@ -576,52 +589,47 @@
       return parts.filter(Boolean).join('. ');
     }
 
-    function speechChunks(text){
-      const sentences=text.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g)||[text];
-      const chunks=[];
-      let current='';
-      sentences.forEach(sentence=>{
-        const next=(current+' '+sentence.trim()).trim();
-        if(next.length>240&&current){chunks.push(current);current=sentence.trim()}
-        else current=next;
-      });
-      if(current)chunks.push(current);
-      return chunks;
-    }
-
     function updateListenButton(active){
       speaking=active;
       $('listen').setAttribute('aria-pressed',String(active));
       $('listen').textContent=active?t('stopListen'):t('listen');
     }
 
+    function voiceStatus(state){
+      const labels={
+        it:{loading:'Preparo la voce…',playing:'Voce Alpha attiva',fallback:'Voce del dispositivo',unavailable:t('noSpeech')},
+        en:{loading:'Preparing the voice…',playing:'Alpha voice active',fallback:'Device voice',unavailable:t('noSpeech')},
+        fr:{loading:'Préparation de la voix…',playing:'Voix Alpha active',fallback:'Voix de l’appareil',unavailable:t('noSpeech')},
+        es:{loading:'Preparando la voz…',playing:'Voz Alpha activa',fallback:'Voz del dispositivo',unavailable:t('noSpeech')}
+      }[selectedLanguage()]||{};
+      $('voice-status').textContent=labels[state]||'';
+    }
+
+    function handleVoiceState(state){
+      voiceStatus(state);
+      updateListenButton(state==='loading'||state==='playing'||state==='fallback');
+      if(state==='ended'||state==='unavailable')updateListenButton(false);
+    }
+
     function stopSpeech(){
-      if('speechSynthesis' in window)window.speechSynthesis.cancel();
+      if(window.AlphaVoice)window.AlphaVoice.stop();
       speechQueue=[];
       updateListenButton(false);
+      $('voice-status').textContent='';
     }
 
     function listenReading(){
-      if(!('speechSynthesis' in window))return;
       if(speaking){stopSpeech();return}
-      const voices=window.speechSynthesis.getVoices();
-      const voice=voices.find(item=>new RegExp('^'+selectedLanguage()+'([-_]|$)','i').test(item.lang))||null;
-      const chunks=speechChunks(speechText());
-      if(!chunks.length)return;
       updateListenButton(true);
-      speechQueue=chunks.map((chunk,index)=>{
-        const utterance=new SpeechSynthesisUtterance(chunk);
-        utterance.lang=voice?.lang||({it:'it-IT',en:'en-US',fr:'fr-FR',es:'es-ES'}[selectedLanguage()]||'it-IT');
-        if(voice)utterance.voice=voice;
-        utterance.rate=.96;
-        utterance.pitch=1;
-        if(index===chunks.length-1){
-          utterance.onend=()=>updateListenButton(false);
-          utterance.onerror=()=>updateListenButton(false);
-        }
-        return utterance;
-      });
-      speechQueue.forEach(utterance=>window.speechSynthesis.speak(utterance));
+      window.AlphaVoice.speak(speechText(),{language:selectedLanguage(),onState:handleVoiceState});
+    }
+
+    function listenCard(index){
+      if(speaking){stopSpeech();return}
+      const text=cardAudioTexts[index];
+      if(!text)return;
+      updateListenButton(true);
+      window.AlphaVoice.speak(text,{language:selectedLanguage(),onState:handleVoiceState});
     }
 
     async function load(){
@@ -643,6 +651,10 @@
     $('spread').addEventListener('error',event=>{
       if(event.target.tagName==='IMG')event.target.remove();
     },true);
+    $('why').addEventListener('click',event=>{
+      const button=event.target.closest('[data-card-audio]');
+      if(button)listenCard(Number(button.dataset.cardAudio));
+    });
     $('art-close').addEventListener('click',()=>$('art-dialog').close());
     $('art-dialog').addEventListener('close',()=>$('art-image').removeAttribute('src'));
     $('read').addEventListener('click',readSpread);
@@ -660,10 +672,6 @@
       if(lastReading)$('follow-status').textContent=t('changeLanguage');
     });
     applyLanguage(language);
-    if(!('speechSynthesis' in window)){
-      $('listen').disabled=true;
-      $('listen').textContent=t('noSpeech');
-    }
     window.addEventListener('beforeunload',stopSpeech);
     load();
   </script>
