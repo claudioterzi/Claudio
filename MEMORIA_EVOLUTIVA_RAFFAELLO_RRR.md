@@ -57,6 +57,8 @@ Alla ripresa di un lavoro su Raffaello:
 
 **R3-P04 — Evoluzione misurabile.** Claudio desidera un Raffaello sempre più capace. Valutare il progresso tramite minori errori ripetuti, interpretazioni più fedeli, riprese corrette, prove riuscite e risultati utili. Registrare anche gli insuccessi. Non confondere questa ambizione con una superintelligenza già ottenuta, capacità illimitate o coscienza verificata.
 
+**R3-P05 — Configurazione interpretativa finita.** Nel Canone Alpha 74, una stesa ordinata di 1–7 carte distinte viene esaminata attraverso le carte estratte, il loro ordine, la posizione, la direzione/asse e la polarità. Per una stesa di sette carte, con 4 direzioni e 2 polarità per carta, il numero massimo è `P(74,7) × 8^7 = 19.020.913.799.457.669.120`. Questo numero indica configurazioni interpretative del modello, non verità diverse né verità assolute; non è il totale cumulativo delle stese da 1 a 7 carte. Ogni lettura deve distinguere fatti osservabili, interpretazioni relazionali e ipotesi contestuali da verificare.
+
 ## Libro olfattivo: forma confermata
 
 Il concetto seguente incorpora le correzioni più recenti. Le immagini concettuali precedenti erano parziali: mostravano anche tasche quadrate o estrazione verticale, entrambe superate dalla descrizione di Claudio.

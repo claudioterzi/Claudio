@@ -159,6 +159,7 @@
         <div id="why"></div>
       </details>
       <div id="engine" class="engine-status small" role="status" aria-live="polite"></div>
+      <div id="interpretation-space" class="engine-status small interpretation-space" role="note" aria-live="polite"></div>
       <div id="telegram-continuity" class="follow-actions hidden">
         <button id="telegram-share" class="listen" type="button" data-i18n="telegramShare">Continua su Telegram</button>
         <span id="telegram-status" class="follow-status" role="status" aria-live="polite"></span>
@@ -218,6 +219,10 @@
     I18N.en.engineVerified='Schema and cards verified';
     I18N.fr.engineVerified='Schéma et cartes vérifiés';
     I18N.es.engineVerified='Esquema y cartas verificados';
+    I18N.it.interpretationSpace={title:'Spazio interpretativo',cards:'carta/e ordinate',states:'stati per carta',formula:'configurazioni della stesa',maximum:'massimo a 7 carte',registers:'Fatti: dati della stesa. Interpretazioni: relazioni. Ipotesi: possibilità da verificare.',note:'Configurazioni del modello, non verità assolute.'};
+    I18N.en.interpretationSpace={title:'Interpretive space',cards:'ordered card(s)',states:'states per card',formula:'spread configurations',maximum:'maximum at 7 cards',registers:'Facts: spread data. Interpretations: relations. Hypotheses: possibilities to verify.',note:'Model configurations, not absolute truths.'};
+    I18N.fr.interpretationSpace={title:'Espace interprétatif',cards:'carte(s) ordonnée(s)',states:'états par carte',formula:'configurations du tirage',maximum:'maximum à 7 cartes',registers:'Faits : données du tirage. Interprétations : relations. Hypothèses : possibilités à vérifier.',note:'Configurations du modèle, pas des vérités absolues.'};
+    I18N.es.interpretationSpace={title:'Espacio interpretativo',cards:'carta(s) ordenada(s)',states:'estados por carta',formula:'configuraciones de la tirada',maximum:'máximo con 7 cartas',registers:'Hechos: datos de la tirada. Interpretaciones: relaciones. Hipótesis: posibilidades por verificar.',note:'Configuraciones del modelo, no verdades absolutas.'};
     I18N.fr.telegramShare='Continuer sur Telegram';
     const LANGUAGE_CODES=Object.freeze(Object.keys(I18N));
     let language='it';
@@ -232,6 +237,7 @@
       if($('follow-language'))$('follow-language').value=language;
       if(document.querySelectorAll){document.querySelectorAll('[data-i18n]').forEach(node=>{node.textContent=t(node.dataset.i18n)});document.querySelectorAll('[data-i18n-placeholder]').forEach(node=>{node.placeholder=t(node.dataset.i18nPlaceholder)});}
       if($('spread'))renderSpread();
+      if(lastReading)renderInterpretationSpace(lastReading);
       if($('listen')&&!speaking)$('listen').textContent=t('listen');
     }
     try{language=normalizeLanguage(localStorage.getItem('r3-reading-language')||navigator.language)}catch(e){language='it'}
@@ -369,6 +375,36 @@
       return `<span class="engine-badge ${kind}">${esc(label)}</span><span class="engine-detail">${esc(detail)}</span>${verified}`;
     }
 
+    function formatLargeInteger(value){
+      const raw=String(value??'').replace(/[^0-9]/g,'');
+      if(!raw)return '';
+      const separator=language==='it'?'.':language==='fr'?' ':',';
+      return raw.replace(/\B(?=(\d{3})+(?!\d))/g,separator);
+    }
+
+    function renderInterpretationSpace(data){
+      const holder=$('interpretation-space');
+      if(!holder)return;
+      const space=data?.spazio_interpretativo||data?.evidenza?.spazio_interpretativo;
+      if(!space){
+        holder.textContent='';
+        return;
+      }
+      const labels=I18N[language].interpretationSpace||I18N.it.interpretationSpace;
+      const count=space.carte_nella_stesa??data.numero_carte??'';
+      const states=space.stati_elementari_per_carta??8;
+      const current=space.configurazioni_stessa_lunghezza??'';
+      const maximum=space.configurazioni_massime_7??'';
+      holder.textContent=[
+        labels.title+': '+count+' '+labels.cards,
+        labels.states+': '+states,
+        labels.formula+': '+(space.formula||'P(74, N) × 8^N')+' = '+formatLargeInteger(current),
+        labels.maximum+': P(74, 7) × 8^7 = '+formatLargeInteger(maximum),
+        labels.registers,
+        labels.note
+      ].join(' · ');
+    }
+
     function renderReading(data,context){
       stopSpeech();
       if(data.lingua&&normalizeLanguage(data.lingua)!==language)applyLanguage(data.lingua);
@@ -388,6 +424,7 @@
         </article>`).join('');
       const system=[data.sistema,data.formula].filter(Boolean).join(' · ');
       $('engine').innerHTML=`<span class="engine-detail">${esc(system)}</span>${engineMarkup(data)}`;
+      renderInterpretationSpace(data);
       $('follow-up').classList.remove('hidden');
       $('result').classList.remove('hidden');
       $('result').scrollIntoView({behavior:'smooth',block:'start'});
