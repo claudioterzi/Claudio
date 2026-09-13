@@ -108,8 +108,11 @@ def _normalize_items(body):
     items = body.get("carte_scelte")
     automatic = not isinstance(items, list) or not items
     if automatic:
+        raw_count = body.get("numero_carte", 3)
+        if raw_count is None or raw_count == "":
+            raw_count = 3
         try:
-            count = int(body.get("numero_carte") or 3)
+            count = int(raw_count)
         except (TypeError, ValueError) as exc:
             raise ValueError("numero_carte deve essere un intero da 1 a 7.") from exc
         if not 1 <= count <= 7:
