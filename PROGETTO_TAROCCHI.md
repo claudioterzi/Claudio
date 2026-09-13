@@ -19,14 +19,18 @@
 - Layer 3: Doppia Ermeneutica (macchina + umano)
 
 ### Sistema B — Canone Alpha 0.1 (74 carte)
-**Stato: COMPLETO** — canone scritto, 592 stati
+**Stato: COMPLETO** — canone scritto, 592 stati elementari per carta
 
 - 74 carte in 8 cicli: Origine, Legame, Frattura, Trasformazione, Potere, Visione, Totalità, Trascendenti
 - Formula: `Carta + Asse + Polarità = Significato`
-- Assi: Nord (radice) / Est (azione) / Sud (emozione) / Ovest (riflessione)
+- Assi/direzioni: Nord (radice) / Est (azione) / Sud (emozione) / Ovest (riflessione)
 - Polarità: Luce (costruttivo) / Ombra (d'ombra)
 - File: `tarocchi_quantici_alpha.json`
 - **Non è basato sui tarocchi classici** — linguaggio simbolico originale
+
+#### Regola operativa della lettura Alpha
+
+La stesa può contenere da 1 a 7 carte distinte. L'ordine, la posizione, la direzione/asse e la polarità sono parte della configurazione. Per `N` carte, lo spazio è `P(74,N) × 8^N`; con sette carte raggiunge il massimo di `19.020.913.799.457.669.120` configurazioni ordinate. Il conteggio descrive configurazioni interpretative del modello, non verità assolute. Ogni lettura separa fatti osservabili, interpretazioni relazionali e ipotesi contestuali da verificare.
 
 ---
 
