@@ -14,8 +14,11 @@ import os
 import re
 import secrets
 import uuid
+from urllib.error import HTTPError, URLError
+from urllib.parse import quote
+from urllib.request import Request, urlopen
 
-from flask import Flask, jsonify, request
+from flask import Flask, Response, jsonify, request
 
 from tarocchi.spazio_interpretativo import configuration_space
 
@@ -716,6 +719,100 @@ def _follow_up(body):
     }, None
 
 
+def _voice_configured():
+    """Return whether the optional server-side ElevenLabs voice is configured."""
+    provider = _clean(os.getenv("TAROT_TTS_PROVIDER", "elevenlabs"), 40).lower()
+    return provider == "elevenlabs" and bool(
+        _clean(os.getenv("ELEVENLABS_API_KEY"), 240)
+        and _clean(os.getenv("ELEVENLABS_VOICE_ID"), 120)
+    )
+
+
+def _elevenlabs_audio(text):
+    """Generate MP3 audio without ever exposing provider credentials to the client."""
+    if not _voice_configured():
+        return None
+    api_key = _clean(os.getenv("ELEVENLABS_API_KEY"), 240)
+    voice_id = quote(_clean(os.getenv("ELEVENLABS_VOICE_ID"), 120), safe="")
+    model_id = _clean(os.getenv("ELEVENLABS_MODEL_ID"), 120) or "eleven_multilingual_v2"
+    endpoint = (
+        f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+        "?output_format=mp3_44100_128"
+    )
+    payload = json.dumps(
+        {
+            "text": text,
+            "model_id": model_id,
+            "voice_settings": {
+                "stability": 0.45,
+                "similarity_boost": 0.8,
+                "style": 0.2,
+                "use_speaker_boost": True,
+            },
+        },
+        ensure_ascii=False,
+    ).encode("utf-8")
+    request_headers = {
+        "Accept": "audio/mpeg",
+        "Content-Type": "application/json",
+        "xi-api-key": api_key,
+    }
+    try:
+        remote_request = Request(
+            endpoint,
+            data=payload,
+            headers=request_headers,
+            method="POST",
+        )
+        with urlopen(remote_request, timeout=25) as remote_response:
+            audio = remote_response.read(6_000_001)
+    except (HTTPError, URLError, TimeoutError, OSError):
+        return None
+    if not audio or len(audio) > 6_000_000:
+        return None
+    return audio
+
+
+def _alpha_voice():
+    if request.method == "OPTIONS":
+        return "", 204
+    if request.method == "GET":
+        response = jsonify(
+            {
+                "disponibile": _voice_configured(),
+                "provider": "elevenlabs" if _voice_configured() else None,
+                "fallback": "browser-speech-synthesis",
+            }
+        )
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    body = request.get_json(silent=True)
+    if not isinstance(body, dict):
+        return jsonify({"errore": "Serve un oggetto JSON."}), 400
+    raw_text = body.get("testo") or body.get("text")
+    if not isinstance(raw_text, str) or not raw_text.strip():
+        return jsonify({"errore": "Serve il testo da leggere."}), 400
+    text = raw_text.strip()
+    if len(text) > 6000:
+        return jsonify({"errore": "Il testo vocale è troppo lungo."}), 413
+    audio = _elevenlabs_audio(text)
+    if audio is None:
+        return (
+            jsonify(
+                {
+                    "errore": "La voce esterna non è disponibile.",
+                    "fallback": "browser-speech-synthesis",
+                }
+            ),
+            503,
+        )
+    response = Response(audio, mimetype="audio/mpeg")
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Voice-Provider"] = "elevenlabs"
+    return response
+
+
 def _response():
     if request.method == "OPTIONS":
         return "", 200
@@ -776,6 +873,11 @@ def _response():
 @app.route("/api/tarocchi/alpha-leggi", methods=["POST", "OPTIONS"])
 def alpha_read():
     return _response()
+
+
+@app.route("/api/tarocchi/alpha-voce", methods=["GET", "POST", "OPTIONS"])
+def alpha_voice():
+    return _alpha_voice()
 
 
 @app.route("/", methods=["POST", "OPTIONS"])
