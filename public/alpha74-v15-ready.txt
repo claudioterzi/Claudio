@@ -1,0 +1,3 @@
+Alpha 74 v15 consolidated package
+language-top + multilingual presentation + canonical reveal
+2026-09-13
