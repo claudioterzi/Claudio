@@ -584,7 +584,7 @@
         `${t('speechDirection')} ${$('dir').textContent}`,
         `${t('speechFinal')} ${$('fq').textContent}`
       ];
-      $('why').querySelectorAll('.why-card').forEach(card=>parts.push(card.innerText));
+      cardAudioTexts.forEach(text=>parts.push(text));
       $('follow-thread').querySelectorAll('.follow-answer').forEach(answer=>parts.push(answer.innerText));
       return parts.filter(Boolean).join('. ');
     }
