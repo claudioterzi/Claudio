@@ -32,6 +32,10 @@
 
 La stesa può contenere da 1 a 7 carte distinte. L'ordine, la posizione, la direzione/asse e la polarità sono parte della configurazione. Per `N` carte, lo spazio è `P(74,N) × 8^N`; con sette carte raggiunge il massimo di `19.020.913.799.457.669.120` configurazioni ordinate. Il conteggio descrive configurazioni interpretative del modello, non verità assolute. Ogni lettura separa fatti osservabili, interpretazioni relazionali e ipotesi contestuali da verificare.
 
+#### Lettura vocale
+
+La lettura automatica e quella manuale espongono sempre un comando audio per l'intera risposta e per ogni carta. Il percorso server opzionale usa ElevenLabs tramite `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` e, se necessario, `ELEVENLABS_MODEL_ID` (predefinito `eleven_multilingual_v2`); le chiavi restano variabili Vercel server-side. Se il provider non è configurato o non risponde, il browser seleziona una voce disponibile nella lingua scelta senza bloccare la lettura.
+
 ---
 
 ## Roadmap
