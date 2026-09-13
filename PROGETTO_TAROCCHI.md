@@ -34,7 +34,7 @@ La stesa può contenere da 1 a 7 carte distinte. L'ordine, la posizione, la dire
 
 #### Lettura vocale
 
-La lettura automatica e quella manuale espongono sempre un comando audio per l'intera risposta e per ogni carta. Il percorso server opzionale usa ElevenLabs tramite `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` e, se necessario, `ELEVENLABS_MODEL_ID` (predefinito `eleven_multilingual_v2`); le chiavi restano variabili Vercel server-side. Se il provider non è configurato o non risponde, il browser seleziona una voce disponibile nella lingua scelta senza bloccare la lettura.
+La lettura automatica e quella manuale espongono sempre un comando audio per l'intera risposta e per ogni carta. Il percorso server interno può usare OpenAI TTS con `TAROT_TTS_PROVIDER=openai` e `OPENAI_API_KEY`: la voce pronta consigliata è `marin` o `cedar`, impostabile con `OPENAI_TTS_VOICE`, mentre una voce proprietaria usa `OPENAI_CUSTOM_VOICE_ID`. Il percorso ElevenLabs resta compatibile tramite `TAROT_TTS_PROVIDER=elevenlabs`, `ELEVENLABS_API_KEY` e `ELEVENLABS_VOICE_ID`. Le chiavi restano variabili Vercel server-side e viene usato un solo provider alla volta. Le custom voices OpenAI richiedono accesso abilitato, consenso del proprietario e un campione audio della stessa voce; se il provider non è configurato o non risponde, il browser seleziona una voce disponibile nella lingua scelta senza bloccare la lettura.
 
 ---
 
