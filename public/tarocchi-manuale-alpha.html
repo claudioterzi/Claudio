@@ -65,6 +65,7 @@
     .engine-badge.ai{border-color:#657c62;color:#d4e4c2;background:#172018}
     .engine-badge.fallback{border-color:#8b6939;color:#e1c78a;background:#241c12}
     .engine-detail{color:#817a70}
+    .engine-check{color:#a7c990;font-size:.78rem}
     .follow-engine{margin:.75rem 0 0;font-size:.75rem;line-height:1.5;color:#817a70}
     .hidden{display:none!important}
     .signature{text-align:right;color:#8f7a47;font-style:italic;margin:1.75rem .25rem 0}
@@ -213,6 +214,10 @@
         languageLabel:'Idioma de la lectura',languageHelp:'El idioma elegido se aplica a esta lectura y a las preguntas siguientes.',questionLabel:'Pregunta (opcional)',questionPlaceholder:'¿Qué quieres comprender?',contextLabel:'Contexto (opcional)',contextPlaceholder:'Lo que consideres útil contar…',deckTitle:'Mazo cubierto',guideFirst:'Elige la primera carta.',spreadTitle:'Tu tirada',analyzeSpread:'Analizar la tirada',resultTitle:'Mensaje de Raffaello',listen:'🔊 Escuchar la lectura',stopListen:'■ Detener escucha',centralNode:'Nudo central',direction:'Dirección',remainingQuestion:'La pregunta que queda',whySummary:'Por qué la leo así · carta por carta',telegramShare:'Continuar en Telegram',followLabel:'Pregúntale a Raffaello lo que quieras sobre esta lectura.',followLanguage:'Idioma de la respuesta',followHelp:'La pregunta es libre. Raffaello responderá anclado en las cartas que realmente has extraído.',followPlaceholder:'Escribe lo que quieres entender mejor…',analyzeQuestion:'Analizar la pregunta',close:'Cerrar',signature:'Claudio Terzi · C.Terzi',chooseCard:'Elegir esta carta cubierta',yourQuestion:'Tu pregunta',nextCard:'La próxima carta entrará en {position}. Puedes parar cuando quieras.',completeSpread:'Tirada completa: 7 cartas.',writing:'Raffaello está leyendo…',askWriting:'Raffaello está respondiendo…',emptyQuestion:'Escribe primero tu pregunta.',followStatus:'Vuelvo a leer la pregunta a la luz de las cartas extraídas.',savedStatus:'Respuesta guardada también en el diálogo de Telegram.',anchoredStatus:'Respuesta anclada a la tirada ya extraída.',changeLanguage:'Para usar otro idioma, pulsa Analizar la tirada.',engineAi:'IA contextual',engineFallback:'Reserva canónica',engineFallbackDetail:'Sin llamada de IA · significados Alpha deterministas',speechNode:'Nudo central.',speechDirection:'Dirección.',speechFinal:'La pregunta que queda.',noSpeech:'Escucha no disponible',axis:{nord:'Norte',est:'Este',sud:'Sur',ovest:'Oeste'},polarity:{luce:'Luz',ombra:'Sombra'},position:{passato:'Pasado',presente:'Presente',futuro:'Futuro',ostacolo:'Obstáculo',potenziale:'Potencial',consiglio:'Consejo',esito:'Resultado'}
       }
     };
+    I18N.it.engineVerified='Schema e carte verificati';
+    I18N.en.engineVerified='Schema and cards verified';
+    I18N.fr.engineVerified='Schéma et cartes vérifiés';
+    I18N.es.engineVerified='Esquema y cartas verificados';
     I18N.fr.telegramShare='Continuer sur Telegram';
     const LANGUAGE_CODES=Object.freeze(Object.keys(I18N));
     let language='it';
@@ -360,7 +365,8 @@
       const kind=engineKind(data);
       const label=kind==='fallback'?t('engineFallback'):t('engineAi');
       const detail=kind==='fallback'?t('engineFallbackDetail'):[meta.provider,meta.modello].filter(Boolean).join(' · ')||'AI';
-      return `<span class="engine-badge ${kind}">${esc(label)}</span><span class="engine-detail">${esc(detail)}</span>`;
+      const verified=meta.verifica==='superata'?`<span class="engine-check">✓ ${esc(t('engineVerified'))}</span>`:'';
+      return `<span class="engine-badge ${kind}">${esc(label)}</span><span class="engine-detail">${esc(detail)}</span>${verified}`;
     }
 
     function renderReading(data,context){

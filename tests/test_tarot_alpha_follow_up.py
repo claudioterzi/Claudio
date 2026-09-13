@@ -66,6 +66,46 @@ class AlphaFollowUpApiTests(unittest.TestCase):
         self.assertEqual(data["lingua"], "en")
         self.assertTrue(data["risposta"].startswith("I am rereading your question"))
 
+    def test_fallback_is_deterministic_and_exposes_shared_evidence(self):
+        cards, _ = tarot_alpha._normalize_items({
+            "carte_scelte": [
+                {"carta": tarot_alpha._deck()[0]["nome"], "posizione": "passato", "asse": "ovest", "polarita": "luce"},
+                {"carta": tarot_alpha._deck()[1]["nome"], "posizione": "presente", "asse": "sud", "polarita": "ombra"},
+                {"carta": tarot_alpha._deck()[2]["nome"], "posizione": "futuro", "asse": "est", "polarita": "luce"},
+            ]
+        })
+        first = tarot_alpha._fallback(cards, "Che cosa devo osservare?", "it")
+        second = tarot_alpha._fallback(cards, "Che cosa devo osservare?", "it")
+        self.assertEqual(first, second)
+        self.assertEqual(first["traccia"]["formula"], "CARTA + ASSE + POLARITA = SIGNIFICATO")
+        self.assertEqual(first["traccia"]["carte_ancorate"], [card["carta"] for card in cards])
+        self.assertEqual(first["verifica"]["stato"], "superata")
+        self.assertGreaterEqual(first["verifica"]["relazioni"], 2)
+        self.assertIn("Nel filo temporale", first["messaggio"])
+
+    def test_ai_output_validator_rejects_a_card_outside_the_spread(self):
+        cards, _ = tarot_alpha._normalize_items({"carte_scelte": [self.chosen]})
+        valid = {
+            "messaggio": "Messaggio contestuale.",
+            "nodo": "Nodo.",
+            "direzione": "Direzione.",
+            "domanda_finale": "Domanda?",
+            "carte": [{"posizione": "Present", "carta": self.card["nome"], "lettura": "Lettura ancorata."}],
+        }
+        self.assertIsNotNone(tarot_alpha._validate_main_reading(valid, cards, "it"))
+        forged = dict(valid)
+        forged["carte"] = [{"posizione": "Present", "carta": "Carta inventata", "lettura": "Lettura."}]
+        self.assertIsNone(tarot_alpha._validate_main_reading(forged, cards, "it"))
+
+    def test_follow_up_validator_rejects_unlisted_references(self):
+        cards, _ = tarot_alpha._normalize_items({"carte_scelte": [self.chosen]})
+        self.assertIsNotNone(tarot_alpha._validate_follow_up({
+            "risposta": "Risposta.", "carte_richiamate": [self.card["nome"]]
+        }, cards, "it"))
+        self.assertIsNone(tarot_alpha._validate_follow_up({
+            "risposta": "Risposta.", "carte_richiamate": ["Carta inventata"]
+        }, cards, "it"))
+
 
 class AlphaFollowUpFrontendTests(unittest.TestCase):
     @classmethod
