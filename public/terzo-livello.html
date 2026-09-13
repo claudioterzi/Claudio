@@ -356,7 +356,7 @@
       var clear=document.getElementById('clearSearch');
       var sections=[].slice.call(document.querySelectorAll('.book section[id]'));
       var original=sections.map(function(section){return {el:section,html:section.innerHTML}});
-      function escapeRegExp(value){return value.replace(/[\\^$.*+?()[\\]{}|]/g,'\\$&')}
+      function escapeRegExp(value){return value.replace(/[.*+?^${}()|[\]\\]/g,'\\      function escapeRegExp(value){return value.replace(/[\\^$.*+?()[\\]{}|]/g,'\\$&')}')}
       function clearMarks(){
         original.forEach(function(item){item.el.innerHTML=item.html});
       }
