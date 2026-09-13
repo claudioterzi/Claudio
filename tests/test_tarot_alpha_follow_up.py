@@ -140,7 +140,13 @@ class AlphaVoiceApiTests(unittest.TestCase):
             clear=False,
         ), patch.dict(
             os.environ,
-            {"ELEVENLABS_API_KEY": "", "ELEVENLABS_VOICE_ID": ""},
+            {
+                "ELEVENLABS_API_KEY": "",
+                "ELEVENLABS_VOICE_ID": "",
+                "OPENAI_API_KEY": "",
+                "OPENAI_CUSTOM_VOICE_ID": "",
+                "OPENAI_TTS_VOICE": "",
+            },
             clear=False,
         ):
             response = self.client.get("/api/tarocchi/alpha-voce")
@@ -179,6 +185,40 @@ class AlphaVoiceApiTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, "audio/mpeg")
         self.assertEqual(response.headers["X-Voice-Provider"], "elevenlabs")
+
+    def test_openai_voice_endpoint_accepts_a_selected_custom_voice(self):
+        class FakeResponse:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            def read(self, _limit):
+                return b"ID3 fake openai mp3"
+
+        env = {
+            "TAROT_TTS_PROVIDER": "openai",
+            "OPENAI_API_KEY": "test-openai-key",
+            "OPENAI_CUSTOM_VOICE_ID": "voice_123abc",
+            "OPENAI_TTS_VOICE": "",
+        }
+        with patch.dict(os.environ, env, clear=False), patch.object(
+            tarot_alpha,
+            "urlopen",
+            return_value=FakeResponse(),
+        ) as mocked_urlopen:
+            response = self.client.post(
+                "/api/tarocchi/alpha-voce",
+                json={"testo": "Una lettura di prova.", "lingua": "it"},
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, "audio/mpeg")
+        self.assertEqual(response.headers["X-Voice-Provider"], "openai")
+        remote_request = mocked_urlopen.call_args.args[0]
+        self.assertIn("api.openai.com/v1/audio/speech", remote_request.full_url)
+        self.assertEqual(remote_request.headers["Authorization"], "Bearer test-openai-key")
+        self.assertEqual(json.loads(remote_request.data)["voice"], {"id": "voice_123abc"})
 
 
 class AlphaAutomaticFrontendTests(unittest.TestCase):
