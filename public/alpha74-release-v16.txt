@@ -4,4 +4,5 @@ Alpha 74 friend trial release v16
 - presentation language follows selection
 - reveal visualizes 8 possible states without altering the computed result
 - canonical decoding remains server-side
+- friend trial limited to 3 completed readings per browser/device
 Claudio Terzi · C.Terzi
