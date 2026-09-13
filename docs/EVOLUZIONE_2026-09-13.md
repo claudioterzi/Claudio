@@ -31,7 +31,7 @@ File introdotti/aggiornati:
 - `public/datahub-v3-ui.js`
 - `public/datahub-v3.css`
 
-Al momento dell'ultima verifica il deployment Vercel di produzione relativo al commit V3 risultava ancora `BUILDING`; lo stato READY non è registrato in questo documento.
+Deployment Vercel di produzione del commit V3: **READY**. Alias verificato: `https://claudio-ebon.vercel.app`.
 
 ## Router multi-modello recuperato
 
@@ -79,6 +79,8 @@ https://docs.google.com/document/d/1mPFHWg0ea0Ze3kxnfU8ycqyKgi_JgKqXHj3HqWh3b_E/
 
 Decisioni Canoniche A/B/C:
 https://docs.google.com/document/d/1-AwQtsJ3U4q4CRPxvcoqindAUTsrXtJ9pv0l6FH11mA/edit?usp=drivesdk
+
+È stato programmato un promemoria per il 14/09/2026 per riprendere da Data Hub V3, router adattivo e politica di archivio freddo/iCloud.
 
 ## Metodo
 
