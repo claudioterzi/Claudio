@@ -29,7 +29,6 @@
     {"src":"/dialogo-raffaello/?","dest":"/public/dialogo-raffaello.html"},
     {"src":"/tarocchi-alpha/?","dest":"/public/tarocchi-alpha.html"},
     {"src":"/tarocchi-raffaello/?","dest":"/public/tarocchi-alpha.html"},
-    {"src":"/alpha74-prova/?","dest":"/public/tarocchi-manuale-alpha.html"},
     {"src":"/tarocchi-manuale/?","dest":"/public/tarocchi-manuale-alpha.html"},
     {"src":"/viaggi","dest":"/public/viaggi.html"},
     {"src":"/flight","dest":"/public/flight_hunter.html"},
