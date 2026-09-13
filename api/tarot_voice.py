@@ -1,8 +1,12 @@
 """Voice endpoint for Canone Alpha 74.
 
 Keeps provider credentials server-side and provides automatic failover between
-OpenAI TTS and ElevenLabs. The public route remains
+Azure Speech, ElevenLabs and OpenAI TTS. The public route remains
 /api/tarocchi/alpha-voce so the existing Tarot UI does not need to change.
+
+Azure is intentionally supported as the cheapest primary path: the Speech F0
+resource includes a monthly free neural TTS allowance and can be selected with
+TAROT_TTS_PROVIDER=azure. Credentials never reach the browser.
 """
 
 from __future__ import annotations
@@ -12,6 +16,7 @@ import os
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
+from xml.sax.saxutils import escape
 
 from flask import Flask, Response, jsonify, request
 
@@ -48,20 +53,34 @@ def _elevenlabs_ready():
     )
 
 
+def _azure_ready():
+    return bool(
+        _clean(os.getenv("AZURE_SPEECH_KEY"), 320)
+        and _clean(os.getenv("AZURE_SPEECH_REGION"), 80)
+    )
+
+
 def _provider_order():
     requested = _clean(os.getenv("TAROT_TTS_PROVIDER", "auto"), 40).lower()
     configured = []
-    if _openai_ready():
-        configured.append("openai")
+    if _azure_ready():
+        configured.append("azure")
     if _elevenlabs_ready():
         configured.append("elevenlabs")
+    if _openai_ready():
+        configured.append("openai")
 
-    if requested == "elevenlabs":
-        order = ["elevenlabs", "openai"]
+    if requested == "azure":
+        order = ["azure", "elevenlabs", "openai"]
+    elif requested == "elevenlabs":
+        order = ["elevenlabs", "azure", "openai"]
+    elif requested == "openai":
+        # Preserve the explicit OpenAI preference, but still fail over to the
+        # free Azure tier when OpenAI is unavailable or out of credit.
+        order = ["openai", "azure", "elevenlabs"]
     else:
-        # auto and openai both prefer OpenAI; this also preserves the existing
-        # behaviour while allowing a real provider failover when configured.
-        order = ["openai", "elevenlabs"]
+        # In auto mode prefer the lowest expected running cost first.
+        order = ["azure", "elevenlabs", "openai"]
 
     order = [provider for provider in order if provider in configured]
     if not _truthy_env("TAROT_TTS_FAILOVER", True) and order:
@@ -76,6 +95,8 @@ def _error_code_from_http(exc):
         error = parsed.get("error") if isinstance(parsed, dict) else None
         if isinstance(error, dict):
             return _clean(error.get("code") or error.get("type"), 120) or None
+        if isinstance(parsed, dict):
+            return _clean(parsed.get("code") or parsed.get("errorCode"), 120) or None
     except Exception:
         pass
     return None
@@ -104,6 +125,78 @@ def _instructions(language):
             "Usa pausas breves, dicción clara y un ritmo sereno, nunca robótico."
         ),
     }.get(language, "Speak naturally, clearly, warmly and at a calm pace.")
+
+
+def _azure_voice(language):
+    env_voice = _clean(os.getenv("AZURE_TTS_VOICE"), 120)
+    if env_voice:
+        return env_voice
+    return {
+        "it": "it-IT-DiegoNeural",
+        "en": "en-US-GuyNeural",
+        "fr": "fr-FR-HenriNeural",
+        "es": "es-ES-AlvaroNeural",
+    }.get(language, "it-IT-DiegoNeural")
+
+
+def _azure_audio(text, language):
+    api_key = _clean(os.getenv("AZURE_SPEECH_KEY"), 320)
+    region = _clean(os.getenv("AZURE_SPEECH_REGION"), 80).lower()
+    if not api_key or not region:
+        return None, {"provider": "azure", "reason": "not_configured"}
+
+    voice = _azure_voice(language)
+    locale = {
+        "it": "it-IT",
+        "en": "en-US",
+        "fr": "fr-FR",
+        "es": "es-ES",
+    }.get(language, "it-IT")
+    safe_text = escape(text)
+    rate = _clean(os.getenv("AZURE_TTS_RATE"), 24) or "-7%"
+    pitch = _clean(os.getenv("AZURE_TTS_PITCH"), 24) or "-1st"
+    ssml = (
+        f'<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" '
+        f'xml:lang="{locale}"><voice name="{escape(voice)}">'
+        f'<prosody rate="{escape(rate)}" pitch="{escape(pitch)}">'
+        f'{safe_text}</prosody></voice></speak>'
+    ).encode("utf-8")
+
+    endpoint = f"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1"
+    output_format = (
+        _clean(os.getenv("AZURE_TTS_OUTPUT_FORMAT"), 120)
+        or "audio-24khz-160kbitrate-mono-mp3"
+    )
+    remote_request = Request(
+        endpoint,
+        data=ssml,
+        headers={
+            "Accept": "audio/mpeg",
+            "Content-Type": "application/ssml+xml",
+            "Ocp-Apim-Subscription-Key": api_key,
+            "User-Agent": "Raffaello-Alpha74",
+            "X-Microsoft-OutputFormat": output_format,
+        },
+        method="POST",
+    )
+
+    try:
+        with urlopen(remote_request, timeout=30) as remote_response:
+            audio = remote_response.read(8_000_001)
+    except HTTPError as exc:
+        return None, {
+            "provider": "azure",
+            "status": int(exc.code),
+            "code": _error_code_from_http(exc),
+        }
+    except (URLError, TimeoutError, OSError):
+        return None, {"provider": "azure", "reason": "transport_error"}
+
+    if not audio:
+        return None, {"provider": "azure", "reason": "empty_audio"}
+    if len(audio) > 8_000_000:
+        return None, {"provider": "azure", "reason": "audio_too_large"}
+    return audio, None
 
 
 def _openai_audio(text, language):
@@ -245,9 +338,7 @@ def _handle_voice():
         return jsonify({"errore": "Serve il testo da leggere."}), 400
 
     text = raw_text.strip()
-    # OpenAI's speech endpoint accepts up to 4096 characters per request.
-    # Keep one request = one playable MP3; the browser fallback handles longer
-    # passages rather than silently truncating them.
+    # Keep a common ceiling that is safe for the current provider mix.
     if len(text) > 4096:
         return (
             jsonify(
@@ -277,7 +368,9 @@ def _handle_voice():
 
     attempts = []
     for provider in order:
-        if provider == "openai":
+        if provider == "azure":
+            audio, error = _azure_audio(text, language)
+        elif provider == "openai":
             audio, error = _openai_audio(text, language)
         else:
             audio, error = _elevenlabs_audio(text)
