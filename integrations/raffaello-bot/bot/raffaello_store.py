@@ -14,6 +14,8 @@ from pathlib import Path
 
 from bot import db
 
+LANGUAGE_CODES = frozenset({"it", "en", "fr", "es"})
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS r3_readings (
  id TEXT PRIMARY KEY, owner INTEGER NOT NULL, source_id TEXT NOT NULL,
@@ -27,6 +29,7 @@ CREATE TABLE IF NOT EXISTS r3_drafts (
  id TEXT PRIMARY KEY, owner INTEGER NOT NULL, client_id TEXT NOT NULL,
  thread TEXT NOT NULL, reading_id TEXT, question TEXT NOT NULL,
  status TEXT NOT NULL, answer TEXT, created INTEGER NOT NULL, updated INTEGER NOT NULL,
+ language TEXT NOT NULL DEFAULT 'it',
  UNIQUE(owner, client_id)
 );
 CREATE INDEX IF NOT EXISTS r3_drafts_context ON r3_drafts(owner,thread,created);
@@ -52,6 +55,9 @@ class Problem(Exception):
 def init():
     with db.connect() as conn:
         conn.executescript(SCHEMA)
+        cols = {row["name"] for row in conn.execute("PRAGMA table_info(r3_drafts)").fetchall()}
+        if cols and "language" not in cols:
+            conn.execute("ALTER TABLE r3_drafts ADD COLUMN language TEXT NOT NULL DEFAULT 'it'")
 
 
 def _json(value):
@@ -69,6 +75,12 @@ def _text(value, maximum, required=False):
     if required and not value:
         raise Problem("Scrivi prima la domanda.")
     return value
+
+
+def _language(value):
+    raw = str(value or "it").strip().lower().replace("_", "-")
+    code = raw.split("-", 1)[0]
+    return code if code in LANGUAGE_CODES else "it"
 
 
 def canonical_snapshot(raw):
@@ -108,9 +120,17 @@ def canonical_snapshot(raw):
             raise Problem("Cronologia non valida.")
         imported.append({"domanda": _text(turn.get("domanda", ""), 4000, True),
                          "risposta": _text(turn.get("risposta", ""), 8000, True), "origine": "sito-importato"})
-    return {"versione": 1, "sistema": "Canone Alpha 74", "origine": "sito",
-            "domanda": _text(raw.get("domanda", ""), 1800), "contesto": _text(raw.get("contesto", ""), 3200),
-            "carte": cards, "lettura": interpretation, "cronologia": imported}
+    language = str(raw.get("lingua") or raw.get("language") or "it").strip().lower().replace("_", "-").split("-", 1)[0]
+    if language not in {"it", "en", "fr", "es"}:
+        language = "it"
+    snapshot = {"versione": 1, "sistema": "Canone Alpha 74", "origine": "sito",
+                "domanda": _text(raw.get("domanda", ""), 1800), "contesto": _text(raw.get("contesto", ""), 3200),
+                "carte": cards, "lettura": interpretation, "cronologia": imported}
+    # Italian remains the historical default, so old snapshots keep their exact
+    # fingerprint; non-Italian readings carry the chosen language forward.
+    if language != "it":
+        snapshot["lingua"] = language
+    return snapshot
 
 
 def save_reading(owner, raw):
@@ -169,9 +189,10 @@ def history(owner, thread, limit=8):
     return [{"id": r["id"], "domanda": r["question"], "risposta": json.loads(r["answer"])["risposta"], "origine": "raffaello"} for r in reversed(rows)]
 
 
-def stage(owner, question, client_id, rid=None, use_current=False):
+def stage(owner, question, client_id, rid=None, use_current=False, language="it"):
     question = _text(question, 4000, True)
     client_id = _text(client_id, 100, True)
+    language = _language(language)
     state = current(owner)
     if use_current:
         rid = state["active_reading"]
@@ -188,7 +209,7 @@ def stage(owner, question, client_id, rid=None, use_current=False):
             return dict(old)
         conn.execute("UPDATE r3_drafts SET status='superseded' WHERE owner=? AND status IN ('pending','failed')", (owner,))
         did = secrets.token_hex(16)
-        conn.execute("INSERT INTO r3_drafts VALUES (?,?,?,?,?,?,'pending',NULL,?,?)", (did, owner, client_id, thread, rid, question, now, now))
+        conn.execute("INSERT INTO r3_drafts (id,owner,client_id,thread,reading_id,question,status,answer,created,updated,language) VALUES (?,?,?,?,?,?,'pending',NULL,?,?,?)", (did, owner, client_id, thread, rid, question, now, now, language))
     return draft(owner, did)
 
 

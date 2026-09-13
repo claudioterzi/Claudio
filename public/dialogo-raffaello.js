@@ -4,9 +4,34 @@
   const $=id=>document.getElementById(id), api=RaffaelloBridge.request;
   const params=new URLSearchParams(location.search);
   let readingId=null, currentReading=null, turns=[], pending=null, generation=0, speaking=false;
+  const I18N={
+    it:{language:'Lingua della risposta',listen:'Ascolta',stop:'Ferma ascolto',analyze:'Analizza',answering:'Raffaello risponde…',questionLabel:'Scrivi liberamente a Raffaello',questionPlaceholder:'Una domanda, un’idea, un passaggio da capire…',context:'Sulle carte di questa lettura',continue:'Continua questa lettura su Telegram ↗',close:'Chiudi',languageChanged:'La prossima risposta sarà in {language}.'},
+    en:{language:'Response language',listen:'Listen',stop:'Stop listening',analyze:'Analyze',answering:'Raffaello is answering…',questionLabel:'Write freely to Raffaello',questionPlaceholder:'A question, an idea, a passage to understand…',context:'About the cards in this reading',continue:'Continue this reading on Telegram ↗',close:'Close',languageChanged:'The next answer will be in {language}.'},
+    fr:{language:'Langue de la réponse',listen:'Écouter',stop:'Arrêter l’écoute',analyze:'Analyser',answering:'Raffaello répond…',questionLabel:'Écrivez librement à Raffaello',questionPlaceholder:'Une question, une idée, un passage à comprendre…',context:'À propos des cartes de ce tirage',continue:'Continuer ce tirage sur Telegram ↗',close:'Fermer',languageChanged:'La prochaine réponse sera en {language}.'},
+    es:{language:'Idioma de la respuesta',listen:'Escuchar',stop:'Detener escucha',analyze:'Analizar',answering:'Raffaello está respondiendo…',questionLabel:'Escribe libremente a Raffaello',questionPlaceholder:'Una pregunta, una idea, un pasaje que comprender…',context:'Sobre las cartas de esta lectura',continue:'Continuar esta lectura en Telegram ↗',close:'Cerrar',languageChanged:'La próxima respuesta será en {language}.'}
+  };
+  const LANGUAGE_NAMES={it:'Italiano',en:'English',fr:'Français',es:'Español'};
+  const CARD_LABELS={it:{position:{passato:'Passato',presente:'Presente',futuro:'Futuro',ostacolo:'Ostacolo',potenziale:'Potenziale',consiglio:'Consiglio',esito:'Esito'},axis:{nord:'Nord',est:'Est',sud:'Sud',ovest:'Ovest'},polarity:{luce:'Luce',ombra:'Ombra'}},en:{position:{passato:'Past',presente:'Present',futuro:'Future',ostacolo:'Obstacle',potenziale:'Potential',consiglio:'Advice',esito:'Outcome'},axis:{nord:'North',est:'East',sud:'South',ovest:'West'},polarity:{luce:'Light',ombra:'Shadow'}},fr:{position:{passato:'Passé',presente:'Présent',futuro:'Futur',ostacolo:'Obstacle',potenziale:'Potentiel',consiglio:'Conseil',esito:'Résultat'},axis:{nord:'Nord',est:'Est',sud:'Sud',ovest:'Ouest'},polarity:{luce:'Lumière',ombra:'Ombre'}},es:{position:{passato:'Pasado',presente:'Presente',futuro:'Futuro',ostacolo:'Obstáculo',potenziale:'Potencial',consiglio:'Consejo',esito:'Resultado'},axis:{nord:'Norte',est:'Este',sud:'Sur',ovest:'Oeste'},polarity:{luce:'Luz',ombra:'Sombra'}}};
+  function cardLabel(card){const labels=CARD_LABELS[language]||CARD_LABELS.it;return {position:labels.position[card.posizione]||card.posizione_label||'',axis:labels.axis[card.asse]||card.asse||'',polarity:labels.polarity[card.polarita]||card.polarita||''};}
+  let language='it';
+  function normalizeLanguage(value){const code=String(value||'it').toLowerCase().replace('_','-').split('-',1)[0];return Object.hasOwn(I18N,code)?code:'it';}
+  function t(key){return I18N[language][key]??I18N.it[key]??key;}
+  function applyLanguage(value){
+    language=normalizeLanguage(value);
+    try{localStorage.setItem('r3-reading-language',language)}catch(e){}
+    if(document.documentElement)document.documentElement.lang=language;
+    const select=$('dialog-language');if(select)select.value=language;
+    const label=$('dialog-language-label');if(label)label.textContent=t('language');
+    const listen=$('listen');if(listen&&!speaking)listen.textContent=t('listen');
+    const analyze=$('analyze');if(analyze&&!analyze.disabled)analyze.textContent=t('analyze');
+    const question=$('question');if(question)question.placeholder=t('questionPlaceholder');
+    const formLabel=document.querySelector?document.querySelector('#question-form label'):null;if(formLabel)formLabel.textContent=t('questionLabel');
+    const continueLink=$('continue-telegram');if(continueLink)continueLink.textContent=t('continue');
+    if(currentReading)renderCards(currentReading.carte||[]);
+  }
   const say=text=>{$('status').textContent=text;};
   const escapeId=value=>/^[a-f0-9]{32}$/.test(value||'')?value:null;
-  function stop(){if(window.speechSynthesis)window.speechSynthesis.cancel();speaking=false;$('listen').textContent='Ascolta';$('listen').setAttribute('aria-pressed','false');}
+  function stop(){if(window.speechSynthesis)window.speechSynthesis.cancel();speaking=false;$('listen').textContent=t('listen');$('listen').setAttribute('aria-pressed','false');}
   function showTurns(items){
     stop();turns=items;$('thread').replaceChildren();
     for(const turn of items){
@@ -17,30 +42,35 @@
     }
   }
   function setBusy(active){
-    $('analyze').disabled=active;$('analyze').textContent=active?'Raffaello risponde…':'Analizza';
+    $('analyze').disabled=active;$('analyze').textContent=active?t('answering'):t('analyze');
     $('question').disabled=active;
   }
-  async function loadReading(id){
-    const version=++generation;
-    const item=await api('/readings/'+id);if(version!==generation)return;
-    stop();pending=null;readingId=id;currentReading=item.snapshot;
-    $('reading').hidden=false;$('reading-title').textContent=item.snapshot.domanda||'La tua lettura';
-    $('interpretation').textContent=['messaggio','nodo','direzione','domanda_finale'].map(key=>item.snapshot.lettura[key]).filter(Boolean).join('\n\n');
+  function renderCards(cards){
     $('cards').replaceChildren();
-    for(const card of item.snapshot.carte){
+    for(const card of cards){
       const art=Alpha74Art.resolve(card);if(!art)continue;
+      const labels=cardLabel(card);
       const figure=document.createElement('div');figure.className='card';
       const button=document.createElement('button');button.type='button';button.setAttribute('aria-label','Apri '+card.carta);
-      const img=document.createElement('img');img.src=art.thumbnail;img.width=160;img.height=160;img.alt=card.carta+' · '+card.polarita;img.loading='lazy';img.style.setProperty('--turn',art.rotation+'deg');
+      const img=document.createElement('img');img.src=art.thumbnail;img.width=160;img.height=160;img.alt=card.carta+' · '+labels.polarity;img.loading='lazy';img.style.setProperty('--turn',art.rotation+'deg');
       button.append(img);button.addEventListener('click',()=>{
         $('large-card').src=art.detail;$('large-card').alt=img.alt;$('large-card').style.setProperty('--turn',art.rotation+'deg');
         $('card-title').textContent=card.carta;$('card-meaning').textContent=card.significato_canonico;$('card-dialog').showModal();
       });
       const label=document.createElement('p'),name=document.createElement('strong');name.textContent=card.carta;
-      label.append(name,document.createTextNode(card.posizione_label+' · '+card.asse+' · '+card.polarita));figure.append(button,label);$('cards').append(figure);
+      label.append(name,document.createTextNode(labels.position+' · '+labels.axis+' · '+labels.polarity));figure.append(button,label);$('cards').append(figure);
     }
-    $('context-label').textContent='Sulle carte di questa lettura';$('thread-title').textContent='Continuiamo da qui.';
-    $('continue-telegram').href='https://t.me/ProtocolloRossoBot?start=r3_'+id;$('continue-telegram').hidden=false;
+  }
+  async function loadReading(id){
+    const version=++generation;
+    const item=await api('/readings/'+id);if(version!==generation)return;
+    stop();pending=null;readingId=id;currentReading=item.snapshot;
+    if(item.snapshot.lingua)applyLanguage(item.snapshot.lingua);
+    $('reading').hidden=false;$('reading-title').textContent=item.snapshot.domanda||'La tua lettura';
+    $('interpretation').textContent=['messaggio','nodo','direzione','domanda_finale'].map(key=>item.snapshot.lettura[key]).filter(Boolean).join('\n\n');
+    renderCards(item.snapshot.carte||[]);
+    $('context-label').textContent=t('context');$('thread-title').textContent=language==='en'?'Continue from here.':language==='fr'?'Continuons ici.':language==='es'?'Continuemos desde aquí.':'Continuiamo da qui.';
+    $('continue-telegram').href='https://t.me/ProtocolloRossoBot?start=r3_'+id;$('continue-telegram').hidden=false;$('continue-telegram').textContent=t('continue');
     showTurns([...(item.snapshot.cronologia||[]),...item.cronologia]);
     history.replaceState(null,'','?lettura='+id);say('Lettura e dialogo aggiornati.');
   }
@@ -88,7 +118,7 @@
     if(!pending||pending.question!==question||pending.reading!==active)pending={question,reading:active,id:crypto.randomUUID()};
     setBusy(true);say('Raffaello sta analizzando la tua domanda…');
     try{
-      const result=await RaffaelloBridge.analyze(question,active,pending.id);
+      const result=await RaffaelloBridge.analyze(question,active,pending.id,undefined,language);
       if(version!==generation)return;
       showTurns([...turns,{id:result.richiesta_id,domanda:question,risposta:result.risposta}]);pending=null;$('question').value='';say('Risposta salvata nel tuo dialogo.');
     }catch(error){fail(error);}finally{setBusy(false);}
@@ -99,13 +129,16 @@
     const text=[currentReading?['messaggio','nodo','direzione','domanda_finale'].map(key=>currentReading.lettura[key]).filter(Boolean).join('\n'): '',...turns.map(t=>t.domanda+'\n'+t.risposta)].filter(Boolean).join('\n\n');
     if(!text){say('Apri una lettura o analizza una domanda per ascoltarla.');return;}
     const queue=text.match(/[\s\S]{1,240}(?:\s|$)|[\s\S]{1,240}/g)||[];
-    speaking=true;$('listen').textContent='Ferma ascolto';$('listen').setAttribute('aria-pressed','true');
-    function next(){if(!speaking)return;const chunk=queue.shift();if(!chunk){stop();return;}const utterance=new SpeechSynthesisUtterance(chunk);utterance.lang='it-IT';utterance.rate=.95;utterance.onend=next;utterance.onerror=()=>{stop();say('Ascolto interrotto. Premi Ascolta per riprovare.');};speechSynthesis.speak(utterance);}next();
+    speaking=true;$('listen').textContent=t('stop');$('listen').setAttribute('aria-pressed','true');
+    function next(){if(!speaking)return;const chunk=queue.shift();if(!chunk){stop();return;}const utterance=new SpeechSynthesisUtterance(chunk);utterance.lang=({it:'it-IT',en:'en-US',fr:'fr-FR',es:'es-ES'}[language]||'it-IT');utterance.rate=.95;utterance.onend=next;utterance.onerror=()=>{stop();say('Ascolto interrotto. Premi Ascolta per riprovare.');};speechSynthesis.speak(utterance);}next();
   });
   $('general').addEventListener('click',()=>general().catch(fail));
   $('refresh').addEventListener('click',()=>{(readingId?loadReading(readingId):general()).then(list).catch(fail);});
   $('disconnect').addEventListener('click',async()=>{try{await api('/session','DELETE');stop();$('workspace').hidden=true;$('pairing').hidden=false;$('thread').replaceChildren();currentReading=null;turns=[];say('Sito scollegato. I registri e le letture restano conservati.');}catch(error){fail(error);}});
   $('close-card').addEventListener('click',()=>$('card-dialog').close());
+  try{language=normalizeLanguage(localStorage.getItem('r3-reading-language')||navigator.language)}catch(e){language='it'}
+  applyLanguage(language);
+  $('dialog-language').addEventListener('change',event=>{applyLanguage(event.target.value);say(t('languageChanged').replace('{language}',LANGUAGE_NAMES[language]));});
   window.addEventListener('pagehide',stop);document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});
   open();
 })();

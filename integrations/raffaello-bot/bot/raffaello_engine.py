@@ -66,7 +66,8 @@ def analyze(owner, did):
         previous = store.history(owner, task["thread"])
         if context:
             previous = (context["cronologia"] + previous)[-8:]
-        result = call_site({"domanda": task["question"], "lettura": context, "cronologia": previous})
+        result = call_site({"domanda": task["question"], "lettura": context, "cronologia": previous,
+                            "lingua": task.get("language") or (context or {}).get("lingua") or "it"})
         result["lettura_id"] = task["reading_id"]
         result["richiesta_id"] = did
         store.complete(owner, did, result)

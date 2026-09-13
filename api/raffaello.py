@@ -83,12 +83,13 @@ def _engine(body):
             cards, _ = alpha._normalize_items({"carte_scelte": snapshot["carte"]})
         except (ValueError, TypeError, AttributeError, RuntimeError) as exc:
             raise BridgeError("Canone Alpha non valido.", 400) from exc
+        language = alpha._language(body.get("lingua") or body.get("language") or snapshot.get("lingua") or snapshot.get("language"))
         answer, engine = alpha._ai_follow_up(cards, question, alpha._clean(snapshot.get("domanda"), 1800),
             alpha._clean(snapshot.get("contesto"), 3200), alpha._previous_reading(snapshot.get("lettura")), history,
-            timeout_seconds=24, max_retries=0)
+            language=language, timeout_seconds=24, max_retries=0)
         if answer is None:
             raise BridgeError("Motore AI temporaneamente non disponibile.")
-        return {"risposta": answer["risposta"], "motore": engine, "riferimenti": answer.get("carte_richiamate", [])}
+        return {"risposta": answer["risposta"], "motore": engine, "riferimenti": answer.get("carte_richiamate", []), "lingua": language}
     system = """Sei Raffaello, assistente del progetto Rosso Rosso Rosso di Claudio Terzi.
 Parla in italiano, con calore, precisione e iniziativa. Rispondi alla domanda concreta,
 senza menu di domande obbligate, slogan o spiegazioni tecniche fuori tema.

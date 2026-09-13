@@ -18,8 +18,8 @@
       throw error;
     }finally{clearTimeout(timer);}
   }
-  async function analyze(question, reading, requestId, onStaged){
-    const draft=await request('/drafts','POST',{domanda:question,lettura_id:reading||null,request_id:requestId});
+  async function analyze(question, reading, requestId, onStaged, language){
+    const draft=await request('/drafts','POST',{domanda:question,lettura_id:reading||null,request_id:requestId,lingua:language||undefined});
     if(onStaged)onStaged(draft.id);
     return request('/drafts/'+draft.id+'/analyze','POST',{});
   }

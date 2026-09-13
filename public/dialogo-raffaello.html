@@ -26,7 +26,7 @@
         <div id="cards" class="cards"></div><div id="interpretation" class="prose"></div>
       </section>
       <section class="conversation" aria-label="Conversazione">
-        <div class="conversation-head"><h2 id="thread-title">Cosa vuoi esplorare?</h2><button id="listen" class="quiet" type="button" aria-pressed="false">Ascolta</button></div>
+        <div class="conversation-head"><h2 id="thread-title">Cosa vuoi esplorare?</h2><div class="conversation-actions"><label id="dialog-language-label" for="dialog-language">Lingua della risposta</label><select id="dialog-language"><option value="it">Italiano</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option></select><button id="listen" class="quiet" type="button" aria-pressed="false">Ascolta</button></div></div>
         <div id="thread" aria-live="polite"></div>
         <form id="question-form" class="composer"><label for="question">Scrivi liberamente a Raffaello</label><textarea id="question" rows="3" maxlength="4000" placeholder="Una domanda, un'idea, un passaggio da capire…" required></textarea><div class="composer-actions"><span id="context-label">Dialogo libero</span><button id="analyze" type="submit">Analizza</button></div></form>
         <a id="continue-telegram" class="continue" hidden target="_blank" rel="noopener noreferrer">Continua questa lettura su Telegram ↗</a>

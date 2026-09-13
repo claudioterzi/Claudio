@@ -33,6 +33,12 @@ POSITIONS = [
 ]
 VALID_AXES = {"nord", "est", "sud", "ovest"}
 VALID_POLARITIES = {"luce", "ombra"}
+LANGUAGES = {
+    "it": "Italiano",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+}
 
 
 def _deck():
@@ -45,6 +51,13 @@ def _deck():
 
 def _clean(v, n):
     return str(v or "").strip()[:n]
+
+
+def _language(value):
+    """Return one of the four supported reading languages, defaulting to Italian."""
+    raw = _clean(value, 20).lower().replace("_", "-")
+    code = raw.split("-", 1)[0]
+    return code if code in LANGUAGES else "it"
 
 
 def _polarity():
@@ -111,33 +124,89 @@ def _normalize_items(body):
     return out, automatic
 
 
-def _fallback(cards, question):
+def _fallback(cards, question, language="it"):
+    language = _language(language)
     lines = []
+    position_labels = {
+        "it": {"passato": "Passato", "presente": "Presente", "futuro": "Futuro", "ostacolo": "Ostacolo", "potenziale": "Potenziale", "consiglio": "Consiglio", "esito": "Esito"},
+        "en": {"passato": "Past", "presente": "Present", "futuro": "Future", "ostacolo": "Obstacle", "potenziale": "Potential", "consiglio": "Advice", "esito": "Outcome"},
+        "fr": {"passato": "Passé", "presente": "Présent", "futuro": "Futur", "ostacolo": "Obstacle", "potenziale": "Potentiel", "consiglio": "Conseil", "esito": "Résultat"},
+        "es": {"passato": "Pasado", "presente": "Presente", "futuro": "Futuro", "ostacolo": "Obstáculo", "potenziale": "Potencial", "consiglio": "Consejo", "esito": "Resultado"},
+    }[language]
+    axis_labels = {
+        "it": {"nord": "Nord", "est": "Est", "sud": "Sud", "ovest": "Ovest"},
+        "en": {"nord": "North", "est": "East", "sud": "South", "ovest": "West"},
+        "fr": {"nord": "Nord", "est": "Est", "sud": "Sud", "ovest": "Ouest"},
+        "es": {"nord": "Norte", "est": "Este", "sud": "Sur", "ovest": "Oeste"},
+    }[language]
+    polarity_labels = {
+        "it": {"luce": "Luce", "ombra": "Ombra"},
+        "en": {"luce": "Light", "ombra": "Shadow"},
+        "fr": {"luce": "Lumière", "ombra": "Ombre"},
+        "es": {"luce": "Luz", "ombra": "Sombra"},
+    }[language]
     for c in cards:
-        lines.append(f"{c['posizione_label']}: {c['carta']} in {c['polarita'].capitalize()} sull'asse {c['asse'].capitalize()} — {c['significato_canonico']}.")
+        position = position_labels.get(c["posizione"], c["posizione_label"])
+        lines.append(f"{position}: {c['carta']} in {polarity_labels[c['polarita']]} sull'asse {axis_labels[c['asse']]} — {c['significato_canonico']}.")
     base = " ".join(lines)
-    if question:
-        opening = f"Sulla tua domanda, io leggerei questa stesa così: {base}"
-    else:
-        opening = f"Come fotografia simbolica del momento, io leggerei questa stesa così: {base}"
+    opening_templates = {
+        "it": ("Sulla tua domanda, io leggerei questa stesa così: {base}",
+               "Come fotografia simbolica del momento, io leggerei questa stesa così: {base}"),
+        "en": ("Looking at your question, I would read this spread as follows: {base}",
+               "As a symbolic snapshot of this moment, I would read this spread as follows: {base}"),
+        "fr": ("À partir de votre question, je lirais ce tirage ainsi : {base}",
+               "Comme photographie symbolique du moment, je lirais ce tirage ainsi : {base}"),
+        "es": ("A partir de tu pregunta, leería esta tirada así: {base}",
+               "Como fotografía simbólica del momento, leería esta tirada así: {base}"),
+    }[language]
+    opening = (opening_templates[0] if question else opening_templates[1]).format(base=base)
+    copy = {
+        "it": {
+            "message": " Il filo comune non è una previsione certa: è il tema che emerge mettendo in relazione queste posizioni.",
+            "direction": "Osserva quale di questi significati trova un riscontro concreto nella tua situazione e usa quello come punto di partenza.",
+            "final": "Quale passaggio della stesa descrive con più precisione ciò che stai vivendo adesso?",
+        },
+        "en": {
+            "message": " The common thread is not a certain prediction; it is the theme that emerges when these positions are read together.",
+            "direction": "Notice which meaning finds a concrete echo in your situation and use it as a starting point.",
+            "final": "Which part of the spread describes most precisely what you are living through now?",
+        },
+        "fr": {
+            "message": " Le fil commun n'est pas une prédiction certaine : c'est le thème qui apparaît lorsque ces positions sont mises en relation.",
+            "direction": "Observez quel sens trouve un écho concret dans votre situation et prenez-le comme point de départ.",
+            "final": "Quel passage du tirage décrit avec le plus de précision ce que vous vivez maintenant ?",
+        },
+        "es": {
+            "message": " El hilo común no es una predicción cierta: es el tema que aparece al relacionar estas posiciones.",
+            "direction": "Observa qué significado encuentra un eco concreto en tu situación y úsalo como punto de partida.",
+            "final": "¿Qué parte de la tirada describe con más precisión lo que estás viviendo ahora?",
+        },
+    }[language]
     return {
-        "messaggio": opening + " Il filo comune non è una previsione certa: è il tema che emerge mettendo in relazione queste posizioni.",
+        "messaggio": opening + copy["message"],
         "nodo": cards[-1]["significato_canonico"] if cards else "",
-        "direzione": "Osserva quale di questi significati trova un riscontro concreto nella tua situazione e usa quello come punto di partenza.",
-        "domanda_finale": "Quale passaggio della stesa descrive con più precisione ciò che stai vivendo adesso?",
-        "carte": [{"posizione": c["posizione_label"], "carta": c["carta"], "lettura": c["significato_canonico"]} for c in cards],
+        "direzione": copy["direction"],
+        "domanda_finale": copy["final"],
+        "carte": [{"posizione": position_labels.get(c["posizione"], c["posizione_label"]), "carta": c["carta"], "lettura": c["significato_canonico"]} for c in cards],
         "livello": "CANONICAL_FALLBACK",
+        "lingua": language,
     }
 
 
-def _ai(cards, question, context):
-    system = """Sei Raffaello, interprete del Canone Alpha di Claudio Terzi.
+def _ai(cards, question, context, language="it"):
+    language = _language(language)
+    target_language = LANGUAGES[language]
+    system = f"""Sei Raffaello, interprete del Canone Alpha di Claudio Terzi.
 Questo NON è un mazzo di tarocchi tradizionale. Non esistono Spade, Coppe, Bastoni, Denari o Arcani classici.
 Usi soltanto le 74 carte del Canone Alpha e la formula: CARTA + ASSE + POLARITA = SIGNIFICATO.
 Ogni significato canonico ti viene fornito esplicitamente e NON va sostituito con significati inventati.
 Luce e Ombra hanno pari dignità: Ombra non significa automaticamente male; indica la manifestazione d'ombra del simbolo.
 Leggi la relazione fra le carte e parla direttamente all'utente con chiarezza, calore e precisione.
 Non presentare simboli come prove di fatti nascosti o previsioni certe. Se inferisci qualcosa, formulalo come possibilità.
+
+LINGUA OBBLIGATORIA: scrivi ogni valore testuale naturale del JSON in {target_language}.
+Mantieni esattamente i nomi canonici delle carte nel campo "carta"; traduci invece posizioni e spiegazioni quando serve.
+Le chiavi JSON devono restare quelle indicate qui sotto.
 
 OUTPUT SOLO JSON valido:
 {
@@ -148,7 +217,7 @@ OUTPUT SOLO JSON valido:
  "carte":[{"posizione":"...","carta":"...","lettura":"spiegazione chiara del significato canonico nel contesto"}],
  "livello":"AI_ALPHA_CONTEXTUAL"
 }"""
-    user = json.dumps({"domanda": question or None, "contesto": context or None, "carte": cards}, ensure_ascii=False)
+    user = json.dumps({"domanda": question or None, "contesto": context or None, "lingua": language, "carte": cards}, ensure_ascii=False)
     try:
         from sdq1.llm.providers import GeminiProvider, AnthropicProvider
     except Exception:
@@ -212,26 +281,49 @@ def _follow_up_history(value):
     return history
 
 
-def _follow_up_fallback(cards, question):
+def _follow_up_fallback(cards, question, language="it"):
+    language = _language(language)
+    position_labels = {
+        "it": {"passato": "Passato", "presente": "Presente", "futuro": "Futuro", "ostacolo": "Ostacolo", "potenziale": "Potenziale", "consiglio": "Consiglio", "esito": "Esito"},
+        "en": {"passato": "Past", "presente": "Present", "futuro": "Future", "ostacolo": "Obstacle", "potenziale": "Potential", "consiglio": "Advice", "esito": "Outcome"},
+        "fr": {"passato": "Passé", "presente": "Présent", "futuro": "Futur", "ostacolo": "Obstacle", "potenziale": "Potentiel", "consiglio": "Conseil", "esito": "Résultat"},
+        "es": {"passato": "Pasado", "presente": "Presente", "futuro": "Futuro", "ostacolo": "Obstáculo", "potenziale": "Potencial", "consiglio": "Consejo", "esito": "Resultado"},
+    }[language]
     anchors = [
-        f"{c['posizione_label']}: {c['carta']} — {c['significato_canonico']}"
+        f"{position_labels.get(c['posizione'], c['posizione_label'])}: {c['carta']} — {c['significato_canonico']}"
         for c in cards
     ]
     joined = " ".join(anchors)
+    templates = {
+        "it": (f"Rileggo la tua domanda — «{question}» — soltanto attraverso la stesa già uscita. "
+               f"I riferimenti concreti sono questi: {joined}. "
+               "Il collegamento più rigoroso che posso fare resta quindi simbolico: confronta la tua domanda con questi significati e osserva quali trovano un riscontro reale nella situazione. "
+               "Le carte non mi autorizzano ad aggiungere fatti, intenzioni di altre persone o certezze sul futuro che non siano presenti nella lettura."),
+        "en": (f"I am rereading your question — “{question}” — only through the spread already drawn. "
+               f"These are the concrete references: {joined}. "
+               "The most rigorous link I can make is therefore symbolic: compare your question with these meanings and notice which ones have a real echo in your situation. "
+               "The cards do not authorize me to add facts, other people's intentions, or certainty about the future."),
+        "fr": (f"Je relis votre question — « {question} » — uniquement à travers le tirage déjà sorti. "
+               f"Voici les repères concrets : {joined}. "
+               "Le lien le plus rigoureux que je puisse faire reste donc symbolique : confrontez votre question à ces sens et observez lesquels trouvent un écho réel dans votre situation. "
+               "Les cartes ne m'autorisent pas à ajouter des faits, les intentions d'autrui ou des certitudes sur l'avenir."),
+        "es": (f"Vuelvo a leer tu pregunta — «{question}»— únicamente a través de la tirada ya extraída. "
+               f"Estas son las referencias concretas: {joined}. "
+               "El vínculo más riguroso que puedo hacer es, por tanto, simbólico: compara tu pregunta con estos significados y observa cuáles encuentran un eco real en tu situación. "
+               "Las cartas no me autorizan a añadir hechos, intenciones de otras personas ni certezas sobre el futuro."),
+    }[language]
     return {
-        "risposta": (
-            f"Rileggo la tua domanda — «{question}» — soltanto attraverso la stesa già uscita. "
-            f"I riferimenti concreti sono questi: {joined}. "
-            "Il collegamento più rigoroso che posso fare resta quindi simbolico: confronta la tua domanda con questi significati e osserva quali trovano un riscontro reale nella situazione. "
-            "Le carte non mi autorizzano ad aggiungere fatti, intenzioni di altre persone o certezze sul futuro che non siano presenti nella lettura."
-        ),
+        "risposta": templates,
         "carte_richiamate": [c["carta"] for c in cards],
         "livello": "CANONICAL_FOLLOW_UP_FALLBACK",
+        "lingua": language,
     }
 
 
-def _ai_follow_up(cards, question, original_question, context, previous, history, *, timeout_seconds=30, max_retries=2):
-    system = """Sei Raffaello, interprete del Canone Alpha di Claudio Terzi.
+def _ai_follow_up(cards, question, original_question, context, previous, history, *, language="it", timeout_seconds=30, max_retries=2):
+    language = _language(language)
+    target_language = LANGUAGES[language]
+    system = f"""Sei Raffaello, interprete del Canone Alpha di Claudio Terzi.
 L'utente sta facendo una domanda libera DOPO una lettura già conclusa.
 
 VINCOLO ASSOLUTO:
@@ -244,7 +336,7 @@ VINCOLO ASSOLUTO:
 - Ogni affermazione interpretativa deve poter essere ricondotta ad almeno una carta della stesa.
 
 STILE:
-Italiano naturale, caldo, diretto e preciso. Rispondi alla domanda specifica senza menu, formule predefinite o digressioni tecniche.
+{target_language} naturale, caldo, diretto e preciso. Rispondi nella lingua richiesta alla domanda specifica senza menu, formule predefinite o digressioni tecniche.
 
 OUTPUT SOLO JSON valido:
 {
@@ -259,6 +351,7 @@ OUTPUT SOLO JSON valido:
         "carte_estratte_bloccate": cards,
         "lettura_precedente": previous,
         "cronologia_approfondimenti": history,
+        "lingua": language,
     }, ensure_ascii=False)
     try:
         from sdq1.llm.providers import GeminiProvider, AnthropicProvider
@@ -294,6 +387,7 @@ OUTPUT SOLO JSON valido:
 
 def _follow_up(body):
     question = _clean(body.get("domanda_utente"), 1600)
+    language = _language(body.get("lingua") or body.get("language"))
     if not question:
         return None, ("Scrivi la domanda che vuoi fare a Raffaello.", 400)
     try:
@@ -304,9 +398,9 @@ def _follow_up(body):
     context = _clean(body.get("contesto"), 3200)
     previous = _previous_reading(body.get("lettura_precedente"))
     history = _follow_up_history(body.get("cronologia"))
-    answer, engine = _ai_follow_up(cards, question, original_question, context, previous, history)
+    answer, engine = _ai_follow_up(cards, question, original_question, context, previous, history, language=language)
     if answer is None:
-        answer = _follow_up_fallback(cards, question)
+        answer = _follow_up_fallback(cards, question, language)
         engine = {"provider": "canonical-fallback", "via_api": False}
     return {
         "approfondimento_id": str(uuid.uuid4()),
@@ -319,6 +413,7 @@ def _follow_up(body):
         "motore": engine,
         "vincolo": "SOLO_CARTE_ESTRATTE",
         "epistemica": "INTERPRETAZIONE_SIMBOLICA_NON_PREVISIONE_CERTA",
+        "lingua": language,
     }, None
 
 
@@ -342,10 +437,12 @@ def _response():
         return jsonify({"errore": str(exc)}), 400
     question = _clean(body.get("domanda"), 1800)
     context = _clean(body.get("contesto"), 3200)
-    reading, engine = _ai(cards, question, context)
+    language = _language(body.get("lingua") or body.get("language"))
+    reading, engine = _ai(cards, question, context, language)
     if reading is None:
-        reading = _fallback(cards, question)
+        reading = _fallback(cards, question, language)
         engine = {"provider": "canonical-fallback", "via_api": False}
+    reading.setdefault("lingua", language)
     resp = jsonify({
         "lettura_id": str(uuid.uuid4()),
         "sistema": "Canone Alpha 74",
@@ -357,6 +454,7 @@ def _response():
         "lettura": reading,
         "motore": engine,
         "epistemica": "INTERPRETAZIONE_SIMBOLICA_NON_PREVISIONE_CERTA",
+        "lingua": language,
     })
     resp.headers["Cache-Control"] = "no-store"
     return resp

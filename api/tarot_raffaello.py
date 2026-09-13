@@ -34,6 +34,12 @@ from tarocchi import (
 app = Flask(__name__)
 
 _FOCUS = {"amore", "lavoro", "crescita", "creativita", "creatività", "relazioni", "salute", "denaro", "altro", ""}
+LANGUAGES = {
+    "it": "Italiano",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+}
 _LAYOUTS = {
     3: [(TipoPosizione.RADICE, "Radice"),(TipoPosizione.PRESENTE, "Presente"),(TipoPosizione.CONSIGLIO, "Direzione")],
     5: [(TipoPosizione.RADICE, "Radice"),(TipoPosizione.PRESENTE, "Presente"),(TipoPosizione.OSTACOLO, "Nodo / ostacolo"),(TipoPosizione.POTENZIALE, "Potenziale"),(TipoPosizione.CONSIGLIO, "Direzione")],
@@ -51,6 +57,13 @@ _ORIENTATIONS = {o.value: o for o in OrientamentoCarta}
 
 def _clean_text(value, limit):
     return str(value or "").strip()[:limit]
+
+
+def _language(value):
+    """Normalize the requested reading language without trusting client input."""
+    raw = _clean_text(value, 20).lower().replace("_", "-")
+    code = raw.split("-", 1)[0]
+    return code if code in LANGUAGES else "it"
 
 
 def _depth(question: str, context: str, focus: str, requested: str) -> tuple[int, str]:
@@ -94,17 +107,48 @@ def _safe_json(text: str):
         except json.JSONDecodeError:return None
 
 
-def _fallback(personale,cards,question,focus):
+def _fallback(personale,cards,question,focus,language="it"):
+    language = _language(language)
     per=[]
+    position_labels = {
+        "it": {"radice": "Radice", "passato": "Passato", "presente": "Presente", "futuro": "Futuro", "ostacolo": "Ostacolo", "potenziale": "Potenziale", "consiglio": "Consiglio", "esito": "Esito", "ombra": "Ombra"},
+        "en": {"radice": "Root", "passato": "Past", "presente": "Present", "futuro": "Future", "ostacolo": "Obstacle", "potenziale": "Potential", "consiglio": "Advice", "esito": "Outcome", "ombra": "Shadow"},
+        "fr": {"radice": "Racine", "passato": "Passé", "presente": "Présent", "futuro": "Futur", "ostacolo": "Obstacle", "potenziale": "Potentiel", "consiglio": "Conseil", "esito": "Résultat", "ombra": "Ombre"},
+        "es": {"radice": "Raíz", "passato": "Pasado", "presente": "Presente", "futuro": "Futuro", "ostacolo": "Obstáculo", "potenziale": "Potencial", "consiglio": "Consejo", "esito": "Resultado", "ombra": "Sombra"},
+    }[language]
+    nuance = {
+        "it": ("Qui il simbolo tende a mostrarsi come energia trattenuta, interiorizzata o non ancora espressa.",
+               "Qui il simbolo è disponibile in forma più diretta e visibile."),
+        "en": ("Here the symbol tends to appear as energy held back, internalized, or not yet expressed.",
+               "Here the symbol is available in a more direct and visible form."),
+        "fr": ("Ici, le symbole tend à apparaître comme une énergie retenue, intériorisée ou pas encore exprimée.",
+               "Ici, le symbole est disponible sous une forme plus directe et visible."),
+        "es": ("Aquí el símbolo tiende a mostrarse como energía contenida, interiorizada o aún no expresada.",
+               "Aquí el símbolo está disponible de una forma más directa y visible."),
+    }[language]
     for card in cards:
         rovescia=card["orientamento"]=="rovescia"
-        nuance="Qui il simbolo tende a mostrarsi come energia trattenuta, interiorizzata o non ancora espressa." if rovescia else "Qui il simbolo è disponibile in forma più diretta e visibile."
-        per.append({"posizione":card["posizione_label"],"carta":card["carta"],"significato":f"{card['voce']} — {card['eco']}","nel_contesto":nuance})
-    return {"apertura":"Ti restituisco prima il senso complessivo della stesa e poi, se vuoi, puoi vedere perché ogni carta mi porta lì.","contesto_compreso":question or (f"Focus: {focus}." if focus else "Hai aperto la stesa senza una domanda specifica: la leggo come fotografia simbolica del momento."),"carte":per,"trama":personale.ponte,"tensione_centrale":personale.punto_di_collasso,"sintesi":personale.integrazione,"direzione":"Prendi come utile ciò che trova riscontro nella realtà; ciò che non risuona può restare aperto.","domanda_finale":personale.domande_di_riflessione[0] if personale.domande_di_riflessione else "Quale parte della stesa descrive meglio ciò che stai davvero vivendo?","livello":"STRUCTURAL_FALLBACK"}
+        per.append({"posizione":position_labels.get(card["posizione"], card["posizione_label"]),"carta":card["carta"],"significato":f"{card['voce']} — {card['eco']}","nel_contesto":nuance[0] if rovescia else nuance[1]})
+    copy = {
+        "it": {"opening":"Ti restituisco prima il senso complessivo della stesa e poi, se vuoi, puoi vedere perché ogni carta mi porta lì.", "context": "Hai aperto la stesa senza una domanda specifica: la leggo come fotografia simbolica del momento.", "direction":"Prendi come utile ciò che trova riscontro nella realtà; ciò che non risuona può restare aperto.", "final":"Quale parte della stesa descrive meglio ciò che stai davvero vivendo?"},
+        "en": {"opening":"I will give you the overall meaning of the spread first, then you can see why each card leads me there.", "context": "You opened the spread without a specific question: I read it as a symbolic snapshot of this moment.", "direction":"Keep what finds an echo in reality; whatever does not resonate can remain open.", "final":"Which part of the spread best describes what you are truly living through?"},
+        "fr": {"opening":"Je vous donne d'abord le sens d'ensemble du tirage, puis, si vous le souhaitez, pourquoi chaque carte m'y conduit.", "context":"Vous avez ouvert le tirage sans question précise : je le lis comme une photographie symbolique du moment.", "direction":"Gardez ce qui trouve un écho dans la réalité ; ce qui ne résonne pas peut rester ouvert.", "final":"Quelle partie du tirage décrit le mieux ce que vous vivez vraiment ?"},
+        "es": {"opening":"Primero te devuelvo el sentido global de la tirada y después, si quieres, por qué cada carta me lleva hasta allí.", "context":"Has abierto la tirada sin una pregunta concreta: la leo como una fotografía simbólica del momento.", "direction":"Quédate con lo que encuentre un eco en la realidad; lo que no resuene puede quedar abierto.", "final":"¿Qué parte de la tirada describe mejor lo que estás viviendo de verdad?"},
+    }[language]
+    if question:
+        understood = question
+    elif focus:
+        focus_labels = {"it": "Focus", "en": "Focus", "fr": "Domaine", "es": "Enfoque"}
+        understood = f"{focus_labels[language]}: {focus}."
+    else:
+        understood = copy["context"]
+    return {"apertura":copy["opening"],"contesto_compreso":understood,"carte":per,"trama":personale.ponte,"tensione_centrale":personale.punto_di_collasso,"sintesi":personale.integrazione,"direzione":copy["direction"],"domanda_finale":personale.domande_di_riflessione[0] if personale.domande_di_riflessione else copy["final"],"livello":"STRUCTURAL_FALLBACK","lingua":language}
 
 
-def _ai_reading(structural,personal,cards,question,context,focus,emotion):
-    system="""Sei Raffaello, lettore canonico dei Tarocchi R³∞ di Claudio Terzi.
+def _ai_reading(structural,personal,cards,question,context,focus,emotion,language="it"):
+    language = _language(language)
+    target_language = LANGUAGES[language]
+    system=f"""Sei Raffaello, lettore canonico dei Tarocchi R³∞ di Claudio Terzi.
 Scrivi come una persona che sta parlando direttamente all'utente dopo aver osservato tutta la stesa.
 La prima priorità è CHIAREZZA: l'utente deve capire subito che cosa raccontano le carte nel loro insieme.
 
@@ -122,8 +166,12 @@ QUALITÀ:
 - Se la stesa contraddice l'aspettativa dell'utente, dillo con tatto.
 - Non citare tecniche psicologiche o il processo con cui formuli la lettura.
 
+LINGUA OBBLIGATORIA: scrivi ogni valore testuale naturale del JSON in {target_language}.
+Mantieni i nomi canonici delle carte nel campo "carta"; traduci posizioni e spiegazioni quando serve.
+Le chiavi JSON restano esattamente quelle indicate sotto.
+
 STILE:
-Italiano naturale, caldo, preciso. Prima persona come Raffaello. Niente gergo R³∞ nel messaggio principale. Deve sembrare un messaggio personale, non un report.
+{target_language} naturale, caldo, preciso. Prima persona come Raffaello. Niente gergo R³∞ nel messaggio principale. Deve sembrare un messaggio personale, non un report.
 
 OUTPUT SOLO JSON valido:
 {
@@ -137,7 +185,7 @@ OUTPUT SOLO JSON valido:
  "domanda_finale":"una sola domanda molto mirata",
  "livello":"AI_CONTEXTUAL"
 }"""
-    user=json.dumps({"domanda":question or None,"contesto_aggiuntivo":context or None,"focus":focus or None,"emozione_dichiarata":emotion or None,"carte":cards,"strutturale":{"sinossi":structural.sinossi,"tensioni":structural.tensioni,"risorse":structural.risorse,"relazioni":structural.relazioni,"distribuzione_stati":structural.distribuzione_stati,"distribuzione_elementi":structural.distribuzione_elementi},"ponte_base":personal.ponte,"collasso_base":personal.punto_di_collasso,"domande_base":personal.domande_di_riflessione,"integrazione_base":personal.integrazione},ensure_ascii=False)
+    user=json.dumps({"domanda":question or None,"contesto_aggiuntivo":context or None,"focus":focus or None,"emozione_dichiarata":emotion or None,"lingua":language,"carte":cards,"strutturale":{"sinossi":structural.sinossi,"tensioni":structural.tensioni,"risorse":structural.risorse,"relazioni":structural.relazioni,"distribuzione_stati":structural.distribuzione_stati,"distribuzione_elementi":structural.distribuzione_elementi},"ponte_base":personal.ponte,"collasso_base":personal.punto_di_collasso,"domande_base":personal.domande_di_riflessione,"integrazione_base":personal.integrazione},ensure_ascii=False)
     try:from sdq1.llm.providers import AnthropicProvider,GeminiProvider
     except Exception:return None,None
     providers=[(GeminiProvider,"gemini-2.5-flash",{"json_mode":True,"temperatura":0.5,"max_token":3400,"timeout":32}),(AnthropicProvider,"claude-haiku-4-5-20251001",{"temperatura":0.45,"max_token":3400,"timeout_secondi":32})]
@@ -170,7 +218,7 @@ def _manual_spread(items):
 
 
 def _build(body):
-    question=_clean_text(body.get("domanda"),1800);context=_clean_text(body.get("contesto"),3200);focus=_clean_text(body.get("focus"),40).lower();emotion=_clean_text(body.get("emozione"),120);requested=_clean_text(body.get("profondita"),10).lower() or "auto"
+    question=_clean_text(body.get("domanda"),1800);context=_clean_text(body.get("contesto"),3200);focus=_clean_text(body.get("focus"),40).lower();emotion=_clean_text(body.get("emozione"),120);requested=_clean_text(body.get("profondita"),10).lower() or "auto";language=_language(body.get("lingua") or body.get("language"))
     if focus not in _FOCUS:focus="altro"
     manual=body.get("carte_scelte")
     if not question and not context and not manual:return None,("scrivi una domanda o un contesto da esplorare",400)
@@ -188,9 +236,10 @@ def _build(body):
     proto=DoppiaErmeneutica();structural=proto.leggi_struttura(spread)
     personal_context=ContestoPersonale(domanda=question or None,momento_vita=context or None,emozione_prevalente=emotion or None,aspetto_focus=focus or None,disponibilita_collasso=True)
     personal=proto.leggi_personale(structural,personal_context);cards=[_card_payload(n,l) for n,l in zip(spread.nodi,labels)]
-    reading,provider_meta=_ai_reading(structural,personal,cards,question,context,focus,emotion)
-    if reading is None:reading=_fallback(personal,cards,question,focus)
-    return {"lettura_id":str(uuid.uuid4()),"metodo":{"sistema":"Tarocchi R³∞ · Raffaello","numero_carte":count,"schema":spread.schema,"perche_questa_stesa":reason,"estrazione":extraction,"fatti_privati_inventati":False},"contesto":{"domanda":question or None,"focus":focus or None,"emozione":emotion or None},"carte":cards,"strutturale":{"sinossi":structural.sinossi,"tensioni":structural.tensioni,"risorse":structural.risorse,"relazioni":structural.relazioni,"assiomi_attivati":structural.assiomi_attivati},"lettura":reading,"motore":provider_meta or {"provider":"deterministic-fallback","via_api":False},"epistemica":"INTERPRETAZIONE_SIMBOLICA_NON_PREVISIONE_CERTA"},None
+    reading,provider_meta=_ai_reading(structural,personal,cards,question,context,focus,emotion,language)
+    if reading is None:reading=_fallback(personal,cards,question,focus,language)
+    reading.setdefault("lingua", language)
+    return {"lettura_id":str(uuid.uuid4()),"metodo":{"sistema":"Tarocchi R³∞ · Raffaello","numero_carte":count,"schema":spread.schema,"perche_questa_stesa":reason,"estrazione":extraction,"fatti_privati_inventati":False},"contesto":{"domanda":question or None,"focus":focus or None,"emozione":emotion or None,"lingua":language},"carte":cards,"strutturale":{"sinossi":structural.sinossi,"tensioni":structural.tensioni,"risorse":structural.risorse,"relazioni":structural.relazioni,"assiomi_attivati":structural.assiomi_attivati},"lettura":reading,"motore":provider_meta or {"provider":"deterministic-fallback","via_api":False},"epistemica":"INTERPRETAZIONE_SIMBOLICA_NON_PREVISIONE_CERTA","lingua":language},None
 
 
 def _response():

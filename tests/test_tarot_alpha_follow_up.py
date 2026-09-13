@@ -53,6 +53,19 @@ class AlphaFollowUpApiTests(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("domanda", response.get_json()["errore"].lower())
 
+    def test_follow_up_keeps_the_requested_language(self):
+        with patch.object(tarot_alpha, "_ai_follow_up", return_value=(None, None)):
+            response = self.client.post("/", json={
+                "modalita": "approfondimento",
+                "lingua": "en",
+                "domanda_utente": "Explain this card.",
+                "carte_scelte": [self.chosen],
+            })
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data["lingua"], "en")
+        self.assertTrue(data["risposta"].startswith("I am rereading your question"))
+
 
 class AlphaFollowUpFrontendTests(unittest.TestCase):
     @classmethod
@@ -61,6 +74,8 @@ class AlphaFollowUpFrontendTests(unittest.TestCase):
 
     def test_free_question_and_speech_controls_are_present(self):
         self.assertIn("Chiedi a Raffaello qualsiasi cosa su questa lettura.", self.html)
+        self.assertIn('id="follow-language"', self.html)
+        self.assertIn("lingua:selectedLanguage()", self.html)
         self.assertIn("modalita:'approfondimento'", self.html)
         self.assertIn("speechSynthesis", self.html)
         self.assertIn("Ascolta la lettura", self.html)

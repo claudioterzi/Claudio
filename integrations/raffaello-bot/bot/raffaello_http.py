@@ -33,7 +33,7 @@ def dispatch(method, path, headers, body):
     if match and method == "GET":
         return store.reading(owner, match[1])
     if path == "/drafts" and method == "POST":
-        task = store.stage(owner, body.get("domanda"), body.get("request_id"), body.get("lettura_id"))
+        task = store.stage(owner, body.get("domanda"), body.get("request_id"), body.get("lettura_id"), language=body.get("lingua") or body.get("language"))
         return {"id": task["id"], "status": task["status"]}
     match = re.fullmatch(r"/drafts/([a-f0-9]{32})(/analyze)?", path)
     if match and method == "GET" and not match[2]:
