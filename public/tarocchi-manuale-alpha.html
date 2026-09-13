@@ -237,6 +237,7 @@
       if($('follow-language'))$('follow-language').value=language;
       if(document.querySelectorAll){document.querySelectorAll('[data-i18n]').forEach(node=>{node.textContent=t(node.dataset.i18n)});document.querySelectorAll('[data-i18n-placeholder]').forEach(node=>{node.placeholder=t(node.dataset.i18nPlaceholder)});}
       if($('spread'))renderSpread();
+      if(lastReading)renderInterpretationSpace(lastReading);
       if($('listen')&&!speaking)$('listen').textContent=t('listen');
     }
     try{language=normalizeLanguage(localStorage.getItem('r3-reading-language')||navigator.language)}catch(e){language='it'}
