@@ -17,6 +17,8 @@ import uuid
 
 from flask import Flask, jsonify, request
 
+from tarocchi.spazio_interpretativo import configuration_space
+
 app = Flask(__name__)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,7 +41,7 @@ LANGUAGES = {
     "fr": "Français",
     "es": "Español",
 }
-INTERPRETATION_VERSION = "alpha74-context-v2"
+INTERPRETATION_VERSION = "alpha74-context-v3"
 
 POSITION_LABELS = {
     "it": {"passato": "Passato", "presente": "Presente", "futuro": "Futuro", "ostacolo": "Ostacolo", "potenziale": "Potenziale", "consiglio": "Consiglio", "esito": "Esito"},
@@ -106,8 +108,12 @@ def _normalize_items(body):
     items = body.get("carte_scelte")
     automatic = not isinstance(items, list) or not items
     if automatic:
-        count = int(body.get("numero_carte") or 3)
-        count = 3 if count not in {3, 5, 7} else count
+        try:
+            count = int(body.get("numero_carte") or 3)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("numero_carte deve essere un intero da 1 a 7.") from exc
+        if not 1 <= count <= 7:
+            raise ValueError("numero_carte deve essere compreso tra 1 e 7.")
         chosen = secrets.SystemRandom().sample(deck, count)
         items = []
         for i, card in enumerate(chosen):
@@ -119,6 +125,8 @@ def _normalize_items(body):
     seen = set()
     out = []
     for i, raw in enumerate(items):
+        if not isinstance(raw, dict):
+            raise ValueError("Ogni carta della stesa deve essere un oggetto.")
         name = _clean(raw.get("carta"), 120)
         card = by_name.get(name)
         if not card:
@@ -142,6 +150,35 @@ def _normalize_items(body):
             "significato_canonico": meaning,
         })
     return out, automatic
+
+
+def _epistemic_register(cards, relations):
+    """Classify the same spread as facts, interpretations and hypotheses."""
+    facts = [
+        {
+            "ordine": index + 1,
+            "carta": card["carta"],
+            "posizione": card["posizione"],
+            "direzione": card["asse"],
+            "polarita": card["polarita"],
+            "significato_canonico": card["significato_canonico"],
+        }
+        for index, card in enumerate(cards)
+    ]
+    return {
+        "fatti": {
+            "stato": "osservabile",
+            "dati_stesa": facts,
+        },
+        "interpretazioni": {
+            "stato": "relazione_simbolica",
+            "relazioni": relations,
+        },
+        "ipotesi": {
+            "stato": "da_verificare",
+            "vincolo": "Non sono fatti, diagnosi, intenzioni altrui o previsioni certe.",
+        },
+    }
 
 
 def _evidence_map(cards):
@@ -178,22 +215,29 @@ def _evidence_map(cards):
     if light and shadow:
         relations.append({"tipo": "dialogo_luce_ombra", "luce": light, "ombra": shadow})
 
+    space = configuration_space(len(cards))
     return {
         "versione": INTERPRETATION_VERSION,
         "formula": "CARTA + ASSE + POLARITA = SIGNIFICATO",
         "carte_ancorate": [card["carta"] for card in cards],
         "relazioni": relations,
+        "spazio_interpretativo": space,
+        "registri_epistemici": _epistemic_register(cards, relations),
     }
 
 
 def _verification(evidence, *, kind="schema"):
     """Return a categorical, non-numeric check status for the response."""
+    space = evidence.get("spazio_interpretativo", {})
     return {
         "stato": "superata",
         "tipo": kind,
         "versione": evidence.get("versione", INTERPRETATION_VERSION),
         "carte_ancorate": len(evidence.get("carte_ancorate", [])),
         "relazioni": len(evidence.get("relazioni", [])),
+        "registri": ["fatti", "interpretazioni", "ipotesi"],
+        "configurazioni_stessa_lunghezza": space.get("configurazioni_stessa_lunghezza"),
+        "configurazioni_massime_7": space.get("configurazioni_massime_7"),
     }
 
 
@@ -404,6 +448,8 @@ def _fallback(cards, question, language="it", evidence=None):
         "lingua": language,
         "traccia": evidence,
         "verifica": _verification(evidence, kind="deterministico"),
+        "spazio_interpretativo": evidence["spazio_interpretativo"],
+        "registri_epistemici": evidence["registri_epistemici"],
     }
 
 
@@ -411,6 +457,10 @@ def _ai(cards, question, context, language="it"):
     language = _language(language)
     target_language = LANGUAGES[language]
     evidence = _evidence_map(cards)
+    spread_space = evidence["spazio_interpretativo"]
+    spread_count = spread_space["carte_nella_stesa"]
+    spread_configurations = spread_space["configurazioni_stessa_lunghezza"]
+    max_configurations = spread_space["configurazioni_massime_7"]
     system = f"""Sei Raffaello, interprete del Canone Alpha di Claudio Terzi.
 Questo NON è un mazzo di tarocchi tradizionale. Non esistono Spade, Coppe, Bastoni, Denari o Arcani classici.
 Usi soltanto le 74 carte del Canone Alpha e la formula: CARTA + ASSE + POLARITA = SIGNIFICATO.
@@ -418,6 +468,9 @@ Ogni significato canonico ti viene fornito esplicitamente e NON va sostituito co
 Luce e Ombra hanno pari dignità: Ombra non significa automaticamente male; indica la manifestazione d'ombra del simbolo.
 Leggi la relazione fra le carte e parla direttamente all'utente con chiarezza, calore e precisione.
 Non presentare simboli come prove di fatti nascosti o previsioni certe. Se inferisci qualcosa, formulalo come possibilità.
+La stesa è una configurazione ordinata di {spread_count} carte distinte: ordine, posizione, asse/direzione e polarità contano.
+Il modello ha {spread_configurations} configurazioni per questa lunghezza; a 7 carte arriva a {max_configurations} (P(74,7) × 8^7). Questi numeri descrivono lo spazio del modello, non verità assolute.
+Distingui sempre fatti osservabili della stesa, interpretazioni relazionali e ipotesi contestuali da verificare. Non trasformare un'ipotesi in un fatto.
 
 LINGUA OBBLIGATORIA: scrivi ogni valore testuale naturale del JSON in {target_language}.
 Mantieni esattamente i nomi canonici delle carte nel campo "carta"; traduci invece posizioni e spiegazioni quando serve.
@@ -550,6 +603,9 @@ def _ai_follow_up(cards, question, original_question, context, previous, history
     language = _language(language)
     target_language = LANGUAGES[language]
     evidence = _evidence_map(cards)
+    spread_space = evidence["spazio_interpretativo"]
+    spread_count = spread_space["carte_nella_stesa"]
+    max_configurations = spread_space["configurazioni_massime_7"]
     system = f"""Sei Raffaello, interprete del Canone Alpha di Claudio Terzi.
 L'utente sta facendo una domanda libera DOPO una lettura già conclusa.
 
@@ -561,6 +617,8 @@ VINCOLO ASSOLUTO:
 - Non inventare fatti privati, intenzioni di terzi, diagnosi o previsioni certe.
 - Se la domanda chiede una certezza che le carte non possono dare, dillo chiaramente e spiega che cosa suggeriscono invece i simboli presenti.
 - Ogni affermazione interpretativa deve poter essere ricondotta ad almeno una carta della stesa.
+- La stesa corrente è una configurazione ordinata di {spread_count} carte; il massimo teorico a 7 carte è {max_configurations}. Il conteggio riguarda configurazioni del modello, non verità assolute.
+- Mantieni distinti fatti osservabili, interpretazioni relazionali e ipotesi contestuali da verificare.
 
 STILE:
 {target_language} naturale, caldo, diretto e preciso. Rispondi nella lingua richiesta alla domanda specifica senza menu, formule predefinite o digressioni tecniche.
@@ -646,6 +704,8 @@ def _follow_up(body):
         "livello": answer.get("livello", "AI_ALPHA_FOLLOW_UP"),
         "motore": engine,
         "evidenza": evidence,
+        "spazio_interpretativo": evidence["spazio_interpretativo"],
+        "registri_epistemici": evidence["registri_epistemici"],
         "verifica": answer.get("verifica") or _verification(evidence, kind="ai" if answer_is_ai else "deterministico"),
         "vincolo": "SOLO_CARTE_ESTRATTE",
         "epistemica": "INTERPRETAZIONE_SIMBOLICA_NON_PREVISIONE_CERTA",
@@ -684,6 +744,8 @@ def _response():
             "tipo": "riserva_canonica",
         }
     reading["traccia"] = evidence
+    reading["spazio_interpretativo"] = evidence["spazio_interpretativo"]
+    reading["registri_epistemici"] = evidence["registri_epistemici"]
     reading["verifica"] = _verification(evidence, kind="ai" if reading.get("livello") == "AI_ALPHA_CONTEXTUAL" else "deterministico")
     engine = _verified_engine(engine, evidence, kind="ai" if reading.get("livello") == "AI_ALPHA_CONTEXTUAL" else "deterministico")
     reading.setdefault("lingua", language)
@@ -698,6 +760,8 @@ def _response():
         "lettura": reading,
         "motore": engine,
         "evidenza": evidence,
+        "spazio_interpretativo": evidence["spazio_interpretativo"],
+        "registri_epistemici": evidence["registri_epistemici"],
         "verifica": reading["verifica"],
         "epistemica": "INTERPRETAZIONE_SIMBOLICA_NON_PREVISIONE_CERTA",
         "lingua": language,
