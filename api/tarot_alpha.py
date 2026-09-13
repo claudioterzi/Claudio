@@ -719,13 +719,87 @@ def _follow_up(body):
     }, None
 
 
-def _voice_configured():
-    """Return whether the optional server-side ElevenLabs voice is configured."""
-    provider = _clean(os.getenv("TAROT_TTS_PROVIDER", "elevenlabs"), 40).lower()
-    return provider == "elevenlabs" and bool(
+def _voice_provider():
+    """Return the one selected server-side voice provider, if configured.
+
+    ``openai`` is explicit for the internal OpenAI TTS path. In ``auto`` mode
+    an OpenAI key is considered only when a TTS voice has also been selected,
+    so an unrelated application key cannot silently start generating audio.
+    """
+    requested = _clean(os.getenv("TAROT_TTS_PROVIDER", "auto"), 40).lower()
+    openai_key = bool(_clean(os.getenv("OPENAI_API_KEY"), 240))
+    openai_voice = bool(
+        _clean(os.getenv("OPENAI_CUSTOM_VOICE_ID"), 120)
+        or _clean(os.getenv("OPENAI_TTS_VOICE"), 80)
+    )
+    elevenlabs_ready = bool(
         _clean(os.getenv("ELEVENLABS_API_KEY"), 240)
         and _clean(os.getenv("ELEVENLABS_VOICE_ID"), 120)
     )
+    if requested == "openai":
+        return "openai" if openai_key else None
+    if requested == "elevenlabs":
+        return "elevenlabs" if elevenlabs_ready else None
+    if requested not in {"", "auto"}:
+        return None
+    if openai_key and openai_voice:
+        return "openai"
+    if elevenlabs_ready:
+        return "elevenlabs"
+    return None
+
+
+def _voice_configured():
+    """Return whether the selected optional server-side voice is configured."""
+    return _voice_provider() is not None
+
+
+def _openai_audio(text, language):
+    """Generate MP3 through OpenAI TTS, keeping the API key server-side."""
+    if _voice_provider() != "openai":
+        return None
+    api_key = _clean(os.getenv("OPENAI_API_KEY"), 240)
+    custom_voice_id = _clean(os.getenv("OPENAI_CUSTOM_VOICE_ID"), 120)
+    voice = {"id": custom_voice_id} if custom_voice_id else (
+        _clean(os.getenv("OPENAI_TTS_VOICE"), 80) or "marin"
+    )
+    model = _clean(os.getenv("OPENAI_TTS_MODEL"), 120) or "gpt-4o-mini-tts"
+    instructions = _clean(os.getenv("OPENAI_TTS_INSTRUCTIONS"), 1200)
+    if not instructions:
+        instructions = {
+            "it": "Parla in italiano con una voce moderna, tecnologica, fluida, calma e autorevole. Mantieni pause naturali e una dizione chiara.",
+            "en": "Speak in English with a modern, technological, fluid, calm, authoritative voice. Keep natural pauses and clear diction.",
+            "fr": "Parle en français avec une voix moderne, technologique, fluide, calme et assurée. Garde des pauses naturelles et une diction claire.",
+            "es": "Habla en español con una voz moderna, tecnológica, fluida, serena y segura. Mantén pausas naturales y una dicción clara.",
+        }.get(language, "Speak with a modern, fluid, calm and clear voice.")
+    payload = json.dumps(
+        {
+            "model": model,
+            "input": text,
+            "voice": voice,
+            "instructions": instructions,
+            "response_format": "mp3",
+        },
+        ensure_ascii=False,
+    ).encode("utf-8")
+    try:
+        remote_request = Request(
+            "https://api.openai.com/v1/audio/speech",
+            data=payload,
+            headers={
+                "Accept": "audio/mpeg",
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            method="POST",
+        )
+        with urlopen(remote_request, timeout=25) as remote_response:
+            audio = remote_response.read(6_000_001)
+    except (HTTPError, URLError, TimeoutError, OSError):
+        return None
+    if not audio or len(audio) > 6_000_000:
+        return None
+    return audio
 
 
 def _elevenlabs_audio(text):
@@ -777,10 +851,11 @@ def _alpha_voice():
     if request.method == "OPTIONS":
         return "", 204
     if request.method == "GET":
+        provider = _voice_provider()
         response = jsonify(
             {
-                "disponibile": _voice_configured(),
-                "provider": "elevenlabs" if _voice_configured() else None,
+                "disponibile": provider is not None,
+                "provider": provider,
                 "fallback": "browser-speech-synthesis",
             }
         )
@@ -795,7 +870,9 @@ def _alpha_voice():
     text = raw_text.strip()
     if len(text) > 6000:
         return jsonify({"errore": "Il testo vocale è troppo lungo."}), 413
-    audio = _elevenlabs_audio(text)
+    language = _language(body.get("lingua") or body.get("language"))
+    provider = _voice_provider()
+    audio = _openai_audio(text, language) if provider == "openai" else _elevenlabs_audio(text)
     if audio is None:
         return (
             jsonify(
@@ -809,7 +886,7 @@ def _alpha_voice():
     response = Response(audio, mimetype="audio/mpeg")
     response.headers["Cache-Control"] = "no-store"
     response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Voice-Provider"] = "elevenlabs"
+    response.headers["X-Voice-Provider"] = provider or "unknown"
     return response
 
 
