@@ -1,0 +1,7 @@
+Alpha 74 friend trial release v16
+- isolated /alpha74-prova route
+- prominent top language selector
+- presentation language follows selection
+- reveal visualizes 8 possible states without altering the computed result
+- canonical decoding remains server-side
+Claudio Terzi · C.Terzi
