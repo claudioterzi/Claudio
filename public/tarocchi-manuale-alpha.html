@@ -354,8 +354,9 @@
     }
 
     function engineMarkup(data){
-      if(!data?.motore)return '';
+      if(!data?.motore||typeof data.motore!=='object')return '';
       const meta=data.motore||{};
+      if(!meta.provider&&!meta.tipo&&typeof meta.via_api!=='boolean')return '';
       const kind=engineKind(data);
       const label=kind==='fallback'?t('engineFallback'):t('engineAi');
       const detail=kind==='fallback'?t('engineFallbackDetail'):[meta.provider,meta.modello].filter(Boolean).join(' · ')||'AI';
