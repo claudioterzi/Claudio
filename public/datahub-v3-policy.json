@@ -1,0 +1,18 @@
+{
+  "schema": "RAFFAELLO_DATA_HUB_POLICY_V3",
+  "author": "Claudio Terzi",
+  "signature": "C.Terzi",
+  "surface": "CREME_DE_LA_CREME",
+  "cold_archive": {
+    "target": "iCloud",
+    "connected": false,
+    "rule": "Non dichiarare sincronizzato ciò che non è stato realmente trasferito."
+  },
+  "tiers": ["CREME", "ATTIVO", "LOCALE", "ARCHIVIO"],
+  "rules": [
+    "Un solo canone operativo per contenuto equivalente.",
+    "Asset pesanti non vengono caricati automaticamente.",
+    "Le inferenze non diventano fatti senza verifica.",
+    "Ai modelli forti arriva il minimo contesto necessario."
+  ]
+}
