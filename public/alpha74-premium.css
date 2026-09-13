@@ -1,2 +1,2 @@
-@import'/a74-base.css';@import'/a74-hero.css';@import'/a74-manifest.css';@import'/a74-gallery.css';@import'/a74-deck.css';@import'/a74-result.css';@import'/a74-mobile.css';
-/* stable rollback baseline */
+@import'/a74-base.css';@import'/a74-hero.css';@import'/a74-manifest.css';@import'/a74-gallery.css';@import'/a74-language-top.css';@import'/a74-reveal.css';@import'/a74-deck.css';@import'/a74-result.css';@import'/a74-mobile.css';
+/* stable rollback baseline + isolated language/reveal enhancements */
