@@ -1,5 +1,6 @@
 """Regression tests for the Alpha 74 contextual follow-up flow."""
 import json
+import os
 from pathlib import Path
 import unittest
 from unittest.mock import patch
@@ -117,12 +118,82 @@ class AlphaFollowUpFrontendTests(unittest.TestCase):
         self.assertIn('id="follow-language"', self.html)
         self.assertIn("lingua:selectedLanguage()", self.html)
         self.assertIn("modalita:'approfondimento'", self.html)
-        self.assertIn("speechSynthesis", self.html)
+        self.assertIn('src="/alpha-voice.js"', self.html)
+        voice = (ROOT / "public" / "alpha-voice.js").read_text(encoding="utf-8")
+        self.assertIn("speechSynthesis", voice)
         self.assertIn("Ascolta la lettura", self.html)
+        self.assertIn("data-card-audio", self.html)
 
     def test_card_by_card_text_uses_a_full_width_layout(self):
         self.assertIn('<article class="why-card">', self.html)
         self.assertIn(".why-card{display:block;width:100%", self.html)
+
+
+class AlphaVoiceApiTests(unittest.TestCase):
+    def setUp(self):
+        self.client = tarot_alpha.app.test_client()
+
+    def test_voice_endpoint_reports_browser_fallback_without_credentials(self):
+        with patch.dict(os.environ, {}, clear=False), patch.dict(
+            os.environ,
+            {"TAROT_TTS_PROVIDER": "elevenlabs"},
+            clear=False,
+        ), patch.dict(
+            os.environ,
+            {"ELEVENLABS_API_KEY": "", "ELEVENLABS_VOICE_ID": ""},
+            clear=False,
+        ):
+            response = self.client.get("/api/tarocchi/alpha-voce")
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.get_json()["disponibile"])
+        self.assertEqual(
+            response.get_json()["fallback"],
+            "browser-speech-synthesis",
+        )
+
+    def test_voice_endpoint_returns_audio_from_the_configured_provider(self):
+        class FakeResponse:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            def read(self, _limit):
+                return b"ID3 fake mp3"
+
+        env = {
+            "TAROT_TTS_PROVIDER": "elevenlabs",
+            "ELEVENLABS_API_KEY": "test-key",
+            "ELEVENLABS_VOICE_ID": "voice-id",
+        }
+        with patch.dict(os.environ, env, clear=False), patch.object(
+            tarot_alpha,
+            "urlopen",
+            return_value=FakeResponse(),
+        ):
+            response = self.client.post(
+                "/api/tarocchi/alpha-voce",
+                json={"testo": "Una lettura di prova.", "lingua": "it"},
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, "audio/mpeg")
+        self.assertEqual(response.headers["X-Voice-Provider"], "elevenlabs")
+
+
+class AlphaAutomaticFrontendTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.html = (ROOT / "public" / "tarocchi-alpha.html").read_text(encoding="utf-8")
+
+    def test_automatic_alpha_flow_supports_one_to_seven_cards_and_audio(self):
+        self.assertIn("/api/tarocchi/alpha-leggi", self.html)
+        self.assertIn("body.numero_carte=Number", self.html)
+        self.assertIn('value="7"', self.html)
+        self.assertIn('id="listen"', self.html)
+        self.assertIn("data-card-audio", self.html)
+        self.assertIn('src="/alpha-voice.js"', self.html)
+        self.assertIn("P(74, 7) × 8^7", self.html)
 
 
 if __name__ == "__main__":
