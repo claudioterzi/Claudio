@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cubo Quantico delle Opere — Claudio Terzi</title>
+  <meta name="description" content="Cosmografia tridimensionale degli scritti e delle opere di Claudio Terzi.">
+  <link rel="canonical" href="https://claudio-ebon.vercel.app/cubo-quantico">
+  <link rel="stylesheet" href="cubo-quantico.css">
+</head>
+<body>
+  <script src="soglia.js"></script>
+  <script src="nav.js"></script>
+
+  <main class="page-shell">
+    <header class="hero">
+      <p class="eyebrow">R³∞ · archivio vivo</p>
+      <h1>Cubo Quantico delle Opere</h1>
+      <p class="lead">Una cosmografia tridimensionale degli scritti di Claudio Terzi. Muoviti avanti e indietro nel tempo, entra nelle famiglie, segui le relazioni e apri i testi.</p>
+      <div class="axis-legend" aria-label="Significato degli assi">
+        <span><b>X</b> tempo</span>
+        <span><b>Y</b> importanza / canonicità</span>
+        <span><b>Z</b> densità relazionale</span>
+      </div>
+    </header>
+
+    <section class="controls" aria-label="Controlli del cubo">
+      <label class="search-wrap">
+        <span>Cerca</span>
+        <input id="search" type="search" placeholder="Titolo, parola, famiglia…" autocomplete="off">
+      </label>
+      <label>
+        <span>Costellazione</span>
+        <select id="category"><option value="">Tutte</option></select>
+      </label>
+      <label>
+        <span>Tempo</span>
+        <select id="year">
+          <option value="">Tutto</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
+        </select>
+      </label>
+      <label class="toggle"><input id="connections" type="checkbox" checked><span>Connessioni</span></label>
+      <button id="reset" type="button">Ritorna al centro</button>
+    </section>
+
+    <section class="cube-layout">
+      <div class="cube-frame">
+        <div id="graph" aria-label="Cubo tridimensionale interattivo delle opere"></div>
+        <div class="orientation" aria-hidden="true">
+          <span class="x">← passato · X · futuro →</span>
+          <span class="y">Y · importanza ↑</span>
+          <span class="z">Z · densità</span>
+        </div>
+        <div id="webgl-warning" class="warning" hidden>Il dispositivo non riesce a mostrare il cubo 3D. Tutti i titoli restano accessibili nel catalogo sottostante.</div>
+      </div>
+
+      <aside id="detail" class="detail" aria-live="polite">
+        <p class="detail-kicker">Seleziona un nodo</p>
+        <h2>Il cubo è esplorabile</h2>
+        <p>Trascina per ruotare, usa la rotella o il gesto di pinch per entrare nello spazio. Tocca un punto per aprire la sua scheda.</p>
+        <div class="metrics">
+          <div><strong id="metric-works">0</strong><span>titoli</span></div>
+          <div><strong id="metric-categories">0</strong><span>costellazioni</span></div>
+          <div><strong id="metric-links">0</strong><span>relazioni</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="legend-panel"><h2>Costellazioni</h2><div id="legend" class="legend-grid"></div></section>
+
+    <section id="catalogo" class="catalog">
+      <div class="catalog-head"><div><p class="eyebrow">Tutti i titoli</p><h2>Catalogo navigabile</h2></div><p id="catalog-count"></p></div>
+      <div id="catalog-groups"></div>
+    </section>
+
+    <footer>
+      <p>C.Terzi · R³∞ · archivio vivo</p>
+      <p>La posizione di ogni titolo deriva da tempo, importanza e densità relazionale. Le relazioni possono evolvere senza perdere le versioni precedenti.</p>
+    </footer>
+  </main>
+
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/3d-force-graph@1.73.3/dist/3d-force-graph.min.js"></script>
+  <script src="cubo-quantico-data.js"></script>
+  <script src="cubo-quantico.js"></script>
+</body>
+</html>
