@@ -82,6 +82,13 @@
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
   <script src="https://unpkg.com/3d-force-graph@1.73.3/dist/3d-force-graph.min.js"></script>
   <script src="cubo-quantico-data.js"></script>
+  <script>
+    (function(){
+      var d=window.CUBO_OPERE_DATA;if(!d||!d.nodes)return;
+      var n=d.nodes.find(function(x){return x.title==='Progetto polaroid Gian'});
+      if(n)n.url='https://docs.google.com/document/d/1NZmqWSx5qrBtJF7vH5udcL5WpxJDTejvA7yxMPMNkwQ/edit';
+    })();
+  </script>
   <script src="cubo-quantico.js"></script>
 </body>
 </html>
