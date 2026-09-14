@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<title>Alpha 74 · TEST PRIVATO</title>
+<style>
+html,body{margin:0;width:100%;height:100%;background:#0b0b0e;color:#eee9dc;font-family:Georgia,'Times New Roman',serif}
+#gate{min-height:100%;display:grid;place-items:center;padding:2rem;text-align:center;color:#d0b15b}
+iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#0b0b0e;display:none}
+</style>
+</head>
+<body>
+<div id="gate">Verifica invito…</div>
+<iframe id="alpha" title="Alpha 74 TEST" allow="autoplay"></iframe>
+<script>
+(async()=>{
+ const invites={
+  '7b74020f934f448b2e08eeb8407fed6c482ba6b13febff6018801afde23f1041':{friend:'guido',label:'Guido',language:'it'},
+  '0b3b2326893a86795aaa0ae480cbc74badfa57b9fee111fecf2dafabd5be0c4c':{friend:'fabrizio',label:'Fabrizio',language:'it'},
+  '132e5f43c7d4724c19a530d5f4456e1c5328d7f6e49abbdd517668349d136286':{friend:'jorge',label:'Jorge',language:'es'},
+  '858b21910e7f8fd3edd680dc7bfd69c9737ff2ed0490dc7dd5e2413c6dab553c':{friend:'mamma',label:'Mamma',language:'it'}
+ };
+ const token=new URLSearchParams(location.search).get('k')||'';
+ const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(token));
+ const hex=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+ const guest=invites[hex];
+ const gate=document.getElementById('gate');
+ if(!guest){gate.textContent='Invito non disponibile.';return;}
+ const frame=document.getElementById('alpha');
+ const key='alpha74.test.readings.'+guest.friend;
+ const max=3;
+ let pending=false,counted=false;
+ function used(){try{return Math.max(0,Math.min(max,Number(localStorage.getItem(key))||0))}catch(_){return 0}}
+ function save(n){try{localStorage.setItem(key,String(Math.max(0,Math.min(max,n))))}catch(_){}}
+ function decorate(){
+  const w=frame.contentWindow,d=w.document;
+  d.querySelectorAll('.nav-costellazione,#telegram-continuity').forEach(el=>el.remove());
+  let style=d.getElementById('a74-test-style');
+  if(!style){style=d.createElement('style');style.id='a74-test-style';style.textContent='.nav-costellazione,#telegram-continuity{display:none!important}.a74-test-banner{position:sticky;top:0;z-index:999;padding:.65rem .8rem;margin:0 0 .8rem;border:1px solid #d9bd7040;border-radius:12px;background:#0b0a0eee;color:#e5cb7c;font:600 .82rem/1.4 system-ui;backdrop-filter:blur(12px)}';d.head.appendChild(style)}
+  const select=d.getElementById('language');
+  if(select&&select.value!==guest.language){select.value=guest.language;d.documentElement.lang=guest.language;select.dispatchEvent(new Event('change',{bubbles:true}))}
+  let banner=d.querySelector('.a74-test-banner');
+  if(!banner){banner=d.createElement('div');banner.className='a74-test-banner';const wrap=d.querySelector('main.wrap');if(wrap)wrap.prepend(banner)}
+  const left=Math.max(0,max-used());
+  const txt=guest.language==='es'?`TEST PRIVADO · Invitación para ${guest.label} · ${left} lectura${left===1?'':'s'} disponible${left===1?'':'s'}`:`TEST PRIVATO · Invito per ${guest.label} · ${left} lettur${left===1?'a':'e'} disponibil${left===1?'e':'i'}`;
+  if(banner)banner.textContent=txt;
+  const blocked=used()>=max;
+  d.querySelectorAll('#deck .back').forEach(b=>{if(blocked)b.disabled=true});
+  const read=d.getElementById('read');if(read&&blocked)read.disabled=true;
+ }
+ frame.addEventListener('load',()=>{
+  const w=frame.contentWindow,d=w.document;
+  document.title='Alpha 74 · TEST · '+guest.label;
+  gate.remove();frame.style.display='block';
+  decorate();
+  new MutationObserver(decorate).observe(d.documentElement,{childList:true,subtree:true});
+  d.addEventListener('click',e=>{
+   const btn=e.target.closest?.('#read');if(!btn)return;
+   if(used()>=max){e.preventDefault();e.stopImmediatePropagation();decorate();return;}
+   pending=true;counted=false;
+  },true);
+  const result=d.getElementById('result');
+  if(result)new MutationObserver(()=>{
+   if(pending&&!counted&&!result.classList.contains('hidden')){counted=true;pending=false;save(used()+1);decorate()}
+  }).observe(result,{attributes:true,attributeFilter:['class']});
+ },{once:true});
+ frame.src='/tarocchi-manuale';
+})().catch(()=>{document.getElementById('gate').textContent='Invito non disponibile.'});
+</script>
+</body>
+</html>
