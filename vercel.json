@@ -19,6 +19,7 @@
     {"src":"/progetti","dest":"/public/creazioni.html"},
     {"src":"/r3-evoluzione/?","dest":"/public/r3-evoluzione.html"},
     {"src":"/scritti/?","dest":"/public/scritti.html"},
+    {"src":"/cubo-quantico/?","dest":"/public/cubo-quantico.html"},
     {"src":"/terzo-livello/?","dest":"/public/terzo-livello.html"},
     {"src":"/musica/?","dest":"/public/musica.html"},
     {"src":"/codice-gaia/?","dest":"/public/codice-gaia.html"},
