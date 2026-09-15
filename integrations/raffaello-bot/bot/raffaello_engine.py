@@ -1,4 +1,4 @@
-"""Authenticated reuse of the site's AI engine; no invented offline AI answers."""
+"""Authenticated reuse of the site's AI engines; no invented offline AI answers."""
 from __future__ import annotations
 
 import json
@@ -30,6 +30,23 @@ class NoRedirect(HTTPRedirectHandler):
         return None
 
 
+def _call_endpoint(base, endpoint, payload, headers):
+    req = Request(
+        base + endpoint,
+        data=json.dumps(payload, ensure_ascii=False).encode(),
+        headers=headers,
+        method="POST",
+    )
+    with build_opener(NoRedirect).open(req, timeout=70) as response:
+        raw = response.read(65537)
+        if len(raw) > 65536:
+            raise ValueError("oversize")
+        data = json.loads(raw)
+    if not isinstance(data, dict) or not isinstance(data.get("risposta"), str) or not data["risposta"].strip() or len(data["risposta"]) > 8000:
+        raise ValueError("invalid engine response")
+    return data
+
+
 def call_site(payload):
     secret = os.getenv("RAFFAELLO_BRIDGE_SECRET", "")
     base = site_url()
@@ -40,18 +57,31 @@ def call_site(payload):
     bypass = os.getenv("RAFFAELLO_VERCEL_BYPASS_SECRET", "")
     if bypass:
         headers["x-vercel-protection-bypass"] = bypass
-    req = Request(base + "/api/raffaello/engine", data=json.dumps(payload, ensure_ascii=False).encode(), headers=headers, method="POST")
-    try:
-        with build_opener(NoRedirect).open(req, timeout=70) as response:
-            raw = response.read(65537)
-            if len(raw) > 65536:
-                raise ValueError("oversize")
-            data = json.loads(raw)
-    except (HTTPError, URLError, TimeoutError, ValueError, OSError) as exc:
-        raise store.Problem("Il motore di Raffaello non è raggiungibile in questo momento. La domanda resta salvata: riprova con Analizza.", 503) from exc
-    if not isinstance(data, dict) or not isinstance(data.get("risposta"), str) or not data["risposta"].strip() or len(data["risposta"]) > 8000:
-        raise store.Problem("La risposta ricevuta non è valida. Puoi riprovare con Analizza.", 502)
-    return {"risposta": data["risposta"], "motore": data.get("motore", {}), "riferimenti": data.get("riferimenti", [])}
+
+    # Alpha/Tarocchi conservano il motore dedicato. Il dialogo libero passa
+    # all'Orchestra multi-provider. Se Orchestra non è ancora disponibile,
+    # fallback trasparente al motore storico: nessuna interruzione del servizio.
+    primary = "/api/raffaello/engine" if payload.get("lettura") else "/api/orchestra"
+    endpoints = [primary]
+    if primary == "/api/orchestra":
+        endpoints.append("/api/raffaello/engine")
+
+    last_exc = None
+    for endpoint in endpoints:
+        try:
+            data = _call_endpoint(base, endpoint, payload, headers)
+            return {
+                "risposta": data["risposta"],
+                "motore": data.get("motore", {}),
+                "riferimenti": data.get("riferimenti", []),
+            }
+        except (HTTPError, URLError, TimeoutError, ValueError, OSError) as exc:
+            last_exc = exc
+            continue
+    raise store.Problem(
+        "Il motore di Raffaello non è raggiungibile in questo momento. La domanda resta salvata: riprova con Analizza.",
+        503,
+    ) from last_exc
 
 
 def analyze(owner, did):
