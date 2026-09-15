@@ -1,0 +1,101 @@
+name: Claude DeepSeek Integration Review
+
+on:
+  push:
+    paths:
+      - '.github/workflows/claude_deepseek_review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ask Claude for architecture review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, sys, urllib.request, urllib.error
+
+          key = os.getenv('ANTHROPIC_API_KEY', '').strip()
+          out = pathlib.Path('output/claude_deepseek_review.md')
+          out.parent.mkdir(exist_ok=True)
+          if not key:
+              out.write_text('# Claude review\n\nSTATUS: UNAVAILABLE\n\nANTHROPIC_API_KEY non configurata nel runtime GitHub Actions.\n', encoding='utf-8')
+              sys.exit(2)
+
+          def read(path, limit=14000):
+              p = pathlib.Path(path)
+              return p.read_text(encoding='utf-8', errors='replace')[:limit] if p.exists() else '(missing)'
+
+          context = {
+              'provider': read('sdq1/llm/providers/openai_provider.py'),
+              'router': read('sdq1/llm/router.py'),
+              'argo': read('sdq1/argo.py'),
+              'notifiche': read('sdq1/notifiche.py'),
+              'vercel': read('vercel.json'),
+          }
+          prompt = '''Sei il revisore Claude del progetto SDQ-1/R3∞. Devi proporre una soluzione MINIMA, REVERSIBILE e VERIFICABILE per integrare DeepSeek V4.1 Flash (`deepseek-flash`) nel sistema multi-provider esistente.
+
+Vincoli obbligatori:
+- NON scrivere, chiedere o esporre API key.
+- NON modificare `api/raffaello.py`: quel file autenticato è fuori perimetro di questa revisione.
+- DeepSeekProvider è già OpenAI-compatible e deve usare solo `DEEPSEEK_API_KEY` dal runtime.
+- Non dichiarare operativo un provider senza probe reale.
+- Preferire il router/ARGO già esistenti, senza creare un quarto orchestratore.
+- Conservare fallback degli altri provider.
+- P5/P6: separa FATTO / PROPOSTA / TEST DI FALSIFICAZIONE.
+
+Output richiesto SOLO in queste sezioni:
+1. FATTI OSSERVATI
+2. PATCH MINIMA PROPOSTA (file + modifiche precise)
+3. TEST
+4. RISCHI / CASI LIMITE
+5. VERDETTO GO/NO-GO
+
+Contesto repository:\n''' + json.dumps(context, ensure_ascii=False)
+
+          payload = json.dumps({
+              'model': 'claude-haiku-4-5-20251001',
+              'max_tokens': 3500,
+              'temperature': 0.1,
+              'messages': [{'role': 'user', 'content': prompt}],
+          }).encode()
+          req = urllib.request.Request(
+              'https://api.anthropic.com/v1/messages',
+              data=payload,
+              headers={
+                  'x-api-key': key,
+                  'anthropic-version': '2023-06-01',
+                  'content-type': 'application/json',
+              },
+              method='POST',
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=60) as resp:
+                  data = json.loads(resp.read())
+              text = ''.join(part.get('text','') for part in data.get('content',[]) if part.get('type') == 'text').strip()
+              if not text:
+                  raise RuntimeError('Claude ha restituito output vuoto')
+              out.write_text('# Claude — DeepSeek integration review\n\n' + text + '\n', encoding='utf-8')
+              print('CLAUDE_REVIEW_OK')
+          except Exception as exc:
+              safe = str(exc).replace(key, '[REDACTED]')
+              out.write_text('# Claude review\n\nSTATUS: ERROR\n\n' + safe[:500] + '\n', encoding='utf-8')
+              raise
+          PY
+
+      - name: Preserve Claude review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-deepseek-review
+          path: output/claude_deepseek_review.md
+          if-no-files-found: error
+          retention-days: 1
