@@ -1,9 +1,6 @@
 name: DeepSeek Provider Probe
 
 on:
-  push:
-    paths:
-      - '.github/workflows/deepseek_probe.yml'
   workflow_dispatch:
 
 permissions:
