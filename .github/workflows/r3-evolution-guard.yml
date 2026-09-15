@@ -1,0 +1,33 @@
+name: R3 Evolution Guard
+
+on:
+  push:
+    paths:
+      - 'sdq1/evolution_kernel.py'
+      - 'tests/test_evolution_kernel.py'
+      - 'docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md'
+      - '.github/workflows/r3-evolution-guard.yml'
+  pull_request:
+    paths:
+      - 'sdq1/evolution_kernel.py'
+      - 'tests/test_evolution_kernel.py'
+      - 'docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md'
+      - '.github/workflows/r3-evolution-guard.yml'
+  workflow_dispatch:
+
+jobs:
+  evolution-guard:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Evolution kernel unit tests
+        run: python -m unittest tests.test_evolution_kernel -v
+      - name: Kernel deterministic self-test
+        run: python -m sdq1.evolution_kernel --self-test
+      - name: Compile check
+        run: python -m py_compile sdq1/evolution_kernel.py tests/test_evolution_kernel.py
