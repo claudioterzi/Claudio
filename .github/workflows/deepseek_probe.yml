@@ -1,0 +1,79 @@
+name: DeepSeek Provider Probe
+
+on:
+  push:
+    paths:
+      - '.github/workflows/deepseek_probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install provider dependency
+        run: python -m pip install --quiet 'openai>=1.50.0'
+
+      - name: Probe DeepSeek via SDQ-1 provider
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from sdq1.llm.providers import DeepSeekProvider
+
+          configured = bool(os.getenv('DEEPSEEK_API_KEY'))
+          result = {
+              'timestamp': datetime.now(timezone.utc).isoformat(),
+              'executor': 'Claude/GitHub Actions',
+              'provider': 'deepseek',
+              'requested_model': 'deepseek-flash',
+              'configured': configured,
+              'ok': False,
+              'effective_model': None,
+              'latency_ms': None,
+              'error': None,
+          }
+
+          if configured:
+              p = DeepSeekProvider(
+                  modello='deepseek-flash', api_key=None,
+                  max_token=24, temperatura=0.0, timeout_secondi=20,
+              )
+              r = p.completa('Rispondi soltanto con PONG.', 'ping')
+              result['ok'] = bool(r.via_api and r.testo.strip())
+              result['effective_model'] = r.modello
+              result['latency_ms'] = r.latenza_ms
+              if r.errore:
+                  # Non persistere token/credenziali nel caso un SDK li includa nell'errore.
+                  err = re.sub(r'sk-[A-Za-z0-9_-]+', 'sk-REDACTED', str(r.errore))
+                  result['error'] = err[:300]
+          else:
+              result['error'] = 'DEEPSEEK_API_KEY non configurata nei GitHub Actions secrets'
+
+          Path('output').mkdir(exist_ok=True)
+          Path('output/deepseek_probe.json').write_text(
+              json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          print(json.dumps({k: result[k] for k in ('provider','configured','ok','effective_model','latency_ms','error')}, ensure_ascii=False))
+          PY
+
+      - name: Commit probe result as Claude
+        run: |
+          git config user.name 'Claude'
+          git config user.email 'noreply@anthropic.com'
+          git add output/deepseek_probe.json
+          git diff --staged --quiet || git commit -m 'chore(sdq1): record DeepSeek provider probe [skip ci]'
+          git push
