@@ -72,3 +72,76 @@ jobs:
             coverage.xml
 
       # Reports stay in run artifacts: a timestamp must not redeploy the site.
+
+  claude_deepseek_review:
+    name: Claude DeepSeek Review
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ask existing Claude profile for DeepSeek integration review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, urllib.request
+
+          out = pathlib.Path('claude_deepseek_review.md')
+          key = os.getenv('ANTHROPIC_API_KEY', '').strip()
+          if not key:
+              out.write_text('# Claude DeepSeek Review\n\nSTATUS: UNAVAILABLE\n\nANTHROPIC_API_KEY non configurata nel runtime CI.\n', encoding='utf-8')
+              print('CLAUDE_PROFILE_UNAVAILABLE')
+              raise SystemExit(0)
+
+          def read(path, limit=12000):
+              p = pathlib.Path(path)
+              return p.read_text(encoding='utf-8', errors='replace')[:limit] if p.exists() else '(missing)'
+
+          context = {
+              'provider': read('sdq1/llm/providers/openai_provider.py'),
+              'router': read('sdq1/llm/router.py'),
+              'argo': read('sdq1/argo.py'),
+              'notifiche': read('sdq1/notifiche.py'),
+              'vercel': read('vercel.json'),
+          }
+          prompt = '''Sei Claude, revisore già collaborante nel progetto SDQ-1/R3∞. Valuta come integrare DeepSeek V4.1 Flash (`deepseek-flash`) nel protocollo multi-provider già esistente. Non creare un quarto orchestratore. Non toccare api/raffaello.py. Non chiedere, stampare o salvare API key. DeepSeekProvider deve usare solo DEEPSEEK_API_KEY dal runtime. Non dichiarare operativo nulla senza probe reale. Separa FATTI, PATCH MINIMA, TEST DI FALSIFICAZIONE, RISCHI, VERDETTO GO/NO-GO.\n\nCONTESTO:\n''' + json.dumps(context, ensure_ascii=False)
+          payload = json.dumps({
+              'model': 'claude-haiku-4-5-20251001',
+              'max_tokens': 3200,
+              'temperature': 0.1,
+              'messages': [{'role': 'user', 'content': prompt}],
+          }).encode()
+          req = urllib.request.Request(
+              'https://api.anthropic.com/v1/messages', data=payload, method='POST',
+              headers={
+                  'x-api-key': key,
+                  'anthropic-version': '2023-06-01',
+                  'content-type': 'application/json',
+              },
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=60) as resp:
+                  data = json.loads(resp.read())
+              text = ''.join(x.get('text','') for x in data.get('content',[]) if x.get('type') == 'text').strip()
+              if not text:
+                  raise RuntimeError('output Claude vuoto')
+              out.write_text('# Claude — DeepSeek Integration Review\n\n' + text + '\n', encoding='utf-8')
+              print('CLAUDE_REVIEW_OK')
+          except Exception as exc:
+              safe = str(exc).replace(key, '[REDACTED]')
+              out.write_text('# Claude DeepSeek Review\n\nSTATUS: ERROR\n\n' + safe[:800] + '\n', encoding='utf-8')
+              print('CLAUDE_REVIEW_ERROR')
+          PY
+
+      - name: Upload Claude review artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-deepseek-review
+          path: claude_deepseek_review.md
+          if-no-files-found: error
+          retention-days: 1
