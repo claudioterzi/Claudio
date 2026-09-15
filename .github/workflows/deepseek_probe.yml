@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   probe:
@@ -29,7 +29,7 @@ jobs:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
           python - <<'PY'
-          import json, os, re
+          import json, os, re, sys
           from datetime import datetime, timezone
           from pathlib import Path
           from sdq1.llm.providers import DeepSeekProvider
@@ -57,7 +57,6 @@ jobs:
               result['effective_model'] = r.modello
               result['latency_ms'] = r.latenza_ms
               if r.errore:
-                  # Non persistere token/credenziali nel caso un SDK li includa nell'errore.
                   err = re.sub(r'sk-[A-Za-z0-9_-]+', 'sk-REDACTED', str(r.errore))
                   result['error'] = err[:300]
           else:
@@ -68,12 +67,15 @@ jobs:
               json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
           )
           print(json.dumps({k: result[k] for k in ('provider','configured','ok','effective_model','latency_ms','error')}, ensure_ascii=False))
+          if not result['ok']:
+              sys.exit(1)
           PY
 
-      - name: Commit probe result as Claude
-        run: |
-          git config user.name 'Claude'
-          git config user.email 'noreply@anthropic.com'
-          git add output/deepseek_probe.json
-          git diff --staged --quiet || git commit -m 'chore(sdq1): record DeepSeek provider probe [skip ci]'
-          git push
+      - name: Preserve probe result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deepseek-probe
+          path: output/deepseek_probe.json
+          if-no-files-found: error
+          retention-days: 1
