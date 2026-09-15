@@ -1,4 +1,4 @@
-name: Grok Collaborator Probe
+name: DeepSeek Provider Probe
 
 on:
   push:
@@ -24,22 +24,22 @@ jobs:
       - name: Install provider dependency
         run: python -m pip install --quiet 'openai>=1.50.0'
 
-      - name: Probe Grok via SDQ-1 provider
+      - name: Probe DeepSeek via SDQ-1 provider
         env:
-          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
           python - <<'PY'
           import json, os, re, sys
           from datetime import datetime, timezone
           from pathlib import Path
-          from sdq1.llm.providers import GrokProvider
+          from sdq1.llm.providers import DeepSeekProvider
 
-          configured = bool(os.getenv('XAI_API_KEY'))
+          configured = bool(os.getenv('DEEPSEEK_API_KEY'))
           result = {
               'timestamp': datetime.now(timezone.utc).isoformat(),
               'executor': 'GitHub Actions',
-              'provider': 'grok',
-              'requested_model': 'grok-3',
+              'provider': 'deepseek',
+              'requested_model': 'deepseek-flash',
               'configured': configured,
               'ok': False,
               'effective_model': None,
@@ -48,8 +48,8 @@ jobs:
           }
 
           if configured:
-              p = GrokProvider(
-                  modello='grok-3', api_key=None,
+              p = DeepSeekProvider(
+                  modello='deepseek-flash', api_key=None,
                   max_token=24, temperatura=0.0, timeout_secondi=20,
               )
               r = p.completa('Rispondi soltanto con PONG.', 'ping')
@@ -57,13 +57,13 @@ jobs:
               result['effective_model'] = r.modello
               result['latency_ms'] = r.latenza_ms
               if r.errore:
-                  err = re.sub(r'(?:xai-|sk-)[A-Za-z0-9_-]+', '[REDACTED]', str(r.errore))
+                  err = re.sub(r'sk-[A-Za-z0-9_-]+', 'sk-REDACTED', str(r.errore))
                   result['error'] = err[:300]
           else:
-              result['error'] = 'XAI_API_KEY non configurata nei GitHub Actions secrets'
+              result['error'] = 'DEEPSEEK_API_KEY non configurata nei GitHub Actions secrets'
 
           Path('output').mkdir(exist_ok=True)
-          Path('output/grok_probe.json').write_text(
+          Path('output/deepseek_probe.json').write_text(
               json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
           )
           print(json.dumps({k: result[k] for k in ('provider','configured','ok','effective_model','latency_ms','error')}, ensure_ascii=False))
@@ -75,7 +75,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: grok-probe
-          path: output/grok_probe.json
+          name: deepseek-probe
+          path: output/deepseek_probe.json
           if-no-files-found: error
           retention-days: 1
