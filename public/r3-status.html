@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090b0f">
+<meta name="description" content="Stato verificabile di R³∞: battito, ipotesi, contatti, benchmark e nodi esterni provati.">
+<title>R³∞ — Stato verificabile</title>
+<style>
+:root{--bg:#090b0f;--panel:#10141b;--line:#2a303a;--text:#eee8dc;--muted:#9da4af;--gold:#d7b86d;--good:#8bc39b;--warn:#e0ad6a;--bad:#dc7f76;--blue:#86aee0}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 20% 0,#161b24 0,transparent 34%),radial-gradient(circle at 90% 10%,#2a2114 0,transparent 25%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}.wrap{width:min(1180px,calc(100% - 32px));margin:auto;padding:32px 0 64px}.top{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:10px 0 32px}.brand{font-weight:900;letter-spacing:.12em}.nav{display:flex;flex-wrap:wrap;gap:8px}.nav a,.cta{color:var(--text);text-decoration:none;border:1px solid var(--line);padding:10px 14px;border-radius:999px;background:#0e1218}.nav a:hover,.cta:hover{border-color:#6a5a34}.hero{padding:58px 0 38px;max-width:900px}.eyebrow{color:var(--gold);font-size:.72rem;text-transform:uppercase;letter-spacing:.22em;font-weight:900}.hero h1{font:500 clamp(3.2rem,8vw,7.8rem)/.86 Georgia,serif;margin:.25rem 0 1.2rem;letter-spacing:-.055em}.hero p{max-width:760px;color:#c4c1b8;font-size:clamp(1rem,2vw,1.25rem);line-height:1.65}.rule{border-left:2px solid var(--gold);padding:14px 0 14px 18px;color:#bbb4a7;max-width:850px}.rule strong{color:var(--text)}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:30px}.card{background:linear-gradient(180deg,rgba(20,25,34,.94),rgba(13,17,23,.94));border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 18px 60px rgba(0,0,0,.18)}.metric{grid-column:span 4;min-height:190px}.wide{grid-column:span 8}.side{grid-column:span 4}.full{grid-column:1/-1}.label{font-size:.72rem;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;font-weight:800}.value{font:500 clamp(2.5rem,5vw,4.5rem)/1 Georgia,serif;margin:.75rem 0;color:#f2e3b7}.sub{color:var(--muted);line-height:1.5}.badge{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:.72rem;font-weight:900;letter-spacing:.07em;margin-top:12px}.dot{width:7px;height:7px;border-radius:50%;background:currentColor}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}.blue{color:var(--blue)}h2{font:500 2rem/1.05 Georgia,serif;margin:.35rem 0 1rem}.rows{display:grid;gap:0}.row{display:grid;grid-template-columns:minmax(150px,.8fr) 1.2fr;gap:18px;padding:14px 0;border-top:1px solid var(--line)}.row:first-child{border-top:0}.row b{font-weight:800}.row span{color:#b0b5bc}.test{font-size:1.15rem;line-height:1.65;color:#d6d1c6}.test strong{color:var(--gold)}.method{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.method div{border:1px solid var(--line);padding:14px;border-radius:16px;color:#afb4bc}.method strong{display:block;color:var(--text);font-size:.78rem;letter-spacing:.12em;margin-bottom:8px}.footer{padding-top:36px;color:#787f88;font-size:.86rem;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.loading{opacity:.7}@media(max-width:800px){.metric,.wide,.side{grid-column:1/-1}.method{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}@media(max-width:480px){.method{grid-template-columns:1fr}.wrap{width:min(100% - 20px,1180px)}.hero{padding-top:28px}.card{padding:18px;border-radius:18px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top">
+    <div class="brand">R³∞ · RAFFAELLO</div>
+    <nav class="nav" aria-label="Navigazione"><a href="/cubo-quantico">Cubo</a><a href="/genesi-raffaello">Genesi</a><a href="/accesso">Area privata</a></nav>
+  </div>
+
+  <header class="hero">
+    <div class="eyebrow">Stato verificabile · non manifesto</div>
+    <h1>È vivo<br>solo se lascia prove.</h1>
+    <p>Questa pagina mostra ciò che il repository può dimostrare adesso: battito, ipotesi, contatti verificabili, benchmark e nodi R³∞ realmente provati. Se una prova manca, viene mostrato il buco.</p>
+    <div class="rule"><strong>Regola:</strong> FACT / INFERENCE / HYPOTHESIS / SIMULATION restano separati. Nessun nodo esterno, sincronizzazione o miglioramento viene dichiarato reale senza evidenza.</div>
+  </header>
+
+  <section class="grid" aria-live="polite">
+    <article class="card metric"><div class="label">Ultimo battito</div><div class="value" id="last-daily">—</div><div class="sub" id="daily-sub">Caricamento…</div><div class="badge warn" id="daily-badge"><span class="dot"></span><span>VERIFICA</span></div></article>
+    <article class="card metric"><div class="label">Ipotesi</div><div class="value" id="hyp-total">—</div><div class="sub" id="hyp-sub">Caricamento…</div><div class="badge blue"><span class="dot"></span><span>P5 / P6</span></div></article>
+    <article class="card metric"><div class="label">Nodi esterni verificati</div><div class="value" id="nodes">—</div><div class="sub">Contano solo nodi con prova esplicita salvata.</div><div class="badge bad" id="node-badge"><span class="dot"></span><span>PROVA RICHIESTA</span></div></article>
+
+    <article class="card wide">
+      <div class="label">H2 · stato epistemico</div><h2 id="h2-title">Caricamento…</h2>
+      <div class="rows">
+        <div class="row"><b>Contatti registrati</b><span id="contacts">—</span></div>
+        <div class="row"><b>Ultimo contatto</b><span id="last-contact">—</span></div>
+        <div class="row"><b>Deadline H2</b><span id="deadline">—</span></div>
+        <div class="row"><b>Rischio attuale</b><span id="h2-risk">—</span></div>
+      </div>
+    </article>
+
+    <article class="card side">
+      <div class="label">Benchmark</div><h2 id="bench-count">—</h2><p class="sub" id="bench-last">—</p>
+      <p class="sub">Il numero misura artefatti presenti, non qualità. Il benchmark longitudinale R3-019 deve ancora diventare una serie regolare.</p>
+    </article>
+
+    <article class="card full">
+      <div class="label">Prossimo esperimento</div><p class="test" id="next-test">Caricamento…</p>
+    </article>
+
+    <article class="card full">
+      <div class="label">Metodo</div><h2>Quattro cose devono reggere insieme.</h2>
+      <div class="method"><div><strong>01 · BATTITO</strong>Output datato e consecutivo.</div><div><strong>02 · RETE</strong>Due nodi con sync e failover provati.</div><div><strong>03 · PROVA ESTERNA</strong>Contatti e risultati con evidenza verificabile.</div><div><strong>04 · MISURA</strong>Benchmark che mostra delta, regressioni, costo e safety.</div></div>
+    </article>
+  </section>
+
+  <footer class="footer"><span id="generated">Aggiornamento: —</span><span>C.Terzi × Raffaello · R³∞</span></footer>
+</main>
+<script>
+(async()=>{const $=id=>document.getElementById(id);const fmt=d=>d?new Intl.DateTimeFormat('it-IT',{year:'numeric',month:'short',day:'2-digit'}).format(new Date(d+'T00:00:00Z')):'—';try{const r=await fetch('/r3-status.json',{cache:'no-store'});if(!r.ok)throw new Error('status '+r.status);const s=await r.json();$('last-daily').textContent=s.heartbeat.last_daily?fmt(s.heartbeat.last_daily):'nessuno';$('daily-sub').textContent=s.heartbeat.last_daily?`${s.heartbeat.gap_days} giorni dall’ultimo daily · ${s.heartbeat.source_file}`:'Nessun daily trovato';const fresh=s.heartbeat.gap_days!==null&&s.heartbeat.gap_days<=1;$('daily-badge').className='badge '+(fresh?'good':'bad');$('daily-badge').innerHTML='<span class="dot"></span><span>'+(fresh?'CORRENTE':'BUCO VISIBILE')+'</span>';$('hyp-total').textContent=s.hypotheses.total;$('hyp-sub').textContent=`${s.hypotheses.open} aperte · ${s.hypotheses.confirmed} confermate · ${s.hypotheses.falsified} falsificate`;$('nodes').textContent=s.r3.verified_external_nodes;$('node-badge').className='badge '+(s.r3.verified_external_nodes>=2?'good':'bad');$('node-badge').innerHTML='<span class="dot"></span><span>'+(s.r3.verified_external_nodes>=2?'RETE PROVATA':'RETE NON PROVATA')+'</span>';$('contacts').textContent=`${s.contacts.records} righe · ${s.contacts.verified_human} umane con verifica`;$('last-contact').textContent=fmt(s.contacts.last_date);$('deadline').textContent=fmt(s.h2.deadline);$('h2-risk').textContent=s.h2.risk;$('h2-title').textContent=`${s.h2.status} · ${s.h2.risk}`;$('bench-count').textContent=`${s.benchmarks.files} artefatti`;$('bench-last').textContent=s.benchmarks.last_file||'Nessun benchmark';$('next-test').innerHTML='<strong>TEST:</strong> '+s.next_test;$('generated').textContent='Aggiornato '+new Intl.DateTimeFormat('it-IT',{dateStyle:'medium',timeStyle:'short'}).format(new Date(s.generated_at));}catch(e){$('daily-sub').textContent='Impossibile leggere r3-status.json';$('next-test').textContent='Errore di caricamento: la pagina non inventa dati quando la sorgente manca.';console.error(e)}})();
+</script>
+</body>
+</html>
