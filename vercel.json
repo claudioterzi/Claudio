@@ -14,7 +14,8 @@
   "routes": [
     {"src":"/soglia/","dest":"/public/soglia.html"},
     {"src":"/soglia","dest":"/public/soglia.html"},
-    {"src":"/","dest":"/public/accesso.html"},
+    {"src":"/","dest":"/public/r3-status.html"},
+    {"src":"/stato/?","dest":"/public/r3-status.html"},
     {"src":"/accesso/?","dest":"/public/accesso.html"},
     {"src":"/privato/?","dest":"/public/privato.html"},
     {"src":"/raffaello/?","dest":"/public/raffaello.html"},
