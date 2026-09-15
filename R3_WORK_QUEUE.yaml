@@ -1,6 +1,6 @@
 version: 3
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-08-26
+updated: 2026-09-15
 status: ACTIVE
 
 principles:
@@ -85,9 +85,10 @@ queue:
     objective: Measure self-evaluation quality, calibration, error detection and regression.
   - id: R3-013
     title: Evolution Lab sandbox
-    state: IDEA
+    state: DEVELOPMENT
     priority: security
     objective: Test candidate code modifications in isolated branches/sandboxes.
+    evidence: docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md; PR #46
   - id: R3-014
     title: Curriculum Engine
     state: IDEA
@@ -121,9 +122,10 @@ queue:
     evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md
   - id: R3-020
     title: Self-improvement safety gate
-    state: IDEA
+    state: VERIFIED
     priority: security
-    objective: Govern candidate self-modifications using sandbox, benchmark, review and rollback.
+    objective: Govern candidate self-modifications using preregistration, sandbox, benchmark, trajectory audit and rollback.
+    evidence: sdq1/evolution_kernel.py; tests/test_evolution_kernel.py; docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md; merge 1a5a3f66676392edee62dd586e728187f08f53ab
 
 consolidation_gate:
   required:
@@ -139,7 +141,7 @@ consolidation_gate:
 
 user_authorization:
   general_project_authorization: true
-  scope: R3∞ project work that is technically available and non-destructive
+  scope: Maximum operational autonomy for technically available, reversible and non-destructive R3∞ project layers, minimizing routine user intervention.
   still_requires_explicit_confirmation:
     - credentials_or_secrets
     - external_account_authorization
@@ -148,10 +150,9 @@ user_authorization:
     - financial_transactions
 
 last_cycle:
-  completed: R3-019-foundation
-  result: DEVELOPMENT
-  evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md
+  completed: R3-020-evolution-kernel
+  result: VERIFIED
+  evidence: sdq1/evolution_kernel.py; tests/test_evolution_kernel.py; docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md
   commits:
-    - 48a7a527832305692544a233f7bdc6cec0cf1c2b
-    - 4bfdee8364f0f4894618ea09f8522078627fb0f8
+    - 1a5a3f66676392edee62dd586e728187f08f53ab
 next_action: R3-019-baseline-execution
