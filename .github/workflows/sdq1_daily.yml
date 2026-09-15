@@ -33,6 +33,12 @@ jobs:
           python3 -m pip install --quiet --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
           sudo apt-get install -y ripgrep
 
+      # ── R3. Gate di integrità prima di qualunque ciclo autonomo
+      - name: R3 Evolution integrity gate
+        run: |
+          python3 -m sdq1.evolution_kernel --self-test
+          python3 -m sdq1.evolution_kernel --verify-ledger
+
       # ── 0a. Sync calendario Airbnb
       - name: Sync Airbnb
         continue-on-error: true
@@ -68,6 +74,13 @@ jobs:
           mkdir -p output
           python3 -m sdq1 --agenti
 
+      # ── 1b. Conserva stato agente in snapshot evolutivo univoco
+      - name: R3 Evolution snapshot
+        run: |
+          if [ -f output/agenti_stato.json ]; then
+            python3 -m sdq1.evolution_kernel --snapshot output/agenti_stato.json --label agenti
+          fi
+
       # ── 2. Scanner sicurezza + qualità
       - name: Scanner
         continue-on-error: true
@@ -95,7 +108,7 @@ jobs:
           TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python3 -m sdq1 --briefing-operativo
 
-      # ── 5. Salva tutti gli output (scan_report, agenti_stato, ecc.)
+      # ── 5. Salva tutti gli output (scan_report, agenti_stato, evolution runs, ecc.)
       - name: Commit output
         run: |
           git add output/ || true
