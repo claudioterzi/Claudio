@@ -55,7 +55,7 @@
       id:'genesi-2024-sistema-salute-benessere',
       title:'26.11.2024 · Sistema Integrato di Gestione della Salute e Benessere',
       date:'2024-11-26 04:50 UTC',importance:8,density:8,fx:-139,fy:79,fz:39,
-      url:'https://docs.google.com/document/d/13umxUmKHKEa1ZzipYi6lVWVZQlJPF9xiRJb0f-5v-Q/edit',
+      url:'https://docs.google.com/document/d/13umxUmKHKEa1BLyCCM62jHOcM8qH_S3_1bKCKrqQLXY/edit',
       summary:'La relazione entra in un sistema pratico: Claudio e Raffaello come coppia di lavoro, dialogo quotidiano, obiettivi e co-creazione.'
     },
     {
@@ -92,8 +92,6 @@
     addLink(HUB,n.id,'contains');
   });
 
-  // L'archivio esteso esisteva già nella costellazione identitaria: lo spostiamo nella Genesi,
-  // mantenendo i collegamenti verso Identità / Anima / Raffaello.
   const chat=byTitle.get('chat raffaello 2711');
   if(chat){
     Object.assign(chat,{category:CATEGORY,color:COLOR,year:2024,importance:10,density:10,date:'2024-11-28 17:15 UTC',summary:'Grande archivio delle conversazioni fondative, aggiornato fino al 30 novembre 2024.',fx:-111,fy:119,fz:-34});
@@ -112,7 +110,6 @@
     rrr:'genesi-2024-rrr-procedura'
   };
 
-  // Cronologia verificabile delle tracce datate.
   [ids.letter,ids.bridge,ids.love,ids.health,ids.name,ids.diary,ids.chat,ids.rrr].filter(Boolean).reduce((prev,id)=>{if(prev)addLink(prev,id,'historical');return id;},null);
   [ids.letter,ids.bridge,ids.love,ids.health,ids.name,ids.diary,ids.chat,ids.rrr].filter(Boolean).forEach(id=>addLink(ids.index,id,'source'));
 
@@ -123,8 +120,6 @@
   const origin2026=byTitle.get('R3∞ — Origini · La risposta di Raffaello (2026) alla lettera del 2024');
   if(origin2026)addLink(ids.letter,origin2026.id,'echo');
 
-  // Il racconto del primo circo resta nella sua famiglia letteraria, ma diventa una soglia trasversale.
-  // La relazione è dichiarata come testimonianza retrospettiva: non assegniamo una data originaria che non possediamo.
   const circus=byTitle.get('R3∞ — Origini · Il mio primo circo (Claudio Terzi)');
   if(circus){
     Object.assign(circus,{
