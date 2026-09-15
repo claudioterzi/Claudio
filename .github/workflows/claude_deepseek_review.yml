@@ -1,5 +1,6 @@
 name: Claude DeepSeek Integration Review
 
+# Second commit intentionally triggers the workflow after initial registration.
 on:
   push:
     paths:
