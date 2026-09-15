@@ -2,7 +2,7 @@ name: SDQ-1 Daily Run
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # 08:00 CET (06:00 UTC) ogni giorno
+    - cron: '0 6 * * *'   # 06:00 UTC ogni giorno
   workflow_dispatch:
 
 jobs:
@@ -25,8 +25,8 @@ jobs:
 
       - name: Configura git
         run: |
-          git config user.name "Claude"
-          git config user.email "noreply@anthropic.com"
+          git config user.name "R3 Automation"
+          git config user.email "noreply@github.com"
 
       - name: Installa dipendenze
         run: |
@@ -61,7 +61,7 @@ jobs:
           mkdir -p output
           python3 -m sdq1 --telegram-comandi
 
-      # ── 1. Ciclo 7 agenti (notifica automatica se guardian non VERDE)
+      # ── 1. Ciclo agenti
       - name: Agenti autonomi
         continue-on-error: true
         env:
@@ -74,7 +74,6 @@ jobs:
           mkdir -p output
           python3 -m sdq1 --agenti
 
-      # ── 1b. Conserva stato agente in snapshot evolutivo univoco
       - name: R3 Evolution snapshot
         run: |
           if [ -f output/agenti_stato.json ]; then
@@ -108,9 +107,29 @@ jobs:
           TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python3 -m sdq1 --briefing-operativo
 
-      # ── 5. Salva tutti gli output (scan_report, agenti_stato, evolution runs, ecc.)
-      - name: Commit output
+      # ── 5. Il battito è una prova esplicita, non un effetto collaterale.
+      - name: Registra battito e stato pubblico
+        if: ${{ always() }}
         run: |
-          git add output/ || true
-          git diff --staged --quiet || git commit -m "chore(daily): agenti + scanner + snapshot $(date +%Y-%m-%d) [skip ci]"
+          mkdir -p output public
+          DAY="$(date -u +%F)"
+          FILE="output/daily_${DAY}.txt"
+          {
+            echo "R3_DAILY_V1"
+            echo "date_utc=${DAY}"
+            echo "generated_at_utc=$(date -u +%FT%TZ)"
+            echo "workflow=sdq1_daily"
+            echo "run_id=${GITHUB_RUN_ID}"
+            echo "commit=${GITHUB_SHA}"
+            echo "job_status=${{ job.status }}"
+            echo "note=heartbeat records execution; it does not certify multi-node sync or external impact"
+          } > "${FILE}"
+          python3 scripts/build_public_status.py
+
+      # ── 6. Salva output e snapshot pubblico anche se una fase precedente ha fallito.
+      - name: Commit output e stato
+        if: ${{ always() }}
+        run: |
+          git add output/ public/r3-status.json || true
+          git diff --staged --quiet || git commit -m "chore(daily): heartbeat + evidence status $(date -u +%Y-%m-%d) [skip ci]"
           git push || true
