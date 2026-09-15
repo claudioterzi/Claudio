@@ -7,6 +7,7 @@
     {"src":"api/tarot_voice.py","use":"@vercel/python","config":{"maxDuration":60}},
     {"src":"api/raffaello.py","use":"@vercel/python","config":{"maxDuration":120,"includeFiles":"{tarocchi_quantici_alpha.json,api/tarot_alpha.py,sdq1/llm/**}"}},
     {"src":"api/orchestra.py","use":"@vercel/python","config":{"maxDuration":120,"includeFiles":"{sdq1/llm/**,sdq1/config/**}"}},
+    {"src":"api/deepseek_eval.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{sdq1/llm/**}"}},
     {"src":"tarocchi_web.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{studio/parfums/**,public/formule/organo-*.json,tarocchi_quantici_alpha.json}"}},
     {"src":"public/**","use":"@vercel/static"}
   ],
@@ -41,6 +42,7 @@
     {"src":"/api/flight/migliore","dest":"/api/flight_best.py"},
     {"src":"/api/tarocchi/raffaello","dest":"/api/tarot_alpha.py"},
     {"src":"/api/orchestra","dest":"/api/orchestra.py"},
+    {"src":"/api/deepseek-eval","dest":"/api/deepseek_eval.py"},
     {"src":"/api/raffaello/(.*)","dest":"/api/raffaello.py"},
     {"src":"/api/tarocchi/alpha-leggi","dest":"/api/tarot_alpha_fullspace.py"},
     {"src":"/api/tarocchi/alpha-voce","dest":"/api/tarot_voice.py"},
