@@ -1,5 +1,5 @@
 {
-  "ts": "2026-09-14T11:46:53.307041",
+  "ts": "2026-09-15T11:03:34.138500",
   "score_sistema": 92,
   "sicurezza": {
     "agente": "CODE_SCANNER",
@@ -17,13 +17,13 @@
     ],
     "pattern_scansionati": 14,
     "ok": true,
-    "tempo_s": 0.19
+    "tempo_s": 0.188
   },
   "qualita": {
     "agente": "CODE_SCANNER",
     "modulo": "qualità",
     "score_salute": 81,
-    "score_debito": 120,
+    "score_debito": 123,
     "debito_per_1k_righe": 9.6,
     "problemi_critici": [],
     "moduli_peggiori": [
@@ -49,8 +49,8 @@
       }
     ],
     "pattern_analizzati": 11,
-    "file_py_analizzati": 86,
-    "tempo_s": 0.182
+    "file_py_analizzati": 87,
+    "tempo_s": 0.185
   },
   "dipendenze": {
     "agente": "CODE_SCANNER",
@@ -124,13 +124,13 @@
         "from ..config.loader import SDQ1Config",
         "from ..persistence.store import StatoStore"
       ],
-      "voli.__main__": [
-        "from .caccia import main"
-      ],
       "sar.persistence": [
         "from .coerenza import IndiceCoerenza, CoppiaCoerenza",
         "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
         "from .tensioni import MappaTeensioni, Polo, Tensione, Osserv"
+      ],
+      "voli.__main__": [
+        "from .caccia import main"
       ],
       "voli.agenti": [
         "from .. import notifiche",
@@ -154,24 +154,24 @@
         "from .ambiente import telegram_pronto",
         "from .rotte import ROTTE, Rotta, rotte_per_tag"
       ],
+      "agents.__init__": [
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import costruisci_agenti, registra"
+      ],
       "voli.__init__": [
         "from .agenti import CronistaVoli, EsitoScout, ScoutVoli, Val",
         "from .caccia import Cacciatore, RisultatoCaccia",
         "from .rotte import ROTTE, Rotta, rotte_per_tag"
       ],
-      "agents.__init__": [
-        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
-        "from .registry import costruisci_agenti, registra"
-      ],
       "agents.registry": [
         "from ..config.loader import AgenteConfig, SDQ1Config",
         "from .base import AgenteBase"
       ],
-      "monitoring.health": [
-        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
-      ],
       "sar.ciclo": [
         "from .tensioni import Tensione"
+      ],
+      "monitoring.health": [
+        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
       ],
       "monitoring.metrics": [
         "from ..persistence.store import StatoStore"
@@ -179,9 +179,6 @@
       "monitoring.__init__": [
         "from .health import HealthChecker, StatoSalute",
         "from .metrics import MetricsCollector, MetricaChiamata"
-      ],
-      "config.__init__": [
-        "from .loader import SDQ1Config, AgenteConfig, carica_config"
       ],
       "sar.sar": [
         "from ..memory.vss import VectorStateStore",
@@ -208,6 +205,9 @@
         "from .sar import ScacchieraAutoRiflessiva, ReportSAR",
         "from .sognatore import SognatoreSDQ, VisioneSognatrice",
         "from .tensioni import MappaTeensioni, Tensione, Polo, Osserv"
+      ],
+      "config.__init__": [
+        "from .loader import SDQ1Config, AgenteConfig, carica_config"
       ]
     },
     "dipendenze_esterne": {
@@ -221,15 +221,15 @@
       "xml"
     ],
     "circolari_sospette": [],
-    "tempo_s": 0.043
+    "tempo_s": 0.028
   },
   "metriche": {
     "agente": "CODE_SCANNER",
     "modulo": "metriche",
-    "file_analizzati": 86,
-    "totale_righe": 15293,
-    "totale_funzioni": 574,
-    "totale_classi": 130,
+    "file_analizzati": 87,
+    "totale_righe": 15670,
+    "totale_funzioni": 592,
+    "totale_classi": 133,
     "top5_per_dimensione": [
       {
         "file": "sdq1/__main__.py",
@@ -462,6 +462,15 @@
         "funzioni": 4,
         "classi": 2,
         "complessita": 5.5
+      },
+      "sdq1/evolution_kernel.py": {
+        "righe_totali": 377,
+        "righe_codice": 326,
+        "commenti": 0,
+        "vuote": 51,
+        "funzioni": 18,
+        "classi": 3,
+        "complessita": 4.8
       },
       "sdq1/futures/__init__.py": {
         "righe_totali": 6,
@@ -1058,7 +1067,7 @@
         "complessita": 3.2
       }
     },
-    "tempo_s": 0.071
+    "tempo_s": 0.088
   },
-  "tempo_totale_s": 0.486
+  "tempo_totale_s": 0.49
 }
