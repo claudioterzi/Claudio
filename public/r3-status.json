@@ -1,12 +1,12 @@
 {
   "schema": "r3-public-status-v1",
-  "generated_at": "2026-09-15T21:30:42+00:00",
+  "generated_at": "2026-09-16T10:50:36.613541+00:00",
   "source": "repository-derived",
-  "commit": null,
+  "commit": "dd053c4278d8d85ab016a4143a02d0daaa319a45",
   "heartbeat": {
-    "last_daily": "2026-08-31",
-    "gap_days": 15,
-    "source_file": "output/daily_2026-08-31.txt"
+    "last_daily": "2026-09-16",
+    "gap_days": 0,
+    "source_file": "output/daily_2026-09-16.txt"
   },
   "hypotheses": {
     "total": 6,
@@ -31,7 +31,7 @@
   },
   "h2": {
     "status": "OPEN",
-    "risk": "AT_RISK",
+    "risk": "CURRENT",
     "deadline": "2026-12-11",
     "note": "Missing regular daily output is treated as adverse evidence, not hidden."
   },
