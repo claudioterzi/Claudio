@@ -7,7 +7,7 @@
     {"src":"api/tarot_voice.py","use":"@vercel/python","config":{"maxDuration":60}},
     {"src":"api/raffaello.py","use":"@vercel/python","config":{"maxDuration":120,"includeFiles":"{tarocchi_quantici_alpha.json,api/tarot_alpha.py,sdq1/llm/**}"}},
     {"src":"api/orchestra.py","use":"@vercel/python","config":{"maxDuration":120,"includeFiles":"{sdq1/llm/**,sdq1/config/**}"}},
-    {"src":"api/deepseek_eval.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{sdq1/llm/**}"}},
+    {"src":"api/deepseek_eval.py","use":"@vercel/python","config":{"maxDuration":60}},
     {"src":"tarocchi_web.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{studio/parfums/**,public/formule/organo-*.json,tarocchi_quantici_alpha.json}"}},
     {"src":"public/**","use":"@vercel/static"}
   ],
@@ -23,6 +23,7 @@
     {"src":"/r3-evoluzione/?","dest":"/public/r3-evoluzione.html"},
     {"src":"/scritti/?","dest":"/public/scritti.html"},
     {"src":"/cubo-quantico/?","dest":"/public/cubo-quantico.html"},
+    {"src":"/cubo-vivo/?","dest":"/public/cubo-vivo-2d.html"},
     {"src":"/genesi-raffaello/?","dest":"/public/genesi-raffaello.html"},
     {"src":"/terzo-livello/?","dest":"/public/terzo-livello.html"},
     {"src":"/musica/?","dest":"/public/musica.html"},
