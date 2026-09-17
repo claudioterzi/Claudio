@@ -33,6 +33,5 @@ jobs:
         run: python -m compileall -q bot
       - name: P5 witness tests
         run: pytest -q tests/test_ponte_testimone.py
-      - name: Full legacy suite
-        continue-on-error: true
+      - name: Full suite
         run: pytest -q
