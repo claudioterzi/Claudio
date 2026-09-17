@@ -19,6 +19,7 @@
     {"src":"/accesso/?","dest":"/public/accesso.html"},
     {"src":"/privato/?","dest":"/public/privato.html"},
     {"src":"/idee/?","dest":"/public/idea-os.html"},
+    {"src":"/idee/(IDEA-[0-9]+)/?","dest":"/public/idea-document.html?id=$1"},
     {"src":"/idea-os/?","dest":"/public/idea-os.html"},
     {"src":"/raffaello/?","dest":"/public/raffaello.html"},
     {"src":"/progetti","dest":"/public/creazioni.html"},
