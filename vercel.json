@@ -18,6 +18,8 @@
     {"src":"/stato/?","dest":"/public/r3-status.html"},
     {"src":"/accesso/?","dest":"/public/accesso.html"},
     {"src":"/privato/?","dest":"/public/privato.html"},
+    {"src":"/idee/?","dest":"/public/idea-os.html"},
+    {"src":"/idea-os/?","dest":"/public/idea-os.html"},
     {"src":"/raffaello/?","dest":"/public/raffaello.html"},
     {"src":"/progetti","dest":"/public/creazioni.html"},
     {"src":"/r3-evoluzione/?","dest":"/public/r3-evoluzione.html"},
