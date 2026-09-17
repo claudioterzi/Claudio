@@ -1,0 +1,35 @@
+name: Raffaello Bot Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'integrations/raffaello-bot/**'
+      - '.github/workflows/raffaello-bot-tests.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'integrations/raffaello-bot/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: integrations/raffaello-bot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: integrations/raffaello-bot/requirements.txt
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Compile
+        run: python -m compileall -q bot
+      - name: Test
+        run: pytest -q
