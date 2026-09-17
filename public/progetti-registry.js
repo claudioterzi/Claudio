@@ -1,6 +1,6 @@
 window.R3_PROJECTS = {
   meta: {
-    version: "0.1.0",
+    version: "0.1.1",
     updated: "2026-09-17",
     principle: "Ogni progetto ha una pagina viva, una fonte, uno stato e una storia di evoluzione.",
     adoptionFlow: ["DISCOVERED","CANDIDATE","SANDBOX","BASELINE_A_B","FALSIFICATION","AUDIT","ADOPTED_OR_REJECTED"]
@@ -44,7 +44,9 @@ window.R3_PROJECTS = {
       source: "sdq1/ · r3/ · CLAUDE.md",
       capabilities: ["pipeline agenti","multi-provider","memoria e continuità","verifier gates","audit e provenance"],
       next: "Continuare il ciclo WATCH → CANDIDATE PATCH → SANDBOX → A/B → FALSIFICATION → AUDIT → ADOPT/REJECT.",
-      discoveries: []
+      discoveries: [
+        {repo:"diegosouzapw/OmniRoute",status:"CANDIDATE",use:"gateway multi-provider; routing/fallback, quota-aware scheduling, telemetry, MCP e compressione token da confrontare con il router SDQ-1"}
+      ]
     },
     {
       slug: "fabbrica-dei-desideri",
