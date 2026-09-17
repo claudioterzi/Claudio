@@ -55,6 +55,9 @@
     if (/^\/(?:creazioni|progetti)(?:\.html)?\/?$/.test(location.pathname)) {
       loadOnce('/creazioni-extra.js', 'creazioni-extra');
     }
+    if (/^\/(?:idee|idea-os)(?:\.html)?\/?$/.test(location.pathname)) {
+      loadOnce('/idea-os-links.js', 'idea-os-links');
+    }
   }
 
   loadRouteFeatures();
