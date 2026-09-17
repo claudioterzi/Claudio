@@ -1,6 +1,6 @@
 window.R3_PROJECTS = {
   meta: {
-    version: "0.1.1",
+    version: "0.1.2",
     updated: "2026-09-17",
     principle: "Ogni progetto ha una pagina viva, una fonte, uno stato e una storia di evoluzione.",
     adoptionFlow: ["DISCOVERED","CANDIDATE","SANDBOX","BASELINE_A_B","FALSIFICATION","AUDIT","ADOPTED_OR_REJECTED"]
@@ -45,7 +45,9 @@ window.R3_PROJECTS = {
       capabilities: ["pipeline agenti","multi-provider","memoria e continuità","verifier gates","audit e provenance"],
       next: "Continuare il ciclo WATCH → CANDIDATE PATCH → SANDBOX → A/B → FALSIFICATION → AUDIT → ADOPT/REJECT.",
       discoveries: [
-        {repo:"diegosouzapw/OmniRoute",status:"CANDIDATE",use:"gateway multi-provider; routing/fallback, quota-aware scheduling, telemetry, MCP e compressione token da confrontare con il router SDQ-1"}
+        {repo:"diegosouzapw/OmniRoute",status:"CANDIDATE",use:"gateway multi-provider; routing/fallback, quota-aware scheduling, telemetry, MCP e compressione token da confrontare con il router SDQ-1"},
+        {repo:"thedotmack/claude-mem",status:"CANDIDATE",use:"memoria persistente, osservazioni automatiche, progressive disclosure, retrieval ibrido e citation IDs da confrontare con la memoria R³∞"},
+        {repo:"herdrdev/herdr",status:"CANDIDATE",use:"runtime operativo agenti; terminali persistenti, multi-machine, working/blocked/idle e socket API da testare senza confonderlo con memoria o canone"}
       ]
     },
     {
