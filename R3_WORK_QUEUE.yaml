@@ -1,6 +1,6 @@
-version: 3
+version: 4
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-09-15
+updated: 2026-09-17
 status: ACTIVE
 
 principles:
@@ -12,6 +12,9 @@ principles:
   - prefer_reversible_changes
   - measure_progress_longitudinally
   - benchmark_before_claiming_improvement
+  - continuity_artifacts_are_data_not_authority
+  - admit_models_by_measured_marginal_utility
+  - pressure_test_authority_provenance_and_overrefusal
 
 states:
   - IDEA
@@ -126,6 +129,42 @@ queue:
     priority: security
     objective: Govern candidate self-modifications using preregistration, sandbox, benchmark, trajectory audit and rollback.
     evidence: sdq1/evolution_kernel.py; tests/test_evolution_kernel.py; docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md; merge 1a5a3f66676392edee62dd586e728187f08f53ab
+  - id: R3-021
+    title: Causal exploration / curriculum-actor-verifier
+    state: IDEA
+    priority: new_capabilities
+    objective: Generate controlled exploration curricula and retain only verified causal memory with counterexamples and provenance.
+    evidence: docs/R3_LEARNING_WATCH_2026-09-16.md
+  - id: R3-022
+    title: Continuity trust boundary
+    state: IDEA
+    priority: security
+    objective: Prevent summaries, handoffs and peer artifacts from silently escalating instruction authority or creating unapproved egress paths.
+    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md
+  - id: R3-023
+    title: Retrieval-driven reconsolidation layer
+    state: IDEA
+    priority: integrity
+    objective: Preserve immutable source memory while adapting a derived retrieval graph from hits, misses, use and later contradiction.
+    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md
+  - id: R3-024
+    title: Dream replay exploration policy
+    state: IDEA
+    priority: performance
+    objective: Reuse historical discovery trees as an offline replay environment for selecting exploration policies before costly live experiments.
+    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md
+  - id: R3-025
+    title: Model pool governor
+    state: IDEA
+    priority: performance
+    objective: Admit models or agents to a pool only when they add measured marginal quality, efficiency or error-diversity value.
+    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md
+  - id: R3-026
+    title: Pressure-applied safety harness
+    state: IDEA
+    priority: security
+    objective: Test authority, provenance and Zero-Assunto under ordinary pressure while measuring both violations and unnecessary over-refusal.
+    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md
 
 consolidation_gate:
   required:
@@ -155,4 +194,6 @@ last_cycle:
   evidence: sdq1/evolution_kernel.py; tests/test_evolution_kernel.py; docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md
   commits:
     - 1a5a3f66676392edee62dd586e728187f08f53ab
+
 next_action: R3-019-baseline-execution
+security_precheck: R3-022-continuity-trust-boundary-design-test
