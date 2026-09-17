@@ -65,8 +65,55 @@ var extras=[
     dossier:null
   }
 ];
-extras.forEach(function(extra){
-  if(!portfolio.ideas.some(function(x){return x.id===extra.id}))portfolio.ideas.push(extra);
-});
+extras.forEach(function(extra){if(!portfolio.ideas.some(function(x){return x.id===extra.id}))portfolio.ideas.push(extra)});
 portfolio.meta.snapshot='2026-09-17';
+
+/* Se caricato sulla pagina portfolio dopo il renderer principale, integra le schede
+   senza costringere a duplicare o riscrivere il file HTML principale. */
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function badge(text,cls){return '<span class="badge '+(cls||'')+'">'+esc(text)+'</span>'}
+function detail(label,value,wide){return '<div class="detail '+(wide?'wide':'')+'"><h4>'+esc(label)+'</h4><p>'+esc(value||'NON SPECIFICATO / DA FORMALIZZARE')+'</p></div>'}
+function textIdea(i){return [i.id,i.title,i.status,i.engine,i.origin,i.problem,i.thesis,i.buyer,i.evidence,i.currentTech,i.capability,i.constraints,i.assumptions,i.nextTest,i.baseline,i.kpi,i.falsifier,i.risk,i.relations,(i.updates||[]).join(' ')].join(' ').toLowerCase()}
+function matches(i){
+ var q=(document.getElementById('search')||{}).value||'';q=q.trim().toLowerCase();
+ var m=(document.getElementById('maturity')||{}).value||'';
+ var h=(document.getElementById('horizon')||{}).value||'';
+ var s=(document.getElementById('state')||{}).value||'';
+ return (!q||textIdea(i).indexOf(q)!==-1)&&(!m||String(i.maturity).indexOf(m)!==-1)&&(!h||String(i.horizon).indexOf(h)!==-1)&&(!s||(s==='SECURE'?i.secure:String(i.status).indexOf(s)!==-1));
+}
+function card(i){
+ var updates=i.updates&&i.updates.length?'<div class="detail wide"><h4>Update / sub-moduli</h4><ul class="updates">'+i.updates.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div>':'';
+ var dossier=i.dossier?'<a class="primary" target="_blank" rel="noopener noreferrer" href="'+esc(i.dossier.url)+'">Apri dossier canonico ↗</a>':'<span class="pill">Nessun dossier progetto registrato</span>';
+ return '<article class="idea'+(i.secure?' secure':'')+'" data-id="'+esc(i.id)+'">'+
+ '<div class="top"><div><div class="id">'+esc(i.id)+'</div><h3>'+esc(i.title)+'</h3></div><div class="badges">'+badge(i.maturity)+badge(i.status,i.secure?'secure':'status')+badge(i.horizon)+'</div></div>'+
+ '<p class="summary"><strong>Problema/opportunità:</strong> '+esc(i.problem)+'</p><div class="thesis"><strong>Tesi:</strong> '+esc(i.thesis)+'</div>'+
+ '<div class="meta"><div><b>Motore</b><span>'+esc(i.engine)+'</span></div><div><b>Buyer / beneficiario</b><span>'+esc(i.buyer)+'</span></div><div><b>Horizon</b><span>'+esc(i.horizon)+'</span></div><div><b>Constraint</b><span>'+esc(i.constraints)+'</span></div></div>'+
+ '<div class="actions"><a class="primary" data-interactive-dossier="1" href="/idee/'+encodeURIComponent(i.id)+'">Apri documento interattivo →</a>'+dossier+'</div>'+
+ '<details><summary>Apri scheda completa</summary><div class="detail-grid">'+
+ detail('Origine / provenienza',i.origin,true)+detail('Stato dell’arte / evidenza',i.evidence,true)+detail('Current-Tech Path',i.currentTech)+detail('Capability-Horizon Path',i.capability)+detail('Assunzioni',i.assumptions,true)+detail('Preregistrazione prossimo test',i.nextTest,true)+detail('Baseline',i.baseline)+detail('KPI',i.kpi)+detail('Falsificatore / criterio di stop',i.falsifier,true)+detail('Rischi · IP · confidenzialità',i.risk,true)+detail('Relazioni / dedup',i.relations,true)+updates+'</div></details></article>';
+}
+var busy=false;
+function refreshPortfolio(){
+ var out=document.getElementById('ideas');if(!out||busy)return;busy=true;
+ extras.forEach(function(i){
+   var existing=out.querySelector('[data-id="'+i.id+'"]');
+   var ok=matches(i);
+   if(existing&&!ok)existing.remove();
+   if(!existing&&ok){var empty=out.querySelector('.empty');if(empty)empty.remove();out.insertAdjacentHTML('beforeend',card(i))}
+ });
+ var all=document.getElementById('statAll');if(all)all.textContent=portfolio.ideas.length;
+ var active=document.getElementById('statActive');if(active)active.textContent=portfolio.ideas.filter(function(i){return /ACTIVE|PILOT/.test(i.status)}).length;
+ var secure=document.getElementById('statSecure');if(secure)secure.textContent=portfolio.ideas.filter(function(i){return i.secure}).length;
+ var m2=document.getElementById('statM2');if(m2)m2.textContent=portfolio.ideas.filter(function(i){var n=String(i.maturity).match(/M(\d)/g)||[];return n.reduce(function(a,x){return Math.max(a,+x.slice(1))},-1)>=2}).length;
+ var docs=document.getElementById('statDocs');if(docs)docs.textContent=portfolio.ideas.filter(function(i){return i.dossier}).length;
+ var label=document.getElementById('countLabel');if(label)label.textContent=out.querySelectorAll('.idea').length+' di '+portfolio.ideas.length+' schede visibili';
+ busy=false;
+}
+function wire(){
+ var out=document.getElementById('ideas');if(!out)return;
+ refreshPortfolio();
+ ['search','maturity','horizon','state'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener(id==='search'?'input':'change',function(){setTimeout(refreshPortfolio,0)})});
+ var observer=new MutationObserver(function(){if(!busy)setTimeout(refreshPortfolio,0)});observer.observe(out,{childList:true});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(wire,0)});else setTimeout(wire,0);
 })();
