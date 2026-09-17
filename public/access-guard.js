@@ -11,7 +11,7 @@ var privateRoutes=[
   '/home','/home.html','/progetti','/creazioni.html','/scritti','/scritti.html','/codice-gaia','/codice-gaia.html',
   '/idee','/idea-os','/idea-os.html'
 ];
-var isPrivate=privateRoutes.indexOf(p)!==-1;
+var isPrivate=privateRoutes.indexOf(p)!==-1 || /^\/idee\/IDEA-\d+$/i.test(p);
 var privateOK=false,publicOK=false;
 try{
   privateOK=sessionStorage.getItem(PRIVATE_SESSION_KEY)==='1';
