@@ -8,7 +8,8 @@ R3-019 canon before a run can be treated as longitudinal promotion evidence:
 - non-overwriting persistence;
 - explicit COMPLETE / INCOMPLETE / INVALID status;
 - explicit denominators and error counts;
-- refusal to treat incomplete/invalid comparisons as promotion-grade evidence.
+- refusal to treat incomplete/invalid or legacy-unwrapped comparisons as
+  promotion-grade evidence.
 
 It does *not* make the legacy benchmark scientifically complete by itself.
 Held-out tasks, repetitions, variance, frozen configs and the rest of the
@@ -41,7 +42,7 @@ def generate_run_id(now: datetime | None = None) -> str:
     if now.tzinfo is None:
         now = now.replace(tzinfo=timezone.utc)
     now = now.astimezone(timezone.utc)
-    return f"{now.strftime('%Y%m%dT%H%M%S.%fZ')}-{uuid.uuid4().hex[:8]}"
+    return f"{now.strftime('%Y%m%dT%H%M%S.%fZ')}-{uuid.uuid4().hex}"
 
 
 def _safe_component(value: str) -> str:
@@ -58,6 +59,11 @@ def prepare_snapshot(snapshot: dict[str, Any], run_id: str | None = None) -> dic
       denominator disagrees with the runner's declared total;
     - COMPLETE: all observed tests completed without runner errors and the
       denominator is internally consistent.
+
+    This function validates structure; it does not retroactively prove the
+    provenance of a historical snapshot. Promotion-grade comparison therefore
+    separately requires both inputs to have already carried this integrity
+    schema when presented to the comparator.
     """
     prepared = copy.deepcopy(snapshot)
     meta = prepared.setdefault("meta", {})
@@ -181,17 +187,17 @@ def load_snapshot(
 
 
 def compare_snapshots(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
-    """Compare two runs while separating descriptive delta from promotion evidence."""
-    first_prepared = (
-        first
-        if first.get("meta", {}).get("integrity_schema_version") == INTEGRITY_SCHEMA_VERSION
-        else prepare_snapshot(first, run_id=first.get("meta", {}).get("run_id") or generate_run_id())
-    )
-    second_prepared = (
-        second
-        if second.get("meta", {}).get("integrity_schema_version") == INTEGRITY_SCHEMA_VERSION
-        else prepare_snapshot(second, run_id=second.get("meta", {}).get("run_id") or generate_run_id())
-    )
+    """Compare two runs while separating descriptive delta from promotion evidence.
+
+    Legacy snapshots without the Phase-0 schema may still yield descriptive
+    deltas, but they cannot become promotion-grade merely by being normalized at
+    comparison time. That would launder historical provenance defects.
+    """
+    first_native = first.get("meta", {}).get("integrity_schema_version") == INTEGRITY_SCHEMA_VERSION
+    second_native = second.get("meta", {}).get("integrity_schema_version") == INTEGRITY_SCHEMA_VERSION
+
+    first_prepared = first if first_native else prepare_snapshot(first)
+    second_prepared = second if second_native else prepare_snapshot(second)
 
     s1 = first_prepared.get("sommario", {})
     s2 = second_prepared.get("sommario", {})
@@ -212,20 +218,26 @@ def compare_snapshots(first: dict[str, Any], second: dict[str, Any]) -> dict[str
         delta_latency = int(latency2 - latency1)
 
     statuses = (m1.get("run_status"), m2.get("run_status"))
-    promotion_grade = statuses == ("COMPLETE", "COMPLETE")
+    provenance_ok = first_native and second_native
+    promotion_grade = provenance_ok and statuses == ("COMPLETE", "COMPLETE")
+
+    if not provenance_ok:
+        reason = "At least one run lacks native Phase-0 integrity provenance; descriptive deltas cannot support promotion."
+    elif not promotion_grade:
+        reason = "At least one run is not COMPLETE; descriptive deltas cannot support promotion."
+    else:
+        reason = "Both runs carry Phase-0 provenance and are COMPLETE; other R3-019 promotion gates still apply."
 
     return {
         "run_id_from": m1.get("run_id"),
         "run_id_to": m2.get("run_id"),
         "status_from": statuses[0],
         "status_to": statuses[1],
+        "native_integrity_from": first_native,
+        "native_integrity_to": second_native,
         "delta_punteggio": delta_score,
         "delta_latenza_ms": delta_latency,
         "promotion_grade": promotion_grade,
         "promotion_decision": "ELIGIBLE_FOR_NEXT_GATES" if promotion_grade else "REFUSE",
-        "reason": (
-            "Both runs are COMPLETE; other R3-019 promotion gates still apply."
-            if promotion_grade
-            else "At least one run is not COMPLETE; descriptive deltas cannot support promotion."
-        ),
+        "reason": reason,
     }
