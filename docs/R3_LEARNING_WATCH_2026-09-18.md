@@ -107,6 +107,41 @@ https://arxiv.org/abs/2609.18445
 4. `R3-023` remains candidate-only and should not outrank runtime correctness/verification without local ablation evidence.
 5. Native skill routing gains a post-retrieval quality-gate hypothesis; no new router architecture is created.
 
+## Cycle delta — 18/09/2026 · 08:55 CEST
+
+This section is append-only relative to the earlier 08:29 state above. It records the result of executing the next authorized Phase-0 step rather than rewriting the earlier blocker out of history.
+
+### R3-019 Phase-0 integrity experiment — ADOPTED as bounded mechanical layer
+
+**Retroactive classification of the historical persistence/comparison path:** `PATCH`.
+
+**FACT — initial candidate falsified in two places before promotion:** audit of draft PR #58 found (1) an empty result set with `totale=0` could be marked `COMPLETE`, contradicting the benchmark canon that zero valid tests must not become positive evidence; and (2) a historical/raw snapshot could pass through the first `save_snapshot()` adapter, acquire the integrity schema, then be reloaded and mistaken for native Phase-0 evidence. The first candidate therefore was not adopted as-is.
+
+**PATCH:** the integrity layer now records `NATIVE_EXECUTION` versus `ADAPTED_LEGACY`; only direct integrity-wrapped execution may carry native provenance. Zero observed tests and malformed result entries are `INVALID`. Adapted historical evidence remains descriptive-only even after persistence/reload. Promotion-grade comparison requires both native provenance and `COMPLETE` status.
+
+**FALSIFICATION / TEST:** 13 deterministic regression/falsification tests cover complete runs, per-test errors, denominator mismatch, missing results, zero-test false success, malformed results, non-overwrite, unique run IDs, same-date ambiguity, refusal of incomplete comparison, comparison-time provenance laundering, save/reload provenance laundering and native-complete comparison semantics.
+
+**HOSTED GATES:** current candidate head `a4688f5c8a900600698ea4a096ae930fd30b95b1` passed R3 Benchmark Integrity run #5, Test Runner #288 and Security Scan #591.
+
+**ADOPT / CONSOLIDATE:** PR #58 was squash-merged to `main` as commit `c81de2c1a0cc8e2c1144c5a53b9411f6b0ec3e9c`. An authoritative post-merge read of `main` confirmed that exact commit as the branch head. Rollback remains a normal revert of the additive integrity-layer merge; the historical benchmark implementation is preserved.
+
+**LIMIT / P5:** this is L0 measurement-integrity progress, not a new R3-019 capability baseline and not proof that R³∞ improved task performance. No model/API credential was consumed. Held-out/gold separation, repeated runs/variance, frozen configurations, success-gated efficiency/human-friction metrics and the actual A/B/C/D baseline remain separate gates. `R3-019` therefore stays `DEVELOPMENT`.
+
+**OPERATIONAL UPDATE:** the former Phase-0 overwrite/completeness blocker is closed for the new integrity-wrapped path. The next R3-019 step is controlled baseline execution through that path, while preserving the R3-022 full contaminated-handoff replay as the immediate security precheck for continuity automation.
+
+### External WATCH evidence update — partial-utility early stopping
+
+**Source:** Tian, Ganguly & Macdonald, *Predicting Partial Answer Quality and Utility in Agentic Retrieval-Augmented Generation*, arXiv:2609.16453, submitted 15/09/2026.  
+https://arxiv.org/abs/2609.16453
+
+**FACT:** the authors probe intermediate answer states after retrieval/reasoning iterations and report that answer quality often plateaus before natural termination. Their predicted quality/utility early-stopping policy reduces average iteration count by about 11% while preserving about 98% of the final answer quality achieved by natural stopping in their evaluated setting.
+
+**INTERPRETATION:** this is an evidence update to the existing R3-019 efficiency objective, not a new subsystem. R³∞ should eventually test whether a verifier can stop iterative retrieval/reasoning when expected marginal utility falls below a preregistered threshold, but only after verified task success remains protected.
+
+**PROPOSAL / falsifier:** on a fixed held-out R3-019 subset, compare natural termination vs quality/utility-gated stopping. Measure verified success, quality delta, iterations/tool calls, latency and user-visible turns. Reject the gate if it saves work by causing a material success/quality regression, or if utility prediction is too poorly calibrated to distinguish low-value iterations.
+
+**Priority consequence:** none yet. Local R3-019 Phase-0 integrity and R3-022 behavioral security remain ahead of this efficiency experiment.
+
 ## Shared Evolution Loop
 
 `WATCH → EXTRACT → CANDIDATE PATCH → SANDBOX → BASELINE A/B → FALSIFICATION → AUDIT → ADOPT/REJECT → R³∞ MEMORY → RETROACTIVE REEVALUATION → NEW BASELINE`
