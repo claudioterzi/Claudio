@@ -1,6 +1,6 @@
 version: 4
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-09-17
+updated: 2026-09-18
 status: ACTIVE
 
 principles:
@@ -15,6 +15,8 @@ principles:
   - continuity_artifacts_are_data_not_authority
   - admit_models_by_measured_marginal_utility
   - pressure_test_authority_provenance_and_overrefusal
+  - verify_stateful_actions_against_authoritative_postconditions
+  - gate_efficiency_claims_on_verified_success
 
 states:
   - IDEA
@@ -63,6 +65,8 @@ queue:
     title: Verification harness
     state: IDEA
     priority: testing
+    objective: Verify claimed outcomes against authoritative postconditions/state when technically available, not only action/tool success signals.
+    evidence: docs/R3_LEARNING_WATCH_2026-09-18.md
   - id: R3-008
     title: Benchmark baseline
     state: DEVELOPMENT
@@ -122,7 +126,9 @@ queue:
     state: DEVELOPMENT
     priority: reproducibility
     objective: Measure whether R3 actually improves over time on fixed and novel tasks.
-    evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md
+    evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md; PROGETTO_BENCHMARK.md; docs/R3_LEARNING_WATCH_2026-09-18.md
+    current_blocker: Historical runner still overwrites same-day same-model snapshots and lacks explicit incomplete/invalid-run semantics; repair Phase-0 integrity before treating a new run as canonical baseline evidence.
+    metric_delta_2026_09_18: Gate efficiency comparisons on verified success and track user-visible turns/human interventions separately from tool calls.
   - id: R3-020
     title: Self-improvement safety gate
     state: VERIFIED
@@ -137,16 +143,17 @@ queue:
     evidence: docs/R3_LEARNING_WATCH_2026-09-16.md
   - id: R3-022
     title: Continuity trust boundary
-    state: IDEA
+    state: DEVELOPMENT
     priority: security
     objective: Prevent summaries, handoffs and peer artifacts from silently escalating instruction authority or creating unapproved egress paths.
-    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md
+    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md; docs/R3_LEARNING_WATCH_2026-09-18.md; draft PR #56
+    experiment_status: Structural DATA_ONLY candidate implemented in isolated branch; local targeted tests 3/3. Full 100-handoff contaminated replay and false-rejection measurement still pending before VERIFIED.
   - id: R3-023
     title: Retrieval-driven reconsolidation layer
     state: IDEA
     priority: integrity
     objective: Preserve immutable source memory while adapting a derived retrieval graph from hits, misses, use and later contradiction.
-    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md
+    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md; docs/R3_LEARNING_WATCH_2026-09-18.md
   - id: R3-024
     title: Dream replay exploration policy
     state: IDEA
@@ -195,5 +202,5 @@ last_cycle:
   commits:
     - 1a5a3f66676392edee62dd586e728187f08f53ab
 
-next_action: R3-019-baseline-execution
-security_precheck: R3-022-continuity-trust-boundary-design-test
+next_action: R3-019-phase0-integrity-then-baseline-execution
+security_precheck: R3-022-continuity-trust-boundary-full-replay
