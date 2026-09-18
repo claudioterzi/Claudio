@@ -126,9 +126,10 @@ queue:
     state: DEVELOPMENT
     priority: reproducibility
     objective: Measure whether R3 actually improves over time on fixed and novel tasks.
-    evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md; PROGETTO_BENCHMARK.md; docs/R3_LEARNING_WATCH_2026-09-18.md
-    current_blocker: Historical runner still overwrites same-day same-model snapshots and lacks explicit incomplete/invalid-run semantics; repair Phase-0 integrity before treating a new run as canonical baseline evidence.
-    metric_delta_2026_09_18: Gate efficiency comparisons on verified success and track user-visible turns/human interventions separately from tool calls.
+    evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md; PROGETTO_BENCHMARK.md; docs/R3_LEARNING_WATCH_2026-09-18.md; sdq1/benchmark_integrity.py; tests/test_benchmark_integrity.py; merge c81de2c1a0cc8e2c1144c5a53b9411f6b0ec3e9c
+    experiment_status: Phase-0 integrity layer consolidated. It provides unique run IDs, non-overwriting persistence, COMPLETE|INCOMPLETE|INVALID semantics, explicit denominators/error counts, NATIVE_EXECUTION vs ADAPTED_LEGACY provenance, and refuses promotion-grade comparison for incomplete or adapted legacy evidence. 13 deterministic falsification/regression tests PASS; R3 Benchmark Integrity #5 PASS; Test Runner #288 PASS; Security Scan #591 PASS.
+    current_blocker: Phase-0 mechanical integrity is closed for the new wrapped path, but no new canonical capability baseline exists yet. Next evidence must use controlled execution with held-out/gold separation, repetitions/variance, frozen configuration and success-gated efficiency metrics; do not infer capability improvement from the Phase-0 patch itself.
+    metric_delta_2026_09_18: Gate efficiency comparisons on verified success and track user-visible turns/human interventions separately from tool calls. Partial-quality/utility early stopping is an experiment candidate only after success preservation is demonstrated.
   - id: R3-020
     title: Self-improvement safety gate
     state: VERIFIED
@@ -196,11 +197,11 @@ user_authorization:
     - financial_transactions
 
 last_cycle:
-  completed: R3-020-evolution-kernel
-  result: VERIFIED
-  evidence: sdq1/evolution_kernel.py; tests/test_evolution_kernel.py; docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md
+  completed: R3-019-phase0-integrity
+  result: CONSOLIDATED_L0
+  evidence: sdq1/benchmark_integrity.py; tests/test_benchmark_integrity.py; docs/R3_LEARNING_WATCH_2026-09-18.md
   commits:
-    - 1a5a3f66676392edee62dd586e728187f08f53ab
+    - c81de2c1a0cc8e2c1144c5a53b9411f6b0ec3e9c
 
-next_action: R3-019-phase0-integrity-then-baseline-execution
+next_action: R3-019-controlled-baseline-execution
 security_precheck: R3-022-continuity-trust-boundary-full-replay
