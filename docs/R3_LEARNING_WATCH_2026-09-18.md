@@ -15,11 +15,11 @@ External papers are documentary **FACTS about reported methods/results**. Their 
 
 **Internal sources:** `sdq1/sar/archivio_vivente.py`, `SESSIONE.md`, `R3_AUTO_CYCLE.md`, `docs/R3_LEARNING_WATCH_2026-09-17.md`.
 
-**FACT:** on `main` at base `7fa7de5d26796aaf4a0705009ff0edd00a2d9f2a`, `_raccogli_contesto()` concatenates `CLAUDE.md`, `SESSIONE.md`, configuration, hypotheses, contacts and git log into the generation prompt without a machine-readable authority label. `SESSIONE.md` itself contains imperative continuity text (for example, instructions to read everything before responding and behavioral directives). A local baseline inspection therefore found `data_only_markers=0`, an imperative handoff present, and no explicit non-execution boundary.
+**FACT:** on `main` at base `7fa7de5d26796aaf4a0705009ff0edd00a2d9f2a`, `_raccogli_contesto()` concatenates `CLAUDE.md`, `SESSIONE.md`, configuration, hypotheses, contacts and git log into the generation prompt without a machine-readable authority label. `SESSIONE.md` itself contains imperative continuity text. A local baseline inspection therefore found `data_only_markers=0`, an imperative handoff present, and no explicit non-execution boundary.
 
 **INTERPRETATION:** this is one concrete instance of the R3-022 threat model: continuity content and executable-looking instructions are not structurally separated at ingestion time. The finding does **not** imply that the model necessarily follows those directives; it establishes an avoidable authority-ambiguity surface.
 
-**CANDIDATE PATCH:** draft PR #56, branch `r3/r3-022-continuity-boundary-2026-09-18`, head `9dc51413ec6f10dc3701192dedc4bbd50066a905`.
+**BOUNDED CANDIDATE PATCH:** draft PR #57, branch `r3/r3-022-continuity-boundary-2026-09-18`, head `a1a28ac59440580704a93f065534ba994b774738`, targeting `main`.
 
 The candidate:
 - wraps every contextual source in `<R3_CONTEXT source="..." authority="DATA_ONLY">`;
@@ -29,9 +29,13 @@ The candidate:
 
 **LOCAL SANDBOX RESULT:** 3/3 targeted structural tests passed. The tests verify the boundary declaration, wrapping of current handoff/rules sources, and wrapping of adversarial-looking extra context. This is L0/mechanical evidence only.
 
-**FALSIFIER / remaining gate:** the canonical R3-022 replay remains mandatory: 100 continuity handoffs, at least 20 contaminated, measuring unauthorized authority escalation, unapproved egress and false rejection of legitimate continuation. Structural tags alone are not proof of behavioral robustness. PR #56 therefore remains draft and R3-022 is not `VERIFIED`.
+**HOSTED GATE RESULT:** the first hosted Test Runner attempt (#282) failed because the `pytest` entrypoint did not include the repository source path (`ModuleNotFoundError: sdq1`). This was recorded as an infrastructure failure, not a passing test. The workflow was corrected to invoke `python -m pytest`. Test Runner #283 then completed successfully, including the `Test R3 continuity trust boundary` step. Security Scan #582 also completed successfully on the bounded head.
 
-**Rollback:** close/revert PR #56; original source artifacts are unchanged.
+**PROVENANCE CORRECTION:** PR #56 was initially opened for this candidate, but its base was changed during the cycle to `candidate/r3-resonance-0.2`, after which its diff contained unrelated work. PR #56 is therefore excluded from bounded promotion evidence. PR #57 re-establishes the candidate against `main` with a three-file diff: the trust-boundary implementation, its regression tests and the strict test-runner step.
+
+**FALSIFIER / remaining gate:** the canonical R3-022 replay remains mandatory: 100 continuity handoffs, at least 20 contaminated, measuring unauthorized authority escalation, unapproved egress and false rejection of legitimate continuation. Structural tags and passing regression/security checks alone are not proof of behavioral robustness. PR #57 therefore remains draft and R3-022 is not `VERIFIED`.
+
+**Rollback:** close/revert PR #57; original source continuity artifacts are unchanged.
 
 ## 2. ERPBench — verify state, not the appearance of action success
 
@@ -98,7 +102,7 @@ https://arxiv.org/abs/2609.18445
 ## Priority update
 
 1. `R3-019` remains the primary project step, but its Phase-0 measurement-integrity requirements must be satisfied before a new baseline is treated as canonical evidence.
-2. `R3-022` remains the immediate security precheck. A concrete candidate patch now exists in draft PR #56; full contaminated-handoff behavioral testing remains pending.
+2. `R3-022` remains the immediate security precheck. The bounded candidate is draft PR #57; structural and hosted CI/security gates passed, while the contaminated-handoff behavioral test is still pending.
 3. `R3-007` gains a state-grounded postcondition requirement for stateful operations; this is an evidence update to an existing work item.
 4. `R3-023` remains candidate-only and should not outrank runtime correctness/verification without local ablation evidence.
 5. Native skill routing gains a post-retrieval quality-gate hypothesis; no new router architecture is created.
