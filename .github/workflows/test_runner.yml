@@ -49,4 +49,4 @@ jobs:
           "
 
       - name: Test R3 continuity trust boundary
-        run: pytest -q tests/test_archivio_vivente_trust_boundary.py
+        run: python -m pytest -q tests/test_archivio_vivente_trust_boundary.py
