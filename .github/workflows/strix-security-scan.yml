@@ -1,0 +1,44 @@
+name: Security Scan
+
+# Scansione di sicurezza del codice Python con Bandit (SAST).
+# Sostituisce il precedente workflow "Strix" che installava un pacchetto
+# inesistente su PyPI (strix-scanner) e falliva a ogni run.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  schedule:
+    - cron: '0 2 * * *'  # ogni giorno alle 02:00 UTC
+  workflow_dispatch:
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Bandit
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit
+
+      - name: Run Bandit (fail su findings high severity)
+        run: |
+          mkdir -p reports
+          bandit -r . -x ./node_modules --severity-level high -f json -o reports/bandit.json
+          echo "Nessun finding high severity"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: reports/bandit.json

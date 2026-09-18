@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-10",
+  "creation_id": "484c7e9c-e363-4fcc-b24e-2a2b2e02fb3e",
+  "checks": {
+    "photo_creation_http_200": true,
+    "formula_saved_in_production": true,
+    "formula_checksum_matches": true,
+    "recipe_totals_100": true,
+    "repeated_request_preserves_exact_record": true,
+    "anonymous_cannot_read_formula": true,
+    "private_response_not_cacheable_or_cross_origin": true,
+    "session_1_login_and_listing": true,
+    "session_1_exact_formula_reopen": true,
+    "session_1_dedication_preserved": true,
+    "session_2_login_and_listing": true,
+    "session_2_exact_formula_reopen": true,
+    "session_2_dedication_preserved": true,
+    "cookie_secure_httponly_strict": true,
+    "logout_returns_login": true,
+    "logged_out_cookie_revoked_on_server": true,
+    "separate_session_remains_valid": true
+  },
+  "scope": "HTTPS production integration test; fictitious customer",
+  "serial": "TP-484C7E9CE3634FCCB24E2A2B2E02FB3E",
+  "perfume_name": "Forge Crépusculaire",
+  "formula_sha256": "adcf6d7b1e96074294b758f94d28fd681245cb467e2df1f411e163cdb51d4370",
+  "photo_analysis_version": 2,
+  "completed": true,
+  "limitations": [
+    "Provider backup/restore not tested",
+    "Native browser sign-in and iPhone not tested",
+    "Chosen access word also appears in public creative content; separate private password required before customer use"
+  ]
+}

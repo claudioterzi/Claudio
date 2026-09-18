@@ -329,6 +329,7 @@ class WaveMessaggero(AgenteSDQ):
                 "stile_applicato":     risposta.via_api,
                 "stile":               {"tono": "calmo", "formalita": "media"},
             },
+            metadata=self._meta(risposta),
         )
 
 

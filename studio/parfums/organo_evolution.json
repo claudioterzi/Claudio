@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "revision": 1,
+  "updated_at": "2026-09-09",
+  "author": "Claudio Terzi",
+  "overrides": [],
+  "proposals": [
+    {
+      "id": "EV-001",
+      "name": "Nympheal",
+      "status": "proposed",
+      "type": "Molecola · Givaudan",
+      "profile": "Floreale di mughetto e ciclamino, con sfumature verdi, acquatiche e di tiglio descritte dal produttore.",
+      "why": "Da confrontare con Lilyflore e Florhydral per un cuore luminoso: un’ipotesi creativa da valutare su mouillette.",
+      "compare_ids": [196, 213],
+      "test": "Confronto a parità di preparazione e condizioni; registrare apertura, volume del cuore ed evoluzione nel tempo.",
+      "sources": [{"title": "Givaudan · Nympheal", "url": "https://www.givaudan.com/fragrance-beauty/fragrance-ingredients-business/fragrance-molecules/nympheal"}],
+      "checked_at": "2026-09-09"
+    },
+    {
+      "id": "EV-002",
+      "name": "Dreamwood Base",
+      "status": "proposed",
+      "type": "Base composta · dsm-firmenich",
+      "profile": "Base costruita attorno a Dreamwood e ad altre materie di sandalo; il produttore la presenta come legnosa, calda e cremosa.",
+      "why": "Da valutare per una tessitura di sandalo più morbida nei fondi. È una base composta, distinta dalla molecola captive Dreamwood.",
+      "compare_ids": [34, 111, 255],
+      "test": "Confrontare con Sandalore, Javanol ed Ebanol; mantenere il campione originale e registrare il contributo della base.",
+      "sources": [{"title": "dsm-firmenich · Dreamwood Base", "url": "https://studio.dsm-firmenich.com/product/dreamwoodr-base-pe-184270-b"}],
+      "checked_at": "2026-09-09"
+    },
+    {
+      "id": "EV-003",
+      "name": "Paradise Molecule",
+      "status": "proposed",
+      "type": "Miscela proprietaria · Fraterworks",
+      "profile": "Il produttore la propone come alternativa floreale diffusiva nella famiglia di Hedione. È una miscela, non Paradisone originale.",
+      "why": "Da confrontare con Hedione e Hedione HC per verificare se aggiunge una luminosità utile, senza presumere superiorità.",
+      "compare_ids": [21, 212],
+      "test": "Confronto controllato con Hedione e Hedione HC, annotando differenze e costo della fornitura reale.",
+      "sources": [{"title": "Fraterworks · Paradise Molecule", "url": "https://fraterworks.com/products/paradise-molecule"}],
+      "checked_at": "2026-09-09"
+    }
+  ],
+  "events": [{"action": "proposals_added", "at": "2026-09-09", "reason": "Richiesta di Claudio: organo evolutivo con aggiunte e sospensioni tracciate; nessun nuovo acquisto o possesso presunto."}]
+}

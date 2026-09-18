@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "timestamp": 1789207497.655067,
+    "data_ora": "2026-09-12 12:04:57",
+    "tz": "Europe/Brussels",
+    "versione": "1.1.0"
+  },
+  "git": {
+    "branch": "main",
+    "commit": "f613bfc049fbba3cb0f6a5bdd18498e512ea6164",
+    "commit_short": "f613bfc",
+    "messaggio": "Merge Alpha 74 follow-up, audio and layout fix",
+    "autore": "Claudio",
+    "data_commit": "2026-09-12 11:51:30 +0200",
+    "dirty": true,
+    "file_modificati": [
+      "M output/scan_report.json"
+    ]
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "68d2bfcdb1b3b058",
+      "CLAUDE.md": "d6c9406e44893861",
+      "sdq1/__main__.py": "2f261d6e0c948dac",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "89db6bf7b0574e47",
+      "sdq1/snapshot.py": "2fffc6b76d22bd0f",
+      "sdq1/sar/scacchiera_quantica.py": "a326c0669a90877e",
+      "sdq1/sar/agenti_autonomi.py": "ad03c13dab26d2e3",
+      "sdq1/llm/router.py": "830ae93bd2e79033",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "138adc1ac4eb4dec"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-09-12T10:04:57.842584",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.26,
+    "scacchiera_dir": "RADICALE"
+  },
+  "scanner": {
+    "agente": "CODE_SCANNER",
+    "score_sistema": 92,
+    "sicurezza_ok": true,
+    "sicurezza_livello": "VERDE",
+    "qualita_score": 81,
+    "debito_per_1k": 9.6,
+    "file_totali": 86,
+    "righe_totali": 15292,
+    "problemi_critici": 0,
+    "trovati_sicurezza": 0
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 6.4,
+      "n_chiavi": 4
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "date": "2026-09-09",
+  "site": "https://claudio-ebon.vercel.app/atelier/riapri",
+  "application_commits": [
+    "9ab6cbea3d9d294e715333d17dbb746d47f806af",
+    "7a450aff3925279e8bf92ffc7df5880d87915bbe"
+  ],
+  "vercel_status": "success",
+  "browser": "Chrome cloud",
+  "initial_live_import": "rejected; corrected catalogue packaging and exact current revision lookup",
+  "subsequent_native_imports": 2,
+  "fixture": "Public Ferro di Luce example",
+  "recipe_unchanged": true,
+  "formula_code_unchanged": true,
+  "bottle_geometry_unchanged": true,
+  "dedication_unchanged": true,
+  "materials": 12,
+  "parts": 100.0,
+  "bottle_variant": "Essenza",
+  "laboratory_fictitious_test_data": {
+    "basis": "ml",
+    "concentration": "20",
+    "density": "0.85",
+    "support": "44 · Alcol etilico profumeria 96%",
+    "preparations": [
+      {
+        "n": 56,
+        "preparation": "Dato fittizio di collaudo"
+      },
+      {
+        "n": 131,
+        "preparation": ""
+      },
+      {
+        "n": 79,
+        "preparation": ""
+      },
+      {
+        "n": 12,
+        "preparation": ""
+      },
+      {
+        "n": 77,
+        "preparation": ""
+      },
+      {
+        "n": 110,
+        "preparation": ""
+      },
+      {
+        "n": 30,
+        "preparation": ""
+      },
+      {
+        "n": 156,
+        "preparation": ""
+      },
+      {
+        "n": 67,
+        "preparation": ""
+      },
+      {
+        "n": 32,
+        "preparation": ""
+      },
+      {
+        "n": 39,
+        "preparation": ""
+      },
+      {
+        "n": 113,
+        "preparation": ""
+      }
+    ],
+    "production_validated": false
+  },
+  "laboratory_controls_restored_in_browser": true,
+  "recipe_print_preview_verified": true,
+  "physical_print_verified": false,
+  "iphone_verified": false,
+  "cloud_archive_active": false,
+  "new_image_provider_credentials_created": false,
+  "source_download_sha256": "a50bc29b448ab6bea043f592f5ed06af671a28e29c58a1a0733b10774be30aab",
+  "new_download_sha256": "a48c3f58bb8ac7f468864c39ed77b35d573d61919f35f07da797b7928cb045ef"
+}

@@ -6,8 +6,11 @@ Avvio:
 Endpoint:
     POST /ask          — chiama l'orchestratore SDQ-1
     GET  /health       — stato provider + metriche
+    GET  /monitor      — stato live JSON senza auth
     GET  /futures      — lista scenari disponibili
     POST /futures/run  — esegui scenari in parallelo
+    GET  /nas          — schema hardware DS223
+    POST /nas          — agente esperto DS223 {domanda, guida}
 
 Auth:
     Header: X-API-Key <chiave>
@@ -23,7 +26,6 @@ import sys
 import time
 from pathlib import Path
 
-# Assicura che il progetto sia nel path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from sdq1.__main__ import _carica_dotenv, costruisci_sistema
@@ -57,10 +59,58 @@ def _get_sistema():
 
 def _auth():
     if not _API_KEYS:
-        return  # nessuna chiave configurata → accesso libero (dev mode)
+        return
     chiave = request.headers.get("X-API-Key", "")
     if chiave not in _API_KEYS:
         abort(401, "X-API-Key non valida o mancante")
+
+
+@app.route("/monitor", methods=["GET"])
+def monitor_data():
+    """Restituisce lo stato live del sistema SDQ-1 in JSON — senza auth, senza LLM."""
+    ROOT = Path(__file__).resolve().parent.parent
+    out = {}
+
+    stato_file = ROOT / "output" / "stato_sdq1.json"
+    if stato_file.exists():
+        try:
+            out["stato"] = json.loads(stato_file.read_text(encoding="utf-8"))
+        except Exception:
+            out["stato"] = {}
+
+    ipotesi_file = ROOT / "registro_ipotesi.json"
+    if ipotesi_file.exists():
+        try:
+            out["ipotesi"] = json.loads(ipotesi_file.read_text(encoding="utf-8"))
+        except Exception:
+            out["ipotesi"] = {}
+
+    contatti_file = ROOT / "output" / "contatti.jsonl"
+    if contatti_file.exists():
+        try:
+            righe = [json.loads(r) for r in contatti_file.read_text(encoding="utf-8").splitlines() if r.strip()]
+            umani = [v for v in righe if v.get("umano", True)]
+            persone = list({v.get("persona") for v in umani if v.get("persona")})
+            out["contatti"] = {
+                "totale": len(righe),
+                "umani": len(umani),
+                "persone": persone,
+                "ultima_data": righe[-1]["data"] if righe else None,
+            }
+        except Exception:
+            out["contatti"] = {}
+
+    bench_dir = ROOT / "output" / "benchmark"
+    if bench_dir.exists():
+        snapshots = sorted(bench_dir.glob("*.json"))
+        out["benchmark"] = {
+            "n_snapshot": len(snapshots),
+            "ultimo": snapshots[-1].name if snapshots else None,
+        }
+
+    import datetime
+    out["timestamp"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    return jsonify(out)
 
 
 @app.route("/health", methods=["GET"])
@@ -123,7 +173,7 @@ def futures_list():
 def futures_run():
     _auth()
     body = request.get_json(force=True, silent=True) or {}
-    ids = body.get("scenari")  # None = tutti
+    ids = body.get("scenari")
 
     from sdq1.futures import SimulatoreScenari, SCENARI_DEFAULT
     orch, router, *_ = _get_sistema()
@@ -143,6 +193,46 @@ def futures_run():
         "report_salvato": str(dest),
         "scenari": [r.to_dict() for r in risultati],
     })
+
+
+_nas_oracle = None
+
+
+def _get_nas():
+    global _nas_oracle
+    if _nas_oracle is None:
+        from sdq1.nas import NASOracle
+        orch, router, *_ = _get_sistema()
+
+        def _llm_fn(system: str, prompt: str) -> str:
+            esito = router.chiama(system, prompt, profilo="default")
+            return esito.risposta.testo
+
+        _nas_oracle = NASOracle(llm_fn=_llm_fn)
+    return _nas_oracle
+
+
+@app.route("/nas", methods=["GET", "POST"])
+def nas():
+    """Agente esperto Synology DS223 — GET /nas per schema, POST /nas con {domanda} per risposta."""
+    if request.method == "GET":
+        from sdq1.nas import NASOracle
+        oracle = NASOracle()
+        return jsonify({"schema": oracle.schema_hardware(), "agente": "NAS-008"})
+
+    body = request.get_json(force=True, silent=True) or {}
+    domanda = body.get("domanda", "").strip()
+    guida = body.get("guida", False)
+
+    oracle = _get_nas()
+    t0 = time.monotonic()
+    if guida or not domanda:
+        risposta = oracle.guida_installazione()
+    else:
+        risposta = oracle.rispondi(domanda)
+    durata_ms = int((time.monotonic() - t0) * 1000)
+
+    return jsonify({"risposta": risposta, "durata_ms": durata_ms, "agente": "NAS-008"})
 
 
 if __name__ == "__main__":

@@ -1,0 +1,1486 @@
+{
+  "checked_at": "2026-09-09T10:01:35.368858+00:00",
+  "base": "https://claudio-ebon.vercel.app",
+  "method": "GET HTML and static-source inspection; no browser execution or iPhone rendering; no form submissions in this audit",
+  "pages": [
+    {
+      "path": "/",
+      "url": "https://claudio-ebon.vercel.app/",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 10.81,
+      "title": "Tarocchi Quantici R³∞",
+      "headings": [
+        "Tarocchi Quantici R³∞"
+      ],
+      "buttons": [
+        "Mostra carte",
+        "+ Aggiungi carta",
+        "Leggi la stesa"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "/alpha"
+      ],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [
+        "/api/leggi",
+        "/api/mazzo"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": false,
+      "interaction_tested": false
+    },
+    {
+      "path": "/alpha",
+      "url": "https://claudio-ebon.vercel.app/alpha",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/alpha",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 11.09,
+      "title": "Tarocchi Quantici — Canone Alpha",
+      "headings": [
+        "Canone Alpha"
+      ],
+      "buttons": [
+        "Collassa il significato",
+        "Luce",
+        "Ombra"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "/"
+      ],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [
+        "/api/alpha",
+        "/api/alpha/collasso"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": false,
+      "interaction_tested": false
+    },
+    {
+      "path": "/alpha.html",
+      "url": "https://claudio-ebon.vercel.app/alpha.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/alpha.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 11.09,
+      "title": "Tarocchi Quantici — Canone Alpha",
+      "headings": [
+        "Canone Alpha"
+      ],
+      "buttons": [
+        "Collassa il significato",
+        "Luce",
+        "Ombra"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "/"
+      ],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [
+        "/api/alpha",
+        "/api/alpha/collasso"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Simboli",
+      "purpose": "Canone originale: carta, asse e polarità; esplorazione degli stati.",
+      "assessment": "GET /api/alpha: 404. /api/alpha/collasso referenziato nello script; non provato.",
+      "source_path": "public/alpha.html"
+    },
+    {
+      "path": "/atelier.html",
+      "url": "https://claudio-ebon.vercel.app/atelier.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/atelier.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 11.2,
+      "title": "L'Atelier di Raffaello — Terzi Parfums",
+      "headings": [
+        "L'Atelier di Raffaello"
+      ],
+      "buttons": [
+        "🧠 Chiedi a Raffaello — ascolta davvero",
+        "Un'altra proposta",
+        "📋 Copia per le note",
+        "Scarica la formula"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "#",
+        "creazioni.html",
+        "libro.html",
+        "parfums.html"
+      ],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Profumi",
+      "purpose": "Composizione didattica offline e apertura del generatore AI dall’intenzione.",
+      "assessment": "Naviga a /profumo?q=…; generazione non attivata in questa scansione.",
+      "source_path": "public/atelier.html",
+      "dynamic_navigation": [
+        "/profumo?q=<intenzione>"
+      ]
+    },
+    {
+      "path": "/creazioni.html",
+      "url": "https://claudio-ebon.vercel.app/creazioni.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/creazioni.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 11.07,
+      "title": "Le Creazioni — Catalogo del progetto Claudio",
+      "headings": [
+        "Le Creazioni",
+        "Tarocchi Quantici R³∞",
+        "Canone Alpha 0.1",
+        "Parfums 400 — Terzi Parfums",
+        "SDQ-1",
+        "Raffaello Creative Studio",
+        "Le idee che aspettano",
+        "La Grande Opera — Archivio Cosmico R³∞",
+        "La memoria che non vive nel modello",
+        "Tutti i luoghi dove il progetto vive"
+      ],
+      "buttons": [],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "atelier.html",
+        "https://claudio-ebon.vercel.app",
+        "https://claudio-ebon.vercel.app/custode/",
+        "https://claudioterzi.github.io/Claudio/",
+        "https://github.com/claudioterzi/Claudio",
+        "index.html",
+        "libro.html",
+        "opera.html",
+        "opuscolo.html",
+        "organo.html",
+        "parfums.html",
+        "spesa.html",
+        "valigia.html"
+      ],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Indice",
+      "purpose": "Catalogo generale dei sistemi e collegamenti ai luoghi del progetto.",
+      "assessment": "Include sito, Custode, repository e GitHub Pages.",
+      "source_path": "public/creazioni.html"
+    },
+    {
+      "path": "/custode/",
+      "url": "https://claudio-ebon.vercel.app/custode/",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/custode/",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 10.01,
+      "title": "CUSTODE — Catalogo e inventario",
+      "headings": [
+        "CUSTODE · Catalogo & Inventario",
+        "Inventario (0 oggetti a catalogo)",
+        "Schede",
+        "📷 Schedatura rapida — due foto e basta",
+        "Scheda manuale"
+      ],
+      "buttons": [
+        "🔍 ANALIZZA OGGETTI MANCANTI",
+        "📷 Crea scheda dalle foto",
+        "Salva scheda"
+      ],
+      "forms": [
+        {
+          "method": "post",
+          "action": "/custode/inventario"
+        },
+        {
+          "method": "post",
+          "action": "/custode/schedatura"
+        },
+        {
+          "method": "post",
+          "action": "/custode/scheda"
+        }
+      ],
+      "viewport": true,
+      "links": [],
+      "assets": [],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false
+    },
+    {
+      "path": "/flight",
+      "url": "https://claudio-ebon.vercel.app/flight",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/flight",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.77,
+      "title": "Flight Hunter",
+      "headings": [
+        "☠ Flight Hunter"
+      ],
+      "buttons": [
+        "Dove posso andare?",
+        "Rotta specifica",
+        "Trova mete",
+        "Caccia"
+      ],
+      "forms": [
+        {
+          "id": "form-ovunque"
+        },
+        {
+          "id": "form-rotta"
+        }
+      ],
+      "viewport": true,
+      "links": [
+        "/",
+        "/oracolo",
+        "/viaggi"
+      ],
+      "assets": [
+        "/nav.js"
+      ],
+      "api_references": [
+        "/api/flight/caccia",
+        "/api/flight/ovunque"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": false,
+      "interaction_tested": false
+    },
+    {
+      "path": "/flight_hunter.html",
+      "url": "https://claudio-ebon.vercel.app/flight_hunter.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/flight_hunter.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.53,
+      "title": "Flight Hunter",
+      "headings": [
+        "☠ Flight Hunter"
+      ],
+      "buttons": [
+        "Dove posso andare?",
+        "Rotta specifica",
+        "Trova mete",
+        "Caccia"
+      ],
+      "forms": [
+        {
+          "id": "form-ovunque"
+        },
+        {
+          "id": "form-rotta"
+        }
+      ],
+      "viewport": true,
+      "links": [
+        "/",
+        "/oracolo",
+        "/viaggi"
+      ],
+      "assets": [
+        "/nav.js"
+      ],
+      "api_references": [
+        "/api/flight/caccia",
+        "/api/flight/ovunque"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Viaggi",
+      "purpose": "Ricerca mete e rotte con mese, budget e raggio.",
+      "assessment": "POST /api/flight/ovunque e /api/flight/caccia; non inviati.",
+      "source_path": "public/flight_hunter.html"
+    },
+    {
+      "path": "/home",
+      "url": "https://claudio-ebon.vercel.app/home",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/home",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.79,
+      "title": "SDQ-1 — Agorà",
+      "headings": [],
+      "buttons": [
+        "⚖️",
+        "Convoca il Consiglio",
+        "5 agenti deliberano — tu decidi",
+        "Delibera",
+        "📡",
+        "Briefing",
+        "Analisi 4-AI del momento",
+        "📸",
+        "Snapshot",
+        "Stato sistema attuale",
+        "🃏",
+        "Tarocchi",
+        "Lettura quantica R³∞",
+        "📋",
+        "Agenda",
+        "Priorità e prossimi passi",
+        "🏛️",
+        "ASBL P1",
+        "SkyRights Foundation",
+        "🌊",
+        "Riflessione",
+        "Pensiero del sistema"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [],
+      "assets": [
+        "https://telegram.org/js/telegram-web-app.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false
+    },
+    {
+      "path": "/home.html",
+      "url": "https://claudio-ebon.vercel.app/home.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/home.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.79,
+      "title": "SDQ-1 — Agorà",
+      "headings": [],
+      "buttons": [
+        "⚖️",
+        "Convoca il Consiglio",
+        "5 agenti deliberano — tu decidi",
+        "Delibera",
+        "📡",
+        "Briefing",
+        "Analisi 4-AI del momento",
+        "📸",
+        "Snapshot",
+        "Stato sistema attuale",
+        "🃏",
+        "Tarocchi",
+        "Lettura quantica R³∞",
+        "📋",
+        "Agenda",
+        "Priorità e prossimi passi",
+        "🏛️",
+        "ASBL P1",
+        "SkyRights Foundation",
+        "🌊",
+        "Riflessione",
+        "Pensiero del sistema"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [],
+      "assets": [
+        "https://telegram.org/js/telegram-web-app.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Sistema",
+      "purpose": "Agorà SDQ-1: consiglio e comandi rapidi per Telegram.",
+      "assessment": "Telegram WebApp SDK e sendData; comandi non inviati. Gli stati visualizzati non sono un health check verificato.",
+      "source_path": "public/home.html"
+    },
+    {
+      "path": "/index.html",
+      "url": "https://claudio-ebon.vercel.app/index.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/index.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.47,
+      "title": "Tarocchi Quantici R³∞",
+      "headings": [
+        "Tarocchi Quantici R³∞"
+      ],
+      "buttons": [
+        "Mostra carte",
+        "+ Aggiungi carta",
+        "Leggi la stesa"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "/alpha"
+      ],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [
+        "/api/leggi",
+        "/api/mazzo"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Simboli",
+      "purpose": "Mazzo tradizionale e lettura strutturale/personale della stesa.",
+      "assessment": "GET /api/mazzo: 78 carte; POST /api/leggi non inviato.",
+      "source_path": "public/index.html"
+    },
+    {
+      "path": "/libro.html",
+      "url": "https://claudio-ebon.vercel.app/libro.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/libro.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 11.13,
+      "title": "Parfums 400 — Il Libro · Terzi Parfums",
+      "headings": [
+        "Parfums 400",
+        "Avvertenza — da leggere prima di aprire una boccetta",
+        "Parte I — La storia",
+        "Parte II — Il sapere",
+        "La fisica della scia",
+        "La regola d'oro",
+        "Le lezioni dei maestri",
+        "Il percorso — da 0 a 10, con tre soglie",
+        "Parte III — L'Organo Terzi 300",
+        "Le famiglie dell'organo",
+        "Il motore della scia",
+        "I cinque scheletri classici — accordi di studio (parti su 100)",
+        "Parte IV — I quattrocento",
+        "Capitolo 1 — Agrumata",
+        "Lettre de Midi",
+        "Un Matin à Sorrente",
+        "Séville Sauvage",
+        "Retour à l'Été",
+        "Le Silence de Verger",
+        "Nuit de Riviera",
+        "L'Ombre de Verger",
+        "Midi Sauvage",
+        "Retour à Sorrente",
+        "Sicile Noir",
+        "Souvenir de Sorrente",
+        "Capri Éternel",
+        "Riviera Sauvage",
+        "Eau de Menton",
+        "Aube de l'Été",
+        "Aube de Sicile",
+        "Clair de Lisbonne",
+        "Jardin de l'Été",
+        "Palerme Noir",
+        "Lettre de Palerme",
+        "Minuit à Menton",
+        "Nuit de Capri",
+        "L'Ombre de Séville",
+        "Eau de Midi",
+        "Nuit de Soleil",
+        "Lisbonne Sauvage",
+        "Midi Éternel",
+        "Soleil Absolu",
+        "Un Matin à Sicile",
+        "Nuit de Midi",
+        "Aube de Verger",
+        "Minuit à Lisbonne",
+        "L'Ombre de Capri",
+        "Souvenir de Sicile",
+        "Aube de Séville",
+        "Menton Sauvage",
+        "L'Ombre de Sorrente",
+        "Séville Noir",
+        "l'Été Sauvage",
+        "Soleil Sauvage",
+        "Souvenir de Midi",
+        "Lisbonne Éternel",
+        "Eau de Capri",
+        "l'Été Éternel",
+        "Jardin de Soleil",
+        "L'Ombre de Lisbonne",
+        "Minuit à Palerme",
+        "Jardin de Capri",
+        "Retour à Midi",
+        "Clair de Sicile",
+        "Capitolo 2 — Floreale",
+        "Jardin de Camille",
+        "Nuit de Aurore",
+        "Retour à Pétale",
+        "Nuit de Flore",
+        "L'Ombre de Florence",
+        "Eau de Damas",
+        "Grasse Noir",
+        "Clair de Jardin",
+        "Minuit à Roseraie",
+        "L'Ombre de Printemps",
+        "Jardin de Flore",
+        "Jardin de Jardin",
+        "Damas Absolu",
+        "Grasse Éternel",
+        "Flore Absolu",
+        "Jardin de Roseraie",
+        "Jardin de Damas",
+        "Souvenir de Flore",
+        "Eau de Jardin",
+        "Lettre de Damas",
+        "L'Ombre de Damas",
+        "Ophélie Noir",
+        "L'Ombre de Pétale",
+        "Pétale Noir",
+        "Retour à Damas",
+        "Jardin de Grasse",
+        "Minuit à Camille",
+        "Damas Éternel",
+        "Printemps Noir",
+        "L'Ombre de Ophélie",
+        "L'Ombre de Roseraie",
+        "Jardin de Ophélie",
+        "Aube de Ophélie",
+        "Nuit de Camille",
+        "Nuit de Roseraie",
+        "Minuit à Aurore",
+        "Le Silence de Camille",
+        "Lettre de Mai",
+        "Grasse Sauvage",
+        "Pétale Éternel",
+        "Pétale Absolu",
+        "Lettre de Roseraie",
+        "Retour à Ophélie",
+        "Lettre de Printemps",
+        "Lettre de Camille",
+        "Ophélie Sauvage",
+        "Eau de Flore",
+        "Le Silence de Printemps",
+        "Le Silence de Mai",
+        "Ophélie Absolu",
+        "Capitolo 3 — Verde",
+        "Minuit à Bambou",
+        "Un Matin à Mousse",
+        "Prairie Éternel",
+        "Jardin de Toscane",
+        "Aube de Bambou",
+        "Eau de Rosée",
+        "Clair de Bambou",
+        "Feuillage Noir",
+        "Minuit à Avril",
+        "Toscane Absolu",
+        "Sentier Éternel",
+        "L'Ombre de Figuier",
+        "Le Silence de Forêt",
+        "Aube de Prairie",
+        "Clair de Sentier",
+        "Jardin de Figuier",
+        "Un Matin à Forêt",
+        "Sentier Absolu",
+        "Prairie Noir",
+        "Le Silence de Avril",
+        "Lettre de Forêt",
+        "Forêt Éternel",
+        "Nuit de Feuillage",
+        "Retour à Ombrelle",
+        "Retour à Toscane",
+        "Eau de Prairie",
+        "Nuit de Prairie",
+        "Eau de Figuier",
+        "Un Matin à Figuier",
+        "Lettre de Avril",
+        "Figuier Noir",
+        "Retour à Prairie",
+        "Sentier Sauvage",
+        "Prairie Absolu",
+        "Nuit de Rosée",
+        "Jardin de Rosée",
+        "Rosée Sauvage",
+        "Figuier Absolu",
+        "Eau de Avril",
+        "Eau de Lierre",
+        "Eau de Ombrelle",
+        "Souvenir de Sentier",
+        "Avril Éternel",
+        "Rosée Éternel",
+        "Lettre de Ombrelle",
+        "Le Silence de Lierre",
+        "Un Matin à Ombrelle",
+        "Lettre de Sentier",
+        "Jardin de Ombrelle",
+        "Souvenir de Rosée",
+        "Capitolo 4 — Acquatica",
+        "Clair de Sirène",
+        "Lagune Éternel",
+        "Souvenir de Brume",
+        "Aube de Lagune",
+        "Jardin de Bretagne",
+        "Un Matin à Océan",
+        "Nuit de Sirène",
+        "Minuit à Brume",
+        "Océan Sauvage",
+        "Écume Sauvage",
+        "Atlantique Noir",
+        "Eau de Lagune",
+        "Le Silence de Atlantique",
+        "Souvenir de Marée",
+        "Eau de Sirène",
+        "Retour à Azur",
+        "Nuit de Atlantique",
+        "Brume Noir",
+        "Cyclades Sauvage",
+        "Jardin de Écume",
+        "Brume Éternel",
+        "Retour à Bretagne",
+        "L'Ombre de Marée",
+        "Clair de Brume",
+        "Le Silence de Cyclades",
+        "Minuit à Atlantique",
+        "Retour à Lagune",
+        "Aube de Atlantique",
+        "Un Matin à Récif",
+        "Sirène Sauvage",
+        "Nuit de Océan",
+        "L'Ombre de Sirène",
+        "L'Ombre de Horizon",
+        "Un Matin à Azur",
+        "Aube de Cyclades",
+        "Écume Absolu",
+        "Eau de Cyclades",
+        "Écume Éternel",
+        "Récif Absolu",
+        "Nuit de Récif",
+        "Retour à Marée",
+        "Cyclades Noir",
+        "Minuit à Horizon",
+        "Lagune Absolu",
+        "Jardin de Océan",
+        "Souvenir de Écume",
+        "Océan Noir",
+        "Jardin de Brume",
+        "Un Matin à Lagune",
+        "Nuit de Brume",
+        "Capitolo 5 — Legnosa",
+        "Un Matin à Bois",
+        "Minuit à Santal",
+        "Ébène Éternel",
+        "Cabane Absolu",
+        "Nuit de Kyoto",
+        "Le Silence de Séquoia",
+        "Eau de Cèdre",
+        "Jardin de Nord",
+        "Eau de Cabane",
+        "Le Silence de Cèdre",
+        "L'Ombre de Bois",
+        "Kyoto Sauvage",
+        "L'Ombre de Atlas",
+        "Racine Noir",
+        "Retour à Cabane",
+        "Un Matin à Ébène",
+        "Atlas Absolu",
+        "Séquoia Éternel",
+        "Minuit à Kyoto",
+        "Retour à Ébène",
+        "Souvenir de Nord",
+        "Séquoia Sauvage",
+        "Le Silence de Refuge",
+        "Clair de Atlas",
+        "Un Matin à Santal",
+        "Lettre de Cabane",
+        "Eau de Séquoia",
+        "Kyoto Noir",
+        "Jardin de Hiver",
+        "Atlas Noir",
+        "Nuit de Atlas",
+        "L'Ombre de Ébène",
+        "Lettre de Kyoto",
+        "Le Silence de Cabane",
+        "Le Silence de Kyoto",
+        "Séquoia Noir",
+        "Le Silence de Ébène",
+        "Santal Éternel",
+        "Aube de Hiver",
+        "Minuit à Racine",
+        "Cèdre Sauvage",
+        "Racine Absolu",
+        "Nuit de Hiver",
+        "Kyoto Éternel",
+        "Clair de Santal",
+        "Atlas Sauvage",
+        "Le Silence de Hiver",
+        "Jardin de Bois",
+        "Retour à Racine",
+        "Nuit de Cabane",
+        "Capitolo 6 — Orientale",
+        "Nuit de Mille Nuits",
+        "Le Silence de Shéhérazade",
+        "Minuit à Orient",
+        "Eau de Mille Nuits",
+        "Mille Nuits Sauvage",
+        "Ambre Noir",
+        "Clair de Caravane",
+        "Eau de Ambre",
+        "Nuit de Samarcande",
+        "Bazar Sauvage",
+        "Clair de Ambre",
+        "Bazar Noir",
+        "Tanger Absolu",
+        "Mille Nuits Éternel",
+        "Minuit à Samarcande",
+        "Minuit à Caravane",
+        "Jardin de Bazar",
+        "Aube de Samarcande",
+        "Lettre de Shéhérazade",
+        "Lettre de Tanger",
+        "Jardin de Ispahan",
+        "Jardin de Ambre",
+        "Sahara Éternel",
+        "Le Silence de Mille Nuits",
+        "Lettre de Sahara",
+        "Eau de Shéhérazade",
+        "Sahara Noir",
+        "Le Silence de Samarcande",
+        "Aube de Bazar",
+        "Un Matin à Sahara",
+        "Clair de Ispahan",
+        "Samarcande Éternel",
+        "Clair de Bazar",
+        "Lettre de Ambre",
+        "Nuit de Bazar",
+        "Un Matin à Caravane",
+        "L'Ombre de Samarcande",
+        "Clair de Tanger",
+        "Eau de Samarcande",
+        "Samarcande Noir",
+        "Jardin de Caravane",
+        "Ispahan Absolu",
+        "Orient Sauvage",
+        "Caravane Éternel",
+        "Aube de Caravane",
+        "Souvenir de Ispahan",
+        "Un Matin à Ambre",
+        "Jardin de Shéhérazade",
+        "Retour à Mille Nuits",
+        "Ispahan Éternel",
+        "Capitolo 7 — Speziata",
+        "Safran Noir",
+        "Madras Noir",
+        "Jardin de Safran",
+        "L'Ombre de Goa",
+        "Souvenir de Cannelle",
+        "Aube de Comptoir",
+        "Souvenir de Route",
+        "Nuit de Goa",
+        "Jardin de Cannelle",
+        "Clair de Goa",
+        "Cannelle Noir",
+        "L'Ombre de Marrakech",
+        "Minuit à Épices",
+        "Comptoir Absolu",
+        "Clair de Route",
+        "L'Ombre de Safran",
+        "Zanzibar Noir",
+        "Marrakech Sauvage",
+        "Aube de Madras",
+        "Aube de Route",
+        "Eau de Épices",
+        "Eau de Madras",
+        "Minuit à Safran",
+        "Aube de Épices",
+        "Le Silence de Zanzibar",
+        "Épices Absolu",
+        "Marrakech Noir",
+        "Clair de Safran",
+        "Lettre de Comptoir",
+        "Un Matin à Ceylan",
+        "Minuit à Zanzibar",
+        "Goa Absolu",
+        "Souvenir de Ceylan",
+        "Lettre de Cannelle",
+        "Cannelle Absolu",
+        "Eau de Marrakech",
+        "Eau de Safran",
+        "L'Ombre de Feu",
+        "Retour à Safran",
+        "Un Matin à Cannelle",
+        "Souvenir de Safran",
+        "Ceylan Absolu",
+        "Le Silence de Madras",
+        "L'Ombre de Ceylan",
+        "Minuit à Escale",
+        "Aube de Zanzibar",
+        "Eau de Ceylan",
+        "Retour à Épices",
+        "Jardin de Épices",
+        "Aube de Ceylan",
+        "Capitolo 8 — Gourmand",
+        "Dimanche Éternel",
+        "Lettre de Havane",
+        "Eau de Cacao",
+        "Miel Sauvage",
+        "L'Ombre de Automne",
+        "Retour à Praline",
+        "Nuit de Dimanche",
+        "Un Matin à Havane",
+        "Praline Sauvage",
+        "Aube de Vanille",
+        "Minuit à Douceur",
+        "Gourmandise Sauvage",
+        "Lettre de Minuit",
+        "Clair de Automne",
+        "Souvenir de Dimanche",
+        "Retour à Gourmandise",
+        "Jardin de Automne",
+        "Souvenir de Minuit",
+        "Aube de Gourmandise",
+        "Aube de Dimanche",
+        "Le Silence de Praline",
+        "Gourmandise Noir",
+        "Retour à Automne",
+        "Retour à Minuit",
+        "L'Ombre de Caramel",
+        "Souvenir de Gourmandise",
+        "Un Matin à Automne",
+        "Cacao Éternel",
+        "Nuit de Gourmandise",
+        "Lettre de Caramel",
+        "L'Ombre de Vanille",
+        "Souvenir de Miel",
+        "Retour à Vanille",
+        "Clair de Noisette",
+        "Le Silence de Gourmandise",
+        "Retour à Douceur",
+        "Nuit de Praline",
+        "L'Ombre de Cacao",
+        "Clair de Praline",
+        "Le Silence de Caramel",
+        "Miel Éternel",
+        "Souvenir de Noisette",
+        "Aube de Minuit",
+        "Aube de Noisette",
+        "Le Silence de Miel",
+        "Un Matin à Miel",
+        "Souvenir de Douceur",
+        "Jardin de Praline",
+        "Jardin de Minuit",
+        "Le Silence de Minuit"
+      ],
+      "buttons": [],
+      "forms": [],
+      "viewport": true,
+      "links": [],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Profumi",
+      "purpose": "Libro stampabile: storia, metodo, organo e schede dei profumi.",
+      "assessment": "Contenuto HTML; resa di stampa non verificata.",
+      "source_path": "public/libro.html"
+    },
+    {
+      "path": "/opera.html",
+      "url": "https://claudio-ebon.vercel.app/opera.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/opera.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 11.0,
+      "title": "La Grande Opera — Archivio Cosmico R³∞",
+      "headings": [
+        "La Grande Opera"
+      ],
+      "buttons": [],
+      "forms": [],
+      "viewport": true,
+      "links": [],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Archivio",
+      "purpose": "Grande Opera: archivio che dichiara 101 documenti e 100 fasi.",
+      "assessment": "Contenuto/interfaccia nel documento; singoli documenti incorporati non verificati separatamente.",
+      "source_path": "public/opera.html"
+    },
+    {
+      "path": "/opuscolo.html",
+      "url": "https://claudio-ebon.vercel.app/opuscolo.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/opuscolo.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.99,
+      "title": "Tarocchi Quantici — Manifesto A6",
+      "headings": [
+        "Tarocchi",
+        "Quantici",
+        "Visione",
+        "Principio",
+        "L'Osservatore",
+        "Luce e Ombra",
+        "Struttura di una carta",
+        "Formula di collasso",
+        "Esempio",
+        "I quattro assi",
+        "Doppia interpretazione",
+        "Canone — 74 carte",
+        "Interpretazioni chiave",
+        "Visione futura",
+        "Conclusione"
+      ],
+      "buttons": [
+        "← Indietro",
+        "Stampa opuscolo",
+        "Avanti →"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [],
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap",
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Simboli",
+      "purpose": "Manifesto A6 del Canone Alpha, navigazione e stampa.",
+      "assessment": "Contenuto HTML; pulsanti e stampa non eseguiti.",
+      "source_path": "public/opuscolo.html"
+    },
+    {
+      "path": "/oracolo",
+      "url": "https://claudio-ebon.vercel.app/oracolo",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/oracolo",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.76,
+      "title": "L'Oracolo del Viaggio",
+      "headings": [
+        "🔮 L'Oracolo del Viaggio"
+      ],
+      "buttons": [
+        "Consulta l'Oracolo"
+      ],
+      "forms": [
+        {
+          "id": "form"
+        }
+      ],
+      "viewport": true,
+      "links": [
+        "/",
+        "/flight",
+        "/viaggi"
+      ],
+      "assets": [
+        "/nav.js"
+      ],
+      "api_references": [
+        "/api/flight/oracolo"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": false,
+      "interaction_tested": false
+    },
+    {
+      "path": "/oracolo.html",
+      "url": "https://claudio-ebon.vercel.app/oracolo.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/oracolo.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.79,
+      "title": "L'Oracolo del Viaggio",
+      "headings": [
+        "🔮 L'Oracolo del Viaggio"
+      ],
+      "buttons": [
+        "Consulta l'Oracolo"
+      ],
+      "forms": [
+        {
+          "id": "form"
+        }
+      ],
+      "viewport": true,
+      "links": [
+        "/",
+        "/flight",
+        "/viaggi"
+      ],
+      "assets": [
+        "/nav.js"
+      ],
+      "api_references": [
+        "/api/flight/oracolo"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Viaggi",
+      "purpose": "Suggerimenti di partenze imminenti dalla città scelta.",
+      "assessment": "POST /api/flight/oracolo; non inviato in questa scansione.",
+      "source_path": "public/oracolo.html"
+    },
+    {
+      "path": "/organo.html",
+      "url": "https://claudio-ebon.vercel.app/organo.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/organo.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 10.71,
+      "title": "Organo Terzi 300 — le materie prime",
+      "headings": [
+        "Organo Terzi 300"
+      ],
+      "buttons": [],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "atelier.html",
+        "parfums.html"
+      ],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Profumi",
+      "purpose": "Catalogo delle materie, con filtri per famiglia, nota e ondata.",
+      "assessment": "Dati/interfaccia nel documento; filtri non eseguiti.",
+      "source_path": "public/organo.html"
+    },
+    {
+      "path": "/parfums.html",
+      "url": "https://claudio-ebon.vercel.app/parfums.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/parfums.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 11.39,
+      "title": "Parfums 400 — Il Codice Olfattivo",
+      "headings": [
+        "Parfums 400"
+      ],
+      "buttons": [],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "atelier.html",
+        "index.html",
+        "libro.html"
+      ],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Profumi",
+      "purpose": "Catalogo dei 400 profumi in otto famiglie.",
+      "assessment": "Dati/interfaccia nel documento; filtri non eseguiti.",
+      "source_path": "public/parfums.html"
+    },
+    {
+      "path": "/parti",
+      "url": "https://claudio-ebon.vercel.app/parti",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/parti",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 10.85,
+      "title": "Parti — voli assurdi",
+      "headings": [
+        "✈️ Parti"
+      ],
+      "buttons": [
+        "Trova",
+        "📍 Posizione"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "/flight",
+        "/oracolo",
+        "/viaggi"
+      ],
+      "assets": [
+        "/nav.js"
+      ],
+      "api_references": [
+        "/api/flight/occasioni"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": true,
+      "interaction_tested": false
+    },
+    {
+      "path": "/parti.html",
+      "url": "https://claudio-ebon.vercel.app/parti.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/parti.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.9,
+      "title": "Parti — voli assurdi",
+      "headings": [
+        "✈️ Parti"
+      ],
+      "buttons": [
+        "Trova",
+        "📍 Posizione"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "/flight",
+        "/oracolo",
+        "/viaggi"
+      ],
+      "assets": [
+        "/nav.js"
+      ],
+      "api_references": [
+        "/api/flight/occasioni"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": true,
+      "interaction_tested": false,
+      "category": "Viaggi",
+      "purpose": "Occasioni di volo dalla città, con posizione e preferenze locali.",
+      "assessment": "POST /api/flight/occasioni; localStorage; geolocalizzazione non attivata.",
+      "source_path": "public/parti.html"
+    },
+    {
+      "path": "/profumo",
+      "url": "https://claudio-ebon.vercel.app/profumo",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/profumo",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.77,
+      "title": "",
+      "headings": [],
+      "buttons": [],
+      "forms": [],
+      "viewport": false,
+      "links": [],
+      "assets": [],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false
+    },
+    {
+      "path": "/prova",
+      "url": "https://claudio-ebon.vercel.app/prova",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/prova",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 10.59,
+      "title": "L'Atelier è chiuso — Terzi Parfums",
+      "headings": [
+        "L'Atelier ha chiuso i battenti."
+      ],
+      "buttons": [],
+      "forms": [],
+      "viewport": true,
+      "links": [],
+      "assets": [],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false
+    },
+    {
+      "path": "/spesa.html",
+      "url": "https://claudio-ebon.vercel.app/spesa.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/spesa.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 10.39,
+      "title": "La Dispensa — lista della spesa e calcoli del banco",
+      "headings": [
+        "La Dispensa",
+        "Le materie — spunta «preso» quando arriva, segna i ml usati per lo scarico",
+        "L'attrezzatura del banco — alcol, provette e tutto il necessario",
+        "Il calcolatore — quanti profumi vuoi fare?"
+      ],
+      "buttons": [
+        "Ondata CORE",
+        "CORE + ESP",
+        "Organo completo",
+        "⬇ Scarica la lista (CSV)",
+        "Azzera dispensa"
+      ],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "atelier.html",
+        "organo.html",
+        "parfums.html"
+      ],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": true,
+      "interaction_tested": false,
+      "category": "Profumi",
+      "purpose": "Dispensa: acquisti, consumi, quantità e lista CSV.",
+      "assessment": "localStorage del browser; nessuna sincronizzazione verificata; export non eseguito.",
+      "source_path": "public/spesa.html"
+    },
+    {
+      "path": "/valigia.html",
+      "url": "https://claudio-ebon.vercel.app/valigia.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/valigia.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 10.37,
+      "title": "La Valigia-Organo — Terzi Parfums",
+      "headings": [
+        "La Valigia-Organo",
+        "La mappa dei cassetti",
+        "— trova ogni boccetta",
+        "L'architettura",
+        "— valigia a libro",
+        "La griglia e le boccette",
+        "Il budget",
+        "— stime da confermare col preventivo",
+        "Prima di dare l'ordine",
+        "V2 — il \"trova-boccetta\" luminoso",
+        "— dopo, non ora"
+      ],
+      "buttons": [],
+      "forms": [],
+      "viewport": true,
+      "links": [
+        "atelier.html",
+        "organo.html",
+        "spesa.html"
+      ],
+      "assets": [
+        "nav.js",
+        "soglia.js"
+      ],
+      "api_references": [],
+      "uses_fetch": false,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Profumi",
+      "purpose": "Mappa dei moduli e progetto della valigia per le materie.",
+      "assessment": "293 boccette + 7 solventi/consumabili separati: compatibile con Organo 300.",
+      "source_path": "public/valigia.html"
+    },
+    {
+      "path": "/viaggi",
+      "url": "https://claudio-ebon.vercel.app/viaggi",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/viaggi",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 10.36,
+      "title": "Viaggi Low Cost",
+      "headings": [
+        "Viaggi Low Cost"
+      ],
+      "buttons": [
+        "Trova viaggi"
+      ],
+      "forms": [
+        {
+          "id": "form"
+        }
+      ],
+      "viewport": true,
+      "links": [
+        "/",
+        "/flight"
+      ],
+      "assets": [
+        "/nav.js"
+      ],
+      "api_references": [
+        "/api/viaggi/pianifica"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": false,
+      "interaction_tested": false
+    },
+    {
+      "path": "/viaggi.html",
+      "url": "https://claudio-ebon.vercel.app/viaggi.html",
+      "status": 200,
+      "final_url": "https://claudio-ebon.vercel.app/viaggi.html",
+      "content_type": "text/html; charset=utf-8",
+      "seconds": 9.88,
+      "title": "Viaggi Low Cost",
+      "headings": [
+        "Viaggi Low Cost"
+      ],
+      "buttons": [
+        "Trova viaggi"
+      ],
+      "forms": [
+        {
+          "id": "form"
+        }
+      ],
+      "viewport": true,
+      "links": [
+        "/",
+        "/flight"
+      ],
+      "assets": [
+        "/nav.js"
+      ],
+      "api_references": [
+        "/api/viaggi/pianifica"
+      ],
+      "uses_fetch": true,
+      "uses_local_storage": false,
+      "interaction_tested": false,
+      "category": "Viaggi",
+      "purpose": "Pianificatore per città, budget, durata, mese e tipo di viaggio.",
+      "assessment": "POST /api/viaggi/pianifica; catalogo destinazioni GET disponibile. Volo A/R stimato come andata ×2.",
+      "source_path": "public/viaggi.html"
+    }
+  ],
+  "backend_routes": [
+    "@app.route(\"/\")",
+    "@app.route(\"/home\")",
+    "@app.route(\"/api/mazzo\")",
+    "@app.route(\"/api/atelier\", methods=[\"POST\", \"GET\", \"OPTIONS\"])",
+    "@app.route(\"/prova\")",
+    "@app.route(\"/profumo\")",
+    "@app.route(\"/api/leggi\", methods=[\"POST\", \"OPTIONS\"])",
+    "@app.route(\"/api/telegram/debug\")",
+    "@app.route(\"/api/telegram\", methods=[\"POST\"])",
+    "@app.route(\"/viaggi\")",
+    "@app.route(\"/api/viaggi/destinazioni\")",
+    "@app.route(\"/api/viaggi/pianifica\", methods=[\"POST\", \"OPTIONS\"])",
+    "@app.route(\"/parti\")",
+    "@app.route(\"/api/flight/occasioni\", methods=[\"POST\", \"OPTIONS\"])",
+    "@app.route(\"/oracolo\")",
+    "@app.route(\"/api/flight/oracolo\", methods=[\"POST\", \"OPTIONS\"])",
+    "@app.route(\"/flight\")",
+    "@app.route(\"/api/flight/ovunque\", methods=[\"POST\", \"OPTIONS\"])",
+    "@app.route(\"/api/flight/caccia\", methods=[\"POST\", \"OPTIONS\"])"
+  ],
+  "dependencies": [
+    {
+      "path": "/nav.js",
+      "status": 200,
+      "content_type": "application/javascript; charset=utf-8",
+      "bytes": 1903
+    },
+    {
+      "path": "/soglia.js",
+      "status": 200,
+      "content_type": "application/javascript; charset=utf-8",
+      "bytes": 3555
+    },
+    {
+      "path": "/api/mazzo",
+      "status": 200,
+      "content_type": "application/json",
+      "bytes": 21268,
+      "json_valid": true,
+      "structure": "list",
+      "items": 78
+    },
+    {
+      "path": "/api/alpha",
+      "error": "HTTP Error 404: Not Found",
+      "status": 404
+    },
+    {
+      "path": "/api/viaggi/destinazioni",
+      "status": 200,
+      "content_type": "application/json",
+      "bytes": 14647,
+      "json_valid": true,
+      "structure": [
+        "destinazioni",
+        "mesi",
+        "tipi"
+      ],
+      "items": 3
+    }
+  ],
+  "repository": "Claudioterzi/Claudio",
+  "scope": "16 public HTML files, configured short aliases and discovered same-host pages; no external-site crawl, browser execution, exhaustive query combinations or authenticated pages.",
+  "findings": [
+    {
+      "id": "F01",
+      "priority": "alta",
+      "finding": "Canone Alpha: pagina HTTP 200, GET /api/alpha HTTP 404; caricamento carte bloccato.",
+      "next_action": "Ripristinare endpoint del canone e verificare anche il collasso."
+    },
+    {
+      "id": "F02",
+      "priority": "alta",
+      "finding": "Custode mostra avviso di archivio temporaneo e apre il catalogo senza autenticazione nella richiesta effettuata.",
+      "next_action": "Verificare persistenza e controllo accessi prima di catalogare dati reali."
+    },
+    {
+      "id": "F03",
+      "priority": "media",
+      "finding": "La Dispensa salva solo nel browser tramite localStorage.",
+      "next_action": "Esportare CSV per conservare una copia; progettare sincronizzazione tra dispositivi."
+    },
+    {
+      "id": "F04",
+      "priority": "media",
+      "finding": "/prova risponde 200 ma mostra la chiusura dell’Atelier, senza collegamenti di recupero.",
+      "next_action": "Valutare collegamento o redirect verso /atelier.html."
+    },
+    {
+      "id": "F05",
+      "priority": "media",
+      "finding": "/profumo senza intenzione restituisce solo istruzione testuale, senza titolo o viewport.",
+      "next_action": "Aggiungere una pagina di ingresso con campo intenzione e navigazione."
+    },
+    {
+      "id": "F06",
+      "priority": "bassa",
+      "finding": "La navigazione condivisa comprende 15 voci: non comprende Agorà né Custode.",
+      "next_action": "Valutare un punto di ingresso completo; verificare evidenziazione attiva degli alias brevi."
+    }
+  ]
+}

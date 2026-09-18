@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "timestamp": 1788689716.5517535,
+    "data_ora": "2026-09-06 12:15:16",
+    "tz": "Europe/Brussels",
+    "versione": "1.1.0"
+  },
+  "git": {
+    "branch": "main",
+    "commit": "e68a279e22eb50450073d8d20c753e5b2ec6abe8",
+    "commit_short": "e68a279",
+    "messaggio": "chore(daily): agenti + scanner + snapshot 2026-09-05 [skip ci]",
+    "autore": "Claude",
+    "data_commit": "2026-09-05 09:57:02 +0000",
+    "dirty": true,
+    "file_modificati": [
+      "M output/scan_report.json"
+    ]
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "93c9d1714ddcc094",
+      "CLAUDE.md": "e1c1a4f8f92cbdad",
+      "sdq1/__main__.py": "2f261d6e0c948dac",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "89db6bf7b0574e47",
+      "sdq1/snapshot.py": "2fffc6b76d22bd0f",
+      "sdq1/sar/scacchiera_quantica.py": "1fc175f7ac9acff3",
+      "sdq1/sar/agenti_autonomi.py": "ad03c13dab26d2e3",
+      "sdq1/llm/router.py": "830ae93bd2e79033",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "e9fb5651f1fbbce1"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-09-06T10:15:16.664648",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.35,
+    "scacchiera_dir": "META"
+  },
+  "scanner": {
+    "agente": "CODE_SCANNER",
+    "score_sistema": 92,
+    "sicurezza_ok": true,
+    "sicurezza_livello": "VERDE",
+    "qualita_score": 80,
+    "debito_per_1k": 9.8,
+    "file_totali": 84,
+    "righe_totali": 14790,
+    "problemi_critici": 0,
+    "trovati_sicurezza": 0
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 6.4,
+      "n_chiavi": 4
+    }
+  }
+}

@@ -1,0 +1,342 @@
+{
+  "date": "2026-09-10",
+  "book_sha256": "5e49723eef47fff5c385c387ed01cc59caadf16cfc7f1cd82583d742c632b0f2",
+  "source_revision": "662923cd0381e99ff295c9e3f35981dc5e20b2fe",
+  "book": {
+    "bytes": 1176498,
+    "sheets": 400,
+    "recipe_rows": 4800,
+    "parts": [
+      "Parte I — La storia",
+      "Parte II — Il sapere",
+      "Parte III — L'Organo Terzi 300",
+      "Parte IV — I quattrocento"
+    ],
+    "chapters": [
+      "Capitolo 1 — Agrumata",
+      "Capitolo 2 — Floreale",
+      "Capitolo 3 — Verde",
+      "Capitolo 4 — Acquatica",
+      "Capitolo 5 — Legnosa",
+      "Capitolo 6 — Orientale",
+      "Capitolo 7 — Speziata",
+      "Capitolo 8 — Gourmand"
+    ],
+    "recipe_links": 400,
+    "print_buttons_in_html": 0,
+    "sheet_anchors": 0,
+    "table_headers_in_recipes": 0,
+    "unique_bottle_image_sources": {
+      "images/libro-photonic.webp": 400
+    },
+    "laboratory_widget_present": false,
+    "contains_table_of_contents": false
+  },
+  "recipes": {
+    "count": 400,
+    "unique_names": 400,
+    "unique_formulas_by_material_dose_micro": 400,
+    "unique_ingredient_sets": 400,
+    "ingredient_count_distribution": {
+      "12": 400
+    },
+    "families": {
+      "Agrumata": 50,
+      "Floreale": 50,
+      "Verde": 50,
+      "Acquatica": 50,
+      "Legnosa": 50,
+      "Orientale": 50,
+      "Speziata": 50,
+      "Gourmand": 50
+    },
+    "feasibility": {
+      "CORE": 80,
+      "ESP": 120,
+      "MASTER": 200
+    },
+    "organo_materials_used": 295,
+    "organo_total_materials": 300,
+    "olfactory_materials_used": 291,
+    "support_materials_used": 4,
+    "unused_material_ids": [
+      44,
+      45,
+      46,
+      203,
+      255
+    ],
+    "micro_rows": 943,
+    "body_total_variants": [
+      {
+        "testa_cuore_fondo_scia": [
+          20.0,
+          30.0,
+          35.0,
+          15.0
+        ],
+        "recipes": 221
+      },
+      {
+        "testa_cuore_fondo_scia": [
+          20.0,
+          30.5,
+          34.5,
+          15.0
+        ],
+        "recipes": 42
+      },
+      {
+        "testa_cuore_fondo_scia": [
+          20.5,
+          30.0,
+          34.5,
+          15.0
+        ],
+        "recipes": 34
+      },
+      {
+        "testa_cuore_fondo_scia": [
+          19.5,
+          30.0,
+          35.5,
+          15.0
+        ],
+        "recipes": 33
+      },
+      {
+        "testa_cuore_fondo_scia": [
+          20.0,
+          29.5,
+          35.5,
+          15.0
+        ],
+        "recipes": 23
+      },
+      {
+        "testa_cuore_fondo_scia": [
+          19.5,
+          30.5,
+          35.0,
+          15.0
+        ],
+        "recipes": 21
+      },
+      {
+        "testa_cuore_fondo_scia": [
+          20.5,
+          29.5,
+          35.0,
+          15.0
+        ],
+        "recipes": 9
+      },
+      {
+        "testa_cuore_fondo_scia": [
+          20.5,
+          30.5,
+          34.0,
+          15.0
+        ],
+        "recipes": 6
+      },
+      {
+        "testa_cuore_fondo_scia": [
+          20.5,
+          29.0,
+          35.5,
+          15.0
+        ],
+        "recipes": 4
+      },
+      {
+        "testa_cuore_fondo_scia": [
+          19.5,
+          31.0,
+          34.5,
+          15.0
+        ],
+        "recipes": 4
+      },
+      {
+        "testa_cuore_fondo_scia": [
+          19.5,
+          29.5,
+          36.0,
+          15.0
+        ],
+        "recipes": 3
+      }
+    ],
+    "codes_checked": 400
+  },
+  "writing": {
+    "unique_complete_concepts": 400,
+    "unique_anima_phrases": 48,
+    "story_template_distribution": {
+      "2": 67,
+      "5": 73,
+      "3": 94,
+      "1": 81,
+      "4": 85
+    },
+    "top_repeated_opening_phrases": [
+      [
+        "una carovana che viaggia di notte",
+        16
+      ],
+      [
+        "il momento esatto in cui un fiore si apre",
+        15
+      ],
+      [
+        "zucchero e malinconia in parti uguali",
+        14
+      ],
+      [
+        "linfa che sale senza chiedere il permesso",
+        12
+      ],
+      [
+        "erba appena tagliata dietro una casa d'infanzia",
+        11
+      ],
+      [
+        "la calma di chi non deve dimostrare niente",
+        11
+      ],
+      [
+        "una rotta tracciata a mano su una mappa",
+        11
+      ],
+      [
+        "un mercato al tramonto, tutto insieme",
+        11
+      ]
+    ],
+    "packaging_designs_without_label": 8
+  },
+  "failures": [],
+  "review_warnings": [
+    {
+      "numero": 18,
+      "material_id": 124,
+      "material": "Benzil benzoato",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 29,
+      "material_id": 285,
+      "material": "Glucam P-20",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 34,
+      "material_id": 125,
+      "material": "Trietil citrato (TEC)",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 36,
+      "material_id": 285,
+      "material": "Glucam P-20",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 44,
+      "material_id": 125,
+      "material": "Trietil citrato (TEC)",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 45,
+      "material_id": 286,
+      "material": "Hercolyn D",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 50,
+      "material_id": 125,
+      "material": "Trietil citrato (TEC)",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 114,
+      "material_id": 125,
+      "material": "Trietil citrato (TEC)",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 120,
+      "material_id": 124,
+      "material": "Benzil benzoato",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 166,
+      "material_id": 125,
+      "material": "Trietil citrato (TEC)",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 169,
+      "material_id": 125,
+      "material": "Trietil citrato (TEC)",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 185,
+      "material_id": 125,
+      "material": "Trietil citrato (TEC)",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 187,
+      "material_id": 286,
+      "material": "Hercolyn D",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 196,
+      "material_id": 125,
+      "material": "Trietil citrato (TEC)",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    },
+    {
+      "numero": 198,
+      "material_id": 286,
+      "material": "Hercolyn D",
+      "parts": 3.0,
+      "role": "scia",
+      "reason": "support_in_sillage_to_review_against_current_atelier_separation"
+    }
+  ]
+}

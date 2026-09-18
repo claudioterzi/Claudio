@@ -12,13 +12,20 @@ recuperare contenuto rilevante da tutti i nodi precedenti dello stesso run.
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
 
 from .store import MemoriaVettoriale, RisultatoRicerca
 
 
 class VectorStateStore:
-    """Store condiviso in-process; un'istanza per tutta la vita dell'app."""
+    """Store condiviso; un'istanza per tutta la vita dell'app.
+
+    NOTA PERSISTENZA: fino al commit 155cb5f lo store era solo in-process
+    (la continuita' tra sessioni restava affidata ai file git).
+    salva()/carica() lo rendono sopravvivibile tra run diversi su disco.
+    """
 
     def __init__(self, memoria: MemoriaVettoriale):
         self._mem = memoria
@@ -93,3 +100,51 @@ class VectorStateStore:
 
     def esporta(self) -> list[dict]:
         return [{"ptr": ptr, "testo": testo} for ptr, testo in self._idx.items()]
+
+    # ------------------------------------------------------------------ #
+    # Persistenza (Fase 1 — fix-bloccanti)                                 #
+    # ------------------------------------------------------------------ #
+
+    def salva(self, percorso: str | Path) -> int:
+        """Persiste lo stato su JSON. Ritorna il numero di pointer salvati.
+
+        Salva sia l'indice ptr->testo (lettura O(1)) sia i ricordi della
+        MemoriaVettoriale (ricerca semantica), cosi' un nuovo processo
+        recupera entrambe le modalita'.
+        """
+        dati = {
+            "versione": 1,
+            "idx": self.esporta(),
+            "ricordi": self._mem.esporta(),
+        }
+        p = Path(percorso)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(dati, ensure_ascii=False, indent=2),
+                     encoding="utf-8")
+        return len(self._idx)
+
+    def carica(self, percorso: str | Path) -> int:
+        """Ripristina lo stato da JSON. Ritorna il numero di pointer caricati.
+
+        Idempotente: i pointer gia' presenti non vengono duplicati.
+        I ricordi sono re-inseriti nella MemoriaVettoriale (nuovi id
+        interni, stesso testo e metadata: la ricerca per run_id regge).
+        """
+        p = Path(percorso)
+        if not p.exists():
+            return 0
+        dati = json.loads(p.read_text(encoding="utf-8"))
+
+        ricordi_esistenti = {
+            (m.get("ptr")) for m in
+            (r.metadata for r in getattr(self._mem, "_ricordi", {}).values())
+        }
+        for r in dati.get("ricordi", []):
+            ptr = r.get("metadata", {}).get("ptr")
+            if ptr and ptr in ricordi_esistenti:
+                continue
+            self._mem.aggiungi(r["testo"], metadata=r.get("metadata", {}))
+
+        for voce in dati.get("idx", []):
+            self._idx.setdefault(voce["ptr"], voce["testo"])
+        return len(dati.get("idx", []))

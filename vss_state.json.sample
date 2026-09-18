@@ -1,0 +1,21 @@
+{
+  "versione": 1,
+  "idx": [
+    {
+      "ptr": "<run_id>:<agente_id>:<chiave>",
+      "testo": "Testo originale scritto dall'agente (lettura O(1) via leggi())."
+    }
+  ],
+  "ricordi": [
+    {
+      "testo": "Stesso testo indicizzato per la ricerca semantica.",
+      "metadata": {
+        "run_id": "<run_id>",
+        "agente_id": "<agente_id>",
+        "chiave": "<chiave>",
+        "ptr": "<run_id>:<agente_id>:<chiave>"
+      },
+      "creato_at": 1786134419.75
+    }
+  ]
+}

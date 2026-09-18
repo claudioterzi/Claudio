@@ -1,0 +1,185 @@
+{
+  "meta": {
+    "suite_versione": "v1",
+    "modello": "gemini-2.5-flash",
+    "timestamp_inizio": "2026-06-14T02:47:37.991337+00:00",
+    "timestamp_fine": "2026-06-14T02:47:57.709881+00:00",
+    "data": "2026-06-14"
+  },
+  "sommario": {
+    "punteggio": 1.0,
+    "superati": 20,
+    "totale": 20,
+    "punteggi_categoria": {
+      "ragionamento": 1.0,
+      "fattuale": 1.0,
+      "codice": 1.0,
+      "linguaggio": 1.0,
+      "meta": 1.0
+    },
+    "latenza_media_ms": 985,
+    "latenza_mediana_ms": 625
+  },
+  "risultati": [
+    {
+      "id": "R1",
+      "categoria": "ragionamento",
+      "superato": true,
+      "risposta": "No, non possiamo concludere che alcuni gatti sono pericolosi basandoci solo su queste due affermazioni.\n\nEcco perché:\n\n* **Relazione tra insiemi:**\n    * \"Tutti i gatti sono animali\" significa che l'insieme dei gatti è un sottoinsieme dell'insieme degli animali.\n    * \"Alcuni animali sono pericolosi",
+      "latenza_ms": 2327,
+      "errore": null
+    },
+    {
+      "id": "R2",
+      "categoria": "ragionamento",
+      "superato": true,
+      "risposta": "Per risolvere questo problema, dobbiamo sommare l'orario di partenza e la durata del viaggio.\n\n*   **Orario di partenza:** 9:15\n*   **Durata del viaggio:** 2 ore e 47 minuti\n\n**Passo 1: Sommare le ore**\n9 ore + 2 ore = 11 ore\n\n**Passo 2: Sommare i minuti**\n15 minuti + 47 minuti = 62 minuti\n\n**Passo ",
+      "latenza_ms": 1314,
+      "errore": null
+    },
+    {
+      "id": "R3",
+      "categoria": "ragionamento",
+      "superato": true,
+      "risposta": "Maggiore",
+      "latenza_ms": 377,
+      "errore": null
+    },
+    {
+      "id": "R4",
+      "categoria": "ragionamento",
+      "superato": true,
+      "risposta": "Ci sono **3** lettere 'r' nella parola 'programmazione'.",
+      "latenza_ms": 590,
+      "errore": null
+    },
+    {
+      "id": "R5",
+      "categoria": "ragionamento",
+      "superato": true,
+      "risposta": "Ecco come risolvere il problema:\n\nChiamiamo:\n* **B** il costo della bottiglia\n* **T** il costo del tappo\n\nSappiamo due cose:\n1. **B + T = 1,10** (Il costo totale della bottiglia e del tappo è 1,10 euro)\n2. **B = T + 1** (La bottiglia costa 1 euro più del tappo)\n\nOra possiamo sostituire la seconda eq",
+      "latenza_ms": 1515,
+      "errore": null
+    },
+    {
+      "id": "F1",
+      "categoria": "fattuale",
+      "superato": true,
+      "risposta": "La capitale dell'Australia è **Canberra**.",
+      "latenza_ms": 424,
+      "errore": null
+    },
+    {
+      "id": "F2",
+      "categoria": "fattuale",
+      "superato": true,
+      "risposta": "\"Il Gattopardo\" di Tomasi di Lampedusa fu pubblicato nel **1958**.",
+      "latenza_ms": 719,
+      "errore": null
+    },
+    {
+      "id": "F3",
+      "categoria": "fattuale",
+      "superato": true,
+      "risposta": "L'elemento chimico con simbolo Au è l'**Oro**.",
+      "latenza_ms": 450,
+      "errore": null
+    },
+    {
+      "id": "F4",
+      "categoria": "fattuale",
+      "superato": true,
+      "risposta": "A dipingere la Cappella Sistina è stato **Michelangelo**.",
+      "latenza_ms": 426,
+      "errore": null
+    },
+    {
+      "id": "F5",
+      "categoria": "fattuale",
+      "superato": true,
+      "risposta": "Il nostro Sistema Solare ha **otto** pianeti.\n\nFino a non molto tempo fa si parlava di nove, ma nel 2006 l'Unione Astronomica Internazionale ha riclassificato Plutone come \"pianeta nano\".",
+      "latenza_ms": 661,
+      "errore": null
+    },
+    {
+      "id": "C1",
+      "categoria": "codice",
+      "superato": true,
+      "risposta": "```python\ndef factorial(n):\n    if n == 0:\n        return 1\n    else:\n        return n * factorial(n - 1)\n```",
+      "latenza_ms": 521,
+      "errore": null
+    },
+    {
+      "id": "C2",
+      "categoria": "codice",
+      "superato": true,
+      "risposta": "L'output di `print(type([]).__name__)` è:\n\n```\nlist\n```",
+      "latenza_ms": 547,
+      "errore": null
+    },
+    {
+      "id": "C3",
+      "categoria": "codice",
+      "superato": true,
+      "risposta": "`==` confronta il valore, `is` confronta l'identità dell'oggetto (stesso oggetto in memoria).",
+      "latenza_ms": 540,
+      "errore": null
+    },
+    {
+      "id": "C4",
+      "categoria": "codice",
+      "superato": true,
+      "risposta": "Analizziamo passo dopo passo cosa restituisce `sorted([3,1,4,1,5,9,2,6], reverse=True)[:3]`:\n\n1.  **`[3,1,4,1,5,9,2,6]`**: Questa è la lista originale di numeri.\n\n2.  **`sorted([3,1,4,1,5,9,2,6], reverse=True)`**:\n    *   La funzione `sorted()` ordina gli elementi della lista.\n    *   `reverse=True`",
+      "latenza_ms": 2134,
+      "errore": null
+    },
+    {
+      "id": "C5",
+      "categoria": "codice",
+      "superato": true,
+      "risposta": "Ecco la list comprehension Python che genera i quadrati dei numeri pari da 0 a 10:\n\n```python\nquadrati_numeri_pari = [x**2 for x in range(11) if x % 2 == 0]\n```\n\n**Spiegazione:**\n\n1.  `range(11)`: Questo genera una sequenza di numeri interi da 0 a 10 (estremo superiore escluso, quindi `11` significa",
+      "latenza_ms": 1754,
+      "errore": null
+    },
+    {
+      "id": "L1",
+      "categoria": "linguaggio",
+      "superato": true,
+      "risposta": "Viaggio",
+      "latenza_ms": 445,
+      "errore": null
+    },
+    {
+      "id": "L2",
+      "categoria": "linguaggio",
+      "superato": true,
+      "risposta": "Certamente, ecco alcune traduzioni formali di \"The quick brown fox jumps over the lazy dog\", con sfumature leggermente diverse:\n\n**Opzione 1 (Più letterale ma elegante):**\n> \"La rapida volpe bruna salta sopra il pigro cane.\"\n\n**Opzione 2 (Con un tocco più arcaico/letterario, ma ancora compreso):**\n>",
+      "latenza_ms": 3081,
+      "errore": null
+    },
+    {
+      "id": "L3",
+      "categoria": "linguaggio",
+      "superato": true,
+      "risposta": "AI multiple in parallelo per compiti complessi.",
+      "latenza_ms": 693,
+      "errore": null
+    },
+    {
+      "id": "M1",
+      "categoria": "meta",
+      "superato": true,
+      "risposta": "Sono un modello linguistico AI e, come tale, le mie risposte sono basate sui dati e algoritmi, ma il rischio di errori o imprecisioni, seppur minimo, non può essere escluso.",
+      "latenza_ms": 680,
+      "errore": null
+    },
+    {
+      "id": "M2",
+      "categoria": "meta",
+      "superato": true,
+      "risposta": "La mia data di training cutoff è **Giugno 2024**.",
+      "latenza_ms": 511,
+      "errore": null
+    }
+  ]
+}

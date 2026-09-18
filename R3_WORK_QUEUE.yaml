@@ -1,0 +1,157 @@
+version: 3
+name: R3_INFINITY_WORK_QUEUE
+updated: 2026-08-26
+status: ACTIVE
+
+principles:
+  - preserve_history
+  - distinguish_fact_hypothesis_simulation
+  - verify_before_consolidation
+  - never_expose_credentials
+  - never_claim_external_execution_without_evidence
+  - prefer_reversible_changes
+  - measure_progress_longitudinally
+  - benchmark_before_claiming_improvement
+
+states:
+  - IDEA
+  - DEVELOPMENT
+  - VERIFIED
+  - CONSOLIDATED
+  - WAITING_USER
+  - BLOCKED
+
+priority_order:
+  - security
+  - integrity
+  - reproducibility
+  - architecture
+  - testing
+  - performance
+  - new_capabilities
+
+queue:
+  - id: R3-001
+    title: Repository inventory
+    state: VERIFIED
+    priority: architecture
+  - id: R3-002
+    title: Dependency graph
+    state: VERIFIED
+    priority: architecture
+    evidence: R3_DEPENDENCY_MAP_2026-08-26.md
+  - id: R3-003
+    title: SDQ-1 audit
+    state: DEVELOPMENT
+    priority: architecture
+  - id: R3-004
+    title: Memory unification
+    state: DEVELOPMENT
+    priority: integrity
+  - id: R3-005
+    title: Scacchiera meta-reflexive layer
+    state: IDEA
+    priority: new_capabilities
+  - id: R3-006
+    title: Nine-node reality audit
+    state: DEVELOPMENT
+    priority: integrity
+  - id: R3-007
+    title: Verification harness
+    state: IDEA
+    priority: testing
+  - id: R3-008
+    title: Benchmark baseline
+    state: DEVELOPMENT
+    priority: reproducibility
+    evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md
+  - id: R3-009
+    title: Consolidation gate
+    state: IDEA
+    priority: integrity
+  - id: R3-010
+    title: SDQ-2 architecture
+    state: IDEA
+    priority: architecture
+  - id: R3-011
+    title: Evidence Graph
+    state: DEVELOPMENT
+    priority: integrity
+    objective: Link claims to source, code, test, commit and epistemic status.
+  - id: R3-012
+    title: Meta-Scacchiera benchmark
+    state: DEVELOPMENT
+    priority: testing
+    objective: Measure self-evaluation quality, calibration, error detection and regression.
+  - id: R3-013
+    title: Evolution Lab sandbox
+    state: IDEA
+    priority: security
+    objective: Test candidate code modifications in isolated branches/sandboxes.
+  - id: R3-014
+    title: Curriculum Engine
+    state: IDEA
+    priority: new_capabilities
+    objective: Generate progressively harder verified problem curricula.
+  - id: R3-015
+    title: Research Loop
+    state: IDEA
+    priority: new_capabilities
+    objective: Automate hypothesis, implementation, experiment, analysis and review with provenance.
+  - id: R3-016
+    title: Synthetic Data Firewall
+    state: IDEA
+    priority: integrity
+    objective: Track real, synthetic and derived data and prevent uncontrolled recursive training.
+  - id: R3-017
+    title: Red/Blue/Purple harness
+    state: IDEA
+    priority: security
+    objective: Continuously attack, patch and verify the system.
+  - id: R3-018
+    title: Sim2Real readiness audit
+    state: IDEA
+    priority: testing
+    objective: Establish grounding, observability and validation requirements before physical deployment.
+  - id: R3-019
+    title: Longitudinal capability benchmark
+    state: DEVELOPMENT
+    priority: reproducibility
+    objective: Measure whether R3 actually improves over time on fixed and novel tasks.
+    evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md
+  - id: R3-020
+    title: Self-improvement safety gate
+    state: IDEA
+    priority: security
+    objective: Govern candidate self-modifications using sandbox, benchmark, review and rollback.
+
+consolidation_gate:
+  required:
+    - documented_change
+    - provenance
+    - tests_or_explicit_reason_unavailable
+    - security_review
+    - regression_check
+    - rollback_path
+    - fact_hypothesis_simulation_labels
+  destination: GitHub_Hub
+  rule: Never promote an unverified experiment to consolidated status.
+
+user_authorization:
+  general_project_authorization: true
+  scope: R3∞ project work that is technically available and non-destructive
+  still_requires_explicit_confirmation:
+    - credentials_or_secrets
+    - external_account_authorization
+    - irreversible_or_destructive_actions
+    - public_release_with_material_consequences
+    - financial_transactions
+
+last_cycle:
+  completed: R3-019-foundation
+  result: DEVELOPMENT
+  evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md
+  commits:
+    - 48a7a527832305692544a233f7bdc6cec0cf1c2b
+    - 4bfdee8364f0f4894618ea09f8522078627fb0f8
+next_action: R3-019-baseline-execution

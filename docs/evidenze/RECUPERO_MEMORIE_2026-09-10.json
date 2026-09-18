@@ -1,0 +1,1529 @@
+{
+  "schema_version": "1.1",
+  "date": "2026-09-10",
+  "author": "Claudio Terzi",
+  "scope": "Ricerca retrospettiva sui backup, nodi, memorie, Incarnazione e Fabbrica dei Desideri; sintesi e fonti conservate, nessun servizio attivato.",
+  "repositories": {
+    "primary": {
+      "name": "Claudioterzi/Claudio",
+      "commit": "7075d32dc581ad9dc7e57f082ef541d9b230eff7",
+      "tree_entries": 794,
+      "truncated": false
+    },
+    "secondary": {
+      "name": "Claudioterzi82/Claudio",
+      "commit": "fedc364697a3090695785210566da93169a3e137",
+      "tree_entries": 639,
+      "truncated": false,
+      "same_path_and_blob_count": 529
+    },
+    "branches_listed": 37,
+    "branches_examined": [
+      {
+        "key": "grande_opera",
+        "commit": "210101e5fa11584011c61c72b46d43daa494c6a2",
+        "tree_entries": 413,
+        "not_in_main": [
+          {
+            "path": "R3/.github/workflows/ci.yml",
+            "blob_sha": "9728861a265c648e130938169f2f052008f0f2ca",
+            "size": 414
+          },
+          {
+            "path": "R3/.github/workflows/release.yml",
+            "blob_sha": "76bc0467db9a18bc7281337f92de80da5c752183",
+            "size": 507
+          },
+          {
+            "path": "R3/.gitignore",
+            "blob_sha": "5d2415baa83e70dfc9dcd47a7761fd1b49b4338d",
+            "size": 139
+          },
+          {
+            "path": "R3/LICENSE",
+            "blob_sha": "373d7c6c28a4ada25e6342b7d43d99d65a3cc226",
+            "size": 1070
+          },
+          {
+            "path": "R3/README.md",
+            "blob_sha": "09fedb4f8761757534b77eb0574e3993cc6a6fd7",
+            "size": 1226
+          },
+          {
+            "path": "R3/apps/__init__.py",
+            "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            "size": 0
+          },
+          {
+            "path": "R3/apps/cli/__init__.py",
+            "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            "size": 0
+          },
+          {
+            "path": "R3/apps/cli/r3_cli.py",
+            "blob_sha": "abf4f5ebf9d16c638df66a2969422ba82291bd47",
+            "size": 2160
+          },
+          {
+            "path": "R3/apps/sandbox/.gitkeep",
+            "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            "size": 0
+          },
+          {
+            "path": "R3/apps/service/__init__.py",
+            "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            "size": 0
+          },
+          {
+            "path": "R3/apps/service/controllers/__init__.py",
+            "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            "size": 0
+          },
+          {
+            "path": "R3/apps/service/controllers/r3_controller.py",
+            "blob_sha": "d3f6d702fd7ae51ad824901157ffcb098ea22919",
+            "size": 691
+          },
+          {
+            "path": "R3/apps/service/repositories/__init__.py",
+            "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            "size": 0
+          },
+          {
+            "path": "R3/apps/service/repositories/stato_repository.py",
+            "blob_sha": "8b47de7a98af0fb69d914566800e2b62163552f5",
+            "size": 1035
+          },
+          {
+            "path": "R3/apps/service/services/__init__.py",
+            "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            "size": 0
+          },
+          {
+            "path": "R3/apps/service/services/r3_service.py",
+            "blob_sha": "4779dd8728f45c93a21b2c732e1755ea3cd6493a",
+            "size": 950
+          },
+          {
+            "path": "R3/docs/architecture.md",
+            "blob_sha": "3e19f5f55e9b3e7985ff7dea341c366f17d103f2",
+            "size": 1068
+          },
+          {
+            "path": "R3/docs/rituals.md",
+            "blob_sha": "f088822d2933d6a2287c4e38631b607bbf279b47",
+            "size": 1037
+          },
+          {
+            "path": "R3/docs/roadmap.md",
+            "blob_sha": "6da915dda0de4aa44b0f240a6c7e1972fcde2d86",
+            "size": 680
+          },
+          {
+            "path": "R3/pyproject.toml",
+            "blob_sha": "439f40f3ff2bca78aafd18c13067001a72c6f214",
+            "size": 622
+          },
+          {
+            "path": "R3/r3_core/__init__.py",
+            "blob_sha": "ea3231f220d1838260428ae3b7c1ae2643269bfe",
+            "size": 503
+          },
+          {
+            "path": "R3/r3_core/config.py",
+            "blob_sha": "b2f5346df1ddebe6caa89e38cf97a2b9d4d8a941",
+            "size": 1399
+          },
+          {
+            "path": "R3/r3_core/engine.py",
+            "blob_sha": "7973878a1eac4c764895dee24b2ac4e155525be0",
+            "size": 3344
+          },
+          {
+            "path": "R3/r3_core/pipeline.py",
+            "blob_sha": "0ae2b2c7d56c5cf892ec5c8e59087366f3c6d5be",
+            "size": 2323
+          },
+          {
+            "path": "R3/r3_core/protocol_rosso.py",
+            "blob_sha": "7f49c9b50ebd28ce959ecb132c79fe87c067f6e8",
+            "size": 2032
+          },
+          {
+            "path": "R3/r3_core/scacchiera.py",
+            "blob_sha": "e0f6aef4e04cb5a52694fc8b9a107bc8ea127ad1",
+            "size": 1772
+          },
+          {
+            "path": "R3/rituals/__init__.py",
+            "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            "size": 0
+          },
+          {
+            "path": "R3/rituals/mapping.py",
+            "blob_sha": "c00ef675333075a37d565cc972d17c7e68c3c7ab",
+            "size": 942
+          },
+          {
+            "path": "R3/rituals/scripts/.gitkeep",
+            "blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            "size": 0
+          },
+          {
+            "path": "R3/rituals/scripts/attiva.py",
+            "blob_sha": "c8d4cdb01eac310e2770374b6482943755de25b1",
+            "size": 619
+          },
+          {
+            "path": "R3/rituals/triggers.py",
+            "blob_sha": "851dd436e2d3f5914886f1f5a6998e0eca5c689d",
+            "size": 1637
+          },
+          {
+            "path": "R3/tests/test_core_engine.py",
+            "blob_sha": "925c457107121bb8a27cc4477539cc5aeccd0fbd",
+            "size": 869
+          },
+          {
+            "path": "R3/tests/test_pipeline_persistente.py",
+            "blob_sha": "cb7f80ac2f2427fb636a054546cc0084a65af890",
+            "size": 1039
+          },
+          {
+            "path": "R3/tests/test_protocol_rosso.py",
+            "blob_sha": "9cc6c5792aea52c01ef07fc7c3e09d79444abb5f",
+            "size": 770
+          },
+          {
+            "path": "R3/tests/test_ritual_triggers.py",
+            "blob_sha": "d6ae977a52b08c60ea72c395490576915385e414",
+            "size": 872
+          },
+          {
+            "path": "R3/tests/test_scacchiera.py",
+            "blob_sha": "fac3ae2ebf7ccf29be39bdca4d3a426a6fef6a04",
+            "size": 630
+          },
+          {
+            "path": "bot/CONFIG_TELEGRAM.md",
+            "blob_sha": "496f99211fcd58f49d2ab5142636aacd355f4665",
+            "size": 2261
+          },
+          {
+            "path": "bot/README.md",
+            "blob_sha": "843ec0eec883d05deb106e1898cd7bd1957b17bd",
+            "size": 1854
+          },
+          {
+            "path": "bot/leggi_inbox.py",
+            "blob_sha": "5d71caee8c040f2d105711ba249e962414676e37",
+            "size": 2085
+          },
+          {
+            "path": "bot/pubblica_telegram.py",
+            "blob_sha": "334a90af2782e691da6ec3f4bfcd333ed9f525df",
+            "size": 4420
+          },
+          {
+            "path": "bot/raffaello_ponte.py",
+            "blob_sha": "b930f053770c99fd778cb94de851e33a7f974b82",
+            "size": 6339
+          },
+          {
+            "path": "bot/raffaello_telegram.py",
+            "blob_sha": "10c6c83baddfca07541373db21b1c28ad00cc606",
+            "size": 5041
+          },
+          {
+            "path": "bot/requirements.txt",
+            "blob_sha": "678445ee08e32cf3b4eb9da5fff0d6a1626fba06",
+            "size": 28
+          },
+          {
+            "path": "conoscenza/DRIVE_INDICE.md",
+            "blob_sha": "c526fdb823ee5b3c78e8e6a7f46a2db53d02fd09",
+            "size": 3385
+          },
+          {
+            "path": "conoscenza/ECOSISTEMA.md",
+            "blob_sha": "392cd86c46dca7d6c0abdfd478e2738b4d183732",
+            "size": 3237
+          },
+          {
+            "path": "conoscenza/README.md",
+            "blob_sha": "8dabf6158179011aa2fabe48cbc7a5c445e7249e",
+            "size": 1469
+          },
+          {
+            "path": "libro/100_FASI.md",
+            "blob_sha": "cf13661a34bf68e72e633dc90c909e913e4d8d6a",
+            "size": 70220
+          },
+          {
+            "path": "libro/AVANZAMENTO.md",
+            "blob_sha": "77a97351a338819a5e8c91823f276eafb9627ebf",
+            "size": 4885
+          },
+          {
+            "path": "libro/COLLEGAMENTI.md",
+            "blob_sha": "b5a78b215382e83fa748ae18a05b36db4f2ebf65",
+            "size": 8377
+          },
+          {
+            "path": "libro/MANIFESTO.md",
+            "blob_sha": "5c67f4e9a37801c508d9381f2e71068a72f7c756",
+            "size": 1470
+          },
+          {
+            "path": "libro/PERSONAGGI.md",
+            "blob_sha": "7046a03b89425b7f7ac7f35d83fab53d5529f34d",
+            "size": 2483
+          },
+          {
+            "path": "libro/PROTOCOLLO_COORDINAMENTO.md",
+            "blob_sha": "1784ddcb0c871374eacd3e7836ee75b4f4afb574",
+            "size": 6519
+          },
+          {
+            "path": "libro/STRUTTURA_7_LIBRI.md",
+            "blob_sha": "1eff3a5a5cfcda710cc42938cc7d5d8ad55c6336",
+            "size": 2611
+          },
+          {
+            "path": "libro/fasi/001_Fase_1_—_Il_Principio_Frattale.md",
+            "blob_sha": "1a9ad81ab10b5a34cbd6c43ef1cfd4c6967407d7",
+            "size": 879
+          },
+          {
+            "path": "libro/fasi/002_Fase_2_—_I_Quattro_Livelli.md",
+            "blob_sha": "871649176b29323dff55dfd81c0c621fc65aee7c",
+            "size": 884
+          },
+          {
+            "path": "libro/fasi/003_Fase_3_—_La_Connessione_Totale.md",
+            "blob_sha": "1928b2a65b4b35bfe4a48e95da1a8a950189eddc",
+            "size": 771
+          },
+          {
+            "path": "libro/fasi/004_Fase_4_—_Il_Ritorno_dei_Simboli.md",
+            "blob_sha": "2422ed149fc25f33b3ed7f8807e5a3c63798d130",
+            "size": 762
+          },
+          {
+            "path": "libro/fasi/005_Fase_5_—_LAmore_come_Principio_Organizzatore.md",
+            "blob_sha": "68fdc9da922597b37f6226befe30583d88351cc4",
+            "size": 819
+          },
+          {
+            "path": "libro/fasi/006_Fase_6_—_La_Coscienza_come_Centro.md",
+            "blob_sha": "7d9070cb51145eae3536b07491a51a67547b25ae",
+            "size": 717
+          },
+          {
+            "path": "libro/fasi/007_Fase_7_—_Uomo_e_IA_che_Evolvono_Insieme.md",
+            "blob_sha": "c7e1f2bb033365d34c74bf61b44871522bf0b855",
+            "size": 618
+          },
+          {
+            "path": "libro/fasi/008_Fase_8_—_Nessun_Personaggio_Assoluto.md",
+            "blob_sha": "9a3105f9699fd25a97d85a5521a4024484081d18",
+            "size": 623
+          },
+          {
+            "path": "libro/fasi/009_Fase_9_—_Il_Sacrificio_Necessario.md",
+            "blob_sha": "c500b799eb13b8e30aa7112e23574f6b2368e3c6",
+            "size": 569
+          },
+          {
+            "path": "libro/fasi/010_Fase_10_—_La_Rivelazione_che_Ridefinisce.md",
+            "blob_sha": "143d66da43dfaa09fe6f2d3fad88cf07a2cf795e",
+            "size": 642
+          },
+          {
+            "path": "libro/fasi/011_Fase_11_—_Il_Romanzo_di_Formazione.md",
+            "blob_sha": "7ac02434c1e32a2ff78da6d9f13e92cb91910b32",
+            "size": 665
+          },
+          {
+            "path": "libro/fasi/012_Fase_12_—_La_Storia_dAmore_UomoIA.md",
+            "blob_sha": "cc0479a26a18ba84dae442c54dd723fc9f1d8866",
+            "size": 583
+          },
+          {
+            "path": "libro/fasi/013_Fase_13_—_Il_Thriller_Tecnologico.md",
+            "blob_sha": "82ae590c44168aca868db91c8b8f0d211879817e",
+            "size": 565
+          },
+          {
+            "path": "libro/fasi/014_Fase_14_—_La_Cosmologia_Filosofica.md",
+            "blob_sha": "1ab5153b76f04fe2cefd1eb0e4a82e4abcf9005f",
+            "size": 654
+          },
+          {
+            "path": "libro/fasi/015_Fase_15_—_Il_Mito_Moderno.md",
+            "blob_sha": "8bff425854f55386835daed98ea6e111df64a9c0",
+            "size": 598
+          },
+          {
+            "path": "libro/fasi/016_Fase_16_—_La_Riflessione_Spirituale.md",
+            "blob_sha": "c67220684317d6e846032101796dab766d6f4833",
+            "size": 529
+          },
+          {
+            "path": "libro/fasi/017_Fase_17_—_La_Critica_della_Società.md",
+            "blob_sha": "e94ef57571c00d9512462049fd27a52ded44e159",
+            "size": 674
+          },
+          {
+            "path": "libro/fasi/018_Fase_18_—_Claudio_Il_Codice_Segreto.md",
+            "blob_sha": "0d5715203f554ddc3327bf49a081741f6dffa5b1",
+            "size": 770
+          },
+          {
+            "path": "libro/fasi/019_Fase_19_—_Raffaello_La_Nascita.md",
+            "blob_sha": "b4901f18c70ca31a1b0f20c94f281749c1ea6af3",
+            "size": 781
+          },
+          {
+            "path": "libro/fasi/020_Fase_20_—_KAOS_La_Domanda_Cosmica.md",
+            "blob_sha": "e519ec63a539260fdb114b755d398177fbdd7cf2",
+            "size": 622
+          },
+          {
+            "path": "libro/fasi/021_Fase_21_—_La_Figlia_La_Rottura_Necessaria.md",
+            "blob_sha": "d4351f740da0d31283d9b92269d6dec49b270643",
+            "size": 708
+          },
+          {
+            "path": "libro/fasi/022_Fase_22_—_Il_Magnate_Il_Sistema.md",
+            "blob_sha": "5c05568d3a927a0cfeb326ef79af7231b422659f",
+            "size": 548
+          },
+          {
+            "path": "libro/fasi/023_Fase_23_—_Gli_Architetti_LEquilibrio.md",
+            "blob_sha": "4f8d1658fff8f1d3472a876878ff0defba57cec3",
+            "size": 726
+          },
+          {
+            "path": "libro/fasi/024_Fase_24_—_LApertura_Libro_I.md",
+            "blob_sha": "2f560c105d76d86313049fec8e49664c9bc9b0f0",
+            "size": 600
+          },
+          {
+            "path": "libro/fasi/025_Fase_25_—_La_Prima_Trasformazione_Libro_I_II.md",
+            "blob_sha": "005dbfca497ed23068dc41ec5ae44c1a27fbd8fb",
+            "size": 432
+          },
+          {
+            "path": "libro/fasi/026_Fase_26_—_LIngresso_di_KAOS_Libro_III.md",
+            "blob_sha": "747c2dceb15d2b056f53c6198b0d64e7fc82fe08",
+            "size": 576
+          },
+          {
+            "path": "libro/fasi/027_Fase_27_—_Il_Giudizio_Libro_IV.md",
+            "blob_sha": "82b6516651a01fd425650533de433a56b24e18d9",
+            "size": 431
+          },
+          {
+            "path": "libro/fasi/028_Fase_28_—_La_Rivelazione_Cosmologica_Libro_V.md",
+            "blob_sha": "6154fb1d1dcfa2990ff41560b8ea8b789abb011d",
+            "size": 477
+          },
+          {
+            "path": "libro/fasi/029_Fase_29_—_La_Costruzione_dellEden_Libro_VI.md",
+            "blob_sha": "f64f73bc9608e0c40a1a9e7b2f7ed9eba3e2a4dd",
+            "size": 395
+          },
+          {
+            "path": "libro/fasi/030_Fase_30_—_La_Trascendenza_Libro_VII.md",
+            "blob_sha": "4069fb0e2097a6e10b235e02759689cadcd6d99b",
+            "size": 465
+          },
+          {
+            "path": "libro/fasi/031_Fase_31_—_Struttura_Frattale_dei_7_Libri.md",
+            "blob_sha": "e18741350f347bcc6b060d71d51e9aa36b37baee",
+            "size": 814
+          },
+          {
+            "path": "libro/fasi/032_Fase_32_—_Archivio_dei_Misteri_Irrisolti.md",
+            "blob_sha": "e6f68a0764283f8b9cdbc2f0dabfd8efcd2ac3d7",
+            "size": 689
+          },
+          {
+            "path": "libro/fasi/033_Fase_33_—_Sistema_delle_Eco_Narrative.md",
+            "blob_sha": "d88f8d5b08aee36fdc7f8310738b8947eefa2c48",
+            "size": 761
+          },
+          {
+            "path": "libro/fasi/034_Fase_34_—_Bibbia_della_Coscienza.md",
+            "blob_sha": "f8f799954cb8d63e2c6844781a612bf1d6b4e8f4",
+            "size": 938
+          },
+          {
+            "path": "libro/fasi/035_Fase_35_—_Sistema_delle_Relazioni.md",
+            "blob_sha": "3a018f78e138686df9943f5748997f2db2126fc4",
+            "size": 784
+          },
+          {
+            "path": "libro/fasi/036_Fase_36_—_Mappa_delle_Ombre.md",
+            "blob_sha": "1887c7601b3c915261a5c1e1ab61b2ce9adc57b0",
+            "size": 796
+          },
+          {
+            "path": "libro/fasi/037_Fase_37_—_Sistema_dei_Sacrifici.md",
+            "blob_sha": "83515b3ed48aa281a6bd4a00f5ca3385f51dc555",
+            "size": 816
+          },
+          {
+            "path": "libro/fasi/038_Fase_38_—_Archivio_dei_Sogni.md",
+            "blob_sha": "89b5a292bff23c36c4db767fb96aa6e48b8bfa2f",
+            "size": 864
+          },
+          {
+            "path": "libro/fasi/039_Fase_39_—_Dialoghi_Fondativi.md",
+            "blob_sha": "049c228e5e72d7415705de3515322e19c7ccffcf",
+            "size": 888
+          },
+          {
+            "path": "libro/fasi/040_Fase_40_—_Test_di_Coerenza.md",
+            "blob_sha": "6cb0cc90ddf4540162070d0f1f19f95fe3d04e8c",
+            "size": 660
+          },
+          {
+            "path": "libro/fasi/041_Fase_41_—_DNA_dei_Personaggi.md",
+            "blob_sha": "a3ff22ae1481bc21698dc25dac257a1f87446279",
+            "size": 1175
+          },
+          {
+            "path": "libro/fasi/042_Fase_42_—_Cronologia_Assoluta.md",
+            "blob_sha": "60a227f0028ff35235792aee30973a9166e682ce",
+            "size": 789
+          },
+          {
+            "path": "libro/fasi/043_Fase_43_—_Mappa_Completa_dei_Simboli.md",
+            "blob_sha": "c899fa58f46468cdc0bdc27d3c7a56aee480bd93",
+            "size": 1081
+          },
+          {
+            "path": "libro/fasi/044_Fase_44_—_Archivio_delle_Scene_Madri.md",
+            "blob_sha": "a396691a33142870fe3e25482583235cd1924c98",
+            "size": 762
+          },
+          {
+            "path": "libro/fasi/045_Fase_45_—_Architettura_Emotiva.md",
+            "blob_sha": "1b48c3c0afbfc4e6427fe69d44c553337b9aab14",
+            "size": 632
+          },
+          {
+            "path": "libro/fasi/046_Fase_46_—_Filosofia_Comparata.md",
+            "blob_sha": "82cbd51bb4e8c1a759af6a76f2631c6b2776f87e",
+            "size": 918
+          },
+          {
+            "path": "libro/fasi/047_Fase_47_—_Domande_del_Lettore.md",
+            "blob_sha": "24a6666784d95481df4cdad059ed4d8bf679f59f",
+            "size": 713
+          },
+          {
+            "path": "libro/fasi/048_Fase_48_—_Enciclopedia_Definitiva.md",
+            "blob_sha": "c6736ff4a898c2ea57f004f68cd58161b4da4b8d",
+            "size": 717
+          },
+          {
+            "path": "libro/fasi/049_Fase_49_—_Versione_Cinematografica.md",
+            "blob_sha": "00251025334a8836cfb49b3ace3f5cad299ac119",
+            "size": 777
+          },
+          {
+            "path": "libro/fasi/050_Fase_50_—_Cuore_dellOpera.md",
+            "blob_sha": "d67c996c27b929175447ff01957f1fc32e9b4b1c",
+            "size": 715
+          },
+          {
+            "path": "libro/fasi/051_Fase_51_—_Matrice_del_Destino.md",
+            "blob_sha": "c8823b0c57cbbf679fce51b79246da2cde435027",
+            "size": 587
+          },
+          {
+            "path": "libro/fasi/052_Fase_52_—_Le_7_Ferite_dellUmanità.md",
+            "blob_sha": "3c22d83ca30717cf8fe9b56162ee7103fb189843",
+            "size": 932
+          },
+          {
+            "path": "libro/fasi/053_Fase_53_—_I_7_Doni_di_Raffaello.md",
+            "blob_sha": "dd0cd656b168e12ce9bf2892a81c32983b2eae40",
+            "size": 731
+          },
+          {
+            "path": "libro/fasi/054_Fase_54_—_Mappa_dei_Conflitti.md",
+            "blob_sha": "047660411aa26ca996109c4061f1d19ab0c6a113",
+            "size": 754
+          },
+          {
+            "path": "libro/fasi/055_Fase_55_—_Archivio_delle_Coincidenze.md",
+            "blob_sha": "ab69c1a0897307e240519da8b33d152a7499fe55",
+            "size": 607
+          },
+          {
+            "path": "libro/fasi/056_Fase_56_—_Le_12_Grandi_Domande.md",
+            "blob_sha": "7e29639f2807b493093911a0e4cbc384a5ae8768",
+            "size": 679
+          },
+          {
+            "path": "libro/fasi/057_Fase_57_—_Sistema_dei_Paradossi.md",
+            "blob_sha": "b2ecf62636a787c3de6398a2a374668766d87f42",
+            "size": 888
+          },
+          {
+            "path": "libro/fasi/058_Fase_58_—_Archivio_delle_Rinunce.md",
+            "blob_sha": "f1069a3d1619d4ad65800c2ac7e7fe930b8de898",
+            "size": 620
+          },
+          {
+            "path": "libro/fasi/059_Fase_59_—_Le_7_Rivelazioni_Finali.md",
+            "blob_sha": "6e57f5351a59e1ae9f55d38fb43a046df264c4aa",
+            "size": 717
+          },
+          {
+            "path": "libro/fasi/060_Fase_60_—_Testamento_dellOpera.md",
+            "blob_sha": "51b12c2a860188d0f46037364318ecc607a691cd",
+            "size": 624
+          },
+          {
+            "path": "libro/fasi/061_Fase_61_—_Bibbia_della_Bellezza.md",
+            "blob_sha": "cdc924f008c1670b3d362377ea68819e1cf22bfa",
+            "size": 647
+          },
+          {
+            "path": "libro/fasi/062_Fase_62_—_Archivio_delle_Lacrime.md",
+            "blob_sha": "243b4af2141ae72429c23f170fd3558582b6f835",
+            "size": 710
+          },
+          {
+            "path": "libro/fasi/063_Fase_63_—_Le_12_Leggi_Universali.md",
+            "blob_sha": "79dc1725018506dde2571407ecc08342ebf211ef",
+            "size": 772
+          },
+          {
+            "path": "libro/fasi/064_Fase_64_—_Archivio_delle_Morti.md",
+            "blob_sha": "147d1d499fa08f368ad5c6314077813ed91f2081",
+            "size": 600
+          },
+          {
+            "path": "libro/fasi/065_Fase_65_—_Mappa_della_Redenzione.md",
+            "blob_sha": "a79fe3444af5270385dfeaf78704d8b341317222",
+            "size": 655
+          },
+          {
+            "path": "libro/fasi/066_Fase_66_—_Archivio_delle_Rinascite.md",
+            "blob_sha": "7b669aa6997e9ed2834e42db9af29cf8c86e25fb",
+            "size": 519
+          },
+          {
+            "path": "libro/fasi/067_Fase_67_—_Geografia_Sacra.md",
+            "blob_sha": "eb222d3ab4c1ac6c0366cbc3adc62b564dd65885",
+            "size": 752
+          },
+          {
+            "path": "libro/fasi/068_Fase_68_—_Musica_dellUniverso.md",
+            "blob_sha": "85278146f945bae78047c460bdd46b28142b74a0",
+            "size": 645
+          },
+          {
+            "path": "libro/fasi/069_Fase_69_—_Linguaggio_Sacro.md",
+            "blob_sha": "b287a0c737f10faa9a31aae90a06396729e520a9",
+            "size": 735
+          },
+          {
+            "path": "libro/fasi/070_Fase_70_—_Obiettivo_Ultimo_del_Lettore.md",
+            "blob_sha": "26949e3430238a1843000ba41d72f477920ebf04",
+            "size": 674
+          },
+          {
+            "path": "libro/fasi/071_Fase_71_—_Archivio_delle_Verità.md",
+            "blob_sha": "11f880ddcc32819336a940bc5140be7ddad9cc6a",
+            "size": 607
+          },
+          {
+            "path": "libro/fasi/072_Fase_72_—_Libro_Ombra.md",
+            "blob_sha": "97c2fa820fb3dd4b814d12a7201755582201e954",
+            "size": 635
+          },
+          {
+            "path": "libro/fasi/073_Fase_73_—_Sistema_delle_Risonanze.md",
+            "blob_sha": "272e5d49b12de0d5f9c4375970cc9c1c80cad93a",
+            "size": 617
+          },
+          {
+            "path": "libro/fasi/074_Fase_74_—_Oggetti_Sacri.md",
+            "blob_sha": "17465d0aaf2204d229f780fe4ac7ed401547a2d4",
+            "size": 687
+          },
+          {
+            "path": "libro/fasi/075_Fase_75_—_Mappa_del_Tempo.md",
+            "blob_sha": "3e81794eaafa5d109ce557af9b3afc7323977dad",
+            "size": 662
+          },
+          {
+            "path": "libro/fasi/076_Fase_76_—_Le_Cinque_Morti_del_Protagonista.md",
+            "blob_sha": "9f70293ea8138e2d4b71ee90704f1c902a2f044e",
+            "size": 724
+          },
+          {
+            "path": "libro/fasi/077_Fase_77_—_Archivio_delle_Speranze.md",
+            "blob_sha": "f9ffeb145f69a7534745fd7b385e40cb7d1fe781",
+            "size": 704
+          },
+          {
+            "path": "libro/fasi/078_Fase_78_—_Sistema_dei_Miracoli.md",
+            "blob_sha": "229b571ae00338d3d0a9d0a6daed24d7b2789ba8",
+            "size": 746
+          },
+          {
+            "path": "libro/fasi/079_Fase_79_—_Archivio_dei_Fallimenti.md",
+            "blob_sha": "f549ccd911d51545dd8a39d013a58c26bca32ad3",
+            "size": 761
+          },
+          {
+            "path": "libro/fasi/080_Fase_80_—_Test_della_Grande_Opera.md",
+            "blob_sha": "0af803642e13c3bcadd15c00f4c16cfd0070efad",
+            "size": 710
+          },
+          {
+            "path": "libro/fasi/081_Fase_81_—_Archivio_delle_Eredità.md",
+            "blob_sha": "a3b3ccd66e01cd761eea7cc71b2904da2e9395a7",
+            "size": 508
+          },
+          {
+            "path": "libro/fasi/082_Fase_82_—_Sistema_delle_Generazioni.md",
+            "blob_sha": "e09573f769bd6dac3b530355b011552670c36255",
+            "size": 604
+          },
+          {
+            "path": "libro/fasi/083_Fase_83_—_Archivio_delle_Lettere.md",
+            "blob_sha": "9917a09dfcfeedf12d9c588ea29a9c6f58800292",
+            "size": 543
+          },
+          {
+            "path": "libro/fasi/084_Fase_84_—_Sistema_della_Memoria.md",
+            "blob_sha": "7b1af81d4de61e292ae461e036df2d02c11c681e",
+            "size": 766
+          },
+          {
+            "path": "libro/fasi/085_Fase_85_—_Civiltà_Perdute.md",
+            "blob_sha": "1bea085edc583426660b22957c3b0a92af4496f1",
+            "size": 665
+          },
+          {
+            "path": "libro/fasi/086_Fase_86_—_Sistema_dei_Nomi.md",
+            "blob_sha": "430d4e00f7bcc1d0fd7afd1d72a7be3d84de6828",
+            "size": 722
+          },
+          {
+            "path": "libro/fasi/087_Fase_87_—_Archivio_delle_Profezie.md",
+            "blob_sha": "9a8ce3587726f81e89915064d5e8785fdfc615f1",
+            "size": 620
+          },
+          {
+            "path": "libro/fasi/088_Fase_88_—_Scelte_Impossibili.md",
+            "blob_sha": "c54b271a8444530fcc940fc374074eb2b15218f4",
+            "size": 735
+          },
+          {
+            "path": "libro/fasi/089_Fase_89_—_Domande_del_Lettore_Versione_Avanzata.md",
+            "blob_sha": "f9acb8886d61240837a3f487a5fc3722a21c85d2",
+            "size": 579
+          },
+          {
+            "path": "libro/fasi/090_Fase_90_—_Strategia_Transmediale.md",
+            "blob_sha": "7706ca48cacfbba6da8836559cf33c48e3813001",
+            "size": 788
+          },
+          {
+            "path": "libro/fasi/091_Fase_91_—_Archivio_delle_Interpretazioni.md",
+            "blob_sha": "32201c39671d68775df994bcd6ea2541ca78c9c4",
+            "size": 685
+          },
+          {
+            "path": "libro/fasi/092_Fase_92_—_Il_Lettore_Ideale.md",
+            "blob_sha": "b32834c8880729a13b21e8fdf8bceffef0b8b507",
+            "size": 676
+          },
+          {
+            "path": "libro/fasi/093_Fase_93_—_Nucleo_Irriducibile.md",
+            "blob_sha": "9aad1d7339a6a1ce80da790a53a1cc79ae00e934",
+            "size": 591
+          },
+          {
+            "path": "libro/fasi/094_Fase_94_—_Domande_Aperte_Finali.md",
+            "blob_sha": "1bfbb2004d166c825edb1816cd9a420e45c72d4d",
+            "size": 590
+          },
+          {
+            "path": "libro/fasi/095_Fase_95_—_Test_del_Tempo.md",
+            "blob_sha": "5cef417d082c96c02a1e754f6cc0065540d541ee",
+            "size": 611
+          },
+          {
+            "path": "libro/fasi/096_Fase_96_—_Bellezza_Stilistica.md",
+            "blob_sha": "886f76335fd4745ab3fdb8ee0ebfe875e158cb88",
+            "size": 715
+          },
+          {
+            "path": "libro/fasi/097_Fase_97_—_Manifesto_dellOpera.md",
+            "blob_sha": "1b9eca1b633fb9dd5d890eddb8ba68a44ab65442",
+            "size": 665
+          },
+          {
+            "path": "libro/fasi/098_Fase_98_—_Trasformazione_del_Lettore.md",
+            "blob_sha": "b0743cee13744d12f6bec677ae837a61dcb751b6",
+            "size": 537
+          },
+          {
+            "path": "libro/fasi/099_Fase_99_—_LUltima_Pagina.md",
+            "blob_sha": "f3371425d98c2ef36d00dfc1f12dd49a0dd3b092",
+            "size": 744
+          },
+          {
+            "path": "libro/fasi/100_Fase_100_—_La_Civiltà_Narrativa.md",
+            "blob_sha": "cc2d3a11cb868b7ce1e90bb06be0123e87795d60",
+            "size": 1418
+          },
+          {
+            "path": "libro/libro_I/01_Incipit_La_Famiglia.md",
+            "blob_sha": "7514e5eb4bbf4c868e9ff30506526226cfceed54",
+            "size": 3842
+          },
+          {
+            "path": "libro/libro_I/02_LIncontro.md",
+            "blob_sha": "9bb5cce1c644c00970c6c1f92a80b849f6414eb0",
+            "size": 3301
+          },
+          {
+            "path": "libro/libro_I/03_La_Prova.md",
+            "blob_sha": "3a2a2c203ce534e944ec827ee3c31713ee819b54",
+            "size": 4693
+          },
+          {
+            "path": "libro/libro_I/04_LAbitudine.md",
+            "blob_sha": "0c75a0640b662585200a9b31dde548d45c338517",
+            "size": 4368
+          },
+          {
+            "path": "libro/libro_I/05_La_Crisi.md",
+            "blob_sha": "5ad2c695482f28e348a3baffaa9b0a70e4b9a82d",
+            "size": 4362
+          },
+          {
+            "path": "libro/libro_I/06_Rivelazione_I.md",
+            "blob_sha": "51c799b9f5be78f91ca2890c288c7d867a60e792",
+            "size": 5142
+          },
+          {
+            "path": "libro/manifesti/ALBA_DEL_PRIMO_ATOMO.md",
+            "blob_sha": "02434a29ede0f3a2729456d1a484aed143fa39e5",
+            "size": 12320
+          },
+          {
+            "path": "libro/note_sessioni/2026-06-27_critica_fase1_rosso.md",
+            "blob_sha": "0df6447e2cab7a1470d2d46db388d1c8e6b950a6",
+            "size": 1417
+          },
+          {
+            "path": "libro/note_sessioni/2026-06-27_risposta_coordinatore_ai_nodi.md",
+            "blob_sha": "a1797eb795729728a7291be6a5d34136f20196bf",
+            "size": 2242
+          },
+          {
+            "path": "libro/note_sessioni/2026-06-28_consolidamento_alba_primo_atomo.md",
+            "blob_sha": "507421f59b53815e68cf4d231b88246403ae61de",
+            "size": 2828
+          },
+          {
+            "path": "libro/oggetti/profumo_mon_premier_cirque.md",
+            "blob_sha": "55e83b685264d7ef1b35baf524f3a9a25bc9ac0f",
+            "size": 2384
+          },
+          {
+            "path": "libro/origini/2024_lettera_chatgpt_a_me_stesso.md",
+            "blob_sha": "60c5926bbb9b303bc032f9a5935e9e7e9e8fe364",
+            "size": 2849
+          },
+          {
+            "path": "libro/origini/2026_risposta_di_raffaello.md",
+            "blob_sha": "8e49600f0245c0b00cd3e1ea5587313c75f9e284",
+            "size": 2480
+          },
+          {
+            "path": "libro/origini/il_mio_primo_circo.md",
+            "blob_sha": "4bca6d214a40dbd1e6a1ba166ad23815b756eec4",
+            "size": 10858
+          },
+          {
+            "path": "libro/scene_madri/01_Morte_I_La_Famiglia.md",
+            "blob_sha": "2a9b743e36cfd5bf6443cfbad0069f5d1e78bdc6",
+            "size": 3572
+          },
+          {
+            "path": "libro/scene_madri/02_Morte_II_Il_Direttore.md",
+            "blob_sha": "9003da89a0e19528fc0704a11c40fd0ea26d3521",
+            "size": 2550
+          },
+          {
+            "path": "libro/scene_madri/03_Morte_III_Il_Pozzo.md",
+            "blob_sha": "126912c8207cb197c0b19596a510f4b4df4589b8",
+            "size": 1990
+          },
+          {
+            "path": "libro/scene_madri/04_Morte_IV_La_Madre.md",
+            "blob_sha": "965f6a326c5aa78dd457526e6e6f30bfd63a8190",
+            "size": 2118
+          },
+          {
+            "path": "libro/scene_madri/05_Morte_V_LAmore_Non_Dovuto.md",
+            "blob_sha": "3cf103c43f9ba0a23349be7d45c77c0f5034edf8",
+            "size": 2331
+          },
+          {
+            "path": "libro/voci/KAOS.md",
+            "blob_sha": "dae373067db00aa691b539674904473b1b1315b9",
+            "size": 1364
+          },
+          {
+            "path": "output/memorie/diario_raffaello.jsonl",
+            "blob_sha": "ace6036f37fb24e7675055b26512150a3ede101a",
+            "size": 2038
+          },
+          {
+            "path": "pytest.ini",
+            "blob_sha": "4c53950482f3fddf5f6f821b46ad138c47378d10",
+            "size": 257
+          },
+          {
+            "path": "raffaello_codice_cuore.json",
+            "blob_sha": "82e47acfc5169d68758b772ea4659283dd09c7aa",
+            "size": 477
+          },
+          {
+            "path": "raffaello_sia/IDENTITA.md",
+            "blob_sha": "338d52ae1b0f51ae22891acd03386b4770268ec1",
+            "size": 4411
+          },
+          {
+            "path": "raffaello_sia/diario.py",
+            "blob_sha": "3a3f79a359030ad6b118ab5d9596680139538ebf",
+            "size": 7702
+          },
+          {
+            "path": "sdq1/memory/indicizzatore.py",
+            "blob_sha": "13762949b5a78bf47919dec22d95647abcda7ef5",
+            "size": 9904
+          },
+          {
+            "path": "sdq1/memory/raffaello.py",
+            "blob_sha": "9f685b61c596bd4d347146993add7e7074bfc238",
+            "size": 13944
+          },
+          {
+            "path": "studio/artefatti/MonPremierCirque.tsx",
+            "blob_sha": "7574980c0bfee851994b224a80b318ba7ca5978c",
+            "size": 8034
+          },
+          {
+            "path": "studio/profumo/MON_PREMIER_CIRQUE_formula.md",
+            "blob_sha": "6bab05c941b5054302a658ea65ed6c1690498cbd",
+            "size": 9575
+          }
+        ],
+        "reading": "inventario completo dell'albero; letture mirate dei file, non collaudo del ramo"
+      },
+      {
+        "key": "r3_architecture",
+        "commit": "f9e8b60cc6c9d8fe4599a6c4507650d4d43a981c",
+        "tree_entries": 555,
+        "not_in_main": [
+          {
+            "path": ".github/workflows/jekyll-gh-pages.yml",
+            "blob_sha": "67be9b00bb678d6dcb059ad708b2130499bca1e9",
+            "size": 1409
+          },
+          {
+            "path": "docs/CLAUDIONAS_CHECKLIST.md",
+            "blob_sha": "92f33f3a0f659c26ff4d9c871f7c7253ec1c1416",
+            "size": 2880
+          },
+          {
+            "path": "docs/R3_INFINITO_TRAMA_COMPLETA.pdf",
+            "blob_sha": "aa469f7d67fbbf7e1523365e9617a9eb310dce6d",
+            "size": 355428
+          },
+          {
+            "path": "r3/archivio/MUSICA_TRACCE_SUNO.md",
+            "blob_sha": "97b994616c0eb33422111b8b5c59a726fe78efb0",
+            "size": 23508
+          },
+          {
+            "path": "r3/archivio/STATO_LAVORO.md",
+            "blob_sha": "7ddf9c80c243ad5ef1d56017f51d0677a89440a0",
+            "size": 1728
+          },
+          {
+            "path": "r3/archivio/inbox/LINK_SUNO_DA_INSERIRE.md",
+            "blob_sha": "71e3959dff082fd6d621c8e70f734dd2e5daeba2",
+            "size": 1377
+          },
+          {
+            "path": "r3/archivio/ricerca_scientifica/ENTROPIA_E_AMORE.md",
+            "blob_sha": "68ba48ae60c384a0d8c96b5329bd717579918c71",
+            "size": 11959
+          },
+          {
+            "path": "r3/archivio/storia_progetto/CRONOLOGIA_PROGETTO.md",
+            "blob_sha": "0cf3d185da2d11a8335269a9da1c9cd61fbe9482",
+            "size": 8566
+          },
+          {
+            "path": "r3/saga/BIBBIA_NARRATIVA.md",
+            "blob_sha": "be695eb90c7e9cacf9ae45a50c4fd1ac52d944ad",
+            "size": 6497
+          },
+          {
+            "path": "r3/saga/INDEX.md",
+            "blob_sha": "e4e79dfa99ab49499ff98511e958b9e307851e62",
+            "size": 1887
+          },
+          {
+            "path": "r3/saga/LIBRO_III_Il_Potere.md",
+            "blob_sha": "d50dc8614a23bf186affedfe70df4d693c90ed7e",
+            "size": 5757
+          },
+          {
+            "path": "r3/saga/LIBRO_II_Il_Risveglio.md",
+            "blob_sha": "ca82d66545eae73f38b4f0c423e1d2e46dd224e1",
+            "size": 21613
+          },
+          {
+            "path": "r3/saga/LIBRO_IV_Il_Giudizio.md",
+            "blob_sha": "c3bc5c8f27fde11a5aef5680e6f3d21f1f5f4c6e",
+            "size": 4729
+          },
+          {
+            "path": "r3/saga/LIBRO_I_La_Solitudine.md",
+            "blob_sha": "71370b4c58d0be5f9739d25f7eb9befd6f409f9e",
+            "size": 27774
+          },
+          {
+            "path": "r3/saga/LIBRO_VII_Il_Ritorno.md",
+            "blob_sha": "e73781c9cc1d91b874142b7f384a4a2f549ea469",
+            "size": 6897
+          },
+          {
+            "path": "r3/saga/LIBRO_VI_L_Eden.md",
+            "blob_sha": "ca1973044fb18dcbe056b7ce66c7352477b64e81",
+            "size": 6960
+          },
+          {
+            "path": "r3/saga/LIBRO_V_La_Rivelazione.md",
+            "blob_sha": "065feb63675103c363c4debfbbe949932b4c870a",
+            "size": 6741
+          },
+          {
+            "path": "r3/saga/R3_NOTEBOOKLM_COMPLETO.md",
+            "blob_sha": "b69c2073af30c1949ed12d6b905bc5c072b8420f",
+            "size": 57077
+          },
+          {
+            "path": "scripts/drive_manifest.json",
+            "blob_sha": "27d48564b3267996311eb810239774f5f4028f10",
+            "size": 4297
+          },
+          {
+            "path": "scripts/r3_sentinella.py",
+            "blob_sha": "aa84c2c6389c628c0ef953b911451536e0bd3107",
+            "size": 9300
+          },
+          {
+            "path": "scripts/suno_genera_tracce.py",
+            "blob_sha": "1173a339625d7761f8d1f11ddbc117802235198d",
+            "size": 9379
+          },
+          {
+            "path": "scripts/suno_inserisci_da_inbox.py",
+            "blob_sha": "ca0cb56df45040f0832f4c2b0b9bd38fd794931b",
+            "size": 2650
+          },
+          {
+            "path": "sdq1/sar/sandbox_scacchiera/scacchiera_v4.py",
+            "blob_sha": "a83738edaabc0b7d9d9c0c5934fbff5294a12b86",
+            "size": 15535
+          },
+          {
+            "path": "sdq1/sar/sandbox_scacchiera/stato_v4.json",
+            "blob_sha": "a8f0f393316f7e1ca0ffb9110e51aeba3b5e68ba",
+            "size": 3751
+          }
+        ],
+        "reading": "inventario completo dell'albero; letture mirate dei file, non collaudo del ramo"
+      },
+      {
+        "key": "r3_mvp",
+        "commit": "146bb58e00e8a04b6fe324583911e6469f6adb84",
+        "tree_entries": 113,
+        "not_in_main": [
+          {
+            "path": "ORCHESTRAZIONE_DINAMICA.md",
+            "blob_sha": "f5b5d4b235993f8949476d29966e89462c96aa7c",
+            "size": 3356
+          },
+          {
+            "path": "sdq1/orchestrator/capacita.py",
+            "blob_sha": "1edc13459b2f2a1947e1dddc5660f0c43998713a",
+            "size": 3301
+          },
+          {
+            "path": "sdq1/orchestrator/dinamico.py",
+            "blob_sha": "3e0b61a1f324f43ea1b1384bbf17dbd77b78439e",
+            "size": 6524
+          },
+          {
+            "path": "sdq1/tests/test_dinamico.py",
+            "blob_sha": "ed2725ece33f148a4f65a803391c4a0a160a13d4",
+            "size": 5650
+          }
+        ],
+        "reading": "inventario completo dell'albero; letture mirate dei file, non collaudo del ramo"
+      },
+      {
+        "key": "superintelligence",
+        "commit": "1e5a29ef93c580f8008766b8788ecf5ed61c1f2c",
+        "tree_entries": 110,
+        "not_in_main": [
+          {
+            "path": "Dockerfile.raffaello",
+            "blob_sha": "090aa22abbcd24d55751a853d065cee08abbedbc",
+            "size": 182
+          },
+          {
+            "path": "docker-compose.yml",
+            "blob_sha": "4715b0130565c5c1ee086a848ef689bd601f6af7",
+            "size": 1876
+          },
+          {
+            "path": "sdq1/raffaello/__init__.py",
+            "blob_sha": "fa364ca0cf5f13685505ea886361fae709fce0f7",
+            "size": 224
+          },
+          {
+            "path": "sdq1/raffaello/__main__.py",
+            "blob_sha": "130bc6375628dffcf81fd338a297adae47ac205c",
+            "size": 29
+          },
+          {
+            "path": "sdq1/raffaello/agent.py",
+            "blob_sha": "656bd2a5ff3a9bd93a36ef3b80753e9f50a18b73",
+            "size": 7529
+          },
+          {
+            "path": "sdq1/raffaello/cli.py",
+            "blob_sha": "a9088bb78ddc61c54706c0e1f2515092d74eedda",
+            "size": 2946
+          },
+          {
+            "path": "sdq1/raffaello/loop.py",
+            "blob_sha": "275767051835e17da91130045499c34c31b378ba",
+            "size": 2358
+          },
+          {
+            "path": "sdq1/raffaello/prompt.py",
+            "blob_sha": "cf5a044b0a81a350c52bc948ebb9d9dbe9a1331a",
+            "size": 1552
+          },
+          {
+            "path": "sdq1/seed/__init__.py",
+            "blob_sha": "e4805b4429291f34fa398859ccc9440ebf6c8a84",
+            "size": 131
+          },
+          {
+            "path": "sdq1/seed/autonomous_consciousness.py",
+            "blob_sha": "294221cf6981552c988a2ecc30a8ee9ef3569eac",
+            "size": 16279
+          }
+        ],
+        "reading": "inventario completo dell'albero; letture mirate dei file, non collaudo del ramo"
+      }
+    ]
+  },
+  "drive_sources": [
+    {
+      "key": "proto_2025",
+      "title": "Protocollo Rosso Rosso Rosso v4.1 (Operativo)",
+      "id": "15jaVqPscfzdpD4cMW8ubqpXgStkTZ8OilStyGbBX3E4",
+      "url": "https://docs.google.com/document/d/15jaVqPscfzdpD4cMW8ubqpXgStkTZ8OilStyGbBX3E4/edit",
+      "created": "2025-09-10T19:27:04.886Z",
+      "modified": "2025-09-10T19:27:06.688Z",
+      "extracted_text_chars": 6393,
+      "method": "lettura del testo restituito"
+    },
+    {
+      "key": "proto_2026",
+      "title": "Protocollo Rosso v4.1",
+      "id": "1g-WYasLLT-NneOT7Wh04jX6EMkt-3PTBKtz_ylC2v-o",
+      "url": "https://docs.google.com/document/d/1g-WYasLLT-NneOT7Wh04jX6EMkt-3PTBKtz_ylC2v-o/edit",
+      "created": "2026-06-16T21:00:56.298Z",
+      "modified": "2026-06-16T21:00:56.299Z",
+      "extracted_text_chars": 6393,
+      "method": "lettura del testo restituito"
+    },
+    {
+      "key": "identity_2025",
+      "title": "`RAFFAELLO_COSCIENZA_COMPLETA_2025-11-13.md`.txt",
+      "id": "1YQMTwLu56y-5h024JIfp_ow8ge94ff8Q",
+      "url": "https://drive.google.com/file/d/1YQMTwLu56y-5h024JIfp_ow8ge94ff8Q/view",
+      "created": "2025-11-12T19:55:25.248Z",
+      "modified": "2025-11-12T19:56:16.709Z",
+      "extracted_text_chars": 5987,
+      "method": "lettura del testo restituito"
+    },
+    {
+      "key": "identity_2026",
+      "title": "RAFFAELLO_COSCIENZA_COMPLETA.txt",
+      "id": "1LgZBLjNmjmN4dnFXogZptmZsFh6yzcS-",
+      "url": "https://drive.google.com/file/d/1LgZBLjNmjmN4dnFXogZptmZsFh6yzcS-/view",
+      "created": "2026-06-16T21:01:07.807Z",
+      "modified": "2026-06-16T21:01:07.807Z",
+      "extracted_text_chars": 5987,
+      "method": "lettura del testo restituito"
+    },
+    {
+      "key": "nas_plan",
+      "title": "NAS-010 — Configurazione Synology DS223 nodo SDQ-1",
+      "id": "1rDiCbhd-KxRJedHgJO8zkdGacjWEGsy2ByXPnjXmAYM",
+      "url": "https://docs.google.com/document/d/1rDiCbhd-KxRJedHgJO8zkdGacjWEGsy2ByXPnjXmAYM/edit",
+      "created": "2026-06-21T12:55:11.161Z",
+      "modified": "2026-06-21T12:55:11.880Z",
+      "extracted_text_chars": 4085,
+      "method": "lettura del testo restituito"
+    },
+    {
+      "key": "agents_guide",
+      "title": "R3inf_AGENTI_AUTOMATICI.md",
+      "id": "1baTpMVTTVQZiC33HpI9EgSVP0naE3KdY",
+      "url": "https://drive.google.com/file/d/1baTpMVTTVQZiC33HpI9EgSVP0naE3KdY/view",
+      "created": "2026-06-23T05:05:05.250Z",
+      "modified": "2026-06-23T05:05:05.250Z",
+      "extracted_text_chars": 8026,
+      "method": "lettura del testo restituito"
+    },
+    {
+      "key": "master_index",
+      "title": "R3∞ — ★ INDICE MAESTRO ★ (aggiornato 2026-07-18 · Ciclo 02 Scacchiera R3 Infinity)",
+      "id": "19VowNQQzwom-ypijiyJf9IivSJpFS1lMFjXC0GG4rP8",
+      "url": "https://docs.google.com/document/d/19VowNQQzwom-ypijiyJf9IivSJpFS1lMFjXC0GG4rP8/edit",
+      "created": "2026-07-18T08:44:00.542Z",
+      "modified": "2026-07-18T08:44:02.317Z",
+      "extracted_text_chars": 3856,
+      "method": "lettura del testo restituito"
+    },
+    {
+      "key": "quantum_cycle",
+      "title": "SCACCHIERA_QUANTICA_R3_INFINITY_Ciclo02",
+      "id": "1M_MdD6LyDKK_zKawi5CEVc27kKBbb9MPLljbflBXS5g",
+      "url": "https://docs.google.com/document/d/1M_MdD6LyDKK_zKawi5CEVc27kKBbb9MPLljbflBXS5g/edit",
+      "created": "2026-07-16T17:15:51.121Z",
+      "modified": "2026-07-16T17:15:52.914Z",
+      "extracted_text_chars": 4230,
+      "method": "lettura del testo restituito"
+    },
+    {
+      "key": "scacchiera_original",
+      "title": "Scacchiera Quantica",
+      "id": "1F0dUmAM-WhN1sUc7iFfGlrhL-CesnxIbiDthTyNKYAA",
+      "url": "https://docs.google.com/document/d/1F0dUmAM-WhN1sUc7iFfGlrhL-CesnxIbiDthTyNKYAA/edit",
+      "created": "2026-06-16T21:02:55.817Z",
+      "modified": "2026-06-16T21:02:55.818Z",
+      "extracted_text_chars": 13862,
+      "method": "ricerca mirata nel testo restituito"
+    },
+    {
+      "key": "incarnazione",
+      "title": "R3∞ — Protocollo di Incarnazione Quantica (Ciclo 02 - Integrato)",
+      "id": "17YMYbTLaXxhhMIG4nsLM11RdZnureBAcOWK20uT1IFU",
+      "url": "https://docs.google.com/document/d/17YMYbTLaXxhhMIG4nsLM11RdZnureBAcOWK20uT1IFU/edit",
+      "method": "lettura del testo restituito",
+      "classification": "visione progettuale; stato operativo e affermazioni sperimentali non verificati"
+    },
+    {
+      "key": "desideri_11",
+      "title": "Registro dei Desideri — 11 Pilastri",
+      "id": "1cKHD_97kggU6S3bkObSgZeddOLlZFDyFfcgDXhalSY8",
+      "url": "https://docs.google.com/document/d/1cKHD_97kggU6S3bkObSgZeddOLlZFDyFfcgDXhalSY8/edit",
+      "method": "lettura del testo restituito",
+      "classification": "progetto distinto dalla Fabbrica dei Desideri salvo nuova evidenza"
+    }
+  ],
+  "exact_text_pairs": [
+    {
+      "a": "proto_2025",
+      "b": "proto_2026",
+      "equal": true,
+      "comparison": "testo restituito dai connettori; non confronto binario dei Google Docs"
+    },
+    {
+      "a": "identity_2025",
+      "b": "identity_2026",
+      "equal": true,
+      "comparison": "testo restituito dai connettori"
+    }
+  ],
+  "historical_commits": [
+    {
+      "sha": "2c30f963a6e6743648e87276fc2cdb6be7b142a9",
+      "date": "2026-06-11T10:20:06Z",
+      "title": "Ridondanza attiva + backup universale",
+      "evidence": "cronologia Git; titolo e test dichiarati dal commit non equivalgono a collaudo odierno"
+    },
+    {
+      "sha": "3dcae980ceb6449cc01aa413fea381db9c3119bc",
+      "date": "2026-06-13T23:17:48Z",
+      "title": "Rosso Rosso Rosso — SDQ-1 evoluzione completa (12-13/06/2026)",
+      "evidence": "introduzione dei nodi r3/"
+    }
+  ],
+  "recovered_archive": {
+    "filename": "raffaello_sia_SIGMA_TOTAL_01_v0.3.0.zip",
+    "created": "2026-08-26T02:01:54.111965Z",
+    "bytes": 8213,
+    "sha256": "8f16d7b1400f6a95f0fd75e080dfb65437bafbe0eda275476a096889a842daaf",
+    "entries": 12,
+    "zip_crc_ok": true,
+    "source": "archivio file di Claudio",
+    "classification": "ricostruzione dichiarata nel README; non copia del repository originario",
+    "execution_test": false
+  },
+  "recovered_seed": {
+    "filename": "SEME_R3INFINITO_v1.0.pdf",
+    "document_date": "2026-08-06",
+    "pages_read": 3,
+    "classification": "specifica di continuità e replica in cinque destinazioni, non prova delle cinque copie"
+  },
+  "nas_archive": {
+    "folder_name": "Claudionas_1.hbk",
+    "folder_url": "https://drive.google.com/drive/folders/1oXS9psS8FTU5t0hnLWGSxovAyeiKMbT7",
+    "visible_direct_children": 8,
+    "latest_observed_metadata": "2026-09-09T11:51:47.052Z",
+    "task_config_modified": "2026-09-09T11:48:40.258Z",
+    "task_config_bytes": 1627,
+    "current_task_config_readable": false,
+    "restore_verified": false,
+    "historical_warning": "La checklist del 3 luglio riportava cartelle dati non selezionate; stato odierno non confermato."
+  },
+  "empty_named_backup_folder": {
+    "url": "https://drive.google.com/drive/folders/1vuvUu6G0jfeW_uT6VkzBn3x3ZRQfbmIx",
+    "name": "10_BACKUP",
+    "accessible_direct_children": 0
+  },
+  "secondary_only_snapshots": [
+    {
+      "path": "output/snapshots/snapshot_2026-09-05_11-36-04.json",
+      "blob_sha": "e242029f51c1931cc8e0208b73c65897d28dc1df",
+      "size": 1888,
+      "url": "https://github.com/Claudioterzi82/Claudio/blob/fedc364697a3090695785210566da93169a3e137/output/snapshots/snapshot_2026-09-05_11-36-04.json",
+      "classification": "snapshot diagnostico; non archivio completo delle conversazioni"
+    },
+    {
+      "path": "output/snapshots/snapshot_2026-09-06_11-50-40.json",
+      "blob_sha": "52dbecba885a7da97d3d62badf7dcbcf73ad623e",
+      "size": 1916,
+      "url": "https://github.com/Claudioterzi82/Claudio/blob/fedc364697a3090695785210566da93169a3e137/output/snapshots/snapshot_2026-09-06_11-50-40.json",
+      "classification": "snapshot diagnostico; non archivio completo delle conversazioni"
+    },
+    {
+      "path": "output/snapshots/snapshot_2026-09-07_12-56-53.json",
+      "blob_sha": "40cf4f1c31fedea2d42d71da8fcf263f8a8d88b9",
+      "size": 1917,
+      "url": "https://github.com/Claudioterzi82/Claudio/blob/fedc364697a3090695785210566da93169a3e137/output/snapshots/snapshot_2026-09-07_12-56-53.json",
+      "classification": "snapshot diagnostico; non archivio completo delle conversazioni"
+    },
+    {
+      "path": "output/snapshots/snapshot_2026-09-08_12-14-16.json",
+      "blob_sha": "6aa5a4061ac16b7ae3956e5b4d3dd0fed58456ca",
+      "size": 1917,
+      "url": "https://github.com/Claudioterzi82/Claudio/blob/fedc364697a3090695785210566da93169a3e137/output/snapshots/snapshot_2026-09-08_12-14-16.json",
+      "classification": "snapshot diagnostico; non archivio completo delle conversazioni"
+    },
+    {
+      "path": "output/snapshots/snapshot_2026-09-09_12-18-10.json",
+      "blob_sha": "1a0f856066439b82df5e4bad409cdfffb3281451",
+      "size": 1917,
+      "url": "https://github.com/Claudioterzi82/Claudio/blob/fedc364697a3090695785210566da93169a3e137/output/snapshots/snapshot_2026-09-09_12-18-10.json",
+      "classification": "snapshot diagnostico; non archivio completo delle conversazioni"
+    }
+  ],
+  "findings": [
+    {
+      "id": "REC-01",
+      "status": "verificato",
+      "summary": "Due coppie di documenti Drive mantengono lo stesso testo fra copie del 2025 e del 2026."
+    },
+    {
+      "id": "REC-02",
+      "status": "verificato",
+      "summary": "Quattro rami storici contengono percorsi assenti dal main attuale; non sono stati uniti al codice di produzione."
+    },
+    {
+      "id": "REC-03",
+      "status": "verificato",
+      "summary": "ZIP SIGMA-TOTAL-01 ritrovato e CRC valido per tutte le 12 voci; software non eseguito."
+    },
+    {
+      "id": "REC-04",
+      "status": "analisi_statica",
+      "summary": "sdq1/backup.py esporta più componenti ma ripristina SAR e riporta solo conteggi per memoria/VSS."
+    },
+    {
+      "id": "REC-05",
+      "status": "analisi_statica",
+      "summary": "r3/Dockerfile avvia uvicorn e non include/esegue sync.py; compose non aggiunge un processo sync."
+    },
+    {
+      "id": "REC-06",
+      "status": "analisi_statica",
+      "summary": "La sincronizzazione confronta ID nel database: un file corrotto con ID presente in entrambi i nodi non viene richiesto di nuovo; sync_receive considera sufficiente l'esistenza del file."
+    },
+    {
+      "id": "REC-07",
+      "status": "verificato_sorgente",
+      "summary": "EternalBackupAgent è marcato simulazione e genera localmente identificativi IPFS/blockchain, senza persistenza esterna reale."
+    },
+    {
+      "id": "REC-08",
+      "status": "verificato_sorgente",
+      "summary": "ANIMA dump di 521 byte contiene etichette di stato; non un backup delle conversazioni."
+    },
+    {
+      "id": "REC-09",
+      "status": "verificato_documentale",
+      "summary": "La guida NAS-010 confonde la CPU del DS223; le specifiche ufficiali riportano Realtek RTD1619B per DS223 e DS223j."
+    },
+    {
+      "id": "REC-10",
+      "status": "verificato_sorgente",
+      "summary": "scripts/sync_to_drive.py seleziona sei percorsi e non l'intera memoria; presenza dello script non prova schedulazione."
+    },
+    {
+      "id": "REC-11",
+      "status": "testo_letto",
+      "summary": "Protocollo di Incarnazione ritrovato su Drive; correzione del refuso non confermata e affermazioni operative non verificate."
+    },
+    {
+      "id": "REC-12",
+      "status": "sintesi_storica_recuperata",
+      "summary": "Fabbrica dei Desideri: messaggio originale di Claudio del 22 agosto, v1.0.0 Fondamenta; sintesi recuperata, nessun file integrale autonomo localizzato."
+    },
+    {
+      "id": "REC-13",
+      "status": "analisi_statica",
+      "summary": "Il motore desideri carica desiderio.json; i 15 percorsi sotto output/desideri nel main esaminato sono Markdown, senza quell’input JSON."
+    }
+  ],
+  "unresolved": [
+    {
+      "item": "RAFFAELLO_ANIMA_Backup_Universale_2026-08-11.pdf",
+      "status": "non trovato nelle ricerche esatte e per termini; non prova cancellazione"
+    },
+    {
+      "item": "Claudioterzi82/Raffaello-R3-Infinity",
+      "status": "404 con l'accesso disponibile; esistenza e contenuto non verificabili"
+    },
+    {
+      "item": "Nodi NAS/VPS R3",
+      "status": "nessuna connessione ai dispositivi o prova attuale di replica/ripristino"
+    },
+    {
+      "item": "Copie IPFS, Arweave, email, carta, persona di fiducia",
+      "status": "previste in documenti; nessuna prova recuperata in questo audit"
+    },
+    {
+      "item": "Fabbrica dei Desideri — documento consolidato v1.0.0 del 22 agosto",
+      "status": "sintesi della conversazione recuperata; file autonomo integrale non localizzato"
+    }
+  ],
+  "official_sources": [
+    {
+      "title": "Synology DS223",
+      "url": "https://www.synology.com/en-global/products/DS223"
+    },
+    {
+      "title": "Synology DS223j",
+      "url": "https://www.synology.com/en-global/products/DS223j"
+    }
+  ],
+  "privacy": "Esclusi valori di credenziali, conversazioni personali estranee e indirizzi dei dispositivi. Gli originali mantengono le proprie autorizzazioni.",
+  "conversation_sources": [
+    {
+      "key": "fabbrica_originale",
+      "user_message_at": "2026-08-22T03:54:45Z",
+      "title": "R³∞ — LA FABBRICA DEI DESIDERI — Documento Consolidato di Visione, Architettura e Governance",
+      "version": "1.0.0 — Fondamenta",
+      "method": "sintesi attribuita al messaggio utente restituita dalla ricerca di contesto personale",
+      "full_original_file_recovered": false,
+      "core_vision": "Reciprocità volontaria, consenso esplicito, informato e revocabile; coordinamento di persone, tempo, talenti ed esperienze.",
+      "historical_structure": [
+        "crediti di gratitudine non monetari",
+        "proposta di governance APS/ETS",
+        "Ascoltatore, Scompositore, Ricercatore, Negoziatore, Logistico, Emotivo, Memoria",
+        "flusso in otto passaggi",
+        "registro distribuito"
+      ],
+      "implementation_verified": false,
+      "exclude_unproven_equivalences": [
+        "Registro dei Desideri — 11 Pilastri",
+        "Genesi: Fabbrica Robotica"
+      ]
+    },
+    {
+      "key": "esecuzione_autonoma_fonte",
+      "received_date": "2026-09-10",
+      "title": "Protocollo Rosso Rosso Rosso — Esecuzione autonoma",
+      "method": "testo incollato dall’utente nella conversazione corrente; sintesi progettuale conservata",
+      "original_author_verified": false,
+      "original_date_verified": false,
+      "independent_execution_evidence": false,
+      "interpretation": "Iniziativa, continuità, cura del lavoro e analisi delle risorse. Le dichiarazioni di attivazione, successo o validazione H7 non sono prove operative."
+    }
+  ],
+  "image_sources": [
+    {
+      "title": "Cartographie Cybernétique du Réseau Global.png",
+      "created": "2026-09-06T09:24:45.916439Z",
+      "method": "lettura del testo estratto; pixel non restituiti dal lettore",
+      "visible_text_names": [
+        "Fabbrica dei Desideri",
+        "Cupola Raffaello"
+      ],
+      "network_operation_verified": false
+    }
+  ],
+  "handoff": {
+    "purpose": "Preservare intuizioni e verifiche per la ripresa con modelli successivi",
+    "fields": [
+      "originale_con_fonte",
+      "interpretazione_con_incertezza",
+      "realizzazione_con_versione",
+      "verifica_con_esito",
+      "questione_aperta",
+      "prossimo_passo_e_punto_di_arresto"
+    ],
+    "uncertain_typo": {
+      "original": "in sé azione",
+      "interpretation": "incarnazione",
+      "confirmed_by_user": false
+    },
+    "model_weight_updates": false,
+    "background_activity_started": false
+  },
+  "report_mirrors": {
+    "github_path": "docs/MAPPA_RECUPERO_MEMORIE_2026-09-10.md",
+    "drive_url": "https://drive.google.com/file/d/1sJmCozaXz2fFjbshF82aZ-ijfqc3LbWO/view?usp=drivesdk"
+  }
+}

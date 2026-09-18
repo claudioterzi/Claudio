@@ -1,0 +1,298 @@
+{
+  "verified_at": "2026-09-09",
+  "source": "Native public browser form, one submission; browser controller reconnected without resubmission",
+  "test_customer": "Cliente Prova (fictional)",
+  "url": "https://claudio-ebon.vercel.app/profumo",
+  "automatic_bottle": "Scultura",
+  "bottle_render_px": 1200,
+  "print_formula_test": {
+    "example": "Ferro di Luce",
+    "density_test_value_g_ml": 0.85,
+    "concentration_percent_mass": 20,
+    "volumes_ml": [
+      50,
+      100,
+      200
+    ],
+    "total_mass_g": [
+      42.5,
+      85,
+      170
+    ],
+    "pompelmo_grams": [
+      0.9775,
+      1.955,
+      3.91
+    ],
+    "printed_preparation": "Tal quale — valore di prova",
+    "remaining_undeclared_preparations": 11,
+    "html_tables": 2,
+    "html_inputs": 0,
+    "formula_code_preserved": true
+  },
+  "print_documents_verified": [
+    "recipe",
+    "label",
+    "inspiration"
+  ],
+  "print_command_clicked": true,
+  "physical_printer_tested": false,
+  "iphone_tested": false,
+  "gpu_renderer_tested": false,
+  "compatible_renderer_tested": true,
+  "ai_photography_enabled": false,
+  "production_validated": false,
+  "record": {
+    "customer": "Cliente Prova",
+    "dedication": "Cliente Prova, questa creazione è dedicata a te. Coucher de Soleil Industriel custodisce l’ispirazione da cui è nato. Un incontro tra Safraleine, Cera d'api assoluta, Patchouli EO. Una traccia personale da scoprire, indossare e fare tua.",
+    "name": "Coucher de Soleil Industriel",
+    "record": {
+      "archived": false,
+      "customer": "Cliente Prova",
+      "intention": "Un profumo ispirato alla fotografia.",
+      "perfume": {
+        "concept": "Un omaggio olfattivo all'epos del cantiere navale al tramonto. Scintille di metallo danzano nell'aria mentre il sole scompare, dipingendo il cielo di ambra e rosa. Un profumo che celebra la potenza dell'industria e la quiete maestosa della natura, in un abbraccio di ferro, acqua e fuoco.",
+        "fam": "Legnosa",
+        "flacone": {
+          "accenti": [
+            "Safraleine",
+            "Cera d'api assoluta",
+            "Patchouli EO",
+            "Iso E Super"
+          ],
+          "attribution": "Concept e direzione: Claudio Terzi · © 2026 Claudio Terzi",
+          "forma": "prisma esagonale con fianchi scanalati e tappo a disco",
+          "luce": "luce calda radente, ombre architettoniche",
+          "palette": "ambra fumé e bronzo",
+          "prompt": "Use case: product-mockup. Create ONE original, photorealistic niche perfume bottle. Art direction by Claudio Terzi. Do not copy a commercial bottle, logo or packaging. Bottle silhouette: prisma esagonale con fianchi scanalati e tappo a disco. Palette: ambra fumé e bronzo. Lighting: luce calda radente, ombre architettoniche. Translate these olfactory accents into tactile glass, cap finish and abstract light, not literal ingredients inside the bottle: Safraleine, Cera d'api assoluta, Patchouli EO, Iso E Super. Refine the geometry and surface details creatively. Thick optical glass, credible refraction, premium materials, exquisite editorial product photography. Square image, front view, full bottle and cap visible, bottle occupies x=25%..75%, y=12%..86%. Keep a flat front face with a blank dark rectangular plaque at x=37%..63%, y=47%..65% so a precise typographic label can be applied separately. No text, letters, logos, watermark, people, additional bottles, advertising layouts or health claims. This is a visual concept, not a manufacturing drawing.",
+          "recipe_fingerprint": "e3b739cc4888de35d70c33a58b59a11609aaa0ac9967c23ac2fc1f0371d6dd59",
+          "version": "terzi-visual-2"
+        },
+        "formula_code": "TRZ1.13aff1815ecef350.131:155:T:0-10:40:T:0-117:10:T:1-69:125:C:0-110:125:C:0-72:45:C:1-33:195:F:0-156:125:F:0-107:30:F:1-32:80:S:0-7:40:S:0-111:30:S:1.42bf95c96424",
+        "foto": {
+          "analysis_version": 2,
+          "analyzed_at": "2026-09-09T16:42:06.683738+00:00",
+          "associazioni": [
+            {
+              "elemento": "Scintille della saldatura",
+              "evocazione": "Un'esplosione di note metalliche e calde, quasi incandescenti, con un tocco affumicato e minerale."
+            },
+            {
+              "elemento": "Cielo al tramonto con nuvole",
+              "evocazione": "Un accordo ambrato e resinoso, con sfumature dolci e leggermente speziate, che evoca la transizione dal giorno alla notte."
+            },
+            {
+              "elemento": "Terreno bagnato e riflessi",
+              "evocazione": "Una sensazione acquatica e minerale, con un sentore di asfalto bagnato o terra umida, forse con accenti ozonici."
+            },
+            {
+              "elemento": "Strutture industriali e metallo",
+              "evocazione": "Note robuste e terrose, con un cuore di legno scuro e un accenno di muschio, che richiamano la forza e la solidità."
+            },
+            {
+              "elemento": "Atmosfera crepuscolare e operosa",
+              "evocazione": "Un profumo che bilancia la freschezza dell'aria serale con il calore del lavoro, forse con un tocco di cuoio o tabacco."
+            }
+          ],
+          "direzione": "Un profumo che catturi l'essenza di un cantiere navale al tramonto: un'apertura luminosa e metallica data dalle scintille, seguita da un cuore caldo e avvolgente che richiama i colori del cielo e il calore del lavoro. Il fondo dovrebbe essere robusto e terroso, con accenti acquatici e minerali che evocano il terreno bagnato e la presenza del mare, creando un contrasto tra la forza industriale e la bellezza naturale del crepuscolo. Un profumo che parli di fatica, progresso e la bellezza inaspettata dell'ambiente industriale.",
+          "esempio_pubblico": "cantiere",
+          "image_sha256": "1946cd4d7031e1e18a8d0ace17b3a49a3f6a8ef466e4a94d9882ea3c051e078f",
+          "incertezze": "Non è possibile determinare il tipo specifico di metallo della nave o degli attrezzi, né la natura esatta dei liquidi sul terreno. Non è chiaro se la nave sia in costruzione, riparazione o smantellamento.",
+          "model": "gemini-2.5-flash",
+          "osservazioni": [
+            "Un operaio salda la fiancata di una grande nave, generando scintille luminose.",
+            "Il cielo al tramonto mostra sfumature di arancione, rosa e grigio, con nuvole sparse.",
+            "Il terreno è bagnato e riflette le luci artificiali e i colori del cielo.",
+            "Sono presenti gru e altre strutture industriali sullo sfondo, suggerendo un cantiere navale.",
+            "Due altri operai, con elmetti di sicurezza, osservano o prendono appunti vicino alla nave."
+          ],
+          "provider": "gemini",
+          "status": "interpreted"
+        },
+        "gusti_cliente": "",
+        "liv": "MASTER",
+        "nome": "Coucher de Soleil Industriel",
+        "organo": {
+          "evolution_revision": 1,
+          "fonte": "Organo_Terzi_300.xlsx",
+          "materie_disponibili": 293,
+          "nome": "Organo Terzi",
+          "ondata": 2,
+          "sha256": "13aff1815ecef35044352b0baa4709be5484597836e6aba25d87af17179309d5",
+          "supporti": [
+            {
+              "n": 44,
+              "nome": "Alcol etilico profumeria 96%"
+            },
+            {
+              "n": 45,
+              "nome": "Dipropilenglicole (DPG)"
+            },
+            {
+              "n": 46,
+              "nome": "Isopropil miristato (IPM)"
+            },
+            {
+              "n": 124,
+              "nome": "Benzil benzoato"
+            },
+            {
+              "n": 125,
+              "nome": "Trietil citrato (TEC)"
+            },
+            {
+              "n": 285,
+              "nome": "Glucam P-20"
+            },
+            {
+              "n": 286,
+              "nome": "Hercolyn D"
+            }
+          ],
+          "totale": 300
+        },
+        "ovr": "Safraleine",
+        "preferenze": {
+          "items": [],
+          "origin": "context",
+          "status": "none"
+        },
+        "ragionamento": "Per catturare le 'scintille della saldatura' in apertura, ho scelto la Safraleine (131) per la sua vibrante nota metallica e speziata, quasi incandescente. Il Calone 1951 (117) introduce una sensazione acquatica e ozonica, evocando l'aria serale e il 'terreno bagnato', mentre l'Incenso EO (10) aggiunge una sfumatura fumosa e minerale. Nel cuore, l'Isobutil Chinolina (72) ricrea l'odore di 'cuoio' e 'industriale', richiamando le strutture e la fatica. La Cera d'api assoluta (69) apporta un calore dolce e avvolgente, come il 'cielo al tramonto', e il Cypriol (110) unisce note terrose e legnose, con un accenno di affumicato. Il fondo è ancorato dal Patchouli EO (33) per la sua robustezza 'terrosa', lo Storace resinoide (156) con le sue sfaccettature resinose e leggermente animaliche, e l'Amber Xtreme (107) per una persistenza potente e ambrata che rafforza il concetto di 'forza industriale'. L'overdose di Safraleine (131) amplifica la brillantezza iniziale delle scintille e la modernità metallica, creando una firma audace e distintiva che definisce il carattere del profumo.",
+        "ricerca": {
+          "reference": "",
+          "sources": [],
+          "status": "not_requested",
+          "summary": ""
+        },
+        "ricetta": [
+          [
+            "Safraleine",
+            131,
+            15.5,
+            "testa",
+            0
+          ],
+          [
+            "Incenso (olibano) EO",
+            10,
+            4,
+            "testa",
+            0
+          ],
+          [
+            "Calone 1951",
+            117,
+            1,
+            "testa",
+            1
+          ],
+          [
+            "Cera d'api assoluta",
+            69,
+            12.5,
+            "cuore",
+            0
+          ],
+          [
+            "Cypriol (nagarmotha) EO",
+            110,
+            12.5,
+            "cuore",
+            0
+          ],
+          [
+            "Isobutil chinolina (IBQ)",
+            72,
+            4.5,
+            "cuore",
+            1
+          ],
+          [
+            "Patchouli EO",
+            33,
+            19.5,
+            "fondo",
+            0
+          ],
+          [
+            "Storace (styrax) resinoide",
+            156,
+            12.5,
+            "fondo",
+            0
+          ],
+          [
+            "Amber Xtreme",
+            107,
+            3,
+            "fondo",
+            1
+          ],
+          [
+            "Iso E Super",
+            32,
+            8,
+            "scia",
+            0
+          ],
+          [
+            "Ambroxan",
+            7,
+            4,
+            "scia",
+            0
+          ],
+          [
+            "Javanol",
+            111,
+            3,
+            "scia",
+            1
+          ]
+        ],
+        "riferimento": "Nessun profumo di riferimento esplicito è stato fornito da Claudio. Questa creazione è una traduzione diretta e artistica dell'immagine e delle sue associazioni, con un'enfasi sulla dicotomia tra l'elemento industriale e la bellezza naturale del tramonto.",
+        "scia": [
+          "Iso E Super",
+          "Ambroxan",
+          "Javanol"
+        ],
+        "stile": "carles",
+        "verifica": {
+          "aggiunte_automatiche": false,
+          "catalogo": true,
+          "correzioni_modello": 0,
+          "duplicati": false
+        }
+      },
+      "schema_version": 1
+    },
+    "serial": null
+  },
+  "export_artifacts": [
+    {
+      "file": "terzi-label-Ferro-di-Luce.html",
+      "bytes": 2880,
+      "sha256": "1d18d07b728c96f8b7916e5f02847ebd7b59d894d15cbea8ebbd601abf223c60"
+    },
+    {
+      "file": "terzi-inspiration-Ferro-di-Luce.html",
+      "bytes": 734510,
+      "sha256": "841da7173cde3a4c9b5fcb098f0e50f23552fb8b702d5a3d12f04cd662f5006b"
+    },
+    {
+      "file": "terzi-recipe-Ferro-di-Luce.html",
+      "bytes": 8402,
+      "sha256": "a10d9bbf0d4c86ddeee99801b10176286161fb151831a560bd03ba57f69a3905"
+    },
+    {
+      "file": "ferro-di-luce-6bea3b93e0-scultura.png",
+      "bytes": 1503702,
+      "sha256": "eef8562a7821445999d7b6609a52a8c1e9325d6b9e45e7812995868cf0a58156"
+    },
+    {
+      "file": "ferro-di-luce-6bea3b93e0-essenza.png",
+      "bytes": 1642821,
+      "sha256": "560610f1c5e54dcf88c177e147abf60c1ab3967e76a4a2915c1b118ac3505873"
+    }
+  ]
+}

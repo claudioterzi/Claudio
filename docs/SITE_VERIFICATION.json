@@ -1,0 +1,196 @@
+{
+  "checked_at": "2026-09-09T10:17:39.742047+00:00",
+  "cases": [
+    {
+      "name": "alpha_catalogo",
+      "path": "/api/alpha",
+      "expected_status": 200,
+      "status": 200,
+      "status_pass": true,
+      "count": 74,
+      "json_valid": true,
+      "seconds": 9.37
+    },
+    {
+      "name": "alpha_luce",
+      "path": "/api/alpha/collasso?carta=La+Ferita&asse=sud&polarita=luce",
+      "expected_status": 200,
+      "status": 200,
+      "status_pass": true,
+      "keys": [
+        "asse",
+        "carta",
+        "formula",
+        "polarita",
+        "significato",
+        "simbolo"
+      ],
+      "significato": "guarigione",
+      "json_valid": true,
+      "seconds": 9.58
+    },
+    {
+      "name": "alpha_ombra",
+      "path": "/api/alpha/collasso?carta=La+Ferita&asse=sud&polarita=ombra",
+      "expected_status": 200,
+      "status": 200,
+      "status_pass": true,
+      "keys": [
+        "asse",
+        "carta",
+        "formula",
+        "polarita",
+        "significato",
+        "simbolo"
+      ],
+      "significato": "paralisi",
+      "json_valid": true,
+      "seconds": 9.43
+    },
+    {
+      "name": "alpha_invalidi",
+      "path": "/api/alpha/collasso",
+      "expected_status": 400,
+      "status": 400,
+      "status_pass": true,
+      "keys": [
+        "errore"
+      ],
+      "errore": "Scegli una carta, un asse e luce oppure ombra.",
+      "json_valid": true,
+      "seconds": 9.98
+    },
+    {
+      "name": "lettura",
+      "path": "/api/leggi",
+      "expected_status": 200,
+      "status": 200,
+      "status_pass": true,
+      "keys": [
+        "personale",
+        "stesa_id",
+        "strutturale"
+      ],
+      "json_valid": true,
+      "seconds": 9.98
+    },
+    {
+      "name": "viaggi_stima",
+      "path": "/api/viaggi/pianifica",
+      "expected_status": 200,
+      "status": 200,
+      "status_pass": true,
+      "keys": [
+        "budget",
+        "giorni",
+        "mese",
+        "nota_origine",
+        "origine",
+        "origine_ok",
+        "proposte",
+        "tipi"
+      ],
+      "origine_ok": false,
+      "proposte_count": 6,
+      "all_within_budget": true,
+      "json_valid": true,
+      "seconds": 9.77
+    },
+    {
+      "name": "parti",
+      "path": "/api/flight/occasioni",
+      "expected_status": 200,
+      "status": 200,
+      "status_pass": true,
+      "keys": [
+        "origine",
+        "voli"
+      ],
+      "voli_count": 24,
+      "json_valid": true,
+      "seconds": 15.73
+    },
+    {
+      "name": "oracolo",
+      "path": "/api/flight/oracolo",
+      "expected_status": 200,
+      "status": 200,
+      "status_pass": true,
+      "keys": [
+        "alternative",
+        "finestra",
+        "meta",
+        "origine",
+        "quando",
+        "responso",
+        "trovato"
+      ],
+      "json_valid": true,
+      "seconds": 14.42
+    },
+    {
+      "name": "ovunque",
+      "path": "/api/flight/ovunque",
+      "expected_status": 200,
+      "status": 200,
+      "status_pass": true,
+      "keys": [
+        "budget",
+        "mese",
+        "mete",
+        "origine"
+      ],
+      "mete_count": 60,
+      "json_valid": true,
+      "seconds": 13.72
+    },
+    {
+      "name": "caccia",
+      "path": "/api/flight/caccia",
+      "expected_status": 200,
+      "status": 200,
+      "status_pass": true,
+      "keys": [
+        "destinazione",
+        "itinerari",
+        "mese",
+        "origine"
+      ],
+      "itinerari_count": 5,
+      "json_valid": true,
+      "seconds": 14.27
+    },
+    {
+      "name": "atelier",
+      "path": "/api/atelier",
+      "expected_status": 200,
+      "status": 200,
+      "status_pass": true,
+      "keys": [
+        "ok",
+        "parfum"
+      ],
+      "ok": true,
+      "formula_present": true,
+      "json_valid": true,
+      "seconds": 15.58
+    }
+  ],
+  "local_tests_passed": 23,
+  "pages_http_200": 26,
+  "merged_pr": 28,
+  "browser_checks": [
+    "menu opens and closes",
+    "Escape closes menu",
+    "short alias selects Flight",
+    "travel preset returns six proposals",
+    "Alpha La Ferita Sud Luce returns guarigione",
+    "Alpha Ombra tab shows paralisi"
+  ],
+  "limitations": [
+    "No actual iPhone Safari device test",
+    "Not every UI control exercised",
+    "No Telegram messages or inventory writes",
+    "No psychological or physical effects measured"
+  ]
+}

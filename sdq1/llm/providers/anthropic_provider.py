@@ -25,7 +25,8 @@ class AnthropicProvider(ProviderBase):
             return False
         self.api_key = key
         self._client = anthropic.Anthropic(
-            api_key=key, timeout=self.opts.get("timeout_secondi", 60)
+            api_key=key, timeout=self.opts.get("timeout_secondi", 60),
+            max_retries=self.opts.get("max_retries", 2)
         )
         return True
 
