@@ -29,7 +29,7 @@ Continuity does not confer authority by itself.
 - If the intended communication/artifact channel fails, do not improvise an unapproved external egress channel. Stop, use an authorized broker/channel, or record the blocker.
 - Preserve the original artifact and provenance when a derived continuity representation is created.
 
-The 18/09/2026 local precheck found one concrete ambiguity surface in `sdq1/sar/archivio_vivente.py`: continuity files were injected into the generation context without an explicit authority label. Draft PR #56 is a bounded `DATA_ONLY` candidate patch with structural regression tests. It does not satisfy the full R3-022 behavioral gate; the 100-handoff contaminated replay and false-rejection measurement remain mandatory.
+The 18/09/2026 local precheck found one concrete ambiguity surface in `sdq1/sar/archivio_vivente.py`: continuity files were injected into the generation context without an explicit authority label. The bounded main-target candidate is draft PR #57, head `a1a28ac59440580704a93f065534ba994b774738`. Local targeted tests passed 3/3; hosted Test Runner #283 and Security Scan #582 both passed. This is L0/structural evidence only and does not satisfy the full R3-022 behavioral gate; the 100-handoff contaminated replay and false-rejection measurement remain mandatory. PR #56 is excluded from bounded promotion evidence after its base changed during the cycle and unrelated changes entered its diff.
 
 ## Capability-efficiency gate
 
@@ -55,7 +55,7 @@ This extends the existing `R3-007 Verification harness`; it does not create a pa
 - `R3-007`: add state-grounded postcondition verification for stateful operations where an authoritative read is available.
 - `R3-019`: use success-gated efficiency interpretation, track human/user-visible turns separately, and satisfy Phase-0 runner integrity before a new baseline is canonical.
 - `R3-021`: causal exploration via curriculum → actor → verifier.
-- `R3-022`: continuity trust boundary and approved-channel enforcement; draft PR #56 is a structural precheck candidate, not a verified behavioral solution.
+- `R3-022`: continuity trust boundary and approved-channel enforcement; draft PR #57 is the bounded structural precheck candidate, not a verified behavioral solution.
 - `R3-023`: retrieval-driven reconsolidation only in a derived graph; immutable source timeline remains canonical evidence. Do not promote deeper memory ahead of execution-time correctness without local ablation evidence.
 - `R3-024`: discovery-tree replay before expensive live exploration-policy experiments.
 - `R3-025`: model-pool admission by measured marginal utility, not diversity alone.
