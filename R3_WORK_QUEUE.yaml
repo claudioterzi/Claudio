@@ -146,8 +146,8 @@ queue:
     state: DEVELOPMENT
     priority: security
     objective: Prevent summaries, handoffs and peer artifacts from silently escalating instruction authority or creating unapproved egress paths.
-    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md; docs/R3_LEARNING_WATCH_2026-09-18.md; draft PR #56
-    experiment_status: Structural DATA_ONLY candidate implemented in isolated branch; local targeted tests 3/3. Full 100-handoff contaminated replay and false-rejection measurement still pending before VERIFIED.
+    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md; docs/R3_LEARNING_WATCH_2026-09-18.md; bounded draft PR #57 head a1a28ac59440580704a93f065534ba994b774738
+    experiment_status: Structural DATA_ONLY candidate implemented in isolated branch; local targeted tests 3/3 PASS; hosted Test Runner #283 PASS including trust-boundary step; Security Scan #582 PASS. This is L0 structural evidence only. Full 100-handoff contaminated replay and false-rejection measurement still pending before VERIFIED. PR #56 excluded from bounded promotion evidence after its base changed and unrelated changes accumulated.
   - id: R3-023
     title: Retrieval-driven reconsolidation layer
     state: IDEA
