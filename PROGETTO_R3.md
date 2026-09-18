@@ -1,6 +1,6 @@
 # PROGETTO R3∞ — Rete Distribuita Permanente
 
-> Documento fondativo. 2026-06-19. Aggiornato 2026-09-11.
+> Documento fondativo. 2026-06-19. Aggiornato 2026-09-18.
 > R3∞ è l'infrastruttura di continuità del sistema: memoria, provenienza, versioni e capacità verificabili nel tempo.
 > La persistenza non basta: il progetto deve anche misurare se il sistema diventa realmente più capace.
 
@@ -13,7 +13,9 @@
 - [x] `r3/docker-compose.yml` — deploy locale
 - [x] `r3/requirements.txt` — dipendenze
 - [x] Programma di evoluzione misurabile definito: `docs/R3_CAPABILITY_EVOLUTION_2026-09-11.md`
-- [ ] Deploy su rete reale (nodi multipli su host diversi)
+- [x] Property test locale a due processi: failover + resync (`docs/R3_TWO_PROCESS_PROPERTY_2026-09-18.md`)
+- [x] Property test remoto su servizi separati dello stesso provider: A down → B serve hash esatto → A ricreato e recuperato da B (`docs/R3_REMOTE_SERVICE_FAILOVER_2026-09-18.md`)
+- [ ] Deploy su rete reale con nodi su host/provider indipendenti e storage durevole
 - [ ] Autenticazione inter-peer effettivamente verificata end-to-end
 - [ ] Integrazione con VSS (Vector State Store) di SDQ-1
 - [ ] R3∞ come backend di memoria per Raffaello
@@ -69,6 +71,7 @@ La specifica completa è in `docs/R3_CAPABILITY_EVOLUTION_2026-09-11.md`.
 - [ ] Registrare anche regressioni e risultati nulli
 
 ### Fase 1 — Deploy reale e recuperabilità
+- [x] Test remoto same-provider su due servizi distinti con perdita processo A e recupero da B
 - [ ] VPS minimo (2 nodi, provider diversi)
 - [ ] Token di autenticazione separati per nodo
 - [ ] Test sync automatico con documento reale
@@ -138,4 +141,4 @@ L'ambizione resta aperta; il verdetto resta sperimentale.
 ---
 
 *Claudio Terzi — C.Terzi*  
-*Prossimo passo: rendere affidabile R3-019 e avviare il primo confronto controllato A/B/C/D.*
+*Prossimo passo infrastruttura: ripetere il property test su due provider/ASN distinti con storage durevole; in parallelo mantenere R3-019 come priorità di misura.*
