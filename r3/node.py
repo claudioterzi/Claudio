@@ -8,6 +8,7 @@ import hashlib
 import logging
 import os
 import sqlite3
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -26,6 +27,7 @@ DB_PATH    = DATA_DIR / "r3.db"
 API_TOKEN  = os.getenv("R3_API_TOKEN", "changeme")
 NODE_ID    = os.getenv("R3_NODE_ID", "node-a")
 SIGNING_KEY_HEX = os.getenv("R3_SIGNING_KEY_HEX", "")
+ALLOW_TEST_SHUTDOWN = os.getenv("R3_ALLOW_TEST_SHUTDOWN", "").strip().lower() in {"1", "true", "yes"}
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -257,3 +259,33 @@ async def sync_receive(
     _audit("sync_receive", f"id={actual_hash} size={len(data)}")
     log.info("Sync received  id=%s", actual_hash)
     return {"status": "stored", "id": actual_hash}
+
+
+# ---------------------------------------------------------------------------
+# Test-only process shutdown hook
+# ---------------------------------------------------------------------------
+
+@app.post("/test/shutdown")
+def test_shutdown(authorization: Optional[str] = Header(None)):
+    """
+    Authenticated test hook used only by the external failover property test.
+
+    Disabled by default. It exists to make process loss observable without
+    adding a production control plane. Enabling it requires BOTH:
+      1. R3_ALLOW_TEST_SHUTDOWN=true
+      2. the normal Bearer token.
+
+    It must never be described as a production failover mechanism.
+    """
+    _check_token(authorization)
+    if not ALLOW_TEST_SHUTDOWN:
+        raise HTTPException(status_code=404, detail="Test shutdown non abilitato")
+
+    _audit("test_shutdown", f"node_id={NODE_ID}")
+    log.warning("Authenticated external property test requested process shutdown")
+
+    def _exit_process() -> None:
+        os._exit(0)
+
+    threading.Timer(0.35, _exit_process).start()
+    return {"status": "shutting_down_for_test", "node_id": NODE_ID}

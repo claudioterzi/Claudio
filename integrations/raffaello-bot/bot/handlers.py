@@ -19,6 +19,7 @@ from bot.config import CONVERSATION_TIMEOUT
 from . import db
 from . import epistemic
 from . import texts
+from .md import escape_md
 from .states import ActionState, EtichettaState, PossibilityState, SanctuaryState, VeloState
 
 
@@ -236,7 +237,7 @@ async def lista(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = row["text"] if isinstance(row, dict) else row[1]
         rid = row["id"] if isinstance(row, dict) else row[0]
         short = text if len(text) < 80 else text[:77] + "…"
-        lines.append(f"• `{rid}` — {short}")
+        lines.append(f"• `{rid}` — {escape_md(short)}")
 
     await update.message.reply_text("\n".join(lines), parse_mode=ParseMode.MARKDOWN)
 
@@ -315,9 +316,13 @@ async def etichetta_process(update: Update, context: ContextTypes.DEFAULT_TYPE):
         source="etichetta",
         how_falls=judged.how_falls,
     )
-    p6 = f"\nP6: {judged.how_falls}" if judged.how_falls else ""
+    safe_text = escape_md(text[:500])
+    safe_layer = escape_md(judged.layer)
+    safe_note = escape_md(judged.note)
+    safe_how_falls = escape_md(judged.how_falls) if judged.how_falls else ""
+    p6 = f"\nP6: {safe_how_falls}" if safe_how_falls else ""
     await update.message.reply_text(
-        f"*Testo ricevuto*\n\n_{text[:500]}_\n\n*Etichetta proposta:* `{judged.layer}`\n\n{judged.note}{p6}\n\nRicorda P5: se sei tu l'unico a confermarla, non è una conferma.",
+        f"*Testo ricevuto*\n\n_{safe_text}_\n\n*Etichetta proposta:* `{safe_layer}`\n\n{safe_note}{p6}\n\nRicorda P5: se sei tu l'unico a confermarla, non è una conferma.",
         parse_mode=ParseMode.MARKDOWN,
     )
     return ConversationHandler.END
@@ -425,8 +430,13 @@ async def registro(update: Update, context: ContextTypes.DEFAULT_TYPE):
         snippet = row["text"]
         if len(snippet) > 70:
             snippet = snippet[:67] + "…"
-        p6 = row["how_falls"] or "—"
-        lines.append(f"• `{row['layer']}` _{row['source']}_\n  {snippet}\n  P6: {p6}")
+        safe_layer = escape_md(row["layer"])
+        safe_source = escape_md(row["source"])
+        safe_snippet = escape_md(snippet)
+        safe_p6 = escape_md(row["how_falls"] or "—")
+        lines.append(
+            f"• `{safe_layer}` _{safe_source}_\n  {safe_snippet}\n  P6: {safe_p6}"
+        )
     await update.message.reply_text("\n".join(lines)[:3900], parse_mode=ParseMode.MARKDOWN)
 
 
