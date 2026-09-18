@@ -1,9 +1,12 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
 from sdq1.benchmark_integrity import (
     AmbiguousSnapshotError,
+    PROVENANCE_ADAPTED_LEGACY,
+    PROVENANCE_NATIVE_EXECUTION,
     compare_snapshots,
     generate_run_id,
     load_snapshot,
@@ -12,24 +15,9 @@ from sdq1.benchmark_integrity import (
 )
 
 
-def _raw_snapshot(*, error=False, total=2):
-    return {
-        "meta": {
-            "suite_versione": "v1",
-            "modello": "stub-model",
-            "timestamp_inizio": "2026-09-18T06:00:00+00:00",
-            "timestamp_fine": "2026-09-18T06:00:01+00:00",
-            "data": "2026-09-18",
-        },
-        "sommario": {
-            "punteggio": 0.5,
-            "superati": 1,
-            "totale": total,
-            "punteggi_categoria": {"stub": 0.5},
-            "latenza_media_ms": 100,
-            "latenza_mediana_ms": 100,
-        },
-        "risultati": [
+def _raw_snapshot(*, error=False, total=2, results=None):
+    if results is None:
+        results = [
             {
                 "id": "T1",
                 "categoria": "stub",
@@ -46,18 +34,40 @@ def _raw_snapshot(*, error=False, total=2):
                 "latenza_ms": 100,
                 "errore": "timeout" if error else None,
             },
-        ],
+        ]
+    return {
+        "meta": {
+            "suite_versione": "v1",
+            "modello": "stub-model",
+            "timestamp_inizio": "2026-09-18T06:00:00+00:00",
+            "timestamp_fine": "2026-09-18T06:00:01+00:00",
+            "data": "2026-09-18",
+        },
+        "sommario": {
+            "punteggio": 0.5,
+            "superati": 1,
+            "totale": total,
+            "punteggi_categoria": {"stub": 0.5},
+            "latenza_media_ms": 100,
+            "latenza_mediana_ms": 100,
+        },
+        "risultati": results,
     }
 
 
-def _snapshot(*, error=False, total=2, run_id=None):
-    return prepare_snapshot(_raw_snapshot(error=error, total=total), run_id=run_id)
+def _snapshot(*, error=False, total=2, run_id=None, native=True):
+    return prepare_snapshot(
+        _raw_snapshot(error=error, total=total),
+        run_id=run_id,
+        native_execution=native,
+    )
 
 
 class BenchmarkIntegrityTests(unittest.TestCase):
-    def test_complete_run_has_explicit_denominators(self):
+    def test_complete_native_run_has_explicit_denominators(self):
         snap = _snapshot(run_id="run-complete")
         self.assertEqual(snap["meta"]["run_status"], "COMPLETE")
+        self.assertEqual(snap["meta"]["integrity_provenance"], PROVENANCE_NATIVE_EXECUTION)
         self.assertEqual(snap["sommario"]["expected_total"], 2)
         self.assertEqual(snap["sommario"]["observed_total"], 2)
         self.assertEqual(snap["sommario"]["completed_count"], 2)
@@ -89,7 +99,22 @@ class BenchmarkIntegrityTests(unittest.TestCase):
                 "sommario": {"totale": 2},
             },
             run_id="invalid",
+            native_execution=True,
         )
+        self.assertEqual(snap["meta"]["run_status"], "INVALID")
+        self.assertFalse(snap["sommario"]["promotion_grade_eligible"])
+
+    def test_zero_observed_tests_is_invalid(self):
+        raw = _raw_snapshot(total=0, results=[])
+        raw["sommario"]["punteggio"] = 1.0
+        snap = prepare_snapshot(raw, run_id="zero", native_execution=True)
+        self.assertEqual(snap["meta"]["run_status"], "INVALID")
+        self.assertEqual(snap["sommario"]["observed_total"], 0)
+        self.assertFalse(snap["sommario"]["promotion_grade_eligible"])
+
+    def test_malformed_result_marks_run_invalid(self):
+        raw = _raw_snapshot(total=1, results=["not-a-result-object"])
+        snap = prepare_snapshot(raw, run_id="malformed", native_execution=True)
         self.assertEqual(snap["meta"]["run_status"], "INVALID")
         self.assertFalse(snap["sommario"]["promotion_grade_eligible"])
 
@@ -122,7 +147,7 @@ class BenchmarkIntegrityTests(unittest.TestCase):
         self.assertFalse(comparison["promotion_grade"])
         self.assertEqual(comparison["promotion_decision"], "REFUSE")
 
-    def test_legacy_snapshot_cannot_be_laundered_into_promotion_grade(self):
+    def test_legacy_snapshot_cannot_be_laundered_at_comparison_time(self):
         legacy = _raw_snapshot()
         current = _snapshot(run_id="current-run")
         comparison = compare_snapshots(legacy, current)
@@ -130,7 +155,19 @@ class BenchmarkIntegrityTests(unittest.TestCase):
         self.assertFalse(comparison["native_integrity_from"])
         self.assertTrue(comparison["native_integrity_to"])
         self.assertEqual(comparison["promotion_decision"], "REFUSE")
-        self.assertIn("lacks native Phase-0 integrity provenance", comparison["reason"])
+        self.assertIn("lacks native Phase-0 execution provenance", comparison["reason"])
+
+    def test_legacy_snapshot_cannot_be_laundered_by_save_reload(self):
+        legacy = _raw_snapshot()
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            path = save_snapshot(legacy, output_dir=out)
+            persisted = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(persisted["meta"]["integrity_provenance"], PROVENANCE_ADAPTED_LEGACY)
+        self.assertFalse(persisted["sommario"]["promotion_grade_eligible"])
+        comparison = compare_snapshots(persisted, _snapshot(run_id="native"))
+        self.assertFalse(comparison["promotion_grade"])
+        self.assertFalse(comparison["native_integrity_from"])
 
     def test_complete_comparison_only_advances_to_next_gates(self):
         first = _snapshot(run_id="run-1")
