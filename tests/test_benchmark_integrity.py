@@ -1,4 +1,3 @@
-import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -13,8 +12,8 @@ from sdq1.benchmark_integrity import (
 )
 
 
-def _snapshot(*, error=False, total=2, run_id=None):
-    data = {
+def _raw_snapshot(*, error=False, total=2):
+    return {
         "meta": {
             "suite_versione": "v1",
             "modello": "stub-model",
@@ -49,7 +48,10 @@ def _snapshot(*, error=False, total=2, run_id=None):
             },
         ],
     }
-    return prepare_snapshot(data, run_id=run_id)
+
+
+def _snapshot(*, error=False, total=2, run_id=None):
+    return prepare_snapshot(_raw_snapshot(error=error, total=total), run_id=run_id)
 
 
 class BenchmarkIntegrityTests(unittest.TestCase):
@@ -119,6 +121,16 @@ class BenchmarkIntegrityTests(unittest.TestCase):
         comparison = compare_snapshots(complete, incomplete)
         self.assertFalse(comparison["promotion_grade"])
         self.assertEqual(comparison["promotion_decision"], "REFUSE")
+
+    def test_legacy_snapshot_cannot_be_laundered_into_promotion_grade(self):
+        legacy = _raw_snapshot()
+        current = _snapshot(run_id="current-run")
+        comparison = compare_snapshots(legacy, current)
+        self.assertFalse(comparison["promotion_grade"])
+        self.assertFalse(comparison["native_integrity_from"])
+        self.assertTrue(comparison["native_integrity_to"])
+        self.assertEqual(comparison["promotion_decision"], "REFUSE")
+        self.assertIn("lacks native Phase-0 integrity provenance", comparison["reason"])
 
     def test_complete_comparison_only_advances_to_next_gates(self):
         first = _snapshot(run_id="run-1")
