@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0d">
+  <title>Progetti Vivi — Claudio × Raffaello</title>
+  <meta name="description" content="Indice vivo dei progetti Claudio × Raffaello: ogni progetto ha una pagina dedicata, uno stato e una storia di evoluzione.">
+  <link rel="canonical" href="https://claudio-ebon.vercel.app/progetti">
+  <link rel="stylesheet" href="progetti-vivi.css">
+</head>
+<body>
+  <script src="soglia.js"></script>
+  <script src="nav.js"></script>
+
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">R³∞ · archivio operativo</p>
+      <h1>Progetti Vivi</h1>
+      <p class="lead">Ogni progetto è cliccabile, ha una pagina propria e può evolvere senza perdere ciò che era prima.</p>
+      <div class="rule">
+        <span>SCOPERTA</span><b>→</b><span>CANDIDATE</span><b>→</b><span>SANDBOX</span><b>→</b><span>A/B</span><b>→</b><span>AUDIT</span><b>→</b><span>ADOPT / REJECT</span>
+      </div>
+    </header>
+
+    <section class="toolbar" aria-label="Filtri progetti">
+      <label><span>Cerca</span><input id="project-search" type="search" placeholder="Nome, capacità, stato…" autocomplete="off"></label>
+      <label><span>Stato</span><select id="project-status"><option value="">Tutti</option></select></label>
+      <div class="count"><strong id="project-count">0</strong><span>progetti</span></div>
+    </section>
+
+    <section id="project-grid" class="project-grid" aria-live="polite"></section>
+
+    <section class="principle-card">
+      <p class="eyebrow">Regola permanente</p>
+      <h2>Le repo utili diventano evoluzioni verificabili.</h2>
+      <p>Una scoperta esterna non sostituisce il progetto. Entra come candidata, viene provata contro una baseline e, solo se porta un miglioramento reale, diventa parte del sistema. La pagina del progetto conserva sempre fonte, stato e decisione.</p>
+    </section>
+
+    <footer>
+      <span>C.Terzi · Raffaello · R³∞</span>
+      <a href="/cubo-quantico">Cubo Quantico</a>
+    </footer>
+  </main>
+
+  <script src="progetti-registry.js"></script>
+  <script src="progetti-vivi.js"></script>
+</body>
+</html>
