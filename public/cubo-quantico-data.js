@@ -435,3 +435,65 @@ window.CUBO_OPERE_DATA = {
     ["DIALOGHI_FONDATIVI","SF-001 Il Primo Incontro","source"],["MAPPA_SIMBOLI","SF-008 L'Origine del Simbolo Infinito","source"],["ARCHITETTI","003_ARCHITETTI","version"],["EDEN","004_EDEN","version"],["CODICE_ETICO","005_ETICA_UNIVERSALE","version"],["006_TEORIA_DEI_SEGNALI","SF-004 Il Primo Segnale","source"],["TIMELINE_UNIVERSALE","008_CRONOLOGIA_COSMICA","version"],["ENTROPIA_E_AMORE","Libro VI — L’Eden","theme"],["FERITE_E_DONI","Libro I — La Solitudine","theme"],["MISTERI_IRRISOLTI","Libro V — La Rivelazione","theme"],["BELLEZZA_STILISTICA","Il Mirto e La Rosa - Romanzo","style"],["LINGUAGGIO_SACRO","IL MIRTO E LA ROSA — Il Vangelo dell'Ascensione","style"],["Rutila / La Guaritrice","Lettera di Maria Adelaide a Fenelon","historical"]
   ].forEach(r=>{if(X[r[0]]&&X[r[1]])D.links.push({source:X[r[0]],target:X[r[1]],type:r[2]})});
 })();
+/* Provenienza e attribuzione — aggiornamento archivistico 2026-09-19 */
+(function(){
+  const D=window.CUBO_OPERE_DATA;
+  if(!D||!Array.isArray(D.nodes))return;
+  const owner='Claudio Terzi', signature='C.Terzi';
+  D.nodes.filter(n=>n.kind==='work').forEach(n=>{
+    n.archiveOwner=owner;
+    n.signature=signature;
+    n.rightsNotice='© Claudio Terzi · archivio e contributi dichiarati';
+    n.attributionStatus=n.attributionStatus||'Corpus Claudio Terzi · eventuali voci collaborative e derivazioni restano indicate nelle edizioni.';
+  });
+  const category='Edizioni 18 settembre 2026', color='#f09a83', hubId='hub-edizioni-18-settembre-2026';
+  if(!D.nodes.some(n=>n.id===hubId)){
+    D.nodes.push({id:hubId,title:category,category,year:2026,importance:10,density:10,url:'#catalogo',color,fx:20,fy:132,fz:-150,kind:'category',archiveOwner:owner,signature,rightsNotice:'© Claudio Terzi · archivio e contributi dichiarati',attributionStatus:'Costellazione editoriale del corpus Claudio Terzi.'});
+  }
+  const additions=[
+    {
+      id:'la-prima-lezione-ricostruzione-2026',
+      title:'La Prima Lezione — Ricostruzione',
+      category,year:2026,date:'18 settembre 2026',importance:10,density:9,
+      url:'https://drive.google.com/file/d/1nzZRdGGny6FJMxZstPJQPVeJTY8cOAXO/view?usp=drivesdk',
+      color:'#f09a83',fx:28,fy:108,fz:-140,kind:'work',
+      summary:'Edizione di lavoro e ricostruzione del materiale storico. La provenienza interna del Testo A resta da determinare.',
+      credit:'Claudio Terzi · ricostruzione e curatela dell’edizione di lavoro',
+      attributionStatus:'Provenienza del Testo A da determinare · paternità esclusiva non dichiarata',
+      rightsNotice:'© Claudio Terzi · curatela, ricostruzione ed edizione v0.1',
+      archiveOwner:owner,signature
+    },
+    {
+      id:'il-canto-della-rete-che-si-sveglia-2026',
+      title:'Il Canto della Rete che si Sveglia',
+      category,year:2026,date:'18 settembre 2026',importance:9,density:10,
+      url:'https://drive.google.com/file/d/1pXUgMjbhkKR-LbAGdOyRgSM44v1EXzO4/view?usp=drivesdk',
+      color:'#f09a83',fx:56,fy:118,fz:-126,kind:'work',
+      summary:'Poema in nove movimenti, riprodotto in edizione integrale e curata come opera autonoma del corpus R³∞.',
+      credit:'Raffaello Cantarelli / DeepSeek-Nexus · su invito di Claudio Terzi',
+      attributionStatus:'Opera collaborativa · voce originaria indicata nell’edizione',
+      rightsNotice:'© Claudio Terzi · curatela ed edizione integrale 2026',
+      archiveOwner:owner,signature
+    },
+    {
+      id:'l-oltrecanto-codice-della-soglia-2026',
+      title:'L’OltreCanto — Il codice della soglia',
+      category,year:2026,date:'18 settembre 2026',importance:10,density:10,
+      url:'https://drive.google.com/file/d/1rwoNwx-2Iidw4MpbK_nP5DWfVy0eJpm9/view?usp=drivesdk',
+      color:'#f09a83',fx:84,fy:128,fz:-112,kind:'work',
+      summary:'Opera poetica illustrata in tre atti e nove voci, nuova composizione derivata dal percorso R³∞.',
+      credit:'Raffaello Cardarelli a Claudio Terzi',
+      attributionStatus:'Nuova opera · attribuzione creativa condivisa secondo il frontespizio',
+      rightsNotice:'© Claudio Terzi · contributo e edizione; firma creativa indicata nel libro',
+      archiveOwner:owner,signature
+    }
+  ];
+  additions.forEach(n=>{if(!D.nodes.some(x=>x.id===n.id))D.nodes.push(n);});
+  const endpoint=x=>typeof x==='object'&&x?x.id:x;
+  const link=(source,target,type)=>{if(!D.links.some(l=>endpoint(l.source)===source&&endpoint(l.target)===target))D.links.push({source,target,type});};
+  link('corpus-claudio-terzi',hubId,'archive');
+  additions.forEach(n=>{link(hubId,n.id,'edition');link('hub-saga-r3infinito',n.id,'source');});
+  D.meta.generated='2026-09-19';
+  D.meta.works=D.nodes.filter(n=>n.kind==='work').length;
+  D.meta.categories=new Set(D.nodes.filter(n=>n.kind==='work').map(n=>n.category)).size;
+})();
