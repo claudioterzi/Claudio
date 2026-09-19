@@ -26,7 +26,7 @@ jobs:
       - name: Installa dipendenze
         run: |
           python -m pip install --upgrade pip
-          pip install anthropic "openai>=1.50.0" "google-genai>=1.0.0" pyyaml flask mistralai
+          pip install anthropic "openai>=1.50.0" "google-genai>=1.0.0" pyyaml flask mistralai pytest
 
       - name: Verifica import principali
         run: |
@@ -47,3 +47,6 @@ jobs:
           assert carta is not None, 'Il Matto non trovato'
           print('Test mazzo: OK')
           "
+
+      - name: Test R3 continuity trust boundary
+        run: python -m pytest -q tests/test_archivio_vivente_trust_boundary.py
