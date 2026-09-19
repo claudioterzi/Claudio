@@ -1,0 +1,35 @@
+schema_version: "1.0"
+project: "R3-DESIRE-OS"
+ideas:
+  - id: DESIRE-001
+    title: "Desire Club / physical laboratory"
+    status: ACTIVE
+    classification: IDEA
+  - id: DESIRE-002
+    title: "Wearable / Apple Watch + R3 Band"
+    status: ACTIVE
+    classification: IDEA
+  - id: DESIRE-003
+    title: "Consent State Machine"
+    status: ACTIVE
+    classification: IDEA
+  - id: DESIRE-004
+    title: "Raffaello Experience Orchestrator"
+    status: ACTIVE
+    classification: IDEA
+  - id: DESIRE-005
+    title: "Privacy & Safety Layer"
+    status: ACTIVE
+    classification: IDEA
+  - id: DESIRE-006
+    title: "Dark Room operational protocol"
+    status: VALIDATION_REQUIRED
+    classification: IDEA
+  - id: DESIRE-007
+    title: "Reciprocity / network-effect growth engine"
+    status: ACTIVE
+    classification: IDEA
+  - id: DESIRE-008
+    title: "Licensing / API model"
+    status: CANDIDATE
+    classification: IDEA

@@ -1,0 +1,37 @@
+version: "1.0"
+default_scope: PROJECT
+pipeline:
+  - NODE
+  - DELTA
+  - DEDUP
+  - CLASSIFY
+  - CANONICAL_ID
+  - PROVENANCE
+  - MATURITY
+  - HORIZON
+  - LINK
+  - SCOPE_GATE
+  - CANONICALIZE
+  - PROPAGATE
+  - TEST_FALSIFY
+  - LEDGER
+  - REACTIVATE
+cross_project:
+  auto_merge: false
+  required_fields:
+    - source_project
+    - source_event_hash
+    - destination_project
+    - rationale
+    - risk
+    - test
+    - permission_required
+dedup:
+  preserve_origin: true
+  preserve_parent_ids: true
+waiting_reactivation:
+  enabled: true
+  triggers:
+    - new_evidence
+    - new_technology
+    - dependency_resolved
