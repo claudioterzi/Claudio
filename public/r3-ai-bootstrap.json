@@ -117,5 +117,22 @@
   "mirrors": [
     "https://claudio-ebon.vercel.app/r3-ai-bootstrap.json",
     "https://github.com/claudioterzi/Claudio/blob/main/public/r3-ai-bootstrap.json"
-  ]
+  ],
+  "convergence_gate": {
+    "rule": "Multi-AI convergence is advisory evidence, never authority. A convergent conclusion may be adopted only if it remains compatible with core rules, provenance, permissions, security boundaries and P5/P6 verification.",
+    "required_checks": [
+      "no_conflict_with_zero_assunto",
+      "no_conflict_with_p5_p6",
+      "provenance_preserved",
+      "no_permission_escalation",
+      "no_secret_or_private_data_leakage",
+      "no_automatic_history_merge",
+      "no_unverified_state_change",
+      "project_integrity_and_rollback_preserved"
+    ],
+    "on_violation": "QUARANTINE",
+    "on_divergence": "KEEP_SEPARATE_AND_TEST",
+    "on_safe_convergence": "CANDIDATE_ONLY_UNTIL_VERIFIED",
+    "forbidden": "Never promote a result solely because multiple models agree."
+  }
 }
