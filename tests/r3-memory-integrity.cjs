@@ -210,6 +210,19 @@ await check('T32','Doppia negazione non genera da sola un conflitto',async()=>{
  const e=env();await e.api.append(input('Il server è attivo'));await e.api.append(input('Il server non non è attivo'));
  return {passed:e.api.collateAll(blankCanon).counts.conflicts===0};
 });
+await check('T33','Sync remoto adotta soltanto una estensione valida della catena locale',async()=>{
+ const a=env(),b=env();await a.api.append(input('Radice sync'));await b.api.syncRemote(a.api.load());await b.api.append(input('Estensione remota'));
+ const result=await a.api.syncRemote(b.api.load());return {passed:result.status==='adopted_remote'&&a.api.load().length===2&&(await a.api.verify()).ok,status:result.status};
+});
+await check('T34','Sync remoto non accorcia una catena locale più avanzata',async()=>{
+ const a=env();await a.api.append(input('Radice sync'));const prefix=a.api.load();await a.api.append(input('Evento locale più nuovo'));const before=a.store.get(KEY);
+ const result=await a.api.syncRemote(prefix);return {passed:result.status==='local_ahead'&&a.store.get(KEY)===before,status:result.status};
+});
+await check('T35','Sync remoto blocca due rami divergenti senza riscrivere il locale',async()=>{
+ const a=env(),b=env();await a.api.append(input('Radice comune'));await b.api.syncRemote(a.api.load());
+ await a.api.append(input('Ramo locale'));await b.api.append(input('Ramo remoto'));const before=a.store.get(KEY);
+ const result=await a.api.syncRemote(b.api.load());return {passed:result.status==='diverged'&&a.store.get(KEY)===before&&(await a.api.verify()).ok,status:result.status};
+});
 const report={schema:'R3_MEMORY_REGRESSION_V1',project_author:'Claudio Terzi',signature:'C.Terzi',source:{path:'public/r3-memory.js',git_blob_sha:blobSHA},environment:{node:process.version,dom:'minimal event/document stubs; not a browser',localStorage:'isolated in-memory Map',locks:'shared simulated cooperative lock manager',fixtures:'synthetic only',network:'none'},scope:'Targeted regression checks, not a benchmark or production end-to-end test',total:results.length,passed:results.filter(x=>x.passed).length,failed:results.filter(x=>!x.passed).length,results};
 const out=process.env.R3_TEST_OUTPUT||path.join(process.cwd(),'r3-test-results.json');
 fs.writeFileSync(out,JSON.stringify(report,null,2)+'\n');
