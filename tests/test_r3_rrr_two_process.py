@@ -198,7 +198,13 @@ def test_rrr_activation_reaches_late_peer_and_rejects_downgrade(tmp_path: Path) 
         assert before["active"] is False
         assert before["event_id"] is None
 
-        relay = _sync(local_url=url_a, peer_url=url_b, token=token, data_dir=sync_dir)
+        relay = _sync(
+            local_url=url_a,
+            peer_url=url_b,
+            token=token,
+            data_dir=sync_dir,
+            controller_verify_key=verify_hex,
+        )
         after = _status(url_b, token)
         assert after["active"] is True
         assert after["event_id"] == activation["event_id"]
