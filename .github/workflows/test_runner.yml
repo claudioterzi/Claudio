@@ -38,6 +38,17 @@ jobs:
         run: |
           python -c "import tarocchi_web; print('Flask app OK')"
 
+      - name: Setup Node per la Fabbrica
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verifica Fabbrica, TypeSafe e dialogo IA
+        run: |
+          python -m unittest discover -s tests -p 'test_fabbrica*.py'
+          npm ci --prefix tests --ignore-scripts
+          npm run --prefix tests test:fabbrica
+
       - name: Test mazzo completo
         run: |
           python -c "
