@@ -83,6 +83,17 @@
     $('plan-title').textContent = plan.title;
     $('plan-type').textContent = demo ? 'ESEMPIO INTERATTIVO · NESSUNA AZIONE REALE' : 'IL TUO COPIONE · RAFFAELLO IA';
     $('plan-summary').textContent = plan.summary;
+    const assessment = record.assessment;
+    const assessed = !demo && assessment?.status === 'evaluated';
+    const assessmentNote = $('plan-assessment');
+    assessmentNote.hidden = demo;
+    assessmentNote.textContent = assessed
+      ? 'TypeSafe ha analizzato la richiesta e orientato le domande della regia. Percorso suggerito: ' + assessment.label + '.'
+      : 'La valutazione aggiuntiva TypeSafe non è disponibile per questo copione.';
+    // Uncertain judgments never force a travel suggestion. The manual travel
+    // link remains available independently of this advisory signal.
+    $('copione').dataset.travelSuggested = assessed
+      ? (assessment.signals.travel >= .75 ? 'yes' : 'no') : 'unknown';
     $('plan-meta').replaceChildren(...[
       record.brief.city || 'Luogo da scegliere', record.brief.budget || 'Budget da definire',
       record.brief.timing || 'Data da definire',
@@ -153,6 +164,7 @@
     deleteButton.hidden = demo;
     $('copione').hidden = false;
     if (!demo) history.replaceState(null, '', '#copione/' + record.id);
+    document.dispatchEvent(new CustomEvent('fabbrica:plan-rendered'));
     if (scroll) { $('copione').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('plan-title').focus({ preventScroll: true }); }
   }
   async function updateAction(id, complete) {
@@ -253,7 +265,7 @@
     if (busy) return;
     record = null; $('copione').hidden = true; history.replaceState(null, '', '#racconta');
     message('form-status', 'Il copione precedente resta conservato al suo indirizzo per 30 giorni.');
-    $('dream-form').reset(); $('racconta').scrollIntoView(); $('dream-text').focus();
+    $('dream-form').reset(); updateLevel(); $('racconta').scrollIntoView(); $('dream-text').focus();
   });
   $('download-plan').addEventListener('click', () => {
     if (!record) return;
@@ -266,7 +278,7 @@
   initPromise = (async () => {
     try {
       const status = await api('status'); serviceReady = status.ai_available;
-      $('service-mode').textContent = serviceReady ? 'Progettazione IA pronta' : 'Esplora l’esempio';
+      $('service-mode').textContent = serviceReady ? 'Progettazione disponibile' : 'Esplora l’esempio';
       const requested = location.hash.match(/^#copione\/([a-f0-9]{32})$/)?.[1];
       const id = requested || status.latest_id;
       if (id) {

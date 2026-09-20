@@ -50,6 +50,9 @@ class TestFabbrica(unittest.TestCase):
         cls.examples = json.loads(subprocess.check_output(['node', '-e', script], cwd=root))
 
     def setUp(self):
+        self.patch_assessment = patch('fabbrica.assess_brief', return_value={'status': 'not_configured'})
+        self.assessment = self.patch_assessment.start()
+        self.addCleanup(self.patch_assessment.stop)
         self.db = MemoryRedis()
         self.patch_db = patch('fabbrica.client', return_value=self.db)
         self.patch_db.start()
@@ -163,9 +166,43 @@ class TestFabbrica(unittest.TestCase):
         self.db.allow_quota=False
         self.assertEqual(self.generate().status_code,429)
         self.assertEqual(self.calls,0)
+        self.assessment.assert_not_called()
         with patch('fabbrica.client',side_effect=RuntimeError('test')):
             self.assertEqual(self.generate().status_code,503)
         self.assertEqual(self.calls,0)
+
+    def test_typesafe_guidance_reaches_generator_and_survives_reload_and_dedup(self):
+        advice = {'status': 'evaluated', 'provider': 'typesafe', 'label': 'Cena',
+                  'signals': {'travel': .01}, 'questions': ['Quale data?']}
+        self.assessment.return_value = advice
+        prompts = []
+        def reply(system, prompt):
+            prompts.append(json.loads(prompt))
+            return self.reply(system, prompt)
+        self.provider.completa = reply
+        record = self.generate().json
+        self.assertEqual(record['assessment'], advice)
+        self.assertEqual(prompts[0]['semantic_guidance'], advice)
+        self.assertEqual(self.http.get('/api/fabbrica/plans/' + record['id']).json, record)
+        self.assertEqual(self.generate().json, record)
+        self.assessment.assert_called_once_with(record['brief'], '')
+
+    def test_typesafe_failure_keeps_planning_available_without_false_evaluation(self):
+        self.assessment.return_value = {'status': 'unavailable'}
+        response = self.generate()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['assessment'], {'status': 'unavailable'})
+
+    def test_dialogue_revision_above_old_700_limit_is_accepted_and_bounded(self):
+        first = self.generate().json
+        revision = 'Preferenze della cena da rispettare. ' * 80
+        revised = self.generate(parent_id=first['id'], revision=revision)
+        self.assertEqual(revised.status_code, 200, revised.json)
+        self.assertEqual(revised.json['revision'], revision.strip())
+        self.assessment.assert_called_with(revised.json['brief'], revision.strip())
+        calls = self.calls
+        self.assertEqual(self.generate(parent_id=first['id'], revision='x' * 8001).status_code, 400)
+        self.assertEqual(self.calls, calls)
 
     def test_invalid_ai_output_is_saved_but_never_presented_as_plan(self):
         self.provider.completa=lambda *_: SimpleNamespace(via_api=True,testo='not a plan',provider='test',modello='test-only',metadata={})

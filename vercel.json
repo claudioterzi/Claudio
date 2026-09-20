@@ -8,7 +8,7 @@
     {"src":"api/raffaello.py","use":"@vercel/python","config":{"maxDuration":120,"includeFiles":"{tarocchi_quantici_alpha.json,api/tarot_alpha.py,sdq1/llm/**}"}},
     {"src":"api/orchestra.py","use":"@vercel/python","config":{"maxDuration":120,"includeFiles":"{sdq1/llm/**,sdq1/config/**}"}},
     {"src":"api/deepseek_eval.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{sdq1/llm/**}"}},
-    {"src":"tarocchi_web.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{studio/parfums/**,public/formule/organo-*.json,tarocchi_quantici_alpha.json}"}},
+    {"src":"tarocchi_web.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{studio/parfums/**,public/formule/organo-*.json,tarocchi_quantici_alpha.json,fabbrica.py,fabbrica_typesafe.py,typesafe_sister/client.py}"}},
     {"src":"public/**","use":"@vercel/static"}
   ],
   "routes": [

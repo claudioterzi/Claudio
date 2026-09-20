@@ -16,6 +16,8 @@ import time
 import uuid
 
 from flask import Blueprint, g, jsonify, request, send_from_directory
+from fabbrica_typesafe import assess_brief
+from typesafe_sister.client import configured as typesafe_configured
 
 fabbrica = Blueprint('fabbrica', __name__)
 TTL = 30 * 86400
@@ -56,6 +58,9 @@ Il campo intensity (1-5) indica l'ampiezza della regia: 1 essenziale, 2 curata,
 3 coordinata, 4 ambiziosa, 5 straordinaria. A livelli alti proponi connessioni
 creative fra persone e luoghi, con condizioni, budget, conferme e alternative.
 Non sostituisce la scelta di un modello né la disponibilità delle risorse.
+L'eventuale semantic_guidance contiene suggerimenti probabilistici di TypeSafe,
+non fatti verificati. Usa le domande pertinenti senza ripetere informazioni già
+date nel brief o nella revisione; le parole del cliente prevalgono sui suggerimenti.
 Il budget e i limiti hanno precedenza sull'intensità: riduci il progetto se serve.
 Adatta la regia al contesto: matrimoni (decisioni di entrambi, invitati, fornitori,
 scadenze), feste e addii al celibato/nubilato (limiti condivisi, sorprese gradite,
@@ -190,7 +195,7 @@ def protect():
     g.fabbrica_started = time.monotonic()
     if not request.path.startswith('/api/fabbrica/'):
         return None
-    if request.content_length and request.content_length > 16000:
+    if request.content_length and request.content_length > 48000:
         return jsonify(error='Il testo è troppo lungo.'), 413
     if request.method in ('POST', 'PATCH', 'DELETE'):
         origin = request.headers.get('Origin')
@@ -221,7 +226,8 @@ def status():
     except Exception as exc:
         record_failure('storage_status_failed', exc)
     response = jsonify(ai_available=available and storage, storage_available=storage,
-                       external_actions_available=False, latest_id=latest, retention_days=30)
+                       external_actions_available=False, latest_id=latest, retention_days=30,
+                       typesafe_configured=typesafe_configured())
     response.set_cookie(COOKIE, sid, max_age=TTL, secure=request.is_secure or bool(os.getenv('VERCEL')),
                         httponly=True, samesite='Strict', path='/api/fabbrica')
     return response
@@ -249,7 +255,7 @@ def generate():
         if type(intensity) is not int or not 1 <= intensity <= 5:
             raise ValueError('Scegli un’intensità da 1 a 5.')
         brief['intensity'] = intensity
-        revision = clean(data.get('revision', ''), 700, False)
+        revision = clean(data.get('revision', ''), 8000, False)
         parent = data.get('parent_id')
         if parent is not None and (not isinstance(parent, str) or not ID.fullmatch(parent)):
             raise ValueError('Copione precedente non valido.')
@@ -263,7 +269,7 @@ def generate():
         if previous and previous['status'] != 'complete':
             return jsonify(error='Il copione precedente non è ancora disponibile.'), 409
         sid = session_id()
-        payload = dict(brief=brief, revision=revision, parent_id=parent,
+        payload = dict(planning_policy='fabbrica-typesafe-v1', brief=brief, revision=revision, parent_id=parent,
                        previous=previous.get('plan') if previous else None)
         digest = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
         cachekey = PREFIX + 'request:' + sid + ':' + digest
@@ -301,6 +307,9 @@ def generate():
                       provider=None, model=None, usage=None, estimated_cost_eur=None, attempts=[])
         db.set(PREFIX+'plan:'+pid, json.dumps(record, ensure_ascii=False), ex=TTL)
         db.set(PREFIX+'latest:'+sid, pid, ex=TTL)
+        record['assessment'] = assess_brief(brief, revision)
+        if record['assessment']['status'] == 'evaluated':
+            payload['semantic_guidance'] = record['assessment']
         start = time.monotonic()
         for provider in options:
             if not provider.disponibile or time.monotonic()-start > 30:

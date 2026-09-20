@@ -1,0 +1,6 @@
+{
+  "name": "claudio-frontend-regressions",
+  "private": true,
+  "scripts": { "test:fabbrica": "node test_fabbrica_frontend.cjs" },
+  "devDependencies": { "jsdom": "26.1.0" }
+}
