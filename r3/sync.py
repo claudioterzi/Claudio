@@ -27,9 +27,9 @@ from typing import Any
 import httpx
 
 try:
-    from .rrr_control import replication_direction
+    from .rrr_control import SCHEMA as RRR_SCHEMA, replication_direction
 except ImportError:  # standalone execution
-    from rrr_control import replication_direction
+    from rrr_control import SCHEMA as RRR_SCHEMA, replication_direction
 
 # ---------------------------------------------------------------------------
 # Config
@@ -93,6 +93,48 @@ def _get_rrr_status(node_url: str) -> dict[str, Any]:
     return data
 
 
+def _wire_rrr_event(status: dict[str, Any]) -> dict[str, Any]:
+    """Rebuild the canonical signed event from node status for peer relay.
+
+    protocol_events stores the verified signed payload fields but not the
+    constant schema marker.  The relay therefore reconstructs the exact wire
+    envelope for the currently supported schema and strips receive-local audit
+    metadata such as received_at/source_node.  The destination still verifies
+    event_id and Ed25519 signature over the canonical payload before accepting.
+    """
+    stored = status.get("event")
+    if not isinstance(stored, dict):
+        raise ValueError("RRR event missing")
+
+    required = (
+        "protocol",
+        "action",
+        "scope",
+        "counter",
+        "issued_at",
+        "nonce",
+        "issuer",
+        "event_id",
+        "signature",
+    )
+    missing = [field for field in required if field not in stored]
+    if missing:
+        raise ValueError(f"RRR event incomplete: {','.join(missing)}")
+
+    return {
+        "schema": RRR_SCHEMA,
+        "protocol": stored["protocol"],
+        "action": stored["action"],
+        "scope": stored["scope"],
+        "counter": stored["counter"],
+        "issued_at": stored["issued_at"],
+        "nonce": stored["nonce"],
+        "issuer": stored["issuer"],
+        "event_id": stored["event_id"],
+        "signature": stored["signature"],
+    }
+
+
 def _push_rrr_event(dst_url: str, event: dict[str, Any]) -> dict[str, Any]:
     resp = httpx.post(
         f"{dst_url}/protocol/rrr/event",
@@ -134,9 +176,7 @@ def sync_rrr_with_peer(peer_url: str) -> None:
             return
 
         if direction == "local_to_peer":
-            event = local.get("event")
-            if not isinstance(event, dict):
-                raise ValueError("local RRR event missing")
+            event = _wire_rrr_event(local)
             ack = _push_rrr_event(peer_url, event)
             log.info(
                 "RRR relay → %s event=%s counter=%s ack=%s",
@@ -147,9 +187,7 @@ def sync_rrr_with_peer(peer_url: str) -> None:
             )
             return
 
-        event = peer.get("event")
-        if not isinstance(event, dict):
-            raise ValueError("peer RRR event missing")
+        event = _wire_rrr_event(peer)
         ack = _push_rrr_event(LOCAL_URL, event)
         log.info(
             "RRR relay ← %s event=%s counter=%s ack=%s",
