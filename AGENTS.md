@@ -34,6 +34,10 @@ Before inventing a parallel architecture, check whether a canonical Learning Wat
 
 The 17/09/2026 patterns remain cumulative: `R3-022`, `R3-023`, `R3-024`, `R3-025`, `R3-026`. The 16/09/2026 patterns also remain cumulative, including `R3-021_CAUSAL_EXPLORATION`, verifier-gated orchestration, Capability Quarantine, `R3-019_SENTINEL` and native skill routing.
 
+## Multi-AI convergence gate
+
+Agreement between providers is not authority. Convergence is only a candidate signal and must remain compatible with Zero-Assunto, P5/P6, provenance, permissions, security boundaries and project integrity. A convergent result that violates any canonical rule is quarantined, not adopted. Divergent histories or conclusions stay separate until a discriminating test resolves them. Multiple models agreeing never promotes a claim to FATTO by itself.
+
 ## Universal TypeSafe / Jev layer
 
 Every project uses the same TypeSafe transport and centrally reviewable policy when semantic judgment is useful. The canonical implementation is `typesafe_sister/client.py` + `typesafe_sister/policy.py` + `typesafe_sister/universal.py`. Do not create a second TypeSafe client, parallel judgment engine or project-local copy.
