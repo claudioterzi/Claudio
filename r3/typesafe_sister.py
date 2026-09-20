@@ -237,6 +237,7 @@ def one_shot_body_review() -> dict[str, Any]:
         "needs_external_validation": {"type": "noul", "instructions": "Does the architecture require substantial external engineering/clinical/scientific validation before any physical implementation should be treated as credible?"}
     }
     result = _system_one(state, questions, "jev-latest")
+    log.info("TEMP_JEV_BODY_REVIEW %s", json.dumps(result, ensure_ascii=False, sort_keys=True))
     return {
         "provider": "typesafe",
         "state_sha256": _canonical_hash(state),
