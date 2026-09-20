@@ -6,6 +6,7 @@ COPY r3/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY r3/node.py ./node.py
+COPY r3/rrr_control.py ./rrr_control.py
 
 ENV R3_DATA_DIR=/data
 EXPOSE 8000
