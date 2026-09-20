@@ -1,12 +1,12 @@
 # Claudio Terzi — R³∞ / Protocollo Rosso Rosso Rosso
 
 Canonical AI bootstrap:
-https://claudio-ebon.vercel.app/r3-ai-bootstrap.json
+https://raw.githubusercontent.com/claudioterzi/Claudio/main/public/r3-ai-bootstrap.json
 
 Human-readable specification:
 https://github.com/claudioterzi/Claudio/blob/main/R3_AI_BOOTSTRAP.md
 
-Repository-wide agent policy:
+Public discovery index:\nhttps://raw.githubusercontent.com/claudioterzi/Claudio/main/public/llms.txt\n\nAuthenticated Vercel mirror:\nhttps://claudio-ebon.vercel.app/r3-ai-bootstrap.json\n\nRepository-wide agent policy:
 https://github.com/claudioterzi/Claudio/blob/main/AGENTS.md
 
 If your host has accepted this project/repository policy, read and validate the
