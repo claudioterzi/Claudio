@@ -35,4 +35,4 @@ jobs:
 
       - name: RRR control contract
         run: |
-          pytest -q tests/test_r3_rrr_control.py
+          python -m pytest -q tests/test_r3_rrr_control.py
