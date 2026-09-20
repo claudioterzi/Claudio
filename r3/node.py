@@ -2,6 +2,12 @@
 R3∞ MVP — nodo singolo.
 ID documenti = SHA-256 del contenuto (content-addressed).
 Sync e integrity check delegati a sync.py esterno.
+
+RRR control plane:
+- activation events are signed by a separate controller key;
+- nodes keep only the trusted verification key;
+- the latest valid signed counter is authoritative locally;
+- sync.py relays the same signed event to peers.
 """
 
 import hashlib
@@ -11,12 +17,17 @@ import sqlite3
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import nacl.encoding
 import nacl.signing
-from fastapi import FastAPI, HTTPException, Header, UploadFile, File
+from fastapi import Body, FastAPI, HTTPException, Header, UploadFile, File
 from fastapi.responses import FileResponse
+
+try:
+    from .rrr_control import PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
+except ImportError:  # Railway single-file image
+    from rrr_control import PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
 
 # ---------------------------------------------------------------------------
 # Config
@@ -27,6 +38,7 @@ DB_PATH    = DATA_DIR / "r3.db"
 API_TOKEN  = os.getenv("R3_API_TOKEN", "changeme")
 NODE_ID    = os.getenv("R3_NODE_ID", "node-a")
 SIGNING_KEY_HEX = os.getenv("R3_SIGNING_KEY_HEX", "")
+CONTROL_VERIFY_KEY_HEX = os.getenv("R3_CONTROL_VERIFY_KEY_HEX", "").strip()
 ALLOW_TEST_SHUTDOWN = os.getenv("R3_ALLOW_TEST_SHUTDOWN", "").strip().lower() in {"1", "true", "yes"}
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -91,6 +103,21 @@ def _init_db() -> None:
                 ts     TEXT NOT NULL
             )
         """)
+        db.execute("""
+            CREATE TABLE IF NOT EXISTS protocol_events (
+                event_id     TEXT PRIMARY KEY,
+                protocol     TEXT NOT NULL,
+                action       TEXT NOT NULL,
+                scope        TEXT NOT NULL,
+                counter      INTEGER NOT NULL UNIQUE,
+                issued_at    TEXT NOT NULL,
+                nonce        TEXT NOT NULL UNIQUE,
+                issuer       TEXT NOT NULL,
+                signature    TEXT NOT NULL,
+                received_at  TEXT NOT NULL,
+                source_node  TEXT
+            )
+        """)
 
 _init_db()
 
@@ -115,14 +142,85 @@ def _audit(event: str, detail: str = "") -> None:
         )
 
 def _check_token(authorization: Optional[str]) -> None:
+    if not API_TOKEN or API_TOKEN == "changeme":
+        raise HTTPException(status_code=503, detail="Token del nodo non configurato")
     if authorization != f"Bearer {API_TOKEN}":
         raise HTTPException(status_code=401, detail="Token non valido")
+
+def _rrr_latest() -> dict[str, Any] | None:
+    with _conn() as db:
+        row = db.execute(
+            """SELECT event_id, protocol, action, scope, counter, issued_at,
+                      nonce, issuer, signature, received_at, source_node
+               FROM protocol_events
+               WHERE protocol = ?
+               ORDER BY counter DESC
+               LIMIT 1""",
+            (RRR_PROTOCOL,),
+        ).fetchone()
+    return dict(row) if row else None
+
+def _apply_rrr_event(event: dict[str, Any], source_node: str = "") -> tuple[str, dict[str, Any]]:
+    if not CONTROL_VERIFY_KEY_HEX:
+        raise HTTPException(
+            status_code=503,
+            detail="Controller RRR non configurato: R3_CONTROL_VERIFY_KEY_HEX assente",
+        )
+    try:
+        payload = verify_event(event, CONTROL_VERIFY_KEY_HEX)
+    except RRRControlError as exc:
+        raise HTTPException(status_code=422, detail=f"Evento RRR non valido: {exc}") from exc
+
+    event_id = str(event["event_id"])
+    signature = str(event["signature"])
+    latest = _rrr_latest()
+
+    if latest and latest["event_id"] == event_id:
+        return "already_applied", latest
+    if latest and payload["counter"] < latest["counter"]:
+        raise HTTPException(status_code=409, detail="Evento RRR obsoleto")
+    if latest and payload["counter"] == latest["counter"]:
+        raise HTTPException(status_code=409, detail="Conflitto RRR: stesso counter, evento diverso")
+
+    received_at = datetime.now(timezone.utc).isoformat()
+    with _conn() as db:
+        try:
+            db.execute(
+                """INSERT INTO protocol_events
+                   (event_id, protocol, action, scope, counter, issued_at, nonce,
+                    issuer, signature, received_at, source_node)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (
+                    event_id,
+                    payload["protocol"],
+                    payload["action"],
+                    payload["scope"],
+                    payload["counter"],
+                    payload["issued_at"],
+                    payload["nonce"],
+                    payload["issuer"],
+                    signature,
+                    received_at,
+                    source_node or None,
+                ),
+            )
+        except sqlite3.IntegrityError as exc:
+            raise HTTPException(status_code=409, detail="Replay/conflitto evento RRR") from exc
+
+    _audit(
+        "rrr_event",
+        f"event_id={event_id} action={payload['action']} counter={payload['counter']} "
+        f"issuer={payload['issuer']} source={source_node or 'unknown'}",
+    )
+    current = _rrr_latest()
+    assert current is not None
+    return "applied", current
 
 # ---------------------------------------------------------------------------
 # App
 # ---------------------------------------------------------------------------
 
-app = FastAPI(title=f"R3∞ {NODE_ID}", version="0.1.0")
+app = FastAPI(title=f"R3∞ {NODE_ID}", version="0.2.0")
 
 
 # Health check — senza auth (usato da load balancer / monitor esterno)
@@ -141,12 +239,50 @@ def status(authorization: Optional[str] = Header(None)):
         ).fetchone()[0]
         storage = sum(f.stat().st_size for f in (DATA_DIR / "docs").glob("*")) \
             if (DATA_DIR / "docs").exists() else 0
+    rrr = _rrr_latest()
     return {
         "node_id":    NODE_ID,
         "documents":  count,
         "storage_bytes": storage,
         "verify_key": VERIFY_KEY_HEX,
+        "rrr_active": bool(rrr and rrr["action"] == "activate"),
+        "rrr_protocol": RRR_PROTOCOL,
+        "rrr_event_id": rrr["event_id"] if rrr else None,
         "ts":         datetime.now(timezone.utc).isoformat(),
+    }
+
+
+# RRR network state — authenticated because it exposes control-plane metadata.
+@app.get("/protocol/rrr/status")
+def rrr_status(authorization: Optional[str] = Header(None)):
+    _check_token(authorization)
+    latest = _rrr_latest()
+    return {
+        "node_id": NODE_ID,
+        "protocol": RRR_PROTOCOL,
+        "active": bool(latest and latest["action"] == "activate"),
+        "controller_configured": bool(CONTROL_VERIFY_KEY_HEX),
+        "counter": latest["counter"] if latest else None,
+        "event_id": latest["event_id"] if latest else None,
+        "event": latest,
+    }
+
+
+@app.post("/protocol/rrr/event")
+def rrr_event(
+    event: dict[str, Any] = Body(...),
+    authorization: Optional[str] = Header(None),
+    x_r3_source_node: Optional[str] = Header(None),
+):
+    _check_token(authorization)
+    state, current = _apply_rrr_event(event, x_r3_source_node or "")
+    return {
+        "status": state,
+        "node_id": NODE_ID,
+        "active": current["action"] == "activate",
+        "protocol": current["protocol"],
+        "counter": current["counter"],
+        "event_id": current["event_id"],
     }
 
 
