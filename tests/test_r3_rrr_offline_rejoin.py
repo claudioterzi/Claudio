@@ -213,7 +213,13 @@ def test_offline_b_rejoins_catches_same_event_and_cannot_be_downgraded(tmp_path:
         assert pre_sync_b["active"] is False
         assert pre_sync_b["event_id"] is None
 
-        relay = _sync(local_url=url_a, peer_url=url_b, token=token, data_dir=sync_dir)
+        relay = _sync(
+            local_url=url_a,
+            peer_url=url_b,
+            token=token,
+            data_dir=sync_dir,
+            controller_verify_key=verify_hex,
+        )
         caught_up_b = _status(url_b, token)
         assert caught_up_b["active"] is True
         assert caught_up_b["event_id"] == activation["event_id"] == state_a["event_id"]
