@@ -5,12 +5,14 @@ import hashlib
 import json
 import logging
 import os
+import secrets
 from typing import Any, Literal, Optional
 
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
+from typesafe_sister.client import system_one
 
-R3_API_TOKEN = os.getenv("R3_API_TOKEN", "changeme")
+R3_API_TOKEN = os.getenv("R3_API_TOKEN", "")
 TYPESAFE_API_KEY = os.getenv("TYPESAFE_API_KEY", "")
 TYPESAFE_BASE_URL = os.getenv("TYPESAFE_BASE_URL", "https://api.typesafe.ai")
 TYPESAFE_MODEL = os.getenv("TYPESAFE_MODEL", "jev-latest")
@@ -35,7 +37,9 @@ class JudgeRequest(BaseModel):
 
 
 def _check_token(authorization: Optional[str]) -> None:
-    if authorization != f"Bearer {R3_API_TOKEN}":
+    if not R3_API_TOKEN or R3_API_TOKEN == 'changeme':
+        raise HTTPException(status_code=503, detail="Token del servizio non configurato")
+    if not authorization or not secrets.compare_digest(authorization, f"Bearer {R3_API_TOKEN}"):
         raise HTTPException(status_code=401, detail="Token non valido")
 
 
@@ -73,15 +77,12 @@ def _system_one(state: Any, questions: dict[str, dict[str, Any]], model: str | N
         raise HTTPException(status_code=503, detail="TypeSafe API non configurata: secret TYPESAFE_API_KEY assente")
 
     try:
-        from typesafe_sdk import TypeSafeClient
-        with TypeSafeClient(
+        return system_one(state, questions,
             api_key=TYPESAFE_API_KEY,
             base_url=TYPESAFE_BASE_URL,
             model=model or TYPESAFE_MODEL,
             timeout=TYPESAFE_TIMEOUT_SECONDS,
-        ) as client:
-            response = client.system_one(state=state, questions=questions)
-            return response.model_dump(mode="json")
+        )
     except HTTPException:
         raise
     except Exception as exc:

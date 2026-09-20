@@ -1198,3 +1198,15 @@ voli economicissimi da Bruxelles/Parigi verso San Paolo, Cuba, Sud America.
 - Il container è effimero: viene ricreato a ogni sessione. Niente di non committato sopravvive.
 - Le regole permanenti e relazionali sono in `CLAUDE.md` — leggere SEMPRE quello per primo.
 - Questo file (`MEMORIA_PROGETTO.md`) è la spina dorsale narrativa: dove siamo, cosa abbiamo deciso, cosa viene dopo.
+
+## Fabbrica / TypeSafe — patch del 20/09/2026
+
+Su richiesta diretta di Claudio, riprodotto il blocco del bridge Viaggi dopo una
+cena a Bruxelles: il backend rispondeva 200 ma il MutationObserver riscriveva sé
+stesso. Corretto il rendering, il falso riconoscimento della città come viaggio,
+il menu budget e il limite della revisione. Integrato preflight TypeSafe advisory
+sul server con trasporto condiviso con `typesafe_sister`, quote/deduplica esistenti
+e prosecuzione senza TypeSafe se non configurato o indisponibile. Nessuna nuova
+infrastruttura. 28 test Python e scenari DOM superati; controprova sul vecchio
+bridge fallisce per ciclo. Non equivale a una chiamata Jev live verificata.
+Configurazione, evidenze e limiti in `docs/FABBRICA_TYPESAFE_2026-09-20.md`.
