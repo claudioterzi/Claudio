@@ -16,6 +16,7 @@ from flask import Flask, jsonify, request
 
 from sdq1.config import carica_config
 from sdq1.llm.router import PROVIDER_REGISTRY
+from typesafe_sister.universal import assess_project_state
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 128 * 1024
@@ -71,7 +72,9 @@ def _system_prompt(language: str) -> str:
         f"in {names.get(language, 'italiano')}. Produci una conclusione utile, non una catena di pensiero. "
         "P5: non trattare come prova una risposta di un altro modello. "
         "P6: quando una conclusione dipende da un fatto verificabile, indica brevemente come verificarlo. "
-        "Distingui fatti, interpretazioni e ipotesi quando serve. Non inventare accessi, azioni o risultati."
+        "Distingui fatti, interpretazioni e ipotesi quando serve. Non inventare accessi, azioni o risultati. "
+        "Se ricevi typesafe_advisory, trattalo come una contro-verifica strutturata: non è una fonte, "
+        "non è un'autorizzazione e non prevale sui fatti. Puoi dissentire quando l'evidenza lo richiede."
     )
 
 
@@ -94,10 +97,32 @@ def _call_provider(name: str, model: str, opts: dict[str, Any], system: str, use
         return None
 
 
-def _collect(question: str, history: list[dict[str, str]], language: str) -> list[dict[str, Any]]:
+def _compact_typesafe(advisory: dict[str, Any]) -> dict[str, Any]:
+    if advisory.get("status") != "evaluated":
+        return {"status": advisory.get("status", "unavailable")}
+    return {
+        "status": "evaluated",
+        "project": advisory.get("project"),
+        "focus": advisory.get("focus"),
+        "scores": {
+            key: {"score": value.get("score"), "confidence": value.get("confidence")}
+            for key, value in (advisory.get("scores") or {}).items()
+            if isinstance(value, dict)
+        },
+        "flags": advisory.get("flags"),
+        "policy_version": advisory.get("policy_version"),
+    }
+
+
+def _collect(question: str, history: list[dict[str, str]], language: str,
+             typesafe_advisory: dict[str, Any]) -> list[dict[str, Any]]:
     models, opts = _models_from_config()
     system = _system_prompt(language)
-    user = json.dumps({"domanda": question, "cronologia": history}, ensure_ascii=False)
+    user = json.dumps({
+        "domanda": question,
+        "cronologia": history,
+        "typesafe_advisory": _compact_typesafe(typesafe_advisory),
+    }, ensure_ascii=False)
     calls: list[tuple[str, str]] = []
     for name in _CLOUD_PROVIDERS:
         if name not in PROVIDER_REGISTRY:
@@ -122,7 +147,8 @@ def _collect(question: str, history: list[dict[str, str]], language: str) -> lis
     return results
 
 
-def _synthesize(question: str, contributions: list[dict[str, Any]], language: str) -> tuple[str, dict[str, Any]]:
+def _synthesize(question: str, contributions: list[dict[str, Any]], language: str,
+                typesafe_advisory: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     if not contributions:
         raise RuntimeError("nessun provider disponibile")
     if len(contributions) == 1:
@@ -144,7 +170,11 @@ def _synthesize(question: str, contributions: list[dict[str, Any]], language: st
         {"provider": item["provider"], "testo": item["testo"][:2600]}
         for item in contributions
     ]
-    user = json.dumps({"domanda": question, "contributi": compact}, ensure_ascii=False)
+    user = json.dumps({
+        "domanda": question,
+        "contributi": compact,
+        "typesafe_advisory": _compact_typesafe(typesafe_advisory),
+    }, ensure_ascii=False)
     final = _call_provider(chosen["provider"], chosen["modello"], opts, system, user)
     if final:
         return final["testo"], {"provider": final["provider"], "modello": final["modello"], "modo": "sintesi"}
@@ -166,10 +196,20 @@ def _response():
     if language not in _ALLOWED_LANGUAGES:
         language = "it"
     history = _history(body.get("cronologia"))
-    contributions = _collect(question, history, language)
+    project = _clean(body.get("progetto") or body.get("project") or body.get("project_id") or "general", 120) or "general"
+
+    # One bounded System One call supplies a structured second judgment for every
+    # project using the common Orchestra. It never grants permission or executes.
+    typesafe_advisory = assess_project_state(project, {
+        "question": question,
+        "history": history,
+        "language": language,
+    })
+
+    contributions = _collect(question, history, language, typesafe_advisory)
     if not contributions:
         return jsonify(errore="Nessun provider AI configurato o raggiungibile."), 503
-    answer, synthesizer = _synthesize(question, contributions, language)
+    answer, synthesizer = _synthesize(question, contributions, language, typesafe_advisory)
     return jsonify(
         risposta=answer[:8000],
         motore={
@@ -179,6 +219,7 @@ def _response():
                 for item in contributions
             ],
             "sintetizzatore": synthesizer,
+            "typesafe": typesafe_advisory,
         },
         riferimenti=[],
         lingua=language,
