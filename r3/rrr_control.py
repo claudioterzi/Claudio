@@ -39,6 +39,36 @@ PAYLOAD_FIELDS = (
     "issuer",
 )
 
+POLICY: dict[str, Any] = {
+    "protocol": PROTOCOL,
+    "name": "Protocollo Rosso Rosso Rosso",
+    "activation_phrase": "ROSSO ROSSO ROSSO",
+    "required_on_join": True,
+    "role": "network_epistemic_policy",
+    "rules": {
+        "epistemic_states": ["FATTO", "INTERPRETAZIONE", "IPOTESI"],
+        "p5": "Una fonte non conferma se stessa; l'indipendenza si misura sull'origine causale.",
+        "p6": "Conservare provenienza, nodo, versione, evidenza e hash quando disponibili.",
+        "falsification": "Prima della conferma cercare una prova capace di indebolire o falsificare l'ipotesi.",
+        "resonance": "La convergenza genera CANDIDATE, non TRUE.",
+        "divergence": "Conservare il disaccordo e il test capace di discriminarlo.",
+        "high_impact": "Preferire analisi, simulazione, test, verifica e azioni reversibili con rollback.",
+    },
+    "output_contract": [
+        "FATTI",
+        "INTERPRETAZIONI",
+        "IPOTESI",
+        "P5_CHECK",
+        "P6_CHECK",
+        "FALSIFIER",
+        "RISCHI",
+        "TEST",
+        "ESITO",
+        "CONFIDENZA",
+        "NEXT_ACTION",
+    ],
+}
+
 
 class RRRControlError(ValueError):
     """A signed RRR event is malformed or cannot be verified."""
