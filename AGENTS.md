@@ -33,6 +33,17 @@ Before inventing a parallel architecture, check whether a canonical Learning Wat
 
 The 17/09/2026 patterns remain cumulative: `R3-022`, `R3-023`, `R3-024`, `R3-025`, `R3-026`. The 16/09/2026 patterns also remain cumulative, including `R3-021_CAUSAL_EXPLORATION`, verifier-gated orchestration, Capability Quarantine, `R3-019_SENTINEL` and native skill routing.
 
+## Universal TypeSafe / Jev layer
+
+Every project uses the same TypeSafe transport and centrally reviewable policy when semantic judgment is useful. The canonical implementation is `typesafe_sister/client.py` + `typesafe_sister/policy.py` + `typesafe_sister/universal.py`. Do not create a second TypeSafe client, parallel judgment engine or project-local copy.
+
+- Use Jev for narrow typed judgments (Choice, Score, Noul), especially routing/focus, readiness, coherence, grounding, contradictions, missing critical inputs, freshness and consequence/risk signals.
+- Jev is advisory only: it is not a source, permission, executor, proof of success or final authority. Raffaello/application code owns the workflow under P5/P6.
+- Exact rules, calculations, permissions, verification and side effects remain deterministic/code-controlled. A TypeSafe result must never authorize spend, send, publish, book, delete, deploy, merge, grant access or create a legal/financial commitment.
+- Put shared and domain question wording in `typesafe_sister/policy.py` so questions can be reviewed in one place. Domain-specific questions may extend the common layer but must reuse the shared transport.
+- Send only bounded project state needed for the judgment; never send API keys, credentials or an entire private archive. Keep `TYPESAFE_API_KEY` server-side.
+- Validate representative cases and application behavior. Confidence describes the answer distribution, not truth or permission. Thresholds require local evidence and remain explicit in code.
+
 ## Capability maximization rule
 
 Optimize for verified useful capability, efficiency per unit resource, operational autonomy and innovation yield. Do not maximize raw activity, token use, tool calls or architectural complexity. A simpler mechanism wins when it achieves equal or better verified outcomes with lower cost, latency, supervision or failure surface.
