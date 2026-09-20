@@ -1,5 +1,6 @@
 """Regia tests: dependencies, privacy, concurrency and persistence boundaries."""
 import copy
+from datetime import date
 import json
 from pathlib import Path
 import subprocess
@@ -7,7 +8,7 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from fabbrica import PREFIX, apply_progress, validate_plan
+from fabbrica import PREFIX, apply_progress, review_schedule, validate_plan
 from tarocchi_web import app
 
 
@@ -100,6 +101,45 @@ class TestFabbrica(unittest.TestCase):
             example = copy.deepcopy(self.examples[0])
             example['scenes'][0]['actions'][0]['depends_on'] = dependency
             with self.assertRaises(ValueError): validate_plan(json.dumps(example))
+
+    def test_explicit_deadlines_are_reviewed_without_rewriting_history(self):
+        for when, expected in [
+            ('Entro il 25 agosto 2026', 'Da ripianificare:'),
+            ('2026-08-25', 'Da ripianificare:'),
+            ('25/08/2026', 'Da ripianificare:'),
+            ('25.08.2026', 'Da ripianificare:'),
+            ('31 settembre 2026', 'Data proposta non valida'),
+            ('2026-02-29', 'Data proposta non valida'),
+            ('20 settembre 2026', None),
+            ('Entro il 25 settembre 2026', None),
+            ('Dopo A1', None),
+            ('Appena possibile', None),
+            ('25 agosto', None),
+        ]:
+            with self.subTest(when=when):
+                plan = {'scenes': [{'actions': [{'when': when, 'status': 'proposed'}]}]}
+                reviewed = review_schedule(plan, date(2026, 9, 20))
+                result = reviewed['scenes'][0]['actions'][0]['when']
+                if expected:
+                    self.assertTrue(result.startswith(expected), result)
+                    self.assertEqual(review_schedule(reviewed, date(2026, 9, 20)), reviewed)
+                else:
+                    self.assertEqual(result, when)
+                self.assertEqual(plan['scenes'][0]['actions'][0]['when'], when)
+                plan['scenes'][0]['actions'][0]['status'] = 'reported_done'
+                self.assertEqual(review_schedule(plan, date(2026, 9, 20)), plan)
+
+    def test_reopened_legacy_deadline_is_flagged_and_keeps_stored_evidence(self):
+        record = self.generate().json
+        key = PREFIX + 'plan:' + record['id']
+        stored = json.loads(self.db.get(key))
+        stored['plan']['scenes'][0]['actions'][0]['when'] = 'Entro il 25 agosto 2000'
+        original = json.dumps(stored)
+        self.db.set(key, original)
+        reopened = self.http.get('/api/fabbrica/plans/' + record['id'])
+        self.assertEqual(reopened.status_code, 200)
+        self.assertTrue(reopened.json['plan']['scenes'][0]['actions'][0]['when'].startswith('Da ripianificare:'))
+        self.assertEqual(self.db.get(key), original)
 
     def test_out_of_order_completion_rejected_and_revoke_cascades(self):
         plan = validate_plan(json.dumps(self.examples[0]))
