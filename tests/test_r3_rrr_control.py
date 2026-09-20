@@ -217,10 +217,15 @@ class TestRRRControl(unittest.TestCase):
                 empty = node.rrr_status("Bearer TEST_TOKEN")
                 self.assertFalse(empty["active"])
                 self.assertIsNone(empty["event_id"])
+                self.assertFalse(node._readiness_state()["ready"])
+                self.assertIn("rrr_not_active", node._readiness_state()["reasons"])
+                self.assertEqual(node.ready().status_code, 503)
 
                 applied = node.rrr_event(self.event, "Bearer TEST_TOKEN", "controller")
                 self.assertEqual(applied["status"], "applied")
                 self.assertTrue(applied["active"])
+                self.assertTrue(node._readiness_state()["ready"])
+                self.assertEqual(node.ready().status_code, 200)
 
                 duplicate = node.rrr_event(self.event, "Bearer TEST_TOKEN", "peer-a")
                 self.assertEqual(duplicate["status"], "already_applied")
