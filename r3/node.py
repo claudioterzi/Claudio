@@ -23,7 +23,7 @@ from typing import Any, Optional
 import nacl.encoding
 import nacl.signing
 from fastapi import Body, FastAPI, HTTPException, Header, UploadFile, File
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 try:
     from .rrr_control import POLICY as RRR_POLICY, POLICY_SHA256 as RRR_POLICY_SHA256, PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
@@ -40,6 +40,7 @@ API_TOKEN  = os.getenv("R3_API_TOKEN", "changeme")
 NODE_ID    = os.getenv("R3_NODE_ID", "node-a")
 SIGNING_KEY_HEX = os.getenv("R3_SIGNING_KEY_HEX", "")
 CONTROL_VERIFY_KEY_HEX = os.getenv("R3_CONTROL_VERIFY_KEY_HEX", "").strip()
+REQUIRE_RRR_ACTIVE = os.getenv("R3_REQUIRE_RRR_ACTIVE", "true").strip().lower() in {"1", "true", "yes"}
 ALLOW_TEST_SHUTDOWN = os.getenv("R3_ALLOW_TEST_SHUTDOWN", "").strip().lower() in {"1", "true", "yes"}
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -274,10 +275,38 @@ def _apply_rrr_event(event: dict[str, Any], source_node: str = "") -> tuple[str,
 app = FastAPI(title=f"R3∞ {NODE_ID}", version="0.2.0")
 
 
-# Health check — senza auth (usato da load balancer / monitor esterno)
+# Liveness: process is up. This deliberately does not claim network readiness.
 @app.get("/health")
 def health():
     return {"status": "healthy", "node_id": NODE_ID}
+
+
+def _readiness_state() -> dict[str, Any]:
+    latest = _rrr_latest()
+    active = bool(latest and latest["action"] == "activate")
+    reasons: list[str] = []
+    if not API_TOKEN or API_TOKEN == "changeme":
+        reasons.append("api_token_not_configured")
+    if not CONTROL_VERIFY_KEY_HEX:
+        reasons.append("rrr_controller_key_not_configured")
+    if REQUIRE_RRR_ACTIVE and not active:
+        reasons.append("rrr_not_active")
+    return {
+        "ready": not reasons,
+        "node_id": NODE_ID,
+        "protocol": RRR_PROTOCOL,
+        "policy_sha256": RRR_POLICY_SHA256,
+        "rrr_active": active,
+        "rrr_event_id": latest["event_id"] if latest else None,
+        "reasons": reasons,
+    }
+
+
+# Readiness: a node may be alive while still quarantined from active network use.
+@app.get("/ready")
+def ready():
+    state = _readiness_state()
+    return JSONResponse(status_code=200 if state["ready"] else 503, content=state)
 
 
 # Stato nodo — con auth
@@ -291,6 +320,7 @@ def status(authorization: Optional[str] = Header(None)):
         storage = sum(f.stat().st_size for f in (DATA_DIR / "docs").glob("*")) \
             if (DATA_DIR / "docs").exists() else 0
     rrr = _rrr_latest()
+    readiness = _readiness_state()
     return {
         "node_id":    NODE_ID,
         "documents":  count,
@@ -300,6 +330,8 @@ def status(authorization: Optional[str] = Header(None)):
         "rrr_protocol": RRR_PROTOCOL,
         "rrr_policy_sha256": RRR_POLICY_SHA256,
         "rrr_event_id": rrr["event_id"] if rrr else None,
+        "network_ready": readiness["ready"],
+        "readiness_reasons": readiness["reasons"],
         "ts":         datetime.now(timezone.utc).isoformat(),
     }
 
