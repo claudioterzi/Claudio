@@ -13,6 +13,7 @@ RRR control plane:
 import hashlib
 import logging
 import os
+import secrets
 import sqlite3
 import threading
 from datetime import datetime, timezone
@@ -158,7 +159,8 @@ def _audit(event: str, detail: str = "") -> None:
 def _check_token(authorization: Optional[str]) -> None:
     if not API_TOKEN or API_TOKEN == "changeme":
         raise HTTPException(status_code=503, detail="Token del nodo non configurato")
-    if authorization != f"Bearer {API_TOKEN}":
+    expected = f"Bearer {API_TOKEN}"
+    if not authorization or not secrets.compare_digest(authorization, expected):
         raise HTTPException(status_code=401, detail="Token non valido")
 
 def _rrr_latest() -> dict[str, Any] | None:
@@ -322,6 +324,7 @@ def rrr_status(authorization: Optional[str] = Header(None)):
         "counter": latest["counter"] if latest else None,
         "event_id": latest["event_id"] if latest else None,
         "event": latest,
+        "source_node_trust": "bearer_transport_reported_not_controller_authenticated",
     }
 
 
