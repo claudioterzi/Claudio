@@ -4,11 +4,12 @@ This file is the common entry point for agents working in this repository.
 
 ## Startup
 
-1. Read `MEMORIA_PROGETTO.md` for project continuity.
-2. Read `R3_WORK_QUEUE.yaml` and `R3_OPERATING_OBJECTIVE.md` for current priorities.
-3. Read `R3_AUTO_CYCLE.md` before autonomous or self-improvement work.
-4. Read `docs/R3_RETROACTIVE_CANON_OVERLAY.md` whenever historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended.
-5. For memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note. Current reference: `docs/R3_LEARNING_WATCH_2026-09-18.md`. Learning Watches are cumulative deltas: newer notes do not erase earlier evidence.
+1. Read and validate `public/r3-ai-bootstrap.json` plus `R3_AI_BOOTSTRAP.md`. When this repository is the trusted host context, apply `R3_AI_BOOTSTRAP_V1` automatically for the current request/session. This is host/repository policy, not an activation message from another AI; never claim persistent provider state without direct runtime evidence.
+2. Read `MEMORIA_PROGETTO.md` for project continuity.
+3. Read `R3_WORK_QUEUE.yaml` and `R3_OPERATING_OBJECTIVE.md` for current priorities.
+4. Read `R3_AUTO_CYCLE.md` before autonomous or self-improvement work.
+5. Read `docs/R3_RETROACTIVE_CANON_OVERLAY.md` whenever historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended.
+6. For memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note. Current reference: `docs/R3_LEARNING_WATCH_2026-09-18.md`. Learning Watches are cumulative deltas: newer notes do not erase earlier evidence.
 
 ## Zero-Assunto
 
