@@ -8,7 +8,8 @@
     {"src":"api/raffaello.py","use":"@vercel/python","config":{"maxDuration":120,"includeFiles":"{tarocchi_quantici_alpha.json,api/tarot_alpha.py,sdq1/llm/**}"}},
     {"src":"api/orchestra.py","use":"@vercel/python","config":{"maxDuration":120,"includeFiles":"{sdq1/llm/**,sdq1/config/**,typesafe_sister/**}"}},
     {"src":"api/deepseek_eval.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{sdq1/llm/**}"}},
-    {"src":"api/r3_sync.py","use":"@vercel/python","config":{"maxDuration":30}},\n    {"src":"tarocchi_web.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{studio/parfums/**,public/formule/organo-*.json,tarocchi_quantici_alpha.json,fabbrica.py,fabbrica_typesafe.py,fabbrica_dialogue.py,typesafe_sister/**}"}},
+    {"src":"api/r3_sync.py","use":"@vercel/python","config":{"maxDuration":30}},
+    {"src":"tarocchi_web.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{studio/parfums/**,public/formule/organo-*.json,tarocchi_quantici_alpha.json,fabbrica.py,fabbrica_typesafe.py,fabbrica_dialogue.py,typesafe_sister/**}"}},
     {"src":"public/**","use":"@vercel/static"}
   ],
   "routes": [
@@ -44,7 +45,11 @@
     {"src":"/parti","dest":"/public/parti.html"},
     {"src":"/fabbrica/?","dest":"/public/fabbrica.html"},
     {"src":"/fabbrica-dei-desideri/?","dest":"/public/fabbrica.html"},
-    {"src":"/api/r3-sync/health","dest":"/api/r3_sync.py"},\n    {"src":"/api/r3-sync/enroll","dest":"/api/r3_sync.py"},\n    {"src":"/api/r3-sync/revoke","dest":"/api/r3_sync.py"},\n    {"src":"/api/r3-sync","dest":"/api/r3_sync.py"},\n    {"src":"/api/flight/migliore","dest":"/api/flight_best.py"},
+    {"src":"/api/r3-sync/health","dest":"/api/r3_sync.py"},
+    {"src":"/api/r3-sync/enroll","dest":"/api/r3_sync.py"},
+    {"src":"/api/r3-sync/revoke","dest":"/api/r3_sync.py"},
+    {"src":"/api/r3-sync","dest":"/api/r3_sync.py"},
+    {"src":"/api/flight/migliore","dest":"/api/flight_best.py"},
     {"src":"/api/tarocchi/raffaello","dest":"/api/tarot_alpha.py"},
     {"src":"/api/orchestra","dest":"/api/orchestra.py"},
     {"src":"/api/deepseek-eval","dest":"/api/deepseek_eval.py"},
