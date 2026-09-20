@@ -1,0 +1,52 @@
+name: R3 Cross Device Sync
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'api/r3_sync.py'
+      - 'public/r3-memory.js'
+      - 'public/r3-sync.js'
+      - 'public/r3-evoluzione.html'
+      - 'tests/r3-memory-integrity.cjs'
+      - 'tests/test_r3_sync.py'
+      - 'vercel.json'
+      - '.github/workflows/r3-cross-device-sync.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'api/r3_sync.py'
+      - 'public/r3-memory.js'
+      - 'public/r3-sync.js'
+      - 'public/r3-evoluzione.html'
+      - 'tests/r3-memory-integrity.cjs'
+      - 'tests/test_r3_sync.py'
+      - 'vercel.json'
+      - '.github/workflows/r3-cross-device-sync.yml'
+  workflow_dispatch:
+
+jobs:
+  sync-integrity:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install API test dependencies
+        run: pip install flask redis werkzeug
+      - name: JavaScript syntax
+        run: |
+          node --check public/r3-memory.js
+          node --check public/r3-sync.js
+      - name: Ledger regression suite
+        run: node tests/r3-memory-integrity.cjs
+      - name: Server sync unit tests
+        run: python -m unittest tests.test_r3_sync -v
+      - name: Python compile
+        run: python -m py_compile api/r3_sync.py tests/test_r3_sync.py
