@@ -297,6 +297,23 @@ def _targets() -> list[str]:
     return result
 
 
+def _validate_ack(result: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(result, dict):
+        raise RRRControlError("invalid acknowledgement")
+    if result.get("status") not in {"applied", "already_applied"}:
+        raise RRRControlError("node did not acknowledge RRR event")
+    if result.get("protocol") != event["protocol"]:
+        raise RRRControlError("ack protocol mismatch")
+    if result.get("event_id") != event["event_id"]:
+        raise RRRControlError("ack event_id mismatch")
+    if result.get("counter") != event["counter"]:
+        raise RRRControlError("ack counter mismatch")
+    expected_active = event["action"] == "activate"
+    if result.get("active") is not expected_active:
+        raise RRRControlError("ack active-state mismatch")
+    return result
+
+
 def _post_event(url: str, event: dict[str, Any], token: str) -> dict[str, Any]:
     response = httpx.post(
         f"{url}/protocol/rrr/event",
@@ -305,7 +322,8 @@ def _post_event(url: str, event: dict[str, Any], token: str) -> dict[str, Any]:
         timeout=15,
     )
     response.raise_for_status()
-    return response.json()
+    result = response.json()
+    return _validate_ack(result, event)
 
 
 def _get_status(url: str, token: str) -> dict[str, Any]:
