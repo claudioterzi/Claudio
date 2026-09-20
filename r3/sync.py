@@ -27,9 +27,19 @@ from typing import Any
 import httpx
 
 try:
-    from .rrr_control import SCHEMA as RRR_SCHEMA, replication_direction
+    from .rrr_control import (
+        SCHEMA as RRR_SCHEMA,
+        RRRControlError,
+        replication_direction,
+        verify_event,
+    )
 except ImportError:  # standalone execution
-    from rrr_control import SCHEMA as RRR_SCHEMA, replication_direction
+    from rrr_control import (
+        SCHEMA as RRR_SCHEMA,
+        RRRControlError,
+        replication_direction,
+        verify_event,
+    )
 
 # ---------------------------------------------------------------------------
 # Config
@@ -41,6 +51,7 @@ PEER_URLS         = [u for u in os.getenv("R3_PEERS", "").split(",") if u]
 SYNC_INTERVAL     = int(os.getenv("R3_SYNC_INTERVAL", "300"))
 DATA_DIR          = Path(os.getenv("R3_DATA_DIR", "data"))
 NODE_ID           = os.getenv("R3_NODE_ID", "sync")
+CONTROL_VERIFY_KEY_HEX = os.getenv("R3_CONTROL_VERIFY_KEY_HEX", "").strip()
 
 logging.basicConfig(
     level=logging.INFO,
@@ -137,6 +148,36 @@ def _wire_rrr_event(status: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _trusted_rrr_view(status: dict[str, Any]) -> dict[str, Any]:
+    """Validate the signed event before its counter can influence sync direction."""
+    if not status.get("event"):
+        return {
+            "event": None,
+            "counter": None,
+            "event_id": None,
+        }
+    if not CONTROL_VERIFY_KEY_HEX:
+        raise RRRControlError(
+            "R3_CONTROL_VERIFY_KEY_HEX is required to route a non-empty RRR state"
+        )
+
+    wire = _wire_rrr_event(status)
+    payload = verify_event(wire, CONTROL_VERIFY_KEY_HEX)
+
+    # Top-level status metadata is transport data. It must agree with the signed
+    # payload/envelope before it is used for ordering.
+    if status.get("counter") != payload["counter"]:
+        raise RRRControlError("status counter disagrees with signed event")
+    if status.get("event_id") != wire["event_id"]:
+        raise RRRControlError("status event_id disagrees with signed event")
+
+    return {
+        "event": status["event"],
+        "counter": payload["counter"],
+        "event_id": wire["event_id"],
+    }
+
+
 def _push_rrr_event(dst_url: str, event: dict[str, Any]) -> dict[str, Any]:
     resp = httpx.post(
         f"{dst_url}/protocol/rrr/event",
@@ -160,8 +201,10 @@ def _sha256(data: bytes) -> str:
 
 def sync_rrr_with_peer(peer_url: str) -> None:
     try:
-        local = _get_rrr_status(LOCAL_URL)
-        peer = _get_rrr_status(peer_url)
+        local_raw = _get_rrr_status(LOCAL_URL)
+        peer_raw = _get_rrr_status(peer_url)
+        local = _trusted_rrr_view(local_raw)
+        peer = _trusted_rrr_view(peer_raw)
         direction = replication_direction(local, peer)
 
         if direction in {"none", "equal"}:
@@ -178,7 +221,7 @@ def sync_rrr_with_peer(peer_url: str) -> None:
             return
 
         if direction == "local_to_peer":
-            event = _wire_rrr_event(local)
+            event = _wire_rrr_event(local_raw)
             ack = _push_rrr_event(peer_url, event)
             log.info(
                 "RRR relay → %s event=%s counter=%s ack=%s",
@@ -189,7 +232,7 @@ def sync_rrr_with_peer(peer_url: str) -> None:
             )
             return
 
-        event = _wire_rrr_event(peer)
+        event = _wire_rrr_event(peer_raw)
         ack = _push_rrr_event(LOCAL_URL, event)
         log.info(
             "RRR relay ← %s event=%s counter=%s ack=%s",
