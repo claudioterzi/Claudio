@@ -15,9 +15,11 @@ import hashlib
 import json
 import os
 import secrets
+import sqlite3
 import sys
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -31,6 +33,7 @@ VALID_ACTIONS = {"activate", "deactivate"}
 PAYLOAD_FIELDS = (
     "schema",
     "protocol",
+    "policy_sha256",
     "action",
     "scope",
     "counter",
@@ -83,6 +86,60 @@ def _canonical_bytes(payload: dict[str, Any]) -> bytes:
     ).encode("utf-8")
 
 
+POLICY_SHA256 = hashlib.sha256(_canonical_bytes(POLICY)).hexdigest()
+
+
+def _counter_db_path(path: str | Path | None = None) -> Path:
+    if path is not None:
+        return Path(path)
+    configured = os.getenv("R3_CONTROL_COUNTER_DB", "").strip()
+    if configured:
+        return Path(configured).expanduser()
+    return Path.home() / ".r3" / "rrr_control.db"
+
+
+def _next_counter(path: str | Path | None = None) -> int:
+    """Return a controller-local monotonic counter, durable across restarts.
+
+    SQLite BEGIN IMMEDIATE serializes concurrent controller processes that share
+    the same counter DB.  Wall-clock nanoseconds are only a floor; a backwards
+    clock step cannot reduce the signed counter.
+    """
+    db_path = _counter_db_path(path)
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    db = sqlite3.connect(str(db_path), timeout=10, isolation_level=None)
+    try:
+        db.execute("PRAGMA busy_timeout=10000")
+        db.execute("BEGIN IMMEDIATE")
+        db.execute(
+            """CREATE TABLE IF NOT EXISTS controller_counter (
+                   singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
+                   value INTEGER NOT NULL
+               )"""
+        )
+        row = db.execute(
+            "SELECT value FROM controller_counter WHERE singleton = 1"
+        ).fetchone()
+        last = int(row[0]) if row else 0
+        candidate = max(time.time_ns(), last + 1)
+        db.execute(
+            """INSERT INTO controller_counter (singleton, value)
+               VALUES (1, ?)
+               ON CONFLICT(singleton) DO UPDATE SET value = excluded.value""",
+            (candidate,),
+        )
+        db.execute("COMMIT")
+        return candidate
+    except Exception:
+        try:
+            db.execute("ROLLBACK")
+        except sqlite3.Error:
+            pass
+        raise
+    finally:
+        db.close()
+
+
 def canonical_payload(event: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(event, dict):
         raise RRRControlError("event must be an object")
@@ -96,6 +153,8 @@ def canonical_payload(event: dict[str, Any]) -> dict[str, Any]:
         raise RRRControlError("unsupported schema")
     if payload["protocol"] != PROTOCOL:
         raise RRRControlError("unsupported protocol")
+    if payload["policy_sha256"] != POLICY_SHA256:
+        raise RRRControlError("policy hash mismatch")
     if payload["action"] not in VALID_ACTIONS:
         raise RRRControlError("unsupported action")
     if payload["scope"] != SCOPE:
@@ -145,9 +204,10 @@ def sign_event(
         {
             "schema": SCHEMA,
             "protocol": PROTOCOL,
+            "policy_sha256": POLICY_SHA256,
             "action": action,
             "scope": SCOPE,
-            "counter": counter if counter is not None else time.time_ns(),
+            "counter": counter if counter is not None else _next_counter(),
             "issued_at": issued_at or datetime.now(timezone.utc).isoformat(),
             "nonce": nonce or secrets.token_urlsafe(24),
             "issuer": issuer,
@@ -315,6 +375,7 @@ def main(argv: list[str] | None = None) -> int:
         {
             "command": args.command,
             "protocol": PROTOCOL,
+            "policy_sha256": POLICY_SHA256,
             "event_id": event["event_id"],
             "counter": event["counter"],
             "acknowledgements": acknowledgements,
