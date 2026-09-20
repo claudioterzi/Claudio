@@ -25,9 +25,9 @@ from fastapi import Body, FastAPI, HTTPException, Header, UploadFile, File
 from fastapi.responses import FileResponse
 
 try:
-    from .rrr_control import PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
+    from .rrr_control import POLICY as RRR_POLICY, PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
 except ImportError:  # Railway single-file image
-    from rrr_control import PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
+    from rrr_control import POLICY as RRR_POLICY, PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
 
 # ---------------------------------------------------------------------------
 # Config
@@ -250,6 +250,12 @@ def status(authorization: Optional[str] = Header(None)):
         "rrr_event_id": rrr["event_id"] if rrr else None,
         "ts":         datetime.now(timezone.utc).isoformat(),
     }
+
+
+# Canonical machine-readable policy. Public by design: no secret material.
+@app.get("/protocol/rrr/policy")
+def rrr_policy():
+    return RRR_POLICY
 
 
 # RRR network state — authenticated because it exposes control-plane metadata.
