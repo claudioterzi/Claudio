@@ -1,11 +1,11 @@
 (function(){
 'use strict';
-// R3 memory integrity hardening v1.1.0 — Claudio Terzi · C.Terzi
+// R3 memory integrity hardening v1.2.0 — Claudio Terzi · C.Terzi
 // Local-only. Reload older tabs before writing; never disable access controls.
 const KEY='r3.memory.ledger.v1';
 const META='r3.memory.meta.v1';
 const REPORT='r3.memory.collate.latest.v1';
-const VERSION='1.1.0';
+const VERSION='1.2.0';
 const LOCK=KEY+'.write';
 const STATES=new Set(['FATTO','INFERENZA','IPOTESI','SIMULAZIONE']);
 const MAX_EVENTS=5000, MAX_IMPORT_BYTES=8*1024*1024;
@@ -65,6 +65,7 @@ function commitLedger(ledger,expectedRaw){
  // The ledger is ONE storage write, after all validation. Metadata is non-authoritative.
  localStorage.setItem(KEY,serialized);
  try{localStorage.setItem(META,JSON.stringify({updated_at:new Date().toISOString(),count:ledger.length,writer_version:VERSION,head:ledger.at(-1)?.hash||null}))}catch{}
+ try{if(globalThis.dispatchEvent&&globalThis.CustomEvent)globalThis.dispatchEvent(new globalThis.CustomEvent('r3:ledger-updated',{detail:{count:ledger.length,head:ledger.at(-1)?.hash||null}}))}catch{}
 }
 function checkedInput(input){
  if(!input||!STATES.has(input.state))throw new Error('Stato della memoria non valido.');
@@ -92,6 +93,26 @@ async function append(input){
 }
 function render(){const ledger=load();const list=document.getElementById('r3-ledger-list');const count=document.getElementById('r3-ledger-count');if(count)count.textContent=String(ledger.length);if(!list)return;list.innerHTML='';ledger.slice().reverse().slice(0,40).forEach(e=>{const a=document.createElement('article');a.className='memory-event';a.innerHTML=`<div class="event-top"><span class="tag ${esc(e.state.toLowerCase())}">${esc(e.state)}</span><code>${esc(e.priority)}</code><time>${new Date(e.ts).toLocaleString('it-IT')}</time></div><h3>${esc(e.claim)}</h3><p><strong>Evidenza:</strong> ${esc(e.evidence||'—')}</p><p><strong>Cade se:</strong> ${esc(e.falsifier||'—')}</p><p><strong>Fonte:</strong> ${esc(e.source||'locale')}</p><small>${esc(e.hash.slice(0,18))}…</small>`;list.appendChild(a)});if(!ledger.length)list.innerHTML='<p class="muted">Nessun evento locale ancora registrato.</p>';}
 function download(){const data={schema:'R3_MEMORY_LEDGER_V1',exported_at:new Date().toISOString(),events:load()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='R3_MEMORY_LEDGER_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+async function syncRemote(incoming){
+ const check=await verifyLedger(incoming);
+ if(!check.ok)throw new Error('Sync remoto non valido ('+check.reason+'): memoria locale intatta.');
+ return withWriteLock(async()=>{
+  const before=localStorage.getItem(KEY),current=load(),existing=await verifyLedger(current);
+  if(!existing.ok)throw new Error('Catena locale non valida: sincronizzazione sospesa, nessun dato sovrascritto.');
+  const common=Math.min(current.length,incoming.length);
+  for(let i=0;i<common;i++){
+   if(current[i].hash!==incoming[i].hash||stable(current[i])!==stable(incoming[i]))
+    return {status:'diverged',count:current.length,local_head:current.at(-1)?.hash||null,remote_head:incoming.at(-1)?.hash||null};
+  }
+  if(incoming.length>current.length){
+   commitLedger(incoming,before);
+   return {status:'adopted_remote',count:incoming.length,head:incoming.at(-1)?.hash||null};
+  }
+  if(current.length>incoming.length)
+   return {status:'local_ahead',count:current.length,head:current.at(-1)?.hash||null};
+  return {status:'equal',count:current.length,head:current.at(-1)?.hash||null};
+ });
+}
 async function importFile(file){
  if(!file||typeof file.text!=='function'||file.size>MAX_IMPORT_BYTES)throw new Error('File non valido o troppo grande.');
  const text=await file.text();
@@ -99,20 +120,10 @@ async function importFile(file){
  const raw=JSON.parse(text);
  if(!Array.isArray(raw)&&(!raw||typeof raw!=='object'||raw.schema&&raw.schema!=='R3_MEMORY_LEDGER_V1'))throw new Error('Formato non valido.');
  const incoming=Array.isArray(raw)?raw:raw.events;
- const check=await verifyLedger(incoming);
- if(!check.ok)throw new Error('Import non valido ('+check.reason+'): memoria precedente intatta.');
- return withWriteLock(async()=>{
-  const before=localStorage.getItem(KEY),current=load(),existing=await verifyLedger(current);
-  if(!existing.ok)throw new Error('Catena locale non valida: ripristino manuale necessario, nessun dato sovrascritto.');
-  // V1 is a linear chain. Only a matching prefix/extension is mergeable without
-  // changing history. Independent roots/forks must remain separate exports.
-  for(let i=0;i<Math.min(current.length,incoming.length);i++){
-   if(current[i].hash!==incoming[i].hash||stable(current[i])!==stable(incoming[i]))
-    throw new Error('Catene divergenti o indipendenti: import rifiutato senza modifiche. Conservare entrambi gli export.');
-  }
-  if(incoming.length>current.length)commitLedger(incoming,before);
-  return Math.max(current.length,incoming.length);
- });
+ const result=await syncRemote(incoming);
+ if(result.status==='diverged')
+  throw new Error('Catene divergenti o indipendenti: import rifiutato senza modifiche. Conservare entrambi gli export.');
+ return result.count;
 }
 function nextAction(canon){const ledger=load();const counts={};ledger.forEach(e=>counts[e.priority]=(counts[e.priority]||0)+1);const open=(canon.priorities||[]).filter(p=>!/verificat|canonic/i.test(p.state));open.sort((a,b)=>(counts[a.id]||0)-(counts[b.id]||0));return open[0]||null;}
 
@@ -266,6 +277,6 @@ async function init(){
   if(status)status.textContent+=' · SOLA LETTURA: Web Locks non disponibile.';
  }
 }
-window.R3Memory={version:VERSION,load,append,verify,collateAll,collaborate,executeCollaboration,importFile};
+window.R3Memory={version:VERSION,load,append,verify,collateAll,collaborate,executeCollaboration,importFile,syncRemote};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
