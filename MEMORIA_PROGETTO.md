@@ -1210,3 +1210,20 @@ e prosecuzione senza TypeSafe se non configurato o indisponibile. Nessuna nuova
 infrastruttura. 28 test Python e scenari DOM superati; controprova sul vecchio
 bridge fallisce per ciclo. Non equivale a una chiamata Jev live verificata.
 Configurazione, evidenze e limiti in `docs/FABBRICA_TYPESAFE_2026-09-20.md`.
+
+## Fabbrica — TypeSafe live e aiuto IA nelle microdomande, 20/09/2026
+
+Su richiesta diretta di Claudio, configurato TYPESAFE_API_KEY come Secret di
+Production Vercel e ripubblicata la base 405974f con deployment
+`dpl_GXo84BNJ8yLYVcsc3mFZbVUnqs7B`. Cena sintetica generata e riaperta nel browser;
+TypeSafe valutato nella UI e HTTP 200 dall'API ufficiale nei log di produzione.
+La precedente assenza della chiave è quindi superata per la Fabbrica su Vercel.
+Non sono state copiate credenziali nel repository o su Drive.
+
+Claudio chiede ora aiuto IA su ogni microdomanda. Modifica: proposte modificabili
+per ogni risposta, applicazione singola o cumulativa, memoria server delle scelte
+tra revisioni, priorità manuali conservate, domande identificate per testo anziché
+posizione. Il dialogo usa eventi espliciti. Si riusano provider, archivio e regia
+esistenti; nessun nuovo motore globale o endpoint Railway. Test locali 34 + 15
+subtest e scenari DOM superati; il collaudo live della nuova interazione resta
+separato. Dettagli e limiti: `docs/FABBRICA_DIALOGO_AI_2026-09-20.md`.

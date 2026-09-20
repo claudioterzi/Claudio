@@ -18,6 +18,7 @@ import uuid
 from flask import Blueprint, g, jsonify, request, send_from_directory
 from fabbrica_typesafe import assess_brief
 from typesafe_sister.client import configured as typesafe_configured
+from fabbrica_dialogue import HELP_SYSTEM, merge_dialogue, question_key, semantic_revision, validate_help
 
 fabbrica = Blueprint('fabbrica', __name__)
 TTL = 30 * 86400
@@ -61,6 +62,15 @@ Non sostituisce la scelta di un modello né la disponibilità delle risorse.
 L'eventuale semantic_guidance contiene suggerimenti probabilistici di TypeSafe,
 non fatti verificati. Usa le domande pertinenti senza ripetere informazioni già
 date nel brief o nella revisione; le parole del cliente prevalgono sui suggerimenti.
+Il campo dialogue conserva le scelte dichiarate dal cliente e le revisioni in
+ordine cronologico: non perderle nei passaggi successivi. VINCOLO e CONFERMATO
+si preservano salvo modifica esplicita; PREFERENZA è negoziabile; DESIDERIO è
+un obiettivo; DA_DECIDERE resta aperto. Una scelta non prova un'azione eseguita.
+Non ripetere domande a cui il cliente ha già risposto. Se le informazioni bastano,
+questions può essere vuoto. Per un conflitto reale chiedi solo il chiarimento utile.
+today_utc è la data attuale: non fissare scadenze precedenti a oggi. Se il cliente
+indica una data passata, chiedi di aggiornarla. Musica di sottofondo non implica
+un musicista dal vivo: non aggiungere quel costo senza una richiesta esplicita.
 Il budget e i limiti hanno precedenza sull'intensità: riduci il progetto se serve.
 Adatta la regia al contesto: matrimoni (decisioni di entrambi, invitati, fornitori,
 scadenze), feste e addii al celibato/nubilato (limiti condivisi, sorprese gradite,
@@ -128,7 +138,7 @@ def validate_plan(raw):
         raise ValueError('Invalid conditions')
     if not isinstance(scenes, list) or not 1 <= len(scenes) <= 5:
         raise ValueError('Invalid scenes')
-    if not isinstance(questions, list) or not 1 <= len(questions) <= 4:
+    if not isinstance(questions, list) or not 0 <= len(questions) <= 4:
         raise ValueError('Invalid questions')
     result['conditions'] = [dict(text=clean(c.get('text'), 180), detail=clean(c.get('detail'), 400)) for c in conditions]
     result['questions'] = [clean(q, 280) for q in questions]
@@ -173,9 +183,9 @@ def apply_progress(plan, action_id, complete):
     return plan
 
 
-def providers():
+def providers(max_tokens=3600):
     from sdq1.llm.providers import GeminiProvider, AnthropicProvider
-    options = dict(api_key=None, temperatura=.55, max_token=3600, json_mode=True,
+    options = dict(api_key=None, temperatura=.55, max_token=max_tokens, json_mode=True,
                    timeout=24, timeout_secondi=15, max_retries=0)
     if os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY'):
         yield GeminiProvider(modello='gemini-2.5-flash', **options)
@@ -195,7 +205,7 @@ def protect():
     g.fabbrica_started = time.monotonic()
     if not request.path.startswith('/api/fabbrica/'):
         return None
-    if request.content_length and request.content_length > 48000:
+    if request.content_length and request.content_length > 96000:
         return jsonify(error='Il testo è troppo lungo.'), 413
     if request.method in ('POST', 'PATCH', 'DELETE'):
         origin = request.headers.get('Origin')
@@ -269,7 +279,12 @@ def generate():
         if previous and previous['status'] != 'complete':
             return jsonify(error='Il copione precedente non è ancora disponibile.'), 409
         sid = session_id()
-        payload = dict(planning_policy='fabbrica-typesafe-v1', brief=brief, revision=revision, parent_id=parent,
+        try:
+            dialogue = merge_dialogue(previous, data.get('dialogue'), revision)
+        except ValueError as exc:
+            return jsonify(error=str(exc)), 400
+        payload = dict(planning_policy='fabbrica-dialogue-v2', today_utc=now()[:10],
+                       brief=brief, revision=revision, dialogue=dialogue, parent_id=parent,
                        previous=previous.get('plan') if previous else None)
         digest = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
         cachekey = PREFIX + 'request:' + sid + ':' + digest
@@ -303,11 +318,13 @@ def generate():
         if not db.set(cachekey, pid, ex=120, nx=True):
             return jsonify(error='Una richiesta uguale è già in corso. Attendi qualche istante.'), 409
         record = dict(id=pid, owner=sid, version=1, created_at=now(), expires_at=datetime.fromtimestamp(time.time()+TTL, timezone.utc).isoformat(),
-                      brief=brief, revision=revision, parent_id=parent, status='pending', plan=None, events=[],
+                      brief=brief, revision=revision, dialogue=dialogue,
+                      root_id=(previous.get('root_id') or previous['id']) if previous else pid,
+                      parent_id=parent, status='pending', plan=None, events=[],
                       provider=None, model=None, usage=None, estimated_cost_eur=None, attempts=[])
         db.set(PREFIX+'plan:'+pid, json.dumps(record, ensure_ascii=False), ex=TTL)
         db.set(PREFIX+'latest:'+sid, pid, ex=TTL)
-        record['assessment'] = assess_brief(brief, revision)
+        record['assessment'] = assess_brief(brief, semantic_revision(dialogue))
         if record['assessment']['status'] == 'evaluated':
             payload['semantic_guidance'] = record['assessment']
         start = time.monotonic()
@@ -344,6 +361,108 @@ def generate():
         return jsonify(error='Non riesco a confermare la preparazione e il salvataggio. Riapri il copione prima di riprovare.'), 503
 
 
+def save_question_help(db, pid, cachekey, record):
+    # Serialize with plan deletion: no suggestion survives its parent being removed.
+    return db.eval('''
+        if not redis.call('GET',KEYS[1]) then return 0 end
+        redis.call('SADD',KEYS[2],KEYS[3],KEYS[4]); redis.call('EXPIRE',KEYS[2],ARGV[2])
+        redis.call('SET',KEYS[3],ARGV[1],'EX',ARGV[2])
+        if ARGV[3] == 'suggested' then redis.call('SET',KEYS[4],ARGV[1],'EX',ARGV[2]) end
+        return 1
+    ''', 4, PREFIX+'plan:'+pid, PREFIX+'help-index:'+pid, PREFIX+'help:'+record['id'], cachekey,
+         json.dumps(record, ensure_ascii=False), TTL, record['status'])
+
+
+@fabbrica.post('/api/fabbrica/plans/<pid>/question-help')
+def question_help(pid):
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify(error='Richiesta non valida.'), 400
+    cachekey = None
+    acquired = False
+    try:
+        db = client()
+        current = read_owned(db, pid)
+        if current is None:
+            return jsonify(error='Copione non disponibile in questo browser o scaduto.'), 404
+        if current['status'] != 'complete' or type(data.get('version')) is not int or data['version'] != current['version']:
+            return jsonify(error='Il copione è cambiato. Riaprilo prima di chiedere aiuto.'), 409
+        try:
+            question = clean(data.get('question'), 280)
+            allowed = current['plan']['questions'] + [a['question'] for a in current.get('dialogue', {}).get('answers', [])]
+            if question_key(question) not in {question_key(q) for q in allowed}:
+                raise ValueError('La domanda non appartiene a questo copione.')
+            answer = clean(data.get('answer', ''), 900, False)
+            instruction = clean(data.get('instruction', ''), 600, False)
+            dialogue = merge_dialogue(current, data.get('dialogue'))
+        except ValueError as exc:
+            return jsonify(error=str(exc)), 400
+        payload = dict(policy='fabbrica-question-help-v1', today_utc=now()[:10],
+                       brief=current['brief'], dialogue=dialogue, question=question,
+                       draft_answer=answer, help_request=instruction)
+        digest = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+        cachekey = PREFIX + 'help-cache:' + pid + ':' + str(current['version']) + ':' + digest
+        existing = db.get(cachekey)
+        if existing:
+            saved = json.loads(existing)
+            if saved.get('status') == 'suggested':
+                return jsonify(public_record(saved))
+            return jsonify(error='Sto preparando una risposta a questa domanda. Attendi qualche istante.'), 409
+        options = list(providers(max_tokens=1800))
+        if not any(p.disponibile for p in options):
+            return jsonify(error='L’aiuto IA non è disponibile adesso. Puoi scrivere la tua risposta.'), 503
+        sid = session_id()
+        ip = request.headers.get('X-Vercel-Forwarded-For') or request.remote_addr or 'unknown'
+        bucket = hashlib.sha256(ip.encode()).hexdigest()[:32]
+        period = str(int(time.time() // 3600))
+        quota = db.eval('''
+            for i=1,#KEYS do
+                if tonumber(redis.call('GET',KEYS[i]) or '0') >= tonumber(ARGV[i]) then return 0 end
+            end
+            for i=1,#KEYS do redis.call('INCR',KEYS[i]); redis.call('EXPIRE',KEYS[i],90000) end
+            return 1
+        ''', 3, PREFIX+'help-quota:ip:'+bucket+':'+period, PREFIX+'help-quota:sid:'+sid+':'+period,
+             PREFIX+'help-quota:day:'+str(int(time.time()//86400)), 20, 20, 150)
+        if not quota:
+            return jsonify(error='Hai raggiunto il limite temporaneo di aiuti IA. Puoi continuare a rispondere e affinare il copione.'), 429
+        acquired = bool(db.set(cachekey, json.dumps({'status': 'pending'}), ex=120, nx=True))
+        if not acquired:
+            return jsonify(error='Un aiuto per questa domanda è già in preparazione.'), 409
+        help_record = dict(id=uuid.uuid4().hex, owner=sid, plan_id=pid,
+                           plan_version=current['version'], question=question,
+                           status='pending', created_at=now(), attempts=[])
+        started = time.monotonic()
+        for provider in options:
+            if not provider.disponibile or time.monotonic() - started > 30:
+                continue
+            response = provider.completa(HELP_SYSTEM, json.dumps(payload, ensure_ascii=False))
+            if not response.via_api or not response.testo:
+                continue
+            help_record['attempts'].append(dict(output=response.testo[:10000], provider=response.provider,
+                                               model=response.modello, usage=response.metadata))
+            if not save_question_help(db, pid, cachekey, help_record):
+                db.delete(cachekey)
+                return jsonify(error='Questo copione è stato eliminato mentre preparavo il consiglio.'), 404
+            try:
+                help_record.update(validate_help(response.testo), status='suggested')
+                if not save_question_help(db, pid, cachekey, help_record):
+                    db.delete(cachekey)
+                    return jsonify(error='Questo copione è stato eliminato mentre preparavo il consiglio.'), 404
+                return jsonify(public_record(help_record))
+            except (ValueError, TypeError, AttributeError):
+                continue
+        db.delete(cachekey)
+        return jsonify(error='Non ho ottenuto una proposta valida. La tua risposta resta disponibile: puoi modificarla o riprovare.'), 503
+    except Exception as exc:
+        if acquired and cachekey:
+            try:
+                db.delete(cachekey)
+            except Exception:
+                pass
+        record_failure('question_help_failed', exc)
+        return jsonify(error='L’aiuto IA non risponde adesso. La tua risposta resta disponibile.'), 503
+
+
 @fabbrica.route('/api/fabbrica/plans/<pid>', methods=['GET', 'PATCH', 'DELETE'])
 def plan_resource(pid):
     try:
@@ -355,7 +474,10 @@ def plan_resource(pid):
         if request.method == 'GET':
             return jsonify(public_record(record))
         if request.method == 'DELETE':
-            db.delete(key)
+            db.eval('''
+                for _,k in ipairs(redis.call('SMEMBERS',KEYS[2])) do redis.call('DEL',k) end
+                redis.call('DEL',KEYS[1],KEYS[2]); return 1
+            ''', 2, key, PREFIX+'help-index:'+pid)
             latest = db.get(PREFIX+'latest:'+session_id())
             if latest in (pid, pid.encode()):
                 db.delete(PREFIX+'latest:'+session_id())
