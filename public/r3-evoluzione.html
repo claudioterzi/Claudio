@@ -24,5 +24,5 @@
 <script>
 (async function(){const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));try{const d=await (await fetch('/r3-evoluzione.json',{cache:'no-store'})).json();document.getElementById('version-label').textContent='Versione '+d.version+' · '+d.status;document.getElementById('principle').textContent=d.principle;document.getElementById('updated-at').textContent='Canone aggiornato: '+new Date(d.updated_at).toLocaleString('it-IT')+' · firma C.Terzi';const p=document.getElementById('priorities');d.priorities.forEach(x=>{const a=document.createElement('article');a.className='priority';a.innerHTML=`<div class="id">${esc(x.id)}</div><div><strong>${esc(x.name)}</strong><span>${esc(x.why)}</span></div><div class="state">${esc(x.state)}</div>`;p.appendChild(a)});const e=document.getElementById('evidence');d.current_evidence.forEach(x=>{const a=document.createElement('article');a.className='card';a.innerHTML=`<span class="tag ${esc((x.state||'').toLowerCase())}">${esc(x.state)}</span><h3>${esc(x.label)}</h3><p>${esc(x.detail)}</p>`;e.appendChild(a)});}catch{document.getElementById('version-label').textContent='Canone non caricato';}})();
 </script>
-<script src="/r3-memory.js" defer></script>
+<script src="/r3-memory.js" defer></script>\n<script src="/r3-sync.js" defer></script>
 </body></html>
