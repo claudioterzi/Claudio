@@ -25,9 +25,9 @@ from fastapi import Body, FastAPI, HTTPException, Header, UploadFile, File
 from fastapi.responses import FileResponse
 
 try:
-    from .rrr_control import POLICY as RRR_POLICY, PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
+    from .rrr_control import POLICY as RRR_POLICY, POLICY_SHA256 as RRR_POLICY_SHA256, PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
 except ImportError:  # Railway single-file image
-    from rrr_control import POLICY as RRR_POLICY, PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
+    from rrr_control import POLICY as RRR_POLICY, POLICY_SHA256 as RRR_POLICY_SHA256, PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
 
 # ---------------------------------------------------------------------------
 # Config
@@ -107,6 +107,7 @@ def _init_db() -> None:
             CREATE TABLE IF NOT EXISTS protocol_events (
                 event_id     TEXT PRIMARY KEY,
                 protocol     TEXT NOT NULL,
+                policy_sha256 TEXT NOT NULL DEFAULT '',
                 action       TEXT NOT NULL,
                 scope        TEXT NOT NULL,
                 counter      INTEGER NOT NULL UNIQUE,
@@ -118,6 +119,15 @@ def _init_db() -> None:
                 source_node  TEXT
             )
         """)
+        columns = {
+            row[1]
+            for row in db.execute("PRAGMA table_info(protocol_events)").fetchall()
+        }
+        if "policy_sha256" not in columns:
+            db.execute(
+                "ALTER TABLE protocol_events "
+                "ADD COLUMN policy_sha256 TEXT NOT NULL DEFAULT ''"
+            )
 
 _init_db()
 
@@ -134,12 +144,16 @@ def _sha256(data: bytes) -> str:
 def _sign(data: bytes) -> str:
     return SIGNING_KEY.sign(data).signature.hex()
 
+def _audit_db(db: sqlite3.Connection, event: str, detail: str = "") -> None:
+    db.execute(
+        "INSERT INTO audit_log (event, detail, ts) VALUES (?, ?, ?)",
+        (event, detail, datetime.now(timezone.utc).isoformat()),
+    )
+
+
 def _audit(event: str, detail: str = "") -> None:
     with _conn() as db:
-        db.execute(
-            "INSERT INTO audit_log (event, detail, ts) VALUES (?, ?, ?)",
-            (event, detail, datetime.now(timezone.utc).isoformat()),
-        )
+        _audit_db(db, event, detail)
 
 def _check_token(authorization: Optional[str]) -> None:
     if not API_TOKEN or API_TOKEN == "changeme":
@@ -150,7 +164,7 @@ def _check_token(authorization: Optional[str]) -> None:
 def _rrr_latest() -> dict[str, Any] | None:
     with _conn() as db:
         row = db.execute(
-            """SELECT event_id, protocol, action, scope, counter, issued_at,
+            """SELECT event_id, protocol, policy_sha256, action, scope, counter, issued_at,
                       nonce, issuer, signature, received_at, source_node
                FROM protocol_events
                WHERE protocol = ?
@@ -173,26 +187,46 @@ def _apply_rrr_event(event: dict[str, Any], source_node: str = "") -> tuple[str,
 
     event_id = str(event["event_id"])
     signature = str(event["signature"])
-    latest = _rrr_latest()
-
-    if latest and latest["event_id"] == event_id:
-        return "already_applied", latest
-    if latest and payload["counter"] < latest["counter"]:
-        raise HTTPException(status_code=409, detail="Evento RRR obsoleto")
-    if latest and payload["counter"] == latest["counter"]:
-        raise HTTPException(status_code=409, detail="Conflitto RRR: stesso counter, evento diverso")
-
     received_at = datetime.now(timezone.utc).isoformat()
-    with _conn() as db:
+
+    # Ordering check + insert + audit are one serialized transaction.
+    # This prevents a concurrent stale writer from being acknowledged after a
+    # newer event has already committed.
+    db = _conn()
+    try:
+        db.execute("PRAGMA busy_timeout=10000")
+        db.execute("BEGIN IMMEDIATE")
+        row = db.execute(
+            """SELECT event_id, protocol, policy_sha256, action, scope, counter,
+                      issued_at, nonce, issuer, signature, received_at, source_node
+               FROM protocol_events
+               WHERE protocol = ?
+               ORDER BY counter DESC
+               LIMIT 1""",
+            (RRR_PROTOCOL,),
+        ).fetchone()
+        latest = dict(row) if row else None
+
+        if latest and latest["event_id"] == event_id:
+            db.execute("COMMIT")
+            return "already_applied", latest
+        if latest and payload["counter"] < latest["counter"]:
+            db.execute("ROLLBACK")
+            raise HTTPException(status_code=409, detail="Evento RRR obsoleto")
+        if latest and payload["counter"] == latest["counter"]:
+            db.execute("ROLLBACK")
+            raise HTTPException(status_code=409, detail="Conflitto RRR: stesso counter, evento diverso")
+
         try:
             db.execute(
                 """INSERT INTO protocol_events
-                   (event_id, protocol, action, scope, counter, issued_at, nonce,
-                    issuer, signature, received_at, source_node)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                   (event_id, protocol, policy_sha256, action, scope, counter, issued_at,
+                    nonce, issuer, signature, received_at, source_node)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (
                     event_id,
                     payload["protocol"],
+                    payload["policy_sha256"],
                     payload["action"],
                     payload["scope"],
                     payload["counter"],
@@ -205,13 +239,28 @@ def _apply_rrr_event(event: dict[str, Any], source_node: str = "") -> tuple[str,
                 ),
             )
         except sqlite3.IntegrityError as exc:
+            db.execute("ROLLBACK")
             raise HTTPException(status_code=409, detail="Replay/conflitto evento RRR") from exc
 
-    _audit(
-        "rrr_event",
-        f"event_id={event_id} action={payload['action']} counter={payload['counter']} "
-        f"issuer={payload['issuer']} source={source_node or 'unknown'}",
-    )
+        _audit_db(
+            db,
+            "rrr_event",
+            f"event_id={event_id} action={payload['action']} counter={payload['counter']} "
+            f"policy_sha256={payload['policy_sha256']} issuer={payload['issuer']} "
+            f"source_reported={source_node or 'unknown'}",
+        )
+        db.execute("COMMIT")
+    except HTTPException:
+        raise
+    except Exception:
+        try:
+            db.execute("ROLLBACK")
+        except sqlite3.Error:
+            pass
+        raise
+    finally:
+        db.close()
+
     current = _rrr_latest()
     assert current is not None
     return "applied", current
@@ -247,6 +296,7 @@ def status(authorization: Optional[str] = Header(None)):
         "verify_key": VERIFY_KEY_HEX,
         "rrr_active": bool(rrr and rrr["action"] == "activate"),
         "rrr_protocol": RRR_PROTOCOL,
+        "rrr_policy_sha256": RRR_POLICY_SHA256,
         "rrr_event_id": rrr["event_id"] if rrr else None,
         "ts":         datetime.now(timezone.utc).isoformat(),
     }
@@ -255,7 +305,7 @@ def status(authorization: Optional[str] = Header(None)):
 # Canonical machine-readable policy. Public by design: no secret material.
 @app.get("/protocol/rrr/policy")
 def rrr_policy():
-    return RRR_POLICY
+    return {**RRR_POLICY, "policy_sha256": RRR_POLICY_SHA256}
 
 
 # RRR network state — authenticated because it exposes control-plane metadata.
@@ -266,6 +316,7 @@ def rrr_status(authorization: Optional[str] = Header(None)):
     return {
         "node_id": NODE_ID,
         "protocol": RRR_PROTOCOL,
+        "policy_sha256": RRR_POLICY_SHA256,
         "active": bool(latest and latest["action"] == "activate"),
         "controller_configured": bool(CONTROL_VERIFY_KEY_HEX),
         "counter": latest["counter"] if latest else None,
