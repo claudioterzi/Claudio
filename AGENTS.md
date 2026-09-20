@@ -44,6 +44,16 @@ Every project uses the same TypeSafe transport and centrally reviewable policy w
 - Send only bounded project state needed for the judgment; never send API keys, credentials or an entire private archive. Keep `TYPESAFE_API_KEY` server-side.
 - Validate representative cases and application behavior. Confidence describes the answer distribution, not truth or permission. Thresholds require local evidence and remain explicit in code.
 
+## Quantum Cube / Graphify structural layer
+
+For work involving cross-project relationships, code/document structure, IDEA OS, the Matrice dei Possibili or the Cubo Quantico, read `docs/R3_QUANTUM_CUBE_GRAPH_LAYER.md`.
+
+- The Cubo Quantico is the shared multidimensional interface; do not create a parallel Graphify universe.
+- Graphify is a structural sensor. Preserve its `EXTRACTED | INFERRED | AMBIGUOUS` tags and source provenance. `INFERRED` never auto-promotes to fact.
+- Existing curated Cubo relations are `DECLARED`; future branches from the Matrice dei Possibili are `POSSIBLE`. Observed and possible graphs may be overlaid but never conflated.
+- TypeSafe/Jev remains advisory for narrow judgments; R³∞ owns continuity/provenance and P5/P6 + Zero-Assunto remain the promotion gate.
+- Use `scripts/graphify_to_cubo.py` to convert `graphify-out/graph.json` into the live Cubo overlay. Reuse the shared bridge rather than creating project-local graph adapters.
+
 ## Capability maximization rule
 
 Optimize for verified useful capability, efficiency per unit resource, operational autonomy and innovation yield. Do not maximize raw activity, token use, tool calls or architectural complexity. A simpler mechanism wins when it achieves equal or better verified outcomes with lower cost, latency, supervision or failure surface.
