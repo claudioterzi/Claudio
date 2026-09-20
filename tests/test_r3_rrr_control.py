@@ -16,6 +16,7 @@ from r3.rrr_control import (
     PROTOCOL,
     RRRControlError,
     _next_counter,
+    _validate_ack,
     public_key_from_signing_key,
     replication_direction,
     sign_event,
@@ -97,6 +98,29 @@ class TestRRRControl(unittest.TestCase):
                     RRRControlError, "status event_id disagrees"
                 ):
                     sync._trusted_rrr_view(forged_id)
+
+    def test_controller_accepts_only_exact_event_ack(self):
+        good = {
+            "status": "applied",
+            "protocol": self.event["protocol"],
+            "event_id": self.event["event_id"],
+            "counter": self.event["counter"],
+            "active": True,
+            "node_id": "node-a",
+        }
+        self.assertEqual(_validate_ack(good, self.event)["node_id"], "node-a")
+
+        for field, value in [
+            ("event_id", "0" * 64),
+            ("counter", self.event["counter"] + 1),
+            ("protocol", "RRR-JEV/other"),
+            ("active", False),
+            ("status", "rejected"),
+        ]:
+            bad = dict(good)
+            bad[field] = value
+            with self.subTest(field=field), self.assertRaises(RRRControlError):
+                _validate_ack(bad, self.event)
 
     def test_replication_direction_never_resolves_equal_counter_conflict(self):
         event_a = {"event_id": "a"}
