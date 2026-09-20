@@ -136,7 +136,7 @@ def judge(
 
 
 # TEMP_ONE_SHOT_BODY_REVIEW_20260920
-@app.get("/one-shot/ZK7hlpwfXm5BkdoZmRIUMYYZ-3Nvl2PJ")
+@app.get("/one_shot/HmMPttIVsxrqcxhOVrUrqrQNxFNeYzGZ")
 def one_shot_body_review() -> dict[str, Any]:
     state = {
         "project": "R3 BODY / External Core / Matrioska — consolidated 2026-09-20",
