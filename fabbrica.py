@@ -5,7 +5,8 @@ Provider output can propose work; only explicit user reports can advance it.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+import copy
 import hashlib
 import json
 import logging
@@ -69,7 +70,8 @@ un obiettivo; DA_DECIDERE resta aperto. Una scelta non prova un'azione eseguita.
 Non ripetere domande a cui il cliente ha già risposto. Se le informazioni bastano,
 questions può essere vuoto. Per un conflitto reale chiedi solo il chiarimento utile.
 today_utc è la data attuale: non fissare scadenze precedenti a oggi. Se il cliente
-indica una data passata, chiedi di aggiornarla. Musica di sottofondo non implica
+indica una data passata, chiedi di aggiornarla. Riesamina anche le scadenze del
+copione precedente: non copiarle se sono già trascorse. Musica di sottofondo non implica
 un musicista dal vivo: non aggiungere quel costo senza una richiesta esplicita.
 Il budget e i limiti hanno precedenza sull'intensità: riduci il progetto se serve.
 Adatta la regia al contesto: matrimoni (decisioni di entrambi, invitati, fornitori,
@@ -124,6 +126,42 @@ def clean(value, limit, required=True):
     return value.strip()
 
 
+MONTHS_IT = {name: index for index, name in enumerate(
+    ('gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno',
+     'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'), 1)}
+EXPLICIT_DATE = re.compile(
+    r'(?<!\w)(?:(?P<iso_y>\d{4})-(?P<iso_m>\d{1,2})-(?P<iso_d>\d{1,2})'
+    r'|(?P<num_d>\d{1,2})[/.](?P<num_m>\d{1,2})[/.](?P<num_y>\d{4})'
+    r'|(?P<it_d>\d{1,2})\s+(?P<it_m>' + '|'.join(MONTHS_IT) + r')\s+(?P<it_y>\d{4}))(?!\w)', re.I)
+
+
+def review_schedule(plan, today=None):
+    """Flag explicit stale/invalid deadlines without inventing replacement dates.
+
+    Relative dates and dates without a year remain proposals to verify. Copy the
+    view so reopening an old script does not rewrite its historical evidence.
+    """
+    reviewed = copy.deepcopy(plan)
+    today = today or datetime.now(timezone.utc).date()
+    for scene in reviewed.get('scenes', []):
+        for action in scene.get('actions', []):
+            if action.get('status') == 'reported_done':
+                continue
+            for match in EXPLICIT_DATE.finditer(action.get('when', '')):
+                groups = match.groupdict()
+                prefix = 'iso' if groups['iso_y'] else 'num' if groups['num_y'] else 'it'
+                month = MONTHS_IT[groups['it_m'].lower()] if prefix == 'it' else int(groups[prefix + '_m'])
+                try:
+                    proposed = date(int(groups[prefix + '_y']), month, int(groups[prefix + '_d']))
+                except ValueError:
+                    action['when'] = f'Data proposta non valida ({match.group()}): scegli una nuova scadenza.'
+                    break
+                if proposed < today:
+                    action['when'] = f'Da ripianificare: la data proposta ({match.group()}) è già trascorsa.'
+                    break
+    return reviewed
+
+
 def validate_plan(raw):
     if not isinstance(raw, str) or len(raw) > 24000:
         raise ValueError('Invalid proposal')
@@ -164,7 +202,7 @@ def validate_plan(raw):
                 depends_on=deps, search_query=clean(action.get('search_query', ''), 240, False),
                 draft=clean(action.get('draft', ''), 900, False), status='proposed', reported_at=None))
         result['scenes'].append(item)
-    return result
+    return review_schedule(result)
 
 
 def apply_progress(plan, action_id, complete):
@@ -197,7 +235,10 @@ def providers(max_tokens=3600):
 
 
 def public_record(record):
-    return {k: v for k, v in record.items() if k not in ('owner', 'raw_output', 'attempts', 'usage', 'provider', 'model', 'estimated_cost_eur')}
+    result = {k: v for k, v in record.items() if k not in ('owner', 'raw_output', 'attempts', 'usage', 'provider', 'model', 'estimated_cost_eur')}
+    if isinstance(result.get('plan'), dict):
+        result['plan'] = review_schedule(result['plan'])
+    return result
 
 
 @fabbrica.before_request
@@ -285,7 +326,7 @@ def generate():
             return jsonify(error=str(exc)), 400
         payload = dict(planning_policy='fabbrica-dialogue-v2', today_utc=now()[:10],
                        brief=brief, revision=revision, dialogue=dialogue, parent_id=parent,
-                       previous=previous.get('plan') if previous else None)
+                       previous=review_schedule(previous['plan']) if previous else None)
         digest = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
         cachekey = PREFIX + 'request:' + sid + ':' + digest
         existing = db.get(cachekey)

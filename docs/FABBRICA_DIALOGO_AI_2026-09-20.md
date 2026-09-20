@@ -65,3 +65,26 @@ disponibile; non si ricostruisce retroattivamente una cronologia non registrata.
 I suggerimenti restano da valutare. Il test semantico dei 24 brief non viene
 dichiarato eseguito da queste fixture. Rollback: revert della modifica al dialogo;
 la configurazione TypeSafe server-side può rimanere sulla base già verificata.
+
+## Appendice — prova online e correzione delle scadenze
+
+PR #65 pubblicata su `32047a2bec6bbfa80f86c92d693c291472fce143`.
+La prova online ha prodotto un aiuto sulla musica (HTTP 200), lasciato invariata
+la risposta fino alla scelta esplicita, accettato una modifica manuale e generato
+un nuovo copione con playlist jazz di due ore, tetto di 250 euro e nessun musicista.
+TypeSafe ha risposto HTTP 200 anche nella revisione; la domanda già risposta è
+passata fra le scelte integrate. Si tratta di un caso sintetico, non del benchmark.
+
+RETEST/PATCH: il modello ha però copiato dal piano precedente una scadenza già
+trascorsa, nonostante il prompt contenesse la data attuale. Il controllo
+deterministico ora segnala come da ripianificare le date assolute trascorse nelle
+microazioni ancora da svolgere, comprese quelle nei vecchi copioni riaperti.
+Segnala anche date impossibili e non inventa scadenze sostitutive. Supporta date
+italiane con anno, ISO e numeriche giorno/mese/anno; date relative e senza anno
+restano da verificare. Le azioni dichiarate complete e i record storici rimangono
+intatti. Il contesto di revisione riceve lo stesso avviso.
+
+Verifica locale della correzione: 36 test Python e 26 subtest superati, inclusi
+formati data, data odierna/futura, data impossibile, idempotenza, riapertura di un
+record storico e mancata modifica dell'evidenza salvata. La verifica online di
+questa correzione va registrata separatamente dopo la pubblicazione.

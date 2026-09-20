@@ -1227,3 +1227,12 @@ posizione. Il dialogo usa eventi espliciti. Si riusano provider, archivio e regi
 esistenti; nessun nuovo motore globale o endpoint Railway. Test locali 34 + 15
 subtest e scenari DOM superati; il collaudo live della nuova interazione resta
 separato. Dettagli e limiti: `docs/FABBRICA_DIALOGO_AI_2026-09-20.md`.
+
+Appendice — PR #65 unita e pubblicata (`32047a2`). Aiuto IA sulla domanda
+musicale, scelta esplicita, modifica manuale e revisione del piano verificati
+online: playlist di due ore, tetto di 250 euro, nessun musicista. TypeSafe HTTP
+200 anche nella revisione. Rilevata una scadenza passata ereditata: aggiunto un
+controllo deterministico che la segnala come da ripianificare senza inventarne
+una nuova, anche riaprendo copioni storici. Test locali aggiornati: 36 + 26
+subtest. Pubblicazione e rilettura live della correzione restano da attestare.
+Il benchmark semantico dei 24 brief resta distinto e non dichiarato eseguito.
