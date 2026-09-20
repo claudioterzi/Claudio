@@ -60,6 +60,44 @@ class TestRRRControl(unittest.TestCase):
         with self.assertRaises(RRRControlError):
             verify_event(self.event, other)
 
+    def test_sync_does_not_trust_unsigned_status_ordering_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            env = {
+                "R3_DATA_DIR": tmp,
+                "R3_CONTROL_VERIFY_KEY_HEX": self.verify_hex,
+            }
+            with patch.dict(os.environ, env, clear=False):
+                import r3.sync as sync
+                sync = importlib.reload(sync)
+
+                stored = {
+                    key: value
+                    for key, value in self.event.items()
+                    if key != "schema"
+                }
+                correct = {
+                    "event": stored,
+                    "counter": self.event["counter"],
+                    "event_id": self.event["event_id"],
+                }
+                trusted = sync._trusted_rrr_view(correct)
+                self.assertEqual(trusted["counter"], 100)
+                self.assertEqual(trusted["event_id"], self.event["event_id"])
+
+                forged_counter = dict(correct)
+                forged_counter["counter"] = 10**30
+                with self.assertRaisesRegex(
+                    RRRControlError, "status counter disagrees"
+                ):
+                    sync._trusted_rrr_view(forged_counter)
+
+                forged_id = dict(correct)
+                forged_id["event_id"] = "f" * 64
+                with self.assertRaisesRegex(
+                    RRRControlError, "status event_id disagrees"
+                ):
+                    sync._trusted_rrr_view(forged_id)
+
     def test_replication_direction_never_resolves_equal_counter_conflict(self):
         event_a = {"event_id": "a"}
         event_b = {"event_id": "b"}
