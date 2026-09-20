@@ -1,6 +1,6 @@
 # Google Drive — Mappa Completa dei Link
 *Tutti i file e le cartelle del progetto SDQ-1 su Google Drive*
-*Aggiornato: 2026-06-26 — Claudio Terzi, Bruxelles*
+*Aggiornato: 2026-09-20 — Claudio Terzi*
 
 > Regola: ogni file del repo esiste anche qui. Drive è il posto madre.
 > Se un link non funziona o un file manca → caricarlo subito.
@@ -56,6 +56,7 @@
 | 📄 **ORIENTAMENTO** | Come leggere il sistema da zero | [Apri](https://docs.google.com/document/d/1-FLujjrNqE7mvi4LK1KPl7XBt94YOQRu_1mD-r-7mns/edit) |
 | 📁 **Allineamento AI — SDQ-1** | Cartella con tutti i file provider | [Apri cartella](https://drive.google.com/drive/folders/1HxdloTqYW3Yg2M1rYrtLzTmNEvmkxC0I) |
 | 📄 **ORCHESTRA SDQ-1** | File unico orchestrato: tutto il sistema | [Apri](https://docs.google.com/document/d/1ADzRT0gLAStC5Mj8XenERFBdKCFT02QujZruqeZlmHM/edit) |
+| 📄 **Cubo Quantico + Graphify Structural Layer v1.0** | Layer comune: grafo osservato, possibili, provenienza e regole multi-agent | [Apri](https://docs.google.com/document/d/1ngUQq6lIgqtdT_oYNWEBlOw_f63jB1xH8Nyrwu5o2qg/edit) |
 
 ### Provider AI — File di allineamento individuali
 
