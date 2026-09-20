@@ -88,6 +88,11 @@ class TestRRRControl(unittest.TestCase):
                 import r3.node as node
                 node = importlib.reload(node)
 
+                policy = node.rrr_policy()
+                self.assertEqual(policy["protocol"], PROTOCOL)
+                self.assertTrue(policy["required_on_join"])
+                self.assertEqual(policy["activation_phrase"], "ROSSO ROSSO ROSSO")
+
                 empty = node.rrr_status("Bearer TEST_TOKEN")
                 self.assertFalse(empty["active"])
                 self.assertIsNone(empty["event_id"])
