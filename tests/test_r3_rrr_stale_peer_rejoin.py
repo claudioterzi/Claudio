@@ -228,7 +228,13 @@ def test_stale_b_initiates_rejoin_sync_but_newer_a_wins(tmp_path: Path) -> None:
 
         # Crucial falsifier: the STALE node B initiates sync toward newer A.
         # Counter ordering must cause B to pull A's signed event, not push 399.
-        relay = _sync(local_url=url_b, peer_url=url_a, token=token, data_dir=sync_dir)
+        relay = _sync(
+            local_url=url_b,
+            peer_url=url_a,
+            token=token,
+            data_dir=sync_dir,
+            controller_verify_key=verify_hex,
+        )
 
         state_a_after = _status(url_a, token)
         caught_up_b = _status(url_b, token)
