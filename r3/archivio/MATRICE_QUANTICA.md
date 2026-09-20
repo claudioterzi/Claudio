@@ -124,6 +124,24 @@ Quanto ogni libro è "denso" di nodi attivi (misura della complessità da gestir
 
 ---
 
+## INTEGRAZIONE OPERATIVA — GRAPHIFY NEL CUBO (2026-09-20)
+
+Graphify non crea una seconda Matrice Quantica. Automatizza una parte di ciò che questa Matrice ha sempre richiesto: **estrarre nodi, relazioni, dipendenze e provenienza dal corpus reale**.
+
+Il modello canonico diventa:
+
+`Graphify → GRAFO OSSERVATO`  
+`Matrice dei Possibili → GRAFO POSSIBILE`  
+`R³∞ → provenienza, identità, versione e continuità`  
+`TypeSafe/Jev → micro-giudizi advisory`  
+`Cubo Quantico → interfaccia unificata`
+
+Ogni edge mantiene lo stato `DECLARED | EXTRACTED | INFERRED | AMBIGUOUS | POSSIBLE | REJECTED/HISTORICAL`. Un edge `INFERRED` non è prova; un ramo `POSSIBLE` non è un fatto. La promozione richiede verifica coerente con P5/P6 e Zero-Assunto.
+
+Implementazione condivisa: `docs/R3_QUANTUM_CUBE_GRAPH_LAYER.md`, `scripts/graphify_to_cubo.py`, `public/cubo-graph-layer.js`.
+
+---
+
 ## COME USARE QUESTA MATRICE
 
 1. **Prima di scrivere una scena:** verificare quali nodi tocca e a quale costellazione appartiene
