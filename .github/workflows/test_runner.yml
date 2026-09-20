@@ -46,6 +46,7 @@ jobs:
       - name: Verifica Fabbrica, TypeSafe e dialogo IA
         run: |
           python -m unittest discover -s tests -p 'test_fabbrica*.py'
+          python -m unittest discover -s tests -p 'test_typesafe*.py'
           npm ci --prefix tests --ignore-scripts
           npm run --prefix tests test:fabbrica
 

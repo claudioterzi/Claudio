@@ -4,7 +4,13 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-09-12
+> Ultimo aggiornamento: 2026-09-20
+
+## TypeSafe / Jev universale — 2026-09-20
+
+Decisione diretta di Claudio: applicare TypeSafe/Jev trasversalmente a ogni progetto come unico layer comune di giudizi strutturati, senza creare motori paralleli. Implementazione candidata sul ramo `typesafe-universal-20260920`: policy centralizzata Choice/Score/Noul, evaluator universale, integrazione Orchestra e riuso della policy nella Fabbrica. Jev è contro-verifica advisory: non è fonte, permesso, prova di successo o autorità finale; Raffaello/codice mantiene il workflow sotto P5/P6. Segreti solo server-side e stato limitato; nessuna probabilità può autorizzare invii, spese, prenotazioni, cancellazioni, deploy, merge, permessi o impegni legali/finanziari.
+
+Specifica: `docs/TYPESAFE_UNIVERSAL_2026-09-20.md`. Prima di dichiarare ADOPTED attendere CI e revisione del diff.
 
 ## Raffaello Telegram 2 — avvio verificato, 2026-09-12
 
