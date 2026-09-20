@@ -8,6 +8,7 @@ on:
       - 'tests/test_r3_rrr_control.py'
       - 'tests/test_r3_rrr_two_process.py'
       - 'tests/test_r3_rrr_offline_rejoin.py'
+      - 'tests/test_r3_rrr_stale_peer_rejoin.py'
       - 'Dockerfile.r3-railway'
       - 'sdq1/__main__.py'
       - '.github/workflows/r3_rrr_control.yml'
@@ -37,4 +38,4 @@ jobs:
 
       - name: RRR control contract
         run: |
-          python -m pytest -q tests/test_r3_rrr_control.py tests/test_r3_rrr_two_process.py tests/test_r3_rrr_offline_rejoin.py
+          python -m pytest -q tests/test_r3_rrr_control.py tests/test_r3_rrr_two_process.py tests/test_r3_rrr_offline_rejoin.py tests/test_r3_rrr_stale_peer_rejoin.py
