@@ -44,7 +44,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install runtime test dependencies
-        run: pip install flask pyyaml redis openai anthropic google-genai
+        run: pip install flask pyyaml redis openai anthropic google-genai mistralai
       - name: Validate manifest JSON
         run: python -m json.tool public/r3-ai-bootstrap.json >/dev/null
       - name: Validate bootstrap CLI
