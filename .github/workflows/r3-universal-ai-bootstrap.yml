@@ -1,0 +1,57 @@
+name: R3 Universal AI Bootstrap
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'GEMINI.md'
+      - '.github/copilot-instructions.md'
+      - 'R3_AI_BOOTSTRAP.md'
+      - 'public/r3-ai-bootstrap.json'
+      - 'public/llms.txt'
+      - 'scripts/r3_ai_bootstrap.py'
+      - 'api/orchestra.py'
+      - 'tests/test_r3_ai_bootstrap.py'
+      - 'vercel.json'
+      - '.github/workflows/r3-universal-ai-bootstrap.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'GEMINI.md'
+      - '.github/copilot-instructions.md'
+      - 'R3_AI_BOOTSTRAP.md'
+      - 'public/r3-ai-bootstrap.json'
+      - 'public/llms.txt'
+      - 'scripts/r3_ai_bootstrap.py'
+      - 'api/orchestra.py'
+      - 'tests/test_r3_ai_bootstrap.py'
+      - 'vercel.json'
+      - '.github/workflows/r3-universal-ai-bootstrap.yml'
+  workflow_dispatch:
+
+jobs:
+  bootstrap-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install runtime test dependencies
+        run: pip install flask pyyaml redis openai anthropic google-genai
+      - name: Validate manifest JSON
+        run: python -m json.tool public/r3-ai-bootstrap.json >/dev/null
+      - name: Validate bootstrap CLI
+        run: |
+          python scripts/r3_ai_bootstrap.py --check
+          python scripts/r3_ai_bootstrap.py --emit-prompt >/dev/null
+      - name: Universal bootstrap tests
+        run: python -m unittest tests.test_r3_ai_bootstrap -v
+      - name: Compile
+        run: python -m py_compile scripts/r3_ai_bootstrap.py api/orchestra.py tests/test_r3_ai_bootstrap.py
