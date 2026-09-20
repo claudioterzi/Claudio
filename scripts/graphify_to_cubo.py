@@ -1,4 +1,4 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 """Convert Graphify graph.json into a Cubo Quantico browser overlay.
 
 Usage:
