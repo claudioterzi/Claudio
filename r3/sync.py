@@ -108,6 +108,7 @@ def _wire_rrr_event(status: dict[str, Any]) -> dict[str, Any]:
 
     required = (
         "protocol",
+        "policy_sha256",
         "action",
         "scope",
         "counter",
@@ -124,6 +125,7 @@ def _wire_rrr_event(status: dict[str, Any]) -> dict[str, Any]:
     return {
         "schema": RRR_SCHEMA,
         "protocol": stored["protocol"],
+        "policy_sha256": stored["policy_sha256"],
         "action": stored["action"],
         "scope": stored["scope"],
         "counter": stored["counter"],
