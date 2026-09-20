@@ -94,7 +94,14 @@ def _stop(proc: subprocess.Popen | None) -> None:
         proc.wait(timeout=5)
 
 
-def _sync(*, local_url: str, peer_url: str, token: str, data_dir: Path) -> subprocess.CompletedProcess:
+def _sync(
+    *,
+    local_url: str,
+    peer_url: str,
+    token: str,
+    data_dir: Path,
+    controller_verify_key: str,
+) -> subprocess.CompletedProcess:
     data_dir.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
     env.update(
@@ -102,6 +109,7 @@ def _sync(*, local_url: str, peer_url: str, token: str, data_dir: Path) -> subpr
             "R3_LOCAL_URL": local_url,
             "R3_PEERS": peer_url,
             "R3_API_TOKEN": token,
+            "R3_CONTROL_VERIFY_KEY_HEX": controller_verify_key,
             "R3_DATA_DIR": str(data_dir),
             "R3_NODE_ID": "rrr-sync-test",
             "PYTHONPATH": str(ROOT),
