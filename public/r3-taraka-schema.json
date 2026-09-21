@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "R3-TARAKA/1",
+  "title": "R3 TĀRAKA Universal AI Envelope",
+  "type": "object",
+  "required": ["protocol","sigil","classification","artifact_id","version","intent","authority","instructions_for_ai"],
+  "properties": {
+    "protocol": {"const": "R3-TARAKA/1"},
+    "sigil": {"const": "తారక"},
+    "classification": {"enum": ["PUBLIC","PRIVATE","SEALED"]},
+    "artifact_id": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "minLength": 1},
+    "created_at": {"type": ["string","null"]},
+    "intent": {"type": "string"},
+    "facts": {"type": "array", "items": {"type": "object"}},
+    "interpretations": {"type": "array"},
+    "hypotheses": {"type": "array"},
+    "constraints": {"type": "array"},
+    "invariants": {"type": "array"},
+    "capabilities": {"type": "array"},
+    "open_loops": {"type": "array"},
+    "failure_modes": {"type": "array"},
+    "verification": {"type": "array"},
+    "side_effects": {"type": "array"},
+    "authority": {
+      "type": "object",
+      "required": ["source","scope"],
+      "properties": {
+        "source": {"type": "string"},
+        "scope": {"type": "string"},
+        "expires": {"type": ["string","null"]}
+      }
+    },
+    "payload": {},
+    "sealed_payload_ref": {"type": ["string","null"]},
+    "payload_sha256": {"type": ["string","null"]},
+    "previous_version_sha256": {"type": ["string","null"]},
+    "instructions_for_ai": {"type": "array", "items": {"type": "string"}}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"classification": {"const": "SEALED"}}},
+      "then": {
+        "properties": {"payload": {"type": "null"}},
+        "required": ["sealed_payload_ref","payload_sha256"]
+      }
+    }
+  ],
+  "additionalProperties": true
+}
