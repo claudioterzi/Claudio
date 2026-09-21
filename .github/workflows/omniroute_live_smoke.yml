@@ -117,11 +117,31 @@ jobs:
             exit 1
           fi
 
+      - name: Create ephemeral inference key
+        shell: bash
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/key-response.json -w '%{http_code}' \
+            -X POST -b /tmp/omni-cookie.txt \
+            -H "x-omniroute-csrf: $CSRF_TOKEN" \
+            -H 'Content-Type: application/json' \
+            -d '{"name":"r3-smoke","scopes":["chat"]}' \
+            http://127.0.0.1:20128/api/keys)
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Inference key creation failed HTTP $code"
+            jq 'del(.key,.apiKey,.token,.rawKey,.secret)' /tmp/key-response.json 2>/dev/null || true
+            exit 1
+          fi
+          INFERENCE_KEY=$(jq -r '.key // .apiKey // .token // .rawKey // .secret // empty' /tmp/key-response.json)
+          test -n "$INFERENCE_KEY"
+          echo "::add-mask::$INFERENCE_KEY"
+          echo "INFERENCE_KEY=$INFERENCE_KEY" >> "$GITHUB_ENV"
+
       - name: Verify models and auto route
         shell: bash
         run: |
           set -euo pipefail
-          curl -fsS http://127.0.0.1:20128/v1/models > /tmp/models.json
+          curl -fsS -H "Authorization: Bearer $INFERENCE_KEY" http://127.0.0.1:20128/v1/models > /tmp/models.json
           MODEL_COUNT=$(jq '[.data[]?] | length' /tmp/models.json)
           test "$MODEL_COUNT" -gt 0
 
@@ -180,4 +200,4 @@ jobs:
         shell: bash
         run: |
           docker rm -f r3-omniroute-smoke >/dev/null 2>&1 || true
-          rm -f /tmp/login.json /tmp/login-response.json /tmp/omni-cookie.txt /tmp/csrf.json                 /tmp/provider-create.json /tmp/provider-response.json /tmp/providers.json                 /tmp/provider-test.json /tmp/models.json /tmp/chat.json /tmp/chat-response.json
+          rm -f /tmp/login.json /tmp/login-response.json /tmp/omni-cookie.txt /tmp/csrf.json                 /tmp/provider-create.json /tmp/provider-response.json /tmp/providers.json                 /tmp/provider-test.json /tmp/key-response.json /tmp/models.json /tmp/chat.json /tmp/chat-response.json
