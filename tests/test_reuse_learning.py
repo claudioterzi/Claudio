@@ -77,11 +77,32 @@ class ReuseLearningTests(unittest.TestCase):
             encoder=None,
             learner=None,
             jev_caller=broken,
+            provider_jury=lambda query, ranked: (None, []),
             min_score=1.0,
         )
         self.assertFalse(decision.jev_used)
         self.assertFalse(decision.jev_available)
         self.assertEqual(decision.selected_lesson_id, ranked[0].lesson_id)
+
+    def test_jev_failure_can_fall_over_to_provider_jury(self):
+        def broken(*args, **kwargs):
+            raise RuntimeError("jev unavailable")
+
+        def jury(query, ranked):
+            return "L-JEV", [{"provider": "anthropic", "valid": True, "choice": "L-JEV"}]
+
+        decision, _ = choose_route(
+            "need a reusable path",
+            lessons=LESSONS,
+            encoder=None,
+            learner=None,
+            jev_caller=broken,
+            provider_jury=jury,
+            min_score=1.0,
+        )
+        self.assertEqual(decision.selected_lesson_id, "L-JEV")
+        self.assertEqual(decision.route, "ml_shortlist+provider_jury")
+        self.assertFalse(decision.jev_used)
 
 
 if __name__ == "__main__":
