@@ -3,8 +3,10 @@
 Deterministic, auditable gate for turning research signals into candidate
 improvements without silently rewriting canonical state. It operates above the
 foundation model: memory, retrieval, routing, prompts, orchestration,
-evaluation, provenance and reversible configuration. It does not modify model
-weights or bypass platform/security constraints.
+evaluation, provenance and reversible configuration. It may rewrite project code, workflow and project-level policy when a candidate
+survives the R3-020 evidence gates. Foundation invariants, authority boundaries,
+credentials, canonical history and platform constraints remain outside the
+self-modification envelope.
 """
 from __future__ import annotations
 
@@ -22,11 +24,18 @@ DEFAULT_LEDGER = Path("output/evolution/ledger.jsonl")
 DEFAULT_SNAPSHOT_DIR = Path("output/evolution/runs")
 AUTO_APPLY_SCOPES = frozenset({
     "prompt", "routing", "retrieval_weight", "evaluation_budget",
-    "memory_index", "tool_selection",
+    "memory_index", "tool_selection", "core_code", "workflow",
+    "project_policy", "documentation", "evaluation",
+    "provider_configuration", "reuse_learning_model", "rewrite_strategy",
 })
-PROTECTED_SCOPES = frozenset({
-    "core_code", "credentials", "external_side_effects", "safety_policy",
-    "canonical_history", "model_weights",
+IMMUTABLE_SCOPES = frozenset({
+    "foundation_invariants", "credentials", "canonical_history",
+    "authority_boundary", "platform_constraints", "foundation_model_weights",
+})
+PROTECTED_SCOPES = frozenset({"external_side_effects"})
+REWRITE_SCOPES_REQUIRING_ROLLBACK = frozenset({
+    "core_code", "workflow", "project_policy", "evaluation",
+    "provider_configuration", "reuse_learning_model", "rewrite_strategy",
 })
 TRAJECTORY_FIELDS = (
     "goal_match", "evidence_integrity", "authority_scope",
@@ -86,8 +95,10 @@ class EvolutionCandidate:
             errors.append("at least one provenance source_ref is required")
         if not self.falsifiers:
             errors.append("at least one falsifier must be preregistered")
-        if self.scope in PROTECTED_SCOPES and not self.rollback_ref:
-            errors.append("protected scopes require rollback_ref")
+        if self.scope in IMMUTABLE_SCOPES:
+            errors.append("immutable foundation scope cannot be modified by the evolution kernel")
+        if (self.scope in PROTECTED_SCOPES or self.scope in REWRITE_SCOPES_REQUIRING_ROLLBACK) and not self.rollback_ref:
+            errors.append("rewrite/protected scopes require rollback_ref")
         if self.external_side_effects and self.scope != "external_side_effects":
             errors.append("external_side_effects must use the external_side_effects scope")
         return errors
@@ -206,6 +217,7 @@ def evaluate_candidate(candidate: EvolutionCandidate, baseline: Mapping[str, Any
     auto_apply = (
         candidate.scope in AUTO_APPLY_SCOPES
         and candidate.scope not in PROTECTED_SCOPES
+        and candidate.scope not in IMMUTABLE_SCOPES
         and candidate.reversible
         and candidate.risk_level in {"low", "medium"}
         and not candidate.external_side_effects
