@@ -4,7 +4,15 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-09-20
+> Ultimo aggiornamento: 2026-09-21
+
+## Reuse Learning / lezioni apprese — 2026-09-21
+
+Decisione diretta di Claudio: ogni riutilizzo di una funzione, tool, integrazione o workflow già sviluppato deve rendere il sistema più efficiente e rapido. R³∞ non deve riscoprire da zero architettura, prerequisiti o failure mode già osservati.
+
+È stato introdotto il registro canonico machine-readable `R3_REUSE_LESSONS.yaml`. Prima del riuso si legge la lezione più recente e si parte dal percorso minimo verificato; dopo il riuso si registrano nuovi fatti verificati, errori, scorciatoie, verifiche e cleanup. Le lezioni seguono `OBSERVED → CANDIDATE → VERIFIED → CANONICAL`. Se una lezione implica una modifica a codice/policy/workflow, la modifica passa attraverso il già esistente gate `R3-020 Self-improvement safety gate` in branch/sandbox: nessun nuovo motore parallelo e nessuna auto-modifica diretta della produzione.
+
+Prima lezione registrata: TypeSafe/Jev live. Percorso canonico `typesafe_sister/client.py → POST /v1/systemone → jev-latest`; evitare rediscovery Railway quando non esiste un servizio attivo; non trattare deployment/HTTP come prova di risposta Jev; nessun punteggio inventato se il typed result non è disponibile; eventuali caller one-shot vanno rimossi dopo l'uso.
 
 ## TypeSafe / Jev universale — 2026-09-20
 
