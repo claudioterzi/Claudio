@@ -4,7 +4,19 @@ const assert=require('node:assert/strict');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const canonical=JSON.parse(fs.readFileSync(root+'/tarocchi_quantici_alpha.json')).carte;
-const art=require(root+'/public/alpha74-art.js');
+
+// alpha74-art.js is browser code: execute it in a minimal DOM-like VM instead
+// of require(), then read the exported global. This keeps the harness faithful
+// to the runtime contract while remaining dependency-free in CI.
+const artBoot=vm.createContext({
+ document:{createElement:()=>({}),head:{append(){}}},
+ addEventListener(){},
+ console
+});
+vm.runInContext(fs.readFileSync(root+'/public/alpha74-art.js','utf8'),artBoot);
+const art=artBoot.Alpha74Art;
+assert.ok(art && typeof art.resolve==='function');
+
 let checks=0;
 for(const c of canonical)for(const pol of ['luce','ombra'])for(const axis of ['nord','est','sud','ovest']){
  const view=art.resolve({id:c.id,polarita:pol,asse:axis});
