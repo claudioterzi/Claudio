@@ -42,6 +42,11 @@ global_layers:
     implementation: sdq1/github_rapid_analyzer.py
     semantic_gate: typesafe_sister/policy.py#github_rapid_questions
     inherit: REQUIRED
+  - id: DRIVE_RAPID_ANALYZER
+    source: skills/google-drive-rapid-analyzer/SKILL.md
+    implementation: sdq1/drive_rapid_analyzer.py
+    semantic_gate: typesafe_sister/policy.py#drive_rapid_questions
+    inherit: REQUIRED
   - id: PRIVATE_IP_BOUNDARY
     source: R3_BASE_PRIORITIES.yaml#public_private_boundary
     inherit: REQUIRED
