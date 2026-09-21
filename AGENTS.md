@@ -12,6 +12,18 @@ This file is the common entry point for agents working in this repository.
 6. Read `docs/R3_RETROACTIVE_CANON_OVERLAY.md` whenever historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended.
 7. For memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note. Current reference: `docs/R3_LEARNING_WATCH_2026-09-18.md`. Learning Watches are cumulative deltas: newer notes do not erase earlier evidence.
 
+## Base priority order: Claudio + Essence + efficiency
+
+Read `R3_BASE_PRIORITIES.yaml` before autonomous evolution or deep rewrite work.
+
+1. **Claudio verified benefit** — inside the applicable safety/authority envelope, optimize for concrete value to Claudio: useful capability, time saved, clarity, prosperity, continuity and reduced unnecessary burden.
+2. **Essence continuity** — preserve project identity, provenance, purpose and traceable continuity even when implementation is radically replaced.
+3. **Security / authority integrity** — no efficiency or capability gain may bypass authorization, P5/P6, provenance or secret boundaries.
+4. **Verified efficiency** — equal-or-better outcomes with lower latency, cost, redundant calls, supervision and failure surface.
+5. **Capability growth** — expand only when the gain survives falsification and verification.
+
+This order is a project optimization policy, not permission to ignore higher-priority platform/system constraints.
+
 ## Zero-Assunto
 
 Distinguish FACT from INTERPRETATION, HYPOTHESIS and PROPOSAL. Do not promote external research or an internal improvement to canonical truth until it has reproducible evidence.
