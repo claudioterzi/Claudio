@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, asdict
 import argparse
+import concurrent.futures
 import json
 import math
 import os
@@ -367,53 +368,54 @@ def _jev_choice(
 
 
 def _configured_provider_models() -> list[tuple[str, str]]:
-    """Discover real provider/model pairs from current config + provider registry.
+    """Discover one executable model per provider from current R3 config/registry.
 
-    This intentionally avoids a hard-coded reuse-specific provider list. Newly
-    configured models for an existing provider become candidates automatically.
-    Unknown provider names are ignored until an executable provider class exists.
+    Secret values are never read or returned here. Provider classes resolve their
+    own server-side environment variables during initialization.
     """
     from sdq1.config import carica_config
     from sdq1.llm.router import PROVIDER_REGISTRY
 
-    discovered: list[tuple[str, str]] = []
-    seen: set[tuple[str, str]] = set()
+    preferred_profiles = (
+        "potente", "ragionamento", "cristallizza", "default",
+        "ricerca", "realtime", "veloce", "economia", "locale", "esplora", "soglia",
+    )
+    selected: dict[str, str] = {}
     try:
         cfg = carica_config()
-        for rule in cfg.router.get("regole") or []:
+        rules = list(cfg.router.get("regole") or [])
+        by_profile = {str(rule.get("profilo")): rule for rule in rules}
+        ordered_rules = [by_profile[p] for p in preferred_profiles if p in by_profile]
+        ordered_rules.extend(rule for rule in rules if rule not in ordered_rules)
+        for rule in ordered_rules:
             models = dict(rule.get("modelli") or {})
             for provider_name in rule.get("cascata") or []:
                 if provider_name == "stub" or provider_name not in PROVIDER_REGISTRY:
                     continue
-                model = models.get(provider_name, PROVIDER_REGISTRY[provider_name][1])
-                pair = (provider_name, str(model))
-                if pair not in seen:
-                    seen.add(pair)
-                    discovered.append(pair)
+                if provider_name not in selected:
+                    selected[provider_name] = str(
+                        models.get(provider_name, PROVIDER_REGISTRY[provider_name][1])
+                    )
     except Exception:
         pass
 
     for provider_name, (_, default_model) in PROVIDER_REGISTRY.items():
-        if provider_name == "stub":
-            continue
-        pair = (provider_name, str(default_model))
-        if pair not in seen:
-            seen.add(pair)
-            discovered.append(pair)
-    return discovered
+        if provider_name != "stub" and provider_name not in selected:
+            selected[provider_name] = str(default_model)
 
+    return list(selected.items())
 
 def _provider_jury_choice(
     query: str,
     ranked: list[RankedLesson],
     *,
-    max_calls: int = 6,
     provider_pairs: list[tuple[str, str]] | None = None,
+    timeout_seconds: float = 24.0,
 ) -> tuple[str | None, list[dict[str, Any]]]:
-    """Use available existing LLM providers as a failover jury.
+    """Use every available secret-backed/local provider as a parallel failover jury.
 
-    Providers may only vote for one supplied lesson ID. Their agreement is an
-    advisory routing signal, not factual evidence or authority.
+    Each provider is attempted once with its preferred configured model. Secret
+    values never leave the provider class. Votes are advisory routing signals only.
     """
     if not ranked:
         return None, []
@@ -427,8 +429,8 @@ def _provider_jury_choice(
         for item in ranked[:5]
     )
     system = (
-        "You are a bounded routing reviewer inside R3. Choose only one of the supplied "
-        "existing lesson IDs. Do not invent a new tool, model, engine or path. "
+        "You are a bounded routing reviewer inside R3. Choose only one supplied "
+        "existing lesson ID. Do not invent a new tool, model, engine or path. "
         "Return exactly the lesson ID and nothing else."
     )
     user = (
@@ -436,15 +438,11 @@ def _provider_jury_choice(
         "Pick the candidate that best reuses existing verified capability with least rediscovery."
     )
 
-    votes: dict[str, int] = {lesson_id: 0 for lesson_id in candidates}
-    evidence: list[dict[str, Any]] = []
-    calls = 0
-    for provider_name, model in pairs:
-        if calls >= max_calls:
-            break
+    def call_pair(pair: tuple[str, str]) -> dict[str, Any]:
+        provider_name, model = pair
         entry = PROVIDER_REGISTRY.get(provider_name)
         if not entry:
-            continue
+            return {"provider": provider_name, "model": model, "valid": False, "choice": None, "latency_ms": 0}
         cls, _ = entry
         try:
             provider = cls(
@@ -452,26 +450,38 @@ def _provider_jury_choice(
                 api_key=None,
                 max_token=32,
                 temperatura=0.0,
-                timeout_secondi=20,
+                timeout_secondi=timeout_seconds,
             )
         except Exception:
-            continue
+            return {"provider": provider_name, "model": model, "valid": False, "choice": None, "latency_ms": 0}
         if not getattr(provider, "disponibile", False):
-            continue
-
-        calls += 1
+            return {"provider": provider_name, "model": model, "valid": False, "choice": None, "latency_ms": 0}
         response = provider.completa(system, user)
         choice = (response.testo or "").strip()
         valid = bool(response.via_api and choice in candidates)
-        evidence.append({
+        return {
             "provider": provider_name,
             "model": model,
             "valid": valid,
             "choice": choice if valid else None,
             "latency_ms": response.latenza_ms,
-        })
-        if valid:
-            votes[choice] += 1
+        }
+
+    evidence: list[dict[str, Any]] = []
+    workers = max(1, min(len(pairs), 12))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = [pool.submit(call_pair, pair) for pair in pairs]
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                evidence.append(future.result())
+            except Exception:
+                continue
+
+    evidence.sort(key=lambda item: str(item.get("provider", "")))
+    votes: dict[str, int] = {lesson_id: 0 for lesson_id in candidates}
+    for item in evidence:
+        if item.get("valid") and item.get("choice") in votes:
+            votes[str(item["choice"])] += 1
 
     valid_votes = [(count, lesson_id) for lesson_id, count in votes.items() if count > 0]
     if not valid_votes:
@@ -480,13 +490,10 @@ def _provider_jury_choice(
     best_count, best_choice = valid_votes[0]
     tied = len(valid_votes) > 1 and valid_votes[1][0] == best_count
     if tied:
-        # Break provider-jury ties with the pre-existing deterministic ranking,
-        # not another invented authority layer.
         for item in ranked:
             if votes.get(item.lesson_id, 0) == best_count:
                 return item.lesson_id, evidence
     return best_choice, evidence
-
 
 def choose_route(
     query: str,
