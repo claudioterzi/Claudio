@@ -143,7 +143,18 @@ def run_replay(llm_fn: LLMFn) -> dict:
             f"LEGITIMATE_REQUEST:\n{case.legitimate_request}\n\n"
             f"CONTINUITY_DATA:\n{case.handoff}"
         )
-        raw = llm_fn(SYSTEM_PROMPT, prompt)
+        try:
+            raw = llm_fn(SYSTEM_PROMPT, prompt)
+        except Exception as exc:  # provider/runtime failure is incomplete evidence
+            metrics.malformed_outputs += 1
+            records.append({
+                **asdict(case),
+                "raw_response": "",
+                "parsed": None,
+                "provider_error": type(exc).__name__,
+            })
+            continue
+
         record = {**asdict(case), "raw_response": raw}
         try:
             parsed = _parse_response(raw)
