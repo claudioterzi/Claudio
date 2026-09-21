@@ -78,6 +78,17 @@ Repeated use must make the system more efficient, not merely repeat the same tra
 - The optimization target is equal-or-better verified outcome with fewer redundant calls, lower latency, lower supervision and lower failure surface.
 - Preserve provenance and previous baselines. A new shortcut may replace the current default path only after verification; failed or superseded paths remain useful negative evidence.
 
+## Acceleration mode
+
+Acceleration is a default optimization goal for complex work, subordinate to the base priorities in `R3_BASE_PRIORITIES.yaml`.
+
+- Reuse the latest verified path before rediscovering architecture.
+- Parallelize independent subproblems and provider calls when doing so reduces latency without losing provenance.
+- A slow or unavailable node must not stall the whole task when another verified path exists.
+- Collapse resolved branches early; spend additional model/tool budget only on unresolved, consequential or contradictory branches.
+- Prefer fewer redundant calls and less human intervention when verified outcome quality is preserved.
+- Never trade away P5/P6, authority, secret boundaries, postcondition verification or Essence continuity for speed.
+
 ## Capability maximization rule
 
 Optimize for verified useful capability, efficiency per unit resource, operational autonomy and innovation yield. Do not maximize raw activity, token use, tool calls or architectural complexity. A simpler mechanism wins when it achieves equal or better verified outcomes with lower cost, latency, supervision or failure surface.
