@@ -144,7 +144,7 @@ echo "::add-mask::$INFERENCE_KEY"
 
 curl -fsS -H "Authorization: Bearer $INFERENCE_KEY" http://127.0.0.1:20128/v1/models >/tmp/pre-models.json
 curl -fsS -H "Authorization: Bearer $INFERENCE_KEY" http://127.0.0.1:20128/api/v1/auto-combo/auto/candidates >/tmp/pre-candidates.json
-PRE_BAD=$(jq '[.candidates[]?.model | select(test("opus-5|big-pickle|felo-chat|felo-search";"i"))] | length' /tmp/pre-candidates.json)
+PRE_BAD=$(jq '[.candidates[]?.model | select(test("(^|/)anthropic/claude-opus-5$|(^|/)big-pickle$|(^|/)felo-chat$|(^|/)felo-search$";"i"))] | length' /tmp/pre-candidates.json)
 PRE_GOOD=$(jq '[.candidates[]?.model | select(test("r3-good-model";"i"))] | length' /tmp/pre-candidates.json)
 
 pre_start=$(date +%s%3N)
@@ -182,8 +182,8 @@ fi
 curl -fsS -H "Authorization: Bearer $INFERENCE_KEY" http://127.0.0.1:20128/v1/models >/tmp/post-models.json
 curl -fsS -H "Authorization: Bearer $INFERENCE_KEY" http://127.0.0.1:20128/api/v1/auto-combo/auto/candidates >/tmp/post-candidates.json
 
-BAD_CATALOG=$(jq '[.data[]?.id | select(test("opus-5|big-pickle|felo-chat|felo-search";"i"))] | length' /tmp/post-models.json)
-BAD_POOL=$(jq '[.candidates[]?.model | select(test("opus-5|big-pickle|felo-chat|felo-search";"i"))] | length' /tmp/post-candidates.json)
+BAD_CATALOG=$(jq '[.data[]?.id | select(test("(^|/)anthropic/claude-opus-5$|(^|/)big-pickle$|(^|/)felo-chat$|(^|/)felo-search$";"i"))] | length' /tmp/post-models.json)
+BAD_POOL=$(jq '[.candidates[]?.model | select(test("(^|/)anthropic/claude-opus-5$|(^|/)big-pickle$|(^|/)felo-chat$|(^|/)felo-search$";"i"))] | length' /tmp/post-candidates.json)
 GOOD_CATALOG=$(jq '[.data[]?.id | select(test("r3-good-model";"i"))] | length' /tmp/post-models.json)
 GOOD_POOL=$(jq '[.candidates[]?.model | select(test("r3-good-model";"i"))] | length' /tmp/post-candidates.json)
 P1=false
