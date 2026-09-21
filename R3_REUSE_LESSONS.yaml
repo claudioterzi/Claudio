@@ -147,3 +147,38 @@ lessons:
       - GitHub workflow logs for job 106202577151
       - Railway project deepseek-eval-temp-2026-09-15 runtime inspection
       - Vercel project claudio deployment inspection
+
+
+  - id: RL-2026-09-21-VERCEL-RATE-001
+    capability: github_candidate_consolidation
+    status: OBSERVED
+    observed_at: 2026-09-21
+    trigger: R3-007 and R3-006 promotion attempts during Vercel build-rate limiting
+    verified_facts:
+      - PR 76 and PR 77 passed their relevant CI, Test Runner and Security Scan gates.
+      - Their only combined-status failure was Vercel with target URL indicating upgradeToPro=build-rate-limit.
+      - A Vercel build-rate-limit status is infrastructure/quota evidence and must not be described as a code, test or security regression.
+      - Branch protection may keep an otherwise mergeable candidate in unstable/not-promoted state while the Vercel status is failing.
+    failure_modes:
+      - retrying merge repeatedly while a required external status remains rate-limited
+      - weakening or bypassing branch protection to hide an infrastructure blocker
+      - reporting the candidate as merged before authoritative main/PR postcondition confirms it
+      - treating a quota/rate status as behavioral falsification
+    canonical_short_path:
+      - inspect PR mergeability
+      - inspect CI Test Runner and Security Scan separately
+      - inspect combined commit statuses
+      - classify Vercel build-rate-limit as EXTERNAL_INFRA_BLOCKER when it is the sole red status
+      - preserve candidate branch and continue other unblocked work
+      - re-read PR/main before claiming promotion
+    verification:
+      - exact failing context is Vercel
+      - target URL or deployment evidence identifies build-rate-limit
+      - all relevant code/test/security gates are independently green
+    cleanup:
+      - do not create repeated no-op commits solely to force Vercel rebuilds
+      - do not bypass required branch protection
+    provenance:
+      - PR 76
+      - PR 77
+      - GitHub combined statuses observed 2026-09-21
