@@ -62,3 +62,6 @@ jobs:
 
       - name: Test R3-019 controlled baseline
         run: python -m unittest tests.test_benchmark_controlled
+
+      - name: Test R3-007 state-grounded verification
+        run: python -m unittest tests.test_verification_harness
