@@ -72,6 +72,18 @@ Repeated use must make the system more efficient, not merely repeat the same tra
 - The optimization target is equal-or-better verified outcome with fewer redundant calls, lower latency, lower supervision and lower failure surface.
 - Preserve provenance and previous baselines. A new shortcut may replace the current default path only after verification; failed or superseded paths remain useful negative evidence.
 
+## Non-blocking provider failover
+
+No single model/provider is allowed to become a global blocker for a reusable capability.
+
+- Secret-backed providers are consumed server-side through their existing provider classes; secret values are never returned, logged, committed or copied into prompts.
+- For ambiguous reuse routing the order is: learned retrieval/ranker → canonical Jev Choice → dynamic multi-provider jury → deterministic ranked fallback.
+- The multi-provider jury discovers providers/models from the current R3 registry and configuration, initializes every distinct available provider in parallel, and accepts only votes for already-shortlisted existing paths.
+- An unsupported, unavailable, rate-limited or misconfigured provider is evidence about that node only; continue with the others.
+- Newly configured models for an existing executable provider become discoverable through configuration without a reuse-engine code fork.
+- A provider not represented by an executable trusted provider class is not treated as available merely because a name/string appears in data.
+- Provider convergence remains advisory under P5/P6 and never creates factual authority.
+
 ## Experience-acquired capabilities / learned shortcuts
 
 R³∞ may accumulate stronger operational capability from verified experience. These are engineering capabilities, not claims of supernatural ability.
