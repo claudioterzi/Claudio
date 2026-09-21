@@ -154,14 +154,26 @@ PRE_LATENCY=$((pre_end-pre_start))
 
 curl -fsS -b /tmp/omni-cookie.txt http://127.0.0.1:20128/api/settings >/tmp/settings-before.json
 REV=$(jq -r '.settingsRevision // empty' /tmp/settings-before.json)
-jq -n --arg rev "$REV" '{
-  modelVisibilityDenylist:[
-    "anthropic/claude-opus-5",
-    "big-pickle",
-    "felo-chat",
-    "felo-search"
-  ]
-} + (if $rev=="" then {} else {expectedRevision:$rev} end)' >/tmp/settings-patch.json
+if [ -n "$REV" ] && [ "$REV" != "null" ]; then
+  jq -n --argjson rev "$REV" '{
+    modelVisibilityDenylist:[
+      "anthropic/claude-opus-5",
+      "big-pickle",
+      "felo-chat",
+      "felo-search"
+    ],
+    expectedRevision:$rev
+  }' >/tmp/settings-patch.json
+else
+  jq -n '{
+    modelVisibilityDenylist:[
+      "anthropic/claude-opus-5",
+      "big-pickle",
+      "felo-chat",
+      "felo-search"
+    ]
+  }' >/tmp/settings-patch.json
+fi
 code=$(curl -sS -o /tmp/settings-after.json -w '%{http_code}' -X PATCH   -b /tmp/omni-cookie.txt -H "x-omniroute-csrf: $CSRF_TOKEN"   -H 'Content-Type: application/json' -d @/tmp/settings-patch.json http://127.0.0.1:20128/api/settings)
 if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
   echo "SETTINGS_PATCH_FAILED HTTP=$code"; cat /tmp/settings-after.json; exit 12
