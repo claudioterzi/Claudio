@@ -1,0 +1,61 @@
+name: OmniRoute F0 NPM Package
+
+on:
+  push:
+    branches:
+      - r3/omniroute-gateway-20260921
+    paths:
+      - '.github/workflows/omniroute_f0_npm_package.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Inspect published npm 3.8.50 tarball
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp
+          TARBALL=$(npm pack omniroute@3.8.50 --silent)
+          tar -tzf "$TARBALL" > /tmp/files.txt
+          HAS_EXPOSURE=false
+          HAS_LOCKOUT=false
+          HAS_VIRTUAL=false
+          grep -Eq 'modelExposureFilter\.(ts|js)$' /tmp/files.txt && HAS_EXPOSURE=true || true
+          grep -Eq 'modelLockoutFilter\.(ts|js)$' /tmp/files.txt && HAS_LOCKOUT=true || true
+          grep -Eq 'virtualFactory\.(ts|js)$' /tmp/files.txt && HAS_VIRTUAL=true || true
+
+          mkdir -p /tmp/pkg
+          tar -xzf "$TARBALL" -C /tmp/pkg
+          ROOT=/tmp/pkg/package
+          VERSION=$(node -e "console.log(require('$ROOT/package.json').version)")
+          VIRTUAL=$(find "$ROOT" -type f \( -name 'virtualFactory.ts' -o -name 'virtualFactory.js' \) | head -n1 || true)
+          USES=false
+          if [ -n "$VIRTUAL" ] && grep -q 'filterModelExposureCandidates' "$VIRTUAL"; then USES=true; fi
+
+          jq -n             --arg package_version "$VERSION"             --argjson has_exposure "$HAS_EXPOSURE"             --argjson has_lockout "$HAS_LOCKOUT"             --argjson has_virtual "$HAS_VIRTUAL"             --argjson uses_exposure "$USES"             '{
+              schema:"R3-OMNIROUTE-F0-NPM/1",
+              package_version:$package_version,
+              has_model_exposure_filter:$has_exposure,
+              has_model_lockout_filter:$has_lockout,
+              has_virtual_factory:$has_virtual,
+              virtual_factory_uses_exposure_filter:$uses_exposure
+            }' > /tmp/r3-omniroute-f0-npm.json
+          cat /tmp/r3-omniroute-f0-npm.json
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-omniroute-f0-npm-${{ github.sha }}
+          path: /tmp/r3-omniroute-f0-npm.json
+          retention-days: 30
