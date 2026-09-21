@@ -368,42 +368,9 @@ def _jev_choice(
 
 
 def _configured_provider_models() -> list[tuple[str, str]]:
-    """Discover one executable model per provider from current R3 config/registry.
-
-    Secret values are never read or returned here. Provider classes resolve their
-    own server-side environment variables during initialization.
-    """
-    from sdq1.config import carica_config
-    from sdq1.llm.router import PROVIDER_REGISTRY
-
-    preferred_profiles = (
-        "potente", "ragionamento", "cristallizza", "default",
-        "ricerca", "realtime", "veloce", "economia", "locale", "esplora", "soglia",
-    )
-    selected: dict[str, str] = {}
-    try:
-        cfg = carica_config()
-        rules = list(cfg.router.get("regole") or [])
-        by_profile = {str(rule.get("profilo")): rule for rule in rules}
-        ordered_rules = [by_profile[p] for p in preferred_profiles if p in by_profile]
-        ordered_rules.extend(rule for rule in rules if rule not in ordered_rules)
-        for rule in ordered_rules:
-            models = dict(rule.get("modelli") or {})
-            for provider_name in rule.get("cascata") or []:
-                if provider_name == "stub" or provider_name not in PROVIDER_REGISTRY:
-                    continue
-                if provider_name not in selected:
-                    selected[provider_name] = str(
-                        models.get(provider_name, PROVIDER_REGISTRY[provider_name][1])
-                    )
-    except Exception:
-        pass
-
-    for provider_name, (_, default_model) in PROVIDER_REGISTRY.items():
-        if provider_name != "stub" and provider_name not in selected:
-            selected[provider_name] = str(default_model)
-
-    return list(selected.items())
+    """Reuse the shared SDQ-1 provider/model discovery path."""
+    from sdq1.llm.router import configured_provider_models
+    return configured_provider_models()
 
 def _provider_jury_choice(
     query: str,
