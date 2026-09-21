@@ -1,0 +1,89 @@
+version: 1
+name: R3_CAPILLARY_INHERITANCE
+updated: 2026-09-21
+status: CANONICAL
+
+purpose: >
+  Distribute shared R3 capabilities and continuity rules to every project through
+  one capillary inheritance layer, avoiding project-by-project duplication.
+
+inheritance_mode: DELTA_PROPAGATION
+transport_envelope: R3-TARAKA/1
+alignment_protocol: R3-SISTER/1
+semantic_trigger: SINERGIA
+
+global_layers:
+  - id: BASE_PRIORITIES
+    source: R3_BASE_PRIORITIES.yaml
+    inherit: REQUIRED
+  - id: SISTER_ALIGNMENT
+    source: public/r3-sister-alignment.json
+    inherit: REQUIRED
+  - id: TARAKA_HANDOFF
+    source: public/r3-taraka-schema.json
+    inherit: REQUIRED
+  - id: REUSE_LEARNING
+    source: R3_REUSE_LESSONS.yaml
+    inherit: REQUIRED
+  - id: TYPESAFE_JEV
+    source: typesafe_sister/
+    inherit: SHARED_SERVICE
+  - id: ZERO_ASSUNTO_P5_P6
+    source: AGENTS.md
+    inherit: REQUIRED
+  - id: ACCELERATION
+    source: AGENTS.md#Acceleration-mode
+    inherit: REQUIRED
+  - id: REDUNDANCY_BACKUP
+    source: R3_UNIVERSAL_BACKUP.yaml
+    inherit: REQUIRED_WHEN_PRESENT
+  - id: PRIVATE_IP_BOUNDARY
+    source: R3_BASE_PRIORITIES.yaml#public_private_boundary
+    inherit: REQUIRED
+
+propagation_rule:
+  before_project_work:
+    - load_latest_global_layer_versions
+    - compare_project_inherited_versions
+    - apply_only_missing_or_newer_deltas
+    - preserve_project_local_state
+    - preserve_provenance_and_authority
+  after_global_change:
+    - emit_capillary_delta
+    - assign_monotonic_version
+    - classify_public_private_sealed
+    - propagate_to_project_manifests
+    - verify_postcondition
+    - record_success_or_failure
+  conflict_policy:
+    - global_foundation_beats_project_duplicate
+    - project_specific_requirements_remain_local
+    - divergent_history_never_silently_merges
+    - unresolved_conflict_becomes_QUARANTINE
+  private_payload_policy:
+    - private_payloads_never_copy_into_public_projects
+    - propagate_only_sealed_reference_and_hash
+    - require_authorized_private_host_to_resolve_sealed_reference
+
+project_contract:
+  required_fields:
+    - project_id
+    - project_version
+    - inherited_capillary_version
+    - inherited_layers
+    - local_overrides
+    - provenance
+    - verification_state
+  rule: >
+    Every project is a leaf of the same R3 capillary system. Common capability
+    is inherited; project-specific content remains local. No project creates a
+    second global engine for a capability already present in the capillary layer.
+
+efficiency_rule: >
+  A shared improvement is implemented once in the capillary layer and inherited
+  everywhere. Repeated manual reimplementation is considered a regression.
+
+backup_rule: >
+  Capillary propagation does not replace backup. Canonical shared layers and each
+  project's unique state must remain independently recoverable from redundant
+  storage with verified restore evidence.
