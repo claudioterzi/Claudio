@@ -71,14 +71,14 @@ jobs:
           test -n "$CSRF_TOKEN"
           echo "CSRF_TOKEN=$CSRF_TOKEN" >> "$GITHUB_ENV"
 
-      - name: Connect keyless Pollinations provider
+      - name: Connect keyless Kilo Gateway provider
         shell: bash
         run: |
           set -euo pipefail
-          printf '%s\n' '{"provider":"pollinations","name":"r3-smoke"}' > /tmp/provider-create.json
+          printf '%s\n' '{"provider":"kilo-gateway","name":"r3-smoke","apiKey":"r3-smoke-nonsecret-placeholder"}' > /tmp/provider-create.json
           code=$(curl -sS -o /tmp/provider-response.json -w '%{http_code}'             -X POST             -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d @/tmp/provider-create.json             http://127.0.0.1:20128/api/providers)
           if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
-            echo "::error::Pollinations connection create failed HTTP $code"
+            echo "::error::Kilo Gateway connection create failed HTTP $code"
             jq 'del(.apiKey,.token,.secret)' /tmp/provider-response.json 2>/dev/null || cat /tmp/provider-response.json
             exit 1
           fi
@@ -93,7 +93,7 @@ jobs:
           if [ -z "$PROVIDER_ID" ]; then
             PROVIDER_ID=$(jq -r '
               (.connections // .providers // [])[]
-              | select((.provider // .providerId // "") == "pollinations")
+              | select((.provider // .providerId // "") == "kilo-gateway")
               | .id
             ' /tmp/providers.json | head -n1)
           fi
@@ -101,19 +101,19 @@ jobs:
           echo "PROVIDER_ID=$PROVIDER_ID" >> "$GITHUB_ENV"
           echo "Connected provider id present; raw credentials are not printed."
 
-      - name: Test Pollinations connection
+      - name: Test Kilo Gateway connection
         shell: bash
         run: |
           set -euo pipefail
           code=$(curl -sS -o /tmp/provider-test.json -w '%{http_code}'             -X POST             -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d '{}'             "http://127.0.0.1:20128/api/providers/$PROVIDER_ID/test")
           jq 'del(.apiKey,.token,.secret)' /tmp/provider-test.json
           if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
-            echo "::error::Pollinations provider test failed HTTP $code"
+            echo "::error::Kilo Gateway provider test failed HTTP $code"
             exit 1
           fi
           valid=$(jq -r '.valid // .success // false' /tmp/provider-test.json)
           if [ "$valid" != "true" ]; then
-            echo "::error::Pollinations provider test did not report valid=true"
+            echo "::error::Kilo Gateway provider test did not report valid=true"
             exit 1
           fi
 
@@ -160,7 +160,7 @@ jobs:
               model_count:$model_count,
               latency_ms:$latency_ms,
               nonempty_response:($content|length>0),
-              provider_seed:"pollinations-keyless",
+              provider_seed:"kilo-gateway-keyless",
               secrets_persisted:false
             }' > /tmp/r3-omniroute-smoke.json
 
