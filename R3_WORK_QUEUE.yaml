@@ -169,10 +169,11 @@ queue:
     evidence: docs/R3_LEARNING_WATCH_2026-09-17.md
   - id: R3-025
     title: Model pool governor
-    state: IDEA
+    state: DEVELOPMENT
     priority: performance
     objective: Admit models or agents to a pool only when they add measured marginal quality, efficiency or error-diversity value.
-    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md
+    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md; draft PR #79; docs/R3_OMNIROUTE_GATEWAY_2026-09-21.md; sdq1/llm/providers/omniroute_provider.py; tests/test_omniroute_provider.py
+    experiment_status: OmniRoute candidate integrated as an optional shared transport/router beneath the existing R3 LLMRouter. Eligible profiles can use OmniRoute auto-routing when configured; realtime/research retain specialized providers first; the locale/privacy profile does not silently use OmniRoute. Remote no-key access is rejected, local unauthenticated use requires explicit loopback opt-in, and absence of OmniRoute falls back to the existing R3 provider cascade. CI & Security Scans PASS on the candidate. No live OmniRoute runtime/provider pool is yet evidenced, so this is L0 integration evidence only. PR #79 remains draft; Vercel combined status is externally failing due build-rate-limit.
   - id: R3-026
     title: Pressure-applied safety harness
     state: IDEA
