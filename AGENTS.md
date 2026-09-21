@@ -8,8 +8,9 @@ This file is the common entry point for agents working in this repository.
 2. Read `MEMORIA_PROGETTO.md` for project continuity.
 3. Read `R3_WORK_QUEUE.yaml` and `R3_OPERATING_OBJECTIVE.md` for current priorities.
 4. Read `R3_AUTO_CYCLE.md` before autonomous or self-improvement work.
-5. Read `docs/R3_RETROACTIVE_CANON_OVERLAY.md` whenever historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended.
-6. For memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note. Current reference: `docs/R3_LEARNING_WATCH_2026-09-18.md`. Learning Watches are cumulative deltas: newer notes do not erase earlier evidence.
+5. Before reusing an existing function, tool, integration or workflow, read `R3_REUSE_LESSONS.yaml` and start from the latest matching canonical short path instead of rediscovering known architecture or failure modes.
+6. Read `docs/R3_RETROACTIVE_CANON_OVERLAY.md` whenever historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended.
+7. For memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note. Current reference: `docs/R3_LEARNING_WATCH_2026-09-18.md`. Learning Watches are cumulative deltas: newer notes do not erase earlier evidence.
 
 ## Zero-Assunto
 
@@ -58,6 +59,18 @@ For work involving cross-project relationships, code/document structure, IDEA OS
 - Existing curated Cubo relations are `DECLARED`; future branches from the Matrice dei Possibili are `POSSIBLE`. Observed and possible graphs may be overlaid but never conflated.
 - TypeSafe/Jev remains advisory for narrow judgments; R³∞ owns continuity/provenance and P5/P6 + Zero-Assunto remain the promotion gate.
 - Use `scripts/graphify_to_cubo.py` to convert `graphify-out/graph.json` into the live Cubo overlay. Reuse the shared bridge rather than creating project-local graph adapters.
+
+
+## Reuse learning and bounded self-modification
+
+Repeated use must make the system more efficient, not merely repeat the same trajectory. `R3_REUSE_LESSONS.yaml` is the machine-readable ledger for reusable operational lessons.
+
+- **Before use:** identify the capability, read its latest lesson, use the shortest verified path, and skip known dead ends unless a deliberate retest is required.
+- **After use:** record newly verified prerequisites, failure modes, shortcuts, verification steps and cleanup requirements.
+- A lesson progresses `OBSERVED → CANDIDATE → VERIFIED → CANONICAL`; never promote an inference directly to canon.
+- When a lesson implies changing code, policy, routing or workflow, route the candidate modification through the existing `R3-020 Self-improvement safety gate` in an isolated branch/sandbox. Do not create a parallel self-improvement engine.
+- The optimization target is equal-or-better verified outcome with fewer redundant calls, lower latency, lower supervision and lower failure surface.
+- Preserve provenance and previous baselines. A new shortcut may replace the current default path only after verification; failed or superseded paths remain useful negative evidence.
 
 ## Capability maximization rule
 
