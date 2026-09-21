@@ -1,0 +1,101 @@
+version: 1
+name: R3_REUSE_LESSONS
+updated: 2026-09-21
+status: ACTIVE
+purpose: >
+  Persist operational lessons from repeated use of existing functions, tools,
+  integrations and workflows so later reuse starts from the best verified path
+  instead of rediscovering the same architecture or failure modes.
+
+principles:
+  - reuse_existing_canonical_path_before_designing_new_path
+  - lessons_are_evidence_not_authority
+  - preserve_provenance_and_failure_modes
+  - optimize_verified_outcome_not_raw_tool_count
+  - no_parallel_engine_for_an_existing_capability
+  - candidate_self_modifications_must_pass_R3_020
+  - never_turn_unverified_inference_into_canonical_rule
+
+lesson_lifecycle:
+  - OBSERVED
+  - CANDIDATE
+  - VERIFIED
+  - CANONICAL
+  - DEPRECATED
+
+required_fields:
+  - id
+  - capability
+  - status
+  - observed_at
+  - trigger
+  - verified_facts
+  - failure_modes
+  - canonical_short_path
+  - preconditions
+  - verification
+  - cleanup
+  - provenance
+
+reuse_rule:
+  before_use:
+    - identify_capability
+    - read_matching_lesson
+    - start_from_canonical_short_path
+    - skip_known_dead_ends_unless_retesting_is_the_goal
+  after_use:
+    - record_new_facts_failures_and_shortcuts
+    - compare_actual_path_with_previous_best_path
+    - create_candidate_patch_when_a_reusable_improvement_exists
+    - route_self_modification_through_R3_020
+    - promote_only_after_verification
+  optimization_target:
+    - fewer_redundant_tool_calls
+    - lower_latency
+    - lower_human_intervention
+    - lower_failure_surface
+    - equal_or_better_verified_result
+
+lessons:
+  - id: RL-2026-09-21-TYPESAFE-JEV-001
+    capability: canonical_typesafe_jev_live_judgment
+    status: OBSERVED
+    observed_at: 2026-09-21
+    trigger: Bitcoin Cannes 2009 recovery case
+    verified_facts:
+      - Canonical transport is typesafe_sister/client.py -> POST /v1/systemone -> model jev-latest.
+      - Universal typed layer is typesafe_sister/policy.py + typesafe_sister/universal.py.
+      - The Railway project r3-typesafe-sister was reachable through the connector but had no deployed services in production during this run.
+      - Vercel project claudio has the repository integration and historically executed TypeSafe successfully for Fabbrica.
+      - A temporary preview caller can be created without changing the Jev engine, but the preview encountered Vercel SSO protection and did not yield a readable Jev result in this run.
+      - No Jev score may be invented when the live typed response is unavailable.
+    failure_modes:
+      - rediscovering Railway before checking the canonical transport and known live host
+      - treating a READY/deployment or HTTP trajectory signal as proof that the Jev response was obtained
+      - preview SSO/cookie bypass not preserved by the available fetch connector
+      - creating a second TypeSafe client or parallel evaluator
+    canonical_short_path:
+      - inspect R3_REUSE_LESSONS.yaml for latest TypeSafe lesson
+      - use typesafe_sister/client.py and existing server-side TYPESAFE_API_KEY host
+      - prefer an already callable authenticated host over creating infrastructure
+      - send one bounded Choice/Score/Noul request
+      - verify the returned result contains typed answers before interpreting
+      - if unavailable, report blocker without synthetic scores
+    preconditions:
+      - server-side TYPESAFE_API_KEY available on the execution host
+      - callable endpoint/runtime capable of POST to api.typesafe.ai
+      - bounded state under canonical size limits
+    verification:
+      - response is a real TypeSafe result with answers object and model metadata
+      - requested question keys are complete
+      - no score is inferred from logs, deployment state, or another model
+    cleanup:
+      - remove any temporary one-shot caller after use
+      - do not merge temporary debug endpoints into main
+      - preserve only the reusable lesson and verified evidence
+    provenance:
+      - typesafe_sister/client.py
+      - typesafe_sister/policy.py
+      - typesafe_sister/universal.py
+      - docs/TYPESAFE_UNIVERSAL_2026-09-20.md
+      - run_2026-09-21_bitcoin_cannes_retry
