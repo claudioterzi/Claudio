@@ -495,6 +495,7 @@ def choose_route(
     encoder: SemanticEncoder | None = None,
     learner: OutcomeLearner | None = None,
     jev_caller: Callable[..., dict[str, Any]] | None = None,
+    provider_jury: Callable[[str, list[RankedLesson]], tuple[str | None, list[dict[str, Any]]]] | None = None,
     min_score: float = 0.40,
     min_margin: float = 0.08,
 ) -> tuple[RouteDecision, list[RankedLesson]]:
@@ -523,7 +524,8 @@ def choose_route(
             # No fabricated Jev answer. Continue to existing-provider failover.
             pass
 
-        jury_choice, jury_evidence = _provider_jury_choice(query, ranked)
+        jury = provider_jury or _provider_jury_choice
+        jury_choice, jury_evidence = jury(query, ranked)
         if jury_choice:
             selected = next(item for item in ranked if item.lesson_id == jury_choice)
             providers = ",".join(
