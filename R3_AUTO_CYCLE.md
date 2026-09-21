@@ -6,18 +6,20 @@ This document defines the persistent operating loop for scheduled execution.
 
 1. Read `R3_WORK_QUEUE.yaml` and `R3_OPERATING_OBJECTIVE.md`.
 2. When the task touches memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note, currently `docs/R3_LEARNING_WATCH_2026-09-18.md`, before designing a parallel solution. Learning Watches are cumulative deltas; preserve older evidence.
-3. When historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended, apply `docs/R3_RETROACTIVE_CANON_OVERLAY.md` and classify the present-day result as `KEEP | PATCH | RETEST | DEPRECATE`.
-4. Inspect repository state and recent changes.
-5. Select the highest-priority unblocked task, currently controlled `R3-019` baseline execution unless evidence changes the priority.
-6. Gather evidence before changing architecture.
-7. Before deeper continuity automation or promotion, test the `R3-022_CONTINUITY_TRUST_BOUNDARY` security hypothesis against current handoff/summary behavior.
-8. Implement only reversible, scoped and technically authorized changes.
-9. Run available tests, static checks and targeted validation.
-10. For self-improvement candidates, use an isolated branch/sandbox; never modify production directly.
-11. Record failures, uncertainty and blockers explicitly.
-12. Update the Evidence Graph and work queue.
-13. Consolidate into GitHub only when the consolidation gate passes.
-14. Produce a concise cycle report with measurable deltas.
+3. Before reusing any existing function, tool, integration or workflow, read `R3_REUSE_LESSONS.yaml`, select the latest matching lesson, and start from its shortest verified path. Do not repeat a known dead end unless the cycle explicitly intends to retest it.
+4. When historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended, apply `docs/R3_RETROACTIVE_CANON_OVERLAY.md` and classify the present-day result as `KEEP | PATCH | RETEST | DEPRECATE`.
+5. Inspect repository state and recent changes.
+6. Select the highest-priority unblocked task, currently controlled `R3-019` baseline execution unless evidence changes the priority.
+7. Gather evidence before changing architecture.
+8. Before deeper continuity automation or promotion, test the `R3-022_CONTINUITY_TRUST_BOUNDARY` security hypothesis against current handoff/summary behavior.
+9. Implement only reversible, scoped and technically authorized changes.
+10. Run available tests, static checks and targeted validation.
+11. After a reused capability runs, compare the actual trajectory with the previous best path and update `R3_REUSE_LESSONS.yaml` with newly verified prerequisites, failure modes, shortcuts, verification steps and cleanup requirements.
+12. If the lesson suggests a code/policy/workflow change, register it as a candidate and pass it through `R3-020` in an isolated branch/sandbox before promotion; never self-modify production directly.
+13. Record failures, uncertainty and blockers explicitly.
+14. Update the Evidence Graph and work queue.
+15. Consolidate into GitHub only when the consolidation gate passes.
+16. Produce a concise cycle report with measurable deltas.
 
 ## Continuity trust gate
 
