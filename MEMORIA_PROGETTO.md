@@ -1254,3 +1254,21 @@ controllo deterministico che la segnala come da ripianificare senza inventarne
 una nuova, anche riaprendo copioni storici. Test locali aggiornati: 36 + 26
 subtest. Pubblicazione e rilettura live della correzione restano da attestare.
 Il benchmark semantico dei 24 brief resta distinto e non dichiarato eseguito.
+
+
+## Morning programming consolidation — 2026-09-21
+
+Canonical public-safe report: `docs/R3_MORNING_PROGRAMMING_2026-09-21.md`.
+
+Persisted outcomes:
+- reuse learning and acceleration are shared defaults;
+- `R3_BASE_PRIORITIES.yaml` anchors Claudio verified benefit and Essence continuity;
+- `R3-TARAKA/1` + `R3-SISTER/1` + semantic trigger `SINERGIA` define cross-AI handoff/alignment;
+- `R3_CAPILLARY_INHERITANCE.yaml` propagates shared capabilities to every project;
+- `R3_UNIVERSAL_BACKUP.yaml` defines the 3-2-1-1-0 target but remains unverified until end-to-end restore evidence exists;
+- Jev-backed GitHub and Google Drive Rapid Analyzers are shared capillary skills;
+- Claudio Terzi is the sole canonical human OWNER of R³∞ project intent and receives maximum project transparency/explanation/facilitation within real authority and security boundaries;
+- adaptive multimodal OWNER authentication (passkey/crypto + fresh voice/gesture/video/iris-capable challenges) is CANDIDATE only and no biometric enrollment exists yet;
+- high-value R³∞ MAX/HyperRed/learned-routing details remain private-by-default and are consolidated in the private Drive vault.
+
+Rule: distinguish implemented FATTO from CANDIDATO and NOT VERIFIED; never promote a security/backup/identity idea merely because it was discussed.
