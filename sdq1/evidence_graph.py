@@ -128,6 +128,20 @@ class EvidenceGraph:
             key=lambda e: e.edge_id,
         )
 
+    def promotion_support(self, key: str) -> list[EvidenceEdge]:
+        """Return only explicit evidence edges eligible for promotion review."""
+        if key not in self._records:
+            raise KeyError(key)
+        return sorted(
+            [
+                edge for edge in self._edges.values()
+                if edge.target_key == key
+                and edge.basis == "EXPLICIT"
+                and edge.relation in {"SUPPORTS", "TESTS"}
+            ],
+            key=lambda edge: edge.edge_id,
+        )
+
     def export(self) -> dict[str, Any]:
         records = [asdict(r) for r in sorted(self._records.values(), key=lambda x: x.key())]
         edges = [asdict(e) for e in sorted(self._edges.values(), key=lambda x: x.edge_id)]
