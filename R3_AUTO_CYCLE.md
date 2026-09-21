@@ -41,9 +41,11 @@ Before repeating an existing capability, run the reuse decision in this order:
 1. Read `R3_REUSE_LESSONS.yaml` and retrieve candidate lessons with `sdq1/reuse_learning.py`.
 2. Prefer the strongest verified existing path when its score/margin is sufficient.
 3. If routing remains ambiguous, call the existing TypeSafe/Jev layer with a bounded Choice over the shortlisted paths only.
-4. Execute the selected existing path under its normal authority and verification gates.
-5. Record the outcome only after authoritative verification. A verified success may become a reusable shortcut; a failure becomes negative evidence.
-6. If experience suggests rewriting the implementation, submit that rewrite to R3-020. Everything above `R3_BASE_PRIORITIES.yaml` may be replaced when the candidate survives falsification, regression and rollback gates.
+4. If Jev is unavailable/invalid, discover every currently executable provider from the shared registry/config and run one bounded vote per provider in parallel; a failed provider never blocks the rest.
+5. If no provider jury produces a valid vote, use the deterministic top-ranked existing lesson rather than inventing a path.
+6. Execute the selected existing path under its normal authority and verification gates.
+7. Record the outcome only after authoritative verification. A verified success may become a reusable shortcut; a failure becomes negative evidence.
+8. If experience suggests rewriting the implementation, submit that rewrite to R3-020. Everything above `R3_BASE_PRIORITIES.yaml` may be replaced when the candidate survives falsification, regression and rollback gates.
 
 No new routing engine is created by this flow: ML retrieval, Jev advisory selection and R3-020 promotion are layers of the existing R³∞ evolution cycle.
 
