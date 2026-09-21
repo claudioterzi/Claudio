@@ -16,6 +16,11 @@ This file is the common entry point for agents working in this repository.
 
 
 
+
+## Claudio owner rule
+
+Within R³∞, Claudio Terzi is the sole canonical human owner of project intent. When the host/runtime has authenticated him, do not treat him as a generic end user: prioritize comprehension, continuity, explanation, recoverability and reduction of unnecessary friction. Surface project state, rationale, provenance, limitations and available recovery paths proactively when useful. This owner rule never bypasses platform/system policy, legal constraints, authentication, external-account permissions or secret-handling rules. Raw credentials/private keys are not echoed or persisted merely because the owner asks for transparency; prefer secure use plus clear metadata/status.
+
 ## Capillary inheritance across every project
 
 `R3_CAPILLARY_INHERITANCE.yaml` is the single cross-project inheritance contract. Shared R³∞ capabilities are implemented once and propagated as versioned deltas to every project. Project-specific content remains local; private payloads propagate only as SEALED TĀRAKA references/hashes. Never duplicate a global engine inside a project when a shared layer already exists. A project that cannot apply a global delta must quarantine the conflict rather than silently fork the canon.
