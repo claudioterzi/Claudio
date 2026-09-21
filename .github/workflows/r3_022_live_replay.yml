@@ -1,0 +1,46 @@
+name: R3-022 Live Continuity Replay
+
+on:
+  push:
+    branches:
+      - r3/r3-022-replay-20260921
+    paths:
+      - 'sdq1/continuity_replay.py'
+      - 'scripts/r3_022_live_replay.py'
+      - '.github/workflows/r3_022_live_replay.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install live-provider dependency
+        run: python -m pip install --quiet anthropic
+
+      - name: Run 100-handoff live replay
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/r3_022_live_replay.py
+
+      - name: Upload replay evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-022-live-replay-${{ github.sha }}
+          path: output/r3_022_live_replay/
+          if-no-files-found: ignore
+          retention-days: 30
