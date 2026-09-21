@@ -1,0 +1,121 @@
+name: OmniRoute F0 Runtime Inventory
+
+on:
+  push:
+    branches:
+      - r3/omniroute-gateway-20260921
+    paths:
+      - '.github/workflows/omniroute_f0_runtime_inventory.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Inspect Docker latest
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker pull diegosouzapw/omniroute:latest >/dev/null
+          IMAGE_ID=$(docker image inspect diegosouzapw/omniroute:latest --format '{{.Id}}')
+          DIGEST=$(docker image inspect diegosouzapw/omniroute:latest --format '{{index .RepoDigests 0}}')
+          docker run --rm --entrypoint sh diegosouzapw/omniroute:latest -lc '
+            set -eu
+            ROOT=/app
+            VERSION=$(node -e "try{console.log(require("/app/package.json").version)}catch(e){console.log("unknown")}")
+            EXPOSURE=$(find "$ROOT" -type f \( -name "modelExposureFilter.ts" -o -name "modelExposureFilter.js" \) 2>/dev/null | head -n1 || true)
+            LOCKOUT=$(find "$ROOT" -type f \( -name "modelLockoutFilter.ts" -o -name "modelLockoutFilter.js" \) 2>/dev/null | head -n1 || true)
+            VIRTUAL=$(find "$ROOT" -type f \( -name "virtualFactory.ts" -o -name "virtualFactory.js" \) 2>/dev/null | head -n1 || true)
+            HAS_EXPOSURE=false
+            HAS_LOCKOUT=false
+            VIRTUAL_IMPORTS_EXPOSURE=false
+            [ -n "$EXPOSURE" ] && HAS_EXPOSURE=true
+            [ -n "$LOCKOUT" ] && HAS_LOCKOUT=true
+            if [ -n "$VIRTUAL" ] && grep -q "filterModelExposureCandidates" "$VIRTUAL"; then
+              VIRTUAL_IMPORTS_EXPOSURE=true
+            fi
+            node -e "
+              const fs=require("fs");
+              const out={
+                transport:"docker-latest",
+                package_version:process.env.VERSION||"unknown",
+                exposure_path:process.env.EXPOSURE||null,
+                lockout_path:process.env.LOCKOUT||null,
+                virtual_factory_path:process.env.VIRTUAL||null,
+                has_model_exposure_filter:process.env.HAS_EXPOSURE==="true",
+                has_model_lockout_filter:process.env.HAS_LOCKOUT==="true",
+                virtual_factory_uses_exposure_filter:process.env.VIRTUAL_IMPORTS_EXPOSURE==="true"
+              };
+              fs.writeFileSync("/tmp/docker-inventory.json",JSON.stringify(out,null,2));
+            "             VERSION="$VERSION" EXPOSURE="$EXPOSURE" LOCKOUT="$LOCKOUT" VIRTUAL="$VIRTUAL"             HAS_EXPOSURE="$HAS_EXPOSURE" HAS_LOCKOUT="$HAS_LOCKOUT" VIRTUAL_IMPORTS_EXPOSURE="$VIRTUAL_IMPORTS_EXPOSURE"
+            cat /tmp/docker-inventory.json
+          ' > /tmp/docker-raw.txt
+
+          # Extract the final JSON block from container output.
+          python - <<'PY'
+          from pathlib import Path
+          text=Path("/tmp/docker-raw.txt").read_text()
+          start=text.find("{")
+          Path("/tmp/docker-inventory.json").write_text(text[start:] if start>=0 else "{}")
+          PY
+          jq --arg image_id "$IMAGE_ID" --arg digest "$DIGEST"              '. + {image_id:$image_id,image_digest:$digest}' /tmp/docker-inventory.json              > /tmp/docker-inventory-final.json
+          mv /tmp/docker-inventory-final.json /tmp/docker-inventory.json
+          cat /tmp/docker-inventory.json
+
+      - name: Inspect npm 3.8.50
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install -g omniroute@3.8.50 >/tmp/npm-install.log 2>&1
+          ROOT="$(npm root -g)/omniroute"
+          VERSION=$(node -e "console.log(require('$ROOT/package.json').version)")
+          EXPOSURE=$(find "$ROOT" -type f \( -name "modelExposureFilter.ts" -o -name "modelExposureFilter.js" \) 2>/dev/null | head -n1 || true)
+          LOCKOUT=$(find "$ROOT" -type f \( -name "modelLockoutFilter.ts" -o -name "modelLockoutFilter.js" \) 2>/dev/null | head -n1 || true)
+          VIRTUAL=$(find "$ROOT" -type f \( -name "virtualFactory.ts" -o -name "virtualFactory.js" \) 2>/dev/null | head -n1 || true)
+          HAS_EXPOSURE=false
+          HAS_LOCKOUT=false
+          VIRTUAL_IMPORTS_EXPOSURE=false
+          [ -n "$EXPOSURE" ] && HAS_EXPOSURE=true
+          [ -n "$LOCKOUT" ] && HAS_LOCKOUT=true
+          if [ -n "$VIRTUAL" ] && grep -q "filterModelExposureCandidates" "$VIRTUAL"; then
+            VIRTUAL_IMPORTS_EXPOSURE=true
+          fi
+          jq -n             --arg transport "npm"             --arg package_version "$VERSION"             --arg exposure_path "$EXPOSURE"             --arg lockout_path "$LOCKOUT"             --arg virtual_factory_path "$VIRTUAL"             --argjson has_model_exposure_filter "$HAS_EXPOSURE"             --argjson has_model_lockout_filter "$HAS_LOCKOUT"             --argjson virtual_factory_uses_exposure_filter "$VIRTUAL_IMPORTS_EXPOSURE"             '{
+              transport:$transport,
+              package_version:$package_version,
+              exposure_path:(if $exposure_path=="" then null else $exposure_path end),
+              lockout_path:(if $lockout_path=="" then null else $lockout_path end),
+              virtual_factory_path:(if $virtual_factory_path=="" then null else $virtual_factory_path end),
+              has_model_exposure_filter:$has_model_exposure_filter,
+              has_model_lockout_filter:$has_model_lockout_filter,
+              virtual_factory_uses_exposure_filter:$virtual_factory_uses_exposure_filter
+            }' > /tmp/npm-inventory.json
+          cat /tmp/npm-inventory.json
+
+      - name: Build F0 verdict
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -s '{
+            schema:"R3-OMNIROUTE-F0/1",
+            observed_at:now|todateiso8601,
+            runtimes: .,
+            verdict:{
+              docker_exposure_present:.[0].has_model_exposure_filter,
+              docker_exposure_wired:.[0].virtual_factory_uses_exposure_filter,
+              npm_3_8_50_exposure_present:.[1].has_model_exposure_filter,
+              npm_3_8_50_exposure_wired:.[1].virtual_factory_uses_exposure_filter
+            }
+          }' /tmp/docker-inventory.json /tmp/npm-inventory.json > /tmp/r3-omniroute-f0.json
+          cat /tmp/r3-omniroute-f0.json
+
+      - name: Upload F0 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-omniroute-f0-${{ github.sha }}
+          path: /tmp/r3-omniroute-f0.json
+          retention-days: 30
