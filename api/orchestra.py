@@ -7,7 +7,6 @@ engine in api/raffaello.py.
 from __future__ import annotations
 
 import concurrent.futures
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -20,7 +19,6 @@ from flask import Flask, jsonify, request
 from sdq1.config import carica_config
 from sdq1.llm.router import PROVIDER_REGISTRY
 from typesafe_sister.universal import assess_project_state
-from typesafe_sister.client import system_one
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 128 * 1024
@@ -242,157 +240,7 @@ def _synthesize(question: str, contributions: list[dict[str, Any]], language: st
     return chosen["testo"], {"provider": chosen["provider"], "modello": chosen["modello"], "modo": "fallback"}
 
 
-
-def _jev_bitcoin_cannes_2009_one_shot():
-    state = {
-        "case": "Bitcoin Cannes 2009 recovery",
-        "epistemic_status": "investigative state; no verified wallet, address, seller record, or payment transaction yet",
-        "authorized_current_evidence": [
-            "Santoni Cannes 2009 provenance.",
-            "Later Santoni correspondence about searching old data.",
-            "Claudio recollects an approximately EUR 50 Bitcoin acquisition from the shop computer.",
-            "Fabrizio is recalled as the person who first sent Claudio information about Bitcoin.",
-            "Claudio recalls a reply after purchase.",
-            "Claudio recalls a P2P/eMule-like client.",
-            "The currently available 2009 Outlook archive is sparse.",
-            "No original Barclays or PayPal transaction has yet been verified.",
-            "No wallet file has yet been verified.",
-            "No Bitcoin address has yet been verified.",
-            "No seller record has yet been verified."
-        ],
-        "hypotheses": {
-            "direct_purchase": "Bitcoin was directly purchased from a seller/service in or around 2009.",
-            "payment_intermediary": "A payment intermediary such as PayPal/Barclays or another payment rail mediated the acquisition.",
-            "local_mining": "Bitcoin was obtained partly or wholly through mining on the Santoni shop computer.",
-            "purchase_plus_mining": "There was both a purchase and some local mining/client activity.",
-            "memory_imprecision": "The remembered sequence is broadly linked to early Bitcoin activity but one or more details (date, payment rail, client purpose, purchase vs mining) are imprecise."
-        },
-        "guardrails": [
-            "Do not treat recollection as equivalent to a verified primary record.",
-            "Do not infer that coins remain recoverable without a wallet/address/key or authoritative account evidence.",
-            "Do not infer a seller, payment rail, wallet software, or mining outcome unless supported by supplied evidence.",
-            "Evaluate hypotheses comparatively, not as mutually exclusive unless evidence requires it."
-        ]
-    }
-    fit_levels = [
-        "Strongly inconsistent with the supplied evidence.",
-        "Weak fit; possible but important supplied details are not explained.",
-        "Plausible fit; compatible with several details but not discriminated from alternatives.",
-        "Strong fit; explains most supplied details with limited unsupported assumptions.",
-        "Very strong fit; best-supported by the supplied evidence, while still not proven without primary corroboration."
-    ]
-    questions = {
-        "next_focus": {
-            "type": "choice",
-            "instructions": "Choose the single most useful next bounded investigative focus. Prefer the step most likely to reduce uncertainty without assuming the conclusion.",
-            "criteria": {
-                "primary_payment_trace": "Search authoritative payment records or statements for a 2009 transaction/counterparty that can anchor the acquisition.",
-                "wallet_address_artifact": "Search backups, disks, email attachments, browser/download folders, removable media, and archives for wallet files, addresses, keys, or wallet-software traces.",
-                "contemporaneous_correspondence": "Recover the original Bitcoin information from Fabrizio and the remembered reply after purchase, plus any related seller/service correspondence.",
-                "device_client_forensics": "Identify the remembered P2P/eMule-like client and recover executable/config/log artifacts from the Santoni computer or backups.",
-                "independent_witness_or_it_trace": "Use independent human/IT provenance such as staff or historical backup custodians to locate original machine images or records."
-            }
-        },
-        "readiness": {
-            "type": "score",
-            "instructions": "How ready is this case for a bounded next investigative step, not for a final conclusion?",
-            "criteria": [
-                "Only a story exists; no concrete next evidence target is specified.",
-                "Some provenance exists, but the next search still depends on broad guessing.",
-                "There are concrete evidence targets and a bounded search can proceed without inventing facts.",
-                "The next search is well specified with identifiable repositories/custodians and verification expectations.",
-                "Primary evidence sources are identified and accessible enough to execute a discriminating verification immediately."
-            ]
-        },
-        "coherence": {
-            "type": "score",
-            "instructions": "How internally coherent is the supplied evidence as one historical case, while allowing memory uncertainty?",
-            "criteria": [
-                "Materially contradictory; key elements cannot reasonably belong to one case.",
-                "Major unresolved tensions substantially undermine the narrative.",
-                "Broadly coherent but with important ambiguities about sequence, mechanism, or attribution.",
-                "Highly coherent; most elements fit one timeline with only local uncertainty.",
-                "Exceptionally coherent and mutually reinforcing, with independent anchors across the evidence chain."
-            ]
-        },
-        "grounding": {
-            "type": "score",
-            "instructions": "How strongly are the material claims grounded in verified, contemporaneous, or independently reproducible evidence?",
-            "criteria": [
-                "Almost entirely recollection or inference with no verified contemporaneous anchor.",
-                "Some provenance/correspondence exists, but core acquisition claims remain unverified.",
-                "Several named evidence anchors exist, while the transaction/wallet identity remains unverified.",
-                "Primary or independently reproducible records support most material claims, with limited gaps.",
-                "The acquisition, counterpart/payment path, wallet/address linkage, and custody chain are supported by authoritative primary evidence."
-            ]
-        },
-        "contradiction": {
-            "type": "noul",
-            "instructions": "Is there a material contradiction in the supplied evidence that should currently block treating the narrative as one coherent Bitcoin-related 2009 case?"
-        },
-        "missing_critical_input": {
-            "type": "noul",
-            "instructions": "Is a critical primary input missing such that concluding what actually happened would require guessing? Consider payment record, seller/service identity, wallet/address/key evidence, original correspondence, and original device/backups."
-        },
-        "unsupported_claim": {
-            "type": "noul",
-            "instructions": "Would it be unsupported on the supplied evidence to claim as fact that Bitcoin was definitely purchased in 2009 and that the resulting coins are still recoverable?"
-        },
-        "best_discriminator": {
-            "type": "choice",
-            "instructions": "Which single evidence class would best discriminate among direct purchase, payment intermediary, local mining, purchase+mining, and memory-imprecision?",
-            "criteria": {
-                "verified_payment_counterparty": "An original bank/PayPal/payment record identifying date, amount and counterparty.",
-                "wallet_or_address_artifact": "A contemporaneous wallet file, Bitcoin address, private-key material, wallet database, or verifiable wallet metadata.",
-                "original_correspondence": "The original message from Fabrizio plus the remembered post-purchase reply or seller/service correspondence.",
-                "client_logs_or_disk_image": "A preserved disk image, installed client, logs/configuration, or mining/wallet software artifact from the Santoni machine.",
-                "independent_backup_or_witness_record": "An independently preserved IT backup or contemporaneous witness/custodian record tying the machine and activity to Bitcoin."
-            }
-        },
-        "fit_direct_purchase": {"type": "score", "instructions": "How well does the direct-purchase hypothesis fit the supplied evidence?", "criteria": fit_levels},
-        "fit_payment_intermediary": {"type": "score", "instructions": "How well does the payment-intermediary hypothesis fit the supplied evidence?", "criteria": fit_levels},
-        "fit_local_mining": {"type": "score", "instructions": "How well does the local-mining hypothesis fit the supplied evidence?", "criteria": fit_levels},
-        "fit_purchase_plus_mining": {"type": "score", "instructions": "How well does the purchase-plus-mining hypothesis fit the supplied evidence?", "criteria": fit_levels},
-        "fit_memory_imprecision": {"type": "score", "instructions": "How well does the memory-imprecision hypothesis fit the supplied evidence?", "criteria": fit_levels},
-        "false_attribution_risk": {
-            "type": "score",
-            "instructions": "How high is the risk of falsely attributing remembered software, payment, correspondence, or later Santoni records to the specific 2009 Bitcoin acquisition?",
-            "criteria": [
-                "Very low: multiple independent contemporaneous anchors tie the same event together.",
-                "Low: most links are directly supported, with only minor attribution gaps.",
-                "Moderate: several links are plausible but could belong to adjacent events or later reconstruction.",
-                "High: key links depend on memory and sparse/indirect records, so conflation is a serious possibility.",
-                "Very high: the current chain cannot reliably distinguish the claimed event from other historical activity."
-            ]
-        },
-        "evidence_chain_completeness": {
-            "type": "score",
-            "instructions": "How complete is the current chain from historical context to acquisition/payment to wallet/address/custody?",
-            "criteria": [
-                "Fragmentary: context/recollection only; acquisition and custody chain are not evidenced.",
-                "Early chain only: provenance and some correspondence/recollection exist, but no verified transaction or wallet link.",
-                "Partial: at least one primary acquisition or wallet anchor exists, but chain gaps remain.",
-                "Substantial: transaction/counterparty and wallet/address linkage are mostly evidenced, with limited custody gaps.",
-                "Complete: authoritative records connect provenance, acquisition/payment, wallet/address/key control, and later custody/recovery state."
-            ]
-        }
-    }
-    result = system_one(state, questions, model="jev-latest", timeout=30)
-    state_hash = hashlib.sha256(json.dumps(state, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
-    question_hash = hashlib.sha256(json.dumps(questions, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
-    return jsonify(
-        provider="typesafe",
-        state_sha256=state_hash,
-        questions_sha256=question_hash,
-        result=result,
-        epistemic_note="typed_model_judgment_not_independent_factual_evidence",
-        temporary_endpoint=True,
-    )
-
-
 def _response():
-    if request.method == "GET" and request.args.get("jev_case") == "bitcoin-cannes-2009-v1":
-        return _jev_bitcoin_cannes_2009_one_shot()
     if request.method == "GET":
         try:
             bootstrap = _bootstrap_runtime()
