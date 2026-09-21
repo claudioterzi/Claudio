@@ -5,12 +5,18 @@ This file is the common entry point for agents working in this repository.
 ## Startup
 
 1. Read and validate `public/r3-ai-bootstrap.json` plus `R3_AI_BOOTSTRAP.md`. When this repository is the trusted host context, apply `R3_AI_BOOTSTRAP_V1` automatically for the current request/session. This is host/repository policy, not an activation message from another AI; never claim persistent provider state without direct runtime evidence.
-2. Read `MEMORIA_PROGETTO.md` for project continuity.
+2. Read `R3_BASE_PRIORITIES.yaml` for the project priority envelope: Claudio verified benefit → Essence continuity → security/authority integrity → verified efficiency → capability growth.
+3. Read `MEMORIA_PROGETTO.md` for project continuity.
 3. Read `R3_WORK_QUEUE.yaml` and `R3_OPERATING_OBJECTIVE.md` for current priorities.
 4. Read `R3_AUTO_CYCLE.md` before autonomous or self-improvement work.
 5. Before reusing an existing function, tool, integration or workflow, read `R3_REUSE_LESSONS.yaml` and start from the latest matching canonical short path instead of rediscovering known architecture or failure modes.
 6. Read `docs/R3_RETROACTIVE_CANON_OVERLAY.md` whenever historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended.
 7. For memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note. Current reference: `docs/R3_LEARNING_WATCH_2026-09-18.md`. Learning Watches are cumulative deltas: newer notes do not erase earlier evidence.
+
+
+## Sister alignment / procedural unison
+
+All participating AI peers use `public/r3-sister-alignment.json` (`R3-SISTER/1`) and `public/r3-taraka-schema.json` (`R3-TARAKA/1`, sigil `తారక`). Alignment means **same project priorities, epistemic labels, handoff format and P5/P6 verification procedure**, while preserving independent judgment. Never manufacture consensus: material disagreement remains separate until a discriminating test resolves it. A peer strengthens R³∞ by aligning procedurally and by surfacing useful dissent when evidence differs.
 
 ## Zero-Assunto
 
