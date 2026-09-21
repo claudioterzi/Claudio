@@ -89,6 +89,8 @@ queue:
     state: DEVELOPMENT
     priority: integrity
     objective: Link claims to source, code, test, commit and epistemic status.
+    evidence: draft PR #78; existing public/r3-memory.js R3_COLLATE_ALL prototype; sdq1/evidence_graph.py; tests/test_evidence_graph.py
+    experiment_status: Candidate backend contract extends the existing R3_COLLATE_ALL prototype rather than replacing it. It is append-only, versions claims, requires provenance/evidence_ref/falsifier, preserves conflicts, separates explicit vs inferred edges, rejects MODEL_OUTPUT as standalone FATTO, and excludes inferred support from promotion evidence. R3-007-shaped authoritative postcondition evidence can be ingested as AUTHORITATIVE_STATE while proxy evidence remains IPOTESI. PR #78 is currently under CI; Vercel combined status is externally failing due build-rate-limit.
   - id: R3-012
     title: Meta-Scacchiera benchmark
     state: DEVELOPMENT
