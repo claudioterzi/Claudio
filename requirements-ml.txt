@@ -1,0 +1,6 @@
+# Optional local ML accelerator for R³∞ Reuse Learning.
+# Kept separate from requirements.txt so Vercel/serverless core does not pull multi-GB model runtimes.
+sentence-transformers>=5.1.0,<6
+scikit-learn>=1.5.0,<2
+joblib>=1.4.0,<2
+numpy>=1.26.0,<3
