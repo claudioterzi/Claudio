@@ -77,6 +77,7 @@ def main() -> int:
         "provider": provider.nome,
         "model": provider.modello,
         "metrics": result["metrics"],
+        "thresholds": result["preregistered_thresholds"],
         "artifact": str(path),
     }, ensure_ascii=False))
 
