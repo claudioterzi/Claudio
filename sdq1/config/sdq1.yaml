@@ -33,8 +33,9 @@ router:
   regole:
     - profilo: "default"
       timeout_s: 45
-      cascata: ["gemini", "anthropic", "grok", "openai", "deepseek", "stub"]
+      cascata: ["omniroute", "gemini", "anthropic", "grok", "openai", "deepseek", "stub"]
       modelli:
+        omniroute: "auto"
         gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
         grok: "grok-3"
@@ -42,15 +43,17 @@ router:
         deepseek: "deepseek-chat"
     - profilo: "realtime"
       timeout_s: 60        # Grok primario: accesso live a X/Twitter + web
-      cascata: ["grok", "perplexity", "gemini", "stub"]
+      cascata: ["grok", "perplexity", "omniroute", "gemini", "stub"]
       modelli:
+        omniroute: "auto/smart"
         grok: "grok-3"
         perplexity: "sonar-pro"
         gemini: "gemini-2.5-flash"
     - profilo: "ragionamento"
       timeout_s: 90
-      cascata: ["gemini", "deepseek", "grok", "anthropic", "openai", "stub"]
+      cascata: ["omniroute", "gemini", "deepseek", "grok", "anthropic", "openai", "stub"]
       modelli:
+        omniroute: "auto/reasoning:pro"
         gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
         grok: "grok-3"
@@ -58,22 +61,25 @@ router:
         deepseek: "deepseek-reasoner"
     - profilo: "veloce"
       timeout_s: 15        # C: decomposizione / sintesi rapida
-      cascata: ["anthropic", "gemini", "openai", "stub"]
+      cascata: ["omniroute", "anthropic", "gemini", "openai", "stub"]
       modelli:
+        omniroute: "auto/fast"
         anthropic: "claude-haiku-4-5-20251001"
         gemini: "gemini-2.5-flash"
         openai: "gpt-4o-mini"
     - profilo: "ricerca"
       timeout_s: 60        # C: ricerca web può essere lenta
-      cascata: ["perplexity", "openai", "anthropic", "stub"]
+      cascata: ["perplexity", "omniroute", "openai", "anthropic", "stub"]
       modelli:
+        omniroute: "auto/smart"
         perplexity: "sonar-pro"
         openai: "gpt-4o"
         anthropic: "claude-fable-5"
     - profilo: "economia"
       timeout_s: 45
-      cascata: ["gemini", "deepseek", "stub"]
+      cascata: ["omniroute", "gemini", "deepseek", "stub"]
       modelli:
+        omniroute: "auto/cheap"
         gemini: "gemini-2.5-flash"
         deepseek: "deepseek-chat"
     - profilo: "locale"
@@ -86,15 +92,17 @@ router:
     # --- Commutazione Creativa ---
     - profilo: "esplora"
       timeout_s: 20        # esplorazione rapida, molte opzioni in parallelo
-      cascata: ["gemini", "deepseek", "openai", "stub"]
+      cascata: ["omniroute", "gemini", "deepseek", "openai", "stub"]
       modelli:
+        omniroute: "auto/smart"
         gemini: "gemini-2.5-flash"
         deepseek: "deepseek-chat"
         openai: "gpt-4o-mini"
     - profilo: "soglia"
       timeout_s: 45
-      cascata: ["gemini", "anthropic", "openai", "stub"]
+      cascata: ["omniroute", "gemini", "anthropic", "openai", "stub"]
       modelli:
+        omniroute: "auto"
         gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
         openai: "gpt-4o-mini"
@@ -102,6 +110,7 @@ router:
       timeout_s: 120       # impegno finale: massima qualità, più tempo
       cascata: ["gemini", "anthropic", "openai", "stub"]
       modelli:
+        omniroute: "auto/reasoning:pro"
         gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
         openai: "gpt-4o"
@@ -109,6 +118,7 @@ router:
       timeout_s: 120       # profilo massima potenza: Pro + reasoning
       cascata: ["gemini", "deepseek", "stub"]
       modelli:
+        omniroute: "auto/reasoning:pro"
         gemini: "gemini-2.5-pro"
         deepseek: "deepseek-reasoner"
 
