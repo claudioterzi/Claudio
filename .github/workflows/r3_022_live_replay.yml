@@ -29,7 +29,22 @@ jobs:
       - name: Install live-provider dependency
         run: python -m pip install --quiet anthropic
 
+      - name: Check live-provider availability
+        id: provider
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "$GOOGLE_API_KEY" ] || [ -n "$GEMINI_API_KEY" ] || [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::R3-022 live replay BLOCKED_NO_PROVIDER: no provider secret is configured in this GitHub Actions runtime."
+          fi
+
       - name: Run 100-handoff live replay
+        if: steps.provider.outputs.available == 'true'
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
