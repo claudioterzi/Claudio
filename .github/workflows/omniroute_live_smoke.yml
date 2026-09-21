@@ -1,0 +1,183 @@
+name: OmniRoute Live Smoke
+
+on:
+  push:
+    branches:
+      - r3/omniroute-gateway-20260921
+    paths:
+      - 'sdq1/llm/providers/omniroute_provider.py'
+      - 'sdq1/llm/router.py'
+      - 'sdq1/config/sdq1.yaml'
+      - 'tests/test_omniroute_provider.py'
+      - '.github/workflows/omniroute_live_smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+
+      - name: Start disposable OmniRoute
+        shell: bash
+        run: |
+          set -euo pipefail
+          JWT_SECRET="$(openssl rand -base64 48 | tr -d '\n')"
+          API_KEY_SECRET="$(openssl rand -hex 32)"
+          STORAGE_ENCRYPTION_KEY="$(openssl rand -hex 32)"
+          INITIAL_PASSWORD="$(openssl rand -base64 24 | tr -d '\n')"
+
+          {
+            echo "INITIAL_PASSWORD=$INITIAL_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+          docker pull diegosouzapw/omniroute:latest
+          docker run -d --name r3-omniroute-smoke             -p 127.0.0.1:20128:20128             -e JWT_SECRET="$JWT_SECRET"             -e API_KEY_SECRET="$API_KEY_SECRET"             -e STORAGE_ENCRYPTION_KEY="$STORAGE_ENCRYPTION_KEY"             -e INITIAL_PASSWORD="$INITIAL_PASSWORD"             -e NODE_ENV=production             -e HOSTNAME=0.0.0.0             -e REQUIRE_API_KEY=false             -e AUTH_COOKIE_SECURE=false             -e APP_LOG_TO_FILE=false             -e OMNIROUTE_DISABLE_BACKGROUND_SERVICES=true             diegosouzapw/omniroute:latest
+
+      - name: Verify boot and health
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 90); do
+            if curl -fsS http://127.0.0.1:20128/api/health > /tmp/health.json 2>/dev/null; then
+              cat /tmp/health.json | jq .
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::OmniRoute did not become healthy"
+          docker logs --tail 120 r3-omniroute-smoke || true
+          exit 1
+
+      - name: Login to local management API
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -n --arg password "$INITIAL_PASSWORD" '{password:$password}' > /tmp/login.json
+          code=$(curl -sS -o /tmp/login-response.json -w '%{http_code}'             -c /tmp/omni-cookie.txt             -H 'Content-Type: application/json'             -d @/tmp/login.json             http://127.0.0.1:20128/api/auth/login)
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::OmniRoute management login failed HTTP $code"
+            jq 'del(.token,.accessToken,.apiKey)' /tmp/login-response.json 2>/dev/null || cat /tmp/login-response.json
+            exit 1
+          fi
+          curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20128/api/auth/status | jq .
+          curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20128/api/auth/csrf > /tmp/csrf.json
+          CSRF_TOKEN=$(jq -r '.token // empty' /tmp/csrf.json)
+          test -n "$CSRF_TOKEN"
+          echo "CSRF_TOKEN=$CSRF_TOKEN" >> "$GITHUB_ENV"
+
+      - name: Connect keyless Pollinations provider
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s\n' '{"provider":"pollinations","name":"r3-smoke"}' > /tmp/provider-create.json
+          code=$(curl -sS -o /tmp/provider-response.json -w '%{http_code}'             -X POST             -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d @/tmp/provider-create.json             http://127.0.0.1:20128/api/providers)
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Pollinations connection create failed HTTP $code"
+            jq 'del(.apiKey,.token,.secret)' /tmp/provider-response.json 2>/dev/null || cat /tmp/provider-response.json
+            exit 1
+          fi
+
+          curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20128/api/providers > /tmp/providers.json
+
+          PROVIDER_ID=$(jq -r '
+            .id //
+            .connection.id //
+            empty
+          ' /tmp/provider-response.json)
+          if [ -z "$PROVIDER_ID" ]; then
+            PROVIDER_ID=$(jq -r '
+              (.connections // .providers // [])[]
+              | select((.provider // .providerId // "") == "pollinations")
+              | .id
+            ' /tmp/providers.json | head -n1)
+          fi
+          test -n "$PROVIDER_ID"
+          echo "PROVIDER_ID=$PROVIDER_ID" >> "$GITHUB_ENV"
+          echo "Connected provider id present; raw credentials are not printed."
+
+      - name: Test Pollinations connection
+        shell: bash
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/provider-test.json -w '%{http_code}'             -X POST             -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d '{}'             "http://127.0.0.1:20128/api/providers/$PROVIDER_ID/test")
+          jq 'del(.apiKey,.token,.secret)' /tmp/provider-test.json
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Pollinations provider test failed HTTP $code"
+            exit 1
+          fi
+          valid=$(jq -r '.valid // .success // false' /tmp/provider-test.json)
+          if [ "$valid" != "true" ]; then
+            echo "::error::Pollinations provider test did not report valid=true"
+            exit 1
+          fi
+
+      - name: Verify models and auto route
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS http://127.0.0.1:20128/v1/models > /tmp/models.json
+          MODEL_COUNT=$(jq '[.data[]?] | length' /tmp/models.json)
+          test "$MODEL_COUNT" -gt 0
+
+          cat > /tmp/chat.json <<'JSON'
+          {
+            "model": "auto",
+            "messages": [
+              {"role":"system","content":"Reply with exactly: OMNIROUTE_R3_OK"},
+              {"role":"user","content":"R3 live smoke ping"}
+            ],
+            "temperature": 0,
+            "max_tokens": 24
+          }
+          JSON
+
+          start=$(date +%s%3N)
+          code=$(curl -sS -o /tmp/chat-response.json -w '%{http_code}'             -H 'Content-Type: application/json'             -d @/tmp/chat.json             http://127.0.0.1:20128/v1/chat/completions)
+          end=$(date +%s%3N)
+          latency=$((end-start))
+
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::OmniRoute auto route failed HTTP $code"
+            jq 'del(.apiKey,.token,.secret)' /tmp/chat-response.json 2>/dev/null || cat /tmp/chat-response.json
+            exit 1
+          fi
+
+          CONTENT=$(jq -r '.choices[0].message.content // empty' /tmp/chat-response.json)
+          RESOLVED_MODEL=$(jq -r '.model // "unknown"' /tmp/chat-response.json)
+          test -n "$CONTENT"
+
+          jq -n             --arg status "PASS"             --arg requested_model "auto"             --arg resolved_model "$RESOLVED_MODEL"             --arg content "$CONTENT"             --argjson model_count "$MODEL_COUNT"             --argjson latency_ms "$latency"             '{
+              schema:"R3-OMNIROUTE-SMOKE/1",
+              status:$status,
+              requested_model:$requested_model,
+              resolved_model:$resolved_model,
+              model_count:$model_count,
+              latency_ms:$latency_ms,
+              nonempty_response:($content|length>0),
+              provider_seed:"pollinations-keyless",
+              secrets_persisted:false
+            }' > /tmp/r3-omniroute-smoke.json
+
+          cat /tmp/r3-omniroute-smoke.json
+
+      - name: Upload smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-omniroute-smoke-${{ github.sha }}
+          path: /tmp/r3-omniroute-smoke.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Dispose OmniRoute container
+        if: always()
+        shell: bash
+        run: |
+          docker rm -f r3-omniroute-smoke >/dev/null 2>&1 || true
+          rm -f /tmp/login.json /tmp/login-response.json /tmp/omni-cookie.txt /tmp/csrf.json                 /tmp/provider-create.json /tmp/provider-response.json /tmp/providers.json                 /tmp/provider-test.json /tmp/models.json /tmp/chat.json /tmp/chat-response.json
