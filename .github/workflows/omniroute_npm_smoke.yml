@@ -59,7 +59,7 @@ jobs:
           tail -n 120 /tmp/omniroute.log || true
           exit 1
 
-      - name: Login and connect Pollinations
+      - name: Login and connect Kilo Gateway
         shell: bash
         run: |
           set -euo pipefail
@@ -71,9 +71,9 @@ jobs:
           test -n "$CSRF_TOKEN"
           echo "CSRF_TOKEN=$CSRF_TOKEN" >> "$GITHUB_ENV"
 
-          code=$(curl -sS -o /tmp/provider-response.json -w '%{http_code}'             -X POST -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d '{"provider":"pollinations","name":"r3-smoke"}'             http://127.0.0.1:20128/api/providers)
+          code=$(curl -sS -o /tmp/provider-response.json -w '%{http_code}'             -X POST -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d '{"provider":"kilo-gateway","name":"r3-smoke","apiKey":"r3-smoke-nonsecret-placeholder"}'             http://127.0.0.1:20128/api/providers)
           if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
-            echo "::error::Pollinations create failed HTTP $code"
+            echo "::error::Kilo Gateway create failed HTTP $code"
             jq 'del(.apiKey,.token,.secret)' /tmp/provider-response.json 2>/dev/null || cat /tmp/provider-response.json
             exit 1
           fi
@@ -81,7 +81,7 @@ jobs:
           curl -fsS -b /tmp/omni-cookie.txt http://127.0.0.1:20128/api/providers > /tmp/providers.json
           PROVIDER_ID=$(jq -r '.id // .connection.id // empty' /tmp/provider-response.json)
           if [ -z "$PROVIDER_ID" ]; then
-            PROVIDER_ID=$(jq -r '(.connections // .providers // [])[] | select((.provider // .providerId // "")=="pollinations") | .id' /tmp/providers.json | head -n1)
+            PROVIDER_ID=$(jq -r '(.connections // .providers // [])[] | select((.provider // .providerId // "")=="kilo-gateway") | .id' /tmp/providers.json | head -n1)
           fi
           test -n "$PROVIDER_ID"
           echo "PROVIDER_ID=$PROVIDER_ID" >> "$GITHUB_ENV"
@@ -107,7 +107,7 @@ jobs:
           MODEL=$(jq -r '.model // "unknown"' /tmp/chat.json)
           test -n "$CONTENT"
 
-          jq -n             --arg status PASS             --arg transport npm             --arg resolved_model "$MODEL"             --arg content "$CONTENT"             --argjson model_count "$MODEL_COUNT"             --argjson latency_ms "$((end-start))"             '{schema:"R3-OMNIROUTE-SMOKE/1",status:$status,transport:$transport,requested_model:"auto",resolved_model:$resolved_model,model_count:$model_count,latency_ms:$latency_ms,nonempty_response:($content|length>0),provider_seed:"pollinations-keyless",secrets_persisted:false}'             > /tmp/r3-omniroute-npm-smoke.json
+          jq -n             --arg status PASS             --arg transport npm             --arg resolved_model "$MODEL"             --arg content "$CONTENT"             --argjson model_count "$MODEL_COUNT"             --argjson latency_ms "$((end-start))"             '{schema:"R3-OMNIROUTE-SMOKE/1",status:$status,transport:$transport,requested_model:"auto",resolved_model:$resolved_model,model_count:$model_count,latency_ms:$latency_ms,nonempty_response:($content|length>0),provider_seed:"kilo-gateway-keyless",secrets_persisted:false}'             > /tmp/r3-omniroute-npm-smoke.json
           cat /tmp/r3-omniroute-npm-smoke.json
 
       - name: Upload evidence
