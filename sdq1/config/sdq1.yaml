@@ -108,7 +108,7 @@ router:
         openai: "gpt-4o-mini"
     - profilo: "cristallizza"
       timeout_s: 120       # impegno finale: massima qualità, più tempo
-      cascata: ["gemini", "anthropic", "openai", "stub"]
+      cascata: ["omniroute", "gemini", "anthropic", "openai", "stub"]
       modelli:
         omniroute: "auto/reasoning:pro"
         gemini: "gemini-2.5-pro"
@@ -116,7 +116,7 @@ router:
         openai: "gpt-4o"
     - profilo: "potente"
       timeout_s: 120       # profilo massima potenza: Pro + reasoning
-      cascata: ["gemini", "deepseek", "stub"]
+      cascata: ["omniroute", "gemini", "deepseek", "stub"]
       modelli:
         omniroute: "auto/reasoning:pro"
         gemini: "gemini-2.5-pro"
