@@ -62,3 +62,6 @@ jobs:
 
       - name: Test R3-019 controlled baseline
         run: python -m unittest tests.test_benchmark_controlled
+
+      - name: Test OmniRoute gateway
+        run: python -m unittest tests.test_omniroute_provider
