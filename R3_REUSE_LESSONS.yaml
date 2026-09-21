@@ -142,3 +142,38 @@ lessons:
       - requirements-ml.txt
       - tests/test_reuse_learning.py
       - tests/test_evolution_kernel.py
+
+  - id: RL-2026-09-21-PROVIDER-FAILOVER-003
+    capability: non_blocking_secret_backed_provider_failover
+    status: CANDIDATE
+    observed_at: 2026-09-21
+    trigger: Claudio required that no unsupported or unavailable node be allowed to stall R3 and that all available secret-backed providers be used.
+    verified_facts:
+      - Existing provider classes already resolve their own server-side secrets without exposing values.
+      - Shared PROVIDER_REGISTRY includes Anthropic, OpenAI, Gemini, DeepSeek, Grok, Perplexity, MiniMax, Ollama and deterministic Stub.
+      - R3 config already contains multiple model choices per provider/profile.
+    candidate_changes:
+      - Discover one preferred configured model per executable provider from registry/config.
+      - Initialize all distinct providers against runtime secrets without reading or returning secret values.
+      - Run bounded ambiguity votes in parallel so a slow or unsupported provider cannot block the rest.
+      - Fall back deterministically when Jev and all provider votes are unavailable/invalid.
+    canonical_short_path:
+      - semantic/learned shortlist
+      - Jev Choice when available
+      - all-provider parallel jury
+      - deterministic ranked fallback
+      - authoritative postcondition verification
+      - record verified outcome as future shortcut evidence
+    preconditions:
+      - secret values remain server-side
+      - provider must have an executable trusted provider class
+      - votes may only select supplied existing candidate paths
+    verification:
+      - unit test for Jev failure followed by provider-jury selection
+      - CI/security scan on implementation commit
+    provenance:
+      - sdq1/reuse_learning.py
+      - sdq1/llm/router.py
+      - sdq1/llm/providers/
+      - AGENTS.md
+      - R3_AUTO_CYCLE.md
