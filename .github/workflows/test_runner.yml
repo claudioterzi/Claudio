@@ -6,6 +6,12 @@ on:
     paths:
       - '**.py'
       - 'requirements*.txt'
+      - '.github/workflows/test_runner.yml'
+      - 'tests/test_alpha74_frontend.cjs'
+      - 'tarocchi_quantici_alpha.json'
+      - 'public/alpha*.js'
+      - 'public/tarocchi*.html'
+      - 'public/images/alpha74/**'
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -42,6 +48,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - name: Test Alpha 74 canone e frontend
+        run: |
+          python -m unittest tests.test_alpha_web tests.test_tarot_alpha_follow_up
+          node tests/test_alpha74_frontend.cjs
 
       - name: Verifica Fabbrica, TypeSafe e dialogo IA
         run: |
