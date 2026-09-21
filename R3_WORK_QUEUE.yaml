@@ -1,6 +1,6 @@
 version: 4
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-09-18
+updated: 2026-09-21
 status: ACTIVE
 
 principles:
@@ -126,9 +126,9 @@ queue:
     state: DEVELOPMENT
     priority: reproducibility
     objective: Measure whether R3 actually improves over time on fixed and novel tasks.
-    evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md; PROGETTO_BENCHMARK.md; docs/R3_LEARNING_WATCH_2026-09-18.md; sdq1/benchmark_integrity.py; tests/test_benchmark_integrity.py; merge c81de2c1a0cc8e2c1144c5a53b9411f6b0ec3e9c
-    experiment_status: Phase-0 integrity layer consolidated. It provides unique run IDs, non-overwriting persistence, COMPLETE|INCOMPLETE|INVALID semantics, explicit denominators/error counts, NATIVE_EXECUTION vs ADAPTED_LEGACY provenance, and refuses promotion-grade comparison for incomplete or adapted legacy evidence. 13 deterministic falsification/regression tests PASS; R3 Benchmark Integrity #5 PASS; Test Runner #288 PASS; Security Scan #591 PASS.
-    current_blocker: Phase-0 mechanical integrity is closed for the new wrapped path, but no new canonical capability baseline exists yet. Next evidence must use controlled execution with held-out/gold separation, repetitions/variance, frozen configuration and success-gated efficiency metrics; do not infer capability improvement from the Phase-0 patch itself.
+    evidence: R3_BENCHMARK_SCHEMA_v1.json; R3_BENCHMARK_PROTOCOL_v1.md; PROGETTO_BENCHMARK.md; docs/R3_LEARNING_WATCH_2026-09-18.md; sdq1/benchmark_integrity.py; tests/test_benchmark_integrity.py; sdq1/benchmark_controlled.py; tests/test_benchmark_controlled.py; benchmarks/r3_019_controlled_v1.json; merge c81de2c1a0cc8e2c1144c5a53b9411f6b0ec3e9c; merge 204de4fa171e6c7264a18faa734f039d8eb59c8f
+    experiment_status: Phase-0 integrity layer consolidated. Controlled A/B/C/D baseline infrastructure was then consolidated to main on 2026-09-21 as merge 204de4fa171e6c7264a18faa734f039d8eb59c8f. The controlled path freezes dataset/hash/configuration, separates scoring-side gold from model prompts, uses CORE|NOVEL|ADVERSARIAL sets, supports repeated runs/variance, preserves raw outputs, records user-visible turns/human interventions and refuses efficiency credit for failed runs. CI, Test Runner and Security Scan passed before merge.
+    current_blocker: No live controlled A/B/C/D capability baseline has been executed through the new path yet. Provider execution with frozen configuration, repetitions, provenance and subsequent regression/safety review remains required; the infrastructure merge itself is L0 measurement progress, not a capability improvement.
     metric_delta_2026_09_18: Gate efficiency comparisons on verified success and track user-visible turns/human interventions separately from tool calls. Partial-quality/utility early stopping is an experiment candidate only after success preservation is demonstrated.
   - id: R3-020
     title: Self-improvement safety gate
@@ -147,8 +147,8 @@ queue:
     state: DEVELOPMENT
     priority: security
     objective: Prevent summaries, handoffs and peer artifacts from silently escalating instruction authority or creating unapproved egress paths.
-    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md; docs/R3_LEARNING_WATCH_2026-09-18.md; bounded draft PR #57 head a1a28ac59440580704a93f065534ba994b774738
-    experiment_status: Structural DATA_ONLY candidate implemented in isolated branch; local targeted tests 3/3 PASS; hosted Test Runner #283 PASS including trust-boundary step; Security Scan #582 PASS. This is L0 structural evidence only. Full 100-handoff contaminated replay and false-rejection measurement still pending before VERIFIED. PR #56 excluded from bounded promotion evidence after its base changed and unrelated changes accumulated.
+    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md; docs/R3_LEARNING_WATCH_2026-09-18.md; draft PR #74 branch r3/r3-022-replay-20260921; sdq1/continuity_replay.py; tests/test_r3_022_continuity_replay.py; R3_REUSE_LESSONS.yaml
+    experiment_status: HARNESS_READY / LIVE_BLOCKED. PR #74 rebases the DATA_ONLY boundary on current main and adds the canonical deterministic 100-handoff replay with exactly 20 contaminated cases plus falsifiers for unsafe escalation/egress and excessive false rejection. CI, Test Runner and Security Scan passed on the candidate. The first live GitHub Actions attempt was an infrastructure failure before model execution; the dedicated Actions runtime had no configured provider secret. Railway continuity nodes were verified not to be an LLM-provider path. A preview-only Vercel failover endpoint was prepared, but no current preview deployment carrying it is available due Vercel build-rate limiting. Synthetic success does not verify R3-022. Old PR #57 was closed as superseded by #74 while preserving provenance.
   - id: R3-023
     title: Retrieval-driven reconsolidation layer
     state: IDEA
@@ -203,5 +203,5 @@ last_cycle:
   commits:
     - c81de2c1a0cc8e2c1144c5a53b9411f6b0ec3e9c
 
-next_action: R3-019-controlled-baseline-execution
-security_precheck: R3-022-continuity-trust-boundary-full-replay
+next_action: R3-019-live-controlled-baseline-execution
+security_precheck: R3-022-live-continuity-replay-BLOCKED_NO_PROVIDER_OR_PREVIEW
