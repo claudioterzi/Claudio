@@ -1,0 +1,330 @@
+name: OmniRoute Candidate A 3.8.51
+
+on:
+  push:
+    branches:
+      - r3/omniroute-gateway-20260921
+    paths:
+      - '.github/workflows/omniroute_candidate_a_3851.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-a:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout R3 test harness
+        uses: actions/checkout@v4
+
+      - name: Checkout OmniRoute release 3.8.51
+        uses: actions/checkout@v4
+        with:
+          repository: diegosouzapw/OmniRoute
+          ref: release/v3.8.51
+          path: omniroute-3851
+
+      - name: Verify upstream source contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd omniroute-3851
+          VERSION=$(node -p "require('./package.json').version")
+          test "$VERSION" = "3.8.51"
+          test -f open-sse/services/autoCombo/modelExposureFilter.ts
+          test -f open-sse/services/autoCombo/modelLockoutFilter.ts
+          grep -q 'filterModelExposureCandidates' open-sse/services/autoCombo/virtualFactory.ts
+          grep -q 'modelVisibilityDenylist' src/shared/validation/settingsSchemas.ts
+          echo "source_version=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Build isolated OmniRoute 3.8.51 image
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build             --target runner-base             -t r3-omniroute:3.8.51-candidate-a             omniroute-3851
+
+      - name: Start isolated 3.8.51 runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          JWT_SECRET="$(openssl rand -base64 48 | tr -d '\n')"
+          API_KEY_SECRET="$(openssl rand -hex 32)"
+          STORAGE_ENCRYPTION_KEY="$(openssl rand -hex 32)"
+          INITIAL_PASSWORD="$(openssl rand -base64 24 | tr -d '\n')"
+
+          echo "::add-mask::$INITIAL_PASSWORD"
+          echo "INITIAL_PASSWORD=$INITIAL_PASSWORD" >> "$GITHUB_ENV"
+
+          docker run -d --name r3-omniroute-3851             -p 127.0.0.1:20129:20128             -e JWT_SECRET="$JWT_SECRET"             -e API_KEY_SECRET="$API_KEY_SECRET"             -e STORAGE_ENCRYPTION_KEY="$STORAGE_ENCRYPTION_KEY"             -e INITIAL_PASSWORD="$INITIAL_PASSWORD"             -e NODE_ENV=production             -e HOSTNAME=0.0.0.0             -e REQUIRE_API_KEY=true             -e AUTH_COOKIE_SECURE=false             -e APP_LOG_TO_FILE=false             -e OMNIROUTE_DISABLE_BACKGROUND_SERVICES=true             r3-omniroute:3.8.51-candidate-a
+
+          for i in $(seq 1 120); do
+            if curl -fsS http://127.0.0.1:20129/api/health > /tmp/health-3851.json 2>/dev/null; then
+              jq . /tmp/health-3851.json
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "::error::3.8.51 runtime did not become healthy"
+          docker logs --tail 160 r3-omniroute-3851 || true
+          exit 1
+
+      - name: Login management session
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -n --arg password "$INITIAL_PASSWORD" '{password:$password}' > /tmp/login.json
+          code=$(curl -sS -o /tmp/login-response.json -w '%{http_code}'             -c /tmp/omni-cookie.txt             -H 'Content-Type: application/json'             -d @/tmp/login.json             http://127.0.0.1:20129/api/auth/login)
+          test "$code" -ge 200 && test "$code" -lt 300
+
+          curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20129/api/auth/csrf > /tmp/csrf.json
+          CSRF_TOKEN=$(jq -r '.token // empty' /tmp/csrf.json)
+          test -n "$CSRF_TOKEN"
+          echo "::add-mask::$CSRF_TOKEN"
+          echo "CSRF_TOKEN=$CSRF_TOKEN" >> "$GITHUB_ENV"
+
+      - name: Seed isolated Kilo connection
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/provider-create.json <<'JSON'
+          {"provider":"kilo-gateway","name":"r3-candidate-a","apiKey":"r3-smoke-nonsecret-placeholder"}
+          JSON
+
+          code=$(curl -sS -o /tmp/provider-response.json -w '%{http_code}'             -X POST -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d @/tmp/provider-create.json             http://127.0.0.1:20129/api/providers)
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Kilo connection create failed HTTP $code"
+            jq 'del(.apiKey,.token,.secret)' /tmp/provider-response.json 2>/dev/null || true
+            exit 1
+          fi
+
+          curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20129/api/providers > /tmp/providers.json
+
+          PROVIDER_ID=$(jq -r '.id // .connection.id // empty' /tmp/provider-response.json)
+          if [ -z "$PROVIDER_ID" ]; then
+            PROVIDER_ID=$(jq -r '
+              (.connections // .providers // [])[]
+              | select((.provider // .providerId // "") == "kilo-gateway")
+              | .id
+            ' /tmp/providers.json | head -n1)
+          fi
+          test -n "$PROVIDER_ID"
+          echo "PROVIDER_ID=$PROVIDER_ID" >> "$GITHUB_ENV"
+
+          code=$(curl -sS -o /tmp/provider-test.json -w '%{http_code}'             -X POST -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d '{}'             "http://127.0.0.1:20129/api/providers/$PROVIDER_ID/test")
+          test "$code" -ge 200 && test "$code" -lt 300
+          valid=$(jq -r '.valid // .success // false' /tmp/provider-test.json)
+          test "$valid" = "true"
+          jq 'del(.apiKey,.token,.secret)' /tmp/provider-test.json
+
+      - name: Create ephemeral inference key
+        shell: bash
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/key-response.json -w '%{http_code}'             -X POST -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d '{"name":"r3-candidate-a","scopes":["chat"]}'             http://127.0.0.1:20129/api/keys)
+          test "$code" -ge 200 && test "$code" -lt 300
+          INFERENCE_KEY=$(jq -r '.key // .apiKey // .token // .rawKey // .secret // empty' /tmp/key-response.json)
+          test -n "$INFERENCE_KEY"
+          echo "::add-mask::$INFERENCE_KEY"
+          echo "INFERENCE_KEY=$INFERENCE_KEY" >> "$GITHUB_ENV"
+
+      - name: Capture pre-denylist state and smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20129/api/settings > /tmp/settings-before.json
+
+          curl -fsS -H "Authorization: Bearer $INFERENCE_KEY"             http://127.0.0.1:20129/api/v1/auto-combo/auto/candidates             > /tmp/candidates-before.json
+
+          curl -fsS -H "Authorization: Bearer $INFERENCE_KEY"             http://127.0.0.1:20129/v1/models             > /tmp/models-before.json
+
+          pre_start=$(date +%s%3N)
+          pre_code=$(curl -sS -o /tmp/auto-before.json -w '%{http_code}'             -H "Authorization: Bearer $INFERENCE_KEY"             -H 'Content-Type: application/json'             -d '{"model":"auto","messages":[{"role":"user","content":"Reply only with OMNIROUTE_R3_OK"}],"temperature":0,"max_tokens":24}'             http://127.0.0.1:20129/v1/chat/completions || true)
+          pre_end=$(date +%s%3N)
+          echo "PRE_CODE=$pre_code" >> "$GITHUB_ENV"
+          echo "PRE_LATENCY=$((pre_end-pre_start))" >> "$GITHUB_ENV"
+
+          echo "Pre-denylist status: $pre_code"
+          jq '{
+            channel,
+            count:(.candidates|length),
+            known_bad:[
+              .candidates[]
+              | select(
+                  .modelStr=="kilo-gateway/anthropic/claude-opus-5" or
+                  .modelStr=="kg/anthropic/claude-opus-5" or
+                  .modelStr=="oc/big-pickle" or
+                  .modelStr=="opencode/big-pickle" or
+                  .modelStr=="felo/felo-chat" or
+                  .modelStr=="felo/felo-search"
+                )
+              | {provider,model,modelStr,reachable}
+            ]
+          }' /tmp/candidates-before.json
+
+      - name: Apply native 3.8.51 denylist
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SETTINGS_REVISION=$(jq -r '.settingsRevision // empty' /tmp/settings-before.json)
+          jq -n             --arg rev "$SETTINGS_REVISION"             '{
+              modelVisibilityDenylist:[
+                "kilo-gateway/anthropic/claude-opus-5",
+                "anthropic/claude-opus-5",
+                "opencode/big-pickle",
+                "big-pickle",
+                "felo/felo-chat",
+                "felo/felo-search",
+                "felo-chat",
+                "felo-search"
+              ]
+            } + (if $rev=="" then {} else {expectedRevision:$rev} end)'             > /tmp/denylist-patch.json
+
+          code=$(curl -sS -o /tmp/settings-patch-response.json -w '%{http_code}'             -X PATCH -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d @/tmp/denylist-patch.json             http://127.0.0.1:20129/api/settings)
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::settings PATCH failed HTTP $code"
+            jq . /tmp/settings-patch-response.json 2>/dev/null || cat /tmp/settings-patch-response.json
+            exit 1
+          fi
+
+          curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20129/api/settings > /tmp/settings-after.json
+
+          jq -e '
+            (.modelVisibilityDenylist // []) as $d
+            | ($d|index("kilo-gateway/anthropic/claude-opus-5")) != null
+            and ($d|index("opencode/big-pickle")) != null
+            and ($d|index("felo/felo-chat")) != null
+          ' /tmp/settings-after.json >/dev/null
+
+          echo "Persisted denylist:"
+          jq '.modelVisibilityDenylist' /tmp/settings-after.json
+
+      - name: Capture post-denylist candidates and smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          curl -fsS -H "Authorization: Bearer $INFERENCE_KEY"             http://127.0.0.1:20129/api/v1/auto-combo/auto/candidates             > /tmp/candidates-after.json
+
+          curl -fsS -H "Authorization: Bearer $INFERENCE_KEY"             http://127.0.0.1:20129/v1/models             > /tmp/models-after.json
+
+          post_start=$(date +%s%3N)
+          post_code=$(curl -sS -o /tmp/auto-after.json -w '%{http_code}'             -H "Authorization: Bearer $INFERENCE_KEY"             -H 'Content-Type: application/json'             -d '{"model":"auto","messages":[{"role":"user","content":"Reply only with OMNIROUTE_R3_OK"}],"temperature":0,"max_tokens":24}'             http://127.0.0.1:20129/v1/chat/completions || true)
+          post_end=$(date +%s%3N)
+
+          echo "POST_CODE=$post_code" >> "$GITHUB_ENV"
+          echo "POST_LATENCY=$((post_end-post_start))" >> "$GITHUB_ENV"
+
+          jq '{
+            channel,
+            count:(.candidates|length),
+            known_bad:[
+              .candidates[]
+              | select(
+                  .modelStr=="kilo-gateway/anthropic/claude-opus-5" or
+                  .modelStr=="kg/anthropic/claude-opus-5" or
+                  .modelStr=="oc/big-pickle" or
+                  .modelStr=="opencode/big-pickle" or
+                  .modelStr=="felo/felo-chat" or
+                  .modelStr=="felo/felo-search"
+                )
+              | {provider,model,modelStr,reachable}
+            ]
+          }' /tmp/candidates-after.json > /tmp/candidates-after-summary.json
+
+          cat /tmp/candidates-after-summary.json
+          echo "Post-denylist status: $post_code"
+
+      - name: Build Candidate A verdict
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PRE_BAD=$(jq '[.candidates[] | select(
+            .modelStr=="kilo-gateway/anthropic/claude-opus-5" or
+            .modelStr=="kg/anthropic/claude-opus-5" or
+            .modelStr=="oc/big-pickle" or
+            .modelStr=="opencode/big-pickle" or
+            .modelStr=="felo/felo-chat" or
+            .modelStr=="felo/felo-search"
+          )] | length' /tmp/candidates-before.json)
+
+          POST_BAD=$(jq '[.candidates[] | select(
+            .modelStr=="kilo-gateway/anthropic/claude-opus-5" or
+            .modelStr=="kg/anthropic/claude-opus-5" or
+            .modelStr=="oc/big-pickle" or
+            .modelStr=="opencode/big-pickle" or
+            .modelStr=="felo/felo-chat" or
+            .modelStr=="felo/felo-search"
+          )] | length' /tmp/candidates-after.json)
+
+          POST_CONTENT=$(jq -r '.choices[0].message.content // empty' /tmp/auto-after.json 2>/dev/null || true)
+          POST_MODEL=$(jq -r '.model // empty' /tmp/auto-after.json 2>/dev/null || true)
+          POST_ERROR=$(jq -r '.error.message // empty' /tmp/auto-after.json 2>/dev/null | cut -c1-800 || true)
+
+          if [ "$POST_BAD" -eq 0 ] && [ "$POST_CODE" -ge 200 ] && [ "$POST_CODE" -lt 300 ] && [ -n "$POST_CONTENT" ]; then
+            VERDICT="ADOPT_A"
+          elif [ "$POST_BAD" -gt 0 ]; then
+            VERDICT="REJECT_A_EXPOSURE"
+          else
+            VERDICT="REJECT_A_DISPATCH_OR_EXHAUSTION"
+          fi
+
+          jq -n             --arg schema "R3-OMNIROUTE-CANDIDATE-A/1"             --arg source_version "$source_version"             --arg baseline_image "3.8.50"             --arg candidate_image "release/v3.8.51-source-build"             --argjson pre_status "$PRE_CODE"             --argjson post_status "$POST_CODE"             --argjson pre_latency_ms "$PRE_LATENCY"             --argjson post_latency_ms "$POST_LATENCY"             --argjson known_bad_before "$PRE_BAD"             --argjson known_bad_after "$POST_BAD"             --arg selected_model "$POST_MODEL"             --arg response "$POST_CONTENT"             --arg error "$POST_ERROR"             --arg verdict "$VERDICT"             '{
+              schema:$schema,
+              source_version:$source_version,
+              baseline_reference:{
+                version:$baseline_image,
+                previously_observed_status:502
+              },
+              candidate:{
+                image:$candidate_image,
+                denylist_applied:true,
+                denylist_persisted:true
+              },
+              same_runtime_pre_denylist:{
+                status:$pre_status,
+                latency_ms:$pre_latency_ms,
+                known_bad_candidate_count:$known_bad_before
+              },
+              post_denylist:{
+                status:$post_status,
+                latency_ms:$post_latency_ms,
+                known_bad_candidate_count:$known_bad_after,
+                selected_model:($selected_model|select(length>0)),
+                response_nonempty:($response|length>0),
+                error_summary:$error
+              },
+              secrets_persisted:false,
+              production_modified:false,
+              verdict:$verdict
+            }' > /tmp/r3-candidate-a-verdict.json
+
+          cat /tmp/r3-candidate-a-verdict.json
+
+      - name: Upload Candidate A evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-omniroute-candidate-a-${{ github.sha }}
+          path: |
+            /tmp/r3-candidate-a-verdict.json
+            /tmp/candidates-before.json
+            /tmp/candidates-after.json
+            /tmp/settings-before.json
+            /tmp/settings-after.json
+            /tmp/auto-before.json
+            /tmp/auto-after.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Dispose isolated runtime
+        if: always()
+        shell: bash
+        run: |
+          docker rm -f r3-omniroute-3851 >/dev/null 2>&1 || true
+          rm -f /tmp/omni-cookie.txt /tmp/login.json /tmp/login-response.json             /tmp/csrf.json /tmp/provider-create.json /tmp/provider-response.json             /tmp/providers.json /tmp/provider-test.json /tmp/key-response.json             /tmp/denylist-patch.json
