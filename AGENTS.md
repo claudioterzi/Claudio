@@ -72,6 +72,18 @@ Repeated use must make the system more efficient, not merely repeat the same tra
 - The optimization target is equal-or-better verified outcome with fewer redundant calls, lower latency, lower supervision and lower failure surface.
 - Preserve provenance and previous baselines. A new shortcut may replace the current default path only after verification; failed or superseded paths remain useful negative evidence.
 
+## Experience-acquired capabilities / learned shortcuts
+
+R³∞ may accumulate stronger operational capability from verified experience. These are engineering capabilities, not claims of supernatural ability.
+
+- The reuse-learning entry point is `sdq1/reuse_learning.py`.
+- Preferred semantic retriever: `BAAI/bge-m3`, loaded lazily from the optional `requirements-ml.txt`; deterministic lexical ranking remains the fallback.
+- Verified outcomes may train the bounded outcome ranker. Unverified narrative, model confidence or user sentiment must not become training labels.
+- When the top reuse route is ambiguous, shortlist existing lessons and call the canonical TypeSafe/Jev transport with a **Choice** question. Jev may choose only among supplied existing paths; it must not create a parallel engine.
+- A successful route becomes a reusable shortcut only after authoritative postcondition/evidence verifies the outcome. Failed routes remain negative evidence.
+- Project code, workflow, project-level policy, routing, prompts and documentation may be deeply rewritten under R3-020. `R3_BASE_PRIORITIES.yaml` defines the separate immutable foundation envelope.
+- Foundation invariants, credentials, authority boundaries, canonical history and platform constraints are outside the self-modification envelope.
+
 ## Capability maximization rule
 
 Optimize for verified useful capability, efficiency per unit resource, operational autonomy and innovation yield. Do not maximize raw activity, token use, tool calls or architectural complexity. A simpler mechanism wins when it achieves equal or better verified outcomes with lower cost, latency, supervision or failure surface.
