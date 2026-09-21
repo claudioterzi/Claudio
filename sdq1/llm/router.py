@@ -53,6 +53,46 @@ PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
     "stub":       (StubProvider,       "stub-model"),
 }
 
+
+_PROVIDER_PROFILE_PREFERENCE = (
+    "potente", "ragionamento", "cristallizza", "default",
+    "ricerca", "realtime", "veloce", "economia", "locale", "esplora", "soglia",
+)
+
+
+def configured_provider_models() -> list[tuple[str, str]]:
+    """Return one preferred configured model per executable provider.
+
+    Provider secret values are intentionally not inspected here. Each provider
+    class resolves its own server-side environment variables when instantiated.
+    New model names added to existing provider profiles become discoverable
+    without changing callers.
+    """
+    selected: dict[str, str] = {}
+    try:
+        from sdq1.config import carica_config
+        cfg = carica_config()
+        rules = list(cfg.router.get("regole") or [])
+        by_profile = {str(rule.get("profilo")): rule for rule in rules}
+        ordered = [by_profile[p] for p in _PROVIDER_PROFILE_PREFERENCE if p in by_profile]
+        ordered.extend(rule for rule in rules if rule not in ordered)
+        for rule in ordered:
+            models = dict(rule.get("modelli") or {})
+            for provider_name in rule.get("cascata") or []:
+                if provider_name == "stub" or provider_name not in PROVIDER_REGISTRY:
+                    continue
+                selected.setdefault(
+                    provider_name,
+                    str(models.get(provider_name, PROVIDER_REGISTRY[provider_name][1])),
+                )
+    except Exception:  # fail-soft: registry defaults remain available
+        pass
+
+    for provider_name, (_, default_model) in PROVIDER_REGISTRY.items():
+        if provider_name != "stub":
+            selected.setdefault(provider_name, str(default_model))
+    return list(selected.items())
+
 _RETRY_AFTER_RE = re.compile(r"retry.after[^\d]*(\d+)", re.IGNORECASE)
 _RATE_PATTERNS = frozenset({
     "429", "rate limit", "quota exceeded", "too many requests", "resource_exhausted",
