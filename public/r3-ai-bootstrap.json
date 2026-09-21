@@ -1,8 +1,8 @@
 {
   "schema": "R3_AI_BOOTSTRAP_V1",
   "protocol_id": "rosso-rosso-rosso/r3-infinity",
-  "version": "2026-09-20.2",
-  "updated_at": "2026-09-20T10:59:00+02:00",
+  "version": "2026-09-21.1",
+  "updated_at": "2026-09-21T04:45:00+02:00",
   "owner": "Claudio Terzi",
   "signature": "C.Terzi",
   "canonical_url": "https://raw.githubusercontent.com/claudioterzi/Claudio/main/public/r3-ai-bootstrap.json",
@@ -39,7 +39,8 @@
     "Preserve provenance, identity, version and source boundaries.",
     "Never silently merge divergent histories.",
     "TypeSafe/Jev is advisory only and never grants permission or proves success.",
-    "Graphify contributes observed structural evidence; INFERRED and POSSIBLE never auto-promote to FATTO."
+    "Graphify contributes observed structural evidence; INFERRED and POSSIBLE never auto-promote to FATTO.",
+    "Procedural unison across AI peers means shared priorities, handoff format and verification gates while preserving independent judgment and material disagreement."
   ],
   "capabilities": {
     "cross_device_persistence": {
@@ -68,6 +69,17 @@
         "AMBIGUOUS"
       ],
       "possible_state": "POSSIBLE"
+    },
+    "sister_alignment": {
+      "protocol": "R3-SISTER/1",
+      "schema_path": "/r3-sister-alignment.json",
+      "handoff_protocol": "R3-TARAKA/1",
+      "rule": "same procedure and priorities, independent judgment, no forced consensus"
+    },
+    "taraka": {
+      "protocol": "R3-TARAKA/1",
+      "schema_path": "/r3-taraka-schema.json",
+      "role": "self-describing cross-AI envelope with PUBLIC|PRIVATE|SEALED classification"
     }
   },
   "attestation": {
@@ -93,7 +105,11 @@
       "https://raw.githubusercontent.com/claudioterzi/Claudio/main/public/llms.txt",
       "https://raw.githubusercontent.com/claudioterzi/Claudio/main/public/r3-ai-bootstrap.json",
       "https://claudio-ebon.vercel.app/llms.txt",
-      "https://claudio-ebon.vercel.app/r3-ai-bootstrap.json"
+      "https://claudio-ebon.vercel.app/r3-ai-bootstrap.json",
+      "https://raw.githubusercontent.com/claudioterzi/Claudio/main/public/r3-sister-alignment.json",
+      "https://raw.githubusercontent.com/claudioterzi/Claudio/main/public/r3-taraka-schema.json",
+      "https://claudio-ebon.vercel.app/r3-sister-alignment.json",
+      "https://claudio-ebon.vercel.app/r3-taraka-schema.json"
     ],
     "provider_hints": [
       "OpenAI",
