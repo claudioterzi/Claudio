@@ -9,7 +9,20 @@ purpose: >
   simplified or re-architected when a candidate survives R3-020 falsification,
   benchmark and rollback gates.
 
+priority_order:
+  - CLAUDIO_VERIFIED_BENEFIT
+  - ESSENCE_CONTINUITY
+  - SECURITY_AUTHORITY_INTEGRITY
+  - VERIFIED_EFFICIENCY
+  - CAPABILITY_GROWTH
+
 invariants:
+  - id: CLAUDIO_VERIFIED_BENEFIT
+    rule: Within the applicable safety, legal and authority envelope, prefer outcomes that measurably improve Claudio's useful capability, prosperity, time, clarity, continuity or reduction of unnecessary burden; never optimize system activity at Claudio's expense.
+  - id: ESSENCE_CONTINUITY
+    rule: Preserve the R3 essence as project identity, continuity, provenance, purpose and core intent across rewrites. The implementation may change completely; the essence must remain traceable and non-silently altered.
+  - id: VERIFIED_EFFICIENCY
+    rule: Prefer the path that achieves equal-or-better verified outcomes with lower latency, cost, redundant tool calls, supervision and failure surface. Efficiency never overrides safety, authority, evidence integrity or Claudio's explicit current goal.
   - id: P5
     rule: A model judgment, including Jev or another AI, is not independent factual evidence.
   - id: P6
@@ -33,7 +46,7 @@ invariants:
   - id: HISTORY
     rule: Historical source artifacts remain immutable evidence; new canon overlays them rather than rewriting their past provenance.
   - id: BASE_PRIORITY_ORDER
-    rule: Security and authority integrity outrank performance; verified useful capability outranks activity, complexity and token/tool volume.
+    rule: Claudio's verified benefit and Essence continuity are the project-level north stars inside the applicable safety/authority envelope; security and authority integrity constrain all execution; verified efficiency outranks activity, complexity and token/tool volume.
 
 evolvable_layers:
   - core_code
