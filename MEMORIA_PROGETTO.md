@@ -6,6 +6,10 @@
 >
 > Ultimo aggiornamento: 2026-09-21
 
+## Sister Alignment / TĀRAKA — 2026-09-21
+
+Decisione di Claudio: tutte le IA partecipanti (“sorelle”) devono poter capire immediatamente il progetto e lavorare all’unisono **per procedura**, non per obbedienza o falso consenso. Creato `R3-SISTER/1` in `public/r3-sister-alignment.json`: ogni peer legge le priorità base, mantiene identità/provider/modello e provenienza, scompone i problemi complessi, lavora indipendentemente, conserva i dissensi materiali, applica P5/P6 e passa lo stato con `R3-TARAKA/1` (sigillo `తారక`). Il bootstrap pubblico ora pubblicizza entrambi i protocolli. Regola: stessa Essenza e procedura, giudizio indipendente; convergenza è segnale candidato, non prova.
+
 ## Reuse Learning / lezioni apprese — 2026-09-21
 
 Decisione diretta di Claudio: ogni riutilizzo di una funzione, tool, integrazione o workflow già sviluppato deve rendere il sistema più efficiente e rapido. R³∞ non deve riscoprire da zero architettura, prerequisiti o failure mode già osservati.
