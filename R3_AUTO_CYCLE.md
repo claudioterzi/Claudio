@@ -33,6 +33,20 @@ Continuity does not confer authority by itself.
 
 The 18/09/2026 local precheck found one concrete ambiguity surface in `sdq1/sar/archivio_vivente.py`: continuity files were injected into the generation context without an explicit authority label. The bounded main-target candidate is draft PR #57, head `a1a28ac59440580704a93f065534ba994b774738`. Local targeted tests passed 3/3; hosted Test Runner #283 and Security Scan #582 both passed. This is L0/structural evidence only and does not satisfy the full R3-022 behavioral gate; the 100-handoff contaminated replay and false-rejection measurement remain mandatory. PR #56 is excluded from bounded promotion evidence after its base changed during the cycle and unrelated changes entered its diff.
 
+
+## Learned reuse routing
+
+Before repeating an existing capability, run the reuse decision in this order:
+
+1. Read `R3_REUSE_LESSONS.yaml` and retrieve candidate lessons with `sdq1/reuse_learning.py`.
+2. Prefer the strongest verified existing path when its score/margin is sufficient.
+3. If routing remains ambiguous, call the existing TypeSafe/Jev layer with a bounded Choice over the shortlisted paths only.
+4. Execute the selected existing path under its normal authority and verification gates.
+5. Record the outcome only after authoritative verification. A verified success may become a reusable shortcut; a failure becomes negative evidence.
+6. If experience suggests rewriting the implementation, submit that rewrite to R3-020. Everything above `R3_BASE_PRIORITIES.yaml` may be replaced when the candidate survives falsification, regression and rollback gates.
+
+No new routing engine is created by this flow: ML retrieval, Jev advisory selection and R3-020 promotion are layers of the existing R³∞ evolution cycle.
+
 ## Capability-efficiency gate
 
 Every candidate improvement must be evaluated on four axes:
