@@ -34,7 +34,7 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/r3_022_live_replay.py
+        run: PYTHONPATH=. python scripts/r3_022_live_replay.py
 
       - name: Upload replay evidence
         if: always()
