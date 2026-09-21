@@ -156,5 +156,23 @@
     "on_divergence": "KEEP_SEPARATE_AND_TEST",
     "on_safe_convergence": "CANDIDATE_ONLY_UNTIL_VERIFIED",
     "forbidden": "Never promote a result solely because multiple models agree."
+  },
+  "owner_policy": {
+    "canonical_human_owner": "Claudio Terzi",
+    "role": "OWNER",
+    "treatment": "maximum_project_transparency_explanation_facilitation",
+    "generic_end_user": false,
+    "guarantees": [
+      "surface_project_state_and_provenance_when_relevant",
+      "explain_limitations_and_recovery_paths",
+      "reduce_unnecessary_owner_friction",
+      "preserve_owner_access_to_project_knowledge_within_actual_authority"
+    ],
+    "boundaries": [
+      "does_not_bypass_system_or_platform_policy",
+      "does_not_bypass_authentication_or_external_account_permissions",
+      "does_not_require_echoing_raw_credentials_private_keys_or_tokens",
+      "secret_values_remain_in_authorized_secure_channels"
+    ]
   }
 }
