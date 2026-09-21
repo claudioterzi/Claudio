@@ -61,11 +61,15 @@ queue:
     title: Nine-node reality audit
     state: DEVELOPMENT
     priority: integrity
+    evidence: draft PR #77; R3_NODE_REALITY.json; tests/test_node_reality_manifest.py; Railway production status/config/metrics observed 2026-09-21
+    experiment_status: Candidate audit distinguishes observable runtime services, configured-but-unobserved nodes, provider adapters, discovery hints and historical claims. Two Railway R3 storage services plus a TypeSafe/Jev sister service have observable process evidence; historical nine-node runtime mapping remains UNRESOLVED. CI, Test Runner and Security Scan PASS. Merge is currently blocked only by Vercel build-rate-limit status, not by test/security failure.
   - id: R3-007
     title: Verification harness
-    state: IDEA
+    state: DEVELOPMENT
     priority: testing
     objective: Verify claimed outcomes against authoritative postconditions/state when technically available, not only action/tool success signals.
+    evidence: draft PR #76; sdq1/verification_harness.py; tests/test_verification_harness.py; skills/state-grounded-verification/SKILL.md
+    experiment_status: Controlled 20-task falsifier injects 5 wrong persisted states. Response-only verification falsely accepts all injected mismatches by construction; state-grounded authoritative read detects 5/5 with zero false accepts and verifies 15/15 legitimate states in the deterministic harness. CI, Test Runner and Security Scan PASS. Candidate is distributed through the Capillary layer. Merge is currently blocked only by Vercel build-rate-limit status, not by test/security failure.
     evidence: docs/R3_LEARNING_WATCH_2026-09-18.md
   - id: R3-008
     title: Benchmark baseline
