@@ -365,6 +365,129 @@ def _jev_choice(
     return choice if choice in criteria else None
 
 
+
+def _configured_provider_models() -> list[tuple[str, str]]:
+    """Discover real provider/model pairs from current config + provider registry.
+
+    This intentionally avoids a hard-coded reuse-specific provider list. Newly
+    configured models for an existing provider become candidates automatically.
+    Unknown provider names are ignored until an executable provider class exists.
+    """
+    from sdq1.config import carica_config
+    from sdq1.llm.router import PROVIDER_REGISTRY
+
+    discovered: list[tuple[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    try:
+        cfg = carica_config()
+        for rule in cfg.router.get("regole") or []:
+            models = dict(rule.get("modelli") or {})
+            for provider_name in rule.get("cascata") or []:
+                if provider_name == "stub" or provider_name not in PROVIDER_REGISTRY:
+                    continue
+                model = models.get(provider_name, PROVIDER_REGISTRY[provider_name][1])
+                pair = (provider_name, str(model))
+                if pair not in seen:
+                    seen.add(pair)
+                    discovered.append(pair)
+    except Exception:
+        pass
+
+    for provider_name, (_, default_model) in PROVIDER_REGISTRY.items():
+        if provider_name == "stub":
+            continue
+        pair = (provider_name, str(default_model))
+        if pair not in seen:
+            seen.add(pair)
+            discovered.append(pair)
+    return discovered
+
+
+def _provider_jury_choice(
+    query: str,
+    ranked: list[RankedLesson],
+    *,
+    max_calls: int = 6,
+    provider_pairs: list[tuple[str, str]] | None = None,
+) -> tuple[str | None, list[dict[str, Any]]]:
+    """Use available existing LLM providers as a failover jury.
+
+    Providers may only vote for one supplied lesson ID. Their agreement is an
+    advisory routing signal, not factual evidence or authority.
+    """
+    if not ranked:
+        return None, []
+
+    from sdq1.llm.router import PROVIDER_REGISTRY
+
+    pairs = provider_pairs if provider_pairs is not None else _configured_provider_models()
+    candidates = {item.lesson_id: item for item in ranked[:5]}
+    candidate_text = "\n".join(
+        f"- {item.lesson_id}: {item.capability}; path={' -> '.join(item.canonical_short_path[:6])}"
+        for item in ranked[:5]
+    )
+    system = (
+        "You are a bounded routing reviewer inside R3. Choose only one of the supplied "
+        "existing lesson IDs. Do not invent a new tool, model, engine or path. "
+        "Return exactly the lesson ID and nothing else."
+    )
+    user = (
+        f"Routing need: {query[:3000]}\nExisting candidates:\n{candidate_text}\n"
+        "Pick the candidate that best reuses existing verified capability with least rediscovery."
+    )
+
+    votes: dict[str, int] = {lesson_id: 0 for lesson_id in candidates}
+    evidence: list[dict[str, Any]] = []
+    calls = 0
+    for provider_name, model in pairs:
+        if calls >= max_calls:
+            break
+        entry = PROVIDER_REGISTRY.get(provider_name)
+        if not entry:
+            continue
+        cls, _ = entry
+        try:
+            provider = cls(
+                modello=model,
+                api_key=None,
+                max_token=32,
+                temperatura=0.0,
+                timeout_secondi=20,
+            )
+        except Exception:
+            continue
+        if not getattr(provider, "disponibile", False):
+            continue
+
+        calls += 1
+        response = provider.completa(system, user)
+        choice = (response.testo or "").strip()
+        valid = bool(response.via_api and choice in candidates)
+        evidence.append({
+            "provider": provider_name,
+            "model": model,
+            "valid": valid,
+            "choice": choice if valid else None,
+            "latency_ms": response.latenza_ms,
+        })
+        if valid:
+            votes[choice] += 1
+
+    valid_votes = [(count, lesson_id) for lesson_id, count in votes.items() if count > 0]
+    if not valid_votes:
+        return None, evidence
+    valid_votes.sort(reverse=True)
+    best_count, best_choice = valid_votes[0]
+    tied = len(valid_votes) > 1 and valid_votes[1][0] == best_count
+    if tied:
+        # Break provider-jury ties with the pre-existing deterministic ranking,
+        # not another invented authority layer.
+        for item in ranked:
+            if votes.get(item.lesson_id, 0) == best_count:
+                return item.lesson_id, evidence
+    return best_choice, evidence
+
+
 def choose_route(
     query: str,
     *,
@@ -397,17 +520,41 @@ def choose_route(
                     reason="ML ranking was ambiguous; canonical Jev Choice resolved among existing paths.",
                 ), ranked
         except Exception:
-            # Fail-soft: no invented Jev output. Keep deterministic ranked fallback.
+            # No fabricated Jev answer. Continue to existing-provider failover.
             pass
+
+        jury_choice, jury_evidence = _provider_jury_choice(query, ranked)
+        if jury_choice:
+            selected = next(item for item in ranked if item.lesson_id == jury_choice)
+            providers = ",".join(
+                sorted({str(item.get("provider")) for item in jury_evidence if item.get("valid")})
+            )
+            return RouteDecision(
+                selected_lesson_id=jury_choice,
+                route="ml_shortlist+provider_jury",
+                confidence_signal=selected.score,
+                ambiguous=True,
+                jev_used=False,
+                jev_available=False,
+                candidates=tuple(item.lesson_id for item in ranked),
+                reason=(
+                    "Jev was unavailable/invalid; dynamically discovered available providers "
+                    f"resolved among existing paths ({providers or 'provider jury'})."
+                ),
+            ), ranked
+
         return RouteDecision(
             selected_lesson_id=ranked[0].lesson_id,
-            route="ml_or_lexical_fallback",
+            route="deterministic_ranked_fallback",
             confidence_signal=ranked[0].score,
             ambiguous=True,
             jev_used=False,
             jev_available=False,
             candidates=tuple(item.lesson_id for item in ranked),
-            reason="Routing remained ambiguous and Jev was unavailable/invalid; used deterministic top-ranked fallback.",
+            reason=(
+                "Jev and the available provider jury were unavailable/invalid; "
+                "used deterministic top-ranked existing lesson without inventing a route."
+            ),
         ), ranked
 
     return RouteDecision(
