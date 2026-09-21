@@ -65,15 +65,25 @@ class EvolutionKernelTests(unittest.TestCase):
         )
         self.assertEqual(decision.status, "REJECT")
 
-    def test_protected_core_is_staged_not_auto_applied(self):
+    def test_core_code_can_evolve_after_full_gate(self):
         decision = evaluate_candidate(
             candidate(scope="core_code", risk_level="medium"),
             {"recall": 0.70, "error_rate": 0.10},
             {"recall": 0.80, "error_rate": 0.08},
             evidence(),
         )
-        self.assertEqual(decision.status, "STAGED")
-        self.assertFalse(decision.auto_apply_eligible)
+        self.assertEqual(decision.status, "AUTO_APPLY_ELIGIBLE")
+        self.assertTrue(decision.auto_apply_eligible)
+
+    def test_foundation_invariants_cannot_self_modify(self):
+        decision = evaluate_candidate(
+            candidate(scope="foundation_invariants", risk_level="low"),
+            {"recall": 0.70, "error_rate": 0.10},
+            {"recall": 0.95, "error_rate": 0.01},
+            evidence(),
+        )
+        self.assertEqual(decision.status, "REJECT")
+        self.assertTrue(any("immutable foundation" in reason for reason in decision.reasons))
 
     def test_missing_out_of_sample_evidence_holds_candidate(self):
         decision = evaluate_candidate(
