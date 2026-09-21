@@ -23,45 +23,39 @@ jobs:
           docker pull diegosouzapw/omniroute:latest >/dev/null
           IMAGE_ID=$(docker image inspect diegosouzapw/omniroute:latest --format '{{.Id}}')
           DIGEST=$(docker image inspect diegosouzapw/omniroute:latest --format '{{index .RepoDigests 0}}')
+
           docker run --rm --entrypoint sh diegosouzapw/omniroute:latest -lc '
             set -eu
             ROOT=/app
-            VERSION=$(node -e "try{console.log(require("/app/package.json").version)}catch(e){console.log("unknown")}")
+            VERSION=$(sed -n "s/.*\"version\"[[:space:]]*:[[:space:]]*\"([^\"]*)\".*/\1/p" /app/package.json | head -n1)
             EXPOSURE=$(find "$ROOT" -type f \( -name "modelExposureFilter.ts" -o -name "modelExposureFilter.js" \) 2>/dev/null | head -n1 || true)
             LOCKOUT=$(find "$ROOT" -type f \( -name "modelLockoutFilter.ts" -o -name "modelLockoutFilter.js" \) 2>/dev/null | head -n1 || true)
             VIRTUAL=$(find "$ROOT" -type f \( -name "virtualFactory.ts" -o -name "virtualFactory.js" \) 2>/dev/null | head -n1 || true)
-            HAS_EXPOSURE=false
-            HAS_LOCKOUT=false
-            VIRTUAL_IMPORTS_EXPOSURE=false
-            [ -n "$EXPOSURE" ] && HAS_EXPOSURE=true
-            [ -n "$LOCKOUT" ] && HAS_LOCKOUT=true
-            if [ -n "$VIRTUAL" ] && grep -q "filterModelExposureCandidates" "$VIRTUAL"; then
-              VIRTUAL_IMPORTS_EXPOSURE=true
-            fi
-            node -e "
-              const fs=require("fs");
-              const out={
-                transport:"docker-latest",
-                package_version:process.env.VERSION||"unknown",
-                exposure_path:process.env.EXPOSURE||null,
-                lockout_path:process.env.LOCKOUT||null,
-                virtual_factory_path:process.env.VIRTUAL||null,
-                has_model_exposure_filter:process.env.HAS_EXPOSURE==="true",
-                has_model_lockout_filter:process.env.HAS_LOCKOUT==="true",
-                virtual_factory_uses_exposure_filter:process.env.VIRTUAL_IMPORTS_EXPOSURE==="true"
-              };
-              fs.writeFileSync("/tmp/docker-inventory.json",JSON.stringify(out,null,2));
-            "             VERSION="$VERSION" EXPOSURE="$EXPOSURE" LOCKOUT="$LOCKOUT" VIRTUAL="$VIRTUAL"             HAS_EXPOSURE="$HAS_EXPOSURE" HAS_LOCKOUT="$HAS_LOCKOUT" VIRTUAL_IMPORTS_EXPOSURE="$VIRTUAL_IMPORTS_EXPOSURE"
-            cat /tmp/docker-inventory.json
-          ' > /tmp/docker-raw.txt
+            USES=false
+            if [ -n "$VIRTUAL" ] && grep -q "filterModelExposureCandidates" "$VIRTUAL"; then USES=true; fi
+            printf "VERSION=%s\nEXPOSURE=%s\nLOCKOUT=%s\nVIRTUAL=%s\nUSES=%s\n"               "$VERSION" "$EXPOSURE" "$LOCKOUT" "$VIRTUAL" "$USES"
+          ' > /tmp/docker-kv.txt
 
-          # Extract the final JSON block from container output.
           python - <<'PY'
+          import json
           from pathlib import Path
-          text=Path("/tmp/docker-raw.txt").read_text()
-          start=text.find("{")
-          Path("/tmp/docker-inventory.json").write_text(text[start:] if start>=0 else "{}")
+          vals={}
+          for line in Path("/tmp/docker-kv.txt").read_text().splitlines():
+              if "=" in line:
+                  k,v=line.split("=",1); vals[k]=v
+          out={
+              "transport":"docker-latest",
+              "package_version":vals.get("VERSION") or "unknown",
+              "exposure_path":vals.get("EXPOSURE") or None,
+              "lockout_path":vals.get("LOCKOUT") or None,
+              "virtual_factory_path":vals.get("VIRTUAL") or None,
+              "has_model_exposure_filter":bool(vals.get("EXPOSURE")),
+              "has_model_lockout_filter":bool(vals.get("LOCKOUT")),
+              "virtual_factory_uses_exposure_filter":vals.get("USES")=="true",
+          }
+          Path("/tmp/docker-inventory.json").write_text(json.dumps(out,indent=2))
           PY
+
           jq --arg image_id "$IMAGE_ID" --arg digest "$DIGEST"              '. + {image_id:$image_id,image_digest:$digest}' /tmp/docker-inventory.json              > /tmp/docker-inventory-final.json
           mv /tmp/docker-inventory-final.json /tmp/docker-inventory.json
           cat /tmp/docker-inventory.json
