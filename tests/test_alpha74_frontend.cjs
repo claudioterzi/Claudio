@@ -35,8 +35,14 @@ class Element{
 }
 const els=new Map();const $=id=>{if(!els.has(id))els.set(id,new Element());return els.get(id);};
 const requests=[];let resolveReading;let spoken=0;
+const speechSynthesis={cancel(){},getVoices(){return[];},speak(){spoken++;}};
+const AlphaVoice={
+ stop(){},
+ speak(text,options={}){spoken++;if(typeof options.onState==='function')options.onState('fallback');return true;}
+};
+const window={addEventListener(){},speechSynthesis,AlphaVoice};
 const context=vm.createContext({document:{getElementById:$,createElement:()=>new Element()},
- window:{addEventListener(){},speechSynthesis:{cancel(){},getVoices(){return[];},speak(){spoken++;}}},
+ window,speechSynthesis,AlphaVoice,
  SpeechSynthesisUtterance:class{constructor(text){this.text=text;}},
  crypto:{getRandomValues(a){a[0]=0;}},Uint32Array,Alpha74Art:art,console,alert:e=>{throw Error(e);},
  fetch:async(url,options)=>{
