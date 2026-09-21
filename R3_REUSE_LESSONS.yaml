@@ -182,3 +182,62 @@ lessons:
       - PR 76
       - PR 77
       - GitHub combined statuses observed 2026-09-21
+
+
+  - id: RL-2026-09-21-OMNIROUTE-001
+    capability: omniroute_auto_routing_integration
+    status: VERIFIED
+    observed_at: 2026-09-21
+    trigger: OmniRoute model:auto returned HTTP 502 on the first live 3.8.50 disposable runtime
+    verified_facts:
+      - The original live transport path was healthy through boot, health, management login, provider connection test, inference-key creation and authenticated /v1/models; failure was isolated to model:auto candidate execution.
+      - F0 runtime inventory proved Docker latest digest sha256:085c57adf499a8aaa9f35ccde95c0df9c11bd9ecd18d6c9edbf3b68b8079ba9d and npm 3.8.50 contain virtualFactory but do not contain or wire modelExposureFilter/modelLockoutFilter.
+      - Upstream release/v3.8.51 source SHA 7a921299c5b4c28dcf837f56a1c312b61414a646 contains native model exposure filtering, per-model lockout/resilience filtering and modelVisibilityAllowlist/modelVisibilityDenylist.
+      - Deterministic Candidate A run 35561949401 completed SUCCESS with artifact 10622417386 and verdict ADOPT_A.
+      - After applying the native denylist, exact targeted bad models were absent from both catalog and actual auto candidate pool, while r3-good-model remained present.
+      - Post-denylist model:auto returned HTTP 200, a non-empty response and resolved_model r3-good-model.
+      - The same 3.8.51 deterministic runtime could complete before the denylist as well; do not claim denylist-only causality for improvement relative to 3.8.50.
+      - A prior substring matcher for opus-5 falsely counted unrelated model variants and produced a false negative; exact semantic-id matching fixed the evaluator.
+      - A full source Docker build of release/v3.8.51 failed before runtime on Next/Turbopack resolution of Node builtins; this is a separate build-artifact blocker, not a routing falsifier.
+    failure_modes:
+      - patching upstream 3.8.51 files while the actually executed runtime is still 3.8.50
+      - adding a parallel breaker/router when upstream already supplies model-level filtering and resilience
+      - treating provider aliases such as oc as canonical ids without inspecting the actual candidate object
+      - using broad substring regexes for model-policy falsifiers
+      - interpreting a source-image build failure as evidence that the routing policy itself failed
+      - relying on an external free-tier provider as the only healthy route in a routing falsifier
+      - claiming a denylist caused a latency or success improvement when upgrade and warmup are confounded
+    canonical_short_path:
+      - inventory the exact runtime/package version before designing a patch
+      - compare that runtime to upstream source and prefer the upstream-native fix when available
+      - use a deterministic local healthy provider plus deliberately failing models for routing falsifiers
+      - verify the real auto candidate pool, not only /v1/models
+      - use exact canonical or bare model ids for denylist verification
+      - require P1 pool hygiene and P2 successful runtime execution before adoption
+      - prefer upstream native 3.8.51 filtering over custom R3 breaker/router code
+      - keep R3 fallback active when OmniRoute is unavailable
+    preconditions:
+      - isolated runtime or sandbox
+      - authoritative source SHA/version
+      - at least one deterministic healthy route
+      - ephemeral inference key or equivalent authenticated client path
+      - no production mutation during evaluation
+    verification:
+      - candidate run conclusion is success
+      - exact targeted bad models absent from post-filter catalog and auto candidate pool
+      - healthy model remains in catalog and auto candidate pool
+      - model:auto returns 2xx with non-empty response
+      - artifact preserves source version/SHA, P1, P2 and verdict
+      - production_modified is false for isolated evaluation
+    cleanup:
+      - destroy disposable runtime/mock after test
+      - retain evidence artifact and public-safe result report
+      - do not merge or deploy solely because the isolated Candidate A passed
+      - resolve build/deployment blockers separately before production promotion
+    provenance:
+      - PR 79
+      - docs/R3_OMNIROUTE_CANDIDATE_A_RESULT_2026-09-21.md
+      - workflow run 35561949401
+      - artifact 10622417386
+      - F0 workflow runs 35560389479 and 35560531205
+      - upstream diegosouzapw/OmniRoute release/v3.8.51 SHA 7a921299c5b4c28dcf837f56a1c312b61414a646
