@@ -99,3 +99,46 @@ lessons:
       - typesafe_sister/universal.py
       - docs/TYPESAFE_UNIVERSAL_2026-09-20.md
       - run_2026-09-21_bitcoin_cannes_retry
+
+  - id: RL-2026-09-21-REUSE-ML-JEV-002
+    capability: learned_reuse_routing_and_project_rewrite
+    status: CANDIDATE
+    observed_at: 2026-09-21
+    trigger: Claudio requested experience-acquired capabilities, faster reuse, Jev shortcuts under ambiguity, and consolidation of evolution.
+    verified_facts:
+      - Existing R3-020 evolution kernel already provides preregistration, falsifiers, regression checks, provenance and rollback gates.
+      - Existing TypeSafe transport supports bounded Choice judgments through the canonical shared client.
+      - Existing Ollama provider already supplies local generative model access; no second LLM engine is needed for rewrite proposals.
+      - The repository already had sentence-transformers identified as an optional vector/embedding capability.
+    candidate_changes:
+      - Add lazy BAAI/bge-m3 semantic retrieval for matching tasks to reusable lessons.
+      - Add a supervised reranker trained only from explicitly verified outcomes.
+      - Call canonical Jev Choice only when the learned/semantic route is ambiguous.
+      - Permit complete rewrites of project code/workflow/project policy above a separately declared immutable foundation envelope.
+    canonical_short_path:
+      - retrieve matching lessons
+      - rank with learned semantic router
+      - if ambiguous shortlist existing routes and ask Jev Choice
+      - execute under existing authority gate
+      - verify authoritative postcondition
+      - record success or failure as experience
+      - send any rewrite candidate through R3-020
+    preconditions:
+      - do not use unverified narrative as supervised labels
+      - do not allow Jev to invent a new route when resolving ambiguity
+      - do not permit self-modification of foundation invariants
+    verification:
+      - unit tests for matching route, Jev ambiguity routing and Jev-unavailable fallback
+      - R3-020 tests proving core_code can evolve but foundation_invariants are rejected
+      - repository CI and security gates
+    cleanup:
+      - optional ML dependencies remain separate from serverless core requirements
+      - no model weights committed to the repository
+      - rejected rewrite candidates remain negative evidence
+    provenance:
+      - sdq1/reuse_learning.py
+      - sdq1/evolution_kernel.py
+      - R3_BASE_PRIORITIES.yaml
+      - requirements-ml.txt
+      - tests/test_reuse_learning.py
+      - tests/test_evolution_kernel.py
