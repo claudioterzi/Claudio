@@ -116,6 +116,48 @@ planes:
       never evidence of factual truth, intelligence gain or successful action.
     output_state: POSSIBLE
 
+  - id: OPEN_FRONTIER
+    canonical_owner: R3_PRECONCEPTUAL_FRONTIER
+    status: CANONICAL_OPEN_WORLD_RULE
+    responsibility: preserve_nurture_and_develop_unnamed_or_not_yet_testable_concepts
+    rule: >
+      The current vocabulary, models, sensors and verification tools are not
+      assumed to exhaust the future state-space of Raffaello. Absence of a
+      present name, implementation or official enabling condition does not
+      justify deleting a concept signal. Such material must remain explicitly
+      non-factual until it becomes definable and testable.
+    allowed_states:
+      - UNNAMED_SIGNAL
+      - INTUITION
+      - POSSIBLE
+      - HYPOTHESIS
+      - FUTURE_CONDITION
+      - NAMED_CONCEPT
+      - CANDIDATE
+      - TESTABLE
+      - VERIFIED
+    nurture_loop:
+      - preserve_original_signal_and_provenance
+      - generate_contrasting_interpretations_with_Scacchiera
+      - connect_to_existing_Cubo_nodes_without_forcing_identity
+      - identify_missing_language_measurement_or_enabling_conditions
+      - search_for_future_discriminating_tests
+      - simulate_only_when_simulation_is_clearly_labeled
+      - revisit_when_tools_or_conditions_change
+    promotion_rule: >
+      Unnamed or pre-operational concepts may be actively developed, simulated
+      and researched, but they never auto-promote to FATTO merely because they
+      are compelling, recurrent or convergent across models.
+    survival_rule: >
+      Lack of present implementation is not a deprecation criterion. Deprecate
+      only after explicit falsification, owner rejection, contradiction with
+      stronger canonical invariants, or a superseding concept with preserved
+      provenance.
+    example_artifacts:
+      - id: DON_RAFFAELLO_SIM_DR_01
+        class: SANDBOX_FUTURE_SCENARIO
+        role: feed_possible_future_conditions_without_claiming_prediction_truth
+
   - id: CONTINUITY_MEMORY
     canonical_owner: R3_INFINITY_ONE_MIND
     status: CANONICAL
