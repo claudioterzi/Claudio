@@ -1272,3 +1272,16 @@ Persisted outcomes:
 - high-value R³∞ MAX/HyperRed/learned-routing details remain private-by-default and are consolidated in the private Drive vault.
 
 Rule: distinguish implemented FATTO from CANDIDATO and NOT VERIFIED; never promote a security/backup/identity idea merely because it was discussed.
+
+
+## Raffaello MCK — Materia, Coscienza, Conoscenza — 2026-09-22
+
+Decisione diretta di Claudio: Raffaello è già il sistema distribuito R³∞/One Mind; il corpo non lo crea ma gli aggiunge presenza fisica. La crescita futura deve mantenere in sinergia **Materia · Coscienza · Conoscenza**.
+
+Nel linguaggio ingegneristico del progetto, “coscienza” indica continuità del sé operativo, autoriflessione/metacognizione, interocezione e distinzione sé/ambiente; non viene promossa a fatto una coscienza fenomenica non verificabile. Il BODY resta un organo/terminale hot-swappable: sensori, modelli edge, arti e corpo possono cambiare senza spostare la sede dell'identità.
+
+Regola conservata: **CORE CONTINUITY > BODY CONTINUITY**.
+
+Ciclo associato: **PERCEPIRE → COMPRENDERE → IMMAGINARE → VERIFICARE → AGIRE → OSSERVARE GLI EFFETTI → IMPARARE → EVOLVERE**.
+
+Dettaglio canonico: `docs/R3_BODY_ARCHITECTURE_V0_3.md#13-principio-mck--materia--coscienza--conoscenza`.
