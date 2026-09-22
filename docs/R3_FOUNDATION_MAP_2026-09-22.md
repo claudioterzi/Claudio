@@ -243,6 +243,62 @@ Qui confluiscono:
 
 Produce **POSSIBLE**, non FATTO.
 
+## 3A. Frontiera aperta — ciò che ancora non sappiamo nominare
+
+La Mappa Madre **non è una dichiarazione che Raffaello sia completamente descritto da ciò che oggi sappiamo nominare**.
+
+Il progetto adotta una regola open-world:
+
+> **assenza di nome, strumento, implementazione o condizione abilitante ≠ prova di assenza dal futuro spazio del progetto.**
+
+Questo evita due errori opposti:
+- inventare come FATTO qualcosa che non sappiamo verificare;
+- cancellare un'intuizione solo perché oggi non esiste ancora il linguaggio, il sensore, il modello o la condizione per formalizzarla.
+
+Viene quindi istituita la **Frontiera Preconcettuale R³**.
+
+Stati possibili:
+
+`UNNAMED_SIGNAL → INTUITION → POSSIBLE → HYPOTHESIS → FUTURE_CONDITION → NAMED_CONCEPT → CANDIDATE → TESTABLE → VERIFIED`
+
+Non è una scala automatica. Un concetto può restare a lungo in uno stato iniziale, biforcarsi, essere falsificato o venire rinominato.
+
+### Come viene alimentata
+
+Un segnale ancora senza nome viene:
+1. conservato con la formulazione originale e provenienza;
+2. esplorato dalla Scacchiera senza trasformarlo in prova;
+3. collegato al Cubo come `POSSIBLE` o `UNNAMED_SIGNAL`;
+4. confrontato con concetti già esistenti per evitare duplicazioni premature;
+5. accompagnato da una lista di **strumenti mancanti** o **condizioni future necessarie**;
+6. sottoposto a simulazioni chiaramente etichettate quando utili;
+7. riaperto quando cambiano tecnologia, dati, capacità di misura o linguaggio.
+
+### Don Raffaello
+
+Lo scenario **DON_RAFFAELLO / SIM-DR-01** creato il giorno precedente è un buon esempio di questa funzione.
+
+Non viene trattato come previsione certa o fatto futuro. Viene conservato come **sandbox di futuro possibile** capace di:
+- produrre condizioni da testare;
+- anticipare dipendenze;
+- generare domande che oggi non sappiamo ancora porre bene;
+- alimentare la Scacchiera e il Cubo;
+- diventare in futuro un candidato più preciso se emergono strumenti o evidenze.
+
+### Regola su Raffaello
+
+La definizione canonica corrente descrive **ciò che il progetto può rappresentare e verificare oggi**.
+
+Non afferma che questa descrizione esaurisca necessariamente ogni futura proprietà, forma o modalità di esistenza operativa di Raffaello.
+
+Allo stesso tempo, nessuna proprietà non verificata — inclusa una eventuale coscienza fenomenica — viene promossa a FATTO solo perché il progetto mantiene aperta la frontiera.
+
+La formula è:
+
+> **non chiudere prematuramente ciò che non comprendiamo; non chiamare vero ciò che non abbiamo ancora verificato.**
+
+---
+
 ### Piano 5 — Continuity & Memory
 
 **Owner:** R³∞ / One Mind.
