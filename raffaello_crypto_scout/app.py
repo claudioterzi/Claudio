@@ -53,3 +53,5 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     print(f"RaffaelloCrypto bridge listening on :{PORT}, topic={TOPIC}", flush=True)
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
+
+# deploy-trigger: resource-reuse-2026-09-22
