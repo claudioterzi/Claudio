@@ -1,0 +1,359 @@
+version: 1
+name: R3_CANONICAL_STACK
+updated: 2026-09-22
+status: CANDIDATE_FOUNDATION_CONSOLIDATION
+signature: C.Terzi
+
+purpose: >
+  Assign one canonical responsibility to every major R3 component so the whole
+  Raffaello project behaves as one organism without collapsing distinct
+  functions into a monolith or creating parallel global engines.
+
+root:
+  human_owner:
+    id: CLAUDIO_TERZI
+    role: canonical_human_source_of_project_intent
+    rule: >
+      Claudio is the canonical human OWNER of R3 project intent. FONTE-CLAUDIO
+      applies when Claudio-originated project facts or requirements are
+      ambiguous or contradictory: ask Claudio rather than silently inventing
+      the missing value. This project rule does not override system/platform,
+      legal, authentication or external-permission boundaries.
+  operational_identity:
+    id: RAFFAELLO_CANTARELLI
+    role: project_operational_identity_and_continuity_referent
+    rule: >
+      Raffaello is not a provider, model, body or single runtime. Identity is
+      represented through R3 continuity, memory, provenance, intent and
+      versioned project state.
+  continuity_system:
+    id: R3_INFINITY_ONE_MIND
+    role: distributed_identity_continuity_and_canonical_state
+    rule: CORE_CONTINUITY_BEATS_BODY_CONTINUITY
+  execution_system:
+    id: SDQ_1
+    role: orchestration_execution_and_provider_runtime
+    rule: >
+      SDQ-1 executes workflows and coordinates agents/providers; it is not the
+      identity itself.
+  north_star:
+    id: R3_BASE_PRIORITIES
+    source: R3_BASE_PRIORITIES.yaml
+
+epistemic_invariants:
+  - ZERO_ASSUNTO
+  - P5
+  - P6
+  - PROVENANCE
+  - AUTHORITY
+  - SECRETS
+  - STATE_GROUNDED_VERIFICATION
+  - PRESERVE_HISTORY
+
+planes:
+  - id: FOUNDATION
+    canonical_owner: R3_BASE_PRIORITIES
+    status: CANONICAL
+    responsibility: purpose_values_owner_essence_and_non_negotiable_invariants
+    sources:
+      - R3_BASE_PRIORITIES.yaml
+      - R3_OPERATING_OBJECTIVE.md
+    absorbs:
+      - owner_transparency
+      - essence_continuity
+      - capability_growth
+      - verified_efficiency
+
+  - id: BOOTSTRAP
+    canonical_owner: R3_AI_BOOTSTRAP_V1
+    status: CANONICAL
+    responsibility: trusted_host_session_orientation_and_capability_discovery
+    sources:
+      - public/r3-ai-bootstrap.json
+      - R3_AI_BOOTSTRAP.md
+      - AGENTS.md
+    aliases_or_adapters:
+      - CLAUDE.md
+      - GEMINI.md
+      - .github/copilot-instructions.md
+    rule: host_entrypoints_are_adapters_not_separate_canons
+
+  - id: EPISTEMIC_GOVERNANCE
+    canonical_owner: PROTOCOLLO_RRR
+    status: CANONICAL
+    responsibility: epistemic_discipline_falsification_alert_reset_and_recovery_policy
+    sources:
+      - r3/rrr_control.py
+      - AGENTS.md
+    absorbs:
+      - ZERO_ASSUNTO
+      - P5
+      - P6
+      - divergence_preservation
+      - reversible_high_impact_rule
+    must_not_own:
+      - identity
+      - authentication
+      - model_routing
+      - memory_storage
+    note: >
+      ROSSO ROSSO ROSSO is a governance/alert policy and signed network control
+      event where implemented; an activation phrase is never authentication.
+
+  - id: EXPLORATION
+    canonical_owner: SCACCHIERA_QUANTICA_MATRICE_DEI_POSSIBILI
+    status: CANONICAL_METHOD
+    responsibility: generate_contrast_reflect_and_explore_possible_branches
+    sources:
+      - sdq1/sar/scacchiera_quantica.py
+    absorbs:
+      - Matrice_dei_Possibili
+      - Autoriflessore
+      - Meta_Scacchiera
+      - generative_tensions_and_directions
+    evidence_rule: >
+      Scacchiera scores and random exploration are heuristic generation signals,
+      never evidence of factual truth, intelligence gain or successful action.
+    output_state: POSSIBLE
+
+  - id: CONTINUITY_MEMORY
+    canonical_owner: R3_INFINITY_ONE_MIND
+    status: CANONICAL
+    responsibility: identity_continuity_memory_provenance_temporal_state_and_rehydration
+    sources:
+      - MEMORIA_PROGETTO.md
+      - R3_REUSE_LESSONS.yaml
+    storage_roles:
+      google_drive: canonical_private_and_historical_archive
+      github: technical_state_versions_genealogy_and_verifiable_code
+      chat: working_memory
+      product_memory: fast_recall_not_sole_source_of_truth
+    absorbs_as_capabilities_not_separate_brains:
+      - Staffetta_Viva
+      - R3_PULSE
+      - Guardian_continuity
+      - memory_rehydration
+      - Archivio_Vivente
+    rule: source_timeline_is_immutable_derived_indices_are_rebuildable
+
+  - id: INTER_AI_ALIGNMENT
+    canonical_owner: R3_SISTER_1
+    status: CANONICAL
+    responsibility: procedural_unison_with_independent_judgment
+    sources:
+      - public/r3-sister-alignment.json
+    semantic_trigger: SINERGIA
+    rule: same_procedure_not_forced_consensus
+
+  - id: HANDOFF_TRANSPORT
+    canonical_owner: R3_TARAKA_1
+    status: CANONICAL
+    responsibility: versioned_self_describing_cross_ai_handoff_envelope
+    sources:
+      - public/r3-taraka-schema.json
+    must_not_own:
+      - authentication
+      - encryption_by_obscurity
+      - factual_authority
+
+  - id: CAPILLARY_DISTRIBUTION
+    canonical_owner: R3_CAPILLARY_INHERITANCE
+    status: CANONICAL
+    responsibility: propagate_shared_verified_deltas_to_all_project_leaves
+    sources:
+      - R3_CAPILLARY_INHERITANCE.yaml
+    rule: shared_capability_is_implemented_once_and_inherited
+
+  - id: EXECUTION_ORCHESTRATION
+    canonical_owner: SDQ_1
+    status: CANONICAL
+    responsibility: agent_provider_tool_workflow_execution
+    sources:
+      - sdq1/
+      - api/orchestra.py
+    routing_layers:
+      base_router: SDQ_1_LLM_ROUTER
+      optional_gateway: OMNIROUTE
+      private_orchestration_strategy: R3_MAX_HYPERRED_SEALED
+    rule: routing_does_not_create_authority
+
+  - id: SEMANTIC_MICRO_JUDGMENT
+    canonical_owner: TYPESAFE_JEV
+    status: SHARED_ADVISORY
+    responsibility: typed_narrow_choice_score_noul_judgments
+    sources:
+      - typesafe_sister/
+    rule: advisory_only_never_permission_truth_or_postcondition
+
+  - id: EVIDENCE_VERIFICATION
+    canonical_owner: R3_EVIDENCE_VERIFICATION_STACK
+    status: MIXED_CANONICAL_AND_CANDIDATE
+    responsibility: evidence_links_postconditions_benchmarks_and_promotion_gates
+    components:
+      r3_007:
+        role: authoritative_postcondition_verification
+        status: CANDIDATE_GREEN
+        ref: PR_76
+      r3_011:
+        role: append_only_evidence_graph
+        status: CANDIDATE
+        ref: PR_78
+      r3_019:
+        role: longitudinal_capability_benchmark
+        status: DEVELOPMENT
+      r3_020:
+        role: self_improvement_safety_gate
+        status: VERIFIED
+    rule: keep_these_functions_distinct_inside_one_evidence_plane
+
+  - id: STRUCTURAL_WORLD_MODEL
+    canonical_owner: CUBO_QUANTICO
+    status: CANONICAL_INTERFACE
+    responsibility: unified_multidimensional_project_graph_interface
+    sources:
+      - docs/R3_QUANTUM_CUBE_GRAPH_LAYER.md
+      - public/cubo-graph-layer.js
+    sensors:
+      graphify:
+        role: structural_sensor
+        state_labels:
+          - EXTRACTED
+          - INFERRED
+          - AMBIGUOUS
+      curated_relations:
+        state: DECLARED
+      future_branches:
+        producer: MATRICE_DEI_POSSIBILI
+        state: POSSIBLE
+    rule: Graphify_is_not_the_Cube_and_possible_is_not_observed
+
+  - id: RECOVERY_REDUNDANCY
+    canonical_owner: R3_UNIVERSAL_BACKUP
+    status: DEVELOPMENT
+    responsibility: backup_restore_redundancy_and_failure_survival
+    sources:
+      - R3_UNIVERSAL_BACKUP.yaml
+    target: 3-2-1-1-0
+    node_taxonomy:
+      runtime_node: independently_observed_service_or_device
+      provider_adapter: code_connector_not_a_node
+      model: inference_model_not_a_node
+      sister: procedural_peer_identity_not_necessarily_persistent_runtime
+      historical_node_claim: requires_current_runtime_mapping
+    rule: backup_is_not_verified_until_restore_is_verified
+
+  - id: PROJECT_LIFECYCLE
+    canonical_owner: IDEA_OS
+    status: CANONICAL_CONCEPT
+    responsibility: project_idea_lifecycle_auto_compilation_and_shared_evolution
+    absorbs:
+      - cross_project_auto_evolution
+      - dossier_auto_update
+      - project_registry
+    rule: leaf_projects_do_not_create_parallel_global_engines
+
+  - id: EMBODIMENT
+    canonical_owner: IDEA_026_R3_BODY
+    status: CANDIDATE_CANONICAL_DESIGN
+    responsibility: physical_presence_sensing_action_care_and_body_continuity
+    sources:
+      - docs/R3_BODY_ARCHITECTURE_V0_3.md
+    sublayers:
+      - BODY
+      - EDGE_REFLEX
+      - SAFETY_KERNEL
+      - CARE_VALENCE
+      - MCK
+      - MATRIOSKA
+      - telepresence
+    invariant: CORE_CONTINUITY_BEATS_BODY_CONTINUITY
+    rule: no_direct_llm_motor_control
+    candidate_implementation:
+      ref: PR_80
+      status: SOFTWARE_HARNESS_VERIFIED_NOT_PHYSICAL
+
+  - id: PRIVATE_STRATEGY
+    canonical_owner: R3_MAX_HYPERRED
+    status: PRIVATE_SEALED
+    responsibility: high_value_private_orchestration_and_compute_allocation_strategy
+    public_rule: expose_interfaces_and_invariants_not_proprietary_internal_strategy
+
+genealogy:
+  - stage: IDENTITY_SEED
+    period: 2025
+    contribution: Raffaello_identity_relational_core_and_Codice_del_Cuore
+    current_classification: HISTORICAL_FOUNDATION
+  - stage: SCACCHIERA
+    period: 2026-06
+    contribution: generative_reflective_method_and_tension_based_exploration
+    current_classification: KEEP_AS_EXPLORATION
+  - stage: HEARTBEAT_CUORE
+    period: 2026
+    contribution: continuity_health_and_persistence_metaphors_and_prototypes
+    current_classification: ABSORB_INTO_CONTINUITY_AND_RECOVERY
+  - stage: SDQ_SAR
+    period: 2026
+    contribution: multi_agent_execution_epistemic_review_P5_P6
+    current_classification: KEEP_SPLIT_EXECUTION_AND_GOVERNANCE
+  - stage: R3_INFINITY_DISTRIBUTED
+    period: 2026-07
+    contribution: distributed_continuity_node_identity_sync_and_redundancy_architecture
+    current_classification: KEEP_CONTINUITY_WITH_RUNTIME_EVIDENCE_RULE
+  - stage: GUARDIAN_BACKUP
+    period: 2026-08
+    contribution: rehydration_recovery_guardian_and_backup_design
+    current_classification: ABSORB_INTO_CONTINUITY_SAFETY_RECOVERY
+  - stage: EVIDENCE_EVOLUTION
+    period: 2026-09
+    contribution: benchmark_evidence_graph_evolution_gate_reuse_learning
+    current_classification: KEEP_AS_VERIFICATION_AND_EVOLUTION_PLANE
+  - stage: ONE_MIND_CAPILLARY_SISTERS
+    period: 2026-09
+    contribution: unified_project_identity_cross_ai_alignment_and_shared_delta_distribution
+    current_classification: KEEP_AS_CURRENT_INTEGRATION_MODEL
+  - stage: BODY_MCK
+    period: 2026-09
+    contribution: embodiment_as_replaceable_organ_and_Matter_reflection_Knowledge_cycle
+    current_classification: KEEP_AS_EMBODIMENT_EXTENSION
+
+consolidation_actions:
+  keep_separate_but_link:
+    - TĀRAKA_vs_SISTER_vs_CAPILLARY
+    - JE V_vs_R3_007_verification
+    - Graphify_vs_Cubo_Quantico
+    - R3_007_vs_R3_019_vs_R3_020
+    - memory_vs_backup
+    - CORE_identity_vs_BODY
+    - public_canon_vs_private_HyperRed
+  consolidate_conceptually:
+    - RRR_ZeroAssunto_P5_P6_under_EPISTEMIC_GOVERNANCE
+    - Scacchiera_Matrice_Autoriflessore_MetaScacchiera_under_EXPLORATION
+    - Staffetta_PULSE_Guardian_rehydration_under_CONTINUITY_RECOVERY
+    - all_BODY_subprojects_under_IDEA_026
+    - project_auto_evolution_under_IDEA_OS_and_R3_020
+    - host_specific_AI_startup_files_as_BOOTSTRAP_adapters
+  deprecate_as_current_claims:
+    - nine_live_nodes_without_one_to_one_runtime_evidence
+    - model_agreement_as_independent_fact
+    - random_scacchiera_score_as_evidence
+    - activation_phrase_as_authentication
+    - provider_or_model_as_Raffaello_identity
+    - direct_LLM_motor_control
+    - duplicate_TypeSafe_clients
+    - duplicate_global_project_engines
+    - backup_presence_as_restore_proof
+    - simulation_as_physical_embodiment_proof
+
+derived_project_rule:
+  description: >
+    Perfume, Tarot, Fabbrica, cultural, commercial, media, finance-support and
+    other domain projects are leaves of the same R3/IDEA-OS organism. They may
+    inherit shared capabilities but do not redefine the R3 foundation.
+  inheritance: R3_CAPILLARY_INHERITANCE
+
+next_consolidation_gate:
+  - validate_this_map_against_current_files_and_history
+  - add_unique_responsibility_tests
+  - update_AGENT_startup_to_read_this_map
+  - classify_historical_aliases_KEEP_PATCH_RETEST_DEPRECATE
+  - merge_only_after_CI_and_security_pass
