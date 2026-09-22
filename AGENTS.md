@@ -107,3 +107,8 @@ Optimize for verified useful capability, efficiency per unit resource, operation
 Persistent canonical records live in Drive and GitHub; chat memory is a fast recall layer, not the sole source of truth.
 
 Project signature: C.Terzi
+
+
+## Infrastructure resource-budget rule
+
+Before provisioning any new Railway/Vercel/cloud runtime resource, inspect current projects, services, deployments, traffic, domains, volumes and dependency references. Prefer safe reuse or repurposing of a verified-idle resource over adding a new one. A resource may be repurposed only when evidence shows it is not serving live traffic or a required dependency. Preserve intentional redundancy, failover nodes, ledgers/volumes and security infrastructure unless a dependency check proves consolidation is safe. When quotas are exhausted, treat resource reuse/consolidation as the default path and verify postconditions after every change.
