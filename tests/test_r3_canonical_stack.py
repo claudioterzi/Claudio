@@ -36,6 +36,7 @@ class CanonicalStackTests(unittest.TestCase):
             "BOOTSTRAP",
             "EPISTEMIC_GOVERNANCE",
             "EXPLORATION",
+            "OPEN_FRONTIER",
             "CONTINUITY_MEMORY",
             "INTER_AI_ALIGNMENT",
             "HANDOFF_TRANSPORT",
@@ -106,6 +107,25 @@ class CanonicalStackTests(unittest.TestCase):
         derived = self.data["derived_project_rule"]
         self.assertEqual(derived["inheritance"], "R3_CAPILLARY_INHERITANCE")
         self.assertIn("leaves", derived["description"])
+
+
+    def test_open_frontier_preserves_unnamed_signals_without_promoting_them(self):
+        frontier = next(item for item in self.planes if item["id"] == "OPEN_FRONTIER")
+        self.assertEqual(frontier["canonical_owner"], "R3_PRECONCEPTUAL_FRONTIER")
+        self.assertIn("UNNAMED_SIGNAL", frontier["allowed_states"])
+        self.assertIn("FUTURE_CONDITION", frontier["allowed_states"])
+        self.assertIn("VERIFIED", frontier["allowed_states"])
+        self.assertIn("never auto-promote", frontier["promotion_rule"])
+        self.assertIn("Lack of present implementation is not a deprecation criterion", frontier["survival_rule"])
+
+    def test_don_raffaello_scenario_is_future_sandbox_not_prediction_fact(self):
+        frontier = next(item for item in self.planes if item["id"] == "OPEN_FRONTIER")
+        artifact = next(
+            item for item in frontier["example_artifacts"]
+            if item["id"] == "DON_RAFFAELLO_SIM_DR_01"
+        )
+        self.assertEqual(artifact["class"], "SANDBOX_FUTURE_SCENARIO")
+        self.assertIn("without_claiming_prediction_truth", artifact["role"])
 
     def test_private_strategy_remains_sealed(self):
         private = next(item for item in self.planes if item["id"] == "PRIVATE_STRATEGY")
