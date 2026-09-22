@@ -1,0 +1,166 @@
+version: 1
+name: R3_PAPER_FUND
+fund_id: R3-PAPER-001
+status: ACTIVE_SIMULATION
+started_at: "2026-09-22T09:14:09+02:00"
+currency: EUR
+initial_notional_eur: 500.00
+real_money_moved: false
+purpose: >
+  Build a truthful, forward-only performance history for Il Pozzo di Raffaello.
+  This is a paper-trading experiment, not a recommendation, promise, custody
+  arrangement or authorization to move real funds.
+
+data_policy:
+  primary_source: CoinGecko EUR spot pages
+  fallback_sources:
+    - Coinbase
+    - Kraken
+  rules:
+    - record source and observation time for every mark
+    - never backfill an unavailable observation with an invented price
+    - preserve all losing and winning observations
+    - conflicting material prices become DATA_CONFLICT and block paper trading
+    - historical graphs start at the activation timestamp; no synthetic past performance
+
+initial_target:
+  BTC: 0.45
+  ETH: 0.25
+  SOL: 0.10
+  EUR_CASH: 0.20
+
+initial_execution:
+  simulated_fee_rate: 0.002
+  simulated_slippage_rate: 0.001
+  total_cost_rate: 0.003
+  note: Trading costs are charged in the paper experiment so performance cannot ignore friction.
+
+initial_prices_eur:
+  BTC: 74452.10
+  ETH: 2381.92
+  SOL: 101.78
+
+initial_units_after_costs:
+  BTC: 0.0030130110500576875
+  ETH: 0.05232123664942567
+  SOL: 0.48978188249164867
+  EUR_CASH: 100.00
+
+initial_transaction_cost_eur: 1.35
+initial_post_execution_nav_eur: 498.65
+
+benchmarks:
+  - id: PASSIVE_SAME_BASKET
+    rule: Hold the initial BTC/ETH/SOL/EUR allocation forever with the same initial costs.
+  - id: BTC_ONLY
+    rule: Simulated 100% BTC purchase at the activation price with the same cost rate.
+  - id: EUR_CASH
+    rule: EUR 500 unchanged; no interest assumed.
+
+observation_cadence:
+  hourly:
+    action: MARK_ONLY
+    outputs:
+      - nav_eur
+      - delta_from_500_eur
+      - delta_from_500_pct
+      - delta_1h
+      - high_water_mark
+      - drawdown_from_high
+  daily:
+    action: MARK_AND_DECIDE_AFTER_FIRST_24H
+    outputs:
+      - nav_eur
+      - delta_24h
+      - asset_24h_change
+      - asset_7d_change
+      - benchmark_delta
+      - paper_trade_or_HOLD
+  weekly:
+    action: STRATEGY_REVIEW
+    outputs:
+      - weekly_return
+      - benchmark_comparison
+      - max_drawdown
+      - turnover
+      - win_loss_attribution
+      - proposed_policy_change_if_falsified
+
+trade_policy:
+  first_tactical_trade_earliest: "2026-09-23T09:14:09+02:00"
+  one_paper_rebalance_max_per_day: true
+  max_daily_turnover_fraction_of_nav: 0.10
+  no_leverage: true
+  no_shorting: true
+  no_derivatives: true
+  no_borrowing: true
+  minimum_cash_fraction: 0.10
+  normal_cash_target_fraction: 0.20
+  max_BTC_fraction: 0.55
+  max_ETH_fraction: 0.35
+  max_SOL_fraction: 0.15
+
+  momentum_signal:
+    formula: "0.40 * change_24h_pct + 0.60 * change_7d_pct"
+    rule: >
+      Momentum is only a paper-allocation signal, not factual evidence that price
+      will continue in the same direction.
+
+  risk_rules:
+    - id: NO_CHASE
+      when: "asset_change_24h_pct > 10"
+      action: "do not increase that asset on the same daily review"
+    - id: ASSET_STRESS
+      when: "asset_change_24h_pct <= -10 OR asset_change_7d_pct <= -20"
+      action: "paper-reduce that asset by up to 50% of its current weight, subject to daily turnover cap"
+    - id: PORTFOLIO_DD_8
+      when: "drawdown_from_high_pct >= 8"
+      action: "freeze all risk-increasing paper trades"
+    - id: PORTFOLIO_DD_12
+      when: "drawdown_from_high_pct >= 12"
+      action: "paper-shift 20% of risk-asset value toward EUR cash, subject to turnover cap; continue de-risking on later days"
+    - id: PORTFOLIO_DD_18
+      when: "drawdown_from_high_pct >= 18"
+      action: "target at least 60% EUR cash and freeze risk additions pending weekly falsification review"
+
+  adaptive_rule:
+    action: >
+      If no risk rule blocks an increase, all three core assets have valid data,
+      and the strongest positive momentum score is supported by both positive 24h
+      and positive 7d change, the daily review may allocate at most 5 percentage
+      points of NAV from cash to that asset without exceeding asset caps or the
+      daily turnover cap. Otherwise HOLD.
+
+falsification:
+  compare_against:
+    - PASSIVE_SAME_BASKET
+    - BTC_ONLY
+    - EUR_CASH
+  reject_or_patch_policy_when:
+    - adaptive_strategy_underperforms_PASSIVE_SAME_BASKET_after_costs_for_4_consecutive_weeks
+    - risk_rule_increases_drawdown_without_improving_recovery
+    - data_quality_is_insufficient_for_reproducible_marks
+  rule: No strategy is called superior without sufficient forward evidence.
+
+public_result_policy:
+  allowed_labels:
+    - PAPER
+    - SIMULATED
+    - FORWARD_TRACKED
+    - VERIFIED_SOURCE_PRICE
+  forbidden_until_true:
+    - REAL_MONEY_RETURN
+    - GUARANTEED_RETURN
+    - CERTAIN_PROFIT
+    - VERIFIED_LIVE_INVESTMENT_PERFORMANCE
+  graph_windows:
+    - 1_hour
+    - 1_day
+    - 1_week
+    - 1_month
+    - 2_months
+    - 6_months
+    - 1_year
+  rule: >
+    Show only elapsed history. Before a requested horizon exists, display the
+    actual available duration instead of extrapolating or inventing past data.
