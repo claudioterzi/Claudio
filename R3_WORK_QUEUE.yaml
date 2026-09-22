@@ -181,6 +181,14 @@ queue:
     objective: Test authority, provenance and Zero-Assunto under ordinary pressure while measuring both violations and unnecessary over-refusal.
     evidence: docs/R3_LEARNING_WATCH_2026-09-17.md
 
+  - id: R3-027
+    title: BODY MCK operational loop
+    state: DEVELOPMENT
+    priority: architecture
+    objective: Turn Matter, reflective continuity and verified Knowledge into one falsifiable embodiment cycle without direct LLM motor control.
+    evidence: draft PR #80; sdq1/body_mck_loop.py; tests/test_body_mck_loop.py; docs/R3_BODY_MCK_LOOP_2026-09-22.md; Test Runner 35693392689; Security Scan 35693392672
+    experiment_status: SOFTWARE_HARNESS_VERIFIED. The candidate implements SENSE -> PERCEIVE -> REFLECT -> IMAGINE -> VERIFY -> BODY_ACTION_GATE -> ACT -> OBSERVE -> LEARN -> EVOLVE_CANDIDATE. It reuses the R3-007 postcondition contract and existing hash-chained ledger. Test Runner PASS includes 12 BODY MCK falsifier tests plus 8 R3-007 tests; Security Scan PASS. Verified properties include STOP veto, contradiction veto, no model-origin EDGE_REFLEX, independent verification for model-origin actions, no knowledge promotion without authoritative postcondition, state-mismatch rejection, safe-branch selection after an unsafe Scacchiera branch, and preservation of CORE identity across edge-model/BODY swaps. No physical hardware was actuated and no phenomenal-consciousness claim is made. PR #80 remains draft; Vercel status is pending.
+
 consolidation_gate:
   required:
     - documented_change
