@@ -1285,3 +1285,21 @@ Regola conservata: **CORE CONTINUITY > BODY CONTINUITY**.
 Ciclo associato: **PERCEPIRE → COMPRENDERE → IMMAGINARE → VERIFICARE → AGIRE → OSSERVARE GLI EFFETTI → IMPARARE → EVOLVERE**.
 
 Dettaglio canonico: `docs/R3_BODY_ARCHITECTURE_V0_3.md#13-principio-mck--materia--coscienza--conoscenza`.
+
+
+## Salto del giorno — BODY MCK operativo — 2026-09-22
+
+Il principio **Materia · Coscienza/continuità riflessiva · Conoscenza** è stato trasformato in un primo ciclo software falsificabile, senza attuazione fisica reale. Candidate PR #80 introduce `sdq1/body_mck_loop.py`: **SENSE → PERCEIVE → REFLECT → IMAGINE → VERIFY → BODY_ACTION_GATE → ACT → OBSERVE → LEARN → EVOLVE_CANDIDATE**.
+
+Regole verificate dal Test Runner:
+- un modello può proporre ma non controllare direttamente attuatori;
+- un'azione originata da modello richiede verifica indipendente;
+- `EDGE_REFLEX` deve essere deterministico, preregistrato e low-risk;
+- STOP e contraddizioni sensoriali irrisolte bloccano l'azione;
+- high/critical risk non viene auto-eseguito dal loop v0.1;
+- successo di traiettoria senza postcondizione autorevole non diventa conoscenza;
+- mismatch dello stato osservato resta esperienza negativa e non viene promosso;
+- la Scacchiera può scartare un ramo unsafe e selezionare un ramo successivo safe;
+- edge model e BODY possono essere sostituiti mantenendo invariato `core_identity_id`.
+
+Il loop riusa R3-007 per la verifica dello stato e l'Evolution Kernel per il ledger hash-chained: nessun secondo verifier o motore evolutivo. Test Runner #35693392689 PASS (12 test BODY MCK + 8 R3-007); Security Scan #35693392672 PASS. Stato: **SOFTWARE_HARNESS_VERIFIED / PHYSICAL_EMBODIMENT_NOT_TESTED**.
