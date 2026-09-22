@@ -1,26 +1,11 @@
 name: RaffaelloCrypto ntfy test
-
 on:
   push:
-    branches:
-      - raffaello-crypto-scout
-    paths:
-      - ".github/workflows/raffaello-ntfy-test.yml"
-  workflow_dispatch:
-
-permissions:
-  contents: read
+    branches: [raffaello-crypto-scout]
 
 jobs:
-  send-test:
+  send:
     runs-on: ubuntu-latest
     steps:
-      - name: Send test notification to ntfy
-        shell: bash
-        run: |
-          set -euo pipefail
-          TS="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          RESP="$(curl --fail-with-body --silent --show-error             -H 'Title: RaffaelloCrypto · TEST'             -H 'Priority: high'             -H 'Tags: white_check_mark,chart_with_upwards_trend'             -d "✅ TEST RAFFAELLO CRYPTO
-Canale collegato: GitHub Actions → ntfy → iPhone
-UTC: $TS"             https://ntfy.sh/raffaellocrypto)"
-          echo "$RESP"
+      - name: Send one ntfy test
+        run: curl --fail --silent --show-error "https://ntfy.sh/raffaellocrypto/publish?title=RaffaelloCrypto%20TEST&message=TEST%20REALE%20-%20ponte%20GitHub%20Actions%20a%20ntfy%20funzionante.%20Non%20e%20un%20ordine%20di%20trading.&priority=high&tags=white_check_mark"
