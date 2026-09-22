@@ -241,3 +241,62 @@ lessons:
       - artifact 10622417386
       - F0 workflow runs 35560389479 and 35560531205
       - upstream diegosouzapw/OmniRoute release/v3.8.51 SHA 7a921299c5b4c28dcf837f56a1c312b61414a646
+
+
+  - id: RL-2026-09-22-BODY-MCK-001
+    capability: verified_embodiment_cycle
+    status: VERIFIED
+    observed_at: 2026-09-22
+    trigger: Convert Claudio's Matter / reflective continuity / Knowledge principle into an executable BODY loop
+    verified_facts:
+      - PR 80 implements one bounded MCK cycle without real hardware actuation.
+      - The loop reuses R3-007 state-grounded postcondition verification and the existing evolution hash-chain ledger instead of introducing parallel engines.
+      - Test Runner 35693392689 passed 12 BODY MCK tests and 8 R3-007 tests.
+      - Security Scan 35693392672 passed.
+      - Model-origin actions require independent verification before BODY_ACTION_GATE can allow them.
+      - EDGE_REFLEX cannot originate from a model and requires deterministic preregistration plus low risk.
+      - STOP, unresolved perception contradictions, missing authority and high/critical physical risk block autonomous actuation in v0.1.
+      - A successful trajectory without authoritative postcondition does not promote knowledge.
+      - A state mismatch is preserved as negative experience and does not promote knowledge.
+      - CORE identity remains stable across edge-perception model swaps and BODY-A/B swaps in the deterministic harness.
+    failure_modes:
+      - treating a model proposal as a motor command
+      - treating actuator ACK or HTTP success as knowledge
+      - coupling identity to one edge model, sensor, limb or body
+      - creating a BODY-specific verifier instead of reusing R3-007
+      - allowing unresolved sensory contradiction to actuate
+      - promoting simulation results to physical embodiment claims
+    canonical_short_path:
+      - acquire sensor frame with provenance and integrity state
+      - run replaceable edge perception
+      - preserve CORE and BODY identities separately
+      - generate multiple Scacchiera possibilities
+      - independently verify each model-origin candidate
+      - pass each candidate through deterministic BODY_ACTION_GATE
+      - execute only an allowed host-supplied action
+      - verify authoritative postcondition with R3-007
+      - append experience to the Body Evidence Ledger
+      - promote only verified experience to a knowledge/evolution candidate
+    preconditions:
+      - explicit authority envelope
+      - deterministic Safety Kernel / BODY_ACTION_GATE
+      - host-supplied executor
+      - authoritative observer for knowledge promotion
+      - rollback and STOP path
+    verification:
+      - Test Runner BODY MCK suite passes
+      - Security Scan passes
+      - no physical action occurs in software harness tests
+      - ledger hash chain remains valid
+      - CORE identity is invariant across replaceable BODY/edge components
+    cleanup:
+      - keep PR 80 draft until branch protection and integration review complete
+      - do not connect the harness to real actuators before hardware-in-the-loop safety gates exist
+      - preserve failed experiences as evidence without promoting them
+    provenance:
+      - PR 80
+      - sdq1/body_mck_loop.py
+      - tests/test_body_mck_loop.py
+      - docs/R3_BODY_MCK_LOOP_2026-09-22.md
+      - Test Runner 35693392689
+      - Security Scan 35693392672
