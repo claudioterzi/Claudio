@@ -51,6 +51,11 @@ class Handler(BaseHTTPRequestHandler):
         print(time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), fmt % args, flush=True)
 
 if __name__ == "__main__":
+    if os.getenv("SEND_STARTUP_TEST", "0") == "1":
+        try:
+            print("startup ntfy test:", send_ntfy(), flush=True)
+        except Exception as e:
+            print("startup ntfy test failed:", repr(e), flush=True)
     print(f"RaffaelloCrypto bridge listening on :{PORT}, topic={TOPIC}", flush=True)
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
 
