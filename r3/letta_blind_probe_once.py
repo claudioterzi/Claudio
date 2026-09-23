@@ -40,18 +40,26 @@ def inspect_agent(client, agent_id):
         client,
         f"https://api.letta.com/v1/agents/{agent_id}/archival-memory?limit=200"
     )
+    msg_status, msgs = get_json(
+        client,
+        f"https://api.letta.com/v1/agents/{agent_id}/messages?limit=200"
+    )
     core_text = stringify(core)
     arch_text = stringify(arch)
+    msg_text = stringify(msgs)
     return {
         "agent_id": agent_id,
         "core_status": core_status,
         "archival_status": arch_status,
+        "messages_status": msg_status,
         "core_blocks": block_summary(core),
         "found": {
             needle: {
                 "core": needle in core_text,
                 "archival": needle in arch_text,
-                "any": (needle in core_text) or (needle in arch_text),
+                "messages": needle in msg_text,
+                "persisted_memory": (needle in core_text) or (needle in arch_text),
+                "any_state": (needle in core_text) or (needle in arch_text) or (needle in msg_text),
             }
             for needle in NEEDLES
         },
