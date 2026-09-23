@@ -83,3 +83,40 @@ Only Phase C justifies the label **provider-independent continuity**.
 Do not destroy an existing agent for the first test. Parallel A/B workers give a cleaner falsifier and avoid accidental memory loss.
 
 No financial execution is allowed from recovered memory alone. Live data and manual confirmation remain mandatory where the project requires them.
+
+
+## Refinements after external review
+
+The external review is directionally aligned, but the following corrections are canonical constraints for the experiment:
+
+1. **Do not call the architecture definitive before evidence.** Until Phases A/B/C pass with preserved evidence, status remains `CANDIDATE`.
+2. **R³∞ Canon is not TypeSafe/Jev.** TypeSafe/Jev is advisory under repository policy; it cannot be the authority that decides truth, permissions, spend, promotion or canonical state. Canonical authority resides in versioned R³∞ state/artifacts plus deterministic validation, P5/P6, provenance and explicit promotion rules.
+3. **Do not snapshot every write by default.** Prefer an append-only event/receipt log plus checkpointed signed portable snapshots. Per-write snapshots are allowed only if measurements justify their latency/storage cost.
+4. **A Railway-local database is not sufficient for sovereignty.** The portable continuity representation must have at least one recovery path independent of the active runtime/provider. A bridge database may be a working store, but not the only copy.
+5. **"Migration in seconds / no downtime / total sovereignty" are hypotheses until measured.** Record recovery time objective (RTO), recovery point objective (RPO), export completeness and hash/provenance preservation before making those claims.
+6. **CI split:** deterministic schema/hash/promotion tests may run on every build; live Letta/provider integration tests should run in an isolated integration job (scheduled/manual or gated) to avoid nondeterminism, quota coupling and false CI failures.
+
+## Persistence pattern
+
+Recommended write path:
+
+```
+EVENT -> Receipt Ledger (append-only)
+      -> provider adapter write (e.g. Letta)
+      -> continuity registry update
+      -> checkpoint policy decides whether to emit signed portable snapshot
+```
+
+A checkpoint must include the logical continuity IDs, versions, content hashes, provenance references and provider bindings needed to reconstruct state without trusting the provider's private internal representation.
+
+## Promotion boundary
+
+```
+Retrieved memory -> NON_CANONICAL evidence
+                  -> deterministic validation + provenance checks
+                  -> CANDIDATE
+                  -> explicit R³∞ promotion gate
+                  -> CANONICAL
+```
+
+No semantic model, Letta agent, TypeSafe/Jev result, or provider receipt may skip this path.
