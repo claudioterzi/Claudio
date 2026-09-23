@@ -1,0 +1,75 @@
+{
+  "schema": "R3_CONTINUITY_CONSOLIDATION_EVIDENCE/1.0",
+  "date": "2026-09-23",
+  "status": "MIXED_VERIFIED_AND_CANDIDATE",
+  "public_safe": true,
+  "facts": [
+    {
+      "id": "NTFY_DELIVERY",
+      "status": "VERIFIED",
+      "detail": "RaffaelloCrypto ntfy test delivered; Railway startup publish returned HTTP 200."
+    },
+    {
+      "id": "RAILWAY_RESOURCE_REUSE",
+      "status": "VERIFIED",
+      "detail": "Idle r3-external-test reused instead of provisioning a sixth service after quota error."
+    },
+    {
+      "id": "RAILWAY_HEALTH",
+      "status": "VERIFIED",
+      "detail": "Reused crypto bridge returned health 200 and successful deployment."
+    },
+    {
+      "id": "R3_REPLAY_FIRST_SEEN",
+      "status": "VERIFIED",
+      "detail": "Receipt FIRST_SEEN observed in r3-typesafe-sister logs."
+    },
+    {
+      "id": "R3_REPLAY_DUPLICATE",
+      "status": "VERIFIED",
+      "detail": "Same message replay produced DUPLICATE_REPLAY."
+    },
+    {
+      "id": "R3_CANONICAL_WRITE_FALSE",
+      "status": "VERIFIED",
+      "detail": "Receipt layer emitted canonical_memory_write=false; this is an R3 bridge marker, not native Letta storage proof."
+    },
+    {
+      "id": "LETTA_DIRECT_BLIND_PROBE",
+      "status": "INCONCLUSIVE",
+      "detail": "Direct Letta messages API attempt returned HTTP 403."
+    },
+    {
+      "id": "EXTERNAL_CONTINUITY_SAMPLE",
+      "status": "OBSERVED",
+      "detail": "Peer AI recovered historical continuity details not included in the immediate test prompt; causal source remains unproven."
+    },
+    {
+      "id": "LETTA_CAUSAL_ATTRIBUTION",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "CROSS_AGENT_LETTA_CONTINUITY",
+      "status": "CANDIDATE"
+    },
+    {
+      "id": "PROVIDER_INDEPENDENT_CONTINUITY",
+      "status": "CANDIDATE"
+    }
+  ],
+  "architecture": {
+    "core_rule": "CORE CONTINUITY > PROVIDER/AGENT CONTINUITY",
+    "agent_id": "worker",
+    "provider_binding": "block/archive IDs",
+    "continuity_registry": "provider-neutral logical identity",
+    "portable_snapshot": "provider-independent recovery representation",
+    "canon": "R3 authority under deterministic validation + P5/P6 + provenance",
+    "receipt_ledger": "evidence/provenance",
+    "typesafe_jev": "advisory only"
+  },
+  "tests_required": [
+    "PHASE_A_CROSS_AGENT",
+    "PHASE_B_CONTAMINATION",
+    "PHASE_C_PROVIDER_PORTABILITY"
+  ]
+}
