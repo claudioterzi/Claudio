@@ -1,6 +1,6 @@
 version: 1
 name: R3_REUSE_LESSONS
-updated: 2026-09-21
+updated: 2026-09-23
 status: ACTIVE
 purpose: >
   Persist operational lessons from repeated use of existing functions, tools,
@@ -300,3 +300,78 @@ lessons:
       - docs/R3_BODY_MCK_LOOP_2026-09-22.md
       - Test Runner 35693392689
       - Security Scan 35693392672
+
+  - id: RL-2026-09-23-RAILWAY-RESOURCE-REUSE-001
+    capability: constrained_cloud_resource_reuse
+    status: VERIFIED
+    observed_at: 2026-09-23
+    trigger: Railway refused provisioning of a new RaffaelloCrypto service because the plan resource limit was exhausted
+    verified_facts:
+      - Inspecting existing Railway resources revealed r3-external-test with no domain and zero RX/TX network activity in the observed 24-hour window.
+      - The test service was safely repurposed for the RaffaelloCrypto ntfy bridge instead of provisioning a new service.
+      - The repurposed deployment reached SUCCESS, health returned 200, and ntfy publish returned HTTP 200.
+      - Redundant/continuity services were preserved because temporary inactivity alone is not evidence that redundancy is unnecessary.
+    failure_modes:
+      - attempting new provisioning before inventorying existing resources
+      - deleting idle-looking redundancy without dependency analysis
+      - confusing an empty project with a runtime resource consumer
+    canonical_short_path:
+      - inventory projects/services/domains/volumes/traffic first
+      - identify an explicitly disposable or test resource with evidence
+      - repurpose rather than provision when safe
+      - verify deployment, health and external postcondition
+      - preserve redundancy unless dependency checks justify consolidation
+    preconditions:
+      - resource quota is constrained or reuse offers lower failure surface
+      - candidate resource is not serving required live traffic
+      - no required volume/dependency is destroyed
+    verification:
+      - authoritative service status SUCCESS
+      - health endpoint 200
+      - intended external side effect verified
+    cleanup:
+      - disable one-shot tests after verification
+      - do not leave temporary credentials or debug probes active
+    provenance:
+      - Railway project deepseek-eval-temp-2026-09-15
+      - service r3-external-test
+      - docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md
+
+  - id: RL-2026-09-23-LETTA-CONTINUITY-001
+    capability: provider_neutral_memory_continuity
+    status: OBSERVED
+    observed_at: 2026-09-23
+    trigger: Evaluate whether Letta can support R3 continuity without becoming the continuity root
+    verified_facts:
+      - R3 receipt logs showed FIRST_SEEN and DUPLICATE_REPLAY behavior and canonical_memory_write=false.
+      - canonical_memory_write is an R3 bridge marker and must not be treated as proof of Letta internal persistence semantics.
+      - A direct blind Letta API probe returned HTTP 403 and is inconclusive.
+      - Cross-agent continuity inside one provider is not equivalent to provider-independent continuity.
+      - TypeSafe/Jev is advisory and cannot be the R3 Canon authority.
+    failure_modes:
+      - inferring persistent memory from agent_id alone
+      - treating provider-local cross-agent recovery as provider independence
+      - promoting retrieved memory directly into canon
+      - making migration/RTO claims before measurement
+    canonical_short_path:
+      - keep agent IDs as replaceable worker bindings
+      - represent logical memory in an R3 Continuity Registry
+      - preserve hashes, versions and provenance
+      - run non-destructive Phase A cross-agent test
+      - run Phase B contamination test
+      - run Phase C provider portability test before claiming provider independence
+    preconditions:
+      - portable logical memory schema
+      - provider adapter with explicit bindings
+      - recovery copy independent of the active runtime/provider
+    verification:
+      - Phase A exact-match canary plus negative control
+      - Phase B false memory cannot promote
+      - Phase C recovery without Letta preserves content hash and provenance
+    cleanup:
+      - remove temporary probe credentials
+      - preserve failed/inconclusive evidence rather than rewriting it
+    provenance:
+      - docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md
+      - docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md
+      - docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json
