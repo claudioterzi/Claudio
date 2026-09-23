@@ -10,4 +10,4 @@ COPY r3/letta_blind_probe_once.py ./letta_blind_probe_once.py
 
 EXPOSE 8000
 CMD ["sh", "-c", "uvicorn typesafe_sister:app --host 0.0.0.0 --port ${PORT:-8000}"]
-# blind-probe-httpx-run-2026-09-23
+# blind-probe-httpx-run2-2026-09-23
