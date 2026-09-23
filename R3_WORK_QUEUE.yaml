@@ -1,6 +1,6 @@
-version: 4
+version: 5
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-09-21
+updated: 2026-09-23
 status: ACTIVE
 
 principles:
@@ -188,6 +188,15 @@ queue:
     objective: Turn Matter, reflective continuity and verified Knowledge into one falsifiable embodiment cycle without direct LLM motor control.
     evidence: draft PR #80; sdq1/body_mck_loop.py; tests/test_body_mck_loop.py; docs/R3_BODY_MCK_LOOP_2026-09-22.md; Test Runner 35693392689; Security Scan 35693392672
     experiment_status: SOFTWARE_HARNESS_VERIFIED. The candidate implements SENSE -> PERCEIVE -> REFLECT -> IMAGINE -> VERIFY -> BODY_ACTION_GATE -> ACT -> OBSERVE -> LEARN -> EVOLVE_CANDIDATE. It reuses the R3-007 postcondition contract and existing hash-chained ledger. Test Runner PASS includes 12 BODY MCK falsifier tests plus 8 R3-007 tests; Security Scan PASS. Verified properties include STOP veto, contradiction veto, no model-origin EDGE_REFLEX, independent verification for model-origin actions, no knowledge promotion without authoritative postcondition, state-mismatch rejection, safe-branch selection after an unsafe Scacchiera branch, and preservation of CORE identity across edge-model/BODY swaps. No physical hardware was actuated and no phenomenal-consciousness claim is made. PR #80 remains draft; Vercel status is pending.
+
+
+  - id: R3-028
+    title: Provider-neutral continuity registry and Letta adapter
+    state: DEVELOPMENT
+    priority: architecture
+    objective: Prove portable continuity across Letta workers and then across providers without allowing provider memory to become canonical authority.
+    evidence: docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md; docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md; docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json; r3/continuity_registry_seed.json
+    experiment_status: ntfy/RaffaelloCrypto delivery VERIFIED; Railway idle-resource reuse VERIFIED; receipt FIRST_SEEN/DUPLICATE_REPLAY VERIFIED; direct Letta blind probe INCONCLUSIVE due HTTP 403; external peer continuity OBSERVED but Letta causality UNVERIFIED. Phase A/B/C not yet run.
 
 consolidation_gate:
   required:
