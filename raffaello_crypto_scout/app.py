@@ -43,6 +43,16 @@ def _extract_assistant_text(payload):
                     parts.append(str(item.get("text", "")))
     return "\n".join(p for p in parts if p).strip()
 
+def inspect_sister_openapi():
+    url = os.getenv("SISTER_OPENAPI_URL", "https://r3-typesafe-sister-production.up.railway.app/openapi.json")
+    with urllib.request.urlopen(url, timeout=20) as resp:
+        data = json.loads(resp.read().decode("utf-8", errors="replace"))
+    paths = data.get("paths", {})
+    return {
+        "title": (data.get("info") or {}).get("title"),
+        "paths": {p: sorted(list((spec or {}).keys())) for p, spec in paths.items()}
+    }
+
 def blind_letta_probe():
     api_key = os.getenv("LETTA_API_KEY")
     agent_id = os.getenv("LETTA_AGENT_ID")
@@ -105,6 +115,11 @@ if __name__ == "__main__":
             print("startup ntfy test:", send_ntfy(), flush=True)
         except Exception as e:
             print("startup ntfy test failed:", repr(e), flush=True)
+    if os.getenv("DUMP_SISTER_OPENAPI", "0") == "1":
+        try:
+            print("SISTER_OPENAPI", json.dumps(inspect_sister_openapi(), ensure_ascii=False), flush=True)
+        except Exception as e:
+            print("SISTER_OPENAPI_FAILED", repr(e), flush=True)
     if os.getenv("RUN_LETTA_BLIND_PROBE", "0") == "1":
         try:
             probe = blind_letta_probe()
