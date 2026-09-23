@@ -94,13 +94,14 @@ class ReflexRuntime:
         if effective_risk >= destructive_threshold and not allow_destructive:
             return Outcome("BLOCCO", decision, False, f"risk={effective_risk:.2f}", signature)
 
+        if not execute_actions:
+            return Outcome("SCATTO", decision, False, "eligible", signature)
+
         now = self.clock()
         if signature == self.last_signature and (now - self.last_fire_at) < cooldown_seconds:
             return Outcome("FERMO", decision, False, "duplicate within cooldown", signature)
 
-        if not execute_actions or bool(self.config.get("dry_run", True)):
-            self.last_signature = signature
-            self.last_fire_at = now
+        if bool(self.config.get("dry_run", True)):
             return Outcome("SCATTO", decision, False, "dry-run", signature)
 
         result = self.executor(decision, self.config)
