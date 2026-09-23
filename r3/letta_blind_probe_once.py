@@ -12,22 +12,20 @@ PROMPT = (
 )
 
 def request_json(url, key, method="GET", body=None):
-    data = None if body is None else json.dumps(body).encode("utf-8")
-    req = urllib.request.Request(
-        url,
-        data=data,
-        method=method,
-        headers={
-            "Authorization": f"Bearer {key}",
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-    )
+    headers = {
+        "Authorization": f"Bearer {key}",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "User-Agent": "letta-client-python/1.0",
+    }
     try:
-        with urllib.request.urlopen(req, timeout=45) as resp:
-            return resp.status, json.loads(resp.read().decode("utf-8", "replace"))
-    except urllib.error.HTTPError as exc:
-        return exc.code, {"error": exc.read().decode("utf-8", "replace")[:1000]}
+        with httpx.Client(headers=headers, timeout=45.0, follow_redirects=False) as client:
+            resp = client.request(method, url, json=body)
+        try:
+            payload = resp.json()
+        except Exception:
+            payload = {"error": resp.text[:1000]}
+        return resp.status_code, payload
     except Exception as exc:
         return 0, {"error": repr(exc)}
 
