@@ -75,6 +75,33 @@ async def inspect_sister_mcp_tools():
                         out.append({"name": getattr(tool, "name", "?"), "description": getattr(tool, "description", "")})
                 return out
 
+def diagnose_letta_api():
+    api_key = os.getenv("LETTA_API_KEY", "")
+    if not api_key:
+        return {"ok": False, "error": "missing_key"}
+    req = urllib.request.Request(
+        "https://api.letta.com/v1/agents/",
+        method="GET",
+        headers={"Authorization": f"Bearer {api_key}", "Accept": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            raw = resp.read().decode("utf-8", errors="replace")
+            data = json.loads(raw)
+            # Return only non-secret identifiers/names for diagnosis.
+            items = data.get("items") if isinstance(data, dict) else data
+            agents = []
+            if isinstance(items, list):
+                for a in items[:20]:
+                    if isinstance(a, dict):
+                        agents.append({"id": a.get("id"), "name": a.get("name")})
+            return {"ok": True, "status": resp.status, "agents": agents}
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")[:500]
+        return {"ok": False, "status": e.code, "body": body}
+    except Exception as e:
+        return {"ok": False, "error": repr(e)}
+
 def blind_letta_probe():
     api_key = os.getenv("LETTA_API_KEY")
     agent_id = os.getenv("LETTA_AGENT_ID")
@@ -137,6 +164,11 @@ if __name__ == "__main__":
             print("startup ntfy test:", send_ntfy(), flush=True)
         except Exception as e:
             print("startup ntfy test failed:", repr(e), flush=True)
+    if os.getenv("DIAGNOSE_LETTA_API", "0") == "1":
+        try:
+            print("LETTA_API_DIAG", json.dumps(diagnose_letta_api(), ensure_ascii=False), flush=True)
+        except Exception as e:
+            print("LETTA_API_DIAG_FAILED", repr(e), flush=True)
     if os.getenv("DUMP_SISTER_MCP_TOOLS", "0") == "1":
         try:
             import asyncio
