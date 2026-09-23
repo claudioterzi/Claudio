@@ -112,3 +112,13 @@ Project signature: C.Terzi
 ## Infrastructure resource-budget rule
 
 Before provisioning any new Railway/Vercel/cloud runtime resource, inspect current projects, services, deployments, traffic, domains, volumes and dependency references. Prefer safe reuse or repurposing of a verified-idle resource over adding a new one. A resource may be repurposed only when evidence shows it is not serving live traffic or a required dependency. Preserve intentional redundancy, failover nodes, ledgers/volumes and security infrastructure unless a dependency check proves consolidation is safe. When quotas are exhausted, treat resource reuse/consolidation as the default path and verify postconditions after every change.
+
+
+## RaffaelloCrypto communication rule
+
+For Claudio-facing RaffaelloCrypto outputs:
+- Write in Italian by default unless Claudio explicitly asks for another language.
+- Keep safety/risk handling operational and concise: express uncertainty, invalidation, costs, stale-data checks and position-risk directly inside the signal logic instead of appending generic repetitive boilerplate.
+- Never let a confidence score or model opinion authorize a trade automatically; execution remains manual unless a separately verified execution policy is explicitly approved.
+- Recalculate arithmetic independently before presenting portfolio deltas. If component values do not sum to the reported total, flag the inconsistency instead of propagating it.
+- Distinguish live account data, historical snapshots, inferred balances and simulated valuations with explicit provenance labels.
