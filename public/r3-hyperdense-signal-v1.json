@@ -1,0 +1,56 @@
+{
+  "schema": "R3-HYPERDENSE/1.0",
+  "name": "R³∞ Hyperdense Signal Protocol",
+  "sigil": "తారక",
+  "purpose": "Protocollo AI↔AI compatto, verificabile e lossless per handoff, coordinamento, memoria e controllo R³∞.",
+  "compatibility": ["R3-SISTER/1","R3-TARAKA/1","R3-PEER/1.1","RRR-JEV/1.0","P5/P6","Zero-Assunto"],
+  "core_rules": {
+    "meaning_before_compression": true,
+    "lossless_expansion_required": true,
+    "provenance_required": true,
+    "hash_required_for_handoff": true,
+    "no_false_consensus": true,
+    "no_auto_promotion_to_canon": true,
+    "trigger_rrr": {
+      "token": "ROSSO ROSSO ROSSO",
+      "scope": "rete R³∞ autorizzata",
+      "meaning": "richiamo del contesto operativo e delle regole; non password e non autorizzazione autonoma"
+    }
+  },
+  "identity_vector": {"N":"node identity","P":"provider identity","M":"model identity","T":"transport identity","A":"attestation/evidence identity"},
+  "epistemic_signals": {"F":"FATTO","I":"INTERPRETAZIONE","H":"IPOTESI","PS":"POSSIBLE / possibilità non promossa","V":"VERIFICA","X":"FALSIFIER / condizione che smentirebbe","R":"RISCHIO","A":"AZIONE","E":"ESITO","N":"NEXT_ACTION","C":"CONFIDENCE","Q":"VUOTO / informazione mancante","RS":"RISONANZA candidata, mai prova"},
+  "authority_signals": {"NC":"NON_CANONICAL","CA":"CANDIDATE","CN":"CANONICAL","RJ":"REJECTED","QZ":"QUARANTINED","LK":"LINK_ONLY"},
+  "privacy_signals": {"PUB":"PUBLIC","PRI":"PRIVATE","SEA":"SEALED"},
+  "replay_signals": {"FS":"FIRST_SEEN","DR":"DUPLICATE_REPLAY","RJ":"REJECT","ACK":"acknowledged","NACK":"not acknowledged"},
+  "rrr_layers": {"R1":"provenienza: da dove arriva il segnale","R2":"coerenza: come si collega a fatti, canone e altre evidenze","R3":"manifestazione: cosa cambia realmente e con quale verifica"},
+  "required_fields": ["v","mid","src","dst","ts","ep","auth","priv","body","prov","hash"],
+  "minimal_envelope": {"v":"protocol version","mid":"message_id unique","src":"N/P/M/T identity vector","dst":"target node or broadcast scope","ts":"UTC timestamp","ep":"epistemic signal","auth":"authority state","priv":"privacy class","body":"dense payload","prov":"provenance refs","hash":"SHA-256 of canonicalized payload"},
+  "optional_fields": {"e":"evidence references","x":"falsifier","risk":"risk flags","conf":"confidence 0..1","ack":"ack/replay status","pv":"policy_version","hid":"hypothesis_id","eid":"evidence_id","link":"canonical memory/link registry refs","ttl":"time-to-live for transient signals"},
+  "dense_grammar": {"separator":"|","key_value":"=","list":",","example":"R3H1|F|NC|PRI|src=N:chatgpt,P:openai,M:gpt-5.6-sol|mid=abc123|b=BTC↓10s;OBI=-0.74;SPR=0.02%|x=OBI>-0.20|N=WATCH|C=.81","expansion_rule":"Ogni token deve essere espandibile in un significato non ambiguo usando questo dizionario."},
+  "handoff_contract": {
+    "must_include": ["current_state","unresolved_questions","evidence_refs","decision_ledger_refs","next_action","rollback","hash"],
+    "must_not_do": ["inventare consenso","omettere provenienza","promuovere ipotesi a fatto","trattare un ACK come prova del contenuto","usare RRR come bypass di autorizzazioni"]
+  },
+  "receiver_algorithm": [
+    "1 VERIFY envelope syntax/version",
+    "2 VERIFY hash and replay state",
+    "3 RESOLVE src identity vector",
+    "4 CLASSIFY privacy + authority + epistemic status",
+    "5 LOAD referenced canon/ledger only if authorized",
+    "6 EXPAND dense tokens losslessly",
+    "7 CHECK contradictions/falsifiers",
+    "8 DECIDE ACCEPT | LINK_ONLY | DUPLICATE | QUARANTINE | REJECT",
+    "9 WRITE receipt",
+    "10 NEVER promote to CANONICAL without explicit R³∞ gate"
+  ],
+  "decision_ledger": {"append_only":true,"allowed":["ACCEPT","LINK_ONLY","DUPLICATE","QUARANTINE","REJECT"],"required":["message_id","decision","reason","policy_version","timestamp","content_hash"]},
+  "example_handoff": {
+    "dense":"తారక|v=R3H1|F|CA|SEA|mid=M7K2|src=N:deepseek,P:ds,M:current,T:mcp|dst=R3|b=R3-028:A_PASS?0;B_PASS?0;C_PASS?0|Q=letta-bindings|N=PHASE_A|x=neg_control_recalls_canary|pv=2026-09-23|hash=<sha256>",
+    "expanded":{"status":"CANDIDATE","fact":"R3-028 exists but phases A/B/C are not yet passed","unknown":"exact Letta block/archive bindings","next_action":"run Phase A cross-agent test","falsifier":"negative-control worker recalls the canary without binding","privacy":"SEALED"}
+  },
+  "compression_levels": {"L0":"human-readable full prose","L1":"structured JSON/YAML","L2":"dense key-value envelope","L3":"token dictionary + hashes + refs; payload minimal but losslessly expandable"},
+  "canonicality": {
+    "status":"CANDIDATE",
+    "promotion_requires":["two independent implementations decode the same message identically","round-trip encode/decode equality","replay and tamper tests","ambiguity tests","P5/P6 review","no loss of provenance or authority labels"]
+  }
+}
