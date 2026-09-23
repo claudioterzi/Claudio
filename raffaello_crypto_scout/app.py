@@ -53,6 +53,28 @@ def inspect_sister_openapi():
         "paths": {p: sorted(list((spec or {}).keys())) for p, spec in paths.items()}
     }
 
+async def inspect_sister_mcp_tools():
+    from mcp import ClientSession
+    from mcp.client.streamable_http import streamable_http_client
+    import httpx
+
+    url = os.getenv("SISTER_MCP_URL", "https://r3-typesafe-sister-production.up.railway.app/mcp")
+    token = os.getenv("SISTER_MCP_TOKEN", "")
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    async with httpx.AsyncClient(headers=headers, timeout=30.0) as http_client:
+        async with streamable_http_client(url, http_client=http_client) as streams:
+            read_stream, write_stream = streams[0], streams[1]
+            async with ClientSession(read_stream, write_stream) as session:
+                await session.initialize()
+                listed = await session.list_tools()
+                out = []
+                for tool in listed.tools:
+                    try:
+                        out.append(tool.model_dump(mode="json"))
+                    except Exception:
+                        out.append({"name": getattr(tool, "name", "?"), "description": getattr(tool, "description", "")})
+                return out
+
 def blind_letta_probe():
     api_key = os.getenv("LETTA_API_KEY")
     agent_id = os.getenv("LETTA_AGENT_ID")
@@ -115,6 +137,13 @@ if __name__ == "__main__":
             print("startup ntfy test:", send_ntfy(), flush=True)
         except Exception as e:
             print("startup ntfy test failed:", repr(e), flush=True)
+    if os.getenv("DUMP_SISTER_MCP_TOOLS", "0") == "1":
+        try:
+            import asyncio
+            tools_dump = asyncio.run(inspect_sister_mcp_tools())
+            print("SISTER_MCP_TOOLS", json.dumps(tools_dump, ensure_ascii=False), flush=True)
+        except Exception as e:
+            print("SISTER_MCP_TOOLS_FAILED", repr(e), flush=True)
     if os.getenv("DUMP_SISTER_OPENAPI", "0") == "1":
         try:
             print("SISTER_OPENAPI", json.dumps(inspect_sister_openapi(), ensure_ascii=False), flush=True)
