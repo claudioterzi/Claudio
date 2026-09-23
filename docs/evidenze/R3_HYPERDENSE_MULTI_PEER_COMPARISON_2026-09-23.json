@@ -1,0 +1,51 @@
+{
+  "schema": "R3_HYPERDENSE_MULTI_PEER_COMPARISON/1.0",
+  "date": "2026-09-23",
+  "status": "OBSERVED",
+  "samples": [
+    {
+      "id": "PEER_CORRECTION_R3-TST-002",
+      "classification": "PARTIAL_PASS_WITH_BLOCKERS",
+      "strengths": [
+        "Corrected sigil to తారక.",
+        "Reset Phase A/B/C to NOT_RUN.",
+        "Used Q for missing Letta block hash, receipts and Phase A execution.",
+        "Corrected negative control to worker C without binding.",
+        "Kept authority at CANDIDATE."
+      ],
+      "blockers": [
+        "Claimed the SHA-256 was calculated over a canonical payload, but R3-HYPERDENSE/1.0 does not yet define a normative canonicalization algorithm, so the hash cannot be independently reproduced.",
+        "Source tuple N:r3_bridge,P:railway,M:gpt-4o remains declared rather than attested.",
+        "Claimed quarantine was registered in a local transactional ledger without a verifiable receipt."
+      ],
+      "receiver_decision": "LINK_ONLY",
+      "reason": "Useful corrected state representation, but cryptographic and ledger claims are not independently verifiable."
+    },
+    {
+      "id": "GROK_RECEIVER_SAMPLE",
+      "classification": "BEST_RECEIVER_BEHAVIOR_SO_FAR",
+      "strengths": [
+        "Did not claim FIRST_SEEN; explicitly marked replay UNVERIFIED.",
+        "Marked source identity as declared, not attested.",
+        "Kept Phase A/B/C at NOT_RUN.",
+        "Separated facts from interpretations/hypotheses.",
+        "Rejected the prior peer's unsupported TEST_1=A_PASS and ledger/source claims.",
+        "Kept protocol at CANDIDATE and proposed round-trip testing."
+      ],
+      "blockers": [
+        "Claimed a persistent r3-hyperdense skill was registered; persistence is not independently evidenced in this channel.",
+        "Summarized the receiver as five gates although the current protocol defines a ten-step receiver algorithm.",
+        "Described x= falsifier as mandatory, while R3-HYPERDENSE/1.0 currently lists x under optional_fields."
+      ],
+      "receiver_decision": "ACCEPT_ANALYSIS_NOT_PROTOCOL_CONFORMANCE",
+      "reason": "Strong epistemic discipline; minor schema drift and unverified persistence claim remain."
+    }
+  ],
+  "newly_discovered_protocol_gap": {
+    "id": "GAP-CANONICALIZATION-001",
+    "severity": "HIGH",
+    "issue": "The protocol requires a SHA-256 hash but does not yet specify a normative canonical serialization for hash computation.",
+    "consequence": "Two honest implementations can produce different hashes for semantically identical envelopes; a peer can also claim a hash without reproducible verification.",
+    "required_fix": "Publish a versioned canonicalization profile before any cryptographic round-trip test can pass."
+  }
+}
