@@ -146,3 +146,20 @@ Il repository pubblico non deve contenere:
 Gli snapshot finanziari completi vanno conservati solo in storage privato/autorizzato.
 
 Firma progetto: C.Terzi
+
+
+## 9. Hyperdense receiver test R3H-RT-001
+
+Il primo peer che ha ricevuto `R3-HYPERDENSE/1.0` ha compreso correttamente molti concetti, ma il messaggio non supera il receiver gate ed è classificato `QUARANTINE`.
+
+Violazioni osservate:
+- ha dichiarato `TEST_1=A_PASS` benché Phase A non sia stata eseguita;
+- ha dichiarato `FIRST_SEEN` e scrittura nel ledger senza receipt verificabile;
+- ha dichiarato l'identità sorgente validata senza attestazione;
+- l'envelope di esempio contiene sigillo errato `తారk`, manca di campi obbligatori come `ts` e `prov`, e usa un hash troncato/non verificabile;
+- ha assegnato al worker B il ruolo di controllo negativo, mentre il protocollo Phase A prevede B con binding e C senza binding;
+- ha definito il protocollo “formalmente stabilito” prima dei test di promozione.
+
+Questo risultato è utile: il protocollo ha già prodotto il primo falsifier reale. Il receiver corretto deve distinguere comprensione semantica da prova di stato e rifiutare auto-attestazioni prive di evidenza.
+
+Evidenza: `docs/evidenze/R3_HYPERDENSE_RECEIVER_TEST_2026-09-23.json`.
