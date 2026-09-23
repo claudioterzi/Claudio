@@ -1,5 +1,5 @@
 {
-  "fire_threshold": 0.80,
+  "fire_threshold": 0.8,
   "wait_threshold": 0.55,
   "destructive_threshold": 0.75,
   "min_chars": 6,
@@ -28,5 +28,8 @@
     "download": "~/Downloads",
     "documenti": "~/Documents",
     "desktop": "~/Desktop"
-  }
+  },
+  "speech_culture": "it-IT",
+  "voice_stability_hits": 2,
+  "voice_min_confidence": 0.2
 }
