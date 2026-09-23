@@ -4,7 +4,23 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-09-21
+> Ultimo aggiornamento: 2026-09-23
+
+
+## RaffaelloCrypto + Letta provider-neutral continuity — 2026-09-23
+
+Consolidato il canale operativo `raffaellocrypto`: delivery ntfy verificata; bridge Railway health 200 e publish ntfy HTTP 200. A causa del limite risorse Railway, invece di creare un nuovo servizio è stato riutilizzato `r3-external-test`, verificato come inattivo nel campione 24h (zero RX/TX, nessun dominio). I servizi di continuità/ridondanza esistenti non sono stati eliminati. La regola di budget infrastrutturale è ora in `AGENTS.md`: prima di fare provisioning, ispezionare e riusare/consolidare risorse realmente inattive senza sacrificare ridondanza intenzionale.
+
+Sul bridge R³∞/Letta sono stati osservati receipt reali con `FIRST_SEEN` e successivo `DUPLICATE_REPLAY`, più `canonical_memory_write:false`. Questo prova il controllo replay e il confine di promozione del bridge, non la semantica interna di Letta. Un probe diretto Letta ha ricevuto HTTP 403 ed è quindi inconcludente. Un peer AI ha recuperato dettagli storici non presenti nel prompt immediato, fornendo evidenza di continuità esterna; l'attribuzione causale specifica a Letta resta non verificata.
+
+Architettura candidata: `Agent ID = worker`; `Block/Archive ID = binding provider`; `R³∞ Continuity Registry = identità logica`; `Portable Snapshot = recovery indipendente`; `R³∞ Canon = autorità`; `Receipt Ledger = prova`; TypeSafe/Jev resta advisory. Solo il superamento dei test Phase A cross-agent, Phase B contamination e Phase C provider portability consentirà la promozione a continuità provider-independent.
+
+Documenti canonici candidati:
+- `docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md`
+- `docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md`
+- `docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json`
+- `r3/continuity_registry_seed.json`
+
 
 ## Sister Alignment / TĀRAKA — 2026-09-21
 
