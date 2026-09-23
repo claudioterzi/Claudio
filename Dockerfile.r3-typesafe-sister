@@ -6,6 +6,7 @@ COPY r3/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY r3/typesafe_sister.py ./typesafe_sister.py
+COPY r3/letta_blind_probe_once.py ./letta_blind_probe_once.py
 
 EXPOSE 8000
 CMD ["sh", "-c", "uvicorn typesafe_sister:app --host 0.0.0.0 --port ${PORT:-8000}"]
