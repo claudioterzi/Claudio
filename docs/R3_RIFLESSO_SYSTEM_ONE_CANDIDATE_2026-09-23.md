@@ -145,3 +145,53 @@ this module. Promotion must pass the existing R3-020 path and authoritative post
 checks.
 
 *Claudio Terzi — C.Terzi*
+
+
+## Candidate A.1 — Windows voice bridge
+
+Implemented on the same isolated branch:
+
+- `r3/reflex/windows_speech.ps1` uses the Windows `System.Speech` recognizer
+  and emits JSON lines for partial hypotheses and final recognitions;
+- `r3/reflex/voice.py` parses those events and feeds the existing
+  `ReflexRuntime`; no second decision engine is introduced;
+- a partial hypothesis must repeat with the same action signature for
+  `voice_stability_hits` consecutive events before execution is eligible;
+- a final recognition may execute immediately if all normal R3 gates pass;
+- low-confidence partials remain `FERMO`;
+- the normal closed catalog, destructive gate, dry-run and cooldown still apply.
+
+Default configuration:
+
+```json
+{
+  "speech_culture": "it-IT",
+  "voice_stability_hits": 2,
+  "voice_min_confidence": 0.20
+}
+```
+
+Windows launch, first in dry-run:
+
+```powershell
+python -m r3.reflex.voice --backend demo
+```
+
+After observing correct partial/final transcripts:
+
+```powershell
+python -m r3.reflex.voice --backend demo --execute
+```
+
+Live TypeSafe/Jev can replace the deterministic demo without changing the microphone
+or executor layers:
+
+```powershell
+$env:TYPESAFE_API_KEY="..."
+python -m r3.reflex.voice --backend typesafe --execute
+```
+
+**Evidence boundary:** hosted Linux CI can verify parser/controller logic but cannot
+prove that Claudio's Windows microphone, installed speech culture or physical desktop
+actions work. Those remain a Windows hardware smoke test with authoritative
+postcondition reads.
