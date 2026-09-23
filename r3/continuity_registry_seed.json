@@ -1,0 +1,29 @@
+{
+  "schema": "R3_CONTINUITY_REGISTRY/0.1",
+  "status": "CANDIDATE_SEED",
+  "continuity_id": "RAFFAELLO",
+  "authority_model": {
+    "provider_memory": "NON_AUTHORITATIVE_INPUT",
+    "r3_canon": "AUTHORITATIVE_AFTER_PROMOTION",
+    "typesafe_jev": "ADVISORY"
+  },
+  "memories": [],
+  "provider_bindings": {
+    "letta": {
+      "status": "CANDIDATE",
+      "worker_agent_ids_observed": [
+        "agent-e359c0b3-fbee-4a99-bf7a-d0441cf2f05e"
+      ],
+      "block_ids": [],
+      "archive_ids": [],
+      "note": "Do not infer continuity from agent_id alone."
+    }
+  },
+  "portable_checkpoints": [],
+  "promotion_rule": "NON_CANONICAL -> deterministic validation + provenance -> CANDIDATE -> explicit R3 promotion gate -> CANONICAL",
+  "test_state": {
+    "phase_a_cross_agent": "NOT_RUN",
+    "phase_b_contamination": "NOT_RUN",
+    "phase_c_provider_portability": "NOT_RUN"
+  }
+}
