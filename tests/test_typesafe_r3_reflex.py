@@ -6,6 +6,7 @@ from unittest.mock import Mock, patch
 from r3.reflex.decider import Decision, ReflexDecider
 from r3.reflex.executor import ExecutionResult
 from r3.reflex.runtime import ReflexRuntime
+from r3.reflex.voice import SpeechEvent, VoiceReflexController, parse_speech_event
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -185,6 +186,91 @@ class ReflexTypeSafeTests(unittest.TestCase):
         decision = ReflexDecider(self.config).decide("apri photoshop quantum")
         self.assertEqual(decision.provider, "typesafe_unavailable")
         self.assertEqual(decision.action, "none")
+
+
+class ReflexVoiceTests(unittest.TestCase):
+    def setUp(self):
+        self.config = dict(CONFIG)
+        self.config["dry_run"] = False
+        self.decision = Decision(
+            complete=0.99,
+            action="open_app",
+            target="blocco note",
+            destructive=0.0,
+            provider="stub",
+        )
+
+    def test_parses_windows_json_event(self):
+        event = parse_speech_event(
+            '{"type":"recognized","text":"apri il blocco note","confidence":0.91,"final":true}'
+        )
+        self.assertIsNotNone(event)
+        self.assertTrue(event.final)
+        self.assertEqual(event.text, "apri il blocco note")
+        self.assertAlmostEqual(event.confidence, 0.91)
+
+    def test_status_line_is_not_a_speech_event(self):
+        self.assertIsNone(
+            parse_speech_event('{"type":"status","status":"ready","active_culture":"it-IT"}')
+        )
+
+    def test_two_stable_partial_hypotheses_required_before_execution(self):
+        executor = Mock(return_value=ExecutionResult(True, "open_app", "opened"))
+        runtime = ReflexRuntime(
+            self.config,
+            decider=StubDecider(self.decision),
+            executor=executor,
+        )
+        controller = VoiceReflexController(
+            runtime,
+            stability_hits=2,
+            min_confidence=0.20,
+            execute_actions=True,
+        )
+        event = SpeechEvent("apri il blocco note", 0.80, False, "hypothesis")
+        first = controller.on_event(event)
+        second = controller.on_event(event)
+        self.assertEqual(first.stance, "ATTESA")
+        self.assertFalse(first.executed)
+        self.assertTrue(second.executed)
+        self.assertEqual(executor.call_count, 1)
+
+    def test_final_recognition_can_execute_without_second_partial(self):
+        executor = Mock(return_value=ExecutionResult(True, "open_app", "opened"))
+        runtime = ReflexRuntime(
+            self.config,
+            decider=StubDecider(self.decision),
+            executor=executor,
+        )
+        controller = VoiceReflexController(
+            runtime,
+            stability_hits=3,
+            execute_actions=True,
+        )
+        outcome = controller.on_event(
+            SpeechEvent("apri il blocco note", 0.85, True, "recognized")
+        )
+        self.assertTrue(outcome.executed)
+        executor.assert_called_once()
+
+    def test_low_confidence_partial_is_held(self):
+        executor = Mock(return_value=ExecutionResult(True, "open_app", "opened"))
+        runtime = ReflexRuntime(
+            self.config,
+            decider=StubDecider(self.decision),
+            executor=executor,
+        )
+        controller = VoiceReflexController(
+            runtime,
+            stability_hits=2,
+            min_confidence=0.50,
+            execute_actions=True,
+        )
+        outcome = controller.on_event(
+            SpeechEvent("apri il blocco note", 0.20, False, "hypothesis")
+        )
+        self.assertEqual(outcome.stance, "FERMO")
+        executor.assert_not_called()
 
 
 if __name__ == "__main__":
