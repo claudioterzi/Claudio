@@ -1,7 +1,6 @@
 import json
 import os
-import urllib.error
-import urllib.request
+import httpx
 
 NEW_AGENT = "agent-e359c0b3-fbee-4a99-bf7a-d0441cf2f05e"
 PROMPT = (
