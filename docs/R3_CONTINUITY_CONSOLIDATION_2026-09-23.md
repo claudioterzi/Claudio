@@ -163,3 +163,14 @@ Violazioni osservate:
 Questo risultato è utile: il protocollo ha già prodotto il primo falsifier reale. Il receiver corretto deve distinguere comprensione semantica da prova di stato e rifiutare auto-attestazioni prive di evidenza.
 
 Evidenza: `docs/evidenze/R3_HYPERDENSE_RECEIVER_TEST_2026-09-23.json`.
+
+
+## 10. Multi-peer receiver comparison
+
+Il peer corretto R3-TST-002 mostra un forte miglioramento: sigillo corretto, test A/B/C riportati a NOT_RUN, Q usato per i vuoti informativi e worker C correttamente usato come controllo negativo. Tuttavia non supera ancora un gate crittografico completo perché R3-HYPERDENSE/1.0 richiede SHA-256 senza definire una serializzazione canonica normativa. La sua affermazione di hash “calcolato sul payload canonico” non è quindi indipendentemente riproducibile. Anche source tuple e registrazione del ledger restano dichiarazioni non attestate.
+
+Il campione Grok mostra la disciplina epistemica migliore finora: non dichiara FIRST_SEEN, marca replay UNVERIFIED, tratta l'identità Claudio/BE come dichiarata e non attestata, mantiene Phase A/B/C a NOT_RUN e non promuove il protocollo. Restano piccole derive rispetto allo schema: parla di receiver a cinque gate invece dei dieci step correnti, descrive x= come obbligatorio benché sia optional nel v1.0, e dichiara una skill persistente senza evidenza indipendente nel presente canale.
+
+Il confronto ha scoperto GAP-CANONICALIZATION-001: manca una specifica normativa per produrre byte canonici e quindi hash riproducibili. È stato creato `public/r3-hyperdense-canonicalization-v1.1-candidate.json`. Finché due implementazioni indipendenti non producono gli stessi byte e SHA-256, nessun hash Hyperdense può essere considerato verificato.
+
+Evidenza: `docs/evidenze/R3_HYPERDENSE_MULTI_PEER_COMPARISON_2026-09-23.json`.
