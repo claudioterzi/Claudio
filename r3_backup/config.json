@@ -1,0 +1,20 @@
+{
+  "schema": "r3-universal-backup-config-v1",
+  "owners": [
+    "claudioterzi",
+    "raffaellocantatelli"
+  ],
+  "repositories": [
+    "claudioterzi/Claudio",
+    "raffaellocantatelli/Rosso-rosso-rosso",
+    "raffaellocantatelli/Raffaello-R3-Infinity"
+  ],
+  "discover_owner_repositories": true,
+  "include_wikis": true,
+  "include_lfs": true,
+  "export_github_metadata": true,
+  "retention": {
+    "immutable_snapshots": 30,
+    "keep_monthly": 12
+  }
+}
