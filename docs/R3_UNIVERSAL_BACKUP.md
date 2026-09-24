@@ -142,4 +142,4 @@ Recommended operational policy:
 
 ## Limits in v1
 
-GitHub does not reveal secret values, so secret values cannot be reconstructed from GitHub exports. Keep API credentials/recovery keys in a separate encrypted secret vault. External package/container registries and arbitrary externally hosted issue attachments need dedicated exporters in a later version.
+GitHub does not reveal secret values, so secret values cannot be reconstructed from GitHub exports. Keep API credentials and recovery codes outside the R3 historical archive in separate credential storage. External package/container registries and arbitrary externally hosted issue attachments need dedicated exporters in a later version.
