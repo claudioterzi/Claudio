@@ -1,0 +1,37 @@
+name: Casa Parigi ntfy
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "Notification title"
+        required: true
+        default: "Casa Parigi"
+      message:
+        description: "Notification body"
+        required: true
+      priority:
+        description: "ntfy priority: min, low, default, high, max"
+        required: false
+        default: "default"
+      tags:
+        description: "Comma-separated ntfy tags"
+        required: false
+        default: "house"
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish to ntfy Casa Parigi
+        env:
+          NTFY_TITLE: ${{ inputs.title }}
+          NTFY_MESSAGE: ${{ inputs.message }}
+          NTFY_PRIORITY: ${{ inputs.priority }}
+          NTFY_TAGS: ${{ inputs.tags }}
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error             -X POST "https://ntfy.sh/casaparigi"             -H "Title: ${NTFY_TITLE}"             -H "Priority: ${NTFY_PRIORITY}"             -H "Tags: ${NTFY_TAGS}"             --data-binary "${NTFY_MESSAGE}"
