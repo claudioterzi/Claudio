@@ -1,0 +1,31 @@
+name: R3 Universal Backup CI
+
+on:
+  push:
+    branches:
+      - r3-universal-backup-v1
+    paths:
+      - "r3_backup/**"
+      - "scripts/r3_backup_to_synology.ps1"
+      - "scripts/r3_nas_verify.sh"
+      - "tests/test_r3_backup_restore.py"
+      - ".github/workflows/r3-universal-backup-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile backup modules
+        run: python -m py_compile r3_backup/__init__.py r3_backup/universal.py r3_backup/restore.py r3_backup/history.py
+      - name: Run restore integrity test
+        run: python -m unittest tests.test_r3_backup_restore -v
+      - name: Validate JSON configuration
+        run: python -m json.tool r3_backup/config.json >/dev/null
