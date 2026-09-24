@@ -1,12 +1,12 @@
-"""R3 UNIVERSAL BACKUP/1 — real GitHub-to-NAS backup.
+"""R3 UNIVERSAL BACKUP/1 — GitHub-independent archive to Synology.
 
-This module intentionally uses ordinary Git, Git LFS and GitHub CLI primitives so
-the archive can be restored without this application. It never marks a backup
-VERIFIED unless the Git mirror passes fsck, a bundle verifies, copied files hash
-correctly on the destination, and a receipt is durably written.
+A model or a sync client never gets to self-certify persistence. Repository data
+is first verified locally (git fsck + git bundle verify + SHA-256). When the
+destination is a direct mounted NAS share, that same verification is NAS-resident.
+When the destination is a Synology Drive synchronized folder, the run remains
+LOCAL_VERIFIED_PENDING_NAS until the NAS-side verifier writes a NAS receipt.
 
-Secrets are never copied from GitHub because GitHub does not expose secret values.
-Only secret/variable names may be inventoried when GitHub CLI can read them.
+GitHub secret values are not exportable by GitHub and are never claimed as saved.
 """
 from __future__ import annotations
 
@@ -18,7 +18,6 @@ import shutil
 import subprocess
 import sys
 import tarfile
-import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,6 +27,7 @@ from r3_backup import ORIGIN, PROTOCOL
 
 DEFAULT_CONFIG = "r3_backup/config.json"
 DEFAULT_CACHE = Path.home() / ".r3-backup-cache"
+DESTINATION_KINDS = {"direct_nas", "synology_drive_sync"}
 
 
 class BackupError(RuntimeError):
@@ -85,17 +85,9 @@ def load_config(path: Path) -> dict[str, Any]:
     return data
 
 
-def _gh_json(args: list[str]) -> Any:
-    result = _run(["gh", *args])
-    text = result.stdout.strip()
-    return json.loads(text) if text else None
-
-
 def discover_repositories(config: dict[str, Any]) -> list[str]:
     repos = {str(x).strip() for x in config.get("repositories", []) if str(x).strip()}
-    if not config.get("discover_owner_repositories", True):
-        return sorted(repos)
-    if not _command_exists("gh"):
+    if not config.get("discover_owner_repositories", True) or not _command_exists("gh"):
         return sorted(repos)
 
     for owner in config.get("owners", []):
@@ -103,11 +95,7 @@ def discover_repositories(config: dict[str, Any]) -> list[str]:
         if not owner:
             continue
         result = _run(
-            [
-                "gh", "repo", "list", owner,
-                "--limit", "1000",
-                "--json", "nameWithOwner",
-            ],
+            ["gh", "repo", "list", owner, "--limit", "1000", "--json", "nameWithOwner"],
             check=False,
         )
         if result.returncode:
@@ -137,8 +125,6 @@ def update_mirror(full_name: str, mirror_dir: Path) -> None:
 
 
 def fetch_lfs(mirror_dir: Path) -> bool:
-    if not _command_exists("git"):
-        return False
     probe = _run(["git", "lfs", "version"], check=False)
     if probe.returncode:
         return False
@@ -203,9 +189,8 @@ def export_github_metadata(full_name: str, destination: Path) -> dict[str, str]:
     for name, suffix in METADATA_ENDPOINTS.items():
         target = destination / f"{name}.json"
         args = ["api"]
-        if suffix and ("per_page=100" in suffix):
-            args.append("--paginate")
-            args.extend(["--slurp"])
+        if suffix and "per_page=100" in suffix:
+            args.extend(["--paginate", "--slurp"])
         args.append(base + suffix)
         result = _run(["gh", *args], check=False)
         if result.returncode:
@@ -227,21 +212,6 @@ def export_github_metadata(full_name: str, destination: Path) -> dict[str, str]:
     return status
 
 
-def _copy_verified(src: Path, dst: Path) -> str:
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    temp = dst.with_suffix(dst.suffix + ".partial")
-    if temp.exists():
-        temp.unlink()
-    shutil.copy2(src, temp)
-    source_hash = sha256_file(src)
-    copied_hash = sha256_file(temp)
-    if source_hash != copied_hash:
-        temp.unlink(missing_ok=True)
-        raise BackupError(f"hash mismatch while copying {src.name}")
-    os.replace(temp, dst)
-    return source_hash
-
-
 def _write_json_verified(data: Any, destination: Path) -> str:
     destination.parent.mkdir(parents=True, exist_ok=True)
     payload = json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
@@ -251,7 +221,7 @@ def _write_json_verified(data: Any, destination: Path) -> str:
     actual = sha256_file(temp)
     if actual != expected:
         temp.unlink(missing_ok=True)
-        raise BackupError(f"manifest write verification failed: {destination}")
+        raise BackupError(f"write verification failed: {destination}")
     os.replace(temp, destination)
     return actual
 
@@ -264,8 +234,9 @@ def _iter_files(root: Path) -> Iterable[Path]:
 
 def _snapshot_manifest(snapshot_dir: Path) -> dict[str, Any]:
     files = []
+    excluded = {"MANIFEST.json", "SHA256SUMS", "NAS_RECEIPT.json"}
     for path in _iter_files(snapshot_dir):
-        if path.name == "MANIFEST.json":
+        if path.name in excluded:
             continue
         files.append({
             "path": path.relative_to(snapshot_dir).as_posix(),
@@ -276,14 +247,28 @@ def _snapshot_manifest(snapshot_dir: Path) -> dict[str, Any]:
         "protocol": PROTOCOL,
         "origin": ORIGIN,
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "status": "VERIFIED",
+        "integrity_status": "LOCAL_VERIFIED",
         "verification": [
             "git fsck --full passed for every saved repository mirror",
             "git bundle verify passed for every repository bundle",
-            "snapshot file hashes were computed from NAS-resident files",
+            "SHA-256 recorded for every archived snapshot file",
         ],
         "files": files,
     }
+
+
+def _write_sha256sums(snapshot_dir: Path) -> str:
+    excluded = {"SHA256SUMS", "NAS_RECEIPT.json"}
+    lines: list[str] = []
+    for path in _iter_files(snapshot_dir):
+        if path.name in excluded:
+            continue
+        rel = path.relative_to(snapshot_dir).as_posix()
+        lines.append(f"{sha256_file(path)}  {rel}")
+    payload = "\n".join(lines) + "\n"
+    target = snapshot_dir / "SHA256SUMS"
+    target.write_text(payload, encoding="utf-8", newline="\n")
+    return sha256_file(target)
 
 
 def backup_repo(
@@ -302,9 +287,7 @@ def backup_repo(
     update_mirror(full_name, mirror)
     result["git_fsck"] = "passed"
 
-    lfs_ok = False
-    if include_lfs:
-        lfs_ok = fetch_lfs(mirror)
+    lfs_ok = fetch_lfs(mirror) if include_lfs else False
     result["lfs_fetch"] = "passed" if lfs_ok else "not_present_or_unavailable"
 
     repo_dir = snapshot_dir / "repositories" / safe
@@ -333,9 +316,18 @@ def backup_repo(
     return result
 
 
-def backup_all(config_path: Path, nas_root: Path, cache_root: Path = DEFAULT_CACHE) -> dict[str, Any]:
+def backup_all(
+    config_path: Path,
+    nas_root: Path,
+    cache_root: Path = DEFAULT_CACHE,
+    *,
+    destination_kind: str = "synology_drive_sync",
+) -> dict[str, Any]:
     if not _command_exists("git"):
         raise BackupError("git is required")
+    if destination_kind not in DESTINATION_KINDS:
+        raise BackupError(f"invalid destination kind: {destination_kind}")
+
     config = load_config(config_path)
     repos = discover_repositories(config)
     if not repos:
@@ -352,7 +344,8 @@ def backup_all(config_path: Path, nas_root: Path, cache_root: Path = DEFAULT_CAC
         "origin": ORIGIN,
         "started_at": datetime.now(timezone.utc).isoformat(),
         "snapshot": stamp,
-        "nas_root": str(root),
+        "destination_kind": destination_kind,
+        "archive_root": str(root),
         "repositories_requested": repos,
         "repositories": [],
         "status": "RUNNING",
@@ -383,29 +376,35 @@ def backup_all(config_path: Path, nas_root: Path, cache_root: Path = DEFAULT_CAC
             run["repositories"].append(item)
 
         failed = [x for x in run["repositories"] if x.get("status") != "VERIFIED"]
-        run["status"] = "VERIFIED" if not failed else "PARTIAL"
+        if failed:
+            run["status"] = "PARTIAL"
+        elif destination_kind == "direct_nas":
+            run["status"] = "NAS_VERIFIED"
+        else:
+            run["status"] = "LOCAL_VERIFIED_PENDING_NAS"
         run["finished_at"] = datetime.now(timezone.utc).isoformat()
         _write_json_verified(run, snapshot_dir / "RUN.json")
 
         manifest = _snapshot_manifest(snapshot_dir)
-        if failed:
-            manifest["status"] = "PARTIAL"
         manifest_hash = _write_json_verified(manifest, snapshot_dir / "MANIFEST.json")
+        sha256sums_hash = _write_sha256sums(snapshot_dir)
 
         receipt = {
             "protocol": PROTOCOL,
             "snapshot": stamp,
             "status": run["status"],
+            "destination_kind": destination_kind,
             "manifest_sha256": manifest_hash,
+            "sha256sums_sha256": sha256sums_hash,
             "snapshot_path": str(snapshot_dir),
             "repository_count": len(run["repositories"]),
             "verified_repositories": sum(x.get("status") == "VERIFIED" for x in run["repositories"]),
             "failed_repositories": [x.get("repository") for x in failed],
+            "nas_confirmation_required": destination_kind == "synology_drive_sync" and not failed,
             "written_at": datetime.now(timezone.utc).isoformat(),
         }
         _write_json_verified(receipt, root / "LATEST.json")
-        receipt_file = root / "receipts" / f"{stamp}.json"
-        _write_json_verified(receipt, receipt_file)
+        _write_json_verified(receipt, root / "receipts" / f"{stamp}.json")
         return receipt
     except Exception:
         run["status"] = "FAILED"
@@ -418,22 +417,32 @@ def backup_all(config_path: Path, nas_root: Path, cache_root: Path = DEFAULT_CAC
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Back up R3 GitHub repositories to the NAS")
+    parser = argparse.ArgumentParser(description="Back up R3 GitHub repositories to Synology")
     parser.add_argument("--config", type=Path, default=Path(DEFAULT_CONFIG))
     parser.add_argument("--nas-root", type=Path, default=None)
     parser.add_argument("--cache-root", type=Path, default=DEFAULT_CACHE)
+    parser.add_argument(
+        "--destination-kind",
+        choices=sorted(DESTINATION_KINDS),
+        default=os.getenv("R3_BACKUP_DESTINATION_KIND", "synology_drive_sync"),
+    )
     args = parser.parse_args()
 
     raw_nas = str(args.nas_root) if args.nas_root else os.getenv("R3_NAS_ROOT", "").strip()
     if not raw_nas:
         print(json.dumps({
             "status": "NOT_CONFIGURED",
-            "required": "Set R3_NAS_ROOT to the mounted Synology backup share or pass --nas-root.",
+            "required": "Set R3_NAS_ROOT to a mounted NAS share or Synology Drive sync folder.",
         }), file=sys.stderr)
         return 2
 
     try:
-        receipt = backup_all(args.config, Path(raw_nas), args.cache_root)
+        receipt = backup_all(
+            args.config,
+            Path(raw_nas),
+            args.cache_root,
+            destination_kind=args.destination_kind,
+        )
     except Exception as exc:
         print(json.dumps({
             "protocol": PROTOCOL,
@@ -444,7 +453,7 @@ def main() -> int:
         return 1
 
     print(json.dumps(receipt, ensure_ascii=False, indent=2))
-    return 0 if receipt["status"] == "VERIFIED" else 3
+    return 3 if receipt["status"] == "PARTIAL" else 0
 
 
 if __name__ == "__main__":
