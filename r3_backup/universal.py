@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from r3_backup import ORIGIN, PROTOCOL
+from r3_backup.history import collect_history
 
 DEFAULT_CONFIG = "r3_backup/config.json"
 DEFAULT_CACHE = Path.home() / ".r3-backup-cache"
@@ -86,27 +87,44 @@ def load_config(path: Path) -> dict[str, Any]:
 
 
 def discover_repositories(config: dict[str, Any]) -> list[str]:
+    """Return all configured/public repos plus private candidates visible to gh."""
     repos = {str(x).strip() for x in config.get("repositories", []) if str(x).strip()}
-    if not config.get("discover_owner_repositories", True) or not _command_exists("gh"):
+    if not _command_exists("gh"):
         return sorted(repos)
 
-    for owner in config.get("owners", []):
-        owner = str(owner).strip()
-        if not owner:
+    if config.get("discover_owner_repositories", True):
+        for owner in config.get("owners", []):
+            owner = str(owner).strip()
+            if not owner:
+                continue
+            result = _run(
+                ["gh", "repo", "list", owner, "--limit", "1000", "--json", "nameWithOwner"],
+                check=False,
+            )
+            if result.returncode:
+                continue
+            try:
+                for item in json.loads(result.stdout):
+                    full = str(item.get("nameWithOwner") or "").strip()
+                    if full:
+                        repos.add(full)
+            except (ValueError, TypeError):
+                continue
+
+    # Known private/legacy names are attempted only when the active gh account
+    # can actually resolve them. A stale private name must not poison the run.
+    for full_name in config.get("private_candidates", []):
+        full_name = str(full_name).strip()
+        if not full_name:
             continue
-        result = _run(
-            ["gh", "repo", "list", owner, "--limit", "1000", "--json", "nameWithOwner"],
-            check=False,
-        )
-        if result.returncode:
-            continue
-        try:
-            for item in json.loads(result.stdout):
-                full = str(item.get("nameWithOwner") or "").strip()
-                if full:
-                    repos.add(full)
-        except (ValueError, TypeError):
-            continue
+        probe = _run(["gh", "repo", "view", full_name, "--json", "nameWithOwner"], check=False)
+        if probe.returncode == 0:
+            try:
+                resolved = str(json.loads(probe.stdout).get("nameWithOwner") or full_name).strip()
+            except (ValueError, TypeError):
+                resolved = full_name
+            if resolved:
+                repos.add(resolved)
     return sorted(repos)
 
 
@@ -210,6 +228,42 @@ def export_github_metadata(full_name: str, destination: Path) -> dict[str, str]:
         else:
             status[kind] = "unavailable"
     return status
+
+
+def export_github_accounts(config: dict[str, Any], destination: Path) -> dict[str, Any]:
+    """Preserve account/profile provenance without credentials or secret values."""
+    destination.mkdir(parents=True, exist_ok=True)
+    report: dict[str, Any] = {}
+    if not _command_exists("gh"):
+        return {"status": "gh_cli_unavailable"}
+
+    for owner in config.get("owners", []):
+        owner = str(owner).strip()
+        if not owner:
+            continue
+        owner_dir = destination / owner
+        owner_dir.mkdir(parents=True, exist_ok=True)
+        item: dict[str, str] = {}
+
+        profile = _run(["gh", "api", f"users/{owner}"], check=False)
+        if profile.returncode == 0:
+            (owner_dir / "profile.json").write_text(profile.stdout or "null\n", encoding="utf-8")
+            item["profile"] = "saved"
+        else:
+            item["profile"] = "unavailable"
+
+        repos = _run(
+            ["gh", "repo", "list", owner, "--limit", "1000", "--json",
+             "nameWithOwner,visibility,isPrivate,isArchived,url,updatedAt"],
+            check=False,
+        )
+        if repos.returncode == 0:
+            (owner_dir / "repositories.json").write_text(repos.stdout or "[]\n", encoding="utf-8")
+            item["repositories"] = "saved"
+        else:
+            item["repositories"] = "unavailable"
+        report[owner] = item
+    return report
 
 
 def _write_json_verified(data: Any, destination: Path) -> str:
@@ -339,6 +393,8 @@ def backup_all(
     snapshot_dir.mkdir(parents=True, exist_ok=False)
     cache_root.mkdir(parents=True, exist_ok=True)
 
+    account_export = export_github_accounts(config, snapshot_dir / "accounts")
+
     run: dict[str, Any] = {
         "protocol": PROTOCOL,
         "origin": ORIGIN,
@@ -347,6 +403,7 @@ def backup_all(
         "destination_kind": destination_kind,
         "archive_root": str(root),
         "repositories_requested": repos,
+        "github_accounts": account_export,
         "repositories": [],
         "status": "RUNNING",
         "limitations": [
@@ -374,6 +431,16 @@ def backup_all(
                     "detail": str(exc)[-2000:],
                 }
             run["repositories"].append(item)
+
+        history_cfg = config.get("history") if isinstance(config.get("history"), dict) else {}
+        if history_cfg.get("enabled", True):
+            run["history"] = collect_history(
+                Path.cwd(),
+                snapshot_dir,
+                history_inbox=Path(os.environ["R3_HISTORY_INBOX"]).expanduser()
+                if os.environ.get("R3_HISTORY_INBOX", "").strip()
+                else None,
+            )
 
         failed = [x for x in run["repositories"] if x.get("status") != "VERIFIED"]
         if failed:
