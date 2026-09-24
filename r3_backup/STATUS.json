@@ -1,0 +1,20 @@
+{
+  "protocol": "R3-UNIVERSAL-BACKUP/1",
+  "origin": "Claudio Terzi [CT-LGAI-001]",
+  "implementation_status": "IMPLEMENTED",
+  "deployment_status": "NOT_EXECUTED_ON_PHYSICAL_NAS",
+  "canonical_status": "CANDIDATE",
+  "branch": "r3-universal-backup-v1",
+  "facts": [
+    "Backup and offline restore code are committed on the candidate branch.",
+    "QuickConnect/DSM credentials are not stored in repository files.",
+    "Restore tamper-detection unit logic has been executed locally and passed.",
+    "No end-to-end backup receipt has yet been produced by the physical Synology NAS."
+  ],
+  "promotion_gate": [
+    "Run backup from the Dell against Synology Drive sync or a mounted NAS share.",
+    "Obtain NAS_RECEIPT.json with status NAS_VERIFIED from the Synology-side verifier.",
+    "Perform one offline restore from a NAS bundle and pass git fsck --full.",
+    "Only then promote the backup system to canonical/main."
+  ]
+}
