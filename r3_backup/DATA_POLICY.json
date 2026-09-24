@@ -1,0 +1,16 @@
+{
+  "protocol": "R3-DATA-PRESERVATION/1",
+  "origin": "Claudio Terzi [CT-LGAI-001]",
+  "encryption_enabled": false,
+  "history_storage": "PLAINTEXT_RECOVERABLE",
+  "primary_vault": "Synology NAS",
+  "rules": [
+    "R3 history and project backups are not encrypted.",
+    "Preservation and recoverability take priority over secrecy for historical/project artifacts.",
+    "Integrity is protected with SHA-256 manifests and restore verification.",
+    "Access is protected by NAS accounts, permissions and platform authentication, not by an R3 encryption key.",
+    "Passwords, API keys, recovery codes and other live credentials are excluded from the historical archive.",
+    "No backup may depend on a single secret key for recovery."
+  ],
+  "status": "CANDIDATE"
+}
