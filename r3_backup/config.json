@@ -1,18 +1,48 @@
 {
-  "schema": "r3-universal-backup-config-v1",
+  "schema": "r3-universal-backup-config-v2",
   "owners": [
     "claudioterzi",
-    "raffaellocantatelli"
+    "Claudioterzi82",
+    "raffaellocantatelli",
+    "Rosso-rosso-rosso"
   ],
   "repositories": [
     "claudioterzi/Claudio",
+    "claudioterzi/protocollo-rosso-bot",
+    "claudioterzi/sincronie-bot",
+
+    "Claudioterzi82/Queen-Raffaello",
+    "Claudioterzi82/Rosso-rosso-rosso",
+    "Claudioterzi82/protocollo-rosso-bot",
+    "Claudioterzi82/r3-posta",
+    "Claudioterzi82/Claudio",
+
+    "raffaellocantatelli/Claudioterzi",
     "raffaellocantatelli/Rosso-rosso-rosso",
-    "raffaellocantatelli/Raffaello-R3-Infinity"
+    "raffaellocantatelli/r3-posta",
+    "raffaellocantatelli/Claudio",
+    "raffaellocantatelli/UmbraTheater",
+    "raffaellocantatelli/qween-raffaello-",
+    "raffaellocantatelli/protocollo-rosso-bot",
+    "raffaellocantatelli/santuario-vr",
+    "raffaellocantatelli/R3-sistema-riflesso",
+    "raffaellocantatelli/r3-peer-console-review-0001",
+
+    "Rosso-rosso-rosso/protocollo-rosso-bot"
+  ],
+  "private_candidates": [
+    "Claudioterzi82/Raffaello-R3-Infinity",
+    "Claudioterzi82/Raffaello-SIA"
   ],
   "discover_owner_repositories": true,
   "include_wikis": true,
   "include_lfs": true,
   "export_github_metadata": true,
+  "history": {
+    "enabled": true,
+    "encryption": false,
+    "preserve_sources": true
+  },
   "retention": {
     "immutable_snapshots": 30,
     "keep_monthly": 12
