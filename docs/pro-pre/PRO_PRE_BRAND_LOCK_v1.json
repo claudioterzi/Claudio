@@ -1,0 +1,58 @@
+{
+  "spec_id": "PRO_PRE_BRAND_LOCK",
+  "version": "1.0.0",
+  "status": "LOCKED",
+  "effective_date": "2026-09-24",
+  "source_of_truth": "current live pro-pre.com visual identity",
+  "logo_rule": "Use the exact original Pro-pre logo asset from the site. Never redraw, reinterpret or replace it.",
+  "palette": {
+    "navy_primary": "#142B55",
+    "blue_primary": "#45A9E8",
+    "blue_light": "#EAF6FD",
+    "text_dark": "#263A55",
+    "promo_yellow": "#FFE96A",
+    "white": "#FFFFFF"
+  },
+  "style_rules": [
+    "Predominantly white background",
+    "Navy + light blue hierarchy",
+    "Rounded cards and buttons consistent with pro-pre.com",
+    "Clean sans-serif typography matching the site",
+    "VOISIN20 promo may use yellow pill/badge",
+    "Client-facing graphics must look like a direct extension of pro-pre.com"
+  ],
+  "forbidden": [
+    "dark teal/petrol green as primary brand color",
+    "gold luxury palette",
+    "black luxury background",
+    "beige/cream luxury identity",
+    "serif editorial identity",
+    "handwritten luxury-script branding",
+    "AI-redrawn logo",
+    "invented client data, dates, prices, addresses, slogans or claims"
+  ],
+  "generation_policy": {
+    "critical_text_and_logo": "Prefer deterministic HTML/CSS/document layout over generative image rendering.",
+    "image_generation": "Decorative/non-critical imagery only; never let image generation recreate the Pro-pre logo or critical text."
+  },
+  "preflight_gate": {
+    "name": "PRO_PRE_VISUAL_SAFE",
+    "checks": [
+      "original logo correct",
+      "palette matches Pro-pre",
+      "typography matches site",
+      "no forbidden style drift",
+      "client name verified",
+      "date/time verified",
+      "address verified if shown",
+      "price verified if shown",
+      "language verified",
+      "no invented claims",
+      "mobile readability checked"
+    ]
+  },
+  "change_control": {
+    "locked": true,
+    "rule": "Do not change the Pro-pre visual identity unless Claudio explicitly requests a brand change."
+  }
+}
