@@ -1,0 +1,67 @@
+{
+  "schema": "R3_CONTINUITY_LEDGER/1.0",
+  "purpose": "Prevent R3 work from becoming orphaned after creation. Every active component must have a resumable state, evidence pointer, next action, blocker, and completion criterion.",
+  "rules": {
+    "no_orphan_work": true,
+    "canonical_state_required": true,
+    "evidence_before_status": true,
+    "next_action_required_for_active_items": true,
+    "parked_items_require_resume_trigger": true,
+    "completed_items_require_receipt": true,
+    "sensitive_user_data_forbidden_in_public_ledger": true,
+    "external_mutation_requires_human_authorization": true
+  },
+  "lifecycle": [
+    "IDEA",
+    "CANDIDATE",
+    "ACTIVE",
+    "PARKED",
+    "BLOCKED",
+    "COMPLETE",
+    "ARCHIVED"
+  ],
+  "active": [
+    {
+      "id": "R3-JUDGE/1",
+      "branch": "r3-judge-v0.1",
+      "status": "CANDIDATE",
+      "origin": "Claudio Terzi [CT-LGAI-001]",
+      "purpose": "Local typed judgment layer under R3, inspired by Jev-compatible decision backends while preserving epistemic provenance and falsifiability.",
+      "evidence": {
+        "protocol": "docs/R3_JUDGE_PROTOCOL.md",
+        "implementation": [
+          "r3_judge/benchmark.py",
+          "r3_judge/gate.py",
+          "typesafe_sister/client.py"
+        ],
+        "tests": [
+          "tests/test_r3_judge.py",
+          "tests/test_r3_judge_client.py"
+        ],
+        "head_at_registration": "b35f1b239c93337a9d20e88f70fc5783154aba93"
+      },
+      "current_gap": [
+        "Branch is diverged from main and must be reconciled before adoption.",
+        "Ten-file admission benchmark has not been recorded as a passing adoption gate.",
+        "Target local hardware run has not been independently evidenced in this ledger."
+      ],
+      "next_actions": [
+        "Reconcile r3-judge-v0.1 with current main without dropping branch-only work.",
+        "Run unit tests after reconciliation.",
+        "Run the ten-file admission benchmark on the intended local backend and store the create-only report.",
+        "Promote to ACTIVE only if the gate passes and model/fingerprint match."
+      ],
+      "completion_criterion": "A reconciled branch with passing tests, a create-only admission report, matching model/fingerprint, and an explicit promotion receipt.",
+      "resume_trigger": "Any R3 decision/orchestration task needing a local second-judge path."
+    }
+  ],
+  "anti_starvation": {
+    "policy": "An ACTIVE or CANDIDATE item may not remain without a concrete next action. If work pauses, move it to PARKED with an explicit resume_trigger instead of silently abandoning it.",
+    "review_order": [
+      "BLOCKED",
+      "ACTIVE",
+      "CANDIDATE",
+      "PARKED"
+    ]
+  }
+}
