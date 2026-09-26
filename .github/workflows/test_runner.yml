@@ -73,3 +73,6 @@ jobs:
 
       - name: Test R3-019 controlled baseline
         run: python -m unittest tests.test_benchmark_controlled
+
+      - name: Test R3 canonical stack
+        run: python -m unittest tests.test_r3_canonical_stack
