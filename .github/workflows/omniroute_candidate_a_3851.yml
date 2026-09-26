@@ -1,0 +1,49 @@
+name: OmniRoute Candidate A 3.8.51
+
+on:
+  push:
+    branches:
+      - r3/omniroute-gateway-20260921
+    paths:
+      - 'scripts/omniroute_candidate_a_3851.sh'
+      - '.github/workflows/omniroute_candidate_a_3851.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-a:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout R3 harness
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Execute deterministic Candidate A
+        run: bash scripts/omniroute_candidate_a_3851.sh
+
+      - name: Upload Candidate A evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-omniroute-candidate-a-${{ github.sha }}
+          path: |
+            /tmp/r3-candidate-a.json
+            /tmp/p1.json
+            /tmp/p2.json
+            /tmp/pre-models.json
+            /tmp/pre-candidates.json
+            /tmp/post-models.json
+            /tmp/post-candidates.json
+            /tmp/pre-auto.json
+            /tmp/post-auto.json
+            /tmp/settings-before.json
+            /tmp/settings-after.json
+          if-no-files-found: ignore
+          retention-days: 30

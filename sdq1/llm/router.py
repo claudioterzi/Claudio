@@ -32,6 +32,7 @@ from .providers import (
     GrokProvider,
     MiniMaxProvider,
     OllamaProvider,
+    OmniRouteProvider,
     OpenAIProvider,
     PerplexityProvider,
     ProviderBase,
@@ -50,6 +51,7 @@ PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
     "grok":       (GrokProvider,       "grok-3"),
     "minimax":    (MiniMaxProvider,    "MiniMax-M3"),
     "ollama":     (OllamaProvider,     "llama3.2"),
+    "omniroute":  (OmniRouteProvider,  "auto"),
     "stub":       (StubProvider,       "stub-model"),
 }
 
