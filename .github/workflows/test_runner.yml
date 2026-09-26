@@ -73,3 +73,9 @@ jobs:
 
       - name: Test R3-019 controlled baseline
         run: python -m unittest tests.test_benchmark_controlled
+
+      - name: Test R3-007 verification harness
+        run: python -m unittest tests.test_verification_harness
+
+      - name: Test R3 BODY MCK loop
+        run: python -m unittest tests.test_body_mck_loop
