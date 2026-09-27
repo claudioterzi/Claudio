@@ -41,6 +41,7 @@ NODE_ID    = os.getenv("R3_NODE_ID", "node-a")
 SIGNING_KEY_HEX = os.getenv("R3_SIGNING_KEY_HEX", "")
 CONTROL_VERIFY_KEY_HEX = os.getenv("R3_CONTROL_VERIFY_KEY_HEX", "").strip()
 REQUIRE_RRR_ACTIVE = os.getenv("R3_REQUIRE_RRR_ACTIVE", "true").strip().lower() in {"1", "true", "yes"}
+REQUIRE_DURABLE_STATE = os.getenv("R3_REQUIRE_DURABLE_STATE", "true").strip().lower() in {"1", "true", "yes"}
 ALLOW_TEST_SHUTDOWN = os.getenv("R3_ALLOW_TEST_SHUTDOWN", "").strip().lower() in {"1", "true", "yes"}
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -281,14 +282,32 @@ def health():
     return {"status": "healthy", "node_id": NODE_ID}
 
 
+def _durable_state_detected() -> bool:
+    """Best-effort proof that DATA_DIR is a separate mounted filesystem.
+
+    R3 stores its signing key, SQLite state, protocol events and documents under
+    DATA_DIR. On Railway the production image uses /data; an attached volume at
+    that path is a mount point, while the container's ephemeral /data directory
+    is not. This is deliberately conservative: if durability cannot be detected,
+    readiness fails rather than claiming continuity.
+    """
+    try:
+        return os.path.ismount(DATA_DIR.resolve())
+    except OSError:
+        return False
+
+
 def _readiness_state() -> dict[str, Any]:
     latest = _rrr_latest()
     active = bool(latest and latest["action"] == "activate")
+    durable_state = _durable_state_detected()
     reasons: list[str] = []
     if not API_TOKEN or API_TOKEN == "changeme":
         reasons.append("api_token_not_configured")
     if not CONTROL_VERIFY_KEY_HEX:
         reasons.append("rrr_controller_key_not_configured")
+    if REQUIRE_DURABLE_STATE and not durable_state:
+        reasons.append("durable_state_not_detected")
     if REQUIRE_RRR_ACTIVE and not active:
         reasons.append("rrr_not_active")
     return {
@@ -298,6 +317,10 @@ def _readiness_state() -> dict[str, Any]:
         "policy_sha256": RRR_POLICY_SHA256,
         "rrr_active": active,
         "rrr_event_id": latest["event_id"] if latest else None,
+        "data_dir": str(DATA_DIR),
+        "durable_state_required": REQUIRE_DURABLE_STATE,
+        "durable_state_detected": durable_state,
+        "signing_key_source": "env" if SIGNING_KEY_HEX else "data_dir",
         "reasons": reasons,
     }
 
@@ -331,6 +354,9 @@ def status(authorization: Optional[str] = Header(None)):
         "rrr_policy_sha256": RRR_POLICY_SHA256,
         "rrr_event_id": rrr["event_id"] if rrr else None,
         "network_ready": readiness["ready"],
+        "durable_state_required": readiness["durable_state_required"],
+        "durable_state_detected": readiness["durable_state_detected"],
+        "signing_key_source": readiness["signing_key_source"],
         "readiness_reasons": readiness["reasons"],
         "ts":         datetime.now(timezone.utc).isoformat(),
     }

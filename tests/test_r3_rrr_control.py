@@ -166,6 +166,7 @@ class TestRRRControl(unittest.TestCase):
                 "R3_NODE_ID": "node-concurrent-test",
                 "R3_CONTROL_VERIFY_KEY_HEX": self.verify_hex,
                 "R3_SIGNING_KEY_HEX": nacl.signing.SigningKey.generate().encode().hex(),
+                "R3_REQUIRE_DURABLE_STATE": "false",
             }
             with patch.dict(os.environ, env, clear=False):
                 import r3.node as node
@@ -227,6 +228,7 @@ class TestRRRControl(unittest.TestCase):
                 "R3_NODE_ID": "node-test",
                 "R3_CONTROL_VERIFY_KEY_HEX": self.verify_hex,
                 "R3_SIGNING_KEY_HEX": nacl.signing.SigningKey.generate().encode().hex(),
+                "R3_REQUIRE_DURABLE_STATE": "false",
             }
             with patch.dict(os.environ, env, clear=False):
                 import r3.node as node
