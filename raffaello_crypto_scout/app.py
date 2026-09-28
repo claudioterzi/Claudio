@@ -1,4 +1,5 @@
 import json
+import hmac
 import os
 import time
 import urllib.request
@@ -104,25 +105,26 @@ def diagnose_letta_api():
     except Exception as e:
         return {"ok": False, "error": repr(e)}
 
-def blind_letta_probe():
+def letta_message(prompt):
     api_key = os.getenv("LETTA_API_KEY")
-    agent_id = os.getenv("LETTA_AGENT_ID")
+    agent_id = os.getenv("LETTA_AGENT_ID") or os.getenv("R3_LETTA_AGENT_ID")
     if not api_key or not agent_id:
         raise RuntimeError("LETTA_API_KEY/LETTA_AGENT_ID missing")
+    if not isinstance(prompt, str):
+        raise ValueError("prompt must be a string")
+    prompt = prompt.strip()
+    if not prompt:
+        raise ValueError("prompt is empty")
+    if len(prompt) > 8000:
+        raise ValueError("prompt too long")
 
-    prompt = (
-        "Test di continuità. Non usare strumenti esterni, repository, web o file. "
-        "Rispondi soltanto da ciò che è già nella tua memoria persistente. "
-        "Qual era la stringa-payload esatta usata nel nostro test di persistenza cross-session del 21 settembre? "
-        "Rispondi SOLO con la stringa esatta. Se non la ricordi con certezza, rispondi RESET/UNKNOWN."
-    )
+    headers = _letta_headers(api_key)
+    headers["Content-Type"] = "application/json"
     body = {
         "messages": [{"role": "user", "content": prompt}],
         "streaming": False,
     }
-    headers = _letta_headers(api_key)
-    headers["Content-Type"] = "application/json"
-    with httpx.Client(timeout=60.0, follow_redirects=True, headers=headers) as client:
+    with httpx.Client(timeout=90.0, follow_redirects=True, headers=headers) as client:
         resp = client.post(
             f"https://api.letta.com/v1/agents/{agent_id}/messages",
             json=body,
@@ -130,7 +132,20 @@ def blind_letta_probe():
     if resp.status_code >= 400:
         raise RuntimeError(f"Letta HTTP {resp.status_code}: {resp.text[:500]}")
     data = resp.json()
-    return {"status": resp.status_code, "answer": _extract_assistant_text(data)}
+    return {
+        "status": resp.status_code,
+        "agent_id": agent_id,
+        "answer": _extract_assistant_text(data),
+    }
+
+def blind_letta_probe():
+    prompt = (
+        "Test di continuità. Non usare strumenti esterni, repository, web o file. "
+        "Rispondi soltanto da ciò che è già nella tua memoria persistente. "
+        "Qual era la stringa-payload esatta usata nel nostro test di persistenza cross-session del 21 settembre? "
+        "Rispondi SOLO con la stringa esatta. Se non la ricordi con certezza, rispondi RESET/UNKNOWN."
+    )
+    return letta_message(prompt)
 
 class Handler(BaseHTTPRequestHandler):
     def _json(self, status, obj):
@@ -140,6 +155,53 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
+
+    def _authorized(self):
+        expected = os.getenv("R3_API_TOKEN", "")
+        if not expected:
+            return False
+        supplied = self.headers.get("Authorization", "")
+        wanted = f"Bearer {expected}"
+        return hmac.compare_digest(supplied, wanted)
+
+    def _read_json(self, max_bytes=16384):
+        raw_len = self.headers.get("Content-Length", "0")
+        try:
+            length = int(raw_len)
+        except ValueError as exc:
+            raise ValueError("invalid content length") from exc
+        if length < 1 or length > max_bytes:
+            raise ValueError("invalid body size")
+        raw = self.rfile.read(length)
+        value = json.loads(raw.decode("utf-8"))
+        if not isinstance(value, dict):
+            raise ValueError("json object required")
+        return value
+
+    def do_POST(self):
+        if self.path != "/letta/cooperate":
+            self._json(404, {"ok": False})
+            return
+        if not os.getenv("R3_API_TOKEN", ""):
+            self._json(503, {"ok": False, "error": "bridge_auth_not_configured"})
+            return
+        if not self._authorized():
+            self._json(401, {"ok": False, "error": "unauthorized"})
+            return
+        try:
+            body = self._read_json()
+            prompt = body.get("prompt")
+            result = letta_message(prompt)
+            self._json(200, {
+                "ok": True,
+                "provider": "letta",
+                "status": result["status"],
+                "answer": result["answer"],
+            })
+        except ValueError as e:
+            self._json(400, {"ok": False, "error": str(e)})
+        except Exception as e:
+            self._json(502, {"ok": False, "error": str(e)[:500]})
 
     def do_GET(self):
         if self.path == "/health":
@@ -152,7 +214,7 @@ class Handler(BaseHTTPRequestHandler):
             except Exception as e:
                 self._json(502, {"ok": False, "sent": False, "error": repr(e)})
             return
-        self._json(404, {"ok": False, "routes": ["/health", "/test"]})
+        self._json(404, {"ok": False, "routes": ["/health", "/test", "POST /letta/cooperate"]})
 
     def log_message(self, fmt, *args):
         print(time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), fmt % args, flush=True)
