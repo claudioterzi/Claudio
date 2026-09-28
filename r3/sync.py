@@ -195,6 +195,38 @@ def _push_rrr_event(dst_url: str, event: dict[str, Any]) -> dict[str, Any]:
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
+
+def _local_doc_ok(doc_id: str) -> bool:
+    path = DATA_DIR / "docs" / doc_id
+    try:
+        return path.exists() and _sha256(path.read_bytes()) == doc_id
+    except OSError:
+        return False
+
+
+def _repair_doc_from_peers(doc_id: str) -> str | None:
+    """Ripara un ID preciso dalla prima replica che dimostra lo stesso hash."""
+    for peer in PEER_URLS:
+        try:
+            data = _pull_doc(peer, doc_id)
+            actual = _sha256(data)
+            if actual != doc_id:
+                log.warning(
+                    "Replica non integra per %s da %s: got=%s",
+                    doc_id[:12],
+                    peer,
+                    actual[:12],
+                )
+                continue
+            _push_doc(LOCAL_URL, doc_id, data, doc_id)
+            if _local_doc_ok(doc_id):
+                log.info("Repair %s completato da %s", doc_id[:12], peer)
+                return peer
+            log.warning("Repair %s da %s non verificato localmente", doc_id[:12], peer)
+        except Exception as exc:
+            log.warning("Repair fallito %s da %s: %s", doc_id[:12], peer, exc)
+    return None
+
 # ---------------------------------------------------------------------------
 # RRR propagation
 # ---------------------------------------------------------------------------
@@ -294,7 +326,7 @@ def sync_with_peer(peer_url: str) -> None:
 # ---------------------------------------------------------------------------
 
 def integrity_check() -> list[str]:
-    """Controlla hash di ogni file su disco vs DB. Restituisce lista ID corrotti."""
+    """Verifica e prova a riparare; restituisce solo gli ID ancora non integri."""
     db_path = DATA_DIR / "r3.db"
     if not db_path.exists():
         log.warning("DB non trovato: %s", db_path)
@@ -307,26 +339,42 @@ def integrity_check() -> list[str]:
     ).fetchall()
     conn.close()
 
-    corrupted = []
+    corrupted: list[str] = []
     for row in rows:
-        path = DATA_DIR / "docs" / row["id"]
+        doc_id = row["id"]
+        path = DATA_DIR / "docs" / doc_id
         if not path.exists():
-            log.error("File mancante: id=%s", row["id"])
-            corrupted.append(row["id"])
+            log.error("File mancante: id=%s", doc_id)
+            corrupted.append(doc_id)
             continue
-        actual = _sha256(path.read_bytes())
-        if actual != row["sha256"]:
-            log.error("Corruzione rilevata: id=%s", row["id"])
-            corrupted.append(row["id"])
+        try:
+            actual = _sha256(path.read_bytes())
+        except OSError:
+            log.error("File non leggibile: id=%s", doc_id)
+            corrupted.append(doc_id)
+            continue
+        if actual != row["sha256"] or actual != doc_id:
+            log.error("Corruzione rilevata: id=%s", doc_id)
+            corrupted.append(doc_id)
 
-    if corrupted:
-        log.warning("%d documenti corrotti/mancanti → avvio sync da peer", len(corrupted))
-        for peer in PEER_URLS:
-            sync_with_peer(peer)
-    else:
+    if not corrupted:
         log.info("Integrity OK: %d documenti verificati", len(rows))
+        return []
 
-    return corrupted
+    log.warning(
+        "%d documenti corrotti/mancanti → repair mirato da replica sana",
+        len(corrupted),
+    )
+    for doc_id in corrupted:
+        _repair_doc_from_peers(doc_id)
+
+    remaining = [doc_id for doc_id in corrupted if not _local_doc_ok(doc_id)]
+    repaired = len(corrupted) - len(remaining)
+    if repaired:
+        log.info("Integrity repair: %d/%d recuperati", repaired, len(corrupted))
+    if remaining:
+        log.error("Integrity non risolta: %d documenti", len(remaining))
+    return remaining
 
 # ---------------------------------------------------------------------------
 # Entry point
