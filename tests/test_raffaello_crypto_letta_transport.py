@@ -80,6 +80,32 @@ class LettaTransportTests(unittest.TestCase):
         self.assertEqual(result["status"], 200)
         self.assertEqual(result["answer"], "CANARY-OK")
 
+    def test_generic_cooperation_message_is_bounded(self):
+        with self.assertRaises(ValueError):
+            app.letta_message("")
+        with self.assertRaises(ValueError):
+            app.letta_message("x" * 8001)
+
+    def test_generic_cooperation_message_uses_configured_agent(self):
+        response = _Response(
+            200,
+            {
+                "messages": [
+                    {
+                        "message_type": "assistant_message",
+                        "content": "COOP-OK",
+                    }
+                ]
+            },
+        )
+        env = {"LETTA_API_KEY": "secret", "LETTA_AGENT_ID": "agent-123"}
+        with patch.dict(os.environ, env, clear=False):
+            with patch.object(app.httpx, "Client", side_effect=lambda *a, **kw: _Client(response, *a, **kw)):
+                result = app.letta_message("Conferma cooperazione")
+        self.assertEqual(result["status"], 200)
+        self.assertEqual(result["agent_id"], "agent-123")
+        self.assertEqual(result["answer"], "COOP-OK")
+
 
 if __name__ == "__main__":
     unittest.main()
