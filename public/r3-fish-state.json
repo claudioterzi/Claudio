@@ -1,0 +1,118 @@
+{
+  "schema": "R3-FISH-STATE/0.1",
+  "project": "Raffaello",
+  "surface": "R3 Fish / RedFrag semantic console",
+  "generated_date": "2026-09-28",
+  "mode": "VERIFIED_CHECKPOINT_REPLAY",
+  "runtime": {
+    "fish": "TinyFish operator/browser layer",
+    "jev": "ADVISORY_ONLY",
+    "jev_live_status": "BLOCKED_NOT_REVERIFIED_THIS_CYCLE",
+    "destructive_actions": 0
+  },
+  "authorization": {
+    "granted_by": "Claudio",
+    "date": "2026-09-28",
+    "scope": [
+      "create prototype files",
+      "move/reorganize project files when necessary",
+      "run reversible verification"
+    ],
+    "exclusions": [
+      "irreversible deletion",
+      "purchases or spending",
+      "unrelated external changes"
+    ],
+    "principle": "reversible, evidence-gated, least necessary change"
+  },
+  "checkpoint": {
+    "result": "PASS_BOUNDED_POINTER_ONLY",
+    "source_documents": 7,
+    "logical_records": 4,
+    "context_candidate_reduction_pct": 42.9,
+    "positive_controls": "3/3",
+    "negative_controls": "2/2",
+    "physical_deletions": 0,
+    "claim": "Pointer-only compression preserved source documents and provenance in the verified sample."
+  },
+  "clusters": [
+    {
+      "id": "C01",
+      "name": "Anima di Raffaello",
+      "class": "DUPLICATE_SET",
+      "action": "LINK_TO_CANON",
+      "source_count": 2,
+      "status": "VERIFIED_CHECKPOINT"
+    },
+    {
+      "id": "C02",
+      "name": "Concretizzare Idee in Azioni Concrete",
+      "class": "DUPLICATE_SET",
+      "action": "LINK_TO_CANON",
+      "source_count": 2,
+      "status": "VERIFIED_CHECKPOINT"
+    },
+    {
+      "id": "C03",
+      "name": "Il cerchio R3",
+      "class": "DIVERGENT_SET",
+      "action": "KEEP_DISTINCT_POINTERS",
+      "source_count": 3,
+      "status": "VERIFIED_CHECKPOINT"
+    }
+  ],
+  "semantic_classes": [
+    "CORE",
+    "ACTIVE",
+    "EVIDENCE",
+    "REFERENCE",
+    "DUPLICATE",
+    "STALE",
+    "CONFLICT",
+    "NOISE"
+  ],
+  "invariants": [
+    "Jev does not delete sources.",
+    "Conflicts are preserved, not silently merged.",
+    "Every compressed record keeps provenance pointers.",
+    "No result is promoted to canonical state without new evidence."
+  ],
+  "events": [
+    {
+      "seq": 1,
+      "label": "LOAD",
+      "detail": "Verified checkpoint imported",
+      "state": "EVIDENCE"
+    },
+    {
+      "seq": 2,
+      "label": "SCAN",
+      "detail": "7 source documents represented",
+      "state": "ACTIVE"
+    },
+    {
+      "seq": 3,
+      "label": "DISTILL",
+      "detail": "7 source candidates mapped to 4 logical records",
+      "state": "DUPLICATE"
+    },
+    {
+      "seq": 4,
+      "label": "FALSIFY",
+      "detail": "3/3 positive + 2/2 negative controls passed",
+      "state": "EVIDENCE"
+    },
+    {
+      "seq": 5,
+      "label": "GUARD",
+      "detail": "0 physical deletions; provenance retained",
+      "state": "CORE"
+    },
+    {
+      "seq": 6,
+      "label": "JEV",
+      "detail": "Live Jev re-verification unavailable in this cycle; no score invented",
+      "state": "CONFLICT"
+    }
+  ]
+}
