@@ -23,5 +23,41 @@ assert receipt_digest == os.environ['R3_LETTA_RECEIPT_SHA256']
 open('/app/r3_letta_receipt_spine.py', 'wb').write(receipt_raw)
 PY
 
+# OMEE_JEV_ATOMIC_ONESHOT_BEGIN
+python - <<'PY'
+import json
+import os
+from typesafe_sister.client import system_one
+
+raw = os.getenv("R3_OMEE_JEV_ONESHOT_JSON", "").strip()
+if raw:
+    try:
+        payload = json.loads(raw)
+        for batch in payload.get("batches", []):
+            bid = str(batch.get("batch_id", "UNKNOWN"))
+            try:
+                result = system_one(
+                    batch.get("state", {}),
+                    batch.get("questions", {}),
+                    model="jev-latest",
+                    timeout=20,
+                )
+                print("OMEE_JEV_ATOMIC " + json.dumps({
+                    "batch_id": bid,
+                    "model": result.get("model"),
+                    "answers": result.get("answers"),
+                }, ensure_ascii=False, sort_keys=True), flush=True)
+            except Exception as exc:
+                print("OMEE_JEV_ATOMIC " + json.dumps({
+                    "batch_id": bid,
+                    "error": type(exc).__name__,
+                }, sort_keys=True), flush=True)
+    except Exception as exc:
+        print("OMEE_JEV_ATOMIC_INIT " + json.dumps({
+            "error": type(exc).__name__,
+        }, sort_keys=True), flush=True)
+PY
+# OMEE_JEV_ATOMIC_ONESHOT_END
+
 exec python -m uvicorn jev_gateway:app --host 0.0.0.0 --port "${PORT:-8000}"
 # deploy-one-runtime-2026-09-28
