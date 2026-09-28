@@ -46,6 +46,8 @@ Documenti/evidenze:
 - `docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json`
 - `r3/continuity_registry_seed.json`
 - `raffaello_crypto_scout/app.py`
+- `docs/R3_LETTA_COOPERATION_2026-09-28.md`
+- `docs/evidenze/R3_LETTA_COOPERATION_2026-09-28.json`
 
 
 ## Sister Alignment / TĀRAKA — 2026-09-21
