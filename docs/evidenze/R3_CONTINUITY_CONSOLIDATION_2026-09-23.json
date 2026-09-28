@@ -55,6 +55,36 @@
     {
       "id": "PROVIDER_INDEPENDENT_CONTINUITY",
       "status": "CANDIDATE"
+    },
+    {
+      "id": "LETTA_TRANSPORT_ROOT_CAUSE_2026_09_28",
+      "status": "VERIFIED",
+      "detail": "Historical HTTP 403 was reproduced as Cloudflare Error 1010 browser_signature_banned against urllib; this was transport-layer evidence, not proof of an invalid LETTA_API_KEY."
+    },
+    {
+      "id": "LETTA_AGENT_ENUMERATION_2026_09_28",
+      "status": "VERIFIED",
+      "detail": "After switching the active Railway bridge to httpx, GET /v1/agents/ returned HTTP 200 and enumerated two Letta agents without exposing secret values."
+    },
+    {
+      "id": "LETTA_MESSAGE_ROUNDTRIP_2026_09_28",
+      "status": "VERIFIED",
+      "detail": "POST /v1/agents/{agent_id}/messages returned HTTP 200 through the configured Letta worker."
+    },
+    {
+      "id": "LETTA_BLIND_MEMORY_RESPONSE_2026_09_28",
+      "status": "VERIFIED",
+      "detail": "Blind memory probe returned RESET/UNKNOWN and explicitly declined to invent the missing historical payload; this verifies response behavior, not persistent-memory continuity."
+    },
+    {
+      "id": "LETTA_COOPERATION_BRIDGE_2026_09_28",
+      "status": "VERIFIED",
+      "detail": "Authenticated POST /letta/cooperate with fixed configured agent and bounded prompt passed Test Runner and Security Scan, merged as PR #93 and deployed SUCCESS on Railway."
+    },
+    {
+      "id": "LETTA_PHASE_A_B_C",
+      "status": "NOT_RUN",
+      "detail": "Cross-agent shared-memory Phase A, contamination Phase B and provider-portability Phase C remain unexecuted; transport success must not be promoted to continuity success."
     }
   ],
   "architecture": {
@@ -65,11 +95,14 @@
     "portable_snapshot": "provider-independent recovery representation",
     "canon": "R3 authority under deterministic validation + P5/P6 + provenance",
     "receipt_ledger": "evidence/provenance",
-    "typesafe_jev": "advisory only"
+    "typesafe_jev": "advisory only",
+    "letta_cooperation_bridge": "authenticated advisory/data-only transport; fixed configured worker; no canonical-write authority",
+    "transport_state": "VERIFIED_HTTPX_ROUNDTRIP"
   },
   "tests_required": [
     "PHASE_A_CROSS_AGENT",
     "PHASE_B_CONTAMINATION",
     "PHASE_C_PROVIDER_PORTABILITY"
-  ]
+  ],
+  "updated": "2026-09-28"
 }
