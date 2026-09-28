@@ -2,7 +2,6 @@
 set -eu
 
 python /app/letta_blind_probe_once.py || true
-python -m pip install --no-cache-dir 'mcp==1.30.0'
 
 python - <<'PY'
 import base64
