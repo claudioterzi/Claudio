@@ -80,9 +80,25 @@ def _score(answer: Any, levels: list[str]) -> dict[str, Any]:
     score = float(value)
     if not 0 <= score <= len(levels) - 1:
         raise ValueError("score outside rubric")
+    raw_probs = answer.get("probabilities") or {}
+    probabilities = {}
+    if isinstance(raw_probs, dict):
+        for key, probability in raw_probs.items():
+            if str(key).isdigit() and 0 <= int(key) < len(levels):
+                probabilities[str(key)] = _probability(probability)
+    legend = answer.get("legend") or {}
+    safe_legend = {}
+    if isinstance(legend, dict):
+        safe_legend = {
+            str(key): str(value)[:500]
+            for key, value in legend.items()
+            if str(key).isdigit() and 0 <= int(key) < len(levels)
+        }
     return {
         "score": score,
         "confidence": _probability(answer.get("confidence", 0.0)),
+        "probabilities": probabilities,
+        "legend": safe_legend,
     }
 
 
@@ -210,6 +226,8 @@ def assess_redflag_state(
             "policy_version": R3_REDFLAG_POLICY_VERSION,
             "input_sha256": hashlib.sha256(canonical.encode("utf-8")).hexdigest(),
             "authority": "advisory_only",
+            "usage": result.get("usage") if isinstance(result.get("usage"), dict) else {},
+            "server_latency_ms": result.get("latency_ms"),
         }
     except TypeSafeNotConfigured:
         return {
