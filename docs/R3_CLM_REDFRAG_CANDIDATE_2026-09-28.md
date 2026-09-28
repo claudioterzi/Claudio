@@ -24,7 +24,7 @@ The existing typesafe_sister.client.system_one remains the sole entry point.
 
 There is no automatic Jev to local fallback after a configured Jev failure. Shadow mode cannot convert an upstream failure into an invented success.
 
-## RedFrag pilot
+## RedFrag pilot\n\nThe candidate now includes a real in-memory manifest pipeline that fingerprints supplied records, clusters logical records, applies the evidence-gated RedFrag plan, and emits active payload/pointer/quarantine maps with physical_deletions=0 and source_mutations=0.
 
 Semantic classes:
 
@@ -46,7 +46,7 @@ Direct evidence outranks model advice:
 
 ## Evidence produced in this candidate
 
-Local deterministic unit suite: **10/10 PASS**.
+Local deterministic unit suite: **14/14 PASS** after adding the read-only SOURCE -> FINGERPRINT -> CLUSTER -> PLAN -> CONTEXT MAP pipeline.
 
 RedFrag replay fixture: three 28/09 checkpoint clusters plus two negative controls, repeated 100 times per case:
 
