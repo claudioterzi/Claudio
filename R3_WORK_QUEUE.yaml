@@ -1,6 +1,6 @@
-version: 5
+version: 6
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-09-23
+updated: 2026-09-28
 status: ACTIVE
 
 principles:
@@ -195,8 +195,9 @@ queue:
     state: DEVELOPMENT
     priority: architecture
     objective: Prove portable continuity across Letta workers and then across providers without allowing provider memory to become canonical authority.
-    evidence: docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md; docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md; docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json; r3/continuity_registry_seed.json
-    experiment_status: ntfy/RaffaelloCrypto delivery VERIFIED; Railway idle-resource reuse VERIFIED; receipt FIRST_SEEN/DUPLICATE_REPLAY VERIFIED; direct Letta blind probe INCONCLUSIVE due HTTP 403; external peer continuity OBSERVED but Letta causality UNVERIFIED. Phase A/B/C not yet run.
+    evidence: docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md; docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md; docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json; r3/continuity_registry_seed.json; raffaello_crypto_scout/app.py; PR #92; PR #93; merge ffd5ad0cee2755ae001dfa95d4aa0b2fed81a4eb; merge 0726b226a127e2209bc5c5cd80fc91db3709d6e0
+    experiment_status: ntfy/RaffaelloCrypto delivery VERIFIED; Railway idle-resource reuse VERIFIED; receipt FIRST_SEEN/DUPLICATE_REPLAY VERIFIED. The historical 23/09 direct Letta probe returned HTTP 403, later diagnosed on 28/09 as Cloudflare Error 1010 browser_signature_banned against urllib rather than evidence of an invalid key. The transport was replaced with httpx and live verification then returned HTTP 200 for agent enumeration and HTTP 200 for a real message round-trip. The blind probe returned RESET/UNKNOWN rather than inventing missing memory. Authenticated POST /letta/cooperate is deployed on the existing bridge and passed Test Runner + Security Scan. Transport/cooperation are VERIFIED; cross-agent persistent-memory causality remains UNVERIFIED. Phase A/B/C are NOT_RUN.
+    current_blocker: Phase A shared-memory binding has not yet been executed with worker A/B plus negative-control worker C; transport success must not be promoted to continuity success.
 
 consolidation_gate:
   required:
