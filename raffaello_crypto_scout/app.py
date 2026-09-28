@@ -75,30 +75,31 @@ async def inspect_sister_mcp_tools():
                         out.append({"name": getattr(tool, "name", "?"), "description": getattr(tool, "description", "")})
                 return out
 
+def _letta_headers(api_key):
+    return {
+        "Authorization": f"Bearer {api_key}",
+        "Accept": "application/json",
+        "User-Agent": "R3-Raffaello/1.0",
+    }
+
 def diagnose_letta_api():
     api_key = os.getenv("LETTA_API_KEY", "")
     if not api_key:
         return {"ok": False, "error": "missing_key"}
-    req = urllib.request.Request(
-        "https://api.letta.com/v1/agents/",
-        method="GET",
-        headers={"Authorization": f"Bearer {api_key}", "Accept": "application/json"},
-    )
     try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            raw = resp.read().decode("utf-8", errors="replace")
-            data = json.loads(raw)
-            # Return only non-secret identifiers/names for diagnosis.
-            items = data.get("items") if isinstance(data, dict) else data
-            agents = []
-            if isinstance(items, list):
-                for a in items[:20]:
-                    if isinstance(a, dict):
-                        agents.append({"id": a.get("id"), "name": a.get("name")})
-            return {"ok": True, "status": resp.status, "agents": agents}
-    except urllib.error.HTTPError as e:
-        body = e.read().decode("utf-8", errors="replace")[:500]
-        return {"ok": False, "status": e.code, "body": body}
+        with httpx.Client(timeout=30.0, follow_redirects=True, headers=_letta_headers(api_key)) as client:
+            resp = client.get("https://api.letta.com/v1/agents/")
+        if resp.status_code >= 400:
+            return {"ok": False, "status": resp.status_code, "body": resp.text[:500]}
+        data = resp.json()
+        # Return only non-secret identifiers/names for diagnosis.
+        items = data.get("items") if isinstance(data, dict) else data
+        agents = []
+        if isinstance(items, list):
+            for a in items[:20]:
+                if isinstance(a, dict):
+                    agents.append({"id": a.get("id"), "name": a.get("name")})
+        return {"ok": True, "status": resp.status_code, "agents": agents}
     except Exception as e:
         return {"ok": False, "error": repr(e)}
 
@@ -114,24 +115,21 @@ def blind_letta_probe():
         "Qual era la stringa-payload esatta usata nel nostro test di persistenza cross-session del 21 settembre? "
         "Rispondi SOLO con la stringa esatta. Se non la ricordi con certezza, rispondi RESET/UNKNOWN."
     )
-    body = json.dumps({
+    body = {
         "messages": [{"role": "user", "content": prompt}],
-        "streaming": False
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        f"https://api.letta.com/v1/agents/{agent_id}/messages",
-        data=body,
-        method="POST",
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        },
-    )
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        raw = resp.read().decode("utf-8", errors="replace")
-        data = json.loads(raw)
-        return {"status": resp.status, "answer": _extract_assistant_text(data)}
+        "streaming": False,
+    }
+    headers = _letta_headers(api_key)
+    headers["Content-Type"] = "application/json"
+    with httpx.Client(timeout=60.0, follow_redirects=True, headers=headers) as client:
+        resp = client.post(
+            f"https://api.letta.com/v1/agents/{agent_id}/messages",
+            json=body,
+        )
+    if resp.status_code >= 400:
+        raise RuntimeError(f"Letta HTTP {resp.status_code}: {resp.text[:500]}")
+    data = resp.json()
+    return {"status": resp.status_code, "answer": _extract_assistant_text(data)}
 
 class Handler(BaseHTTPRequestHandler):
     def _json(self, status, obj):
