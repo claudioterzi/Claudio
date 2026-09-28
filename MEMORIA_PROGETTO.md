@@ -50,6 +50,27 @@ Documenti/evidenze:
 - `docs/evidenze/R3_LETTA_COOPERATION_2026-09-28.json`
 
 
+## Context pointer manifest — candidato 2026-09-28
+
+Dalla contro-analisi Jev/RedFrag è emersa come direzione prioritaria la riduzione del peso del contesto tramite puntatori, senza riscrivere la memoria canonica. È stato creato il branch `candidate/r3-context-pointer-manifest-20260928` e la Draft PR #91.
+
+Il candidato implementa:
+- `public/r3-context-pointer-manifest.json`;
+- `scripts/r3_context_pointer_manifest.py`;
+- `tests/test_r3_context_pointer_manifest.py`;
+- `docs/R3_CONTEXT_POINTER_MANIFEST_2026-09-28.md`.
+
+Regola: caricare prima un piccolo set di puntatori root e recuperare i documenti completi solo quando i tag del task lo richiedono. Il packet non incorpora i body delle fonti e non sostituisce autorità/provenienza della fonte puntata.
+
+Verifica già completata:
+- Test Runner #410: SUCCESS;
+- Security Scan #805: SUCCESS;
+- nessuna mutazione Railway/produzione per questo candidato.
+
+Stato: **DEVELOPMENT / DRAFT**, non ancora adottato. Manca il confronto A/B preregistrato tra caricamento corrente e pointer-first, misurando token, latenza, task success, missing-context, interventi umani ed errori di provenienza/autorità. La PR #91 resta draft finché non esiste evidenza equal-or-better sul risultato verificato.
+
+
+
 ## Sister Alignment / TĀRAKA — 2026-09-21
 
 Decisione di Claudio: tutte le IA partecipanti (“sorelle”) devono poter capire immediatamente il progetto e lavorare all’unisono **per procedura**, non per obbedienza o falso consenso. Creato `R3-SISTER/1` in `public/r3-sister-alignment.json`: ogni peer legge le priorità base, mantiene identità/provider/modello e provenienza, scompone i problemi complessi, lavora indipendentemente, conserva i dissensi materiali, applica P5/P6 e passa lo stato con `R3-TARAKA/1` (sigillo `తారక`). Il bootstrap pubblico ora pubblicizza entrambi i protocolli. Regola: stessa Essenza e procedura, giudizio indipendente; convergenza è segnale candidato, non prova.
