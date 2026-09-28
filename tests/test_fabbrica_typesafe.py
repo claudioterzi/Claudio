@@ -82,3 +82,44 @@ class TestTypeSafeAssessment(unittest.TestCase):
                 with self.assertRaises(HTTPException) as failure:
                     _check_token('Bearer changeme')
                 self.assertEqual(failure.exception.status_code, 503)
+
+    @unittest.skipUnless(importlib.util.find_spec('fastapi'), 'Optional sister-service dependency')
+    def test_rrr_policy_is_automatic_on_every_sister_judgment(self):
+        from fastapi import HTTPException
+        from typesafe_sister.app import (
+            JudgeRequest,
+            QuestionSpec,
+            RRR_FIXED_QUESTIONS,
+            RRR_POLICY_VERSION,
+            _apply_rrr_policy,
+            _wire_questions,
+            judge,
+        )
+
+        user_questions = _wire_questions({
+            'probe': QuestionSpec(type='noul', instructions='Is the proposed action supported?')
+        })
+        augmented = _apply_rrr_policy(user_questions)
+        self.assertIn(RRR_POLICY_VERSION, augmented['probe']['instructions'])
+        self.assertTrue(set(RRR_FIXED_QUESTIONS).issubset(augmented))
+
+        with self.assertRaises(HTTPException) as reserved:
+            _apply_rrr_policy({'rrr_gate': {'type': 'noul'}})
+        self.assertEqual(reserved.exception.status_code, 422)
+
+        request = JudgeRequest(
+            state={'claim': 'Three confirmations all came from the same source.'},
+            questions={'probe': QuestionSpec(type='noul', instructions='Is the claim independently confirmed?')},
+        )
+        with patch('typesafe_sister.app.R3_API_TOKEN', 'TEST_TOKEN'), \
+             patch('typesafe_sister.app._system_one',
+                   return_value={'model': 'jev-test', 'answers': {}}) as inference:
+            response = judge(request, 'Bearer TEST_TOKEN')
+
+        sent_questions = inference.call_args.args[1]
+        self.assertIn('rrr_p5_independence', sent_questions)
+        self.assertIn('rrr_p6_traceability', sent_questions)
+        self.assertIn('rrr_falsifiable', sent_questions)
+        self.assertIn('rrr_gate', sent_questions)
+        self.assertTrue(response['rrr']['active'])
+        self.assertEqual(response['rrr']['policy_version'], RRR_POLICY_VERSION)
