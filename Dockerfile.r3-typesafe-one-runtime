@@ -5,6 +5,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY r3/typesafe_sister.py ./typesafe_legacy.py
 COPY r3/jev_gateway.py ./jev_gateway.py
 COPY r3/letta_blind_probe_once.py ./letta_blind_probe_once.py
+COPY r3/start_one_runtime.sh ./start_one_runtime.sh
 COPY typesafe_sister ./typesafe_sister
 EXPOSE 8000
-CMD ["sh", "-c", "uvicorn jev_gateway:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "/app/start_one_runtime.sh"]
