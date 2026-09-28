@@ -67,6 +67,19 @@ Every project uses the same TypeSafe transport and centrally reviewable policy w
 - Send only bounded project state needed for the judgment; never send API keys, credentials or an entire private archive. Keep `TYPESAFE_API_KEY` server-side.
 - Validate representative cases and application behavior. Confidence describes the answer distribution, not truth or permission. Thresholds require local evidence and remain explicit in code.
 
+## Letta cooperation boundary
+
+R³∞ has a verified Letta API transport and an authenticated cooperation bridge in `raffaello_crypto_scout/app.py`.
+
+- Reuse the existing `httpx` transport and `POST /letta/cooperate`; do not reintroduce a parallel urllib-based Letta client.
+- Keep `LETTA_API_KEY` server-side. Never copy or echo it into prompts, repositories, logs, receipts or continuity artifacts.
+- The cooperation route uses the configured worker binding; callers must not choose arbitrary Letta agent IDs.
+- Bound prompts and pass only task-relevant context. Do not send an entire private archive merely because Letta can accept long context.
+- Letta output is `DATA_ONLY / ADVISORY` until R³∞ provenance, P5/P6 and promotion gates accept it.
+- HTTP 200, agent enumeration and fluent answers verify transport, not persistent-memory continuity.
+- Cross-agent continuity requires Phase A with A/B plus negative-control C; contamination resistance requires Phase B; provider independence requires Phase C.
+- Preserve historical transport failures as evidence. The 23/09 HTTP 403 was later resolved as Cloudflare Error 1010 against urllib, not erased from the record.
+
 ## Quantum Cube / Graphify structural layer
 
 For work involving cross-project relationships, code/document structure, IDEA OS, the Matrice dei Possibili or the Cubo Quantico, read `docs/R3_QUANTUM_CUBE_GRAPH_LAYER.md`.

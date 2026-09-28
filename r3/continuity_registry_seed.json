@@ -5,18 +5,32 @@
   "authority_model": {
     "provider_memory": "NON_AUTHORITATIVE_INPUT",
     "r3_canon": "AUTHORITATIVE_AFTER_PROMOTION",
-    "typesafe_jev": "ADVISORY"
+    "typesafe_jev": "ADVISORY",
+    "letta": "ADVISORY_NON_AUTHORITATIVE_INPUT"
   },
   "memories": [],
   "provider_bindings": {
     "letta": {
-      "status": "CANDIDATE",
+      "status": "TRANSPORT_VERIFIED_CONTINUITY_CANDIDATE",
       "worker_agent_ids_observed": [
         "agent-e359c0b3-fbee-4a99-bf7a-d0441cf2f05e"
       ],
       "block_ids": [],
       "archive_ids": [],
-      "note": "Do not infer continuity from agent_id alone."
+      "note": "Do not infer continuity from agent_id, agent count, HTTP 200, or a fluent answer. Phase A/B/C remain required.",
+      "transport": "httpx",
+      "transport_verified_at": "2026-09-28",
+      "agent_enumeration_http_status": 200,
+      "observed_agent_count": 2,
+      "message_roundtrip_http_status": 200,
+      "cooperation_bridge": {
+        "status": "DEPLOYED_VERIFIED",
+        "route": "POST /letta/cooperate",
+        "auth": "R3_API_TOKEN",
+        "agent_binding": "fixed_configured_worker",
+        "prompt_bound_chars": 8000,
+        "authority": "ADVISORY_DATA_ONLY"
+      }
     }
   },
   "portable_checkpoints": [],
@@ -25,5 +39,6 @@
     "phase_a_cross_agent": "NOT_RUN",
     "phase_b_contamination": "NOT_RUN",
     "phase_c_provider_portability": "NOT_RUN"
-  }
+  },
+  "updated": "2026-09-28"
 }

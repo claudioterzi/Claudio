@@ -1,6 +1,6 @@
 version: 1
 name: R3_REUSE_LESSONS
-updated: 2026-09-23
+updated: 2026-09-28
 status: ACTIVE
 purpose: >
   Persist operational lessons from repeated use of existing functions, tools,
@@ -345,11 +345,14 @@ lessons:
     verified_facts:
       - R3 receipt logs showed FIRST_SEEN and DUPLICATE_REPLAY behavior and canonical_memory_write=false.
       - canonical_memory_write is an R3 bridge marker and must not be treated as proof of Letta internal persistence semantics.
-      - A direct blind Letta API probe returned HTTP 403 and is inconclusive.
+      - The historical 23/09 direct Letta API probe returned HTTP 403; on 28/09 this was diagnosed as Cloudflare Error 1010 browser_signature_banned against urllib, not proof of an invalid API key.
+      - Replacing urllib with httpx produced live HTTP 200 agent enumeration and HTTP 200 message round-trip while keeping LETTA_API_KEY server-side.
+      - The blind message probe returned RESET/UNKNOWN rather than inventing a missing persisted payload.
+      - Authenticated POST /letta/cooperate is deployed on the existing Railway bridge, but transport success does not prove cross-agent or provider-independent memory continuity.
       - Cross-agent continuity inside one provider is not equivalent to provider-independent continuity.
       - TypeSafe/Jev is advisory and cannot be the R3 Canon authority.
     failure_modes:
-      - inferring persistent memory from agent_id alone
+      - inferring persistent memory from agent_id or successful HTTP transport alone
       - treating provider-local cross-agent recovery as provider independence
       - promoting retrieved memory directly into canon
       - making migration/RTO claims before measurement
@@ -375,6 +378,66 @@ lessons:
       - docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md
       - docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md
       - docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json
+
+
+  - id: RL-2026-09-28-LETTA-TRANSPORT-001
+    capability: letta_authenticated_cooperation_transport
+    status: VERIFIED
+    observed_at: 2026-09-28
+    trigger: Resolve the historical Letta HTTP 403 and establish reusable cooperation between R3 peers and the configured Letta worker
+    verified_facts:
+      - The active Railway runtime already exposed the correctly named LETTA_API_KEY variable; the stale spaced variable in an empty Railway project was not the active cause.
+      - The failing urllib request reached api.letta.com and returned Cloudflare Error 1010 browser_signature_banned before application-level authentication could be evaluated.
+      - Replacing urllib with the already-installed httpx client plus an explicit R3-Raffaello User-Agent returned HTTP 200 from GET /v1/agents/.
+      - The live account enumerated two Letta agents without exposing API-key material.
+      - POST /v1/agents/{agent_id}/messages returned HTTP 200 through the configured worker.
+      - The blind memory prompt returned RESET/UNKNOWN plus an explicit refusal to invent the missing payload.
+      - PR #92 passed Test Runner and Security Scan before merge.
+      - PR #93 added authenticated POST /letta/cooperate on the existing bridge; it passed Test Runner and Security Scan before merge and Railway deployed it successfully.
+      - The cooperation endpoint fixes the configured agent, bounds prompt length, requires R3_API_TOKEN and never returns LETTA_API_KEY.
+      - Transport verification is not evidence of cross-agent persistent memory or provider-independent continuity.
+    failure_modes:
+      - interpreting a Cloudflare transport 403 as proof that an API key is invalid
+      - repeatedly retrying the same urllib signature after Error 1010
+      - rotating or exposing a working secret before isolating transport-layer failure
+      - letting callers select arbitrary Letta agent IDs through the cooperation endpoint
+      - treating HTTP 200 or a fluent Letta answer as canonical-memory proof
+      - leaving one-shot diagnostic flags enabled after verification
+    canonical_short_path:
+      - verify the active runtime variable name without reading or echoing the secret value
+      - diagnose GET /v1/agents/ with httpx on the existing Railway service
+      - if Cloudflare Error 1010 appears, change HTTP transport before changing credentials
+      - verify real HTTP 200 agent enumeration
+      - verify one bounded message round-trip to the configured worker
+      - expose reusable cooperation only behind the existing R3_API_TOKEN with fixed agent binding and prompt bounds
+      - treat Letta output as advisory/data-only until R3 promotion gates pass
+      - disable diagnostic and blind-probe one-shot flags after the test
+    preconditions:
+      - LETTA_API_KEY present server-side on the active runtime
+      - configured LETTA_AGENT_ID or R3_LETTA_AGENT_ID
+      - httpx available in the bridge image
+      - R3_API_TOKEN configured before exposing cooperation
+    verification:
+      - GET /v1/agents/ returns HTTP 200
+      - one POST message round-trip returns HTTP 200
+      - Railway bridge health remains 200 and deployment reaches SUCCESS
+      - Test Runner passes
+      - Security Scan passes
+      - no plaintext API key appears in repository, response or durable logs
+    cleanup:
+      - set DIAGNOSE_LETTA_API=0
+      - set RUN_LETTA_BLIND_PROBE=0
+      - keep the obsolete spaced variable untouched unless its value can be safely migrated or the stale environment is explicitly retired
+      - preserve the historical 403 as negative evidence rather than rewriting history
+    provenance:
+      - PR #92
+      - merge ffd5ad0cee2755ae001dfa95d4aa0b2fed81a4eb
+      - commit a61fd4515f724cb9efb75d823b786af02573e1e3
+      - PR #93
+      - merge 0726b226a127e2209bc5c5cd80fc91db3709d6e0
+      - Railway deployment 480d7ef5-8e60-4cfe-910a-029096b0c1fc
+      - Railway deployment f954b425-ae46-4877-8822-8a6bcd9d98bb
+      - raffaello_crypto_scout/app.py
 
 
   - id: RL-2026-09-28-CONTROLLED-RISK-RECOVERABILITY-001
