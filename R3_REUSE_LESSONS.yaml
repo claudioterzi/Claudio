@@ -375,3 +375,53 @@ lessons:
       - docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md
       - docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md
       - docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json
+
+
+  - id: RL-2026-09-28-CONTROLLED-RISK-RECOVERABILITY-001
+    capability: risk_managed_operational_simplicity
+    status: CANONICAL
+    observed_at: 2026-09-28
+    trigger: Claudio explicitly rejected zero-risk perfection when it creates unnecessary complexity or blocks useful progress
+    verified_facts:
+      - Claudio's current operating preference is to optimize practical benefit, speed and simplicity under bounded risk rather than pursue zero-risk operation.
+      - A known risk may be accepted when the likely benefit is material and the system remains recoverable, observable and reversible.
+      - Security controls should reduce expected damage and recovery time without multiplying infrastructure, agents, credentials or approval gates without evidence of net benefit.
+      - Accepted risk must not be silently promoted to safety; it remains explicit and can be re-evaluated if new evidence changes the expected loss.
+      - Plaintext secrets must not be duplicated into repositories, lessons, logs or durable dossiers merely to preserve continuity.
+      - Railway RedFrag/Jev work on 2026-09-28 demonstrated the preferred pattern: bounded one-shot analysis, receipt, removal of temporary code, and sleep-on-demand for non-persistent services instead of permanent parallel infrastructure.
+    failure_modes:
+      - optimizing for theoretical zero risk while making the system slower, heavier or harder to recover
+      - adding parallel services, monitors, tokens or approval layers without measurable benefit
+      - treating accepted risk as proof that no compromise can happen
+      - deleting provenance or evidence merely to make a risk appear smaller
+      - persisting raw credentials in memory or documentation
+      - continuing expansion before removing temporary or redundant runtime weight
+    canonical_short_path:
+      - state the concrete benefit and concrete downside before adding a control
+      - prefer the simplest reversible action that preserves recoverability
+      - contain blast radius rather than attempting impossible perfect prevention
+      - preserve independent recovery paths and authoritative receipts
+      - keep temporary analysis one-shot and remove it after verification
+      - put idle non-persistent infrastructure to sleep when on-demand wake-up preserves the capability
+      - escalate security only when new evidence materially changes expected risk
+    preconditions:
+      - owner authorization for the risk-bearing action
+      - no irreversible third-party harm or prohibited action
+      - recovery path or rollback exists for material state
+      - evidence and provenance remain available
+    verification:
+      - useful capability remains available
+      - failure or compromise would be bounded and recoverable
+      - no unnecessary parallel infrastructure was introduced
+      - temporary components are removed or asleep after use
+      - no plaintext secret was copied into durable memory
+    cleanup:
+      - remove one-shot helpers after their receipt is captured
+      - sleep or decommission redundant runtime only when reversibility and dependency checks permit
+      - preserve receipts and lessons; do not erase history to manufacture a lower-risk appearance
+    provenance:
+      - direct owner instruction 2026-09-28
+      - R3_REDFRAG_RECEIPT 2026-09-28 JEV-REDFRAG-001
+      - Railway r3-typesafe-sister sleep-on-demand configuration
+      - R3_OPERATING_OBJECTIVE.md
+      - R3_AUTO_CYCLE.md
