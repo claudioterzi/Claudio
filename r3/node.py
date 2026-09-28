@@ -16,6 +16,7 @@ import os
 import secrets
 import sqlite3
 import threading
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
@@ -143,6 +144,19 @@ def _doc_path(doc_id: str) -> Path:
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _atomic_write_bytes(path: Path, data: bytes) -> None:
+    """Scrive nello stesso filesystem e sostituisce solo a contenuto completo."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{time.time_ns()}.tmp")
+    try:
+        tmp.write_bytes(data)
+        os.replace(tmp, path)
+    finally:
+        if tmp.exists():
+            tmp.unlink(missing_ok=True)
+
 
 def _sign(data: bytes) -> str:
     return SIGNING_KEY.sign(data).signature.hex()
@@ -416,8 +430,7 @@ async def upload(
     sig    = _sign(data)
 
     dest = _doc_path(doc_id)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(data)
+    _atomic_write_bytes(dest, data)
 
     with _conn() as db:
         if not db.execute("SELECT 1 FROM documents WHERE id = ?", (doc_id,)).fetchone():
@@ -444,6 +457,9 @@ def download(
     path = _doc_path(doc_id)
     if not path.exists():
         raise HTTPException(status_code=404, detail="Documento non trovato")
+    if _sha256(path.read_bytes()) != doc_id:
+        _audit("integrity_block", f"id={doc_id} reason=content_hash_mismatch")
+        raise HTTPException(status_code=409, detail="Documento presente ma non integro")
     with _conn() as db:
         row = db.execute(
             "SELECT filename FROM documents WHERE id = ? AND deleted = 0", (doc_id,)
@@ -490,29 +506,66 @@ async def sync_receive(
     authorization: Optional[str] = Header(None),
 ):
     _check_token(authorization)
-    data        = await file.read()
+    data = await file.read()
     actual_hash = _sha256(data)
-
     dest = _doc_path(actual_hash)
+
+    repaired = False
     if dest.exists():
-        return {"status": "already_exists", "id": actual_hash}
+        try:
+            repaired = _sha256(dest.read_bytes()) != actual_hash
+        except OSError:
+            repaired = True
+        if not repaired:
+            # Il file può esistere anche se il DB è stato ricostruito: riallinea
+            # i metadati senza duplicare il contenuto.
+            sig = _sign(data)
+            with _conn() as db:
+                db.execute(
+                    """INSERT OR IGNORE INTO documents
+                       (id, filename, sha256, signature, size, uploaded_at, deleted)
+                       VALUES (?, ?, ?, ?, ?, ?, 0)""",
+                    (
+                        actual_hash,
+                        file.filename or actual_hash,
+                        actual_hash,
+                        sig,
+                        len(data),
+                        datetime.now(timezone.utc).isoformat(),
+                    ),
+                )
+            return {"status": "already_exists", "id": actual_hash}
 
     sig = _sign(data)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(data)
+    _atomic_write_bytes(dest, data)
+    now = datetime.now(timezone.utc).isoformat()
 
     with _conn() as db:
         db.execute(
-            """INSERT OR IGNORE INTO documents
+            """INSERT INTO documents
                (id, filename, sha256, signature, size, uploaded_at, deleted)
-               VALUES (?, ?, ?, ?, ?, ?, 0)""",
-            (actual_hash, file.filename or actual_hash, actual_hash, sig,
-             len(data), datetime.now(timezone.utc).isoformat()),
+               VALUES (?, ?, ?, ?, ?, ?, 0)
+               ON CONFLICT(id) DO UPDATE SET
+                 filename=excluded.filename,
+                 sha256=excluded.sha256,
+                 signature=excluded.signature,
+                 size=excluded.size,
+                 uploaded_at=excluded.uploaded_at,
+                 deleted=0""",
+            (
+                actual_hash,
+                file.filename or actual_hash,
+                actual_hash,
+                sig,
+                len(data),
+                now,
+            ),
         )
 
-    _audit("sync_receive", f"id={actual_hash} size={len(data)}")
-    log.info("Sync received  id=%s", actual_hash)
-    return {"status": "stored", "id": actual_hash}
+    event = "sync_repair" if repaired else "sync_receive"
+    _audit(event, f"id={actual_hash} size={len(data)}")
+    log.info("%s  id=%s", "Sync repaired" if repaired else "Sync received", actual_hash)
+    return {"status": "repaired" if repaired else "stored", "id": actual_hash}
 
 
 # ---------------------------------------------------------------------------
