@@ -24,3 +24,4 @@ open('/app/r3_letta_receipt_spine.py', 'wb').write(receipt_raw)
 PY
 
 exec python -m uvicorn jev_gateway:app --host 0.0.0.0 --port "${PORT:-8000}"
+# deploy-one-runtime-2026-09-28
