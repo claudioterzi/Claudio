@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 import os
 import platform
 import statistics
@@ -19,10 +18,10 @@ from pathlib import Path
 from typing import Any
 from urllib.request import urlopen
 
-from typesafe_sister.redflag import assess_redflag_state
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+
+from typesafe_sister.redflag import assess_redflag_state
 
 
 def _get_json(url: str) -> dict[str, Any]:
