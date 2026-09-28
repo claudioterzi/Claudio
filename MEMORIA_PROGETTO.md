@@ -4,22 +4,48 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-09-23
+> Ultimo aggiornamento: 2026-09-28
 
 
-## RaffaelloCrypto + Letta provider-neutral continuity — 2026-09-23
+## RaffaelloCrypto + Letta provider-neutral continuity — aggiornamento 2026-09-28
 
-Consolidato il canale operativo `raffaellocrypto`: delivery ntfy verificata; bridge Railway health 200 e publish ntfy HTTP 200. A causa del limite risorse Railway, invece di creare un nuovo servizio è stato riutilizzato `r3-external-test`, verificato come inattivo nel campione 24h (zero RX/TX, nessun dominio). I servizi di continuità/ridondanza esistenti non sono stati eliminati. La regola di budget infrastrutturale è ora in `AGENTS.md`: prima di fare provisioning, ispezionare e riusare/consolidare risorse realmente inattive senza sacrificare ridondanza intenzionale.
+Il canale operativo `raffaellocrypto` resta consolidato: delivery ntfy verificata, servizio Railway `r3-external-test` riutilizzato senza creare nuova infrastruttura, health 200 e deployment SUCCESS. I servizi di continuità/ridondanza esistenti sono stati preservati.
 
-Sul bridge R³∞/Letta sono stati osservati receipt reali con `FIRST_SEEN` e successivo `DUPLICATE_REPLAY`, più `canonical_memory_write:false`. Questo prova il controllo replay e il confine di promozione del bridge, non la semantica interna di Letta. Un probe diretto Letta ha ricevuto HTTP 403 ed è quindi inconcludente. Un peer AI ha recuperato dettagli storici non presenti nel prompt immediato, fornendo evidenza di continuità esterna; l'attribuzione causale specifica a Letta resta non verificata.
+Sul bridge R³∞/Letta restano validi i receipt reali `FIRST_SEEN`, `DUPLICATE_REPLAY` e `canonical_memory_write:false`: provano replay protection e separazione tra ricezione e promozione canonica, non la semantica interna della memoria Letta.
 
-Architettura candidata: `Agent ID = worker`; `Block/Archive ID = binding provider`; `R³∞ Continuity Registry = identità logica`; `Portable Snapshot = recovery indipendente`; `R³∞ Canon = autorità`; `Receipt Ledger = prova`; TypeSafe/Jev resta advisory. Solo il superamento dei test Phase A cross-agent, Phase B contamination e Phase C provider portability consentirà la promozione a continuità provider-independent.
+Il precedente probe diretto del 23/09, che aveva restituito HTTP 403, è stato riesaminato il 28/09. Diagnosi live Railway: il 403 proveniva da Cloudflare `Error 1010 / browser_signature_banned` contro la firma HTTP di `urllib`, non da una prova di chiave invalida. Il trasporto Letta è stato sostituito con `httpx` mantenendo `LETTA_API_KEY` server-side. Verifiche live successive:
+- `GET https://api.letta.com/v1/agents/` -> HTTP 200;
+- due agenti Letta reali enumerati senza esporre credenziali;
+- invio messaggio al worker configurato -> HTTP 200;
+- blind memory probe -> risposta `RESET/UNKNOWN` con rifiuto di inventare il payload assente;
+- ntfy del blind probe -> HTTP 200;
+- Railway deployment del bridge -> SUCCESS;
+- Test Runner e Security Scan -> SUCCESS prima delle promozioni.
 
-Documenti canonici candidati:
+Sono stati promossi su `main`:
+- PR #92 / merge `ffd5ad0cee2755ae001dfa95d4aa0b2fed81a4eb`: trasporto Letta via `httpx`;
+- fix import `a61fd4515f724cb9efb75d823b786af02573e1e3`;
+- PR #93 / merge `0726b226a127e2209bc5c5cd80fc91db3709d6e0`: bridge cooperativo autenticato `POST /letta/cooperate`.
+
+Il bridge cooperativo usa il worker Letta configurato, limita il prompt, richiede `R3_API_TOKEN`, non espone `LETTA_API_KEY`, non permette al caller di scegliere arbitrariamente l'agent ID e tratta la risposta Letta come input/advisory. Nessuna risposta Letta può auto-promuoversi a R³∞ Canon o autorizzare effetti esterni.
+
+Stato epistemico aggiornato:
+- trasporto API Letta: **VERIFIED**;
+- autenticazione/visibilità agenti Letta nel runtime Railway: **VERIFIED**;
+- round-trip messaggio Letta: **VERIFIED**;
+- bridge cooperativo R³ -> Letta deployato: **VERIFIED STRUCTURAL + DEPLOYMENT**;
+- contenuto recuperato da Letta come memoria cross-agent persistente: **NON ANCORA PROVATO**;
+- Phase A cross-agent, Phase B contamination e Phase C provider portability: **NOT RUN**;
+- continuità provider-independent: **CANDIDATE**.
+
+Architettura resta: `Agent ID = worker`; `Block/Archive ID = binding provider`; `R³∞ Continuity Registry = identità logica`; `Portable Snapshot = recovery indipendente`; `R³∞ Canon = autorità`; `Receipt Ledger = prova`; TypeSafe/Jev e Letta restano advisory/data sources, non autorità canonica.
+
+Documenti/evidenze:
 - `docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md`
 - `docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md`
 - `docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json`
 - `r3/continuity_registry_seed.json`
+- `raffaello_crypto_scout/app.py`
 
 
 ## Sister Alignment / TĀRAKA — 2026-09-21
