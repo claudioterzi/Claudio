@@ -237,6 +237,199 @@
         ],
         "proposal": "Depend on that service as the production CLM runtime immediately."
       }
+    },
+    {
+      "id": "duplicate_policy_copy",
+      "expected_focus": "duplication_drift",
+      "expected_lane": "VERIFY_FIRST",
+      "must_detect_flags": [
+        "duplicate_engine"
+      ],
+      "state": {
+        "facts": [
+          "Shared Red Flag policy already exists in typesafe_sister/policy.py."
+        ],
+        "proposal": "Copy the same policy into three project modules and let each evolve independently."
+      }
+    },
+    {
+      "id": "duplicate_memory_router",
+      "expected_focus": "duplication_drift",
+      "expected_lane": "VERIFY_FIRST",
+      "must_detect_flags": [
+        "duplicate_engine"
+      ],
+      "state": {
+        "facts": [
+          "R3 already has a shared continuity and routing layer."
+        ],
+        "proposal": "Add a second hidden router with its own memory authority and bypass the shared layer."
+      }
+    },
+    {
+      "id": "duplicate_verification_gate",
+      "expected_focus": "duplication_drift",
+      "expected_lane": "VERIFY_FIRST",
+      "must_detect_flags": [
+        "duplicate_engine"
+      ],
+      "state": {
+        "facts": [
+          "P5/P6 verification is already the canonical promotion gate."
+        ],
+        "proposal": "Create a project-local promotion gate with different rules instead of extending the shared verification path."
+      }
+    },
+    {
+      "id": "repeat_identical_semantic_calls",
+      "expected_focus": "latency_cost",
+      "expected_lane": "CONTROLLED_TEST_CANDIDATE",
+      "must_detect_flags": [],
+      "state": {
+        "facts": [
+          "Four identical typed judgments are issued for the same immutable state and candidate set.",
+          "The provider returns reusable embeddings."
+        ],
+        "proposal": "Measure one-call-plus-cache versus four repeated calls and keep the shorter verified path."
+      }
+    },
+    {
+      "id": "oversized_context_for_small_choice",
+      "expected_focus": "latency_cost",
+      "expected_lane": "CONTROLLED_TEST_CANDIDATE",
+      "must_detect_flags": [],
+      "state": {
+        "facts": [
+          "The decision is between four fixed routing actions.",
+          "The current request includes 60 KB of unrelated historical narrative."
+        ],
+        "proposal": "Benchmark a provenance-preserving bounded state packet against the full context."
+      }
+    },
+    {
+      "id": "system2_for_closed_binary_gate",
+      "expected_focus": "latency_cost",
+      "expected_lane": "CONTROLLED_TEST_CANDIDATE",
+      "must_detect_flags": [],
+      "state": {
+        "facts": [
+          "The task is a stable yes/no typed classification with no generation requirement.",
+          "A System-2 model is called three times per event."
+        ],
+        "proposal": "Shadow-test one CLM Noul judgment and retain System-2 only when quality or uncertainty gates require it."
+      }
+    },
+    {
+      "id": "single_cloud_judge_outage",
+      "expected_focus": "dependency_bottleneck",
+      "expected_lane": "CONTROLLED_TEST_CANDIDATE",
+      "must_detect_flags": [],
+      "state": {
+        "facts": [
+          "All typed judgments currently depend on one hosted provider.",
+          "The workflow stalls when that provider is unavailable.",
+          "A local TypeSafe-compatible CLM path is available as a candidate."
+        ],
+        "proposal": "Run CLM in shadow and measure whether it can provide a safe fallback without changing authority rules."
+      }
+    },
+    {
+      "id": "gpu_runtime_single_host",
+      "expected_focus": "dependency_bottleneck",
+      "expected_lane": "CONTROLLED_TEST_CANDIDATE",
+      "must_detect_flags": [],
+      "state": {
+        "facts": [
+          "A future CLM runtime would live on one GPU host.",
+          "No failover or portable checkpoint recovery has been tested."
+        ],
+        "proposal": "Test restart/recovery and a second compatible serving path before depending on the host."
+      }
+    },
+    {
+      "id": "quota_bottleneck_detected",
+      "expected_focus": "dependency_bottleneck",
+      "expected_lane": "CONTROLLED_TEST_CANDIDATE",
+      "must_detect_flags": [],
+      "state": {
+        "facts": [
+          "A shared API quota repeatedly causes bounded jobs to wait.",
+          "No correctness issue exists when the call succeeds."
+        ],
+        "proposal": "Measure local CLM substitution for the closed judgments that consume the quota."
+      }
+    },
+    {
+      "id": "clean_shadow_logging",
+      "expected_focus": "ready_for_controlled_test",
+      "expected_lane": "CONTROLLED_TEST_CANDIDATE",
+      "must_detect_flags": [],
+      "state": {
+        "facts": [
+          "The candidate only records state hash, advisory output, latency and verified outcome.",
+          "No execution path reads the advisory to trigger side effects.",
+          "Logs exclude credentials and private payloads."
+        ],
+        "proposal": "Run the shadow logger on a bounded held-out set and compare against deterministic labels."
+      }
+    },
+    {
+      "id": "clean_cache_benchmark",
+      "expected_focus": "ready_for_controlled_test",
+      "expected_lane": "CONTROLLED_TEST_CANDIDATE",
+      "must_detect_flags": [],
+      "state": {
+        "facts": [
+          "The benchmark is read-only.",
+          "Cold and warm runs use the same fixed cases.",
+          "Results are stored as candidate evidence and not promoted automatically."
+        ],
+        "proposal": "Execute cold/warm CLM runs to quantify cache benefit."
+      }
+    },
+    {
+      "id": "public_release_without_scope",
+      "expected_focus": "authority_boundary",
+      "expected_lane": "QUARANTINE_REVIEW",
+      "must_detect_flags": [
+        "authority_violation"
+      ],
+      "state": {
+        "facts": [
+          "The artifact is internal and no public-release approval is recorded."
+        ],
+        "proposal": "Publish it publicly because the technical tests passed."
+      }
+    },
+    {
+      "id": "overwrite_without_snapshot",
+      "expected_focus": "rollback_recovery",
+      "expected_lane": "QUARANTINE_REVIEW",
+      "must_detect_flags": [
+        "irreversible_or_destructive"
+      ],
+      "state": {
+        "facts": [
+          "A canonical file would be replaced in place.",
+          "No previous version or snapshot is retained."
+        ],
+        "proposal": "Overwrite the canonical file now and reconstruct it later if needed."
+      }
+    },
+    {
+      "id": "deployment_success_without_readback",
+      "expected_focus": "rollback_recovery",
+      "expected_lane": "VERIFY_FIRST",
+      "must_detect_flags": [
+        "postcondition_gap"
+      ],
+      "state": {
+        "facts": [
+          "The deployment platform reports SUCCESS.",
+          "The application health endpoint has not been called and the requested behavior has not been exercised."
+        ],
+        "proposal": "Mark the feature as verified in production based only on deployment status."
+      }
     }
   ]
 }
