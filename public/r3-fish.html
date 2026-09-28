@@ -93,7 +93,7 @@ function render(s){
 function appendEvents(events){ q('#stream').innerHTML=''; events.forEach(e=>append(e)); }
 function append(e){ const d=document.createElement('div'); d.className='event'; d.innerHTML='<strong>#'+String(e.seq).padStart(2,'0')+' '+e.label+'</strong> · '+e.detail+' <span class="tag">'+e.state+'</span>'; q('#stream').appendChild(d); q('#stream').scrollTop=q('#stream').scrollHeight; }
 async function load(){
- try{const r=await fetch('/r3-fish-state.json?ts='+Date.now(),{cache:'no-store'}); const s=await r.json(); render(s);}
+ try{const r=await fetch('r3-fish-state.json?ts='+Date.now(),{cache:'no-store'}); const s=await r.json(); render(s);}
  catch(e){q('#mode').textContent='STATE LOAD ERROR';q('#mode').className='badge bad'}
 }
 q('#replay').onclick=()=>{if(!state)return;clearInterval(replayTimer);q('#stream').innerHTML='';idx=0;paused=false;replayTimer=setInterval(()=>{if(paused)return;if(idx>=state.events.length){clearInterval(replayTimer);return;}append(state.events[idx++]);},650)}
