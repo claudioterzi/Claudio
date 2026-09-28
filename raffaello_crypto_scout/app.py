@@ -2,6 +2,7 @@ import json
 import os
 import time
 import urllib.request
+import httpx
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 TOPIC = os.getenv("NTFY_TOPIC", "raffaellocrypto")
