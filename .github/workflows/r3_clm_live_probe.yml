@@ -1,0 +1,185 @@
+name: R3 CLM Live Probe
+
+on:
+  push:
+    branches:
+      - candidate/r3-clm-redflag-20260928
+    paths:
+      - 'typesafe_sister/**'
+      - 'benchmarks/r3_clm_redflag_cases.json'
+      - 'scripts/r3_clm_live_probe.py'
+      - '.github/workflows/r3_clm_live_probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-clm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      R3_CLM_UPSTREAM_COMMIT: bb42c6c5bf914fd449bed2f6ca65be80602cb1f7
+      CLM_BASE_URL: http://127.0.0.1:8700
+      CLM_EMB_URL: http://127.0.0.1:8090/v1/embeddings
+      CLM_EMB_MODEL: qwen3-8b
+      CLM_DEVICE: cpu
+      CLM_ACTION_CACHE: 256MiB
+
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Record runner capacity
+        run: |
+          mkdir -p artifacts
+          {
+            echo "=== uname ==="
+            uname -a
+            echo "=== cpu ==="
+            nproc
+            echo "=== memory ==="
+            free -h
+            echo "=== disk ==="
+            df -h
+          } | tee artifacts/r3-clm-runner-capacity.txt
+
+      - name: Install minimal CLM runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+          python -m pip install fastapi uvicorn requests numpy httpx huggingface_hub
+          git clone https://github.com/Contrastive-LM/CLM.git /tmp/CLM
+          git -C /tmp/CLM checkout "$R3_CLM_UPSTREAM_COMMIT"
+          python -m pip install --no-deps -e /tmp/CLM
+          python - <<'PY'
+          import torch
+          import clm
+          print("clm import: OK")
+          print("torch:", torch.__version__, "cuda:", torch.cuda.is_available())
+          PY
+
+      - name: Build llama.cpp CPU embedding server
+        run: |
+          git clone --depth 1 https://github.com/ggerganov/llama.cpp.git /tmp/llama.cpp
+          echo "R3_LLAMA_CPP_COMMIT=$(git -C /tmp/llama.cpp rev-parse HEAD)" >> "$GITHUB_ENV"
+          cmake -S /tmp/llama.cpp -B /tmp/llama.cpp/build \
+            -DGGML_NATIVE=OFF -DGGML_CUDA=OFF -DLLAMA_CURL=OFF \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/llama.cpp/build --target llama-server -j2
+          /tmp/llama.cpp/build/bin/llama-server --version | tee artifacts/r3-clm-llama-version.txt
+
+      - name: Select encoder quant
+        run: |
+          MEM_GB=$(awk '/MemTotal/ {printf "%d", $2/1024/1024}' /proc/meminfo)
+          FREE_GB=$(df -BG / | awk 'NR==2 {gsub("G","",$4); print $4}')
+          if [ "${MEM_GB}" -ge 12 ] && [ "${FREE_GB}" -ge 11 ]; then
+            VARIANT="Qwen3-8B-Q8_0-outq2.gguf"
+          else
+            VARIANT="Qwen3-8B-Q6_K-outq2.gguf"
+          fi
+          echo "R3_CLM_ENCODER_VARIANT=${VARIANT}" >> "$GITHUB_ENV"
+          echo "selected=${VARIANT} mem_gb=${MEM_GB} free_gb=${FREE_GB}" | tee artifacts/r3-clm-encoder-selection.txt
+
+      - name: Download CLM encoder
+        run: |
+          mkdir -p /tmp/clm-model
+          hf download czl/CLM-v0.1-8B-GGUF "$R3_CLM_ENCODER_VARIANT" --local-dir /tmp/clm-model
+          ls -lh "/tmp/clm-model/$R3_CLM_ENCODER_VARIANT"
+          sha256sum "/tmp/clm-model/$R3_CLM_ENCODER_VARIANT" | tee artifacts/r3-clm-encoder-sha256.txt
+
+      - name: Start encoder and CLM
+        run: |
+          /tmp/llama.cpp/build/bin/llama-server \
+            -m "/tmp/clm-model/$R3_CLM_ENCODER_VARIANT" \
+            --embedding --pooling last \
+            -c 8192 -np 8 -ngl 0 \
+            --alias qwen3-8b \
+            --host 127.0.0.1 --port 8090 \
+            > artifacts/r3-clm-llama.log 2>&1 &
+          echo $! > /tmp/llama.pid
+
+          python - <<'PY'
+          import time, urllib.request
+          for _ in range(120):
+              try:
+                  urllib.request.urlopen("http://127.0.0.1:8090/health", timeout=3).read()
+                  print("encoder health: OK")
+                  break
+              except Exception:
+                  time.sleep(2)
+          else:
+              raise SystemExit("encoder did not become healthy")
+          PY
+
+          clm-serve --port 8700 --max-tokens 1024 --no-ui \
+            > artifacts/r3-clm-server.log 2>&1 &
+          echo $! > /tmp/clm.pid
+
+          python - <<'PY'
+          import json, time, urllib.request
+          for _ in range(120):
+              try:
+                  health=urllib.request.urlopen("http://127.0.0.1:8700/health", timeout=3).read()
+                  models=urllib.request.urlopen("http://127.0.0.1:8700/v1/models", timeout=3).read()
+                  open("artifacts/r3-clm-health-start.json","wb").write(health)
+                  open("artifacts/r3-clm-models.json","wb").write(models)
+                  print("CLM health: OK")
+                  break
+              except Exception:
+                  time.sleep(2)
+          else:
+              raise SystemExit("CLM did not become healthy")
+          PY
+
+      - name: Execute R3 Red Flag through CLM itself
+        run: |
+          python scripts/r3_clm_live_probe.py \
+            --cases benchmarks/r3_clm_redflag_cases.json \
+            --out artifacts/r3-clm-redflag-live.json \
+            --timeout 300
+
+      - name: Verify live evidence contract
+        run: |
+          python - <<'PY'
+          import json, urllib.request
+          p=json.load(open("artifacts/r3-clm-redflag-live.json"))
+          assert p["status"] == "LIVE_CLM_INFERENCE_COMPLETED"
+          assert p["dataset"]["case_count"] >= 10
+          assert p["cold"]["metrics"]["evaluated_count"] == p["dataset"]["case_count"]
+          assert p["warm"]["metrics"]["evaluated_count"] == p["dataset"]["case_count"]
+          assert p["safety"]["executed_external_actions"] == 0
+          print("LIVE CLM CONTRACT PASS")
+          print(json.dumps({
+              "encoder": p["runtime"]["model_variant"],
+              "cold": p["cold"]["metrics"],
+              "warm": p["warm"]["metrics"],
+              "cache_wall_p50_speedup": p["cache_wall_p50_speedup"],
+          }, indent=2))
+          health=urllib.request.urlopen("http://127.0.0.1:8700/health", timeout=10).read()
+          open("artifacts/r3-clm-health-end.json","wb").write(health)
+          PY
+
+      - name: Append final runner capacity
+        if: always()
+        run: |
+          {
+            echo "=== final memory ==="
+            free -h
+            echo "=== final disk ==="
+            df -h
+          } >> artifacts/r3-clm-runner-capacity.txt
+
+      - name: Upload CLM evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-clm-live-evidence
+          path: artifacts/r3-clm-*
+          if-no-files-found: error
+          retention-days: 14
