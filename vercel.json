@@ -25,6 +25,8 @@
     {"src":"/raffaello/?","dest":"/public/raffaello.html"},
     {"src":"/progetti","dest":"/public/creazioni.html"},
     {"src":"/r3-evoluzione/?","dest":"/public/r3-evoluzione.html"},
+    {"src":"/fish/?","dest":"/public/r3-fish.html"},
+    {"src":"/r3-fish/?","dest":"/public/r3-fish.html"},
     {"src":"/scritti/?","dest":"/public/scritti.html"},
     {"src":"/cubo-quantico/?","dest":"/public/cubo-quantico.html"},
     {"src":"/genesi-raffaello/?","dest":"/public/genesi-raffaello.html"},
