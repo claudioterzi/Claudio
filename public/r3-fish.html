@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R³ Fish — RedFrag Semantic Console</title>
+<style>
+:root{--bg:#090b0f;--panel:#11151c;--line:#232936;--text:#f3f5f7;--muted:#8f99aa;--ok:#9ef0c7;--warn:#ffd37a;--bad:#ff8f8f;--accent:#b7c8ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#151b25 0,#090b0f 45%);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.wrap{max-width:1500px;margin:auto;padding:22px}.top{display:flex;gap:18px;align-items:end;justify-content:space-between;margin-bottom:18px}
+h1{font-size:clamp(28px,4vw,56px);margin:0;letter-spacing:-.04em}.sub{color:var(--muted);max-width:760px}
+.badge{border:1px solid var(--line);padding:7px 10px;border-radius:999px;font-size:12px}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.panel{background:rgba(17,21,28,.88);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 16px 50px #0005}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.metric{background:#0c1016;border:1px solid var(--line);border-radius:14px;padding:14px}.metric b{display:block;font-size:27px}.metric span{color:var(--muted);font-size:11px}
+h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#c6cfdb;margin:0 0 12px}
+.row{display:grid;grid-template-columns:70px 1fr 150px 170px;gap:10px;padding:10px 0;border-top:1px solid #1d2330;align-items:center}.row:first-child{border-top:0}
+.tag{font-size:10px;padding:4px 7px;border-radius:999px;border:1px solid var(--line);width:max-content}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.muted{color:var(--muted)}
+.stream{height:360px;overflow:auto;background:#090c11;border:1px solid var(--line);border-radius:14px;padding:10px}.event{padding:9px 7px;border-bottom:1px dashed #202735;font-size:12px}.event strong{color:var(--accent)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button{background:#151b24;color:#fff;border:1px solid #344052;border-radius:11px;padding:10px 13px;cursor:pointer}button:hover{background:#1b2431}
+.bar{height:12px;border-radius:999px;background:#1b2230;overflow:hidden}.bar i{display:block;height:100%;width:42.9%;background:linear-gradient(90deg,#6f8dff,#9ef0c7)}
+.legend{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.legend div{border:1px solid var(--line);border-radius:10px;padding:8px;font-size:11px}.foot{margin-top:14px;color:var(--muted);font-size:11px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:55px 1fr}.row>*:nth-child(3),.row>*:nth-child(4){grid-column:2}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><div class="badge">R³∞ · RAFFAELLO · FISH</div><h1>RedFrag Semantic Console</h1><div class="sub">Interfaccia di distillazione contestuale: separa utile, duplicato, conflitto e rumore senza cancellare le fonti. Jev resta advisory; Fish osserva e pilota la superficie.</div></div>
+    <div id="mode" class="badge warn">LOADING</div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><b id="docs">—</b><span>SOURCE DOCUMENTS</span></div>
+    <div class="metric"><b id="logical">—</b><span>LOGICAL RECORDS</span></div>
+    <div class="metric"><b id="reduction">—</b><span>CONTEXT REDUCTION</span></div>
+    <div class="metric"><b id="deletions">—</b><span>PHYSICAL DELETIONS</span></div>
+  </div>
+
+  <div class="grid">
+    <section class="panel">
+      <h2>Context Map</h2>
+      <div id="clusters"></div>
+      <div style="margin-top:16px"><div class="muted" style="font-size:11px;margin-bottom:7px">CANDIDATE CONTEXT REMOVED FROM ACTIVE WINDOW</div><div class="bar"><i id="bar"></i></div></div>
+      <div class="foot">Il valore indica riduzione del contesto candidato, non cancellazione della memoria.</div>
+    </section>
+
+    <section class="panel">
+      <h2>Runtime Gate</h2>
+      <div id="runtime"></div>
+      <div class="controls">
+        <button id="replay">▶ Replay scan</button>
+        <button id="pause">Ⅱ Pause</button>
+        <button id="export">⇩ Export state</button>
+      </div>
+      <div class="foot">Replay = riproduzione visuale del checkpoint verificato. Non viene presentato come scansione live.</div>
+    </section>
+
+    <section class="panel">
+      <h2>Fish Event Stream</h2>
+      <div id="stream" class="stream"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Semantic Classes</h2>
+      <div id="legend" class="legend"></div>
+      <h2 style="margin-top:18px">Invariants</h2>
+      <div id="invariants"></div>
+    </section>
+  </div>
+  <div class="foot">R3-FISH-STATE/0.1 · auto-refresh ogni 5s · source: /r3-fish-state.json</div>
+</div>
+<script>
+let state, timer, replayTimer, idx=0, paused=false;
+const q=s=>document.querySelector(s);
+function runtimeLine(k,v,c=''){return '<div class="row"><div class="muted">'+k+'</div><div class="'+c+'">'+v+'</div></div>'}
+function render(s){
+ state=s;
+ q('#mode').textContent=s.mode;
+ q('#docs').textContent=s.checkpoint.source_documents;
+ q('#logical').textContent=s.checkpoint.logical_records;
+ q('#reduction').textContent='−'+s.checkpoint.context_candidate_reduction_pct+'%';
+ q('#deletions').textContent=s.checkpoint.physical_deletions;
+ q('#bar').style.width=s.checkpoint.context_candidate_reduction_pct+'%';
+ q('#clusters').innerHTML=s.clusters.map(x=>'<div class="row"><div class="muted">'+x.id+'</div><div><b>'+x.name+'</b><br><span class="muted">'+x.source_count+' sources</span></div><div><span class="tag">'+x.class+'</span></div><div class="ok">'+x.action+'</div></div>').join('');
+ q('#runtime').innerHTML=
+   runtimeLine('FISH',s.runtime.fish,'ok')+
+   runtimeLine('JEV',s.runtime.jev+' · '+s.runtime.jev_live_status,s.runtime.jev_live_status.startsWith('BLOCKED')?'warn':'ok')+
+   runtimeLine('TEST',s.checkpoint.positive_controls+' POS / '+s.checkpoint.negative_controls+' NEG','ok')+
+   runtimeLine('GATE',s.checkpoint.result,'ok');
+ q('#legend').innerHTML=s.semantic_classes.map(x=>'<div>'+x+'</div>').join('');
+ q('#invariants').innerHTML=s.invariants.map(x=>'<div class="event">• '+x+'</div>').join('');
+ if(!q('#stream').dataset.init){ q('#stream').dataset.init='1'; appendEvents(s.events); }
+}
+function appendEvents(events){ q('#stream').innerHTML=''; events.forEach(e=>append(e)); }
+function append(e){ const d=document.createElement('div'); d.className='event'; d.innerHTML='<strong>#'+String(e.seq).padStart(2,'0')+' '+e.label+'</strong> · '+e.detail+' <span class="tag">'+e.state+'</span>'; q('#stream').appendChild(d); q('#stream').scrollTop=q('#stream').scrollHeight; }
+async function load(){
+ try{const r=await fetch('/r3-fish-state.json?ts='+Date.now(),{cache:'no-store'}); const s=await r.json(); render(s);}
+ catch(e){q('#mode').textContent='STATE LOAD ERROR';q('#mode').className='badge bad'}
+}
+q('#replay').onclick=()=>{if(!state)return;clearInterval(replayTimer);q('#stream').innerHTML='';idx=0;paused=false;replayTimer=setInterval(()=>{if(paused)return;if(idx>=state.events.length){clearInterval(replayTimer);return;}append(state.events[idx++]);},650)}
+q('#pause').onclick=()=>{paused=!paused;q('#pause').textContent=paused?'▶ Resume':'Ⅱ Pause'}
+q('#export').onclick=()=>{if(!state)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));a.download='r3-fish-state.json';a.click();URL.revokeObjectURL(a.href)}
+load();timer=setInterval(load,5000);
+</script>
+</body></html>
