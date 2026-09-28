@@ -90,6 +90,13 @@ def system_one(
         if len(response.content) > 131072:
             raise ValueError("System One response too large")
         result = response.json()
+        if selected == "clm":
+            latency = response.headers.get("X-CLM-Latency-Ms")
+            if latency is not None:
+                try:
+                    result["latency_ms"] = float(latency)
+                except (TypeError, ValueError):
+                    pass
 
     if not isinstance(result, dict) or not isinstance(result.get("answers"), dict):
         raise ValueError("Invalid System One response")
