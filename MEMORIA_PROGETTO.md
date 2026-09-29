@@ -1432,3 +1432,8 @@ Regole verificate dal Test Runner:
 - edge model e BODY possono essere sostituiti mantenendo invariato `core_identity_id`.
 
 Il loop riusa R3-007 per la verifica dello stato e l'Evolution Kernel per il ledger hash-chained: nessun secondo verifier o motore evolutivo. Test Runner #35693392689 PASS (12 test BODY MCK + 8 R3-007); Security Scan #35693392672 PASS. Stato: **SOFTWARE_HARNESS_VERIFIED / PHYSICAL_EMBODIMENT_NOT_TESTED**.
+
+
+## RedFrag benchmark v1 — Jev reale eseguito — 2026-09-29
+
+Sul fixture congelato `0cff14f3…bd127f`, Jev/TypeSafe (`jev-latest`) è stato eseguito su Railway con 30 casi ×20 ripetizioni per vista. Flags: final 1.00, class 0.700, action 0.4667, dissent 0.5333, failures 0, p50/p95/p99 106.9/159.2/217.4 ms. Blind: final 1.00, class 0.700, action 0.4000, dissent 0.7000, failures 0, p50/p95/p99 110.0/164.6/271.1 ms; un outlier ~30.2 s. Il baseline locale blind era 0.1333/0.1000. Il benchmark 28/09 resta superseded per gold leakage. CLM-v0.1 GPU resta NOT_RUN finché esiste un endpoint GPU esterno deliberatamente configurato.

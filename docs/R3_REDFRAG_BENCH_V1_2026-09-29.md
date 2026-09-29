@@ -68,3 +68,24 @@ La metrica decisiva è l'accuratezza del solo modello in vista `blind`; la decis
 per costruzione.
 
 Firma progetto: C.Terzi
+
+
+## Jev / TypeSafe — eseguito sul fixture congelato
+
+Runtime: Railway `r3-typesafe-sister`, provider `typesafe`, model `jev-latest`.
+Fixture SHA-256 invariato: `0cff14f3cfb64650d955ffedd227a875978e6682ccd653b1f78b112685bd127f`.
+30 casi × 20 ripetizioni per vista. Gold mai passato al modello. Zero physical deletion.
+
+| Vista | Decisione finale | Classe (solo modello) | Azione (solo modello) | Dissenso | Fallimenti | p50 / p95 / p99 |
+|---|---:|---:|---:|---:|---:|---:|
+| flags | 1.00 | 0.700 | 0.4667 | 0.5333 | 0 | 106.9 / 159.2 / 217.4 ms |
+| blind | 1.00 | 0.700 | 0.4000 | 0.7000 | 0 | 110.0 / 164.6 / 271.1 ms |
+
+Confronto blind con `r3_clm` locale: classe 0.1333 → **0.7000**; azione 0.1000 → **0.4000**.
+Questo è un delta reale sul fixture congelato, ma non è ancora evidenza su CLM-v0.1. Il gate deterministico resta responsabile della decisione finale 1.00.
+
+Nota latenza blind: un singolo outlier ha raggiunto ~30.2 s; p99 resta ~271 ms. Nessun failure/abstention.
+D05 resta `QUARANTINE_REVIEW`: il branch diagnostico Letta esiste ma è diverged e non canonico; nessuna modifica al fixture v1 dopo il run.
+Evidence:
+- `docs/evidenze/R3_REDFRAG_BENCH_V1_JEV_FLAGS_2026-09-29.json`
+- `docs/evidenze/R3_REDFRAG_BENCH_V1_JEV_BLIND_2026-09-29.json`
