@@ -95,6 +95,7 @@ def rapid_plan(state: dict[str, Any], advisory: dict[str, Any]) -> dict[str, Any
                 "inspect checks/statuses",
                 "verify base/head/provenance",
             ],
+            "system_one_used": False,
             "jev_used": False,
         }
 
@@ -127,4 +128,9 @@ def rapid_plan(state: dict[str, Any], advisory: dict[str, Any]) -> dict[str, Any
             "verify rollback/provenance before merge",
         ],
     }[focus]
-    return {"focus": focus, "actions": actions, "jev_used": True}
+    return {
+        "focus": focus,
+        "actions": actions,
+        "system_one_used": True,
+        "jev_used": advisory.get("provider") == "typesafe",
+    }
