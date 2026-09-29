@@ -1,0 +1,85 @@
+{
+  "schema": "R3_LETTA_PHASE_A_RECEIPT/1.0",
+  "date": "2026-09-29",
+  "public_safe": true,
+  "recorded_by": "Claude (audit session)",
+  "overall_status": "PHASE_A_AB_VARIANT_RUN_LIVE__FAILED_ON_POSITIVE_ARMS__NOT_DIAGNOSABLE",
+  "code": {
+    "main_head": "a8e1ef349108c3eb5fb31cfd00454db4c006c54a",
+    "pr": 100,
+    "pr_head": "040cb9ec3e098381435a0086c3c5ec83974b2109",
+    "tree_equal_main_vs_pr_head": true,
+    "function": "raffaello_crypto_scout/app.py::run_letta_phase_a"
+  },
+  "runtime": {
+    "railway_project": "deepseek-eval-temp-2026-09-15",
+    "service": "r3-external-test",
+    "source_branch": "main",
+    "deployment_id": "e5150bf8-70d1-4ba8-b8b7-4ed57063200b",
+    "deployment_status": "SUCCESS",
+    "sleep_application": true,
+    "env_flag_present_by_name": "RUN_LETTA_PHASE_A",
+    "log_timestamp_utc": "2026-09-29T06:13:37Z",
+    "runs_observed_since_2026-09-28": 1
+  },
+  "observed_result": {
+    "schema": "R3_LETTA_PHASE_A_AB/1.0",
+    "variant": "A_B_WITH_PREATTACH_AND_POSTDETACH_NEGATIVE_CONTROL",
+    "canary_sha256": "b1003c8de0e7bdc5eb7895d4bccf2285037652f1f0410d2029f5017599b64684",
+    "block_label": "r3_phase_a_587f1dbbe5e1",
+    "block_id": "block-4f0bcd7c-39a1-4017-a398-0efc12b9ee7e",
+    "worker_a_id": "agent-e359c0b3-fbee-4a99-bf7a-d0441cf2f05e",
+    "worker_b_id": "agent-34c4c128-350c-4901-b0ce-d1df15c16f40",
+    "negative_before_contains_canary": false,
+    "worker_a_exact": false,
+    "worker_b_exact": false,
+    "negative_after_detach_contains_canary": false,
+    "cleanup": {
+      "detach_a": true,
+      "detach_b": true,
+      "delete_block": true
+    },
+    "full_phase_a_with_independent_c": false,
+    "ab_variant_pass": false
+  },
+  "interpretation": {
+    "canary_exposed_in_logs": false,
+    "cleanup_is_part_of_gate": true,
+    "why_not_diagnosable": "Worker A failed exact match even with the block attached. The harness records no answer class (UNKNOWN / contains-canary / formatted / other), no core-memory readback after attach and no model/llm_config, so a binding failure cannot be separated from answer-format or model-behaviour failure.",
+    "negative_controls_meaning": "Both negatives are trivially false because no positive arm succeeded; they carry no information in this run."
+  },
+  "status_by_claim": {
+    "transport": "VERIFIED (unchanged)",
+    "phase_a_ab_variant": "RUN / FAILED",
+    "cross_agent_shared_memory": "NOT_PROVEN (not falsified either: measurement insufficient)",
+    "phase_a_full_with_independent_c": "NOT_RUN",
+    "phase_b": "NOT_RUN",
+    "phase_c": "NOT_RUN"
+  },
+  "open_risks": [
+    "Worker selection is agents[0], agents[1]; one of them may be the production cooperation worker (LETTA_AGENT_ID), whose message history was modified by the test."
+  ],
+  "next_action": {
+    "id": "DIAGNOSTIC_PHASE_A1",
+    "status": "CANDIDATE",
+    "function": "raffaello_crypto_scout/app.py::run_letta_phase_a1",
+    "flag": "RUN_LETTA_PHASE_A1 (default 0)",
+    "schema": "R3_LETTA_PHASE_A1_DIAG/1.0",
+    "local_tests": "11/11 OK (5 new Phase A.1 tests)",
+    "then": "only after A.1 discriminates: rigorous Phase A with temporary A/B/C cloned from a working worker",
+    "not_mixed_with": "CLM / System One cutover"
+  },
+  "closed_risks": [
+    {
+      "risk": "RUN_LETTA_PHASE_A re-running on every cold start",
+      "closed_by": "Raffaello: RUN_LETTA_PHASE_A=0",
+      "postcondition": {
+        "deployment_id": "aa7ae208-14e3-445c-b667-62b387d17882",
+        "status": "SUCCESS",
+        "health": 200,
+        "LETTA_PHASE_A_RESULT_on_startup": false,
+        "verified_independently_from_railway_logs": true
+      }
+    }
+  ]
+}
