@@ -1,0 +1,1 @@
+"""Isolated exact benchmark package."""

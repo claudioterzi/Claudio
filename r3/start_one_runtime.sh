@@ -22,5 +22,9 @@ assert receipt_digest == os.environ['R3_LETTA_RECEIPT_SHA256']
 open('/app/r3_letta_receipt_spine.py', 'wb').write(receipt_raw)
 PY
 
+if [ "${R3_JEV_BENCH_V1:-0}" = "1" ]; then
+  (cd /app/bench_runtime && PYTHONPATH=/app/bench_runtime python run_jev_bench.py) &
+fi
+
 exec python -m uvicorn jev_gateway:app --host 0.0.0.0 --port "${PORT:-8000}"
 # deploy-one-runtime-2026-09-28

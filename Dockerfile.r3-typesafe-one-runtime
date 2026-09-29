@@ -7,5 +7,6 @@ COPY r3/jev_gateway.py ./jev_gateway.py
 COPY r3/letta_blind_probe_once.py ./letta_blind_probe_once.py
 COPY r3/start_one_runtime.sh ./start_one_runtime.sh
 COPY typesafe_sister ./typesafe_sister
+COPY bench_runtime ./bench_runtime
 EXPOSE 8000
 CMD ["sh", "/app/start_one_runtime.sh"]
