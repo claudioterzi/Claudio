@@ -7,6 +7,10 @@
 > Ultimo aggiornamento: 2026-09-29
 
 
+## RedFrag su System One — candidato 2026-09-29
+
+Decisione di Claudio: usare CLM per RedFrag, strada 3 (prima baseline gratuita su `main`, poi A/B con CLM vero). Branch `candidate/redfrag-systemone-20260929` porta la pipeline RedFrag del 28/09 sul router provider-neutral di `main`: provider esplicito `r3_clm` (locale, zero rete, mai scelto da `auto`), selezione RedFrag via `R3_REDFRAG_PROVIDER` (`r3_clm` default, `clm`, `typesafe`). Test System One/RedFrag 37/37 OK; baseline 5 casi × 100: decisioni finali 5/5, accordo azione del solo modello 0.8, p50 ≈ 20 ms. Il CLM vero non è mai girato fino in fondo (4 run CPU su GitHub Actions del 28/09: 3 falliti, 1 annullato per timeout); richiede GPU temporanea, decisione di costo di Claudio. Stato: **CANDIDATE**. Doc: `docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md`.
+
 ## Letta Phase A — primo run live FALLITO + Diagnostic Phase A.1 — aggiornamento 2026-09-29
 
 PR #100 (merge `a8e1ef349108c3eb5fb31cfd00454db4c006c54a`) ha portato su `main` l'harness `run_letta_phase_a()` (variante A/B con controllo negativo pre-attach e post-detach, canary solo come SHA-256, cleanup nel gate). Con `RUN_LETTA_PHASE_A=1` su `r3-external-test` (deployment `e5150bf8-70d1-4ba8-b8b7-4ed57063200b`) il test è stato eseguito live il 2026-09-29T06:13:37Z:
