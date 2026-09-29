@@ -5,8 +5,8 @@
   "cases": 5,
   "repeats_per_case": 100,
   "final_decision_passed": 5,
-  "final_decision_accuracy": 1.0,
-  "model_only_semantic_class_agreement": 1.0,
+  "final_decision_accuracy": 1,
+  "model_only_semantic_class_agreement": 1,
   "model_only_action_agreement": 0.8,
   "latency_ms": {
     "mean": 20.659,
@@ -78,5 +78,41 @@
       "model_dissent": true,
       "p50_ms": 19.169
     }
-  ]
+  ],
+  "status": "BASELINE_VERIFIED__MERGED__REAL_CLM_NOT_RUN",
+  "merge_sha": "8050f1c02c512cddfd822c467eab8a7953be4517",
+  "pr": 103,
+  "interpretation": {
+    "scope": "Five hand-selected cases are a regression baseline only, not evidence of generalization or CLM-v0.1 superiority.",
+    "r3_clm_identity": "Internal deterministic R3 baseline; not CLM-v0.1.",
+    "gpu_gate": "Do not spend GPU on the 5-case fixture. Freeze >=24 real cases (preferred ~30) before real CLM A/B.",
+    "frozen_fixture_rule": "No wording or gold-label changes after observing a provider result."
+  },
+  "next_experiment": {
+    "id": "REDFRAG_EXTENDED_FROZEN_FIXTURE",
+    "minimum_cases": 24,
+    "preferred_cases": 30,
+    "classes": [
+      "DUPLICATE",
+      "CONFLICT",
+      "CORE",
+      "EVIDENCE",
+      "STALE",
+      "ACTIVE"
+    ],
+    "providers": [
+      "r3_clm",
+      "typesafe",
+      "clm"
+    ],
+    "metrics": [
+      "final_decision_accuracy",
+      "model_only_semantic_class_accuracy",
+      "model_only_action_accuracy",
+      "dissent_rate",
+      "latency_p50_p95_p99",
+      "failures_abstentions"
+    ],
+    "real_clm_gpu": "DEFERRED_UNTIL_FIXTURE_FROZEN"
+  }
 }
