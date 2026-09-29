@@ -1,7 +1,7 @@
 # RedFrag su System One — baseline R3-CLM, pronto per CLM vero
 
 Data: 2026-09-29
-Stato: **CANDIDATE** — branch `candidate/redfrag-systemone-20260929`, basato su `main` `f45b3be`
+Stato: **MERGED / BASELINE VERIFIED / REAL CLM A/B DEFERRED** — PR #103, merge `8050f1c02c512cddfd822c467eab8a7953be4517`
 Autorità: **ADVISORY ONLY** — il gate deterministico sulle evidenze decide, il modello consiglia.
 
 ## Cosa cambia rispetto al branch del 28/09
@@ -30,6 +30,12 @@ percorso System One, nessun motore parallelo.
 
 Cinque casi scelti a mano: è una regressione, non una prova di generalizzazione.
 
+## Gate prima della GPU
+
+Decisione 29/09: non accendere ancora una GPU sul fixture da 5 casi. Prima congelare un set di almeno 24 casi reali (target preferito circa 30), bilanciato tra `DUPLICATE`, `CONFLICT`, `CORE`, `EVIDENCE`, `STALE`, `ACTIVE` e failure mode osservati nel progetto. Ogni caso deve avere provenance, gold deterministico, expected action e falsifier/ambiguità. Il fixture va congelato prima di vedere il risultato del provider CLM reale.
+
+Lo stesso fixture congelato deve essere eseguito con `r3_clm`, TypeSafe/Jev quando disponibile e poi CLM-v0.1 reale. Le metriche minime: final decision accuracy, model-only class/action accuracy, dissent rate, latency p50/p95/p99, failures/abstentions. Nessun wording tuning dopo aver osservato i risultati di un provider.
+
 ## Passo 3 — A/B con CLM vero
 
 1. Server CLM temporaneo su GPU (Qwen3-8B encoder + `clm-serve`), acceso solo per il run.
@@ -37,6 +43,6 @@ Cinque casi scelti a mano: è una regressione, non una prova di generalizzazione
 2. `CLM_BASE_URL=... python scripts/r3_clm_redfrag_benchmark.py --provider clm`
 3. Confronto con la baseline sugli stessi casi: accuratezza finale, accordo del solo modello,
    latenza, errori. Poi spegnere il server.
-4. Promozione di CLM su RedFrag solo se equal-or-better, e solo dopo un set di casi più ampio.
+4. Promozione di CLM su RedFrag solo se equal-or-better sul fixture congelato esteso. `r3_clm` resta un baseline R³ interno e non va descritto come CLM-v0.1.
 
 Firma progetto: C.Terzi
