@@ -7,6 +7,11 @@
 > Ultimo aggiornamento: 2026-09-29
 
 
+## RedFrag benchmark v1 congelato — 2026-09-29
+
+RedFrag/System One promosso su `main` (PR #103, merge `8050f1c02c512cddfd822c467eab8a7953be4517`). Decisione Claudio/Raffaello: niente GPU prima di un benchmark reale. Fixture `tests/redfrag_benchmark_v1.json` congelato (SHA-256 `0cff14f3cfb64650d955ffedd227a875978e6682ccd653b1f78b112685bd127f`): 30 casi reali, 5 per classe, gold deterministico con motivazione e falsifier per caso. Falsifier trovato: il benchmark del 28/09 passava al modello anche le etichette gold; senza etichette l'accordo del solo modello scende da 1.0/0.8 a 0.4/0.2 sui 5 casi vecchi. Baseline `r3_clm` sul fixture v1: decisione finale 1.00 (gate), classe del solo modello 0.167 (flags) / 0.133 (blind), azione 0.033 / 0.100, cioè livello del caso. Jev non eseguito qui (chiave solo su Railway). Prossimo: una sessione GPU con `--provider clm`, viste flags e blind. `r3_clm` è il baseline locale contrastivo, non CLM-v0.1. Doc: `docs/R3_REDFRAG_BENCH_V1_2026-09-29.md`.
+
+
 ## System One Railway — runtime CLM-ready, backend live ancora Jev — 2026-09-29
 
 PR #102 è stata mergiata sul branch Railway effettivamente usato (`feat/typesafe-sister-api-20260920`) come `651f8f0e9f2c98e7ea4805d6bd3cab99695a74cc`. Il runtime combinato conserva il receiver Letta/MCP e usa ora il client System One provider-neutral. Deployment Railway `5e4124db-119c-4b58-82bd-f9b2906986c5`: SUCCESS; `/health` 200.
