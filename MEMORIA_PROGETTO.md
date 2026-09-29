@@ -4,7 +4,30 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-09-28
+> Ultimo aggiornamento: 2026-09-29
+
+
+## Letta Phase A — primo run live FALLITO + Diagnostic Phase A.1 — aggiornamento 2026-09-29
+
+PR #100 (merge `a8e1ef349108c3eb5fb31cfd00454db4c006c54a`) ha portato su `main` l'harness `run_letta_phase_a()` (variante A/B con controllo negativo pre-attach e post-detach, canary solo come SHA-256, cleanup nel gate). Con `RUN_LETTA_PHASE_A=1` su `r3-external-test` (deployment `e5150bf8-70d1-4ba8-b8b7-4ed57063200b`) il test è stato eseguito live il 2026-09-29T06:13:37Z:
+- `negative_before_contains_canary=false`, `worker_a_exact=false`, `worker_b_exact=false`, `negative_after_detach_contains_canary=false`;
+- cleanup detach A / detach B / delete block = true; canary non presente nei log;
+- `ab_variant_pass=false`.
+
+Falsifier registrato: anche worker A con blocco collegato non restituisce il canary. Il run **non discrimina** tra binding API non visibile, blocco non inserito nel contesto, output non exact-only, configurazione/modello incompatibile o altra semantica Letta. Nessuna conclusione su "Letta non condivide memoria".
+
+Rischio di riesecuzione chiuso da Raffaello: `RUN_LETTA_PHASE_A=0`, deployment `aa7ae208-14e3-445c-b667-62b387d17882` SUCCESS, `/health` 200, nessun `LETTA_PHASE_A_RESULT` allo startup (postcondizione riverificata dai log Railway).
+
+Candidato successivo: `run_letta_phase_a1()` (flag separato `RUN_LETTA_PHASE_A1`, default spento). Dopo ogni attach verifica deterministica via API (`core-memory/blocks` lista + lettura per label: id, label, SHA-256 del valore); metadata agente (`agent_type`, modello, context window, se è il worker di cooperazione configurato); risposta classificata `EXACT_CANARY | UNKNOWN | CONTAINS_CANARY_NOT_EXACT | OTHER` con `answer_sha256`, lunghezza e message types, senza testo; dopo il detach verifica di assenza prima del prompt negativo; risultato parziale sempre stampato. Matrice diagnostica: binding non visibile → problema API; visibile + UNKNOWN → modello non usa il blocco; visibile + CONTAINS → memoria ok, criterio di output fallisce; visibile + EXACT → tratta superata. Test mock 5/5 per le quattro modalità + classificatore.
+
+Stato epistemico:
+- Phase A variante A/B: **RUN / FAILED (non diagnostico)**;
+- Diagnostic Phase A.1: **CANDIDATE**, non ancora eseguita live;
+- Phase A rigorosa con C vergine: **NOT_RUN** (solo dopo che A.1 discrimina);
+- memoria condivisa cross-agent: **NOT PROVEN**;
+- CLM/System One: asse separato, repo CLM-ready, runtime ancora TypeSafe/Jev — non mischiare con la diagnosi Letta.
+
+Evidenza: `docs/evidenze/R3_LETTA_PHASE_A_2026-09-29.json`.
 
 
 ## RaffaelloCrypto + Letta provider-neutral continuity — aggiornamento 2026-09-28
