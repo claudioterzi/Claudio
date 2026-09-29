@@ -1,9 +1,7 @@
-"""TypeSafe "sister" node for bounded semantic judgments in R3∞.
+"""R3∞ provider-neutral System One sister for the combined Railway runtime.
 
-This service is intentionally narrow:
-- TypeSafe/Jev supplies typed judgments and probabilities.
-- R3 code owns workflow, permissions, evidence, and execution.
-- No secret is logged or persisted by this module.
+Mounted under /jev by the historical gateway to preserve compatibility while
+routing to CLM or TypeSafe/Jev through the shared canonical client.
 """
 from __future__ import annotations
 
@@ -11,19 +9,27 @@ import hashlib
 import json
 import logging
 import os
+import secrets
 from typing import Any, Literal, Optional
 
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
-R3_API_TOKEN = os.getenv("R3_API_TOKEN", "changeme")
-TYPESAFE_API_KEY = os.getenv("TYPESAFE_API_KEY", "")
-TYPESAFE_BASE_URL = os.getenv("TYPESAFE_BASE_URL", "https://api.typesafe.ai")
-TYPESAFE_MODEL = os.getenv("TYPESAFE_MODEL", "jev-latest")
-TYPESAFE_TIMEOUT_SECONDS = float(os.getenv("TYPESAFE_TIMEOUT_SECONDS", "30"))
+from typesafe_sister.client import (
+    SystemOneCapabilityUnavailable,
+    SystemOneNotConfigured,
+    backend_info,
+    rank,
+    system_one,
+)
 
-log = logging.getLogger("r3.typesafe_sister")
-app = FastAPI(title="R3∞ TypeSafe Sister", version="0.1.0")
+R3_API_TOKEN = os.getenv("R3_API_TOKEN", "")
+SYSTEMONE_TIMEOUT_SECONDS = float(
+    os.getenv("R3_SYSTEMONE_TIMEOUT_SECONDS", os.getenv("TYPESAFE_TIMEOUT_SECONDS", "30"))
+)
+
+log = logging.getLogger("r3.systemone_sister")
+app = FastAPI(title="R3∞ System One Sister", version="0.3.0")
 
 QuestionKind = Literal["choice", "noul", "score"]
 
@@ -40,8 +46,17 @@ class JudgeRequest(BaseModel):
     model: str | None = None
 
 
+class RankRequest(BaseModel):
+    context: Any
+    question: str
+    answers: list[str] = Field(min_length=1)
+    model: str | None = None
+
+
 def _check_token(authorization: Optional[str]) -> None:
-    if authorization != f"Bearer {R3_API_TOKEN}":
+    if not R3_API_TOKEN or R3_API_TOKEN == "changeme":
+        raise HTTPException(status_code=503, detail="Token del servizio non configurato")
+    if not authorization or not secrets.compare_digest(authorization, f"Bearer {R3_API_TOKEN}"):
         raise HTTPException(status_code=401, detail="Token non valido")
 
 
@@ -56,7 +71,6 @@ def _wire_questions(questions: dict[str, QuestionSpec]) -> dict[str, dict[str, A
         body: dict[str, Any] = {"type": q.type}
         if q.instructions is not None:
             body["instructions"] = q.instructions
-
         if q.type == "choice":
             if not isinstance(q.criteria, dict) or not q.criteria:
                 raise HTTPException(status_code=422, detail=f"choice {name!r} requires non-empty object criteria")
@@ -69,67 +83,98 @@ def _wire_questions(questions: dict[str, QuestionSpec]) -> dict[str, dict[str, A
             if not isinstance(q.criteria, dict):
                 raise HTTPException(status_code=422, detail=f"noul {name!r} criteria must be an object when supplied")
             body["criteria"] = q.criteria
-
         out[name] = body
     return out
 
 
-def _system_one(state: Any, questions: dict[str, dict[str, Any]], model: str | None) -> dict[str, Any]:
-    if not TYPESAFE_API_KEY:
-        raise HTTPException(status_code=503, detail="TypeSafe API non configurata: secret TYPESAFE_API_KEY assente")
-
-    try:
-        from typesafe_sdk import TypeSafeClient
-        with TypeSafeClient(
-            api_key=TYPESAFE_API_KEY,
-            base_url=TYPESAFE_BASE_URL,
-            model=model or TYPESAFE_MODEL,
-            timeout=TYPESAFE_TIMEOUT_SECONDS,
-        ) as client:
-            response = client.system_one(state=state, questions=questions)
-            return response.model_dump(mode="json")
-    except HTTPException:
-        raise
-    except Exception as exc:
-        log.warning("TypeSafe request failed: %s", type(exc).__name__)
-        raise HTTPException(status_code=502, detail=f"TypeSafe upstream error: {type(exc).__name__}") from exc
-
-
 @app.get("/health")
 def health() -> dict[str, Any]:
+    info = backend_info()
     return {
         "status": "healthy",
         "service": "r3-typesafe-sister",
-        "provider": "typesafe",
-        "configured": bool(TYPESAFE_API_KEY),
-        "model": TYPESAFE_MODEL,
-        "base_url": TYPESAFE_BASE_URL,
+        "provider": info["provider"],
+        "configured": info["configured"],
+        "model": info["model"],
+        "base_url": info["base_url"],
         "role": "bounded_semantic_judgment",
+        "api_contract": "typesafe-compatible-systemone",
+        "native_rank": info["provider"] == "clm",
     }
 
 
 @app.post("/judge")
-def judge(
-    request: JudgeRequest,
-    authorization: Optional[str] = Header(None),
-) -> dict[str, Any]:
+def judge(request: JudgeRequest, authorization: Optional[str] = Header(None)) -> dict[str, Any]:
     _check_token(authorization)
     wire_questions = _wire_questions(request.questions)
     state_hash = _canonical_hash(request.state)
     question_hash = _canonical_hash(wire_questions)
-    result = _system_one(request.state, wire_questions, request.model)
+    try:
+        result = system_one(
+            request.state,
+            wire_questions,
+            model=request.model,
+            timeout=SYSTEMONE_TIMEOUT_SECONDS,
+        )
+    except SystemOneNotConfigured as exc:
+        raise HTTPException(status_code=503, detail="System One backend non configurato") from exc
+    except Exception as exc:
+        log.warning("System One request failed: %s", type(exc).__name__)
+        raise HTTPException(status_code=502, detail=f"System One upstream error: {type(exc).__name__}") from exc
 
-    # Preserve provenance without logging source content.
+    provider = str(result.get("_r3_provider") or "unknown")
     log.info(
-        "TypeSafe judgment completed state_sha256=%s questions_sha256=%s model=%s",
+        "System One judgment completed state_sha256=%s questions_sha256=%s provider=%s model=%s",
         state_hash,
         question_hash,
+        provider,
         result.get("model"),
     )
     return {
-        "provider": "typesafe",
+        "provider": provider,
         "state_sha256": state_hash,
         "questions_sha256": question_hash,
         "result": result,
         "epistemic_note": "typed_model_judgment_not_independent_factual_evidence",
+    }
+
+
+@app.post("/rank")
+def rank_candidates(request: RankRequest, authorization: Optional[str] = Header(None)) -> dict[str, Any]:
+    _check_token(authorization)
+    context_hash = _canonical_hash(request.context)
+    question_hash = _canonical_hash(request.question)
+    answers_hash = _canonical_hash(request.answers)
+    try:
+        result = rank(
+            request.context,
+            request.question,
+            request.answers,
+            model=request.model,
+            timeout=SYSTEMONE_TIMEOUT_SECONDS,
+        )
+    except SystemOneNotConfigured as exc:
+        raise HTTPException(status_code=503, detail="System One backend non configurato") from exc
+    except SystemOneCapabilityUnavailable as exc:
+        raise HTTPException(status_code=501, detail="Native rank non disponibile sul backend attivo") from exc
+    except Exception as exc:
+        log.warning("System One rank failed: %s", type(exc).__name__)
+        raise HTTPException(status_code=502, detail=f"System One upstream error: {type(exc).__name__}") from exc
+
+    provider = str(result.get("_r3_provider") or "unknown")
+    log.info(
+        "System One rank completed context_sha256=%s question_sha256=%s answers_sha256=%s provider=%s model=%s",
+        context_hash,
+        question_hash,
+        answers_hash,
+        provider,
+        result.get("model"),
+    )
+    return {
+        "provider": provider,
+        "context_sha256": context_hash,
+        "question_sha256": question_hash,
+        "answers_sha256": answers_hash,
+        "result": result,
+        "epistemic_note": "ranked_model_judgment_not_independent_factual_evidence",
     }
