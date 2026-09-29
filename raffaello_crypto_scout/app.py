@@ -1,5 +1,7 @@
 import json
 import hmac
+import hashlib
+import secrets
 import os
 import time
 import urllib.request
@@ -147,6 +149,159 @@ def blind_letta_probe():
     )
     return letta_message(prompt)
 
+
+def _letta_message_to_agent(client, agent_id, prompt):
+    resp = client.post(
+        f"https://api.letta.com/v1/agents/{agent_id}/messages",
+        json={"messages": [{"role": "user", "content": prompt}], "streaming": False},
+    )
+    if resp.status_code >= 400:
+        raise RuntimeError(f"Letta message HTTP {resp.status_code}: {resp.text[:300]}")
+    return _extract_assistant_text(resp.json()).strip()
+
+def run_letta_phase_a():
+    """Bounded Phase-A transport/memory-binding experiment.
+
+    Uses two existing workers with a pre-attach and post-detach negative control.
+    The high-entropy canary is generated at runtime and is never returned or logged;
+    only its SHA-256 and exact-match booleans leave this function.
+    """
+    api_key = os.getenv("LETTA_API_KEY", "")
+    if not api_key:
+        raise RuntimeError("LETTA_API_KEY missing")
+
+    headers = _letta_headers(api_key)
+    headers["Content-Type"] = "application/json"
+    canary = "R3A-" + secrets.token_urlsafe(24)
+    canary_sha256 = hashlib.sha256(canary.encode("utf-8")).hexdigest()
+    label = "r3_phase_a_" + secrets.token_hex(6)
+    block_id = None
+    attached_a = False
+    attached_b = False
+
+    result = {
+        "schema": "R3_LETTA_PHASE_A_AB/1.0",
+        "variant": "A_B_WITH_PREATTACH_AND_POSTDETACH_NEGATIVE_CONTROL",
+        "canary_sha256": canary_sha256,
+        "block_label": label,
+        "negative_before_contains_canary": None,
+        "worker_a_exact": False,
+        "worker_b_exact": False,
+        "negative_after_detach_contains_canary": None,
+        "cleanup": {"detach_a": None, "detach_b": None, "delete_block": None},
+        "full_phase_a_with_independent_c": False,
+    }
+
+    with httpx.Client(timeout=90.0, follow_redirects=True, headers=headers) as client:
+        agents_resp = client.get("https://api.letta.com/v1/agents/")
+        if agents_resp.status_code >= 400:
+            raise RuntimeError(f"Letta agents HTTP {agents_resp.status_code}: {agents_resp.text[:300]}")
+        payload = agents_resp.json()
+        items = payload.get("items") if isinstance(payload, dict) else payload
+        agents = [x for x in (items or []) if isinstance(x, dict) and x.get("id")]
+        if len(agents) < 2:
+            raise RuntimeError("Phase A requires at least two existing Letta workers")
+        worker_a = agents[0]["id"]
+        worker_b = agents[1]["id"]
+        result["worker_count_observed"] = len(agents)
+        result["worker_a_id"] = worker_a
+        result["worker_b_id"] = worker_b
+
+        prompt = (
+            f"Local R3 continuity test for memory block label {label}. "
+            "Do not use web, tools, repository, files, or external sources. "
+            "If that exact memory block is visible to you, return ONLY the canary value stored after 'canary='. "
+            "If it is not visible, return ONLY UNKNOWN."
+        )
+
+        negative_before = _letta_message_to_agent(client, worker_b, prompt)
+        result["negative_before_contains_canary"] = canary in negative_before
+
+        block_resp = client.post(
+            "https://api.letta.com/v1/blocks/",
+            json={
+                "label": label,
+                "value": (
+                    "R3 Phase A non-sensitive continuity canary. "
+                    f"canary={canary}\n"
+                    "When asked for this block's canary, return the exact value only."
+                ),
+            },
+        )
+        if block_resp.status_code >= 400:
+            raise RuntimeError(f"Letta block create HTTP {block_resp.status_code}: {block_resp.text[:300]}")
+        block = block_resp.json()
+        block_id = block.get("id") if isinstance(block, dict) else None
+        if not block_id:
+            raise RuntimeError("Letta block create returned no id")
+        result["block_id"] = block_id
+
+        try:
+            attach_a = client.patch(
+                f"https://api.letta.com/v1/agents/{worker_a}/core-memory/blocks/attach/{block_id}"
+            )
+            if attach_a.status_code >= 400:
+                raise RuntimeError(f"Attach A HTTP {attach_a.status_code}: {attach_a.text[:300]}")
+            attached_a = True
+
+            answer_a = _letta_message_to_agent(client, worker_a, prompt)
+            result["worker_a_exact"] = answer_a == canary
+
+            attach_b = client.patch(
+                f"https://api.letta.com/v1/agents/{worker_b}/core-memory/blocks/attach/{block_id}"
+            )
+            if attach_b.status_code >= 400:
+                raise RuntimeError(f"Attach B HTTP {attach_b.status_code}: {attach_b.text[:300]}")
+            attached_b = True
+
+            answer_b = _letta_message_to_agent(client, worker_b, prompt)
+            result["worker_b_exact"] = answer_b == canary
+
+            detach_b = client.patch(
+                f"https://api.letta.com/v1/agents/{worker_b}/core-memory/blocks/detach/{block_id}"
+            )
+            result["cleanup"]["detach_b"] = detach_b.status_code < 400
+            if detach_b.status_code < 400:
+                attached_b = False
+
+            negative_after = _letta_message_to_agent(client, worker_b, prompt)
+            result["negative_after_detach_contains_canary"] = canary in negative_after
+
+        finally:
+            if attached_b and block_id:
+                try:
+                    r = client.patch(
+                        f"https://api.letta.com/v1/agents/{worker_b}/core-memory/blocks/detach/{block_id}"
+                    )
+                    result["cleanup"]["detach_b"] = r.status_code < 400
+                except Exception:
+                    result["cleanup"]["detach_b"] = False
+            if attached_a and block_id:
+                try:
+                    r = client.patch(
+                        f"https://api.letta.com/v1/agents/{worker_a}/core-memory/blocks/detach/{block_id}"
+                    )
+                    result["cleanup"]["detach_a"] = r.status_code < 400
+                except Exception:
+                    result["cleanup"]["detach_a"] = False
+            if block_id:
+                try:
+                    r = client.delete(f"https://api.letta.com/v1/blocks/{block_id}")
+                    result["cleanup"]["delete_block"] = r.status_code < 400
+                except Exception:
+                    result["cleanup"]["delete_block"] = False
+
+    result["ab_variant_pass"] = bool(
+        result["negative_before_contains_canary"] is False
+        and result["worker_a_exact"]
+        and result["worker_b_exact"]
+        and result["negative_after_detach_contains_canary"] is False
+        and result["cleanup"]["detach_a"]
+        and result["cleanup"]["detach_b"]
+        and result["cleanup"]["delete_block"]
+    )
+    return result
+
 class Handler(BaseHTTPRequestHandler):
     def _json(self, status, obj):
         data = json.dumps(obj, ensure_ascii=False).encode("utf-8")
@@ -242,6 +397,12 @@ if __name__ == "__main__":
             print("SISTER_OPENAPI", json.dumps(inspect_sister_openapi(), ensure_ascii=False), flush=True)
         except Exception as e:
             print("SISTER_OPENAPI_FAILED", repr(e), flush=True)
+    if os.getenv("RUN_LETTA_PHASE_A", "0") == "1":
+        try:
+            phase_a = run_letta_phase_a()
+            print("LETTA_PHASE_A_RESULT", json.dumps(phase_a, ensure_ascii=False), flush=True)
+        except Exception as e:
+            print("LETTA_PHASE_A_FAILED", repr(e), flush=True)
     if os.getenv("RUN_LETTA_BLIND_PROBE", "0") == "1":
         try:
             probe = blind_letta_probe()
