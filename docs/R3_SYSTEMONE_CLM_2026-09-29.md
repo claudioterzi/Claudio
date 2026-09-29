@@ -2,7 +2,7 @@
 
 Date: 2026-09-29
 Owner / Vision: Claudio Terzi
-Status: CANDIDATE PATCH — branch `candidate/clm-systemone-20260929`
+Status: SYSTEM ONE ROUTER MERGED / RAILWAY RUNTIME CLM-READY / REAL CLM NOT LIVE
 
 ## Decision
 
@@ -50,7 +50,7 @@ Raffaello / project
 
 New safe configuration:
 
-- `R3_SYSTEMONE_PROVIDER=auto|clm|typesafe`
+- `R3_SYSTEMONE_PROVIDER=auto|clm|typesafe|r3_clm` (`r3_clm` = baseline interno R³, non CLM-v0.1)
 - `R3_SYSTEMONE_BASE_URL`
 - `R3_SYSTEMONE_MODEL`
 - `R3_SYSTEMONE_API_KEY`
@@ -111,12 +111,14 @@ CLM/Jev may prioritize and falsify hypotheses, but they do not prove ownership, 
 MERGED on main:
 - PR #98 — provider-neutral System One router + CLM-compatible /v1/systemone + native /v1/rank transport; squash merge `9f3ab1cf1410a625cb96f5b78e394a658fc42bdf`; Security Scan, Test Runner and R3 Universal AI Bootstrap PASS.
 - PR #99 — Bitcoin Cannes domain pack made provider-neutral + CLM-native forensic information-gain rank; squash merge `bbb5c4320ed090316ba5c0a224ce7b3314c13438`; Security Scan and Test Runner PASS after correcting one test-decorator bug caught by CI.
+- PR #103 — RedFrag sul router System One + baseline locale `r3_clm`; merge `8050f1c02c512cddfd822c467eab8a7953be4517`; Test Runner #445 e Security Scan #845 SUCCESS. Baseline 5 casi è solo regressione strutturale; fixture esteso richiesto prima della GPU.
+- PR #102 — runtime Railway combinato aggiornato sul branch storico `feat/typesafe-sister-api-20260920`; merge `651f8f0e9f2c98e7ea4805d6bd3cab99695a74cc`. Deployment Railway `5e4124db-119c-4b58-82bd-f9b2906986c5` SUCCESS e `/health` 200. Il receiver MCP/Letta resta nell'app combinata.
 
 No paid GPU service has been provisioned and no live production backend has been switched automatically.
 
 A CLM endpoint requires an encoder-serving runtime (official quickstart uses Qwen3-8B pooling through vLLM) plus `clm-serve`. Deployment is a separate resource/cost decision and must pass the existing infrastructure budget rule.
 
-The existing Railway `r3-typesafe-sister` production service is still pinned to the historical branch `feat/typesafe-sister-api-20260920` and currently exposes the Jev/TypeSafe runtime. The main repository is CLM-ready, but production cutover requires both a deliberate CLM endpoint and an explicit deployment/source change; absence of that cutover must not be described as CLM being live.
+The Railway `r3-typesafe-sister` production service remains pinned to branch `feat/typesafe-sister-api-20260920`, but that branch now contains the provider-neutral System One runtime from PR #102. Production is therefore **CLM-ready** while retaining Jev/TypeSafe as the active backend: the runtime has `TYPESAFE_*` variables, no `CLM_BASE_URL` and no explicit `R3_SYSTEMONE_PROVIDER`. Real CLM-v0.1 is **not live** until a deliberate external GPU CLM endpoint is configured and verified. Railway itself is CPU-only and is not the target for hosting the Qwen3-8B encoder.
 
 ## Sources
 

@@ -7,31 +7,63 @@
 > Ultimo aggiornamento: 2026-09-29
 
 
-## RedFrag su System One — candidato 2026-09-29
+## System One Railway — runtime CLM-ready, backend live ancora Jev — 2026-09-29
 
-Decisione di Claudio: usare CLM per RedFrag, strada 3 (prima baseline gratuita su `main`, poi A/B con CLM vero). Branch `candidate/redfrag-systemone-20260929` porta la pipeline RedFrag del 28/09 sul router provider-neutral di `main`: provider esplicito `r3_clm` (locale, zero rete, mai scelto da `auto`), selezione RedFrag via `R3_REDFRAG_PROVIDER` (`r3_clm` default, `clm`, `typesafe`). Test System One/RedFrag 37/37 OK; baseline 5 casi × 100: decisioni finali 5/5, accordo azione del solo modello 0.8, p50 ≈ 20 ms. Il CLM vero non è mai girato fino in fondo (4 run CPU su GitHub Actions del 28/09: 3 falliti, 1 annullato per timeout); richiede GPU temporanea, decisione di costo di Claudio. Stato: **CANDIDATE**. Doc: `docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md`.
+PR #102 è stata mergiata sul branch Railway effettivamente usato (`feat/typesafe-sister-api-20260920`) come `651f8f0e9f2c98e7ea4805d6bd3cab99695a74cc`. Il runtime combinato conserva il receiver Letta/MCP e usa ora il client System One provider-neutral. Deployment Railway `5e4124db-119c-4b58-82bd-f9b2906986c5`: SUCCESS; `/health` 200.
 
-## Letta Phase A — primo run live FALLITO + Diagnostic Phase A.1 — aggiornamento 2026-09-29
+Configurazione verificata per nome variabile: `TYPESAFE_API_KEY` presente; `CLM_BASE_URL` assente; `R3_SYSTEMONE_PROVIDER` assente. Con routing `auto`, il backend live resta quindi TypeSafe/Jev. Il servizio è **CLM-ready**, ma CLM-v0.1 reale è **NOT LIVE**.
 
-PR #100 (merge `a8e1ef349108c3eb5fb31cfd00454db4c006c54a`) ha portato su `main` l'harness `run_letta_phase_a()` (variante A/B con controllo negativo pre-attach e post-detach, canary solo come SHA-256, cleanup nel gate). Con `RUN_LETTA_PHASE_A=1` su `r3-external-test` (deployment `e5150bf8-70d1-4ba8-b8b7-4ed57063200b`) il test è stato eseguito live il 2026-09-29T06:13:37Z:
-- `negative_before_contains_canary=false`, `worker_a_exact=false`, `worker_b_exact=false`, `negative_after_detach_contains_canary=false`;
-- cleanup detach A / detach B / delete block = true; canary non presente nei log;
-- `ab_variant_pass=false`.
+Railway è CPU-only e non ospita il Qwen3-8B encoder richiesto dal CLM ufficiale. Il CLM reale dovrà essere testato tramite endpoint GPU esterno temporaneo dopo il freeze del benchmark RedFrag esteso. Nessuna spesa GPU è stata effettuata.
 
-Falsifier registrato: anche worker A con blocco collegato non restituisce il canary. Il run **non discrimina** tra binding API non visibile, blocco non inserito nel contesto, output non exact-only, configurazione/modello incompatibile o altra semantica Letta. Nessuna conclusione su "Letta non condivide memoria".
+Evidenza: `docs/evidenze/R3_SYSTEMONE_RUNTIME_2026-09-29.json`.
 
-Rischio di riesecuzione chiuso da Raffaello: `RUN_LETTA_PHASE_A=0`, deployment `aa7ae208-14e3-445c-b667-62b387d17882` SUCCESS, `/health` 200, nessun `LETTA_PHASE_A_RESULT` allo startup (postcondizione riverificata dai log Railway).
 
-Candidato successivo: `run_letta_phase_a1()` (flag separato `RUN_LETTA_PHASE_A1`, default spento). Dopo ogni attach verifica deterministica via API (`core-memory/blocks` lista + lettura per label: id, label, SHA-256 del valore); metadata agente (`agent_type`, modello, context window, se è il worker di cooperazione configurato); risposta classificata `EXACT_CANARY | UNKNOWN | CONTAINS_CANARY_NOT_EXACT | OTHER` con `answer_sha256`, lunghezza e message types, senza testo; dopo il detach verifica di assenza prima del prompt negativo; risultato parziale sempre stampato. Matrice diagnostica: binding non visibile → problema API; visibile + UNKNOWN → modello non usa il blocco; visibile + CONTAINS → memoria ok, criterio di output fallisce; visibile + EXACT → tratta superata. Test mock 5/5 per le quattro modalità + classificatore.
+## RedFrag su System One — MERGED / benchmark expansion gate — 2026-09-29
+
+RedFrag è ora sul router provider-neutral canonico di System One. PR #103 è stata mergiata su `main` come `8050f1c02c512cddfd822c467eab8a7953be4517` dopo Test Runner #445 e Security Scan #845 entrambi SUCCESS.
+
+Il provider `r3_clm` è il baseline contrastivo locale R³: deterministico, zero rete, mai selezionato automaticamente. Non va chiamato CLM-v0.1. Il provider `clm` resta riservato al CLM reale su endpoint esterno; `typesafe` usa Jev/TypeSafe.
+
+Baseline congelata attuale: 5 casi × 100 ripetizioni, decisione finale 5/5, accordo classe del solo modello 1.0, accordo azione 0.8, p50 circa 20 ms, zero chiamate di rete e zero cancellazioni. Questa è evidenza di regressione/struttura, non generalizzazione.
+
+Decisione operativa corrente: **NON spendere ancora GPU sui soli 5 casi**. Prima allargare e congelare un fixture RedFrag reale ad almeno 24 casi (target preferito ~30), bilanciando DUPLICATE / CONFLICT / CORE / EVIDENCE / STALE / ACTIVE e includendo failure mode reali. Lo stesso fixture congelato verrà poi eseguito con `r3_clm`, Jev/TypeSafe quando disponibile e CLM-v0.1 reale su GPU. Nessuna riscrittura del fixture dopo aver visto il risultato di un provider.
+
+Doc: `docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md`. Evidenza baseline: `docs/evidenze/R3_REDFRAG_R3CLM_BASELINE_2026-09-29.json`.
+
+## Letta Phase A / A.1 — binding verificato, modello non usa il block — 2026-09-29
+
+PR #100 (merge `a8e1ef349108c3eb5fb31cfd00454db4c006c54a`) ha introdotto il primo harness Phase A A/B. Il run live su Railway alle 06:13:37Z ha fallito entrambe le positive arms ma ha eseguito cleanup completo. Quel run non distingueva binding da comportamento del modello.
+
+PR #101 (merge `f45b3be4dd43721c5ce12b4db45a05ca7886ec89`) ha introdotto Diagnostic Phase A.1 con readback deterministico del core memory, classificazione della risposta e ricevute senza testo/canary.
+
+A.1 è stata eseguita live sul deployment Railway `9c48f0b0-0b23-4e03-b93c-271886809a5f` alle 06:26:51Z. Risultato:
+- worker A e B: `letta_v1_agent`, modello `auto`, endpoint type `openai`, context window 180000;
+- attach HTTP 200 su entrambi;
+- lista core-memory: block presente su entrambi;
+- readback per label: ID match, label match e SHA-256 del valore match su entrambi;
+- risposta A: `UNKNOWN`;
+- risposta B: `UNKNOWN`;
+- diagnosi su entrambi: `BLOCK_BOUND_BUT_NOT_USED_BY_MODEL`;
+- dopo detach B: block assente via lista e readback 404;
+- cleanup: detach A/B, delete block, readback assenza A e block gone = tutti true;
+- nessun canary plaintext registrato;
+- `ab_diag_pass=false`, `full_phase_a_with_independent_c=false`.
+
+Conclusione verificata: **l'API/binding del memory block funziona**, ma i due worker di produzione testati non hanno usato quel block nella risposta come previsto. Questo NON prova che Letta non possa condividere memoria: restringe il failure surface al rendering/uso del core memory, configurazione del worker/modello o semantica del messaggio.
+
+Entrambi i flag one-shot sono stati riportati a zero; `RUN_LETTA_PHASE_A1=0` ha prodotto il deployment di cleanup `cf3e286c-6b62-4295-857e-e5933ddac84e` SUCCESS. Il prossimo test Letta, se ripreso, deve usare worker temporanei A/B/C e non i worker di produzione; C resta vergine come controllo negativo.
 
 Stato epistemico:
-- Phase A variante A/B: **RUN / FAILED (non diagnostico)**;
-- Diagnostic Phase A.1: **CANDIDATE**, non ancora eseguita live;
-- Phase A rigorosa con C vergine: **NOT_RUN** (solo dopo che A.1 discrimina);
-- memoria condivisa cross-agent: **NOT PROVEN**;
-- CLM/System One: asse separato, repo CLM-ready, runtime ancora TypeSafe/Jev — non mischiare con la diagnosi Letta.
+- trasporto Letta: **VERIFIED**;
+- attach/detach/readback core-memory API: **VERIFIED**;
+- uso del block da parte dei due worker testati: **FAILED / UNKNOWN returned**;
+- cross-agent shared-memory behavior: **NOT PROVEN**;
+- Phase A rigorosa A/B/C temporanei: **NOT_RUN**;
+- Phase B: **NOT_RUN**;
+- Phase C: **NOT_RUN**.
 
 Evidenza: `docs/evidenze/R3_LETTA_PHASE_A_2026-09-29.json`.
+
 
 
 ## RaffaelloCrypto + Letta provider-neutral continuity — aggiornamento 2026-09-28

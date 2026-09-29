@@ -1,6 +1,6 @@
 version: 1
 name: R3_REUSE_LESSONS
-updated: 2026-09-28
+updated: 2026-09-29
 status: ACTIVE
 purpose: >
   Persist operational lessons from repeated use of existing functions, tools,
@@ -488,3 +488,86 @@ lessons:
       - Railway r3-typesafe-sister sleep-on-demand configuration
       - R3_OPERATING_OBJECTIVE.md
       - R3_AUTO_CYCLE.md
+
+  - id: RL-2026-09-29-LETTA-A1-001
+    capability: letta_core_memory_binding_diagnosis
+    status: VERIFIED
+    observed_at: 2026-09-29
+    trigger: Distinguish Letta block-binding failure from model-response failure after the first Phase-A A/B run failed
+    verified_facts:
+      - Diagnostic Phase A.1 deterministically read the same temporary block back from both tested workers after attach.
+      - For both workers, list membership, block id, label and SHA-256 of the block value matched the created block.
+      - Both tested workers were letta_v1_agent with model auto, OpenAI endpoint type and 180000 context window.
+      - Both workers returned UNKNOWN despite the verified bound block.
+      - Detach/readback/delete cleanup succeeded and no plaintext canary was logged.
+      - Therefore API binding is verified while model use/rendering of the bound block failed on those workers.
+    failure_modes:
+      - treating attach HTTP 200 as proof that the model used memory
+      - treating UNKNOWN as proof that the block was not attached
+      - reusing production workers for repeated continuity experiments
+      - logging raw canaries or answer text when hashes/classes suffice
+    canonical_short_path:
+      - verify attach with list plus readback by label and value hash
+      - record safe agent metadata
+      - classify model answer without persisting plaintext canary
+      - verify detach by absence before any negative-control interpretation
+      - use temporary A/B/C workers for the next strict continuity experiment
+    preconditions:
+      - disposable non-sensitive canary
+      - cleanup path for detach and block deletion
+      - no automatic canonical-memory promotion
+    verification:
+      - block id/label/value hash match after attach
+      - answer class recorded separately from binding state
+      - block absent after detach
+      - temporary block deleted
+    cleanup:
+      - RUN_LETTA_PHASE_A1=0 after one live run
+      - do not repeat on production workers
+    provenance:
+      - PR #101
+      - merge f45b3be4dd43721c5ce12b4db45a05ca7886ec89
+      - Railway deployment 9c48f0b0-0b23-4e03-b93c-271886809a5f
+      - docs/evidenze/R3_LETTA_PHASE_A_2026-09-29.json
+
+  - id: RL-2026-09-29-REDFRAG-BENCH-001
+    capability: redfrag_systemone_provider_benchmark
+    status: VERIFIED
+    observed_at: 2026-09-29
+    trigger: Decide whether to spend GPU resources on real CLM-v0.1 for RedFrag
+    verified_facts:
+      - RedFrag now uses the canonical provider-neutral System One router; no parallel selector remains.
+      - The internal r3_clm provider is deterministic, network-free and is not CLM-v0.1.
+      - The initial 5-case x100 baseline achieved 5/5 final gate decisions, model-only class agreement 1.0 and action agreement 0.8.
+      - Five hand-selected cases are insufficient for a provider-promotion decision.
+      - Real CLM-v0.1 has not completed a valid benchmark run and is not live.
+    failure_modes:
+      - spending GPU before freezing a representative fixture
+      - describing r3_clm as CLM-v0.1
+      - tuning wording or gold labels after seeing one provider result
+      - crediting final deterministic-gate accuracy as model-only accuracy
+    canonical_short_path:
+      - build at least 24 real cases, preferably about 30
+      - balance DUPLICATE, CONFLICT, CORE, EVIDENCE, STALE and ACTIVE
+      - record provenance, deterministic gold, expected action and falsifier for every case
+      - freeze the fixture before provider A/B
+      - run r3_clm and TypeSafe/Jev where available
+      - only then provision temporary GPU CLM and run the identical fixture
+      - compare accuracy, dissent, latency, failures and cost before any promotion
+    preconditions:
+      - frozen fixture
+      - identical rubric and state across providers
+      - real CLM endpoint isolated from production
+    verification:
+      - fixture hash frozen before CLM run
+      - same cases and questions used for all providers
+      - full metric vector preserved
+    cleanup:
+      - shut down temporary GPU immediately after benchmark
+      - retain negative results and provider disagreements
+    provenance:
+      - PR #103
+      - merge 8050f1c02c512cddfd822c467eab8a7953be4517
+      - docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md
+      - docs/evidenze/R3_REDFRAG_R3CLM_BASELINE_2026-09-29.json
+
