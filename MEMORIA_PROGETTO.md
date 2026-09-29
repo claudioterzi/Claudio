@@ -7,6 +7,17 @@
 > Ultimo aggiornamento: 2026-09-29
 
 
+## System One Railway — runtime CLM-ready, backend live ancora Jev — 2026-09-29
+
+PR #102 è stata mergiata sul branch Railway effettivamente usato (`feat/typesafe-sister-api-20260920`) come `651f8f0e9f2c98e7ea4805d6bd3cab99695a74cc`. Il runtime combinato conserva il receiver Letta/MCP e usa ora il client System One provider-neutral. Deployment Railway `5e4124db-119c-4b58-82bd-f9b2906986c5`: SUCCESS; `/health` 200.
+
+Configurazione verificata per nome variabile: `TYPESAFE_API_KEY` presente; `CLM_BASE_URL` assente; `R3_SYSTEMONE_PROVIDER` assente. Con routing `auto`, il backend live resta quindi TypeSafe/Jev. Il servizio è **CLM-ready**, ma CLM-v0.1 reale è **NOT LIVE**.
+
+Railway è CPU-only e non ospita il Qwen3-8B encoder richiesto dal CLM ufficiale. Il CLM reale dovrà essere testato tramite endpoint GPU esterno temporaneo dopo il freeze del benchmark RedFrag esteso. Nessuna spesa GPU è stata effettuata.
+
+Evidenza: `docs/evidenze/R3_SYSTEMONE_RUNTIME_2026-09-29.json`.
+
+
 ## RedFrag su System One — MERGED / benchmark expansion gate — 2026-09-29
 
 RedFrag è ora sul router provider-neutral canonico di System One. PR #103 è stata mergiata su `main` come `8050f1c02c512cddfd822c467eab8a7953be4517` dopo Test Runner #445 e Security Scan #845 entrambi SUCCESS.
