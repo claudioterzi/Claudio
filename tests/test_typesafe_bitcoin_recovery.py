@@ -73,7 +73,6 @@ class BitcoinRecoveryJevTests(unittest.TestCase):
         self.assertIn("recovery_next_focus", questions)
         self.assertIn("ownership_inference_risk", questions)
 
-    @patch("typesafe_sister.bitcoin_recovery.system_one")
     @patch("typesafe_sister.bitcoin_recovery.rank")
     def test_clm_native_rank_prioritizes_candidate_evidence_without_execution(self, rank):
         rank.return_value = {
