@@ -125,3 +125,34 @@ The Railway `r3-typesafe-sister` production service remains pinned to branch `fe
 - Official CLM repository: https://github.com/Contrastive-LM/CLM
 - Official model card: https://huggingface.co/Contrastive-LM/CLM-v0.1-8B
 - Release blog: https://contrastive-lm.notion.site/
+
+## R³ EVOLUTION CHAIN checkpoint — GitHub Rapid provider provenance
+
+Date: 2026-09-29  
+Base canon: `main@993f47d63a489df014cc4fa9549cb22ae4d037b0`  
+Candidate: `candidate/systemone-rapid-provider-neutral-v2-20260929`  
+Decision: **CANDIDATE_PASS / NOT_PROMOTED**
+
+Single adjacent capability: make `sdq1/github_rapid_analyzer.py` genuinely provider-neutral while preserving the exact `github_rapid_questions()` rubric and truthful provider provenance.
+
+Prototype changes:
+- remove the forced `model="jev-latest"` call and fixed `provider="typesafe"` label;
+- accept provider/model provenance returned by the canonical System One router;
+- expose `system_one_used`; set `jev_used=true` only for actual `typesafe` results;
+- no rubric wording, score criteria, authority gate or external-action policy changed.
+
+Falsification / evidence:
+- strict candidate gate run `36534361668`: **4 passed in 0.07s** and `py_compile` PASS;
+- tests verify identical rubric delivery for CLM and TypeSafe/Jev-shaped responses, truthful provenance, unavailable-provider behavior, and an actual network-free call through the canonical System One router with `R3_SYSTEMONE_PROVIDER=r3_clm`;
+- the `r3_clm` run is only an internal deterministic System One baseline. It is **not CLM-v0.1**, and no provider score was optimized or used for promotion;
+- repository-wide `CI & Security Scans` is not accepted as pytest proof for this candidate because its generic pytest command currently reaches unrelated dependency collection errors and masks exit status with `|| true`; the strict gate above is the probative test.
+
+Provider boundary:
+- canon says real CLM-v0.1 is not live and no deliberate `CLM_BASE_URL` is configured; therefore native CLM Rank was **NOT_RUN**;
+- canon records TypeSafe/Jev as the live fallback/reference backend, but this tool session did not surface a callable authenticated live System One service endpoint, so a fresh Jev semantic falsification is **BLOCKED_NOT_REVERIFIED_THIS_CYCLE** rather than simulated;
+- Jev Rank was not claimed or emulated.
+
+Branch provenance after rebase-by-reconstruction: compare against `main` showed `behind_by=0` before this checkpoint update. The earlier stale candidate branch is excluded from promotion evidence because it was one commit behind canon and overlapped the System One checkpoint file.
+
+Promotion remains subject to the normal R3 review/promotion gate. This checkpoint records verified new evidence only and changes no production runtime.
+
