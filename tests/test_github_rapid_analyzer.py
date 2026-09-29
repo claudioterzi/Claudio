@@ -66,3 +66,30 @@ def test_unavailable_system_one_does_not_claim_provider_use():
 
     assert plan["system_one_used"] is False
     assert plan["jev_used"] is False
+
+def test_internal_r3_clm_runs_through_same_system_one_layer(monkeypatch):
+    monkeypatch.setenv("R3_SYSTEMONE_PROVIDER", "r3_clm")
+    state = build_github_state(
+        repository="claudioterzi/Claudio",
+        target="candidate",
+        change_summary={
+            "intent": "preserve provider provenance without changing rubric",
+            "provider_neutral": True,
+            "score_tuning": False,
+        },
+        known_invariants=[
+            "same github_rapid_questions rubric across providers",
+            "advisory only",
+            "do not claim native Rank on non-CLM providers",
+        ],
+    )
+
+    advisory = assess_github_state(state)
+
+    assert advisory["status"] == "evaluated"
+    assert advisory["provider"] == "r3_clm"
+    assert set(advisory["answers"]) == set(github_rapid_questions())
+    plan = rapid_plan(state, advisory)
+    assert plan["system_one_used"] is True
+    assert plan["jev_used"] is False
+
