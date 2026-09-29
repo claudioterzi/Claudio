@@ -1,0 +1,28 @@
+name: R3 System One Rapid Candidate
+
+on:
+  push:
+    branches:
+      - candidate/systemone-rapid-provider-neutral-v2-20260929
+    paths:
+      - sdq1/github_rapid_analyzer.py
+      - tests/test_github_rapid_analyzer.py
+      - .github/workflows/systemone_rapid_candidate.yml
+  workflow_dispatch: {}
+
+jobs:
+  targeted-provider-provenance:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install bounded test dependencies
+        run: python -m pip install pytest httpx
+      - name: Provider-neutral rapid analyzer tests
+        run: python -m pytest -q tests/test_github_rapid_analyzer.py
+      - name: Compile candidate
+        run: python -m py_compile sdq1/github_rapid_analyzer.py tests/test_github_rapid_analyzer.py
