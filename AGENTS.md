@@ -135,3 +135,16 @@ For Claudio-facing RaffaelloCrypto outputs:
 - Never let a confidence score or model opinion authorize a trade automatically; execution remains manual unless a separately verified execution policy is explicitly approved.
 - Recalculate arithmetic independently before presenting portfolio deltas. If component values do not sum to the reported total, flag the inconsistency instead of propagating it.
 - Distinguish live account data, historical snapshots, inferred balances and simulated valuations with explicit provenance labels.
+
+
+## System One provider rule — CLM / Jev
+
+The canonical semantic reflex is the shared **R3 System One layer**, not a provider name.
+
+- Reuse `typesafe_sister.client`, `typesafe_sister.policy` and `typesafe_sister.universal`; do not create a parallel CLM/Jev client or project-local judgment engine.
+- CLM-v0.1 is the preferred candidate when a deliberate `CLM_BASE_URL` is configured. TypeSafe/Jev remains the fallback/reference backend.
+- Keep Choice / Score / Noul policy wording provider-independent. Treat all outputs as advisory under P5/P6.
+- CLM's native `/v1/rank` may rank candidate actions/evidence/retrieval items. Do not pretend Jev executed native Rank.
+- A domain pack may switch its default from Jev to CLM only after same-rubric held-out evaluation shows equal-or-better verified utility; preserve latency, calibration and failure-mode evidence.
+- Never let a provider change broaden permissions, leak archives/secrets, or authorize external actions.
+- See `docs/R3_SYSTEMONE_CLM_2026-09-29.md`.
