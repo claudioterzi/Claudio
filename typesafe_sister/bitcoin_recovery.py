@@ -1,8 +1,10 @@
-"""Jev forensic information-gain advisory for the Bitcoin Cannes recovery case.
+"""System One forensic information-gain advisory for the Bitcoin Cannes recovery case.
 
-This module reuses the canonical TypeSafe/Jev transport and universal questions.
-It never authorizes account access, fund movement, credential use, contact with
-third parties, or any other external action.
+This module reuses the canonical R3 System One transport and universal questions.
+It can route typed judgments through CLM or TypeSafe/Jev and can use CLM's native
+Rank primitive for candidate evidence paths. It never authorizes account access,
+fund movement, credential use, contact with third parties, or any other external
+action.
 """
 from __future__ import annotations
 
@@ -10,7 +12,12 @@ import hashlib
 import json
 import logging
 
-from typesafe_sister.client import TypeSafeNotConfigured, system_one
+from typesafe_sister.client import (
+    SystemOneCapabilityUnavailable,
+    SystemOneNotConfigured,
+    rank,
+    system_one,
+)
 from typesafe_sister.policy import (
     BITCOIN_RECOVERY_FOCUS,
     BITCOIN_RECOVERY_SCORE_LEVELS,
@@ -28,7 +35,19 @@ from typesafe_sister.universal import (
 )
 
 LOGGER = logging.getLogger("r3.bitcoin_recovery")
-POLICY_VERSION = "r3-jev-bitcoin-recovery-v1"
+POLICY_VERSION = "r3-systemone-bitcoin-recovery-v2"
+
+
+def _provider_from_result(result):
+    provider = str(result.get("_r3_provider") or "").strip().lower()
+    if provider:
+        return provider[:40]
+    model = str(result.get("model") or "").lower()
+    if model.startswith("clm"):
+        return "clm"
+    if model.startswith("jev"):
+        return "typesafe"
+    return "systemone"
 
 
 def _recovery_choice(answer):
@@ -72,7 +91,7 @@ def assess_bitcoin_recovery(state, *, context=None, timeout=8):
         result = system_one(payload, questions, timeout=timeout)
         answers = result["answers"]
         if not isinstance(answers, dict) or set(answers) != set(questions):
-            raise ValueError("Incomplete TypeSafe answers")
+            raise ValueError("Incomplete System One answers")
 
         universal_scores = {
             key: _score(answers[key], levels)
@@ -95,8 +114,8 @@ def assess_bitcoin_recovery(state, *, context=None, timeout=8):
 
         return {
             "status": "evaluated",
-            "provider": "typesafe",
-            "model": str(result.get("model", "jev-latest"))[:100],
+            "provider": _provider_from_result(result),
+            "model": str(result.get("model", "unknown"))[:100],
             "project": "bitcoin-cannes-recovery",
             "universal": {
                 "focus": _choice(answers["focus"]),
@@ -116,11 +135,60 @@ def assess_bitcoin_recovery(state, *, context=None, timeout=8):
             "input_sha256": hashlib.sha256(canonical.encode("utf-8")).hexdigest(),
             "epistemic_note": "typed_model_judgment_not_independent_factual_evidence",
         }
-    except TypeSafeNotConfigured:
+    except SystemOneNotConfigured:
         return {"status": "not_configured", "policy_version": POLICY_VERSION}
     except Exception as exc:
         LOGGER.warning(json.dumps({
-            "event": "bitcoin_recovery_jev_unavailable",
+            "event": "bitcoin_recovery_systemone_unavailable",
+            "error_class": type(exc).__name__,
+        }))
+        return {"status": "unavailable", "policy_version": POLICY_VERSION}
+
+
+def rank_bitcoin_evidence_paths(state_summary, candidates, *, timeout=8):
+    """Use CLM native Rank to order candidate evidence paths by information value.
+
+    This is intentionally CLM-only. It does not execute any candidate action and
+    does not promote the ranking to factual evidence. When Jev is the active
+    backend, the function reports capability_unavailable instead of emulating
+    CLM's rank primitive.
+    """
+    if not isinstance(candidates, (list, tuple)) or not 2 <= len(candidates) <= 32:
+        return {"status": "invalid_candidates", "policy_version": POLICY_VERSION}
+
+    normalized = []
+    for candidate in candidates:
+        text = str(candidate).strip()
+        if not text or len(text) > 2000:
+            return {"status": "invalid_candidates", "policy_version": POLICY_VERSION}
+        normalized.append(text)
+
+    context = str(state_summary or "").strip()
+    if not context or len(context.encode("utf-8")) > MAX_STATE_BYTES:
+        return {"status": "invalid_state", "policy_version": POLICY_VERSION}
+
+    question = (
+        "Which authorized candidate evidence path has the highest expected information gain "
+        "for distinguishing the Bitcoin Cannes 2009 recovery hypotheses, while preserving "
+        "provenance and minimizing false-attribution risk?"
+    )
+    try:
+        result = rank(context, question, normalized, timeout=timeout)
+        return {
+            "status": "ranked",
+            "provider": _provider_from_result(result),
+            "model": str(result.get("model", "unknown"))[:100],
+            "ranked": result["ranked"],
+            "policy_version": POLICY_VERSION,
+            "epistemic_note": "model_ranking_not_independent_factual_evidence",
+        }
+    except SystemOneCapabilityUnavailable:
+        return {"status": "capability_unavailable", "policy_version": POLICY_VERSION}
+    except SystemOneNotConfigured:
+        return {"status": "not_configured", "policy_version": POLICY_VERSION}
+    except Exception as exc:
+        LOGGER.warning(json.dumps({
+            "event": "bitcoin_recovery_rank_unavailable",
             "error_class": type(exc).__name__,
         }))
         return {"status": "unavailable", "policy_version": POLICY_VERSION}

@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import patch
 
-from typesafe_sister.bitcoin_recovery import assess_bitcoin_recovery
-from typesafe_sister.client import TypeSafeNotConfigured
+from typesafe_sister.bitcoin_recovery import assess_bitcoin_recovery, rank_bitcoin_evidence_paths
+from typesafe_sister.client import SystemOneCapabilityUnavailable, TypeSafeNotConfigured
 from typesafe_sister.policy import (
     BITCOIN_RECOVERY_FOCUS,
     BITCOIN_RECOVERY_SCORE_LEVELS,
@@ -72,6 +72,39 @@ class BitcoinRecoveryJevTests(unittest.TestCase):
         self.assertIn("readiness", questions)
         self.assertIn("recovery_next_focus", questions)
         self.assertIn("ownership_inference_risk", questions)
+
+    @patch("typesafe_sister.bitcoin_recovery.rank")
+    def test_clm_native_rank_prioritizes_candidate_evidence_without_execution(self, rank):
+        rank.return_value = {
+            "model": "clm-latest",
+            "_r3_provider": "clm",
+            "ranked": [
+                {"rank": 1, "candidate": "Barclays merchant descriptor", "prob": 0.62},
+                {"rank": 2, "candidate": "Fabrizio email", "prob": 0.38},
+            ],
+        }
+        result = rank_bitcoin_evidence_paths(
+            "Cannes 2009; payment and email branches unresolved.",
+            ["Barclays merchant descriptor", "Fabrizio email"],
+        )
+        self.assertEqual(result["status"], "ranked")
+        self.assertEqual(result["provider"], "clm")
+        self.assertEqual(result["ranked"][0]["candidate"], "Barclays merchant descriptor")
+        self.assertEqual(rank.call_count, 1)
+
+    @patch("typesafe_sister.bitcoin_recovery.rank")
+    def test_native_rank_is_not_faked_when_backend_lacks_capability(self, rank):
+        rank.side_effect = SystemOneCapabilityUnavailable("Jev has no native rank")
+        result = rank_bitcoin_evidence_paths("state", ["a", "b"])
+        self.assertEqual(result["status"], "capability_unavailable")
+
+    def test_provider_is_reported_from_clm_result(self):
+        response = good_response()
+        response["model"] = "clm-latest"
+        response["_r3_provider"] = "clm"
+        with patch("typesafe_sister.bitcoin_recovery.system_one", return_value=response):
+            result = assess_bitcoin_recovery({"x": 1})
+        self.assertEqual(result["provider"], "clm")
 
     @patch("typesafe_sister.bitcoin_recovery.system_one")
     def test_not_configured_degrades_cleanly(self, system_one):
