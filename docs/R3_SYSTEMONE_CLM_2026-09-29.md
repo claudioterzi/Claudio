@@ -123,3 +123,25 @@ The existing Railway `r3-typesafe-sister` production service is still pinned to 
 - Official CLM repository: https://github.com/Contrastive-LM/CLM
 - Official model card: https://huggingface.co/Contrastive-LM/CLM-v0.1-8B
 - Release blog: https://contrastive-lm.notion.site/
+
+## R³ EVOLUTION CHAIN checkpoint — GitHub Rapid provider provenance
+
+Date: 2026-09-29  
+Branch: `candidate/systemone-rapid-provider-neutral-20260929`  
+Decision: **CANDIDATE_PASS / NOT_PROMOTED**
+
+Adjacent capability tested: preserve provider provenance through `sdq1/github_rapid_analyzer.py` without changing the canonical `github_rapid_questions()` rubric.
+
+Evidence:
+- `46fb350cd3506861ff9e07c1ea03020111e145e3`: `rapid_plan()` now reports `system_one_used` and sets `jev_used` only when the evaluated provider is actually `typesafe`.
+- `27a35f65c42a0ff81291ac4eb1a6df4359225ef6`: three bounded regression tests verify identical rubric delivery for CLM and TypeSafe/Jev stubs, truthful provider provenance, and the unavailable-provider path.
+- The repository-wide `CI & Security Scans` run `36533351713` is **not probative** for pytest correctness: collection stopped with 13 unrelated missing-dependency errors (`bot`, `telegram`, `nacl`) while the workflow masks pytest exit codes with `|| true`.
+- Closest real alternative: strict candidate-only gate added in `bb567510cec79a202752aed6d0cd75c246d08638`. Run `36533823991` completed successfully: **3 passed in 0.03s**, followed by `py_compile` PASS.
+
+Provider/rank boundary for this cycle:
+- no CLM native Rank was executed;
+- no Jev Rank was claimed or emulated;
+- a fresh Railway connector read found the `r3-typesafe-sister` project and production environment but returned no services/deployments, so this cycle does not independently assert that either CLM or Jev is currently live there.
+
+Promotion remains blocked until a normal review/promotion gate is passed. This checkpoint records new evidence only; it does not change production or provider policy.
+
