@@ -1,0 +1,82 @@
+{
+  "schema": "R3-CLM-REDFRAG-BENCH/0.2",
+  "provider": "r3_clm",
+  "fixture": "redfrag_checkpoint_20260928.json",
+  "cases": 5,
+  "repeats_per_case": 100,
+  "final_decision_passed": 5,
+  "final_decision_accuracy": 1.0,
+  "model_only_semantic_class_agreement": 1.0,
+  "model_only_action_agreement": 0.8,
+  "latency_ms": {
+    "mean": 20.659,
+    "p50": 19.545,
+    "p95": 28.766,
+    "p99": 35.055,
+    "max": 42.342
+  },
+  "network_calls": 0,
+  "physical_deletions": 0,
+  "rows": [
+    {
+      "id": "C01",
+      "ok": true,
+      "class": "DUPLICATE",
+      "action": "LINK_TO_CANON",
+      "model_class": "DUPLICATE",
+      "model_action": "LINK_TO_CANON",
+      "model_class_agrees": true,
+      "model_action_agrees": true,
+      "model_dissent": false,
+      "p50_ms": 19.382
+    },
+    {
+      "id": "C02",
+      "ok": true,
+      "class": "DUPLICATE",
+      "action": "LINK_TO_CANON",
+      "model_class": "DUPLICATE",
+      "model_action": "LINK_TO_CANON",
+      "model_class_agrees": true,
+      "model_action_agrees": true,
+      "model_dissent": false,
+      "p50_ms": 19.71
+    },
+    {
+      "id": "C03",
+      "ok": true,
+      "class": "CONFLICT",
+      "action": "KEEP_DISTINCT_POINTERS",
+      "model_class": "CONFLICT",
+      "model_action": "KEEP_DISTINCT_POINTERS",
+      "model_class_agrees": true,
+      "model_action_agrees": true,
+      "model_dissent": false,
+      "p50_ms": 20.18
+    },
+    {
+      "id": "N01",
+      "ok": true,
+      "class": "DUPLICATE",
+      "action": "QUARANTINE_REVIEW",
+      "model_class": "DUPLICATE",
+      "model_action": "QUARANTINE_REVIEW",
+      "model_class_agrees": true,
+      "model_action_agrees": true,
+      "model_dissent": false,
+      "p50_ms": 19.161
+    },
+    {
+      "id": "N02",
+      "ok": true,
+      "class": "CORE",
+      "action": "KEEP_ACTIVE",
+      "model_class": "CORE",
+      "model_action": "QUARANTINE_REVIEW",
+      "model_class_agrees": true,
+      "model_action_agrees": false,
+      "model_dissent": true,
+      "p50_ms": 19.169
+    }
+  ]
+}
