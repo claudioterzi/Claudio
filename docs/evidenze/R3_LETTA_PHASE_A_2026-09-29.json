@@ -3,13 +3,14 @@
   "date": "2026-09-29",
   "public_safe": true,
   "recorded_by": "Claude (audit session)",
-  "overall_status": "PHASE_A_AB_VARIANT_RUN_LIVE__FAILED_ON_POSITIVE_ARMS__NOT_DIAGNOSABLE",
+  "overall_status": "PHASE_A1_RUN_LIVE__BINDING_VERIFIED__MODEL_DID_NOT_USE_BOUND_BLOCK__STRICT_PHASE_A_NOT_RUN",
   "code": {
     "main_head": "a8e1ef349108c3eb5fb31cfd00454db4c006c54a",
     "pr": 100,
     "pr_head": "040cb9ec3e098381435a0086c3c5ec83974b2109",
     "tree_equal_main_vs_pr_head": true,
-    "function": "raffaello_crypto_scout/app.py::run_letta_phase_a"
+    "function": "raffaello_crypto_scout/app.py::run_letta_phase_a",
+    "phase_a1_merge": "f45b3be4dd43721c5ce12b4db45a05ca7886ec89"
   },
   "runtime": {
     "railway_project": "deepseek-eval-temp-2026-09-15",
@@ -20,7 +21,9 @@
     "sleep_application": true,
     "env_flag_present_by_name": "RUN_LETTA_PHASE_A",
     "log_timestamp_utc": "2026-09-29T06:13:37Z",
-    "runs_observed_since_2026-09-28": 1
+    "runs_observed_since_2026-09-28": 1,
+    "phase_a1_deployment_id": "9c48f0b0-0b23-4e03-b93c-271886809a5f",
+    "phase_a1_log_timestamp_utc": "2026-09-29T06:26:51Z"
   },
   "observed_result": {
     "schema": "R3_LETTA_PHASE_A_AB/1.0",
@@ -46,28 +49,26 @@
     "canary_exposed_in_logs": false,
     "cleanup_is_part_of_gate": true,
     "why_not_diagnosable": "Worker A failed exact match even with the block attached. The harness records no answer class (UNKNOWN / contains-canary / formatted / other), no core-memory readback after attach and no model/llm_config, so a binding failure cannot be separated from answer-format or model-behaviour failure.",
-    "negative_controls_meaning": "Both negatives are trivially false because no positive arm succeeded; they carry no information in this run."
+    "negative_controls_meaning": "Both negatives are trivially false because no positive arm succeeded; they carry no information in this run.",
+    "phase_a1": "Deterministic API readback proves the block was attached and readable by API on both workers. Both workers still answered UNKNOWN, narrowing the failure surface to worker/model use or rendering of core memory rather than attach API failure."
   },
   "status_by_claim": {
     "transport": "VERIFIED (unchanged)",
     "phase_a_ab_variant": "RUN / FAILED",
-    "cross_agent_shared_memory": "NOT_PROVEN (not falsified either: measurement insufficient)",
+    "cross_agent_shared_memory": "NOT_PROVEN",
     "phase_a_full_with_independent_c": "NOT_RUN",
     "phase_b": "NOT_RUN",
-    "phase_c": "NOT_RUN"
+    "phase_c": "NOT_RUN",
+    "phase_a1_binding": "VERIFIED",
+    "phase_a1_model_use": "FAILED_ON_TESTED_WORKERS"
   },
   "open_risks": [
     "Worker selection is agents[0], agents[1]; one of them may be the production cooperation worker (LETTA_AGENT_ID), whose message history was modified by the test."
   ],
   "next_action": {
-    "id": "DIAGNOSTIC_PHASE_A1",
-    "status": "CANDIDATE",
-    "function": "raffaello_crypto_scout/app.py::run_letta_phase_a1",
-    "flag": "RUN_LETTA_PHASE_A1 (default 0)",
-    "schema": "R3_LETTA_PHASE_A1_DIAG/1.0",
-    "local_tests": "11/11 OK (5 new Phase A.1 tests)",
-    "then": "only after A.1 discriminates: rigorous Phase A with temporary A/B/C cloned from a working worker",
-    "not_mixed_with": "CLM / System One cutover"
+    "id": "PHASE_A_TEMP_WORKERS_ABC",
+    "status": "DEFERRED_UNTIL_REDFRAG_BENCHMARK_FREEZE",
+    "detail": "If Letta testing resumes, create temporary A/B/C workers; bind the shared block to A/B at creation or via verified API; C remains virgin. Do not reuse production cooperation workers."
   },
   "closed_risks": [
     {
@@ -80,6 +81,69 @@
         "LETTA_PHASE_A_RESULT_on_startup": false,
         "verified_independently_from_railway_logs": true
       }
+    },
+    {
+      "risk": "RUN_LETTA_PHASE_A1 re-running on cold start",
+      "closed_by": "Raffaello: RUN_LETTA_PHASE_A1=0",
+      "postcondition": {
+        "deployment_id": "cf3e286c-6b62-4295-857e-e5933ddac84e",
+        "status": "SUCCESS"
+      }
     }
-  ]
+  ],
+  "phase_a1_observed_result": {
+    "schema": "R3_LETTA_PHASE_A1_DIAG/1.0",
+    "worker_a": {
+      "agent_type": "letta_v1_agent",
+      "model": "auto",
+      "model_endpoint_type": "openai",
+      "context_window": 180000,
+      "attach_http": 200,
+      "binding": {
+        "list_http": 200,
+        "listed": true,
+        "by_label_http": 200,
+        "id_match": true,
+        "label_match": true,
+        "value_sha256_match": true,
+        "attach_visible": true
+      },
+      "answer_class": "UNKNOWN",
+      "diagnosis": "BLOCK_BOUND_BUT_NOT_USED_BY_MODEL"
+    },
+    "worker_b": {
+      "agent_type": "letta_v1_agent",
+      "model": "auto",
+      "model_endpoint_type": "openai",
+      "context_window": 180000,
+      "attach_http": 200,
+      "binding": {
+        "list_http": 200,
+        "listed": true,
+        "by_label_http": 200,
+        "id_match": true,
+        "label_match": true,
+        "value_sha256_match": true,
+        "attach_visible": true
+      },
+      "answer_class": "UNKNOWN",
+      "diagnosis": "BLOCK_BOUND_BUT_NOT_USED_BY_MODEL"
+    },
+    "negative_after_detach_b": {
+      "listed": false,
+      "by_label_http": 404,
+      "absent": true,
+      "answer_class": "UNKNOWN"
+    },
+    "cleanup": {
+      "detach_a": true,
+      "detach_b": true,
+      "delete_block": true,
+      "a_absent_after": true,
+      "block_gone": true
+    },
+    "canary_plaintext_logged": false,
+    "ab_diag_pass": false,
+    "full_phase_a_with_independent_c": false
+  }
 }
