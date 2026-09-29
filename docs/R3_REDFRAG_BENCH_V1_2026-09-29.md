@@ -89,3 +89,15 @@ D05 resta `QUARANTINE_REVIEW`: il branch diagnostico Letta esiste ma è diverged
 Evidence:
 - `docs/evidenze/R3_REDFRAG_BENCH_V1_JEV_FLAGS_2026-09-29.json`
 - `docs/evidenze/R3_REDFRAG_BENCH_V1_JEV_BLIND_2026-09-29.json`
+
+
+### Limite metodologico delle ripetizioni
+
+Il runner v1 esegue 20 chiamate per caso per campionare la latenza, ma conserva in `result` soltanto
+l'ultima risposta del caso prima di calcolare `model_only_class_accuracy` e
+`model_only_action_accuracy`. Di conseguenza le accuratezze Jev 0.700/0.4667 e
+0.700/0.4000 sono **30-case last-sample accuracy**, non accuratezza su 600 predizioni.
+Le distribuzioni p50/p95/p99 usano invece tutte le chiamate. Questo limite è stato rilevato dopo
+il run Jev e viene documentato senza cambiare fixture o metodologia prima del GPU A/B.
+Una futura v2 potrà misurare stabilità/majority/variance per repeat, ma richiederà rerun simmetrico
+di tutti i provider.
