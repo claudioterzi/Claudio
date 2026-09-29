@@ -1,6 +1,6 @@
-version: 7
+version: 8
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-09-28
+updated: 2026-09-29
 status: ACTIVE
 
 principles:
@@ -195,9 +195,9 @@ queue:
     state: DEVELOPMENT
     priority: architecture
     objective: Prove portable continuity across Letta workers and then across providers without allowing provider memory to become canonical authority.
-    evidence: docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md; docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md; docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json; docs/R3_LETTA_COOPERATION_2026-09-28.md; docs/evidenze/R3_LETTA_COOPERATION_2026-09-28.json; r3/continuity_registry_seed.json; raffaello_crypto_scout/app.py; PR #92; PR #93; merge ffd5ad0cee2755ae001dfa95d4aa0b2fed81a4eb; merge 0726b226a127e2209bc5c5cd80fc91db3709d6e0
-    experiment_status: ntfy/RaffaelloCrypto delivery VERIFIED; Railway idle-resource reuse VERIFIED; receipt FIRST_SEEN/DUPLICATE_REPLAY VERIFIED. The historical 23/09 direct Letta probe returned HTTP 403, later diagnosed on 28/09 as Cloudflare Error 1010 browser_signature_banned against urllib rather than evidence of an invalid key. The transport was replaced with httpx and live verification then returned HTTP 200 for agent enumeration and HTTP 200 for a real message round-trip. The blind probe returned RESET/UNKNOWN rather than inventing missing memory. Authenticated POST /letta/cooperate is deployed on the existing bridge and passed Test Runner + Security Scan. Transport/cooperation are VERIFIED; cross-agent persistent-memory causality remains UNVERIFIED. Phase A/B/C are NOT_RUN.
-    current_blocker: Phase A shared-memory binding has not yet been executed with worker A/B plus negative-control worker C; transport success must not be promoted to continuity success.
+    evidence: docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md; docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md; docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json; docs/R3_LETTA_COOPERATION_2026-09-28.md; docs/evidenze/R3_LETTA_COOPERATION_2026-09-28.json; docs/evidenze/R3_LETTA_PHASE_A_2026-09-29.json; r3/continuity_registry_seed.json; raffaello_crypto_scout/app.py; PR #100; PR #101; merge a8e1ef349108c3eb5fb31cfd00454db4c006c54a; merge f45b3be4dd43721c5ce12b4db45a05ca7886ec89
+    experiment_status: Transport/cooperation VERIFIED. Initial Phase-A A/B run was executed and failed on both positive arms but was non-diagnostic. Diagnostic Phase A.1 was then executed live: API readback proved the same temporary block was attached and readable on both tested workers (list present, ID/label/value SHA match), while both workers returned UNKNOWN. Cleanup/detach/delete/readback all passed and no plaintext canary was logged. Therefore core-memory binding is VERIFIED but model use of the bound block failed on those two production workers. Strict cross-agent continuity remains NOT_PROVEN; full Phase A with temporary A/B/C is NOT_RUN. Phase B/C remain NOT_RUN.
+    current_blocker: Do not reuse production workers. If continuity testing resumes, create temporary A/B/C workers; A/B receive the test block, C stays virgin. Investigate worker/model rendering of core-memory before promoting any continuity claim.
 
 
   - id: R3-029
@@ -208,6 +208,16 @@ queue:
     evidence: draft PR #91; branch candidate/r3-context-pointer-manifest-20260928; public/r3-context-pointer-manifest.json; scripts/r3_context_pointer_manifest.py; tests/test_r3_context_pointer_manifest.py; docs/R3_CONTEXT_POINTER_MANIFEST_2026-09-28.md; Test Runner #410; Security Scan #805
     experiment_status: Candidate implementation is complete on the isolated branch. Root + tag-based bounded selection, duplicate/path/body guards and source-authority separation are implemented. Test Runner and Security Scan passed. No production/Railway mutation was made. Promotion is intentionally blocked pending controlled A/B evidence.
     current_blocker: Run preregistered A/B comparing current startup/context loading vs pointer-first on input tokens, latency, verified task success, missing-context events, human interventions and provenance/authority errors. Adopt only on equal-or-better verified success with lower context cost and no authority regression.
+
+
+  - id: R3-030
+    title: RedFrag System One / real CLM benchmark
+    state: DEVELOPMENT
+    priority: performance
+    objective: Evaluate RedFrag through one canonical System One router and promote real CLM-v0.1 only if a frozen, representative benchmark shows equal-or-better verified utility.
+    evidence: PR #103; merge 8050f1c02c512cddfd822c467eab8a7953be4517; docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md; docs/evidenze/R3_REDFRAG_R3CLM_BASELINE_2026-09-29.json; typesafe_sister/redfrag.py; typesafe_sister/r3_clm.py; scripts/r3_clm_redfrag_benchmark.py; Test Runner #445; Security Scan #845
+    experiment_status: RedFrag is MERGED on main and uses the canonical provider-neutral System One router. Internal r3_clm baseline: 5 hand-selected cases x100 repeats, final gate 5/5, model-only class agreement 1.0, action agreement 0.8, p50 about 20 ms, zero network calls/deletions. This is regression evidence only and is not CLM-v0.1. Real CLM has NOT_RUN.
+    current_blocker: Before any paid GPU run, build and freeze >=24 real cases (preferred ~30) balanced across DUPLICATE, CONFLICT, CORE, EVIDENCE, STALE and ACTIVE, with deterministic gold/provenance/falsifier. Run the same frozen fixture on r3_clm and TypeSafe/Jev where available, then run CLM-v0.1 on a temporary GPU endpoint. No provider-specific wording changes after results are observed.
 
 consolidation_gate:
   required:
