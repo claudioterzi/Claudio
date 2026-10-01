@@ -13,6 +13,7 @@ on:
       - 'tests/test_r3_redundancy_repair.py'
       - 'tests/test_backup_recoverability.py'
       - 'Dockerfile.r3-railway'
+      - 'scripts/r3_restart_proof.py'
       - 'sdq1/__main__.py'
       - '.github/workflows/r3_rrr_control.yml'
   workflow_dispatch:
@@ -37,7 +38,7 @@ jobs:
 
       - name: Compile changed Python
         run: |
-          python -m py_compile r3/rrr_control.py r3/node.py r3/sync.py sdq1/__main__.py
+          python -m py_compile r3/rrr_control.py r3/node.py r3/sync.py sdq1/__main__.py scripts/r3_restart_proof.py
 
       - name: RRR control contract
         run: |

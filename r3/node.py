@@ -136,6 +136,34 @@ def _init_db() -> None:
 _init_db()
 
 # ---------------------------------------------------------------------------
+# Storage identity marker (Issue #86)
+#
+# A random id written once into DATA_DIR and never regenerated while the file
+# exists. Unlike the signing key it cannot be pinned through an environment
+# variable, so it changes if and only if DATA_DIR itself was lost. Restart
+# proofs compare it to distinguish "same identity because the key came from
+# env" from "same identity because durable state actually survived".
+# ---------------------------------------------------------------------------
+
+_STORAGE_ID_FILE = DATA_DIR / "storage_id"
+
+
+def _load_storage_id() -> tuple[str, bool]:
+    if _STORAGE_ID_FILE.exists():
+        value = _STORAGE_ID_FILE.read_text(encoding="utf-8").strip()
+        if value:
+            return value, False
+    value = secrets.token_hex(16)
+    _STORAGE_ID_FILE.write_text(value + "\n", encoding="utf-8")
+    log.info("Nuovo storage_id creato → %s", _STORAGE_ID_FILE)
+    return value, True
+
+
+STORAGE_ID, STORAGE_ID_CREATED_THIS_BOOT = _load_storage_id()
+PROCESS_BOOT_ID = secrets.token_hex(8)  # new every process start; proves a restart happened
+PROCESS_STARTED_AT = datetime.now(timezone.utc).isoformat()
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
@@ -304,6 +332,14 @@ def _durable_state_detected() -> bool:
     that path is a mount point, while the container's ephemeral /data directory
     is not. This is deliberately conservative: if durability cannot be detected,
     readiness fails rather than claiming continuity.
+
+    Limits: a mount point proves only "not the container's ephemeral layer".
+    It does not prove that every possible backend is durable (a tmpfs mount
+    would pass), and it cannot detect a non-filesystem store. If persistence
+    ever moves to a non-filesystem driver, this check must be replaced by a
+    driver-specific readiness probe; the restart proof
+    (scripts/r3_restart_proof.py, comparing storage_id across restarts) stays
+    the acceptance evidence either way.
     """
     try:
         return os.path.ismount(DATA_DIR.resolve())
@@ -335,7 +371,53 @@ def _readiness_state() -> dict[str, Any]:
         "durable_state_required": REQUIRE_DURABLE_STATE,
         "durable_state_detected": durable_state,
         "signing_key_source": "env" if SIGNING_KEY_HEX else "data_dir",
+        "storage_id_created_this_boot": STORAGE_ID_CREATED_THIS_BOOT,
         "reasons": reasons,
+    }
+
+
+def _state_fingerprint() -> dict[str, Any]:
+    """Identity + state digest compared across restarts (Issue #86).
+
+    Contains no secret material: verify key, storage marker, latest RRR event
+    reference and the content-hash set of live documents.
+    """
+    with _conn() as db:
+        rows = db.execute(
+            "SELECT id, sha256 FROM documents WHERE deleted = 0 ORDER BY id"
+        ).fetchall()
+        protocol_event_count = db.execute(
+            "SELECT COUNT(*) FROM protocol_events"
+        ).fetchone()[0]
+    hashes = [r["sha256"] for r in rows]
+    missing_or_corrupt: list[str] = []
+    for r in rows:
+        path = _doc_path(r["id"])
+        try:
+            if _sha256(path.read_bytes()) != r["sha256"]:
+                missing_or_corrupt.append(r["id"])
+        except OSError:
+            missing_or_corrupt.append(r["id"])
+    latest = _rrr_latest()
+    return {
+        "node_id": NODE_ID,
+        "verify_key": VERIFY_KEY_HEX,
+        "signing_key_source": "env" if SIGNING_KEY_HEX else "data_dir",
+        "storage_id": STORAGE_ID,
+        "storage_id_created_this_boot": STORAGE_ID_CREATED_THIS_BOOT,
+        "process_boot_id": PROCESS_BOOT_ID,
+        "process_started_at": PROCESS_STARTED_AT,
+        "data_dir": str(DATA_DIR),
+        "durable_state_detected": _durable_state_detected(),
+        "rrr_event_id": latest["event_id"] if latest else None,
+        "rrr_counter": latest["counter"] if latest else None,
+        "rrr_action": latest["action"] if latest else None,
+        "protocol_event_count": protocol_event_count,
+        "document_count": len(hashes),
+        "document_hashes": hashes,
+        "document_set_sha256": _sha256("\n".join(hashes).encode()),
+        "documents_missing_or_corrupt": missing_or_corrupt,
+        "ts": datetime.now(timezone.utc).isoformat(),
     }
 
 
@@ -374,6 +456,13 @@ def status(authorization: Optional[str] = Header(None)):
         "readiness_reasons": readiness["reasons"],
         "ts":         datetime.now(timezone.utc).isoformat(),
     }
+
+
+# Restart-proof fingerprint — authenticated: exposes document inventory.
+@app.get("/state/fingerprint")
+def state_fingerprint(authorization: Optional[str] = Header(None)):
+    _check_token(authorization)
+    return _state_fingerprint()
 
 
 # Canonical machine-readable policy. Public by design: no secret material.
