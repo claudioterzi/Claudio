@@ -1,6 +1,7 @@
 """Readiness and local restart tests for R3 durable state semantics."""
 from __future__ import annotations
 
+import hashlib
 import importlib
 import json
 import os
@@ -188,3 +189,39 @@ def test_restart_proof_rejects_unmounted_data_dir() -> None:
     }
     cur = dict(base, process_boot_id="b", durable_state_detected=False)
     assert any("not a mount" in f for f in compare(base, cur, None))
+
+
+def test_preregistered_seed_is_ingested_once_and_logged_each_boot() -> None:
+    seed_rel = "r3/seeds/issue86_restart_proof_seed_v1.txt"
+    expected = hashlib.sha256((ROOT / seed_rel).read_bytes()).hexdigest()
+    code = (
+        "import json; from r3 import node; "
+        "print(json.dumps({'seeds': node.SEED_RESULTS, "
+        "'fp': node._state_fingerprint()}))"
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        env = os.environ.copy()
+        env.update(_base_env(tmp))
+        env["R3_SIGNING_KEY_HEX"] = ""
+        env["R3_PREREGISTERED_SEED_PATHS"] = seed_rel
+        env["PYTHONPATH"] = str(ROOT)
+
+        def boot() -> tuple[dict, str]:
+            proc = subprocess.run(
+                [sys.executable, "-c", code], cwd=ROOT, env=env,
+                text=True, capture_output=True, check=True,
+            )
+            return json.loads(proc.stdout.strip().splitlines()[-1]), proc.stderr
+
+        first, log1 = boot()
+        second, log2 = boot()
+        third, _ = boot()
+
+    assert first["seeds"][0]["status"] == "ingested"
+    assert second["seeds"][0]["status"] == "present"
+    assert third["seeds"][0]["status"] == "present"
+    assert first["seeds"][0]["id"] == expected
+    assert second["fp"]["document_hashes"] == [expected]
+    assert second["fp"]["document_set_sha256"] == third["fp"]["document_set_sha256"]
+    assert "R3_BOOT_FINGERPRINT" in log1 and "R3_BOOT_FINGERPRINT" in log2
+    assert "Nuovo storage_id creato" in log1 and "Nuovo storage_id creato" not in log2

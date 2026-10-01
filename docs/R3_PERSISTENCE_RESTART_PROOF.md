@@ -66,6 +66,22 @@ Accettazione: entrambi i `verify` escono con codice 0 (`"result": "PASS"`) per
 **ogni** nodo. Aggiungere `--require-ready` quando il controller RRR è configurato e
 attivo, per chiudere anche la condizione `/ready=200`.
 
+## Prova dai log, senza accesso di rete autenticato
+
+Ogni avvio scrive una riga `R3_BOOT_FINGERPRINT {...}` nei log (nessun segreto:
+verify key, `storage_id`, `storage_id_created_this_boot`, `process_boot_id`,
+stato RRR, `document_count`, `document_set_sha256`, esito dei seed).
+
+Documento preregistrato: `r3/seeds/issue86_restart_proof_seed_v1.txt` (immutabile),
+SHA-256 `181935e360299343c1154ba719f3bc8675834ab2f8cf77ac746ee9b013a37f5c`.
+Si attiva con `R3_PREREGISTERED_SEED_PATHS=r3/seeds/issue86_restart_proof_seed_v1.txt`.
+Ingestione idempotente: al primo avvio `ingested`, poi sempre `present`.
+
+Accettazione dai log, per nodo: tre righe consecutive (boot 0 + due restart) con
+stessi `verify_key`, `storage_id`, `document_set_sha256`, stato RRR;
+`process_boot_id` diverso ogni volta; `storage_id_created_this_boot: false` e
+seed `present` nei due restart.
+
 ## Falsificatore
 
 La persistenza **non** è risolta se, dopo un restart, si osserva anche una sola di:
