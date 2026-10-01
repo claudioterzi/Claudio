@@ -1,0 +1,2 @@
+R3 Issue #86 preregistered restart-proof seed v1
+IMMUTABLE: never edit this file. Its SHA-256 is the preregistered hash for the remote restart proof.
