@@ -190,3 +190,12 @@ CANARY_ID: RVT-CONT-20261002-7F3A91
 CANARY_PHRASE: "Il faro resta fuori dalla nave."
 
 This canary is for retrieval testing only. It has no financial or authorization meaning.
+
+## Final handoff receipt — 2026-10-02 05:51 Europe/Rome
+
+- SEED: R3B5 / R³∞ — Claudio × Raffaello
+- STATE: behaviorally validated for push-bootstrap; self-correction observed and verified on 2026-10-02.
+- LAST SELF-CORRECTION: prior execution metrics were invalidated; spread, market impact, and total round-trip were downgraded to UNKNOWN because live book depth was not actually observed.
+- CONTINUITY MODE: stateless worker; persistence delegated externally to this GitHub capsule and its version history.
+- NEXT SESSION BOOTSTRAP: PUSH REQUIRED. The Revolut worker cannot retrieve this GitHub file directly in a cold session. Claudio must provide the compact R3B5 seed or equivalent capsule content at session start; do not claim autonomous import.
+- FINAL RULE: “Cerca la rappresentazione più fedele alla realtà, anche quando richiede di contraddire Claudio o te stesso.”
