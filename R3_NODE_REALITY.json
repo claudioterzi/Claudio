@@ -1,0 +1,202 @@
+{
+  "schema": "R3_NODE_REALITY_V1",
+  "audited_at": "2026-09-21",
+  "work_item": "R3-006",
+  "status": "OBSERVED_PARTIAL_TOPOLOGY",
+  "strongest_current_claim": "Two R3 storage/service nodes are observable as separate Railway services on the same provider, and one TypeSafe/Jev sister service is separately observable. A current nine-node physical/runtime topology is not evidenced.",
+  "epistemic_rules": [
+    "adapter_is_not_runtime_node",
+    "provider_hint_is_not_configured_adapter",
+    "deployment_success_is_not_current_health_proof",
+    "runtime_metrics_are_process_evidence_not_endpoint_postcondition",
+    "historical_node_count_requires_current_one_to_one_mapping",
+    "same_provider_separate_services_do_not_prove_multi_provider_resilience"
+  ],
+  "observed_services": [
+    {
+      "id": "railway:r3-external-node-a",
+      "class": "R3_STORAGE_SERVICE",
+      "state": "OBSERVED_SERVICE_PROCESS",
+      "provider": "Railway",
+      "project": "deepseek-eval-temp-2026-09-15",
+      "service_id": "d7134a2e-2cac-4420-a40e-04d88960fe51",
+      "evidence": {
+        "latest_deployment": "SUCCESS",
+        "deployment_created_at": "2026-09-20T21:09:47.691Z",
+        "metrics_window": "last_1_hour",
+        "metrics_samples": 61,
+        "current_memory_gb": 0.055263232,
+        "direct_health_read": "UNAVAILABLE_FROM_CURRENT_EXTERNAL_FETCH_TOOL",
+        "durable_volume_observed": false
+      }
+    },
+    {
+      "id": "railway:r3-external-node-v2",
+      "class": "R3_STORAGE_SERVICE",
+      "state": "OBSERVED_SERVICE_PROCESS",
+      "provider": "Railway",
+      "project": "deepseek-eval-temp-2026-09-15",
+      "service_id": "d273a2a0-8e0f-45cd-b928-3d8afadc27c4",
+      "evidence": {
+        "latest_deployment": "SUCCESS",
+        "deployment_created_at": "2026-09-20T21:09:47.691Z",
+        "metrics_window": "last_1_hour",
+        "metrics_samples": 61,
+        "current_memory_gb": 0.057348096,
+        "direct_health_read": "UNAVAILABLE_FROM_CURRENT_EXTERNAL_FETCH_TOOL",
+        "durable_volume_observed": false
+      }
+    },
+    {
+      "id": "railway:r3-typesafe-sister",
+      "class": "SEMANTIC_JUDGMENT_SERVICE",
+      "state": "OBSERVED_SERVICE_PROCESS",
+      "provider": "Railway",
+      "project": "deepseek-eval-temp-2026-09-15",
+      "service_id": "f512937c-c06c-4914-a611-69023af9eb40",
+      "source_branch": "feat/typesafe-sister-api-20260920",
+      "evidence": {
+        "latest_deployment": "SUCCESS",
+        "deployment_created_at": "2026-09-20T21:08:32.741Z",
+        "metrics_window": "last_1_hour",
+        "metrics_samples": 61,
+        "current_memory_gb": 0.037515264,
+        "configured_variable_names_include": [
+          "TYPESAFE_API_KEY",
+          "TYPESAFE_BASE_URL",
+          "TYPESAFE_MODEL",
+          "R3_API_TOKEN"
+        ],
+        "secret_values_observed": false
+      }
+    },
+    {
+      "id": "railway:r3-external-test",
+      "class": "LEGACY_TEST_SERVICE",
+      "state": "OBSERVED_SERVICE_PROCESS",
+      "provider": "Railway",
+      "project": "deepseek-eval-temp-2026-09-15",
+      "service_id": "fc5e5a0c-4e68-4762-ada7-af0c7de35f9e",
+      "evidence": {
+        "latest_deployment": "SUCCESS",
+        "restart_policy": "NEVER",
+        "metrics_samples": 61,
+        "current_memory_gb": 0.038842368
+      },
+      "counts_as_canonical_node": false
+    },
+    {
+      "id": "railway:r3-external-property-runner",
+      "class": "TEST_ORCHESTRATOR",
+      "state": "NOT_CURRENTLY_RUNNING",
+      "provider": "Railway",
+      "project": "deepseek-eval-temp-2026-09-15",
+      "service_id": "75539c83-0c86-4ee6-8685-82831775c543",
+      "evidence": {
+        "latest_deployment": "FAILED",
+        "restart_policy": "NEVER",
+        "current_memory_gb": 0,
+        "current_cpu": 0
+      },
+      "counts_as_canonical_node": false
+    }
+  ],
+  "configured_not_observed": [
+    {
+      "id": "docker:node-a",
+      "source": "r3/docker-compose.yml",
+      "state": "CONFIGURED_NOT_OBSERVED_LOCAL_INSTANCE"
+    },
+    {
+      "id": "docker:node-b",
+      "source": "r3/docker-compose.yml",
+      "state": "CONFIGURED_NOT_OBSERVED_LOCAL_INSTANCE"
+    },
+    {
+      "id": "docker:archive",
+      "source": "r3/docker-compose.yml",
+      "state": "CONFIGURED_NOT_OBSERVED_LOCAL_INSTANCE"
+    },
+    {
+      "id": "nas:node-nas",
+      "source": "r3/docker-compose.yml comment / NAS configuration",
+      "state": "DECLARED_NOT_OBSERVED_THIS_AUDIT"
+    }
+  ],
+  "provider_registry": {
+    "source": "sdq1/llm/router.py",
+    "rule": "Registry entries prove an adapter exists in code, not that a provider is reachable or persistent.",
+    "adapters": [
+      "anthropic",
+      "openai",
+      "deepseek",
+      "perplexity",
+      "gemini",
+      "grok",
+      "minimax",
+      "ollama",
+      "stub"
+    ],
+    "external_llm_adapters": [
+      "anthropic",
+      "openai",
+      "deepseek",
+      "perplexity",
+      "gemini",
+      "grok",
+      "minimax"
+    ],
+    "local_model_adapter": [
+      "ollama"
+    ],
+    "deterministic_test_fallback": [
+      "stub"
+    ]
+  },
+  "discovery_hints": {
+    "source": "public/r3-ai-bootstrap.json",
+    "names": [
+      "OpenAI",
+      "Anthropic/Claude",
+      "Google/Gemini",
+      "xAI/Grok",
+      "DeepSeek",
+      "Perplexity",
+      "Qwen",
+      "Manus",
+      "Minimax",
+      "generic compatible agent"
+    ],
+    "not_in_current_provider_registry": [
+      "Qwen",
+      "Manus"
+    ],
+    "rule": "Discovery hint does not imply adapter, credentials, runtime activation, persistence or node identity."
+  },
+  "historical_nine_node_claim": {
+    "state": "UNRESOLVED_MAPPING",
+    "rule": "Do not state nine live nodes unless nine independently identified current runtime instances are each evidenced.",
+    "current_one_to_one_runtime_mapping": false,
+    "source_context": [
+      "R3_DEPENDENCY_MAP_2026-08-26.md",
+      "historical backup/distributed-network documents"
+    ]
+  },
+  "resilience_scope": {
+    "verified": "Remote separate-service failover/recovery previously passed for node-a/node-v2 on Railway.",
+    "not_verified": [
+      "different cloud providers or ASNs",
+      "durable storage survival",
+      "nine live nodes",
+      "automatic failover routing",
+      "production-grade inter-peer identity end-to-end"
+    ],
+    "source": "docs/R3_REMOTE_SERVICE_FAILOVER_2026-09-18.md"
+  },
+  "next_falsifier": [
+    "obtain authoritative /health reads for current runtime services through an authorized path",
+    "attach durable storage and verify restart persistence",
+    "deploy at least one peer on an independently administered provider/ASN",
+    "define explicit canonical node IDs before counting topology size"
+  ]
+}
