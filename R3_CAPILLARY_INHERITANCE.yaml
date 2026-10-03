@@ -25,6 +25,10 @@ global_layers:
   - id: REUSE_LEARNING
     source: R3_REUSE_LESSONS.yaml
     inherit: REQUIRED
+  - id: EVIDENCE_GRAPH
+    source: sdq1/evidence_graph.py
+    inherit: REQUIRED
+    rule: claims_require_provenance_versions_falsifiers_and_explicit_promotion_support
   - id: TYPESAFE_JEV
     source: typesafe_sister/
     inherit: SHARED_SERVICE
