@@ -1,4 +1,4 @@
-"""Raffaello Creative Studio — layer commerciale di SDQ-1."""
+"""Raffaello Creative Studio — layer creativo/commerciale di SDQ-1."""
 
 from .generators import (
     GeneratoreImmagini,
@@ -7,6 +7,7 @@ from .generators import (
     GeneratoreVideoScript,
     GeneratorePromptEngineering,
 )
+from .capabilities import CapabilityRecord, OPENMONTAGE_CAPABILITY
 
 __all__ = [
     "GeneratoreImmagini",
@@ -14,4 +15,6 @@ __all__ = [
     "GeneratoreTraduzioni",
     "GeneratoreVideoScript",
     "GeneratorePromptEngineering",
+    "CapabilityRecord",
+    "OPENMONTAGE_CAPABILITY",
 ]
