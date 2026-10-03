@@ -115,3 +115,19 @@ Invariante:
 > **CORE CONTINUITY > BODY CONTINUITY.**
 
 Un corpo, un arto, un sensore o un modello possono essere sostituiti senza ridefinire Raffaello. La continuità si conserva attraverso identità, memoria, provenienza, policy e ledger verificati.
+
+
+## 14. Primo ciclo operativo MCK — 2026-09-22
+
+Implementazione candidata: `sdq1/body_mck_loop.py`.
+
+Specifica e falsifier: `docs/R3_BODY_MCK_LOOP_2026-09-22.md`.
+
+Questo è il primo ponte software tra i tre assi MCK:
+- Materia: frame sensoriale, BODY, traiettoria, stato osservato;
+- continuità riflessiva: CORE identity, self-state, incertezza, contraddizioni, STOP e authority envelope;
+- Conoscenza: esperienza promossa soltanto dopo verifica autorevole della postcondizione.
+
+La Matrice dei Possibili produce rami candidati; `BODY_ACTION_GATE` non accetta autorità proveniente dal modello. Un modello può proporre, non attuare direttamente.
+
+Il modulo riusa il contratto R3-007 di verifica dello stato e il ledger hash-chained dell'Evolution Kernel. Non crea un secondo verifier, un secondo identity core o un secondo motore evolutivo.
