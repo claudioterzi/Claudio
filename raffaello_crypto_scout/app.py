@@ -314,6 +314,37 @@ def _sha256_text(value):
     return hashlib.sha256(str(value).encode("utf-8")).hexdigest()
 
 
+def _letta_continuity_record(receipt):
+    """Provider-neutral record for a Letta write (docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md).
+
+    Letta holds a provider copy; this record is what R3 owns. A Letta write never
+    self-promotes: promotion_status stays NON_CANONICAL until an explicit R3 gate.
+    """
+    return {
+        "continuity_id": os.getenv("R3_CONTINUITY_ID", "RAFFAELLO"),
+        "memory_id": receipt.get("label"),
+        "authority": "CANONICAL-CANDIDATE",
+        "content_sha256": receipt.get("expected_sha256"),
+        "provenance": [f"letta_canon_write:{receipt.get('ts')}"],
+        "provider_bindings": {"letta": {
+            "agent_id": receipt.get("agent_id"),
+            "block_ids": [receipt["block_id"]] if receipt.get("block_id") else [],
+            "read_after_write": receipt.get("status") == "VERIFIED",
+        }},
+        "promotion_status": "NON_CANONICAL",
+    }
+
+
+def _append_receipt_ledger(entry):
+    """Append-only JSONL ledger; no-op unless R3_RECEIPT_LEDGER_PATH is set."""
+    path = os.getenv("R3_RECEIPT_LEDGER_PATH", "").strip()
+    if not path:
+        return False
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False, sort_keys=True) + "\n")
+    return True
+
+
 def classify_letta_answer(answer, canary):
     text = (answer or "").strip()
     if text == canary:
@@ -472,6 +503,8 @@ def run_letta_canon_write():
         and receipt["listed_on_agent"]
     )
     receipt["status"] = "VERIFIED" if receipt["match"] else "NOT_VERIFIED"
+    receipt["continuity_record"] = _letta_continuity_record(receipt)
+    receipt["ledger_appended"] = _append_receipt_ledger(receipt)
     return receipt
 
 def diagnose_arm(binding, answer_class):
