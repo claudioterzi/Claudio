@@ -62,6 +62,16 @@
           "evidence": "docs/evidenze/R3_ACTIVATION_ATTEMPT_2026-10-05.json",
           "result": "PR #115 gate 4/4 PASS; pre-fix control FAIL; no reachable Rizzo instance; admission NOT_RUN",
           "blocker": "Dell not linked to session; no Rizzo service on Railway"
+        },
+        "external_review_2026_10_05": {
+          "evidence": "docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json",
+          "pr115_head": "b77e0d938bcb0fa262c66fa17fc7703d0fb8df2f",
+          "result": "5 gate defects reproduced and fixed; 9/9 tests",
+          "open": [
+            "200-case held-out adoption set",
+            "leakage/variance checks",
+            "live admission on pinned model"
+          ]
         }
       }
     },
@@ -167,6 +177,17 @@
             "RAILWAY_DEPLOYMENT_DRAINING_SECONDS>=10",
             "schedule merge: watchPatterns r3/** redeploys node-a and node-v2",
             "add progress/heartbeat check for stuck or failing sync"
+          ]
+        },
+        "external_review_2026_10_05": {
+          "evidence": "docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json",
+          "pr113_head": "1f2cdf7457d0caf73a00f046e8e5b53f94e30585",
+          "result": "startup race and group grace fixed; failed-Popen cleanup confirmed correct",
+          "open": [
+            "sync progress/heartbeat check",
+            "PID 1 zombie reaping (init such as tini)",
+            "RAILWAY_DEPLOYMENT_DRAINING_SECONDS>=10",
+            "crash-loop backoff/diagnostics"
           ]
         }
       },
