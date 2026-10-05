@@ -72,6 +72,13 @@
             "leakage/variance checks",
             "live admission on pinned model"
           ]
+        },
+        "independent_execution_CT_LGAI_001": {
+          "evidence": "docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json",
+          "pr115_head": "73c932ab792906bf108f03516b79c00c7a9b3193",
+          "local_tests": "19 PASS; original b77e0d9 baseline 9 FAIL/10 PASS",
+          "live_inference": "NOT_RUN",
+          "quality_adoption": "NOT_VERIFIED"
         }
       }
     },
@@ -143,7 +150,14 @@
       "resume_trigger": "Next R3 continuity, verification or infrastructure task.",
       "reevaluation": {
         "date": "2026-10-05",
-        "classification": "RETEST"
+        "classification": "RETEST",
+        "independent_execution_CT_LGAI_001": {
+          "evidence": "docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json",
+          "pr115_head": "73c932ab792906bf108f03516b79c00c7a9b3193",
+          "local_tests": "19 PASS; original b77e0d9 baseline 9 FAIL/10 PASS",
+          "live_inference": "NOT_RUN",
+          "quality_adoption": "NOT_VERIFIED"
+        }
       }
     },
     {
@@ -157,9 +171,9 @@
         "scope": "5 process-only local tests; no production adoption"
       },
       "next_actions": [
-        "Set draining >=10 s and add sync heartbeat check in the candidate",
-        "Run recovery on an isolated cloned volume with authenticated content/hash readback",
-        "Merge only in a planned window"
+        "Verify PID-1 reaping and sleep/resume before progress watchdog adoption",
+        "Review draining >=10s and crash-loop policy; do not apply unrelated staged changes",
+        "Run hosted checks and authenticated content/hash recovery on isolated cloned state before scheduled adoption"
       ],
       "current_gap": [
         "Candidate is not merged or adopted in production."
@@ -189,10 +203,27 @@
             "RAILWAY_DEPLOYMENT_DRAINING_SECONDS>=10",
             "crash-loop backoff/diagnostics"
           ]
+        },
+        "independent_execution_CT_LGAI_001": {
+          "evidence": "docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json",
+          "pr113_code_head": "c2e753722410a3d5746606431e8730439f143e2d",
+          "result": "Progress watchdog implemented; 25 local tests PASS; no production change",
+          "open": [
+            "PID-1 reaping",
+            "sleep/resume",
+            "draining and crash-loop policy",
+            "hosted checks",
+            "authenticated real-state recovery"
+          ]
         }
       },
       "superseded_next_actions_2026_10_05": [
         "Verify hosted checks and a state-preserving controlled recovery/replication test before production adoption."
+      ],
+      "superseded_next_actions_CT_LGAI_001": [
+        "Set draining >=10 s and add sync heartbeat check in the candidate",
+        "Run recovery on an isolated cloned volume with authenticated content/hash readback",
+        "Merge only in a planned window"
       ]
     }
   ],
