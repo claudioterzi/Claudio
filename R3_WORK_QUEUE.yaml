@@ -264,3 +264,10 @@ last_cycle:
 
 next_action: R3-019-live-controlled-baseline-execution
 security_precheck: R3-022-live-continuity-replay-BLOCKED_NO_PROVIDER_OR_PREVIEW
+
+resilience_completion_20261005:
+  status: CANDIDATE
+  evidence: docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json
+  local_tests: "Supervisor 36 PASS; judge 19 PASS; Orchestra 4 mocked checks PASS"
+  configuration: "Railway drain 10 saved for next deployment; deployments unchanged"
+  remaining: "Authenticated real-state recovery; Railway sleep acceptance; online Rizzo; authenticated Orchestra inference"
