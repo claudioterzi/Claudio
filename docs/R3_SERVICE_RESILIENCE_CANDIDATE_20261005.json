@@ -1,0 +1,31 @@
+{
+  "candidate": {
+    "title": "Supervised node and sync lifecycle",
+    "subsystem": "r3-runtime",
+    "claim": "An unexpected node or sync process exit cannot leave the service apparently complete",
+    "primary_metric": "undetected_child_exit",
+    "direction": "lower",
+    "min_gain": 1,
+    "source_refs": [
+      "r3/sync.py",
+      "r3/supervise_node.py",
+      "tests/test_r3_supervise_node.py"
+    ],
+    "falsifiers": [
+      "Kill sync child: surviving node must be stopped and supervisor exit nonzero",
+      "Kill node child: sync must be stopped",
+      "Clean child exit must still fail an incomplete service",
+      "SIGTERM must stop and reap both children"
+    ],
+    "critical_metrics": {},
+    "scope": "core_code",
+    "risk_level": "medium",
+    "reversible": true,
+    "rollback_ref": "git:7cd63165557638e13f902f1491c4a5a6eca18ba1",
+    "external_side_effects": false,
+    "candidate_id": "R3C-24e62874d1c2",
+    "preregistered_at": "2026-10-05T05:43:10.684469+00:00"
+  },
+  "registration_timing": "POST_IMPLEMENTATION_NOT_PREREGISTERED",
+  "production_adoption": "BLOCKED_PENDING_REVIEW_AND_LIVE_GATE"
+}
