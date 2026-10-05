@@ -1,6 +1,6 @@
-version: 8
+version: 9
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-09-29
+updated: 2026-10-05
 status: ACTIVE
 
 principles:
@@ -218,6 +218,16 @@ queue:
     evidence: PR #103; merge 8050f1c02c512cddfd822c467eab8a7953be4517; docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md; docs/evidenze/R3_REDFRAG_R3CLM_BASELINE_2026-09-29.json; typesafe_sister/redfrag.py; typesafe_sister/r3_clm.py; scripts/r3_clm_redfrag_benchmark.py; Test Runner #445; Security Scan #845
     experiment_status: RedFrag is MERGED on main and uses the canonical provider-neutral System One router. Internal r3_clm baseline: 5 hand-selected cases x100 repeats, final gate 5/5, model-only class agreement 1.0, action agreement 0.8, p50 about 20 ms, zero network calls/deletions. This is regression evidence only and is not CLM-v0.1. Real CLM has NOT_RUN.
     current_blocker: Before any paid GPU run, build and freeze >=24 real cases (preferred ~30) balanced across DUPLICATE, CONFLICT, CORE, EVIDENCE, STALE and ACTIVE, with deterministic gold/provenance/falsifier. Run the same frozen fixture on r3_clm and TypeSafe/Jev where available, then run CLM-v0.1 on a temporary GPU endpoint. No provider-specific wording changes after results are observed.
+
+  - id: R3-031
+    title: Reconcile existing continuity records and Rizzo work
+    state: DEVELOPMENT
+    priority: integrity
+    objective: Preserve prior decisions and resumable work through existing memory, queue and imported branch ledger, avoiding parallel clients and orphan candidates.
+    evidence: PR #114; issue #85; draft PR #88; draft PR #91; draft PR #113; MEMORIA_PROGETTO.md; R3_CONTINUITY_LEDGER.json
+    experiment_status: CANDIDATE_RECORD_RECONCILIATION. Remote issue/PR metadata and original branch ledger read. Model quality, automatic cross-chat recall and production adoption are not verified.
+    current_blocker: Reconcile judge/TERZI branch-only work against main, verify the candidate records and execute existing admission/context A/B gates. No provider defaults change before those gates.
+    next_action: Recover #85 and compare #88 adapters with the shared client; reuse #91 for bounded retrieval. Preserve historical hashes, statuses and concrete resume triggers.
 
 consolidation_gate:
   required:
