@@ -57,7 +57,12 @@
         "date": "2026-10-05",
         "classification": "RETEST",
         "source": "https://github.com/claudioterzi/Claudio/issues/85",
-        "verified_scope": "Issue and branch ledger read; admission inference not executed."
+        "verified_scope": "Issue and branch ledger read; admission inference not executed.",
+        "attempt_2026_10_05_0811": {
+          "evidence": "docs/evidenze/R3_ACTIVATION_ATTEMPT_2026-10-05.json",
+          "result": "PR #115 gate 4/4 PASS; pre-fix control FAIL; no reachable Rizzo instance; admission NOT_RUN",
+          "blocker": "Dell not linked to session; no Rizzo service on Railway"
+        }
       }
     },
     {
@@ -74,7 +79,8 @@
         "Compare branch adapters and admission gates with current shared System One transport before reuse; preserve branch-only work."
       ],
       "current_gap": [
-        "Candidate is not merged or adopted in production."
+        "Candidate is not merged or adopted in production.",
+        "rizzo_local opens its own httpx client; must reuse typesafe_sister/client.py (observed 2026-10-05)."
       ],
       "completion_criterion": "Frozen held-out decision-equivalence benchmark and explicit promotion receipt.",
       "resume_trigger": "Next R3 continuity, verification or infrastructure task.",
@@ -114,7 +120,8 @@
       "evidence": {
         "url": "https://github.com/claudioterzi/Claudio/pull/114",
         "head_at_observation": "3ba77d0f4693f071e088dd7aa29009757944dea6",
-        "scope": "12 mocked/local tests reported in this session; no live Rizzo inference"
+        "scope": "12 mocked/local tests reported in this session; no live Rizzo inference",
+        "scope_update_2026_10_05": "PR #114 merged (main 02fd5960); live inference still NOT_RUN."
       },
       "next_actions": [
         "Reconcile #85 and #88 before any new model layer; run a frozen held-out benchmark on an intentionally configured model endpoint."
@@ -140,7 +147,9 @@
         "scope": "5 process-only local tests; no production adoption"
       },
       "next_actions": [
-        "Verify hosted checks and a state-preserving controlled recovery/replication test before production adoption."
+        "Set draining >=10 s and add sync heartbeat check in the candidate",
+        "Run recovery on an isolated cloned volume with authenticated content/hash readback",
+        "Merge only in a planned window"
       ],
       "current_gap": [
         "Candidate is not merged or adopted in production."
@@ -149,8 +158,21 @@
       "resume_trigger": "Next R3 continuity, verification or infrastructure task.",
       "reevaluation": {
         "date": "2026-10-05",
-        "classification": "RETEST"
-      }
+        "classification": "RETEST",
+        "attempt_2026_10_05_0811": {
+          "evidence": "docs/evidenze/R3_ACTIVATION_ATTEMPT_2026-10-05.json",
+          "result": "Isolated stand-in recovery PASS incl. SHA-256 identity; hung/failing sync not detected; real-state clone NOT_RUN",
+          "blocker": "OAuth variable names only; PyPI blocked",
+          "preconditions": [
+            "RAILWAY_DEPLOYMENT_DRAINING_SECONDS>=10",
+            "schedule merge: watchPatterns r3/** redeploys node-a and node-v2",
+            "add progress/heartbeat check for stuck or failing sync"
+          ]
+        }
+      },
+      "superseded_next_actions_2026_10_05": [
+        "Verify hosted checks and a state-preserving controlled recovery/replication test before production adoption."
+      ]
     }
   ],
   "anti_starvation": {
