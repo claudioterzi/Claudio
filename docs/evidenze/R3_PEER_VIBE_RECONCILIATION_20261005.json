@@ -1,0 +1,56 @@
+{
+  "schema": "R3-PEER-RECONCILIATION/1",
+  "date": "2026-10-05",
+  "peer": "Vibe GLM/Mistral (user-supplied report; provider identity not independently authenticated)",
+  "peer_observation_utc": "2026-10-05T08:46:25Z",
+  "classification": "STATIC_L0_ONLY",
+  "peer_report": {
+    "main": "0100630e1a6b9e080bd291b8635bc0e53a7b8756",
+    "tasks": {
+      "A": "BLOCKED_NO_CLONE_EXEC",
+      "B": "BLOCKED_NO_SERVER_AUTHENTICATED_EXECUTION",
+      "C": "BLOCKED_DEVICE_OFFLINE"
+    },
+    "runtime_tests": "NOT_RUN",
+    "negative_control": "NOT_RUN",
+    "hash_scope": "web-extracted text, not git blob",
+    "sha256": "b925ff261bb6b56cc89e959d269c51befc3cc6fbccc309eae6b177401b4f9e0e",
+    "bytes": 3291
+  },
+  "codex_reconciliation": {
+    "handoff_blob": "ef88e7a2c175c14fbf910672920325f3803273b1",
+    "contents_api_utf8": {
+      "bytes": 3290,
+      "sha256": "f1a6df43be2b720794547692a091649e99d382a49a7cd087a768f5f21b9c905e"
+    },
+    "hash_matches": false,
+    "interpretation": "Different text representations. This mismatch alone does not establish corruption; peer must hash exact bytes or identify normalization.",
+    "supervisor_workflows": [
+      {
+        "id": 37278733035,
+        "name": "Security Scan",
+        "conclusion": "success"
+      },
+      {
+        "id": 37278732980,
+        "name": "Test Runner",
+        "conclusion": "success"
+      },
+      {
+        "id": 37278733060,
+        "name": "R3 RRR Control",
+        "conclusion": "success"
+      }
+    ],
+    "judge_workflows": [
+      {
+        "id": 37274676762,
+        "name": "Security Scan",
+        "conclusion": "success"
+      }
+    ],
+    "limits": "Workflow status independently read from GitHub; local 36/19 test execution has not been replicated by the peer. No new live adoption."
+  },
+  "next_peer_task": "Independently fetch exact supervisor/judge commit trees and dependencies; rerun 36/19 targeted local tests in an executable isolated environment, or report missing execution capability. Compare raw handoff bytes using SHA-256. Do not retry A/B/C without a new accessible execution channel.",
+  "changes": "Evidence only on existing handoff candidate branch; no production mutation."
+}
