@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import httpx
+from typesafe_sister.client import _post_system_one as system_one_transport
 
 from r3_judge import ORIGIN, PROTOCOL
 
@@ -59,18 +59,19 @@ def _classify(base_url: str, fixture: dict[str, str], *, model: str, api_key: st
         "content": content[:262144],
         "benchmark_rule": "Classify only the supplied content. No filename, fixture id or label is provided.",
     }
-    headers = {"Content-Type": "application/json"}
-    if api_key:
-        headers["Authorization"] = "Bearer " + api_key
-    response = httpx.post(
-        base_url.rstrip("/") + "/v1/systemone",
-        headers=headers,
-        json={"state": state, "model": model, "questions": QUESTION},
-        timeout=timeout,
-        follow_redirects=False,
+    result = system_one_transport(
+        endpoint=base_url, key=api_key, state=state, questions=QUESTION,
+        model=model, timeout=timeout,
     )
-    response.raise_for_status()
-    result = response.json()
+    identity = result.get("model")
+    metadata = result.get("x_rizzo")
+    if not isinstance(identity, str) or not identity.strip():
+        raise ValueError("response model must be a non-empty string")
+    if not isinstance(metadata, dict):
+        raise ValueError("response x_rizzo must be an object")
+    fingerprint = metadata.get("fingerprint")
+    if not isinstance(fingerprint, str) or not fingerprint.strip():
+        raise ValueError("response fingerprint must be a non-empty string")
     answer = ((result.get("answers") or {}).get("is_stub") or {})
     probability = answer.get("noul")
     if type(probability) not in (int, float) or not 0 <= probability <= 1:
@@ -83,14 +84,38 @@ def _classify(base_url: str, fixture: dict[str, str], *, model: str, api_key: st
         "predicted": predicted,
         "p_stub": float(probability),
         "correct": predicted == fixture["label"],
-        "model": str(result.get("model") or ""),
-        "backend_fingerprint": str(((result.get("x_rizzo") or {}).get("fingerprint") or "")),
+        "model": identity,
+        "backend_fingerprint": fingerprint,
     }
 
 
-def summarize(rows: list[dict[str, Any]], *, min_correct: int = 8) -> dict[str, Any]:
+def _validate_rows(rows: list[dict[str, Any]]) -> None:
+    """Reject malformed rows instead of coercing them (external review 2026-10-05)."""
+    ids, paths = set(), set()
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"row {index} is not an object")
+        if type(row.get("correct")) is not bool:
+            raise ValueError(f"row {index}: correct must be a real boolean")
+        for key in ("model", "backend_fingerprint"):
+            value = row.get(key)
+            if value is not None and not isinstance(value, str):
+                raise ValueError(f"row {index}: {key} must be a string")
+        case_id, case_path = row.get("id"), row.get("path")
+        if not isinstance(case_id, str) or not case_id or not isinstance(case_path, str) or not case_path:
+            raise ValueError(f"row {index}: id and path are required")
+        if case_id in ids or case_path in paths:
+            raise ValueError(f"row {index}: duplicate case id or path")
+        ids.add(case_id)
+        paths.add(case_path)
+
+
+def summarize(rows: list[dict[str, Any]], *, min_correct: int = 8,
+              expected_model: str | None = None,
+              expected_fingerprint: str | None = None) -> dict[str, Any]:
     if len(rows) != 10:
         raise ValueError("exactly 10 benchmark rows are required")
+    _validate_rows(rows)
     correct = sum(bool(row.get("correct")) for row in rows)
     stub_rows = [r for r in rows if r.get("expected") == "stub"]
     real_rows = [r for r in rows if r.get("expected") == "real"]
@@ -106,9 +131,18 @@ def summarize(rows: list[dict[str, Any]], *, min_correct: int = 8) -> dict[str, 
         and stub_recall >= 0.8
         and real_recall >= 0.8
     )
-    models = sorted({str(r.get("model") or "") for r in rows})
-    fingerprints = sorted({str(r.get("backend_fingerprint") or "") for r in rows if r.get("backend_fingerprint")})
-    stable_backend = len(models) == 1 and len(fingerprints) == 1 and bool(fingerprints[0])
+    # Exact identity: no str() coercion and no strip() equating different values.
+    models = sorted({r.get("model") or "" for r in rows})
+    fingerprints = sorted({r.get("backend_fingerprint") or "" for r in rows})
+    stable_backend = (len(models) == 1 and bool(models[0].strip())
+                      and len(fingerprints) == 1 and bool(fingerprints[0].strip()))
+    pinned = all(isinstance(value, str) and bool(value.strip())
+                 for value in (expected_model, expected_fingerprint))
+    matches_expected = pinned
+    if expected_model is not None and (not stable_backend or models[0] != expected_model):
+        matches_expected = False
+    if expected_fingerprint is not None and (not stable_backend or fingerprints[0] != expected_fingerprint):
+        matches_expected = False
     return {
         "protocol": PROTOCOL,
         "origin": ORIGIN,
@@ -125,7 +159,11 @@ def summarize(rows: list[dict[str, Any]], *, min_correct: int = 8) -> dict[str, 
         "stable_backend": stable_backend,
         "model": models[0] if len(models) == 1 else "",
         "backend_fingerprint": fingerprints[0] if len(fingerprints) == 1 else "",
-        "adopt": bool(beats_chance and r3_strict_gate and stable_backend),
+        "expected_model": expected_model,
+        "expected_fingerprint": expected_fingerprint,
+        "matches_expected": matches_expected,
+        "statistical_note": "10-case smoke gate only: random guessing passes 36/1024 (3.5%); not evidence of >=80% recall.",
+        "adopt": bool(beats_chance and r3_strict_gate and stable_backend and matches_expected),
         "epistemic_class": "TEST_RESULT",
         "rows": rows,
     }
@@ -138,18 +176,24 @@ def main() -> int:
     parser.add_argument("--model", default=os.getenv("R3_JUDGE_MODEL", "rizzo-latest"))
     parser.add_argument("--api-key", default=os.getenv("R3_JUDGE_API_KEY", ""))
     parser.add_argument("--timeout", type=float, default=30.0)
+    parser.add_argument("--expect-fingerprint", default=os.getenv("R3_JUDGE_EXPECT_FINGERPRINT", ""))
     parser.add_argument("--min-correct", type=int, default=8, choices=range(6, 11), metavar="6..10")
     parser.add_argument("--output", type=Path, default=Path("r3_judge/adoption_gate.json"))
     args = parser.parse_args()
+    if not args.model.strip() or not args.expect_fingerprint.strip():
+        parser.error("a non-empty --model and --expect-fingerprint are required before inference")
 
     fixtures = _read_manifest(args.manifest)
     rows = [
         _classify(args.base_url, fixture, model=args.model, api_key=args.api_key, timeout=args.timeout)
         for fixture in fixtures
     ]
-    report = summarize(rows, min_correct=args.min_correct)
+    report = summarize(rows, min_correct=args.min_correct,
+                       expected_model=args.model, expected_fingerprint=args.expect_fingerprint or None)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # Create-only: never overwrite an existing gate record (protocol requirement).
+    with args.output.open("x", encoding="utf-8") as handle:
+        handle.write(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if report["adopt"] else 2
 
