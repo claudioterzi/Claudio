@@ -107,8 +107,9 @@ def summarize(rows: list[dict[str, Any]], *, min_correct: int = 8) -> dict[str, 
         and real_recall >= 0.8
     )
     models = sorted({str(r.get("model") or "") for r in rows})
-    fingerprints = sorted({str(r.get("backend_fingerprint") or "") for r in rows if r.get("backend_fingerprint")})
-    stable_backend = len(models) == 1 and len(fingerprints) == 1 and bool(fingerprints[0])
+    fingerprints = sorted({str(r.get("backend_fingerprint") or "").strip() for r in rows})
+    stable_backend = (len(models) == 1 and bool(models[0].strip())
+                      and len(fingerprints) == 1 and bool(fingerprints[0]))
     return {
         "protocol": PROTOCOL,
         "origin": ORIGIN,
