@@ -29,7 +29,7 @@ class R3JudgeTests(unittest.TestCase):
             rows.append({"expected": "stub", "correct": i < 4, "model": "r3-model", "backend_fingerprint": "fp"})
         for i in range(5):
             rows.append({"expected": "real", "correct": i < 4, "model": "r3-model", "backend_fingerprint": "fp"})
-        report = summarize(_ids(rows))
+        report = summarize(_ids(rows), expected_model="r3-model", expected_fingerprint="fp")
         self.assertTrue(report["beats_chance"])
         self.assertTrue(report["adopt"])
         self.assertEqual(report["correct"], 8)
@@ -83,7 +83,7 @@ class R3JudgeTests(unittest.TestCase):
             summarize(rows)
 
     def test_coherent_but_unrequested_model_is_not_adopted(self):
-        self.assertTrue(summarize(_fixture(), expected_model="M")["adopt"])
+        self.assertTrue(summarize(_fixture(), expected_model="M", expected_fingerprint="F")["adopt"])
         self.assertFalse(summarize(_fixture(model="wrong-model"), expected_model="M")["adopt"])
         self.assertFalse(summarize(_fixture(), expected_model="M", expected_fingerprint="G")["adopt"])
 
