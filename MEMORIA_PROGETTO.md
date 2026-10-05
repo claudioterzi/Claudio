@@ -39,6 +39,15 @@ Evidenza: `docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json`; script `script
 - **Supervisore #113** (`1f2cdf7`): confermate e corrette l'avvio dopo SIGTERM e la grazia limitata ai leader; confermato corretto il caso Popen fallito. Mio primo tentativo (bloccare i segnali) scartato: i figli ereditavano la maschera e ignoravano SIGTERM. Restano aperti: rilevamento del sync bloccato, zombie come PID 1, drain ≥10 s, crash-loop.
 - Nessuna modifica in produzione.
 
+### Esecuzione indipendente Codex — CT-LGAI-001, 2026-10-05
+
+Evidenza: `docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json`. Scope CANDIDATE_LOCAL_VERIFIED, nessuna attivazione di produzione.
+
+- #115: risposta originale validata prima delle conversioni; riuso del trasporto condiviso disponibile sul ramo; adozione vietata senza modello e fingerprint attesi. 19 test locali PASS; sul benchmark precedente b77e0d9 gli stessi test danno 9 FAIL e 10 PASS. Nessuna inferenza live né prova di qualità.
+- #113: implementato controllo di avanzamento nel supervisore esistente, con stato effimero atomico e run ID nuovo. Errori assorbiti dal sync ora contribuiscono al fallimento del ciclo. 25 test locali PASS, inclusi processi bloccati/fallimenti ripetuti e replica/persistenza con stato temporaneo. Restano reaping PID 1, sleep/resume, drain, crash-loop e recupero autenticato reale.
+- I JSON citati nei precedenti commit di #116 risultavano assenti (404). Ora sono pubblicati: la ricostruzione storica distingue esplicitamente dichiarazioni di Claude e prove osservate da Codex; non ricrea output originali mancanti.
+- Per Orchestra servono un canale POST con autenticazione applicativa e una risposta verificata; per Rizzo serve un endpoint raggiungibile dall'esecutore. Riautorizzazione Vercel o apertura della chat sul Dell da sole non dimostrano questi prerequisiti.
+
 ## RedFrag benchmark v1 congelato — 2026-09-29
 
 RedFrag/System One promosso su `main` (PR #103, merge `8050f1c02c512cddfd822c467eab8a7953be4517`). Decisione Claudio/Raffaello: niente GPU prima di un benchmark reale. Fixture `tests/redfrag_benchmark_v1.json` congelato (SHA-256 `0cff14f3cfb64650d955ffedd227a875978e6682ccd653b1f78b112685bd127f`): 30 casi reali, 5 per classe, gold deterministico con motivazione e falsifier per caso. Falsifier trovato: il benchmark del 28/09 passava al modello anche le etichette gold; senza etichette l'accordo del solo modello scende da 1.0/0.8 a 0.4/0.2 sui 5 casi vecchi. Baseline `r3_clm` sul fixture v1: decisione finale 1.00 (gate), classe del solo modello 0.167 (flags) / 0.133 (blind), azione 0.033 / 0.100, cioè livello del caso. Jev non eseguito qui (chiave solo su Railway). Prossimo: una sessione GPU con `--provider clm`, viste flags e blind. `r3_clm` è il baseline locale contrastivo, non CLM-v0.1. Doc: `docs/R3_REDFRAG_BENCH_V1_2026-09-29.md`.
