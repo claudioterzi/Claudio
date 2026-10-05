@@ -29,6 +29,18 @@ class R3JudgeTests(unittest.TestCase):
         self.assertTrue(report["beats_chance"])
         self.assertFalse(report["adopt"])
 
+    def test_each_row_requires_backend_identity(self):
+        rows = [{"expected": "stub" if i < 5 else "real", "correct": True,
+                 "model": "rizzo-latest", "backend_fingerprint": "fp"} for i in range(10)]
+        for field in ("model", "backend_fingerprint"):
+            for missing in ("", "   "):
+                damaged = [dict(row) for row in rows]
+                damaged[0][field] = missing
+                self.assertFalse(summarize(damaged)["adopt"])
+        for row in rows:
+            row["model"] = ""
+        self.assertFalse(summarize(rows)["adopt"])
+
     def test_active_gate_must_match_model_and_fingerprint(self):
         gate = {
             "protocol": "R3-JUDGE/1",
