@@ -51,7 +51,7 @@ def test_unpinned_report_cannot_adopt(pins):
 def test_cli_refuses_missing_pin_before_inference():
     with patch.dict("os.environ", {"R3_JUDGE_EXPECT_FINGERPRINT": ""}), \
          patch("sys.argv", ["benchmark", "nonexistent.json"]), \
-         patch("r3_judge.benchmark.system_one", create=True) as call:
+         patch("r3_judge.benchmark.system_one_transport", create=True) as call:
         with pytest.raises(SystemExit) as exit:
             main()
         assert exit.value.code == 2
