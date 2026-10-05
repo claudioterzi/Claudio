@@ -228,6 +228,10 @@ queue:
     experiment_status: CANDIDATE_RECORD_RECONCILIATION. Remote issue/PR metadata and original branch ledger read. Model quality, automatic cross-chat recall and production adoption are not verified.
     current_blocker: Reconcile judge/TERZI branch-only work against main, verify the candidate records and execute existing admission/context A/B gates. No provider defaults change before those gates.
     next_action: "Recover #85 and compare #88 adapters with the shared client; reuse #91 for bounded retrieval. Preserve historical hashes, statuses and concrete resume triggers."
+    activation_attempt_2026_10_05_0811: "Evidence docs/evidenze/R3_ACTIVATION_ATTEMPT_2026-10-05.json. Orchestra POST BLOCKED (Vercel connector 403 on team scope, egress denied, Deployment Protection). Rizzo live BLOCKED (no reachable instance); PR #115 gate 4/4 PASS and pre-fix control FAIL. PR #113 isolated supervisor test executed (exit detection, same-state SHA-256 restart, SIGTERM/SIGKILL); hung/failing sync not detected; production draining 0 s and watchPatterns r3/** make merge a live redeploy. No production change."
+    external_review_2026_10_05: "GPT review claims tested before adoption (docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json). PR #115 b77e0d9: 5 gate defects fixed, 9/9 tests. PR #113 1f2cdf7: startup race and group grace fixed; heartbeat, PID-1 reaping, drain and crash-loop still open. No production change."
+
+    independent_execution_CT_LGAI_001: "Codex: evidence docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json. PR #115 validates raw identity and requires both pins (19 local PASS; baseline 9 FAIL/10 PASS). PR #113 implements progress/failure detection (25 local PASS). Real inference, authenticated recovery and production adoption NOT_RUN. Historical absent evidence reconstructed with explicit provenance."
 
 consolidation_gate:
   required:
@@ -260,3 +264,10 @@ last_cycle:
 
 next_action: R3-019-live-controlled-baseline-execution
 security_precheck: R3-022-live-continuity-replay-BLOCKED_NO_PROVIDER_OR_PREVIEW
+
+resilience_completion_20261005:
+  status: CANDIDATE
+  evidence: docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json
+  local_tests: "Supervisor 36 PASS; judge 19 PASS; Orchestra 4 mocked checks PASS"
+  configuration: "Railway drain 10 saved for next deployment; deployments unchanged"
+  remaining: "Authenticated real-state recovery; Railway sleep acceptance; online Rizzo; authenticated Orchestra inference"

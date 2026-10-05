@@ -23,6 +23,35 @@ Il registro `R3_CONTINUITY_LEDGER.json` è recuperato dal ramo `r3-judge-v0.1`, 
 
 **Punto di ripresa:** leggere memoria, coda e registro; verificare il ramo/commit corrente per l'attività; annotare decisione, prova, limite, blocco e prossimo passo prima di fermarsi. Correzioni datate senza cancellare storia. Nessun caricamento automatico universale di chat/email o sincronizzazione privata è stato attivato.
 
+### Tentativo di attivazione — 2026-10-05 08:11–08:25
+
+Evidenza: `docs/evidenze/R3_ACTIVATION_ATTEMPT_2026-10-05.json`. Main osservato `02fd5960…4108011`. Nessun segreto letto o scritto; nessuna modifica Vercel/Railway/provider.
+
+- **Orchestra Vercel — BLOCCATO.** Connettore Vercel 403 sullo scope `claudio-terzi-s-projects`; proxy della sessione rifiuta `claudio-ebon.vercel.app`; GET anonimo → 302 login (Deployment Protection). POST NON eseguita, nessun provider ha risposto. Serve riautorizzare il connettore Vercel su quello scope o un canale server-side che invii la POST con il segreto già in ambiente.
+- **Rizzo — BLOCCATO live, gate locale verificato.** #115: 4/4 test del gate passano; gli stessi test sul benchmark pre-fix falliscono (1 FAIL), quindi la correzione è reale. Nessuna istanza Rizzo raggiungibile: Dell non collegato a questa sessione, nessun servizio Rizzo su Railway. Modello/fingerprint non identificati, benchmark non eseguito. Riuso: #88 `rizzo_local` e `r3_judge/benchmark.py` aprono client httpx propri; vanno instradati sul trasporto condiviso `typesafe_sister/client.py`.
+- **Supervisione Railway — test isolato ESEGUITO, stato reale BLOCCATO, produzione invariata.** Harness `scripts/r3_supervisor_isolated_check.py`: uscita del sync rilevata (rc 1), riavvio sullo stesso stato con SHA-256 identici, SIGTERM pulito, SIGKILL dopo 5 s; sync bloccato e cicli falliti NON rilevati (limite confermato). In produzione node-a: restart policy di default ON_FAILURE max 10; draining 0 s (la grazia di 5 s non verrebbe mai usata); `watchPatterns r3/**` su main ⇒ il merge di #113 ridistribuisce node-a e node-v2. Presente `R3_ALLOW_TEST_SHUTDOWN` in produzione: da confermare.
+
+### Revisione esterna GPT verificata — 2026-10-05 08:31–08:40
+
+Evidenza: `docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json`; script `scripts/r3_gpt_review_falsifiers.py`. Ogni obiezione di GPT è stata trasformata in test ed eseguita sul codice prima e dopo; l'accordo di GPT non è stato trattato come prova.
+
+- **Gate #115** (`b77e0d9`): confermate e corrette 5 falle (stringa "false" contata come corretta, identità non-stringa, fingerprint con spazi equiparati, modello richiesto non verificato, casi duplicati). Report ora create-only. 9/9 test; i 5 nuovi falliscono sul codice precedente. Confermato: 10 casi sono solo uno smoke test (il caso supera il gate 36/1024 volte).
+- **Supervisore #113** (`1f2cdf7`): confermate e corrette l'avvio dopo SIGTERM e la grazia limitata ai leader; confermato corretto il caso Popen fallito. Mio primo tentativo (bloccare i segnali) scartato: i figli ereditavano la maschera e ignoravano SIGTERM. Restano aperti: rilevamento del sync bloccato, zombie come PID 1, drain ≥10 s, crash-loop.
+- Nessuna modifica in produzione.
+
+### Esecuzione indipendente Codex — CT-LGAI-001, 2026-10-05
+
+Evidenza: `docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json`. Scope CANDIDATE_LOCAL_VERIFIED, nessuna attivazione di produzione.
+
+- #115: risposta originale validata prima delle conversioni; riuso del trasporto condiviso disponibile sul ramo; adozione vietata senza modello e fingerprint attesi. 19 test locali PASS; sul benchmark precedente b77e0d9 gli stessi test danno 9 FAIL e 10 PASS. Nessuna inferenza live né prova di qualità.
+- #113: implementato controllo di avanzamento nel supervisore esistente, con stato effimero atomico e run ID nuovo. Errori assorbiti dal sync ora contribuiscono al fallimento del ciclo. 25 test locali PASS, inclusi processi bloccati/fallimenti ripetuti e replica/persistenza con stato temporaneo. Restano reaping PID 1, sleep/resume, drain, crash-loop e recupero autenticato reale.
+- I JSON citati nei precedenti commit di #116 risultavano assenti (404). Ora sono pubblicati: la ricostruzione storica distingue esplicitamente dichiarazioni di Claude e prove osservate da Codex; non ricrea output originali mancanti.
+- Per Orchestra servono un canale POST con autenticazione applicativa e una risposta verificata; per Rizzo serve un endpoint raggiungibile dall'esecutore. Riautorizzazione Vercel o apertura della chat sul Dell da sole non dimostrano questi prerequisiti.
+
+### Orchestra: riconciliazione degli scope — 2026-10-05
+
+Evidenza: `docs/evidenze/R3_ORCHESTRA_SCOPE_RECONCILIATION_20261005.json`. Codex ha riletto progetto prj_NfWglC7AYRQs6W5pJBB6nf3lDqXN, team team_dO423fnEAekxtan0rF3u2CQt, deployment dpl_2NnnGU6FCbRRHzhCjvyxDCW7gAha READY; GET Orchestra 200 alle 06:57:28 UTC. Il report fornito dall'utente riguarda invece team rosso-rosso-rosso, alias claudio-ten-phi e fork Claudioterzi82/Claudio (POST 405, endpoint dichiarato assente). Quest'ultimo risultato resta peer-reported e non smentisce il primo. Nessuna POST con inferenza è verificata in questa sessione.
+
 ## RedFrag benchmark v1 congelato — 2026-09-29
 
 RedFrag/System One promosso su `main` (PR #103, merge `8050f1c02c512cddfd822c467eab8a7953be4517`). Decisione Claudio/Raffaello: niente GPU prima di un benchmark reale. Fixture `tests/redfrag_benchmark_v1.json` congelato (SHA-256 `0cff14f3cfb64650d955ffedd227a875978e6682ccd653b1f78b112685bd127f`): 30 casi reali, 5 per classe, gold deterministico con motivazione e falsifier per caso. Falsifier trovato: il benchmark del 28/09 passava al modello anche le etichette gold; senza etichette l'accordo del solo modello scende da 1.0/0.8 a 0.4/0.2 sui 5 casi vecchi. Baseline `r3_clm` sul fixture v1: decisione finale 1.00 (gate), classe del solo modello 0.167 (flags) / 0.133 (blind), azione 0.033 / 0.100, cioè livello del caso. Jev non eseguito qui (chiave solo su Railway). Prossimo: una sessione GPU con `--provider clm`, viste flags e blind. `r3_clm` è il baseline locale contrastivo, non CLM-v0.1. Doc: `docs/R3_REDFRAG_BENCH_V1_2026-09-29.md`.
@@ -1453,3 +1482,7 @@ Il loop riusa R3-007 per la verifica dello stato e l'Evolution Kernel per il led
 ## RedFrag benchmark v1 — Jev reale eseguito — 2026-09-29
 
 Sul fixture congelato `0cff14f3…bd127f`, Jev/TypeSafe (`jev-latest`) è stato eseguito su Railway con 30 casi ×20 ripetizioni per vista. Flags: final 1.00, class 0.700, action 0.4667, dissent 0.5333, failures 0, p50/p95/p99 106.9/159.2/217.4 ms. Blind: final 1.00, class 0.700, action 0.4000, dissent 0.7000, failures 0, p50/p95/p99 110.0/164.6/271.1 ms; un outlier ~30.2 s. Il baseline locale blind era 0.1333/0.1000. Il benchmark 28/09 resta superseded per gold leakage. CLM-v0.1 GPU resta NOT_RUN finché esiste un endpoint GPU esterno deliberatamente configurato.
+
+
+### 2026-10-05 — CT-LGAI-001 resilience completion (independent)
+Supervisor candidate #113 e068cfd: 36 local tests PASS (17.01s), including actual adopted/escaped descendant cleanup, return-code preservation, progress, bounded resume grace and failure cooldown. Judge #115 73c932a: 19 tests PASS. Orchestra: 4 local mocked checks, no live authenticated inference. Railway node-a/node-v2 drainingSeconds=10 saved and read back, effective at next deployment; existing deployment IDs unchanged. ON_FAILURE/max10 update acknowledged; default fields omitted from independent configuration readback. Evidence: docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json. Remaining: authenticated cloned real-state recovery, Railway-specific sleep acceptance, online Rizzo device, authenticated Orchestra inference. No production supervisor adoption; do not merge #113 merely because local tests pass. Ancestor-mounted /proc made PID-absence tests false positives: verify actual disappearance and translate NSpid.
