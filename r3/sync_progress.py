@@ -34,6 +34,17 @@ class ProgressWatchdog:
         self.max_failures, self.clock = max_failures, clock
         self.started = self.last_change = clock()
         self.seq, self.phase = 0, "working"
+        self.resume_seq = None
+
+    def resume(self):
+        """Grant one normal budget after supervisor scheduling suspension.
+
+        Counter regression and consecutive failures remain enforced. A suspended
+        sync alone receives no grace: only a pause of the monitoring loop does.
+        """
+        if self.resume_seq != self.seq:
+            self.last_change = self.clock()
+            self.resume_seq = self.seq
 
     def check(self):
         now = self.clock()
