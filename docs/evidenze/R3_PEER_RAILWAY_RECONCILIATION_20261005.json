@@ -1,0 +1,56 @@
+{
+  "schema": "R3-PEER-RAILWAY-RECONCILIATION/1",
+  "date": "2026-10-05",
+  "authority": "DATA_ONLY",
+  "source": "User supplied peer report referring to d232fd9; repository/report artifact not independently recovered",
+  "peer_reported": {
+    "sleep_resume": {
+      "service": "r3-external-test",
+      "cold_seconds": 7.851,
+      "warm_seconds": [
+        0.288,
+        0.26
+      ],
+      "status_before": "SLEEPING",
+      "status_after": "online"
+    },
+    "ready": {
+      "status": 503,
+      "reasons": [
+        "rrr_controller_key_not_configured",
+        "rrr_not_active"
+      ],
+      "durable_state_detected": true,
+      "storage_id_created_this_boot": false
+    },
+    "unauthenticated_protected_routes": 401,
+    "live_inference": "BLOCKED"
+  },
+  "independently_verified": {
+    "node_a_and_v2_configuration": {
+      "drainingSeconds": 10,
+      "staged": null,
+      "replicas_per_service": 1,
+      "region": "sfo",
+      "sleepApplication": true,
+      "healthcheckPath": "/health",
+      "restartPolicyMaxRetries": "absent from returned config"
+    },
+    "node_a_start": "background sync plus uvicorn; candidate supervisor not deployed",
+    "node_v2_start": "uvicorn only",
+    "readiness_source": "r3/node.py main explicitly separates liveness from readiness and emits cited reasons"
+  },
+  "corrections": [
+    "One infrastructure replica does not demonstrate absence of application-level document replication between two services.",
+    "Wakeup of the current test service does not validate candidate supervisor/watchdog sleep-resume behavior.",
+    "Storage marker not created this boot is not a before/after authenticated content-hash recovery proof.",
+    "Absent max-retries field is ambiguous; neither applied value nor failure can be inferred.",
+    "Vercel connector authorization alone does not supply an application-authenticated POST execution channel.",
+    "Authorized protected GET and peer unauthenticated 401/302 are different access contexts, not conflicting results."
+  ],
+  "next_actions": [
+    "Peer with an existing secret-capable executor may use R3_API_TOKEN only as an in-memory auth header for read-only fingerprint requests; never expose token in tool output, logs, repository or prompts. If tool returns plaintext into conversation, stop and use a server-side channel.",
+    "Return full redacted /ready observations with exact host/deployment/time; inspect existing RRR controller ownership and signed activation protocol before any activation; do not generate replacement authority or disable readiness gates.",
+    "Keep #113 candidate pending isolated real-state recovery and candidate-specific Railway sleep acceptance."
+  ]
+}
