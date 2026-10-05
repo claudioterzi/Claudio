@@ -218,7 +218,7 @@
         "resilience_completion": {
           "evidence": "docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json",
           "result": "36 local supervisor tests PASS; orphan cleanup/progress/cooldown implemented. Drain 10 saved for next deployment. Candidate not adopted.",
-          "head": "73c932ab792906bf108f03516b79c00c7a9b3193"
+          "head": "e068cfd34380048df3a7536ff086d5f62db0eed6"
         }
       },
       "superseded_next_actions_2026_10_05": [
