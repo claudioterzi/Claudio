@@ -171,9 +171,8 @@
         "scope": "5 process-only local tests; no production adoption"
       },
       "next_actions": [
-        "Verify PID-1 reaping and sleep/resume before progress watchdog adoption",
-        "Review draining >=10s and crash-loop policy; do not apply unrelated staged changes",
-        "Run hosted checks and authenticated content/hash recovery on isolated cloned state before scheduled adoption"
+        "Authenticated cloned real-state recovery and hash/replication readback",
+        "Railway-specific inactivity sleep/resume acceptance"
       ],
       "current_gap": [
         "Candidate is not merged or adopted in production."
@@ -215,6 +214,11 @@
             "hosted checks",
             "authenticated real-state recovery"
           ]
+        },
+        "resilience_completion": {
+          "evidence": "docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json",
+          "result": "36 local supervisor tests PASS; orphan cleanup/progress/cooldown implemented. Drain 10 saved for next deployment. Candidate not adopted.",
+          "head": "73c932ab792906bf108f03516b79c00c7a9b3193"
         }
       },
       "superseded_next_actions_2026_10_05": [
@@ -224,6 +228,11 @@
         "Set draining >=10 s and add sync heartbeat check in the candidate",
         "Run recovery on an isolated cloned volume with authenticated content/hash readback",
         "Merge only in a planned window"
+      ],
+      "superseded_next_actions_resilience_completion": [
+        "Verify PID-1 reaping and sleep/resume before progress watchdog adoption",
+        "Review draining >=10s and crash-loop policy; do not apply unrelated staged changes",
+        "Run hosted checks and authenticated content/hash recovery on isolated cloned state before scheduled adoption"
       ]
     }
   ],
