@@ -23,3 +23,9 @@ Use another AI when a bounded independent audit, factual retrieval or specialist
 4. Continue recording evidence in MEMORIA_PROGETTO.md, R3_WORK_QUEUE.yaml and R3_CONTINUITY_LEDGER.json via isolated reviewed candidates; no new global memory engine.
 
 Rollback: close/revert PR #115; no Railway configuration or provider default was changed.
+
+## Activation attempt — 2026-10-05 08:08 Europe/Paris
+Status: BLOCKED_ACCESS_AND_LIVE_GATES, not WAITING_FOR_ROUTINE_PERMISSION.
+User explicitly authorized activation. Vercel get_project_env for the existing bridge returned metadata only (sensitive, decrypted=false, no value). Local environment has no bridge credential, Vercel token/CLI or Runpod key. Available deployment fetch supports GET only, not application-authenticated POST. Do not weaken authentication, overwrite sensitive variables or claim inference from health.
+PR #115 Security Scan #882 passed; local judge gate tests 4 PASS. Hosted Test Runner is not observed for this branch-targeted candidate.
+Resume trigger: an authorized server-side invocation channel to the existing Orchestra and an intentionally configured Rizzo endpoint; isolated Railway recovery with authenticated content verification. No production activation was performed in this attempt.
