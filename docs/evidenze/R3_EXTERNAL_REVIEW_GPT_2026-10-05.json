@@ -67,5 +67,24 @@
     "Orchestra application-authenticated POST"
   ],
   "secrets": "No credentials read, copied or written",
-  "history_preserved": true
+  "history_preserved": true,
+  "hosted_checks": {
+    "pr113": {
+      "head": "79e7c32b56facb3e5fdea32211ef459207be484f",
+      "Test_Runner": "PASS",
+      "Security_Scan": "PASS",
+      "R3_RRR_Control": "PASS"
+    },
+    "pr115": {
+      "head": "73c932ab792906bf108f03516b79c00c7a9b3193",
+      "Security_Scan": "PASS",
+      "Test_Runner": "NOT_OBSERVED"
+    },
+    "pr116": {
+      "head": "ec5c7abbd2f4133e86555e97e4075062bd88d479",
+      "Test_Runner": "PASS",
+      "Security_Scan": "PASS",
+      "scope": "Prior records checkpoint; subsequent scope reconciliation is a new revision"
+    }
+  }
 }
