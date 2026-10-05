@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from typesafe_sister.client import system_one
+from typesafe_sister.client import _post_system_one as system_one_transport
 
 from r3_judge import ORIGIN, PROTOCOL
 
@@ -59,9 +59,9 @@ def _classify(base_url: str, fixture: dict[str, str], *, model: str, api_key: st
         "content": content[:262144],
         "benchmark_rule": "Classify only the supplied content. No filename, fixture id or label is provided.",
     }
-    result = system_one(
-        state, QUESTION, provider="clm", base_url=base_url,
-        model=model, api_key=api_key, timeout=timeout,
+    result = system_one_transport(
+        endpoint=base_url, key=api_key, state=state, questions=QUESTION,
+        model=model, timeout=timeout,
     )
     identity = result.get("model")
     metadata = result.get("x_rizzo")
