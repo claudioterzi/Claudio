@@ -231,6 +231,8 @@ queue:
     activation_attempt_2026_10_05_0811: "Evidence docs/evidenze/R3_ACTIVATION_ATTEMPT_2026-10-05.json. Orchestra POST BLOCKED (Vercel connector 403 on team scope, egress denied, Deployment Protection). Rizzo live BLOCKED (no reachable instance); PR #115 gate 4/4 PASS and pre-fix control FAIL. PR #113 isolated supervisor test executed (exit detection, same-state SHA-256 restart, SIGTERM/SIGKILL); hung/failing sync not detected; production draining 0 s and watchPatterns r3/** make merge a live redeploy. No production change."
     external_review_2026_10_05: "GPT review claims tested before adoption (docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json). PR #115 b77e0d9: 5 gate defects fixed, 9/9 tests. PR #113 1f2cdf7: startup race and group grace fixed; heartbeat, PID-1 reaping, drain and crash-loop still open. No production change."
 
+    independent_execution_CT_LGAI_001: "Codex: evidence docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json. PR #115 validates raw identity and requires both pins (19 local PASS; baseline 9 FAIL/10 PASS). PR #113 implements progress/failure detection (25 local PASS). Real inference, authenticated recovery and production adoption NOT_RUN. Historical absent evidence reconstructed with explicit provenance."
+
 consolidation_gate:
   required:
     - documented_change
