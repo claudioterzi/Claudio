@@ -88,9 +88,33 @@ def _classify(base_url: str, fixture: dict[str, str], *, model: str, api_key: st
     }
 
 
-def summarize(rows: list[dict[str, Any]], *, min_correct: int = 8) -> dict[str, Any]:
+def _validate_rows(rows: list[dict[str, Any]]) -> None:
+    """Reject malformed rows instead of coercing them (external review 2026-10-05)."""
+    ids, paths = set(), set()
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"row {index} is not an object")
+        if type(row.get("correct")) is not bool:
+            raise ValueError(f"row {index}: correct must be a real boolean")
+        for key in ("model", "backend_fingerprint"):
+            value = row.get(key)
+            if value is not None and not isinstance(value, str):
+                raise ValueError(f"row {index}: {key} must be a string")
+        case_id, case_path = row.get("id"), row.get("path")
+        if not isinstance(case_id, str) or not case_id or not isinstance(case_path, str) or not case_path:
+            raise ValueError(f"row {index}: id and path are required")
+        if case_id in ids or case_path in paths:
+            raise ValueError(f"row {index}: duplicate case id or path")
+        ids.add(case_id)
+        paths.add(case_path)
+
+
+def summarize(rows: list[dict[str, Any]], *, min_correct: int = 8,
+              expected_model: str | None = None,
+              expected_fingerprint: str | None = None) -> dict[str, Any]:
     if len(rows) != 10:
         raise ValueError("exactly 10 benchmark rows are required")
+    _validate_rows(rows)
     correct = sum(bool(row.get("correct")) for row in rows)
     stub_rows = [r for r in rows if r.get("expected") == "stub"]
     real_rows = [r for r in rows if r.get("expected") == "real"]
@@ -106,10 +130,16 @@ def summarize(rows: list[dict[str, Any]], *, min_correct: int = 8) -> dict[str, 
         and stub_recall >= 0.8
         and real_recall >= 0.8
     )
-    models = sorted({str(r.get("model") or "") for r in rows})
-    fingerprints = sorted({str(r.get("backend_fingerprint") or "").strip() for r in rows})
+    # Exact identity: no str() coercion and no strip() equating different values.
+    models = sorted({r.get("model") or "" for r in rows})
+    fingerprints = sorted({r.get("backend_fingerprint") or "" for r in rows})
     stable_backend = (len(models) == 1 and bool(models[0].strip())
-                      and len(fingerprints) == 1 and bool(fingerprints[0]))
+                      and len(fingerprints) == 1 and bool(fingerprints[0].strip()))
+    matches_expected = True
+    if expected_model is not None and (not stable_backend or models[0] != expected_model):
+        matches_expected = False
+    if expected_fingerprint is not None and (not stable_backend or fingerprints[0] != expected_fingerprint):
+        matches_expected = False
     return {
         "protocol": PROTOCOL,
         "origin": ORIGIN,
@@ -126,7 +156,11 @@ def summarize(rows: list[dict[str, Any]], *, min_correct: int = 8) -> dict[str, 
         "stable_backend": stable_backend,
         "model": models[0] if len(models) == 1 else "",
         "backend_fingerprint": fingerprints[0] if len(fingerprints) == 1 else "",
-        "adopt": bool(beats_chance and r3_strict_gate and stable_backend),
+        "expected_model": expected_model,
+        "expected_fingerprint": expected_fingerprint,
+        "matches_expected": matches_expected,
+        "statistical_note": "10-case smoke gate only: random guessing passes 36/1024 (3.5%); not evidence of >=80% recall.",
+        "adopt": bool(beats_chance and r3_strict_gate and stable_backend and matches_expected),
         "epistemic_class": "TEST_RESULT",
         "rows": rows,
     }
@@ -139,6 +173,7 @@ def main() -> int:
     parser.add_argument("--model", default=os.getenv("R3_JUDGE_MODEL", "rizzo-latest"))
     parser.add_argument("--api-key", default=os.getenv("R3_JUDGE_API_KEY", ""))
     parser.add_argument("--timeout", type=float, default=30.0)
+    parser.add_argument("--expect-fingerprint", default=os.getenv("R3_JUDGE_EXPECT_FINGERPRINT", ""))
     parser.add_argument("--min-correct", type=int, default=8, choices=range(6, 11), metavar="6..10")
     parser.add_argument("--output", type=Path, default=Path("r3_judge/adoption_gate.json"))
     args = parser.parse_args()
@@ -148,9 +183,12 @@ def main() -> int:
         _classify(args.base_url, fixture, model=args.model, api_key=args.api_key, timeout=args.timeout)
         for fixture in fixtures
     ]
-    report = summarize(rows, min_correct=args.min_correct)
+    report = summarize(rows, min_correct=args.min_correct,
+                       expected_model=args.model, expected_fingerprint=args.expect_fingerprint or None)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # Create-only: never overwrite an existing gate record (protocol requirement).
+    with args.output.open("x", encoding="utf-8") as handle:
+        handle.write(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if report["adopt"] else 2
 
