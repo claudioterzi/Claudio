@@ -4,8 +4,24 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-09-29
+> Ultimo aggiornamento: 2026-10-05 (delta candidato; storia preservata)
 
+
+## Continuità Rizzo e attività aperte — 2026-10-05
+
+Stato: **CANDIDATE_RECONCILIATION / DATA_ONLY**, nella PR #114; nessuna adozione su main o produzione implicita.
+
+Il registro `R3_CONTINUITY_LEDGER.json` è recuperato dal ramo `r3-judge-v0.1`, blob `035d9d47bbcfa93a05b0ad1b37208fdb3f4f12e8`, preservando l'elemento originale e aggiungendo riferimenti di ripresa. Non è un nuovo motore di memoria.
+
+- R3-JUDGE [#85](https://github.com/claudioterzi/Claudio/issues/85): issue aperta; riconciliazione del ramo e benchmark di ammissione su 10 file ancora richiesti.
+- TERZI Flow [#88](https://github.com/claudioterzi/Claudio/pull/88): draft aperta, head `50a59a98d140928eb3f5c9e41fccdcf178bde64e`; distillazione e adapter precedenti da confrontare con il trasporto condiviso attuale.
+- Pointer-first [#91](https://github.com/claudioterzi/Claudio/pull/91): draft aperta, head `35c75f5d7bec16b97ad70295633045d227ae51e4`; riusare questo candidato per il contesto, A/B ancora richiesto.
+- Rizzo [#114](https://github.com/claudioterzi/Claudio/pull/114): 12 test locali/mock superati in questa sessione; inferenza live, qualità e calibrazione NON eseguite.
+- Supervisione [#113](https://github.com/claudioterzi/Claudio/pull/113): 5 test locali di processo superati; adozione Railway NON eseguita.
+
+**Decisione Claudio:** ottimizzare la continuità e recuperare il lavoro precedente prima di duplicarlo. Classificazione retroattiva: RETEST per l'ammissione operativa; KEEP per i riferimenti storici. Il precedente 21/21 riportato non è stato rieseguito qui.
+
+**Punto di ripresa:** leggere memoria, coda e registro; verificare il ramo/commit corrente per l'attività; annotare decisione, prova, limite, blocco e prossimo passo prima di fermarsi. Correzioni datate senza cancellare storia. Nessun caricamento automatico universale di chat/email o sincronizzazione privata è stato attivato.
 
 ## RedFrag benchmark v1 congelato — 2026-09-29
 
