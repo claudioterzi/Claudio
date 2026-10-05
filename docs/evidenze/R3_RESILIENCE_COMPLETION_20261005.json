@@ -4,8 +4,9 @@
   "scope": "Independent local execution and provider configuration acknowledgements; no production runtime adoption",
   "code": {
     "supervisor_pr": 113,
-    "head": "73c932ab792906bf108f03516b79c00c7a9b3193",
-    "judge_pr": 115
+    "supervisor_head": "e068cfd34380048df3a7536ff086d5f62db0eed6",
+    "judge_pr": 115,
+    "judge_head": "73c932ab792906bf108f03516b79c00c7a9b3193"
   },
   "tests": {
     "passed": 36,
