@@ -13,3 +13,19 @@ Local validation: 25 tests pass (5 original process tests, 9 new progress tests 
 Still required before adoption: PID-1 descendant reaping, actual sleep/resume verification, drain at least 10 seconds for 5-second internal grace, hosted checks, exact live source/readiness and authenticated state-preserving controlled recovery. No model admission or production fault was triggered. #113 remains a draft; its merge touches r3/** and can redeploy both nodes.
 
 Rollback: retain the prior startup command and source revision. Preserve all historical baseline evidence. This implementation is a post-review candidate, not a preregistered adoption experiment.
+
+## Autonomous completion — 2026-10-05
+
+Status: candidate, 36 local supervisor/progress/replication/persistence tests PASS (17.01s). Additional judge suite 19 PASS; four local Orchestra route/authentication checks PASS with model calls mocked. No inference claim.
+
+Linux subreaper and selective waits preserve Popen leader status. PPid/NSpid mapping handles ancestor-mounted /proc. Earlier checks of /proc/<inner-pid> falsely indicated orphan disappearance and were replaced with real process-existence checks. Shutdown now signals adopted descendants even after setsid, grants TERM grace, then collects/kills/reaps new orphan generations for at most one additional second. Incomplete cleanup fails nonzero; handlers/subreaper settings are restored.
+
+A monitoring-loop pause over one second grants one new timeout budget per unchanged progress sequence. Further pauses cannot indefinitely hide the same stall. Actual SIGSTOP/SIGCONT tests validate local behavior, not Railway-specific sleep semantics.
+
+R3_FAILURE_DELAY_SECONDS defaults to 5 in main, bounded 0..60. After cleanup, a failed service pauses before its nonzero exit; SIGTERM interrupts that cooldown. This limits rapid churn but does not repair permanent faults.
+
+Infrastructure changed in this attempt: drainingSeconds=10 saved and independently read back for both nodes. ON_FAILURE/max10 writes acknowledged; independent serialization omits those default fields, so direct readback is not claimed. Configuration takes effect on the next deployment. Existing deployments/startup commands remain unchanged, nodes online with no reported failures.
+
+Still blocked: authenticated volume clone/recovery, actual Railway sleep/resume; device Claudio offline for Rizzo; no existing Vercel command session or usable sensitive bridge value for an authenticated Orchestra POST. Other Vercel team rosso-rosso-rosso returns 403 to this connector. Railway agent returned usage-limit reached.
+
+Code checkpoint: 6c5854a77268503314d78983aa24e2617d44196b. Rollback infrastructure: reset drainingSeconds to the prior default (null); restart defaults were already reported ON_FAILURE/max10. No runtime source rollout was initiated.
