@@ -1,6 +1,6 @@
-version: 9
+version: 10
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-10-05
+updated: 2026-10-06
 status: ACTIVE
 
 principles:
@@ -228,6 +228,14 @@ queue:
     experiment_status: CANDIDATE_RECORD_RECONCILIATION. Remote issue/PR metadata and original branch ledger read. Model quality, automatic cross-chat recall and production adoption are not verified.
     current_blocker: Reconcile judge/TERZI branch-only work against main, verify the candidate records and execute existing admission/context A/B gates. No provider defaults change before those gates.
     next_action: "Recover #85 and compare #88 adapters with the shared client; reuse #91 for bounded retrieval. Preserve historical hashes, statuses and concrete resume triggers."
+    continuity_resume_20261006:
+      decision: "Riprendere dal confronto autenticato dei due nodi; mantenere #113 candidato e preservare la quarantena RRR."
+      status: "BLOCKED_AUTHENTICATED_NODE_READ"
+      evidence: "docs/evidenze/R3_CONTINUITY_RESUME_20261006.json"
+      next_action: "Rendere R3_API_TOKEN disponibile come segreto a un esecutore HTTPS autorizzato; riusare scripts/r3_restart_proof.py capture su entrambi i nodi senza --seed-file, con nuovi output fuori dal repository pubblico."
+      blocker: "R3_API_TOKEN assente in questo esecutore; utente indica chat/app DeepSeek, senza canale esecutore verificato. Desktop Commander Claudio offline."
+      completion_criterion: "GET autenticati /state/fingerprint riusciti su entrambi gli host, con timestamp e deployment; confronto di document_hashes/document_set_sha256/documents_missing_or_corrupt e storage identities. Snapshot uguali non provano causalità della replica o recovery."
+      resume_trigger: "Il segreto esistente è disponibile in un esecutore raggiungibile e autorizzato; conferma solo presenza e capacità, mai il valore."
     activation_attempt_2026_10_05_0811: "Evidence docs/evidenze/R3_ACTIVATION_ATTEMPT_2026-10-05.json. Orchestra POST BLOCKED (Vercel connector 403 on team scope, egress denied, Deployment Protection). Rizzo live BLOCKED (no reachable instance); PR #115 gate 4/4 PASS and pre-fix control FAIL. PR #113 isolated supervisor test executed (exit detection, same-state SHA-256 restart, SIGTERM/SIGKILL); hung/failing sync not detected; production draining 0 s and watchPatterns r3/** make merge a live redeploy. No production change."
     external_review_2026_10_05: "GPT review claims tested before adoption (docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json). PR #115 b77e0d9: 5 gate defects fixed, 9/9 tests. PR #113 1f2cdf7: startup race and group grace fixed; heartbeat, PID-1 reaping, drain and crash-loop still open. No production change."
 
