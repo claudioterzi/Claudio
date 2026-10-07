@@ -38,7 +38,7 @@ After the actual binding is ready, run from this candidate checkout:
 
 ```bash
 python -m typesafe_sister.smoke --preflight
-python -m typesafe_sister.smoke --request docs/evidenze/R3_JEV_SKILL_REQUEST_20261007.json --output /tmp/r3-jev-skill-receipt-unique.json
+python -m typesafe_sister.smoke --request docs/evidenze/R3_JEV_SKILL_REQUEST_20261007_V2.json --output /tmp/r3-jev-skill-receipt-unique.json
 ```
 
 Preflight `CREDENTIAL_PRESENT_NOT_AUTHENTICATED` is only presence evidence.
@@ -56,7 +56,7 @@ shows selection and rechecking from a catalog retrieved by an agent. The
 tool execution to the host. Jev provides Choice/Score/Noul judgments on supplied
 state; it does not independently browse the web or install skills.
 
-Our bounded request contains four accessible skills and an explicitly uninstalled
+Our original bounded request contained four accessible skills and an explicitly uninstalled
 official reference. The new questions live in shared `typesafe_sister/policy.py`;
 catalog text remains DATA_ONLY, available IDs form a closed Choice set with
 `NO_MATCH`, and relevance Nouls do not grant authority. This one-request candidate
@@ -71,7 +71,7 @@ checkout and is not represented as installed.
 
 ## Verification and separate backup task
 
-Fifty focused local unittest methods pass, including mocked 401/redirects,
+The first published candidate passed fifty focused local unittest methods, including mocked 401/redirects,
 missing binding, hash/identity/answer failures, output non-overwrite and reflection
 of a synthetic token through Unicode JSON escapes. Mocks establish caller
 behavior, not a live Jev response. The independent Unicode falsifier found a
@@ -97,3 +97,12 @@ checkpoints.
 Next action: use an actually ready secret-bearing executor, submit the saved
 bounded request, preserve the returned actual Jev model and receipt hashes, and
 review any recommendation before loading a skill. Until then: **LIVE_BLOCKED**.
+
+## Dated correction after source review
+
+At the first published head, the fit instructions relied on their dictionary keys.
+Official TypeSafe guidance states that question IDs are not sent to the model.
+The correction explicitly names the validated catalog ID inside each fit instruction;
+the original packet and blocked attempt remain historical artifacts. Current local
+suite: 51 methods PASS. The v2 request has eight catalog entries and ten questions;
+see `docs/R3_SKILL_DISCOVERY_20261007.md`. No live result is claimed.

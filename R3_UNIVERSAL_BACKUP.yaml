@@ -83,3 +83,20 @@ dated_attempts:
     next_action: "Authenticate both existing hosts; upload/download/hash-check the approved private archive and prove isolated restore without changing RRR authority."
     completion_criterion: "Both intended node copies verified independently, followed by the complete restore_gate and 3-2-1-1-0 evidence."
     resume_trigger: "Existing authorized R3_API_TOKEN is actually ready on an executor for the intended hosts."
+  - observed_at: 2026-10-07T03:38:39Z
+    status: OFFSITE_DRIVE_COPY_RESTORE_VERIFIED_NODES_BLOCKED
+    decision: Reuse existing owner-private Drive backup folder as additional provider-separated storage.
+    private_archive_reference: "SEALED:R3_PRIVATE_LOCAL_BACKUP/20261007T031801.329088Z"
+    archive_sha256: "455f8e2dbe90a064d9132974c1cc52b0a954dc75123887ae7188cf96f661a8ca"
+    evidence: docs/evidenze/R3_BACKUP_DRIVE_ROUNDTRIP_20261007.json
+    storage_systems_verified: [current_executor_workspace, Google_Drive_owner_private]
+    verified: "39/39 payload files restored from actual authenticated downloaded parts;5 local refs;exact archive bytes;corrupted-copy rejection;critical synthetic smoke RC0."
+    transfer_limit: Materializer cap32MiB required two smaller parts; both parts represent one backup copy.
+    full_drive_file_scope: Metadata readback only; actual byte recovery proved through the two parts.
+    node_copies_verified: 0
+    offline_or_immutable_copy_verified: false
+    universal_backup_verified: false
+    next_action: Authenticate existing Railway hosts and prove node copies; complete offline/immutable and coherent full-state recovery evidence.
+    blocker: Missing executor token binding and full-volume export channel.
+    completion_criterion: Complete restore_gate and3-2-1-1-0 evidence; document copies alone do not recover node identity/history.
+    resume_trigger: Existing R3_API_TOKEN actually ready for the intended executor/hosts.

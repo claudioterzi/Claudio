@@ -52,6 +52,20 @@ class SkillSuggestionPolicyTests(unittest.TestCase):
             self.assertIn("DATA_ONLY", question["instructions"])
             self.assertIn("do not claim to browse", question["instructions"])
 
+    def test_fit_questions_identify_their_entries_without_question_ids(self):
+        catalog = [entry("github_rapid"), entry("drive_rapid", False)]
+        questions = skill_suggestion_questions(catalog)
+        # Jev sees question content, not the host's fit_<id> dictionary keys.
+        nameless_fit_questions = [questions["fit_" + item["id"]] for item in catalog]
+        self.assertNotEqual(nameless_fit_questions[0]["instructions"],
+                            nameless_fit_questions[1]["instructions"])
+        for item, question in zip(catalog, nameless_fit_questions):
+            self.assertIn(f"exact id is {item['id']!r}", question["instructions"])
+            self.assertIn("state.catalog", question["instructions"])
+            self.assertNotIn("this question's key", question["instructions"])
+            for field in SKILL_SUGGESTION_FIELD_LIMITS:
+                self.assertNotIn(item[field], question["instructions"])
+
     def test_catalog_is_unchanged_and_not_embedded_in_result(self):
         state = {"catalog": [entry()], "task": "Review the numerical gate candidate"}
         original = copy.deepcopy(state)

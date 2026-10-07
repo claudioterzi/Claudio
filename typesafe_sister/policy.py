@@ -229,8 +229,8 @@ def skill_suggestion_questions(catalog):
             "type": "noul",
             "instructions": (
                 SKILL_SUGGESTION_CONTEXT
-                + "For the state.catalog item identified by the exact ID following "
-                "fit_ in this question's key, is its documented scope materially "
+                + f"For the state.catalog item whose exact id is {item['id']!r}, "
+                "is its documented scope materially "
                 "relevant to the bounded task? Relevance alone does not establish "
                 "availability, authority, quality or readiness for execution."
             ),

@@ -657,3 +657,28 @@ lessons:
       - "Keep sealed original immutable; later checkpoints use a separately verified delta."
     provenance:
       - "docs/evidenze/R3_BACKUP_LOCAL_RESTORE_20261007.json"
+
+  - id: RL-2026-10-07-DRIVE-CHUNK-RESTORE-001
+    capability: private_offsite_backup_roundtrip
+    status: VERIFIED
+    observed_at: 2026-10-07
+    scope: One owner-private Drive copy of accessible project archive; not full node or universal recovery
+    verified_facts:
+      - "The authenticated workspace materializer rejects files larger than32MiB."
+      - "Two parts below the limit can be uploaded privately, downloaded, recomposed and restored against the original archive SHA."
+      - "Actual Drive roundtrip:39/39files,5refs,shallow-awarefsck,corrupted-copy rejection,critical synthetic smokeRC0."
+    failure_modes:
+      - "Calling an upload or metadata readback proof of exact remote bytes."
+      - "Counting parts on the same provider as independent copies."
+    canonical_short_path:
+      - "Read owner-only folder/file ACL; use existing connected private storage."
+      - "For larger archives use bounded parts plus manifest; materialize authenticated downloads and verify each and recomposed hash."
+      - "Perform isolated restore using downloaded bytes; preserve original archive and prove negative control."
+    preconditions:
+      - "Authorized owner-private destination and payload; no public operational folder or new sharing."
+    verification:
+      - "Actual downloaded byte hashes and complete restore; archive source history and remaining scope gaps explicit."
+    cleanup:
+      - "Preserve sealed original; later checkpoints use separate deltas and never include signed download URLs or secrets in records."
+    provenance:
+      - "docs/evidenze/R3_BACKUP_DRIVE_ROUNDTRIP_20261007.json"

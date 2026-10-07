@@ -1526,3 +1526,19 @@ Una sola macchina, zero copie cloud verificate: **LOCAL_RESTORE_VERIFIED**,
 backup universale ancora non certificato. Riferimento SEALED e prove pubbliche:
 `docs/evidenze/R3_BACKUP_LOCAL_RESTORE_20261007.json`. Payload privato escluso
 da GitHub/Drive pubblici; archivio sigillato conservato nell'esecutore corrente.
+
+Correzione successiva 2026-10-07 03:38 UTC: copia aggiuntiva eseguita nel Drive
+owner-private già disponibile e ripristino dai byte realmente riscaricati PASS.
+39/39 file, 5 ref locali, SHA dell'archivio identico, copia corrotta respinta,
+smoke sintetico recuperato RC0. Due parti sono una sola copia; file completo
+Drive verificato nei metadati, contenuto provato tramite le parti. Ora due sistemi
+di storage osservati (esecutore e Drive), zero copie Railway verificate;
+offline/immutabile e stato completo dei volumi restano mancanti. Target universale
+ancora NON_CERTIFICATO. Prova pubblica: `docs/evidenze/R3_BACKUP_DRIVE_ROUNDTRIP_20261007.json`.
+
+Ricerca skill ufficiali: Drive file lifecycle e verification applicate; TypeSafe
+ha rivelato che gli ID delle domande non arrivano al modello. Corretto il fit per
+nominare l'ID validato nelle istruzioni; 51 test locali PASS. Originale e tentativo
+restano conservati, nuova richiesta V2 con 8 entry/10 domande e nuovo tentativo
+BLOCKED prima HTTP. R3-007 skill disponibile come sorgente PR76, non installata
+nel checkout. Elenco/provenienza: `docs/R3_SKILL_DISCOVERY_20261007.md`.

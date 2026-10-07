@@ -292,3 +292,18 @@ jev_access_and_redundant_backup_20261007:
     negative_control: Corrupted copy rejected
     critical_smoke: "Restored evolution kernel RC0/ok=true; synthetic fixture, no network/provider"
     limit: One failure domain; no authenticated node copies; shallow repository, incomplete remote Git history
+  dated_correction_20261007:
+    status: OFFSITE_DRIVE_RESTORE_VERIFIED_JEV_AND_RAILWAY_BLOCKED
+    decision: Reuse connected owner-private Drive for an additional backup copy; apply official skill review to correct model-visible skill-fit instructions.
+    evidence: docs/evidenze/R3_BACKUP_DRIVE_ROUNDTRIP_20261007.json
+    skill_sources: docs/R3_SKILL_DISCOVERY_20261007.md
+    request: docs/evidenze/R3_JEV_SKILL_REQUEST_20261007_V2.json
+    tests: "51 local unittest methods PASS; no live provider call."
+    verified: "Authenticated downloaded parts recomposed exact archive;39/39file;5localrefs;fsck;negativecontrol;critical synthetic smoke RC0. Two parts are one backup copy."
+    storage_systems_verified: [current_executor_workspace, Google_Drive_owner_private]
+    node_copies_verified: 0
+    universal_backup_verified: false
+    next_action: Retain sealed original and newest verified checkpoint delta; authenticate both intended node hosts and Jev with actual ready token binding.
+    blocker: R3_API_TOKEN remains absent from executor; full remote state/offline immutable copy not yet evidenced.
+    completion_criterion: Actual typed Jev result and separately authenticated node download/hash/restore plus universal restore gate.
+    resume_trigger: Actual ready binding for intended hosts on selected executor.

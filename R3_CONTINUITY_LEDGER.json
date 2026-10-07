@@ -249,7 +249,22 @@
       "next_action": "Run saved bounded packet after R3_API_TOKEN is actually securely bound to a ready executor",
       "blocker": "Chosen binding route has not produced a current secret binding; no live Jev opinion",
       "completion_criterion": "Authenticated typed Jev receipt with actual model, hashes and all expected answer keys; recommendation remains advisory",
-      "resume_trigger": "Actual ready secret binding on selected executor"
+      "resume_trigger": "Actual ready secret binding on selected executor",
+      "dated_corrections": [
+        {
+          "date": "2026-10-07",
+          "status": "LOCAL_TESTED_LIVE_BLOCKED",
+          "decision": "Read additional official skills; explicitly identify catalog target inside each fit instruction",
+          "evidence": "docs/R3_SKILL_DISCOVERY_20261007.md",
+          "tests": 51,
+          "request": "docs/evidenze/R3_JEV_SKILL_REQUEST_20261007_V2.json",
+          "attempt": "docs/evidenze/R3_JEV_SKILL_ATTEMPT_20261007_V2.json",
+          "next_action": "Run v2 packet after actual ready credential binding",
+          "blocker": "Missing token binding; no live Jev opinion",
+          "completion_criterion": "Authenticated complete typed receipt with actual model and matching hashes",
+          "resume_trigger": "Actual ready binding on intended executor"
+        }
+      ]
     },
     {
       "id": "R3-REDUNDANT-BACKUP-20261007",
@@ -269,7 +284,26 @@
       "blocker": "Missing executor token binding; no full-volume snapshot/clone API; remote durable state not exported",
       "completion_criterion": "Both authenticated downloaded copies match manifest/hash and isolated restore passes; universal3-2-1-1-0 requires separate offline/provider/media/full-state evidence",
       "resume_trigger": "Ready existing R3_API_TOKEN on executor and intended hosts; preserve RRR quarantine and signing authority",
-      "history_limit": "Available local shallow history restored with saved boundaries; full remote history not included"
+      "history_limit": "Available local shallow history restored with saved boundaries; full remote history not included",
+      "dated_corrections": [
+        {
+          "observed_at_utc": "2026-10-07T03:38:39.697993Z",
+          "decision": "Use existing owner-private Drive as additional offsite storage while Railway authentication is unavailable",
+          "status": "OFFSITE_DRIVE_COPY_RESTORE_VERIFIED_NODES_BLOCKED",
+          "evidence": "docs/evidenze/R3_BACKUP_DRIVE_ROUNDTRIP_20261007.json",
+          "result": "39/39 files,5 local refs,archive exact SHA,corrupted-copy rejection,restored synthetic smoke RC0;two downloaded parts form one copy",
+          "storage_systems_verified": [
+            "current_executor_workspace",
+            "Google_Drive_owner_private"
+          ],
+          "node_copies_verified": 0,
+          "universal_backup_verified": false,
+          "next_action": "Authenticate intended Railway hosts with actual ready credential, then independently verify node copies; offline/immutable and coherent remote-state evidence remain required",
+          "blocker": "No executor R3_API_TOKEN binding; no full volume export channel",
+          "completion_criterion": "Both intended node copies and complete universal restore gate/3-2-1-1-0 evidence",
+          "resume_trigger": "Existing R3_API_TOKEN actually ready for intended hosts"
+        }
+      ]
     }
   ],
   "anti_starvation": {

@@ -101,5 +101,51 @@
     "node_copies_verified": 0,
     "independent_failure_domains": 1,
     "universal_backup_verified": false
-  }
+  },
+  "historical_artifact_ref": "aec798f26852de27a7ec7c09e98fc4f4d17dfbf7",
+  "dated_corrections": [
+    {
+      "date": "2026-10-07",
+      "reason": "Question IDs are not sent to Jev; fit instructions must identify exact validated catalog ID without depending on host dictionary keys.",
+      "tests_after_correction": 51,
+      "request": "docs/evidenze/R3_JEV_SKILL_REQUEST_20261007_V2.json",
+      "attempt": "docs/evidenze/R3_JEV_SKILL_ATTEMPT_20261007_V2.json",
+      "original_packet_and_attempt_preserved": true,
+      "live_inference_executed": false,
+      "new_skill_research": "docs/R3_SKILL_DISCOVERY_20261007.md",
+      "offsite_backup_proof": "docs/evidenze/R3_BACKUP_DRIVE_ROUNDTRIP_20261007.json",
+      "artifacts": [
+        {
+          "path": "typesafe_sister/policy.py",
+          "bytes": 35351,
+          "sha256": "66a1d0868e3652c443a7999f0d9d48a0ae683941d6ef56db6d3dbe1ee19ae7a6"
+        },
+        {
+          "path": "tests/test_typesafe_skill_suggestion.py",
+          "bytes": 7527,
+          "sha256": "627bbcdd01e6fe3e06e8a68fe512f2bccbf544c9ca7582771f73c91b0f85576d"
+        },
+        {
+          "path": "docs/evidenze/R3_JEV_SKILL_REQUEST_20261007_V2.json",
+          "bytes": 18390,
+          "sha256": "4c3bff9d125686c3529649f9fadf04269aefce94ff42073dff5c5e3fe6cf19eb"
+        },
+        {
+          "path": "docs/evidenze/R3_JEV_SKILL_ATTEMPT_20261007_V2.json",
+          "bytes": 358,
+          "sha256": "723fc1be1b9957ff4fd581c17afcd053af73361d5ae8662bd91240af492c95f5"
+        },
+        {
+          "path": "docs/evidenze/R3_BACKUP_DRIVE_ROUNDTRIP_20261007.json",
+          "bytes": 3164,
+          "sha256": "4980d5adb2934a97383660ee020c1fb2382c4498a02d2ab41f75dcedd59f6154"
+        },
+        {
+          "path": "docs/R3_SKILL_DISCOVERY_20261007.md",
+          "bytes": 4239,
+          "sha256": "91478129949360913ddcd49a8bde50e408b2b46eac8efb3c4819b910c7576c4e"
+        }
+      ]
+    }
+  ]
 }
