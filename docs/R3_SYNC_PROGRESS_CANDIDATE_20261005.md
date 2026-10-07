@@ -29,3 +29,20 @@ Infrastructure changed in this attempt: drainingSeconds=10 saved and independent
 Still blocked: authenticated volume clone/recovery, actual Railway sleep/resume; device Claudio offline for Rizzo; no existing Vercel command session or usable sensitive bridge value for an authenticated Orchestra POST. Other Vercel team rosso-rosso-rosso returns 403 to this connector. Railway agent returned usage-limit reached.
 
 Code checkpoint: 6c5854a77268503314d78983aa24e2617d44196b. Rollback infrastructure: reset drainingSeconds to the prior default (null); restart defaults were already reported ON_FAILURE/max10. No runtime source rollout was initiated.
+
+## Sentinella CI coverage patch — 2026-10-07
+
+Classification: PATCH / CANDIDATE / production adoption still blocked.
+Inspection of exact head e068cfd34380048df3a7536ff086d5f62db0eed6 found Security
+Scan #898, Test Runner #476 and R3 RRR Control #55 successful. Their workflows
+did not invoke the five supervisor/progress regression modules. Green general
+checks therefore did not establish hosted validation of those regressions.
+
+Reuse the existing R3 RRR Control workflow: add the five modules to its path
+filter and a separate, unmasked pytest step with a five-minute timeout. The
+R3-020 candidate was registered before implementation in
+`docs/evidenze/R3_SUPERVISOR_CI_CANDIDATE_20261007.jsonl`. Local invocation of the
+exact added test command passed 24 tests in 12.41s. Path/command inspection and
+git diff checks passed. Hosted execution remains to be read back after push.
+No runtime code, production startup command, resource or service changed.
+Rollback: revert this CI-only patch; retain the production adoption gates above.
