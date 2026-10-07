@@ -1,6 +1,6 @@
 version: 1
 name: R3_UNIVERSAL_BACKUP
-updated: 2026-09-21
+updated: 2026-10-07
 status: DEVELOPMENT
 target: "3-2-1-1-0"
 
@@ -67,3 +67,19 @@ current_truth:
     The target architecture is canonical, but the complete 3-2-1-1-0 evidence
     set, including offline/immutable copy and end-to-end restore verification,
     is not yet complete. Do not claim full verification until restore evidence exists.
+
+dated_attempts:
+  - observed_at: 2026-10-07
+    status: LOCAL_RESTORE_VERIFIED_REDUNDANT_NODES_BLOCKED
+    private_archive_reference: "SEALED:R3_PRIVATE_LOCAL_BACKUP/20261007T031801.329088Z"
+    archive_bytes: 38792650
+    archive_sha256: "455f8e2dbe90a064d9132974c1cc52b0a954dc75123887ae7188cf96f661a8ca"
+    evidence: docs/evidenze/R3_BACKUP_LOCAL_RESTORE_20261007.json
+    verified: "39/39 accessible payload files restored by exact byte hash; 5 local Git refs; 3 original attachments; corrupted-copy negative control rejected; restored synthetic critical smoke RC0."
+    history_limit: "Local repository is shallow; restore includes saved shallow boundaries, not complete remote history."
+    independent_failure_domains: 1
+    node_copies_verified: 0
+    remaining: "Actual executor token binding for both nodes; coherent remote state export, distinct media/provider and offline/immutable copy."
+    next_action: "Authenticate both existing hosts; upload/download/hash-check the approved private archive and prove isolated restore without changing RRR authority."
+    completion_criterion: "Both intended node copies verified independently, followed by the complete restore_gate and 3-2-1-1-0 evidence."
+    resume_trigger: "Existing authorized R3_API_TOKEN is actually ready on an executor for the intended hosts."

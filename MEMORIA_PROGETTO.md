@@ -1486,3 +1486,43 @@ Sul fixture congelato `0cff14f3…bd127f`, Jev/TypeSafe (`jev-latest`) è stato 
 
 ### 2026-10-05 — CT-LGAI-001 resilience completion (independent)
 Supervisor candidate #113 e068cfd: 36 local tests PASS (17.01s), including actual adopted/escaped descendant cleanup, return-code preservation, progress, bounded resume grace and failure cooldown. Judge #115 73c932a: 19 tests PASS. Orchestra: 4 local mocked checks, no live authenticated inference. Railway node-a/node-v2 drainingSeconds=10 saved and read back, effective at next deployment; existing deployment IDs unchanged. ON_FAILURE/max10 update acknowledged; default fields omitted from independent configuration readback. Evidence: docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json. Remaining: authenticated cloned real-state recovery, Railway-specific sleep acceptance, online Rizzo device, authenticated Orchestra inference. No production supervisor adoption; do not merge #113 merely because local tests pass. Ancestor-mounted /proc made PID-absence tests false positives: verify actual disappearance and translate NSpid.
+
+### 2026-10-07 — Facilitatore Jev e mandato backup ridondante
+
+Decisione: adattare il caller gateway già esistente `typesafe_sister/smoke.py`
+per richieste limitate, controllo di presenza e ricevute create-only; domande di
+selezione skill nella policy condivisa. Stato **LOCAL_TESTED / LIVE_BLOCKED**,
+ramo `candidate/r3-jev-access-skills-20261007`. Cinquanta metodi unittest PASS,
+con controlli negativi su autenticazione, redirect, identità/hash, risposta
+incompleta, sovrascrittura e riflessione Unicode di un token sintetico. Nessun
+nuovo client provider, motore semantico, endpoint, segreto o deploy.
+
+Percorso rilevato dal sorgente runtime Railway `facab5d`: POST `/jev/judge`
+del servizio sister; `R3_API_TOKEN` autentica il caller e la chiave TypeSafe resta
+server-side. Claudio ha scelto di collegare il token all'esecutore; lo snapshot
+attuale non contiene binding. Tentativo reale fermato prima HTTP. Il catalogo
+è raccolto dall'host: Jev può suggerire una skill, non navigare o installarla.
+
+Claudio richiede anche backup universale sui nodi ridondanti. L'upload documentale
+e il download autenticati già presenti consentono due copie con hash verificati;
+non esportano DB, intera storia RRR, identità e chiavi del volume. Backup locale
+dei materiali disponibili e restore isolato sono prove distinte dalla replica
+cloud, ancora bloccata dal token. Il target universale3-2-1-1-0 resta NON_CERTIFICATO.
+
+Evidenza: `docs/evidenze/R3_JEV_ACCESS_CANDIDATE_20261007.json`;
+procedura/richiesta: `docs/R3_JEV_ACCESS_AND_SKILLS_20261007.md`.
+Prossima azione: binding reale pronto, richiesta Jev e backup dei documenti R3
+con readback di entrambe le copie. Blocco: credenziale ancora non associata.
+Criterio: ricevuta del giudizio effettivo e, separatamente, hash/restore del backup
+autenticato sui due nodi. Trigger: esecutore con binding verificato ready.
+
+Prova aggiunta 2026-10-07 03:18 UTC: archivio owner-private di 38.792.650 byte,
+SHA256 `455f8e2dbe90a064d9132974c1cc52b0a954dc75123887ae7188cf96f661a8ca`.
+Restore reale 39/39 file, 5 ref Git locali, 3 allegati originali; copia corrotta
+rifiutata. Checkout crescita ripristinato: `sdq1.evolution_kernel --self-test`
+RC0/ok=true su fixture sintetica, senza rete/provider. Il clone shallow richiede
+anche i confini salvati; il bundle da solo fallisce la clonazione standard.
+Una sola macchina, zero copie cloud verificate: **LOCAL_RESTORE_VERIFIED**,
+backup universale ancora non certificato. Riferimento SEALED e prove pubbliche:
+`docs/evidenze/R3_BACKUP_LOCAL_RESTORE_20261007.json`. Payload privato escluso
+da GitHub/Drive pubblici; archivio sigillato conservato nell'esecutore corrente.

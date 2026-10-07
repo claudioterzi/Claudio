@@ -1,0 +1,105 @@
+{
+  "schema": "R3_JEV_ACCESS_CANDIDATE/1.0",
+  "authority": "DATA_ONLY",
+  "status": "LOCAL_TESTED_LIVE_BLOCKED",
+  "canonical_main": "b3e82b84bde170e50c7ffbd5bbb09de0f8b6d546",
+  "branch": "candidate/r3-jev-access-skills-20261007",
+  "decision": "Reuse existing authenticated gateway caller and central typed policy; no new provider transport or semantic engine",
+  "tests": {
+    "command": "python -m unittest tests.test_typesafe_gateway_caller tests.test_typesafe_skill_suggestion tests.test_typesafe_universal tests.test_drive_rapid_analyzer tests.test_typesafe_r3_reflex tests.test_systemone_clm -q",
+    "methods_passed": 50,
+    "failed": 0,
+    "transport": "MockTransport, no provider calls"
+  },
+  "negative_evidence": {
+    "unicode_secret_reflection": "Independent review found raw-byte-only protection could be evaded by JSON Unicode escapes; decoded keys/values now checked; negativecontrol passes",
+    "unbounded_file_read": "File size was checked after full read; now bounded read(MAX_REQUEST_BYTES+1)",
+    "known_missing_pytest": "One agent attempted pytest; tool prerequisite missing; unittest succeeded, no installation"
+  },
+  "credential_binding": {
+    "user_selected_existing_R3_API_TOKEN": true,
+    "binding_observed": false,
+    "last_spec_revision": "62",
+    "secrets": [],
+    "source_config_id": null,
+    "ready_not_assumed": true
+  },
+  "jev_attempt": {
+    "status": "BLOCKED_MISSING_TOKEN",
+    "gateway": "https://r3-typesafe-sister-production.up.railway.app/jev/judge",
+    "token_present": false,
+    "required_secret": "R3_API_TOKEN",
+    "inference_executed": false,
+    "request_sha256": "a323ba4262d8abed77ecabc51706254645327c2c0bfb00389df78594f4dd6835",
+    "observed_at_utc": "2026-10-07T03:16:01.745293+00:00"
+  },
+  "research_executor": "Codex and internal agents, not Jev",
+  "official_sources": [
+    "https://docs.typesafe.ai/cookbooks/skill_suggestion",
+    "https://docs.typesafe.ai/introduction/coding-agents",
+    "https://docs.typesafe.ai/agent-skill",
+    "https://learn.chatgpt.com/docs/environments/cloud-environments"
+  ],
+  "plugin_search": {
+    "query": "TypeSafe Jev",
+    "returned_plugins": 0,
+    "exhaustive": false
+  },
+  "other_executors": {
+    "device_Claudio": "OFFLINE,75h last-seen at observation",
+    "existing_vercel_sessions": 0
+  },
+  "next_action": "Bind existing R3_API_TOKEN as network secret to intended HTTPS destinations on a runnable executor; check ready then submit saved bounded skill request",
+  "blocker": "No actual secret binding; no live Jev opinion or authenticated node backup",
+  "completion_criterion": "Actual authenticated typed Jev response with model and matching input hashes; node backup separately requires both uploaded copies downloaded/hashchecked plus restore proof",
+  "resume_trigger": "Existing credential binding is observed ready on the selected executor",
+  "production_changed": false,
+  "automatic_actions": false,
+  "backup_scope_limit": "Local repository/continuity/archive proof is not a full Railway volume clone or 3-2-1-1-0 certification",
+  "artifacts": [
+    {
+      "path": "typesafe_sister/smoke.py",
+      "bytes": 11975,
+      "sha256": "60b581231ae321a14d0b85833970f944e6608562aded0ce33843b47f6dc8e66c"
+    },
+    {
+      "path": "typesafe_sister/policy.py",
+      "bytes": 35382,
+      "sha256": "c84827cf60b436f2edd4f30c35528342414945ccc326c0b260461325c44c2cdf"
+    },
+    {
+      "path": "tests/test_typesafe_gateway_caller.py",
+      "bytes": 9056,
+      "sha256": "97d5eb9c17146da1f33dc1e1b650f9173bedb61951b0f0057ff2b853cbc9d815"
+    },
+    {
+      "path": "tests/test_typesafe_skill_suggestion.py",
+      "bytes": 6589,
+      "sha256": "e79d6c3816670d29103b08ff43ec62efe969815ac799f47e060cb3b0dd82980a"
+    },
+    {
+      "path": "docs/evidenze/R3_JEV_SKILL_REQUEST_20261007.json",
+      "bytes": 12477,
+      "sha256": "a3235b707b66bf050406beb109cb34cc659c30d8b41c7b0f793d3d3edd3086e7"
+    },
+    {
+      "path": "docs/evidenze/R3_JEV_SKILL_ATTEMPT_20261007.json",
+      "bytes": 358,
+      "sha256": "d554b7d977ca864824e48dc0892bc3cd750362aee0fd8571a86988c2d6ddfdb6"
+    },
+    {
+      "path": "docs/evidenze/R3_JEV_ACCESS_INSPECTION_20261007.json",
+      "bytes": 7367,
+      "sha256": "59e5826446974c0778567c8113cea6656788ba83b52eebe0c65e33196b21a82e"
+    }
+  ],
+  "local_backup": {
+    "status": "LOCAL_RESTORE_VERIFIED_NODES_BLOCKED",
+    "public_safe_receipt": "docs/evidenze/R3_BACKUP_LOCAL_RESTORE_20261007.json",
+    "archive_sha256": "455f8e2dbe90a064d9132974c1cc52b0a954dc75123887ae7188cf96f661a8ca",
+    "files_restored": 39,
+    "node_copies_verified": 0,
+    "independent_failure_domains": 1,
+    "universal_backup_verified": false
+  }
+}

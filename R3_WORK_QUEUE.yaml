@@ -1,6 +1,6 @@
 version: 9
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-10-05
+updated: 2026-10-07
 status: ACTIVE
 
 principles:
@@ -271,3 +271,24 @@ resilience_completion_20261005:
   local_tests: "Supervisor 36 PASS; judge 19 PASS; Orchestra 4 mocked checks PASS"
   configuration: "Railway drain 10 saved for next deployment; deployments unchanged"
   remaining: "Authenticated real-state recovery; Railway sleep acceptance; online Rizzo; authenticated Orchestra inference"
+
+
+jev_access_and_redundant_backup_20261007:
+  status: LOCAL_TESTED_LIVE_BLOCKED
+  decision: Reuse existing /jev/judge gateway caller and shared typed policy; prepare owner-private archive and isolated restore before copying to both existing document nodes.
+  evidence: docs/evidenze/R3_JEV_ACCESS_CANDIDATE_20261007.json
+  request: docs/evidenze/R3_JEV_SKILL_REQUEST_20261007.json
+  tests: "50 unittest methods PASS; synthetic HTTP controls, no live Jev call."
+  next_action: Use verified local archive; check actual secret binding, then submit skill request and upload/download/hash-check backup on both intended nodes.
+  blocker: R3_API_TOKEN is not yet bound to this executor; no full-volume clone/restore API is available.
+  completion_criterion: Actual Jev typed receipt; separately both node copies downloaded and restored/hashchecked. Universal3-2-1-1-0 remains uncertified.
+  resume_trigger: Existing token is actually bound and observed ready on the selected executor.
+  backup_proof:
+    status: LOCAL_RESTORE_VERIFIED
+    evidence: docs/evidenze/R3_BACKUP_LOCAL_RESTORE_20261007.json
+    sealed_reference: "SEALED:R3_PRIVATE_LOCAL_BACKUP/20261007T031801.329088Z"
+    archive_sha256: "455f8e2dbe90a064d9132974c1cc52b0a954dc75123887ae7188cf96f661a8ca"
+    files_restored: "39/39; 5 local refs; 3 original attachments"
+    negative_control: Corrupted copy rejected
+    critical_smoke: "Restored evolution kernel RC0/ok=true; synthetic fixture, no network/provider"
+    limit: One failure domain; no authenticated node copies; shallow repository, incomplete remote Git history
