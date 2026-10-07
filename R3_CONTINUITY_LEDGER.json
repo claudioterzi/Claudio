@@ -234,6 +234,29 @@
         "Review draining >=10s and crash-loop policy; do not apply unrelated staged changes",
         "Run hosted checks and authenticated content/hash recovery on isolated cloned state before scheduled adoption"
       ]
+    },
+    {
+      "id": "R3C-FINITE-METRICS-20261007",
+      "branch": "candidate/r3-evolution-finite-metrics-20261007",
+      "status": "CANDIDATE",
+      "decision": "STAGED protected core_code hardening of existing R3-020 numerical evidence gate",
+      "classification": "PATCH",
+      "observed_at_utc": "2026-10-07",
+      "evidence": {
+        "manifest": "docs/evidenze/R3_EVOLUTION_FINITE_20261007.json",
+        "report": "docs/R3_EVOLUTION_FINITE_METRICS_20261007.md",
+        "canonical_source_main": "b3e82b84bde170e50c7ffbd5bbb09de0f8b6d546",
+        "result": "Frozen 56 cases:17 to56 conformant;23 invalid admissions to0;11 exceptions to0;10 eligible/HOLD controls unchanged;37 unittest methods PASS"
+      },
+      "next_action": "Review bounded core-code draft and hosted gates; execute saved bounded Jev request on an existing authenticated executor",
+      "blocker": "No Jev credential binding in this executor: actual call blocked before HTTP, opinion not obtained",
+      "completion_criterion": "Explicit core-code adoption receipt after review and hosted gates; actual Jev opinion recorded separately if executed",
+      "resume_trigger": "Candidate review or existing authenticated Jev execution channel",
+      "current_gap": [
+        "Candidate not adopted in production",
+        "Deterministic numerical integrity evidence is not model-quality or live-runtime evidence",
+        "Online research performed by Codex, not Jev"
+      ]
     }
   ],
   "anti_starvation": {

@@ -1,0 +1,194 @@
+{
+  "schema": "R3-020-FINITE-NUMERIC-EVIDENCE/1",
+  "authority": "DATA_ONLY",
+  "observed_at_utc": "2026-10-07T02:55:48.030527+00:00",
+  "repository": "claudioterzi/Claudio",
+  "canonical_main": "b3e82b84bde170e50c7ffbd5bbb09de0f8b6d546",
+  "branch": "candidate/r3-evolution-finite-metrics-20261007",
+  "candidate_id": "R3C-FINITE-METRICS-20261007",
+  "classification": "PATCH",
+  "status": "CANDIDATE_STAGED_NOT_PRODUCTION",
+  "decision": {
+    "candidate_id": "R3C-FINITE-METRICS-20261007",
+    "status": "STAGED",
+    "primary_gain": 23.0,
+    "reasons": [
+      "all configured evidence and regression gates passed"
+    ],
+    "regressions": {
+      "valid_controls": 0.0
+    },
+    "auto_apply_eligible": false,
+    "decided_at": "2026-10-07T02:55:47.812039+00:00"
+  },
+  "metrics": {
+    "baseline": {
+      "invalid_promotions": 23,
+      "valid_controls": 10
+    },
+    "trial": {
+      "invalid_promotions": 0,
+      "valid_controls": 10
+    }
+  },
+  "frozen_comparison": {
+    "suite_sha256": "0bbd4d955f596b788e85889c827ef30f6a53312a92d26a726302f9e8b11f2243",
+    "suite_unchanged": true,
+    "same_case_ids_and_expected_labels": true,
+    "baseline": {
+      "total": 56,
+      "passed": 17,
+      "failed": 39,
+      "invalid_expected": 46,
+      "invalid_rejected": 7,
+      "controls_expected": 10,
+      "controls_preserved": 10,
+      "exceptions": 11,
+      "invalid_admitted": 23
+    },
+    "trial": {
+      "total": 56,
+      "passed": 56,
+      "failed": 0,
+      "invalid_expected": 46,
+      "invalid_rejected": 46,
+      "controls_expected": 10,
+      "controls_preserved": 10,
+      "exceptions": 0,
+      "invalid_admitted": 0
+    },
+    "scope": "local numeric integrity only; no Jev or live inference",
+    "failures": []
+  },
+  "test_receipt": {
+    "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python -m unittest tests.test_evolution_kernel tests.test_benchmark_integrity tests.test_benchmark_controlled -v",
+    "passed_methods": 37,
+    "failed_methods": 0,
+    "checks": [
+      {
+        "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python -m sdq1.evolution_kernel --self-test",
+        "exit_code": 0,
+        "output": "{\n  \"ok\": true,\n  \"decision\": {\n    \"candidate_id\": \"R3C-452790807a8a\",\n    \"status\": \"AUTO_APPLY_ELIGIBLE\",\n    \"primary_gain\": 0.050000000000000044,\n    \"reasons\": [\n      \"all configured evidence and regression gates passed\"\n    ],\n    \"regressions\": {\n      \"error_rate\": 0.0\n    },\n    \"auto_apply_eligible\": true,\n    \"decided_at\": \"2026-10-07T02:55:47.985365+00:00\"\n  }\n}"
+      },
+      {
+        "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python -m py_compile sdq1/evolution_kernel.py tests/test_evolution_kernel.py",
+        "exit_code": 0,
+        "output": ""
+      },
+      {
+        "command": "git diff --check",
+        "exit_code": 0,
+        "output": ""
+      }
+    ],
+    "ledger": {
+      "valid": true,
+      "records": 2,
+      "errors": []
+    }
+  },
+  "rollback": {
+    "scope": "disposable local source copy",
+    "hash_and_import_verified": true,
+    "source_sha256": "42a6a97e62b0ab160521c589d23d7dc1e6ec03d54476252196e218953dde065c",
+    "cleanup": "disposable file removed; no production mutation"
+  },
+  "online_research": {
+    "executor": "Codex web tools, not Jev",
+    "sources": [
+      {
+        "url": "https://docs.python.org/3/library/math.html#math.isfinite",
+        "fact": "NaN and infinities are not finite; zero is finite."
+      },
+      {
+        "url": "https://docs.python.org/3/library/json.html#infinite-and-nan-number-values",
+        "fact": "Python JSON defaults allow NaN and Infinity; strict encoding alone does not cover arithmetic overflow."
+      },
+      {
+        "url": "https://docs.python.org/3/library/stdtypes.html#boolean-type-bool",
+        "fact": "bool subclasses int, so boolean metrics need explicit rejection."
+      }
+    ]
+  },
+  "jev": {
+    "status": "BLOCKED_NOT_EXECUTED",
+    "stage": "configuration_before_http",
+    "reason": "No caller credential for the existing Jev path is bound to this executor.",
+    "opinion_obtained": false,
+    "observed_at_utc": "2026-10-07T02:52:28.987066+00:00",
+    "input_sha256": "cfe22e978522741468543fd477f7e9ec8f7de950948423cb800536cc5f319358",
+    "requested_provider": "typesafe",
+    "requested_model": "jev-latest",
+    "online_research_executor": "Codex web tools; not Jev",
+    "private_archive_sent": false
+  },
+  "artifacts": [
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/heldout_probe.py",
+      "bytes": 9526,
+      "sha256": "0bbd4d955f596b788e85889c827ef30f6a53312a92d26a726302f9e8b11f2243"
+    },
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/heldout_freeze.json",
+      "bytes": 545,
+      "sha256": "fd0b1996072576a6aca60e857c36e7b57d83c15ba7b078ebf8d4b458d63e352f"
+    },
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/heldout_baseline.json",
+      "bytes": 24713,
+      "sha256": "d6bb8780f2314aa4213ef8c32871c22b5452d21df6b742830c5cb385230c10cd"
+    },
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/heldout_trial.json",
+      "bytes": 25944,
+      "sha256": "e4098f3a0b59891161682b7844ede9fab8c05594f0cdb5da5be577935654af7e"
+    },
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/heldout_comparison.json",
+      "bytes": 717,
+      "sha256": "a9b599312e5e0307d95571e59b5c2e88e1f953a8f86774a0ea80282ea07e3343"
+    },
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/preregistration.json",
+      "bytes": 1536,
+      "sha256": "f0ae2e083e67d6a4e437c34663aec83824e6e83475ec453fab53421f2fecedd1"
+    },
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/experiment_ledger.jsonl",
+      "bytes": 2701,
+      "sha256": "f10b2ea3a5dd26e066b3c2d6c2290d474a8499eea6e3784e13c554fababaa640"
+    },
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/jev_review_request.json",
+      "bytes": 10382,
+      "sha256": "3db037facad11d477c8844d09aa8394d3a52513214065fa004083ae0f402e6cb"
+    },
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/jev_attempt.json",
+      "bytes": 502,
+      "sha256": "b13d4610845b1d4223db0d7661cdb2dbc5e63d87fc74596b6b7d1ed45bfd7b5d"
+    },
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/source_pins.json",
+      "bytes": 808,
+      "sha256": "d4493ef79f7f70e9bf731e1ee23c454672dc760df67f9c6462b3d9e9e68fbd5a"
+    },
+    {
+      "path": "docs/evidenze/R3_EVOLUTION_FINITE_20261007/final_test_receipt.log",
+      "bytes": 5601,
+      "sha256": "1cad3990420b609fb1f134859e2a17adaa4256602f0d62e03b4095606aa8f5e6"
+    }
+  ],
+  "next_action": "Review bounded core-code candidate and hosted checks; run saved request through existing authenticated Jev executor when available.",
+  "blocker": "Jev opinion requires a real credential binding to the existing shared client; no configured binding is available here.",
+  "completion_criterion": "Explicit core-code adoption receipt after review and hosted gates; Jev response separately recorded only if actually executed.",
+  "resume_trigger": "Draft review or an existing authenticated Jev execution channel becomes available.",
+  "limits": [
+    "56mechanical fixtures establish local numerical integrity only, not model quality or broad capability growth.",
+    "46cases expect REJECT; include44invalid input/config cases and2intentional rejection controls.10other controls preserve8eligible and2HOLD decisions.",
+    "Frozen cases came from a separate agent; independence is procedural, not a separate provider or organization.",
+    "Local worktree base is7749; selected source blobs matched current b3e main byte-for-byte; remote commit must use current main tree.",
+    "Generic historical JSON/hash serialization is unchanged; no production deploy, background automation, Jev inference or Jev web browsing.",
+    "Initial pytest command was blocked by missing pytest; canonical unittest workflow was used successfully."
+  ]
+}

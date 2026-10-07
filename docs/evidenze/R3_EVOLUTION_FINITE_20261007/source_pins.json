@@ -1,0 +1,15 @@
+{
+  "schema": "R3_SOURCE_PIN/1.0",
+  "canonical_repository": "claudioterzi/Claudio",
+  "canonical_main": "b3e82b84bde170e50c7ffbd5bbb09de0f8b6d546",
+  "local_isolated_base": "7749b9cfde0a0bc550607fb3b0a1150a8a81cede",
+  "scope": "Selected source blobs fetched from current canonical main and verified byte-identical before local mutations",
+  "blobs": {
+    "sdq1/evolution_kernel.py": "de05e3ed6eb3c6aeaacc300609322b728b2fdea2",
+    "tests/test_evolution_kernel.py": "a594ae493aede124e7c5ad932d6ee259d278f595",
+    "MEMORIA_PROGETTO.md": "475838a6e0ab95ab7e46f15edb876c714701c473",
+    "R3_WORK_QUEUE.yaml": "41fdd715b0ad55da1ad28998760f3c44eeab8d5c",
+    "R3_CONTINUITY_LEDGER.json": "618cbd7ce4f31f6df2726072ada81ba8bdd6867b",
+    "R3_REUSE_LESSONS.yaml": "f0338cba49c90c814b71e4c982b258942c15901f"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "status": "BLOCKED_NOT_EXECUTED",
+  "stage": "configuration_before_http",
+  "reason": "No caller credential for the existing Jev path is bound to this executor.",
+  "opinion_obtained": false,
+  "observed_at_utc": "2026-10-07T02:52:28.987066+00:00",
+  "input_sha256": "cfe22e978522741468543fd477f7e9ec8f7de950948423cb800536cc5f319358",
+  "requested_provider": "typesafe",
+  "requested_model": "jev-latest",
+  "online_research_executor": "Codex web tools; not Jev",
+  "private_archive_sent": false
+}

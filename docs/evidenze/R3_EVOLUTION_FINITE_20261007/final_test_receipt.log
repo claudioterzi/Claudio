@@ -1,0 +1,42 @@
+test_critical_direction_and_rule_shape_are_validated (tests.test_evolution_kernel.EvolutionKernelTests.test_critical_direction_and_rule_shape_are_validated) ... ok
+test_critical_gain_overflow_is_rejected (tests.test_evolution_kernel.EvolutionKernelTests.test_critical_gain_overflow_is_rejected) ... ok
+test_critical_regression_is_rejected (tests.test_evolution_kernel.EvolutionKernelTests.test_critical_regression_is_rejected) ... ok
+test_external_side_effects_are_rejected (tests.test_evolution_kernel.EvolutionKernelTests.test_external_side_effects_are_rejected) ... ok
+test_finite_regression_budget_is_preserved (tests.test_evolution_kernel.EvolutionKernelTests.test_finite_regression_budget_is_preserved) ... ok
+test_hash_chain_detects_tampering (tests.test_evolution_kernel.EvolutionKernelTests.test_hash_chain_detects_tampering) ... ok
+test_invalid_minimum_gains_are_rejected (tests.test_evolution_kernel.EvolutionKernelTests.test_invalid_minimum_gains_are_rejected) ... ok
+test_invalid_regression_limits_are_rejected (tests.test_evolution_kernel.EvolutionKernelTests.test_invalid_regression_limits_are_rejected) ... ok
+test_low_risk_reversible_change_can_be_auto_apply_eligible (tests.test_evolution_kernel.EvolutionKernelTests.test_low_risk_reversible_change_can_be_auto_apply_eligible) ... ok
+test_missing_out_of_sample_evidence_holds_candidate (tests.test_evolution_kernel.EvolutionKernelTests.test_missing_out_of_sample_evidence_holds_candidate) ... ok
+test_non_finite_critical_metrics_are_rejected (tests.test_evolution_kernel.EvolutionKernelTests.test_non_finite_critical_metrics_are_rejected) ... ok
+test_non_finite_primary_metrics_are_rejected_in_both_scopes (tests.test_evolution_kernel.EvolutionKernelTests.test_non_finite_primary_metrics_are_rejected_in_both_scopes) ... ok
+test_primary_gain_overflow_is_rejected (tests.test_evolution_kernel.EvolutionKernelTests.test_primary_gain_overflow_is_rejected) ... ok
+test_protected_core_is_staged_not_auto_applied (tests.test_evolution_kernel.EvolutionKernelTests.test_protected_core_is_staged_not_auto_applied) ... ok
+test_snapshots_never_overwrite_same_label (tests.test_evolution_kernel.EvolutionKernelTests.test_snapshots_never_overwrite_same_label) ... ok
+test_unrepresentable_integers_fail_closed (tests.test_evolution_kernel.EvolutionKernelTests.test_unrepresentable_integers_fail_closed) ... ok
+test_zero_and_negative_finite_metrics_remain_valid (tests.test_evolution_kernel.EvolutionKernelTests.test_zero_and_negative_finite_metrics_remain_valid) ... ok
+test_comparison_refuses_incomplete_run (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_comparison_refuses_incomplete_run) ... ok
+test_complete_comparison_only_advances_to_next_gates (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_complete_comparison_only_advances_to_next_gates) ... ok
+test_complete_native_run_has_explicit_denominators (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_complete_native_run_has_explicit_denominators) ... ok
+test_denominator_mismatch_marks_run_incomplete (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_denominator_mismatch_marks_run_incomplete) ... ok
+test_error_marks_run_incomplete (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_error_marks_run_incomplete) ... ok
+test_legacy_snapshot_cannot_be_laundered_at_comparison_time (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_legacy_snapshot_cannot_be_laundered_at_comparison_time) ... ok
+test_legacy_snapshot_cannot_be_laundered_by_save_reload (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_legacy_snapshot_cannot_be_laundered_by_save_reload) ... ok
+test_malformed_result_marks_run_invalid (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_malformed_result_marks_run_invalid) ... ok
+test_missing_results_marks_run_invalid (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_missing_results_marks_run_invalid) ... ok
+test_run_ids_are_unique (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_run_ids_are_unique) ... ok
+test_same_date_multiple_runs_requires_run_id (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_same_date_multiple_runs_requires_run_id) ... ok
+test_save_is_non_overwriting (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_save_is_non_overwriting) ... ok
+test_zero_observed_tests_is_invalid (tests.test_benchmark_integrity.BenchmarkIntegrityTests.test_zero_observed_tests_is_invalid) ... ok
+test_abcd_conditions_are_stable (tests.test_benchmark_controlled.ControlledBenchmarkTests.test_abcd_conditions_are_stable) ... ok
+test_dataset_has_three_required_sets (tests.test_benchmark_controlled.ControlledBenchmarkTests.test_dataset_has_three_required_sets) ... ok
+test_failed_calls_are_not_efficiency_success (tests.test_benchmark_controlled.ControlledBenchmarkTests.test_failed_calls_are_not_efficiency_success) ... ok
+test_gold_fields_never_reach_model_prompt (tests.test_benchmark_controlled.ControlledBenchmarkTests.test_gold_fields_never_reach_model_prompt) ... ok
+test_plan_freezes_dataset_and_repetitions (tests.test_benchmark_controlled.ControlledBenchmarkTests.test_plan_freezes_dataset_and_repetitions) ... ok
+test_repeat_variance_and_human_friction_are_recorded (tests.test_benchmark_controlled.ControlledBenchmarkTests.test_repeat_variance_and_human_friction_are_recorded) ... ok
+test_run_persistence_is_non_overwriting (tests.test_benchmark_controlled.ControlledBenchmarkTests.test_run_persistence_is_non_overwriting) ... ok
+
+----------------------------------------------------------------------
+Ran 37 tests in 0.021s
+
+OK
