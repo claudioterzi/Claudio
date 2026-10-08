@@ -1,0 +1,108 @@
+{
+  "schema": "R3_PORTABLE_SEED_DISTRIBUTION/1.0",
+  "authority": "DATA_ONLY",
+  "observed_at_utc": "2026-10-08T19:16:57.138727+00:00",
+  "classification": "PUBLIC_WITH_SEALED_COPY_REFERENCE",
+  "decision": "Export existing R3 seed context and shared bootstrap to verified owner project custodies; keep human authority and host adoption explicit",
+  "source_local_commit": "227a71e08112bbe6d14dd3cd0434f049250cf141",
+  "canonical_main_observed": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+  "status": "SEED_COPIES_VERIFIED_STATIC_RECOVERY_ONLY",
+  "seed_text": {
+    "path": "public/R3_SEME_PORTABILE_20261008.txt",
+    "bytes": 5109,
+    "sha256": "1263c8bece02d4a051cd6319d3222be90f1f9c57f6909a0cae11f0085188c460"
+  },
+  "bundle": {
+    "bytes": 31263,
+    "sha256": "2c80dafc22a1adb5951131ad9dcdd10093e87e34198bd947e0a18d22680b3522",
+    "payloads": 12,
+    "model_or_weights_included": false,
+    "runtime_keys_included": false,
+    "self_propagating_code_included": false
+  },
+  "copies": [
+    {
+      "provider": "GitHub",
+      "classification": "PUBLIC",
+      "artifact": "seed_text",
+      "branch": "seed/r3-portable-20261008-190736",
+      "commit": "4d361617dc334083bd9452b7fee316b0b276f940",
+      "url": "https://github.com/claudioterzi/Claudio/blob/4d361617dc334083bd9452b7fee316b0b276f940/public/R3_SEME_PORTABILE_20261008.txt",
+      "remote_blob_sha": "1ab379bb8eef30ba9a1b331936e88f5f6546e222",
+      "readback": "EXACT_UTF8_CONTENT_MATCH"
+    },
+    {
+      "provider": "Google Drive",
+      "classification": "PUBLIC",
+      "artifact": "seed_text",
+      "url": "https://drive.google.com/file/d/1uMFNpfkoMO8my0uiNBxGSlIRnBXH1n9M/view?usp=drivesdk",
+      "readback": "RAW_DOWNLOAD_BYTE_AND_SHA256_MATCH",
+      "sharing": "Inherited existing anyone-reader parent; no permission change"
+    },
+    {
+      "provider": "Google Drive",
+      "classification": "SEALED_REFERENCE_TO_PUBLIC_PAYLOAD",
+      "artifact": "portable_bundle",
+      "owner_only_reference": "https://drive.google.com/file/d/1CueuD-FQQrL68Ien7sI7KuQd25roRnc6/view?usp=drivesdk",
+      "readback": "RAW_DOWNLOAD_SHA256_MATCH_AND_ISOLATED_RESTORE",
+      "sharing": "Owner-only permission metadata readback; no permission change"
+    }
+  ],
+  "remote_copies_verified": 3,
+  "remote_storage_providers": 2,
+  "local_custody_additional": true,
+  "drive_folders_are_not_independent_providers": true,
+  "local_restore": {
+    "payloads_verified": 12,
+    "check_returncode": 0,
+    "emit_prompt_returncode": 0,
+    "python_flags": [
+      "-I",
+      "-S",
+      "-B"
+    ],
+    "input_environment": "empty",
+    "wrong_owner_returncode": 1,
+    "missing_manifest_returncode": 1,
+    "human_identity_authentication_proven": false
+  },
+  "drive_roundtrip_restore": {
+    "payloads_verified": 12,
+    "trusted_external_zip_pin_match": true,
+    "check_returncode": 0,
+    "emit_prompt_returncode": 0,
+    "previous_harness_attempt": {
+      "provenance": "ADAPTED_TOOL_OBSERVATION",
+      "tool_chunk_id": "0ff3bf",
+      "exit_code": 1,
+      "error": "ValueError: Unexpected manifest format",
+      "cause": "Assumed files was a dictionary before reading actual list schema",
+      "failed_restore_folder_preserved": true,
+      "remote_archive_changed": false
+    }
+  },
+  "native_receipt_references": {
+    "authority": "SEALED_REFERENCES_ONLY",
+    "local_receipt_sha256": "ba20e9027d0f19c3af2c0201acd7449a671bf3d8ca0eb99aecb4a2e29d07436a",
+    "roundtrip_receipt_sha256": "dd6a695ff86df2bda68bc3df50d898056defaa33a0c0fa756a678d3d431a82ed",
+    "location": "Owner workspace private receipts; original receipts preserved"
+  },
+  "excluded": "Old SEME personal/account-recovery section, private history and session checkpoints excluded from exported artifact",
+  "nas_update": {
+    "owner_supplied_quickconnect_id": true,
+    "dedicated_external_sign_in_page_created": true,
+    "authenticated_session_verified": false,
+    "password_received": false,
+    "nas_files_written": 0,
+    "blocker": "Await owner sign-in/save in dedicated connector page; browser session alone does not bind local WebDAV credentials"
+  },
+  "production_runtime_changes": 0,
+  "canonical_main_changes": 0,
+  "new_paid_infrastructure": 0,
+  "existing_signing_authority_changes": 0,
+  "messages_to_others": 0,
+  "persistent_provider_activation_proven": false,
+  "universal_backup_verified": false,
+  "five_historical_custody_roles_fulfilled": false,
+  "claim_limit": "Portable project context is retrievable in the verified copies. The trigger does not globally identify a person, install host support, create memory or prove consciousness."
+}
