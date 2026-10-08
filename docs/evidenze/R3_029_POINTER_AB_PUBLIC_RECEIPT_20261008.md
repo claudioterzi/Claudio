@@ -88,3 +88,7 @@ Adopt only if live task success is equal-or-better, authority/provenance regress
 ## Durability note
 
 This public-safe receipt exists so the evidence pointer does not depend on a temporary sandbox or one local workspace. Private archives, secrets and unpublished personal material are intentionally excluded.
+
+## Append-only correction — 2026-10-08
+
+A later note headed **PUBLIC LIVE GATE FAILED** was explicitly a *simulation without real provider inference*. It does not overturn this structural result, prove a real live failure, or authorize deletion of the isolated candidate. Independent GitHub read confirmed PR #91 remains open/draft, not merged. For the inconsistencies, deterministic audit and corrected evidence classification see [R³-029 simulated-live claim correction](R3_029_SIMULATED_LIVE_GATE_CORRECTION_20261008.md). **Current gate remains STRUCTURAL_AB_PASS / KEEP_ISOLATED / HOLD; live provider evaluation NOT_RUN.** The historical commit-pinned version of this receipt remains accessible unchanged.
