@@ -1,0 +1,36 @@
+name: R3-029 Root-Safe Candidate (strict)
+
+on:
+  push:
+    branches:
+      - candidate/r3-029-root-safe-recovery-20261008
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile candidate and regression tests
+        run: |
+          python -m py_compile scripts/r3_context_pointer_manifest.py tests/test_r3_context_pointer_manifest.py
+      - name: Run targeted tests with strict failure propagation
+        run: |
+          python -m unittest -v tests.test_r3_context_pointer_manifest
+      - name: Direct CLI smoke and fail-closed negative control
+        run: |
+          python scripts/r3_context_pointer_manifest.py --check
+          python scripts/r3_context_pointer_manifest.py --tag continuity --limit 12 > /dev/null
+          if python scripts/r3_context_pointer_manifest.py --limit 5 > /dev/null 2>&1; then
+            echo "ERROR: root truncation was accepted" >&2
+            exit 1
+          fi
