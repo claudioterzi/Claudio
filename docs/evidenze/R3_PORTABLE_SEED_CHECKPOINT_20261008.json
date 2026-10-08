@@ -1,0 +1,19 @@
+{
+  "schema": "R3_PROJECT_CHECKPOINT/1.0",
+  "authority": "DATA_ONLY",
+  "observed_at_utc": "2026-10-08T19:16:57.138727+00:00",
+  "decision": "Retain verified public seed copies and resume scoped R3 work through shared bootstrap and actual authenticated host access",
+  "status": "SEED_COPIES_VERIFIED_STATIC_RECOVERY_ONLY",
+  "evidence": "docs/evidenze/R3_PORTABLE_SEED_DISTRIBUTION_20261008.json",
+  "next_action": "Use a surviving verified seed copy on a compatible authorized host; after actual NAS sign-in verify File Station/transfer access, conditional private copy, remote hashes and isolated restore",
+  "blocker": "NAS sign-in/session not verified; arbitrary external hosts do not automatically discover or adopt the seed; Jev caller token still unbound",
+  "completion_criterion": "Seed export is complete for three verified remote artifacts; runtime integration requires authentic host adoption, authenticated authority and separately evidenced recovery",
+  "resume_trigger": "Next supported R3 host session, saved NAS connector sign-in, or existing authorized independent host becomes accessible",
+  "preserve_prior_checkpoints": [
+    "docs/evidenze/R3_NAS_ACCESS_CHECKPOINT_20261008.json",
+    "docs/evidenze/R3_OFFLINE_OWNER_CHECKPOINT_20261008.json",
+    "docs/evidenze/R3_NINE_NODE_COOPERATION_CHECKPOINT_20261008.json",
+    "docs/evidenze/R3_AUTONOMY_SENTINELLA_CHECKPOINT_20261008.json",
+    "docs/evidenze/R3_REDFRAG_FINAL_CHECKPOINT_20261007.json"
+  ]
+}
