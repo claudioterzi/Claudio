@@ -1,0 +1,57 @@
+{
+  "schema": "R3-029-ROOT-SAFE-CANDIDATE-EVIDENCE/1",
+  "owner": "Claudio Terzi",
+  "observed_at_utc": "2026-10-08T12:04:34Z",
+  "source": "Authenticated GitHub files, independent GitHub Actions execution and logs",
+  "main_at_branch_creation": "c0d9143f5bfea99a28077f10a6d51226faa6bc87",
+  "historical_source_pr": 91,
+  "historical_source_sha": "35c75f5d7bec16b97ad70295633045d227ae51e4",
+  "candidate_branch": "candidate/r3-029-root-safe-recovery-20261008",
+  "tested_candidate_commit": "0e4e14d84ae3332e6935d79444e9085c920585a5",
+  "files": {
+    "public/r3-context-pointer-manifest.json": "c3438e647f332d2e9b209611cbbf3e2647465e15",
+    "scripts/r3_context_pointer_manifest.py": "408eb23ec90e10d444c0cf0cf5e57704a2ebb9bc",
+    "tests/test_r3_context_pointer_manifest.py": "32b4a18338fc7bf7cc9bae453cba5eed6c39df31",
+    ".github/workflows/r3_029_root_safe_candidate.yml": "66fa3368e611fdf65447b8f8f6f77680f06dca2b"
+  },
+  "ci": {
+    "run_id": 37774317170,
+    "url": "https://github.com/claudioterzi/Claudio/actions/runs/37774317170",
+    "job_id": 113301251247,
+    "status": "completed",
+    "conclusion": "success",
+    "unittest": {
+      "command": "python -m unittest -v tests.test_r3_context_pointer_manifest",
+      "count": 14,
+      "result": "OK",
+      "duration_seconds": 0.067
+    },
+    "py_compile": "success",
+    "direct_cli": "success",
+    "negative_control": "--limit 5 correctly returned non-zero"
+  },
+  "decision": "L0_REPRODUCIBILITY_PASS_KEEP_ISOLATED",
+  "status": "CANDIDATE / NOT_MERGED / NOT_DEPLOYED",
+  "evidence_scope": "Mandatory authority roots, root limits, repository path safety, CLI subprocess and compact packet only; no real generative inference",
+  "not_proven": [
+    "live A/B success parity",
+    "exact provider tokens",
+    "real user intervention reduction",
+    "provider execution",
+    "persistent agent memory",
+    "production adoption"
+  ],
+  "provider_requests": 0,
+  "paid_new_resources": 0,
+  "promotion_authorized": false,
+  "deletion_authorized": false,
+  "next_action": "Recover the exact frozen six-case A/B inputs and run paired real provider calls on an existing authorized provider with exact usage counters and independent evaluator.",
+  "blocker": "Original frozen six-case task inputs not available as a comparable, independently verified dataset in current accessible canonical files; no deliberately configured no-cost generative provider with raw usage accounting in current runtime.",
+  "completion_criterion": "Frozen paired A/B, live task-success equal-or-better, exact provider-token reduction, zero authority regressions, no unexplained missing-context and no material increase in human interventions, plus review.",
+  "resume_trigger": "Existing authorized model host and original six-case frozen fixture available with provenance and token counters.",
+  "limitations": [
+    "GitHub CI is a real Python test, not a real model benchmark.",
+    "Generic CI & Security workflow masks pytest errors and is not used as decisive evidence.",
+    "A green targeted CI does not grant merge/deploy authority."
+  ]
+}
