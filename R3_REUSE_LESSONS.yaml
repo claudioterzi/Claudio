@@ -57,6 +57,40 @@ reuse_rule:
     - equal_or_better_verified_result
 
 lessons:
+  - id: RL-2026-10-09-INTEGRITY-CI-001
+    capability: evidence_bound_integrity_validation
+    status: CANDIDATE
+    observed_at: 2026-10-09
+    trigger: Direct owner request to fix demonstrated defects and improve RRR performance.
+    verified_facts:
+      - A green workflow with masked pytest failures does not prove that relevant tests ran.
+      - Benchmark completion can be error-free with every task wrong; task success needs the evaluator outcome.
+      - Restore must validate the same snapshot bytes it consumes, not a second read of the path.
+      - Full-source RedFrag hashing prevents equal-prefix false duplicates; normalization can be reused within one plan.
+      - Network access must refuse an absent secret; a fresh sync process needs its log directory before import-time logging.
+    failure_modes:
+      - Reusing historical green checks after changes to code, tests or dependencies.
+      - Treating a partial SAR restore as restoration of memory or VSS.
+      - Treating local component timing as end-to-end protocol or provider performance.
+    canonical_short_path:
+      - Re-read current branch heads and matching receipts before changing a shared candidate.
+      - Recover existing bounded patches, then replay their falsifiers against the current base.
+      - Run the actual CI command against passing, failing, collection-error and empty fixtures.
+      - Preserve the complete suite result, including pre-existing failures in other domains.
+    preconditions:
+      - Isolated candidate; immutable source references; synthetic test data.
+    verification:
+      - docs/evidenze/R3_INTEGRITY_CI_20261009.json
+      - tests/test_ci_failure_propagation.py
+      - tests/test_backup_recoverability.py
+      - tests/test_redfrag_pipeline.py
+    cleanup:
+      - No model calls, runtime deployment or production mutation.
+      - Candidate remains unadopted; no claim that all repository tests passed.
+    provenance:
+      - docs/R3_INTEGRITY_CI_20261009.md
+      - PR 120 head a4a06d0aef51708c61f4fc5d0f863b1eba832165
+      - Recovered integrity candidate 4bf1600891613906ba176376ab50f77617fe5a9a
   - id: RL-2026-09-21-TYPESAFE-JEV-001
     capability: canonical_typesafe_jev_live_judgment
     status: OBSERVED

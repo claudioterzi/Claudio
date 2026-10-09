@@ -165,7 +165,8 @@ def run_controlled(
         key = condition["key"]
         subset = [r for r in records if r["condition"] == key]
         completed = [r for r in subset if r["error"] is None]
-        verified_success = len(completed) == len(subset)
+        execution_complete = bool(subset) and len(completed) == len(subset)
+        verified_success = execution_complete and all(r["passed"] for r in subset)
         accuracy = sum(1 for r in subset if r["passed"]) / len(subset)
         latencies = [r["latency_ms"] for r in completed]
         repeat_scores = []
@@ -176,6 +177,7 @@ def run_controlled(
             "condition": condition,
             "task_runs": len(subset),
             "verified_success": verified_success,
+            "execution_complete": execution_complete,
             "accuracy": round(accuracy, 6),
             "run_variance": round(statistics.pvariance(repeat_scores), 8),
             "mean_latency_ms": int(statistics.mean(latencies)) if latencies else None,

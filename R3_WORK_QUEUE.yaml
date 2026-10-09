@@ -129,6 +129,11 @@ queue:
     objective: Establish grounding, observability and validation requirements before physical deployment.
   - id: R3-019
     title: Longitudinal capability benchmark
+    candidate_delta_2026_10_09:
+      state: DEVELOPMENT
+      evidence: docs/evidenze/R3_INTEGRITY_CI_20261009.json
+      change: Execution completion is separate from evaluated task success; zero or partial accuracy refuses efficiency eligibility.
+      limit: Existing lexical evaluator remains; no live capability baseline or adoption claimed.
     state: DEVELOPMENT
     priority: reproducibility
     objective: Measure whether R3 actually improves over time on fixed and novel tasks.
