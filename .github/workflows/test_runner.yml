@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'public/r3-memory.js'
+      - 'tests/r3-memory-integrity.cjs'
       - '**.py'
       - 'requirements*.txt'
       - '.github/workflows/test_runner.yml'
@@ -70,6 +72,12 @@ jobs:
           assert carta is not None, 'Il Matto non trovato'
           print('Test mazzo: OK')
           "
+
+      - name: "R3 memory integrity: snapshot and delayed-lock regression"
+        run: |
+          node --check public/r3-memory.js
+          node --check tests/r3-memory-integrity.cjs
+          R3_TEST_OUTPUT=/tmp/r3-memory-integrity.json node tests/r3-memory-integrity.cjs public/r3-memory.js
 
       - name: Test R3-019 controlled baseline
         run: python -m unittest tests.test_benchmark_controlled
