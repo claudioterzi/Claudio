@@ -75,18 +75,22 @@ class EvolutionCandidate:
 
     def validate(self) -> List[str]:
         errors: List[str] = []
-        if self.direction not in {"higher", "lower"}:
+        # Dataclass hints are not runtime type validation. Untrusted agent/
+        # JSON-originated candidate metadata must fail closed, not crash.
+        if not isinstance(self.direction, str) or self.direction not in {"higher", "lower"}:
             errors.append("direction must be 'higher' or 'lower'")
-        if self.risk_level not in {"low", "medium", "high", "critical"}:
+        if not isinstance(self.risk_level, str) or self.risk_level not in {"low", "medium", "high", "critical"}:
             errors.append("risk_level must be low/medium/high/critical")
+        if not isinstance(self.scope, str) or not self.scope.strip():
+            errors.append("scope must be nonempty text")
         if type(self.reversible) is not bool:
             errors.append("reversible must be a boolean")
         if type(self.external_side_effects) is not bool:
             errors.append("external_side_effects must be a boolean")
-        if not self.title.strip() or not self.claim.strip():
-            errors.append("title and claim are required")
-        if not self.primary_metric.strip():
-            errors.append("primary_metric is required")
+        for key in ("title", "subsystem", "claim", "primary_metric", "candidate_id"):
+            value = getattr(self, key)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"{key} must be nonempty text")
         min_gain = _finite_number(self.min_gain)
         if min_gain is None or min_gain < 0:
             errors.append("min_gain must be a finite non-negative number")
@@ -94,6 +98,8 @@ class EvolutionCandidate:
             errors.append("critical_metrics must be a mapping")
         else:
             for metric_name, rule in self.critical_metrics.items():
+                if not isinstance(metric_name, str) or not metric_name.strip():
+                    errors.append("critical metric names must be nonempty text")
                 if not isinstance(rule, Mapping):
                     errors.append(f"critical metric '{metric_name}' requires a rule mapping")
                     continue
@@ -103,13 +109,20 @@ class EvolutionCandidate:
                 limit = _finite_number(rule.get("max_regression", 0.0))
                 if limit is None or limit < 0:
                     errors.append(f"critical metric '{metric_name}' max_regression must be a finite non-negative number")
-        if not self.source_refs:
-            errors.append("at least one provenance source_ref is required")
-        if not self.falsifiers:
-            errors.append("at least one falsifier must be preregistered")
-        if self.scope in PROTECTED_SCOPES and not self.rollback_ref:
+        for field_name in ("source_refs", "falsifiers"):
+            values = getattr(self, field_name)
+            if (not isinstance(values, (list, tuple)) or not values
+                    or any(not isinstance(v, str) or not v.strip() for v in values)):
+                errors.append(f"{field_name} requires nonempty text entries")
+        if self.rollback_ref is not None and (
+            not isinstance(self.rollback_ref, str) or not self.rollback_ref.strip()
+        ):
+            errors.append("rollback_ref must be nonempty text when present")
+        if isinstance(self.scope, str) and self.scope in PROTECTED_SCOPES and (
+            not isinstance(self.rollback_ref, str) or not self.rollback_ref.strip()
+        ):
             errors.append("protected scopes require rollback_ref")
-        if self.external_side_effects and self.scope != "external_side_effects":
+        if self.external_side_effects is True and self.scope != "external_side_effects":
             errors.append("external_side_effects must use the external_side_effects scope")
         return errors
 
