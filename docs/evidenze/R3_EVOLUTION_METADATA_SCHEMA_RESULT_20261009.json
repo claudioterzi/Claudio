@@ -1,0 +1,80 @@
+{
+  "schema": "R3-020-METADATA-VALIDATION-RESULT/1",
+  "authority": "DATA_ONLY",
+  "observed_at_utc": "2026-10-09T10:44:43.588Z",
+  "repository": "claudioterzi/Claudio",
+  "base_main": "cb6ef50912c5d410a89147fa993d7d5d1985a1dc",
+  "stacked_pr": 124,
+  "underlying_pr": 118,
+  "scope": "existing R3-020 kernel candidate metadata; no new engine",
+  "preregistration": {
+    "commit": "9c88a827c4e49b19e99029ac14b24346bf7c06fc",
+    "path": "docs/evidenze/R3_EVOLUTION_METADATA_SCHEMA_PREREG_20261009.json",
+    "original_code_blob": "083a6683720f19e2e280aadc8f1f79d0db6a0b1a"
+  },
+  "baseline": {
+    "tests_only_commit": "367044d296538e81f0265b2d3d5cd0525b78c077",
+    "run_id": 37919236406,
+    "url": "https://github.com/claudioterzi/Claudio/actions/runs/37919236406",
+    "methods_run": 27,
+    "negative_variants": 18,
+    "assertion_failures": 12,
+    "unhandled_errors": 6,
+    "positive_control_variants": 5,
+    "positive_controls_passed": 5,
+    "outcome": "PREDICTED_NEGATIVE_CONTROL_FAIL"
+  },
+  "candidate": {
+    "technical_commit": "ffcdb4a18072c191ca288eb0b136f5016a1a1eee",
+    "source_blob": "f14815f72d5705886c51cc0106ad37e9957ce4c4",
+    "test_blob": "95fbabedbf77f9d64b2d2d7be7046889f816ddbc",
+    "change": "Strict candidate textual fields and typed nonempty provenance/falsifiers; reject malformed direction/risk/scope; validate rollback reference; preserve valid gates.",
+    "target": "sdq1/evolution_kernel.py",
+    "status": "STAGED_NOT_ADOPTED"
+  },
+  "verification": {
+    "push_evolution_guard": {
+      "run_id": 37919348748,
+      "status": "completed",
+      "conclusion": "success",
+      "methods_passed": 27,
+      "methods_failed": 0,
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/37919348748"
+    },
+    "pr_evolution_guard": {
+      "run_id": 37919354398,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "pr_security_scan": {
+      "run_id": 37919354661,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "broad_ci": {
+      "run_id": 37919348872,
+      "status": "in_progress",
+      "conclusion": null,
+      "claim": "pending at receipt generation; verify separately"
+    },
+    "read_after_write": {
+      "source_git_blob": "f14815f72d5705886c51cc0106ad37e9957ce4c4",
+      "tests_git_blob": "95fbabedbf77f9d64b2d2d7be7046889f816ddbc"
+    },
+    "negative_variants_resolved": 18,
+    "positive_controls_preserved": 5
+  },
+  "decision": "KEEP_STACKED_DRAFT_FOR_INDEPENDENT_ADOPTION_REVIEW",
+  "R3020": "HOLD_PENDING_INDEPENDENT_CONSUMER_REVIEW",
+  "next_action": "Provide exact PR124 receipt and patch for independent external reviewer, including Jev only if authenticated; reconcile stacked PR118 and exact main before any adoption.",
+  "blocker": "Jev not available from current executor; no bearer token in model host, Desktop Commander device offline, and Railway gateway credential is not exported. No inference executed.",
+  "completion_criterion": "Independent consumer/domain review and frozen held-out data, no unexpected regressions, hosted relevant tests on adopted head, explicit core-code decision and rollback proof.",
+  "resume_trigger": "authenticated existing Jev client, independent reviewer result, PR head revision or new adversarial counterexample",
+  "limits": [
+    "27 deterministic tests prove only the inspected case set, not universal safety",
+    "External source_refs and boolean evidence attestations are not self-authenticating proof",
+    "No direct Jev communication/inference",
+    "No merge, deploy, production change, spend, secrets, new resources or third-party contact",
+    "No proof of backup durability, authenticated Railway restoration or real cross-device continuity"
+  ]
+}
