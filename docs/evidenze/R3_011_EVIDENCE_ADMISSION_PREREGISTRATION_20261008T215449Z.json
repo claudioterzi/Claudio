@@ -1,0 +1,71 @@
+{
+  "schema": "R3-EVOLUTION-PREREGISTRATION/1",
+  "candidate_id": "R3C-r3011-evidence-admission-20261008",
+  "created_at": "2026-10-08T21:54:49Z",
+  "owner": "R3 Evolution Cycle",
+  "base_commit": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+  "historical_candidate": {
+    "pull_request": 78,
+    "head": "88c89b6e9e45278538517e6bd8276bcf8b3e6a80",
+    "merge_base": "3cddd0f30115e93625af0b0c1d858056b70df9ff",
+    "unique_commits": 5,
+    "behind_main": 162
+  },
+  "retroactive_classification": "PATCH_RETEST",
+  "scope": "R3-011 Evidence Graph admission of current R3-007 verification evidence",
+  "hypothesis": "The historical Evidence Graph adapter can incorrectly promote structurally incomplete or proxy R3-007 evidence to FATTO and can expose explicit edges from non-factual records as promotion support. A bounded fail-closed patch can remove those false admissions while preserving valid authoritative match and mismatch evidence.",
+  "prediction": {
+    "baseline_false_fact_admissions_minimum": 2,
+    "baseline_nonfactual_promotion_support_minimum": 1,
+    "trial_false_fact_admissions": 0,
+    "trial_nonfactual_promotion_support": 0,
+    "valid_authoritative_match_preserved": true,
+    "valid_authoritative_mismatch_preserved": true
+  },
+  "falsifiers": [
+    "AUTHORITATIVE match without a nonempty postcondition_source is stored as FATTO",
+    "PROXY mismatch is stored as FATTO or AUTHORITATIVE_STATE",
+    "an EXPLICIT support/test edge sourced from an IPOTESI record enters promotion_support",
+    "unknown epistemic, evidence, relation or basis enum values are accepted",
+    "a valid current R3-007 authoritative match or mismatch stops being representable",
+    "the patch creates a second verifier instead of adapting the existing R3-007 evidence contract"
+  ],
+  "experiment": {
+    "baseline": "Recover only the historical R3-011 module/tests and execute the frozen malformed/proxy/nonfactual controls before patching.",
+    "trial": "Add runtime enum validation, strict current R3-007 evidence-shape validation, consistency checks and factual-source filtering for promotion support.",
+    "acceptance": "All frozen false-admission controls are refused or remain non-factual; valid authoritative match and mismatch remain FATTO; historical tests and relevant R3-007/R3-020 tests pass.",
+    "candidate_boundary": "isolated local branch; no push, merge, deploy or canonical queue update"
+  },
+  "critical_metrics": {
+    "valid_authoritative_match_preserved": {
+      "direction": "higher",
+      "max_regression": 0
+    },
+    "valid_authoritative_mismatch_preserved": {
+      "direction": "higher",
+      "max_regression": 0
+    },
+    "historical_tests_passing": {
+      "direction": "higher",
+      "max_regression": 0
+    },
+    "authority_expansion": {
+      "direction": "lower",
+      "max_regression": 0
+    }
+  },
+  "authority": {
+    "promotion_authorized": false,
+    "merge_authorized": false,
+    "deploy_authorized": false,
+    "provider_execution_authorized": false,
+    "canonical_write_authorized": false
+  },
+  "decision_if_prediction_holds": "KEEP_ISOLATED_RETEST",
+  "decision_if_prediction_fails": "REJECT_PATCH_PRESERVE_COUNTEREXAMPLE",
+  "limits": [
+    "The test validates deterministic evidence admission, not truth of an external source.",
+    "A syntactically valid source label still does not prove domain authority.",
+    "Local tests do not substitute for hosted review or adoption."
+  ]
+}
