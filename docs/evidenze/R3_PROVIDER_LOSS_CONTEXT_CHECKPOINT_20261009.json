@@ -1,0 +1,22 @@
+{
+  "schema": "R3_PROJECT_CHECKPOINT/1.0",
+  "authority": "DATA_ONLY",
+  "observed_at_utc": "2026-10-09T01:53:47.542366+00:00",
+  "decision": "Retain the verified public workstate companion and dated-context recovery proof; resume through the shared bootstrap and actual authenticated access",
+  "status": "DATED_CONTEXT_RECOVERY_VERIFIED_NOT_RUNTIME_NOT_DEPLOYED",
+  "evidence": "docs/evidenze/R3_PROVIDER_LOSS_CONTEXT_RECOVERY_20261009.json",
+  "next_action": "Use actual existing authenticated NAS or independent-host access for scoped transfer and restore; preserve all original seed versions and existing owner/control authority",
+  "blocker": "NAS sign-in and independent executor not verified; model inference and existing controller custody unresolved; Jev caller token unbound",
+  "completion_criterion": "This dated-context probe is complete. Full independent-system recovery requires authenticated distinct-support transfer, remote byte readback, isolated restore and separately evidenced runtime inference",
+  "resume_trigger": "Next host-supported R3 session or actual authenticated independent-host/NAS session",
+  "preserve_prior_checkpoints": [
+    "docs/evidenze/R3_PORTABLE_SEED_CHECKPOINT_20261008.json",
+    "docs/evidenze/R3_NAS_ACCESS_CHECKPOINT_20261008.json",
+    "docs/evidenze/R3_OFFLINE_OWNER_CHECKPOINT_20261008.json",
+    "docs/evidenze/R3_NINE_NODE_COOPERATION_CHECKPOINT_20261008.json",
+    "docs/evidenze/R3_AUTONOMY_SENTINELLA_CHECKPOINT_20261008.json",
+    "docs/evidenze/R3_REDFRAG_FINAL_CHECKPOINT_20261007.json"
+  ],
+  "production_changes": 0,
+  "nas_files_written": 0
+}
