@@ -73,7 +73,7 @@ jobs:
           print('Test mazzo: OK')
           "
 
-      - name: R3 memory integrity: snapshot and delayed-lock regression
+      - name: "R3 memory integrity: snapshot and delayed-lock regression"
         run: |
           node --check public/r3-memory.js
           node --check tests/r3-memory-integrity.cjs
