@@ -1,0 +1,37 @@
+{
+  "schema": "R3-020-EVIDENCE-TYPE-PREREG/1",
+  "authority": "DATA_ONLY",
+  "observed_at_utc": "2026-10-09T10:09:42.339Z",
+  "repository": "claudioterzi/Claudio",
+  "source_main": "cb6ef50912c5d410a89147fa993d7d5d1985a1dc",
+  "parent_pr": 118,
+  "parent_head": "13a3380aa3172fa2ea3b04ba642df2d6b1b3d5cd",
+  "parent_source_blob": "97246c6122926c0f825bfa7d0ef1b56d1d0ee6f4",
+  "branch": "candidate/r3-evolution-strict-evidence-20261009",
+  "classification": "PATCH",
+  "scope": "core_code",
+  "risk_level": "high",
+  "decision": "HOLD_PREREGISTERED",
+  "prediction": "Untrusted truthy strings, integers and non-mapping trajectory audits must never make R3-020 approve an invalid evidence bundle; candidate.reversible must be a strict boolean.",
+  "primary_metric": "invalid_evidence_promotions",
+  "direction": "lower",
+  "required_gain": 1,
+  "falsifiers": [
+    "Any field with 'false' or numeric truthy value can obtain AUTO_APPLY_ELIGIBLE or STAGED",
+    "Malformed trajectory audit raises instead of returning REJECT",
+    "Candidate reversible='false' is treated as reversible",
+    "Valid explicit boolean evidence changes legitimate AUTO_APPLY_ELIGIBLE, STAGED, HOLD or REJECT decisions"
+  ],
+  "baseline_anticipated": "Existing dataclass hints are not runtime validation; source uses bool(...) and not evidence fields.",
+  "controls": [
+    "fully valid low-risk finite candidate AUTO_APPLY_ELIGIBLE",
+    "valid out_of_sample=False HOLD",
+    "valid rollback_verified=False REJECT",
+    "core_code valid candidate STAGED"
+  ],
+  "scope_limits": "No modification of PR #118, main, provider credentials, production, infrastructure or third-party data; stacked draft proposal only.",
+  "completion_criterion": "Independent exact-head adversarial/positive checks PASS, existing regression suite PASS, hosted CI/security PASS, review and separate R3-020 adoption decision; no automatic merge or deploy.",
+  "next_action": "Publish negative controls, observe baseline falsifiers, harden only the existing R3-020 kernel, verify post-write exact commit and hosted results.",
+  "blocker": "No independent hosted evidence yet; PR #118 itself remains staged and unmerged.",
+  "resume_trigger": "Exact-head CI/security and independent review, or new adversarial evidence."
+}

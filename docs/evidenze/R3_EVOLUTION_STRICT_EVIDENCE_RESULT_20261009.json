@@ -1,0 +1,92 @@
+{
+  "schema": "R3-020-STRICT-EVIDENCE-RESULT/1",
+  "authority": "DATA_ONLY",
+  "observed_at_utc": "2026-10-09T10:15:06.362Z",
+  "repository": "claudioterzi/Claudio",
+  "canonical_main_at_start": "cb6ef50912c5d410a89147fa993d7d5d1985a1dc",
+  "parent_pr": {
+    "number": 118,
+    "head_sha": "13a3380aa3172fa2ea3b04ba642df2d6b1b3d5cd",
+    "state": "DRAFT_OPEN_UNMERGED"
+  },
+  "stacked_pr": {
+    "number": 124,
+    "url": "https://github.com/claudioterzi/Claudio/pull/124",
+    "base_branch": "candidate/r3-evolution-finite-metrics-20261007",
+    "branch": "candidate/r3-evolution-strict-evidence-20261009",
+    "draft": true
+  },
+  "preregistration": {
+    "commit": "6b31e9937c0d993f2a7fb3ba688674acd9f0ff1f",
+    "path": "docs/evidenze/R3_EVOLUTION_STRICT_EVIDENCE_PREREG_20261009.json",
+    "git_blob": "3e1a48aa660ec6c3d54ed25c2447be2d0f6c0e67"
+  },
+  "baseline": {
+    "test_only_commit": "4222e68cad8a5a5678acb139fbc2cc5631232249",
+    "hosted_workflow_run": 37915961461,
+    "url": "https://github.com/claudioterzi/Claudio/actions/runs/37915961461",
+    "source_git_blob": "97246c6122926c0f825bfa7d0ef1b56d1d0ee6f4",
+    "tests_methods": 25,
+    "failures": 17,
+    "errors": 4,
+    "observed": "Untrusted truthy strings/numeric flags admitted candidates; malformed trajectory audit crashed. Counts include subTest assertion failures/errors, not 21 distinct test methods."
+  },
+  "patch": {
+    "commit": "75b295c9f6acada80bbfa119b0587a586f228e63",
+    "source_git_blob": "083a6683720f19e2e280aadc8f1f79d0db6a0b1a",
+    "tests_git_blob": "0969b7e24070cfbeba84a84249aa2757b75dee28",
+    "target": "Existing sdq1/evolution_kernel.py",
+    "scope": "core_code",
+    "fix": "Require exact bool on candidate reversible/external_side_effects, evidence flags and trajectory checks. Reject invalid evidence before promotion; reject non-mapping audit without exception.",
+    "external_side_effects": false
+  },
+  "verification": {
+    "push_guard": {
+      "run": 37916067699,
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/37916067699",
+      "head": "75b295c9f6acada80bbfa119b0587a586f228e63",
+      "status": "completed",
+      "conclusion": "success",
+      "methods_passed": 25,
+      "methods_failed": 0,
+      "self_test": "PASS",
+      "compile": "PASS"
+    },
+    "pr_guard": {
+      "run": 37916209862,
+      "head": "75b295c9f6acada80bbfa119b0587a586f228e63",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "security_scan": {
+      "run": 37916209740,
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/37916209740",
+      "head": "75b295c9f6acada80bbfa119b0587a586f228e63",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "broad_ci": {
+      "run": 37916067558,
+      "head": "75b295c9f6acada80bbfa119b0587a586f228e63",
+      "status": "in_progress",
+      "conclusion": null,
+      "scope": "Do not imply PASS until independently read."
+    },
+    "negative_controls": "Previously 17 failures and 4 errors; now 25/25 methods PASS.",
+    "positive_controls": "Valid explicit Boolean configurations preserve AUTO_APPLY_ELIGIBLE, STAGED, HOLD, REJECT."
+  },
+  "decision": "KEEP_ISOLATED_STAGED_FOR_REVIEW",
+  "status": "R3-020 kernel canonical VERIFIED; strict-evidence core-code candidate STAGED_NOT_ADOPTED",
+  "limits": [
+    "No out-of-sample independent consumer-review evidence",
+    "Positive evidence booleans remain caller-asserted and do not independently prove external facts",
+    "No model intelligence or inference benchmark",
+    "No remote backup/persistent-restore test",
+    "Neither PR #118 nor #124 merged; main untouched",
+    "No provider calls, secrets, spend, deployment, production restart, removal or third-party communication"
+  ],
+  "next_action": "Exact-head independent consumer/security review; reconcile candidate stack with current main and submit separate core-code adoption decision if gates pass.",
+  "blocker": "Independent reviewer/out-of-sample controls and explicit adoption decision incomplete; #118 remains draft/unmerged; broad CI was running at last observed read.",
+  "completion_criterion": "Typed evidence gate and parent finite-metrics candidate reviewed against exact heads; negative and positive controls pass independently; no unreviewed regression, full hosted relevant gates pass, provenance and rollback verified.",
+  "resume_trigger": "New independent review or counterexample, exact-head hosted result, or canonical base change requiring reconciliation."
+}

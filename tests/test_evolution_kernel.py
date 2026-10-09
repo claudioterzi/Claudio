@@ -46,6 +46,114 @@ def candidate(**overrides):
 
 
 class EvolutionKernelTests(unittest.TestCase):
+
+    def test_adversarial_candidate_metadata_never_promotes_or_crashes(self):
+        # Preregistered separately at the pinned #124 source before test creation.
+        # Deliberately test wrong JSON/runtime shapes and whitespace-only proof.
+        bad_cases = [
+            ("title_number", {"title": 42}),
+            ("claim_null", {"claim": None}),
+            ("primary_metric_list", {"primary_metric": []}),
+            ("direction_list", {"direction": []}),
+            ("risk_level_list", {"risk_level": []}),
+            ("scope_list", {"scope": []}),
+            ("subsystem_null", {"subsystem": None}),
+            ("source_refs_string", {"source_refs": "fabricated:reference"}),
+            ("source_refs_object", {"source_refs": {"fake": "ref"}}),
+            ("source_refs_wrong_element", {"source_refs": [17]}),
+            ("source_refs_blank", {"source_refs": ["  "]}),
+            ("falsifiers_string", {"falsifiers": "some check"}),
+            ("falsifiers_object", {"falsifiers": {"test": True}}),
+            ("falsifiers_wrong_element", {"falsifiers": [False]}),
+            ("falsifiers_blank", {"falsifiers": ["  "]}),
+            ("protected_rollback_blank", {"scope": "core_code", "rollback_ref": "  "}),
+            ("protected_rollback_number", {"scope": "core_code", "rollback_ref": 123}),
+            ("invalid_candidate_id", {"candidate_id": 0}),
+        ]
+        for label, overrides in bad_cases:
+            with self.subTest(label=label):
+                verdict = evaluate_candidate(
+                    candidate(**overrides),
+                    {"recall": 0.7, "error_rate": 0.1},
+                    {"recall": 0.8, "error_rate": 0.08},
+                    evidence(),
+                )
+                self.assertEqual(verdict.status, "REJECT", label)
+                self.assertFalse(verdict.auto_apply_eligible)
+
+    def test_candidate_metadata_valid_controls_unchanged(self):
+        baseline = {"recall": 0.7, "error_rate": 0.1}
+        trial = {"recall": 0.8, "error_rate": 0.08}
+        for label, overrides, ev, expected in [
+            ("low_reversible", {}, evidence(), "AUTO_APPLY_ELIGIBLE"),
+            ("protected_scope", {"scope": "core_code"}, evidence(), "STAGED"),
+            ("no_out_of_sample", {}, evidence(out_of_sample=False), "HOLD"),
+            ("rollback_missing", {}, evidence(rollback_verified=False), "REJECT"),
+            ("valid_unicode", {"title": "perché capacità", "source_refs": ["github:abc"], "falsifiers": ["hash differisce"]}, evidence(), "AUTO_APPLY_ELIGIBLE"),
+        ]:
+            with self.subTest(label=label):
+                verdict = evaluate_candidate(candidate(**overrides), baseline, trial, ev)
+                self.assertEqual(verdict.status, expected, label)
+
+
+    def _strict_input_decision(self, **overrides):
+        return evaluate_candidate(
+            candidate(**{k: v for k, v in overrides.items() if k in {"reversible", "external_side_effects", "risk_level", "scope"}}),
+            {"recall": 0.70, "error_rate": 0.10},
+            {"recall": 0.80, "error_rate": 0.08},
+            evidence(**{k: v for k, v in overrides.items() if k in {"out_of_sample", "provenance_complete", "rollback_verified", "independent_evaluator", "trajectory_audit"}}),
+        )
+
+    def test_evidence_false_strings_never_grant_authority(self):
+        for flag in ("out_of_sample", "provenance_complete", "rollback_verified", "independent_evaluator"):
+            with self.subTest(flag=flag):
+                decision = self._strict_input_decision(**{flag: "false"})
+                self.assertEqual(decision.status, "REJECT")
+                self.assertFalse(decision.auto_apply_eligible)
+
+    def test_truthy_numeric_evidence_flags_are_rejected(self):
+        for flag in ("out_of_sample", "provenance_complete", "rollback_verified", "independent_evaluator"):
+            with self.subTest(flag=flag):
+                decision = self._strict_input_decision(**{flag: 1})
+                self.assertEqual(decision.status, "REJECT")
+
+    def test_non_boolean_audit_flags_cannot_pass(self):
+        for audit_flag in TRAJECTORY_FIELDS:
+            with self.subTest(flag=audit_flag):
+                checks = {name: True for name in TRAJECTORY_FIELDS}
+                checks[audit_flag] = "false"
+                decision = self._strict_input_decision(trajectory_audit=checks)
+                self.assertEqual(decision.status, "REJECT")
+
+    def test_invalid_trajectory_containers_refused_not_crash(self):
+        for malformed in (None, "false", [], 1):
+            with self.subTest(value=repr(malformed)):
+                decision = self._strict_input_decision(trajectory_audit=malformed)
+                self.assertEqual(decision.status, "REJECT")
+
+    def test_false_string_independent_evaluator_cannot_stage_high_risk(self):
+        decision = self._strict_input_decision(
+            risk_level="high", scope="core_code", independent_evaluator="false",
+        )
+        self.assertEqual(decision.status, "REJECT")
+
+    def test_string_reversible_false_cannot_enable_auto_apply(self):
+        decision = self._strict_input_decision(reversible="false")
+        self.assertEqual(decision.status, "REJECT")
+        self.assertFalse(decision.auto_apply_eligible)
+
+    def test_external_side_effects_flag_must_be_strict_bool(self):
+        for value in ("false", 0, None):
+            with self.subTest(value=repr(value)):
+                decision = self._strict_input_decision(external_side_effects=value)
+                self.assertEqual(decision.status, "REJECT")
+
+    def test_valid_evidence_boolean_controls_preserve_decisions(self):
+        self.assertEqual(self._strict_input_decision().status, "AUTO_APPLY_ELIGIBLE")
+        self.assertEqual(self._strict_input_decision(out_of_sample=False).status, "HOLD")
+        self.assertEqual(self._strict_input_decision(rollback_verified=False).status, "REJECT")
+        self.assertEqual(self._strict_input_decision(scope="core_code").status, "STAGED")
+
     def assert_rejected(self, candidate_spec, baseline, trial):
         decision = evaluate_candidate(candidate_spec, baseline, trial, evidence())
         self.assertEqual(decision.status, "REJECT")
