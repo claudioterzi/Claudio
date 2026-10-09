@@ -1,0 +1,137 @@
+{
+  "schema": "R3_PROVIDER_LOSS_CONTEXT_RECOVERY/1.0",
+  "authority": "DATA_ONLY",
+  "classification": "PUBLIC_WITH_SEALED_RECEIPT_REFERENCES",
+  "observed_at_utc": "2026-10-09T01:53:47.542366+00:00",
+  "status": "DATED_CONTEXT_RECOVERY_VERIFIED_SAME_HOST_SIMULATION_ONLY",
+  "decision": "Add the missing public task records to existing owner custody; recover the dated seven-field context through the unchanged shared loader without original-workspace or network reads",
+  "retroactive_classification": {
+    "original_seed": "KEEP",
+    "seed_only_resume_assumption": "RETEST_FALSIFIED",
+    "missing_workstate_custody": "PATCH_BY_SEPARATE_PUBLIC_COMPANION"
+  },
+  "source_local_commit": "1fb44f4c6f82c91136a67d3f6493c0f42eae7540",
+  "canonical_main_observed": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+  "frozen_source": {
+    "github_commit": "671e38d36290cb7fd221248d0f27c3b09fd5789d",
+    "checkpoint_sha256": "55d20418d692179513c7174964f7641047f6ff53aebc2a4d05633032633aea73",
+    "evidence_sha256": "27e74b97b4daa26c0d76763db30d2c255db916819ab5a48c3a4dc1ebcc52281d",
+    "snapshot_at_utc": "2026-10-08T19:16:57.138727+00:00",
+    "historical_checkpoint_references_not_restored": true
+  },
+  "provider_postcondition": {
+    "provenance": "ADAPTED_TOOL_OBSERVATION_PLUS_LOCAL_NATIVE_SHA256",
+    "provider": "Google Drive",
+    "parent_owner_only_metadata": true,
+    "permission_changes": 0,
+    "seed_file_id": "1CueuD-FQQrL68Ien7sI7KuQd25roRnc6",
+    "companion_file_id": "1HF713S_tpK5eHjKjs6pggArWsT4u_7p5",
+    "companion_created_at_utc": "2026-10-09T01:48:48.162Z",
+    "companion_owner_only_reference": "https://drive.google.com/file/d/1HF713S_tpK5eHjKjs6pggArWsT4u_7p5/view",
+    "seed_bytes": 31263,
+    "seed_sha256": "2c80dafc22a1adb5951131ad9dcdd10093e87e34198bd947e0a18d22680b3522",
+    "companion_bytes": 5577,
+    "companion_sha256": "4d1ac05d9a66232cc62dbf76e2e4be75d32bf958d43f909540f0590d7e365884",
+    "both_raw_inputs_downloaded_20261009": true,
+    "both_pre_fixed_external_pins_match": true,
+    "previous_interrupted_upload": "NO_RESULT; not represented as success, rejection or failure; exact-parent/name postcondition returned empty before successful create"
+  },
+  "baseline": {
+    "provenance": "NATIVE_EXECUTION",
+    "observed_at_utc": "2026-10-08T19:48:41.592072+00:00",
+    "seed_only_checkpoint_present": false,
+    "returncode": 2,
+    "state": "RESUME_BLOCKED",
+    "workstate_recovered": false,
+    "guard_controls_passed": 8,
+    "filesystem_unchanged": true
+  },
+  "final": {
+    "provenance": "NATIVE_EXECUTION",
+    "observed_at_utc": "2026-10-09T01:50:24.513436+00:00",
+    "case_returncodes": {
+      "valid": 0,
+      "wrong_checkpoint_pin": 2,
+      "wrong_evidence_pin": 2,
+      "missing_checkpoint": 2,
+      "missing_evidence": 2,
+      "corrupt_evidence": 2,
+      "wrong_owner": 1
+    },
+    "cases_passed": 7,
+    "guard_controls_passed": 56,
+    "filesystem_before_after_equal_cases": 7,
+    "valid_resume_fields_recovered": 7,
+    "valid_output_records": [
+      "R3_BOOTSTRAP_RESUME/1.0 DATA_ONLY",
+      "R3_AI_BOOTSTRAP_V1 VALIDATED"
+    ],
+    "loader_forbidden_operation_attempts": 0,
+    "allowed_reads": [
+      "new fixture",
+      "Python stdlib"
+    ],
+    "checkpoint_and_evidence_read_via_readonly_descriptors": true,
+    "input_environment_entries_after_clear": 0,
+    "python_flags": [
+      "-I",
+      "-S",
+      "-B"
+    ],
+    "input_archives_and_sources_preserved": true,
+    "copied_owner_change_is_not_human_authentication": true
+  },
+  "reproducibility": {
+    "probe": "tests/r3_provider_loss_context_probe.py",
+    "probe_sha256": "315ff44ea6b7c8d8cf6ffbc6118fb8d9f430c65862a79b3ddbaf414571d625d2",
+    "guard": "tests/r3_recovery_guard.py",
+    "guard_sha256": "ad08ab05e0f97cb13a7ccea380bea9231f9e7c93b0f3d6b98699f234008d8746",
+    "driver_uses_only_downloaded_archives_for_fixture": true,
+    "loader_code_modified": false,
+    "driver_extracts_before_guard": true,
+    "host_supplies_pins_before_parse": true,
+    "native_receipts_are_private_not_recovered_original_cloud_outputs": true
+  },
+  "sealed_receipts": {
+    "BASELINE_SEED_ONLY_CONTEXT_STRICT_20261008.json": {
+      "sha256": "c320784116c9b654499ebd7a5fc266fe73a4687096c1d0a0aaf44ce08dfa844f",
+      "bytes": 13576,
+      "location": "Owner workspace private receipts; exact originals retained"
+    },
+    "FINAL_PROVIDER_LOSS_CONTEXT_20261009.json": {
+      "sha256": "6f4f09b47eb4ae7976711c4a31ead6b556ef2cd102b08c2804328bf56ae0af00",
+      "bytes": 101811,
+      "location": "Owner workspace private receipts; exact originals retained"
+    },
+    "DRIVE_WORKSTATE_ROUNDTRIP_20261009.json": {
+      "sha256": "f05fb4910a11324b8b71fce159b89668d3d7313d3320a028bdbd8c8ce32bee0f",
+      "bytes": 1794,
+      "location": "Owner workspace private receipts; exact originals retained"
+    }
+  },
+  "independent_review": {
+    "method": "Second agent read-only review of source, raw archive hashes and receipt; no repeat execution",
+    "status": "PASS_WITHIN_DECLARED_STATIC_SCOPE",
+    "required_limit": "Dated task-context only; provenance comes from separate connector observations; referenced older checkpoints are not restored"
+  },
+  "interpretation": "The public checkpoint8October and its evidence have an additional surviving Drive copy; this bounded clean-folder run no longer needs GitHub or the original repository for loader reads. It does not establish that every project state has that redundancy.",
+  "remaining_blocker": "Actual authenticated independent executor/NAS route, model identity/inference and existing RRR controller custody remain unresolved; no Jev caller secret binding",
+  "production_runtime_changes": 0,
+  "canonical_main_changes": 0,
+  "new_paid_resources": 0,
+  "signing_authority_changes": 0,
+  "nas_files_written": 0,
+  "physical_cleanup": false,
+  "universal_backup_verified": false,
+  "claim_limit": "Same-host CPython audited read-only recovery of dated public task fields; no actual provider outage, OS sandbox, model inference, identity authentication, private history or durable-volume recovery.",
+  "scope_flags": {
+    "simulated_github_and_original_workspace_unavailable": true,
+    "actual_cloud_outage": false,
+    "os_airgap": false,
+    "distinct_physical_host": false,
+    "model_inference": false,
+    "private_history_or_volume_restored": false,
+    "controller_or_credentials_restored": false,
+    "project_owner_labels_are_authentication": false
+  }
+}
