@@ -42,10 +42,10 @@ def get_network_secret() -> str:
 
 
 def verify_network_secret(header: str | None) -> bool:
-    """Match Supereroe: empty secret = open ingest (MVP); else constant-time compare."""
+    """Fail closed unless a configured secret matches in constant time."""
     secret = get_network_secret()
     if not secret:
-        return True
+        return False
     return secrets.compare_digest((header or "").encode(), secret.encode())
 
 

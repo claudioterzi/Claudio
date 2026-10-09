@@ -1,9 +1,47 @@
 import unittest
+import hashlib
+from unittest.mock import patch
 
-from typesafe_sister.redfrag_pipeline import build_clusters, plan_context
+from typesafe_sister import redfrag_pipeline
+from typesafe_sister.redfrag_pipeline import MAX_CONTENT_CHARS, build_clusters, plan_context
 
 
 class TestRedFragPipeline(unittest.TestCase):
+    def test_context_planning_fingerprints_each_source_once(self):
+        records = [{"id": str(i), "content": "context", "provenance": f"test:{i}"}
+                   for i in range(10)]
+        with patch.object(redfrag_pipeline, "_fingerprint", wraps=redfrag_pipeline._fingerprint) as digest:
+            plan_context(records)
+        self.assertEqual(digest.call_count, len(records))
+
+    def test_supplied_hash_must_match_source(self):
+        record = {"id": "a", "content": "actual", "provenance": "test:a",
+                  "content_hash": "sha256:" + "0" * 64}
+        for operation in (build_clusters, plan_context):
+            with self.assertRaises(ValueError):
+                operation([record])
+
+    def test_distinct_tails_cannot_be_exact_duplicates(self):
+        prefix = "x" * MAX_CONTENT_CHARS
+        records = [{"id": tail, "logical_id": "same", "content": prefix + tail,
+                    "provenance": "test:" + tail, "canonical": True}
+                   for tail in ("a", "b")]
+        cluster = build_clusters(records)[0]
+        self.assertEqual(len(set(cluster["content_hashes"])), 2)
+        result = plan_context(records)
+        self.assertFalse(result["plans"][0]["evidence"]["exact_duplicate"])
+        self.assertEqual(records[0]["content"], prefix + "a")
+
+    def test_full_hash_preserved_and_truncated_core_is_not_activated(self):
+        content = "x" * (MAX_CONTENT_CHARS + 1)
+        expected = "sha256:" + hashlib.sha256(content.encode()).hexdigest()
+        record = {"id": "a", "content": content, "provenance": "test:a",
+                  "content_hash": expected, "canonical_invariant": True}
+        result = plan_context([record])
+        self.assertEqual(result["active_records"], [])
+        self.assertEqual(result["quarantined"][0]["sha256"], expected)
+        self.assertEqual(build_clusters([record])[0]["content_hashes"], [expected])
+
     def test_exact_duplicate_becomes_pointer_only_without_source_mutation(self):
         records = [
             {"id": "a", "logical_id": "same", "content": "hello", "provenance": "drive:a", "canonical": True},

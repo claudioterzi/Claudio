@@ -93,3 +93,12 @@ def test_network_is_closed_when_secret_is_missing(http_port, monkeypatch):
     with pytest.raises(HTTPError) as error:
         _get(http_port, "/network/v1/nodes")
     assert error.value.code == 401
+
+
+@pytest.mark.parametrize("secret", [None, "", "   ", "wrong-secret"])
+def test_network_nodes_reject_missing_or_wrong_header(http_port, secret):
+    headers = {} if secret is None else {"X-Network-Secret": secret}
+    req = Request(f"http://127.0.0.1:{http_port}/network/v1/nodes", headers=headers)
+    with pytest.raises(HTTPError) as error:
+        urlopen(req, timeout=3)
+    assert error.value.code == 401

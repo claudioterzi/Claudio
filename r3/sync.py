@@ -64,6 +64,7 @@ SYNC_CANARY       = os.getenv("R3_SYNC_CANARY", "").strip().lower() in {"1", "tr
 SYNC_CANARY_EVERY = max(1, int(os.getenv("R3_SYNC_CANARY_EVERY", "1")))
 _CYCLE = 0
 
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
