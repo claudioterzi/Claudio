@@ -2,7 +2,7 @@ name: Test Runner
 
 on:
   push:
-    branches: [main, 'candidate/r3-memory-sync-snapshot-deploy-review-20261009']
+    branches: [main]
     paths:
       - 'public/r3-memory.js'
       - 'tests/r3-memory-integrity.cjs'
