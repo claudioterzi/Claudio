@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#08070b">
+  <title>Cubo Vivo — Il mio primo circo · 2D</title>
+  <meta name="description" content="Primo prototipo 2D del Cubo Vivo R³∞: entra nei testi come scene attraversabili.">
+  <link rel="stylesheet" href="cubo-vivo-2d.css">
+</head>
+<body>
+  <script src="soglia.js"></script>
+
+  <main id="experience" class="experience" data-scene="campo" data-mode="osserva">
+    <div class="world" aria-hidden="true">
+      <div class="layer sky"></div>
+      <div class="layer haze"></div>
+      <div class="sun"></div>
+      <div class="field field-back"></div>
+      <div class="tent">
+        <div class="tent-flag"></div>
+        <div class="tent-roof"></div>
+        <div class="tent-body"></div>
+        <div class="tent-door"></div>
+      </div>
+      <div class="ring"></div>
+      <div class="acrobat"><span class="head"></span><span class="body"></span><span class="arm arm-a"></span><span class="arm arm-b"></span><span class="leg leg-a"></span><span class="leg leg-b"></span></div>
+      <div class="empty-mark"></div>
+      <div class="field field-front"></div>
+      <div class="vignette"></div>
+      <div class="grain"></div>
+    </div>
+
+    <header class="topbar">
+      <a class="brand" href="/cubo-quantico">R³∞ · CUBO VIVO</a>
+      <div class="phase"><span class="live-dot"></span> PROTOTIPO 2D · SANDBOX</div>
+      <button id="production-toggle" class="ghost-button" type="button" aria-expanded="false" aria-controls="production-panel">Produzione</button>
+    </header>
+
+    <section class="story-card" aria-live="polite">
+      <div class="story-meta">
+        <span id="scene-number">01 / 08</span>
+        <span id="scene-time">Pomeriggio</span>
+      </div>
+      <p id="scene-kicker" class="kicker">La soglia</p>
+      <h1 id="scene-title">La campagna cambia</h1>
+      <p id="scene-copy" class="story-copy"></p>
+      <p id="scene-sense" class="story-sense"></p>
+
+      <div class="mode-switch" role="group" aria-label="Modo di esperienza">
+        <button class="mode-button active" data-mode="osserva" type="button">Osserva</button>
+        <button class="mode-button" data-mode="vivi" type="button">Vivi</button>
+        <button class="mode-button" data-mode="ricorda" type="button">Ricorda</button>
+      </div>
+
+      <div class="story-actions">
+        <button id="prev" class="round-button" type="button" aria-label="Scena precedente">←</button>
+        <button id="play" class="play-button" type="button" aria-pressed="false"><span id="play-icon">▶</span><span id="play-label">Vivi la sequenza</span></button>
+        <button id="next" class="round-button" type="button" aria-label="Scena successiva">→</button>
+      </div>
+    </section>
+
+    <aside id="production-panel" class="production-panel" hidden>
+      <div class="panel-head">
+        <div><p class="kicker">OpenMontage bridge</p><h2>Dal testo alla scena</h2></div>
+        <button id="production-close" class="ghost-button" type="button">Chiudi</button>
+      </div>
+      <div class="production-grid">
+        <div><span>Fonte</span><strong id="prod-source">—</strong></div>
+        <div><span>Pipeline candidata</span><strong id="prod-pipeline">—</strong></div>
+        <div><span>Stato</span><strong id="prod-status">—</strong></div>
+        <div><span>Scene ID</span><strong id="prod-scene-id">—</strong></div>
+      </div>
+      <div class="prompt-box"><span>Direzione visiva</span><p id="prod-prompt"></p></div>
+      <p class="panel-note">Questo pannello non genera ancora asset: conserva scene, intenzione e provenienza in una forma pronta per il futuro adapter OpenMontage.</p>
+    </aside>
+
+    <nav id="timeline" class="timeline" aria-label="Sequenza delle scene"></nav>
+
+    <footer class="footer-note">
+      <span id="scene-location">Campagna · margine dei campi</span>
+      <span>C.Terzi · Raffaello · R³∞</span>
+    </footer>
+  </main>
+
+  <script src="cubo-vivo-2d-data.js"></script>
+  <script src="cubo-vivo-2d.js"></script>
+</body>
+</html>
