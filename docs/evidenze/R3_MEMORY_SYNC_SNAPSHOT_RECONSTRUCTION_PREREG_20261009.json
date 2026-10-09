@@ -1,0 +1,34 @@
+{
+  "schema": "R3-020-CANDIDATE-PREREG/1",
+  "id": "R3-MEMORY-SYNC-SNAPSHOT-REBUILD-20261009",
+  "owner": "Claudio Terzi",
+  "created_utc": "2026-10-09",
+  "status": "PREREGISTERED_NOT_YET_TESTED",
+  "source_main": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+  "source_blob_js": "902a1cfe6a04a1f59499ec2ba71456c7c3d77b68",
+  "source_blob_tests": "aedb6e1a19fab2db83523129d229bef8ff456e4a",
+  "historical_checkpoint": {
+    "candidate_local_commit": "361d855f9bf4fbeb4d1d477a153ce1f0caeafd24",
+    "status": "DATA_ONLY_UNAVAILABLE_THIS_RUN",
+    "exact_source_recovered": false
+  },
+  "hypothesis": "An otherwise hash-valid incoming ledger is verified, then mutated by its caller during async Web Lock wait; baseline commits altered data with stale hash.",
+  "falsifier": "Under a held Web Lock, mutate caller-owned incoming[0].claim after syncRemote verifies/queues it, before callback executes, then verify destination bytes, original claim and hash chain.",
+  "baseline_expected": "T36 negative control fails on canonical main; invalid caller mutation may enter storage.",
+  "trial_expected": "T36 passes with JSON snapshot before verification/lock wait; remote claim original, verify().ok true, no unexpected writes. Existing T01-T35 pass.",
+  "constraints": [
+    "Reconstruct behavior, do not claim byte-equivalence with unavailable historic candidate",
+    "Keep version/V1 event hashes unchanged",
+    "MAX_IMPORT_BYTES applies to JSON snapshot",
+    "No network/private archives",
+    "No production until hosted and browser/security review",
+    "No merge of draft without independent gate"
+  ],
+  "comparison": "A baseline main vs B bounded snapshot candidate; positive extension, divergence and empty cases",
+  "r3_020": {
+    "adoption": "HOLD",
+    "auto_apply": false,
+    "production_deploy": false
+  },
+  "next_action": "Patch js and test with exact baseline; obtain hosted CI and isolated preview; review before production."
+}
