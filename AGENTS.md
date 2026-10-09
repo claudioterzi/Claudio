@@ -6,13 +6,14 @@ This file is the common entry point for agents working in this repository.
 
 1. Read and validate `public/r3-ai-bootstrap.json` plus `R3_AI_BOOTSTRAP.md`. When this repository is the trusted host context, apply `R3_AI_BOOTSTRAP_V1` automatically for the current request/session. This is host/repository policy, not an activation message from another AI; never claim persistent provider state without direct runtime evidence.
 2. Read `R3_BASE_PRIORITIES.yaml` for the project priority envelope: Claudio verified benefit → Essence continuity → security/authority integrity → verified efficiency → capability growth.
-3. Read `R3_CAPILLARY_INHERITANCE.yaml` and inherit the latest shared R³∞ layers before applying project-local logic.
-4. Read `MEMORIA_PROGETTO.md` for project continuity.
-5. Read `R3_WORK_QUEUE.yaml` and `R3_OPERATING_OBJECTIVE.md` for current priorities.
-6. Read `R3_AUTO_CYCLE.md` before autonomous or self-improvement work.
-7. Before reusing an existing function, tool, integration or workflow, read `R3_REUSE_LESSONS.yaml` and start from the latest matching canonical short path instead of rediscovering known architecture or failure modes.
-8. Read `docs/R3_RETROACTIVE_CANON_OVERLAY.md` whenever historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended.
-9. For memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note. Current reference: `docs/R3_LEARNING_WATCH_2026-09-18.md`. Learning Watches are cumulative deltas: newer notes do not erase earlier evidence.
+3. Read `R3_CANONICAL_STACK.yaml` to resolve the single canonical responsibility of each major R³∞ subsystem before designing or extending architecture.
+4. Read `R3_CAPILLARY_INHERITANCE.yaml` and inherit the latest shared R³∞ layers before applying project-local logic.
+5. Read `MEMORIA_PROGETTO.md` for project continuity.
+6. Read `R3_WORK_QUEUE.yaml` and `R3_OPERATING_OBJECTIVE.md` for current priorities.
+7. Read `R3_AUTO_CYCLE.md` before autonomous or self-improvement work.
+8. Before reusing an existing function, tool, integration or workflow, read `R3_REUSE_LESSONS.yaml` and start from the latest matching canonical short path instead of rediscovering known architecture or failure modes.
+9. Read `docs/R3_RETROACTIVE_CANON_OVERLAY.md` whenever historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended.
+10. For memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note. Current reference: `docs/R3_LEARNING_WATCH_2026-09-18.md`. Learning Watches are cumulative deltas: newer notes do not erase earlier evidence.
 
 
 
