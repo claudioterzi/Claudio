@@ -79,6 +79,10 @@ class EvolutionCandidate:
             errors.append("direction must be 'higher' or 'lower'")
         if self.risk_level not in {"low", "medium", "high", "critical"}:
             errors.append("risk_level must be low/medium/high/critical")
+        if type(self.reversible) is not bool:
+            errors.append("reversible must be a boolean")
+        if type(self.external_side_effects) is not bool:
+            errors.append("external_side_effects must be a boolean")
         if not self.title.strip() or not self.claim.strip():
             errors.append("title and claim are required")
         if not self.primary_metric.strip():
@@ -125,8 +129,28 @@ class EvidenceContext:
     independent_evaluator: bool = False
     notes: str = ""
 
+    def validation_errors(self) -> List[str]:
+        """Reject ambiguous truthy values; type hints do not validate runtime input."""
+        errors: List[str] = []
+        for name in (
+            "out_of_sample", "provenance_complete",
+            "rollback_verified", "independent_evaluator",
+        ):
+            if type(getattr(self, name)) is not bool:
+                errors.append(f"evidence field '{name}' must be a boolean")
+        if not isinstance(self.trajectory_audit, Mapping):
+            errors.append("trajectory_audit must be a mapping")
+        else:
+            for name in TRAJECTORY_FIELDS:
+                if type(self.trajectory_audit.get(name)) is not bool:
+                    errors.append(f"trajectory check '{name}' must be a boolean")
+        return errors
+
     def missing_trajectory_checks(self) -> List[str]:
-        return [name for name in TRAJECTORY_FIELDS if not bool(self.trajectory_audit.get(name, False))]
+        if not isinstance(self.trajectory_audit, Mapping):
+            return list(TRAJECTORY_FIELDS)
+        return [name for name in TRAJECTORY_FIELDS
+                if self.trajectory_audit.get(name) is not True]
 
 
 @dataclass(frozen=True)
@@ -168,6 +192,10 @@ def evaluate_candidate(candidate: EvolutionCandidate, baseline: Mapping[str, Any
     if validation_errors:
         return PromotionDecision(candidate.candidate_id, "REJECT", None,
                                  validation_errors, regressions, False)
+    evidence_errors = evidence.validation_errors()
+    if evidence_errors:
+        return PromotionDecision(candidate.candidate_id, "REJECT", None,
+                                 evidence_errors, regressions, False)
 
     base_primary = _as_number(baseline, candidate.primary_metric)
     trial_primary = _as_number(trial, candidate.primary_metric)
