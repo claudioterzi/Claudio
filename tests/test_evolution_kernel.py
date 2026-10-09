@@ -47,6 +47,55 @@ def candidate(**overrides):
 
 class EvolutionKernelTests(unittest.TestCase):
 
+    def test_adversarial_candidate_metadata_never_promotes_or_crashes(self):
+        # Preregistered separately at the pinned #124 source before test creation.
+        # Deliberately test wrong JSON/runtime shapes and whitespace-only proof.
+        bad_cases = [
+            ("title_number", {"title": 42}),
+            ("claim_null", {"claim": None}),
+            ("primary_metric_list", {"primary_metric": []}),
+            ("direction_list", {"direction": []}),
+            ("risk_level_list", {"risk_level": []}),
+            ("scope_list", {"scope": []}),
+            ("subsystem_null", {"subsystem": None}),
+            ("source_refs_string", {"source_refs": "fabricated:reference"}),
+            ("source_refs_object", {"source_refs": {"fake": "ref"}}),
+            ("source_refs_wrong_element", {"source_refs": [17]}),
+            ("source_refs_blank", {"source_refs": ["  "]}),
+            ("falsifiers_string", {"falsifiers": "some check"}),
+            ("falsifiers_object", {"falsifiers": {"test": True}}),
+            ("falsifiers_wrong_element", {"falsifiers": [False]}),
+            ("falsifiers_blank", {"falsifiers": ["  "]}),
+            ("protected_rollback_blank", {"scope": "core_code", "rollback_ref": "  "}),
+            ("protected_rollback_number", {"scope": "core_code", "rollback_ref": 123}),
+            ("invalid_candidate_id", {"candidate_id": 0}),
+        ]
+        for label, overrides in bad_cases:
+            with self.subTest(label=label):
+                verdict = evaluate_candidate(
+                    candidate(**overrides),
+                    {"recall": 0.7, "error_rate": 0.1},
+                    {"recall": 0.8, "error_rate": 0.08},
+                    evidence(),
+                )
+                self.assertEqual(verdict.status, "REJECT", label)
+                self.assertFalse(verdict.auto_apply_eligible)
+
+    def test_candidate_metadata_valid_controls_unchanged(self):
+        baseline = {"recall": 0.7, "error_rate": 0.1}
+        trial = {"recall": 0.8, "error_rate": 0.08}
+        for label, overrides, ev, expected in [
+            ("low_reversible", {}, evidence(), "AUTO_APPLY_ELIGIBLE"),
+            ("protected_scope", {"scope": "core_code"}, evidence(), "STAGED"),
+            ("no_out_of_sample", {}, evidence(out_of_sample=False), "HOLD"),
+            ("rollback_missing", {}, evidence(rollback_verified=False), "REJECT"),
+            ("valid_unicode", {"title": "perché capacità", "source_refs": ["github:abc"], "falsifiers": ["hash differisce"]}, evidence(), "AUTO_APPLY_ELIGIBLE"),
+        ]:
+            with self.subTest(label=label):
+                verdict = evaluate_candidate(candidate(**overrides), baseline, trial, ev)
+                self.assertEqual(verdict.status, expected, label)
+
+
     def _strict_input_decision(self, **overrides):
         return evaluate_candidate(
             candidate(**{k: v for k, v in overrides.items() if k in {"reversible", "external_side_effects", "risk_level", "scope"}}),
