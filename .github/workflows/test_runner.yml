@@ -81,3 +81,57 @@ jobs:
 
       - name: Test R3-019 controlled baseline
         run: python -m unittest tests.test_benchmark_controlled
+
+  snapshot-safety:
+    name: Snapshot safety - exact head
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Setup Python for snapshot safety
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing CLI configuration dependency
+        run: python -m pip install 'PyYAML>=6.0'
+      - name: Verify snapshot contract in full repository
+        env:
+          GIT_ALLOW_PROTOCOL: file
+          GIT_TERMINAL_PROMPT: '0'
+        run: |
+          git rev-parse HEAD
+          python scripts/r3_ai_bootstrap.py --check
+          python - <<'PY'
+          import json, pathlib, re, subprocess, sys, unittest
+          head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          print('R3_SNAPSHOT_TESTED_HEAD=' + head, flush=True)
+          paths = subprocess.check_output(['git', 'ls-files', '-z']).decode('utf-8').split('\0')
+          pattern = re.compile(r'sdq1\.snapshot|from \.snapshot|salva_snapshot|push_snapshot|output[/\\]snapshots|chore\(snapshot\)|--snapshot')
+          extensions = {'.py', '.js', '.ts', '.cjs', '.mjs', '.sh', '.ps1', '.cmd', '.bat', '.yml', '.yaml'}
+          hits = []
+          scanned = 0
+          for name in paths:
+              p = pathlib.Path(name)
+              if not name or p.suffix.lower() not in extensions or p.is_symlink():
+                  continue
+              scanned += 1
+              for number, line in enumerate(p.read_text(encoding='utf-8-sig').splitlines(), 1):
+                  if pattern.search(line):
+                      hits.append({'path': name, 'line': number, 'excerpt': line.strip()[:250]})
+          print('R3_TRACKED_CONSUMER_INVENTORY=' + json.dumps({'head': head, 'tracked_files': len([x for x in paths if x]), 'source_files_scanned': scanned, 'matches': hits}, ensure_ascii=True), flush=True)
+          suite = unittest.TestSuite(unittest.defaultTestLoader.loadTestsFromName(name) for name in ('tests.test_snapshot_solution', 'tests.test_snapshot_consumers'))
+          if suite.countTestCases() != 31:
+              raise SystemExit('Expected exactly 31 snapshot and consumer tests')
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          if result.testsRun != 31 or not result.wasSuccessful() or result.skipped:
+              raise SystemExit(1)
+          print('R3_SNAPSHOT_RESULT=31_PASS_0_SKIP', flush=True)
+          PY
+          python -m py_compile sdq1/snapshot.py sdq1/__main__.py sdq1/notifiche.py tests/test_snapshot_solution.py tests/test_snapshot_consumers.py
+          git diff --exit-code -- sdq1/snapshot.py tests/test_snapshot_solution.py

@@ -19,7 +19,11 @@ Attivabile anche via CLI:
 
 from __future__ import annotations
 
+import copy
 import hashlib
+import os
+import re
+import uuid
 import json
 import subprocess
 import time
@@ -157,25 +161,117 @@ def crea_snapshot() -> dict[str, Any]:
     }
 
 
+def _snapshot_time(value: Any) -> str:
+    """Validate the existing event-time contract; do not invent subsecond precision."""
+    if type(value) is not str or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}", value):
+        raise ValueError("meta.data_ora must be YYYY-MM-DD HH:MM:SS")
+    datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+    return value
+
+
 def salva_snapshot(snap: dict[str, Any]) -> Path:
+    """Create a new record, never replace an existing pathname.
+
+    Event time remains unchanged. Precise save time is a separate UTC field.
+    UUID reduces collisions; exclusive creation is the actual overwrite guard.
+    Return a Path only after exact byte readback. This is not a crash/backup
+    durability certificate: an interrupted write may leave a partial new file.
+    """
+    payload = copy.deepcopy(snap)
+    if type(payload) is not dict or type(payload.get("meta")) is not dict:
+        raise ValueError("Snapshot and meta must be JSON objects")
+    event_time = _snapshot_time(payload["meta"].get("data_ora"))
+    saved_at = datetime.now(timezone.utc)
+    snapshot_id = uuid.uuid4().hex
+    payload["meta"]["snapshot_id"] = snapshot_id
+    payload["meta"]["saved_at_utc"] = saved_at.isoformat(timespec="microseconds")
+    payload["meta"]["snapshot_storage_version"] = 2
+    encoded = json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False).encode("utf-8")
+    ts = event_time.replace(":", "-").replace(" ", "_")
+    save_stamp = saved_at.strftime("%Y%m%dT%H%M%S%fZ")
+    dest = _SNAPSHOT_DIR / f"snapshot_{ts}__saved_{save_stamp}__{snapshot_id}.json"
     _SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
-    ts = snap["meta"]["data_ora"].replace(":", "-").replace(" ", "_")
-    dest = _SNAPSHOT_DIR / f"snapshot_{ts}.json"
-    dest.write_text(json.dumps(snap, indent=2, ensure_ascii=False), encoding="utf-8")
+    with dest.open("xb") as stream:
+        written = stream.write(encoded)
+        if written != len(encoded):
+            raise OSError("Incomplete snapshot write")
+        stream.flush()
+        os.fsync(stream.fileno())
+    if dest.read_bytes() != encoded:
+        raise OSError("Snapshot byte readback mismatch")
     return dest
 
 
-def push_snapshot(dest: Path) -> bool:
-    """Commit + push del file snapshot sul branch corrente."""
+def _snapshot_git(root: Path, *args: str) -> bytes:
+    """Checked, bounded Git invocation for the existing snapshot write path."""
+    result = subprocess.run(
+        ["git", *args], cwd=root, capture_output=True, timeout=30, check=True,
+    )
+    return result.stdout
+
+
+def push_snapshot(dest: Path, *, repo_dir: Path | None = None) -> bool:
+    """Publish one snapshot and verify its exact remote ref.
+
+    False means publication was not verified, including an ambiguous timeout
+    or a readback failure AFTER an accepted push. No retry or rollback occurs.
+    Existing callers retain the Path -> bool API. repo_dir is for an explicit
+    repository context (including isolated local-Git integration tests).
+    """
+    root = Path(repo_dir) if repo_dir is not None else Path(__file__).resolve().parents[1]
     try:
-        _sh(f'git add "{dest}"')
-        branch = _sh("git rev-parse --abbrev-ref HEAD")
-        ts = dest.stem.replace("snapshot_", "")
-        msg = f"chore(snapshot): stato sistema SDQ-1 — {ts}"
-        _sh(f'git commit -m "{msg}"')
-        _sh(f"git push -u origin {branch}")
-        return True
-    except Exception:
+        root = root.resolve(strict=True)
+        candidate = Path(dest)
+        if not candidate.is_absolute():
+            candidate = root / candidate
+        if candidate.is_symlink() or not candidate.is_file():
+            return False
+        target = candidate.resolve(strict=True)
+        relative = target.relative_to(root).as_posix()
+        # Do not stage arbitrary paths or use names as executable shell text.
+        if not target.name.startswith("snapshot_") or target.suffix != ".json":
+            return False
+        encoded = target.read_bytes()
+        data = json.loads(encoded)
+        event_time = _snapshot_time(data["meta"]["data_ora"])
+        record_id = data["meta"].get("snapshot_id")
+        if record_id is None:
+            record_id = "legacy-sha256:" + hashlib.sha256(encoded).hexdigest()
+        elif type(record_id) is not str or not re.fullmatch(r"[0-9a-f]{32}", record_id):
+            return False
+        branch = _snapshot_git(root, "symbolic-ref", "--quiet", "--short", "HEAD").decode().strip()
+        if not branch:
+            return False
+        _snapshot_git(root, "check-ref-format", "--branch", branch)
+        # Readback must use the SAME destination as push, not a different fetch URL.
+        push_urls = _snapshot_git(root, "remote", "get-url", "--push", "--all", "origin").decode().splitlines()
+        if len(push_urls) != 1 or not push_urls[0]:
+            return False
+        push_url = push_urls[0]
+        # Never commit somebody else's staged changes as a side effect.
+        if _snapshot_git(root, "diff", "--cached", "--name-only", "-z"):
+            return False
+        _snapshot_git(root, "add", "--", relative)
+        staged = _snapshot_git(root, "diff", "--cached", "--name-only", "-z")
+        if staged not in (b"", os.fsencode(relative) + b"\0"):
+            return False
+        if staged:
+            # The message contract no longer depends on filename/stem parsing.
+            message = f"chore(snapshot): stato sistema SDQ-1 — {event_time} [id={record_id}]"
+            _snapshot_git(root, "commit", "--only", "-m", message, "--", relative)
+        head = _snapshot_git(root, "rev-parse", "--verify", "HEAD").decode().strip()
+        if not re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", head):
+            return False
+        if _snapshot_git(root, "show", f"{head}:{relative}") != encoded:
+            return False
+        if target.read_bytes() != encoded:
+            return False
+        ref = f"refs/heads/{branch}"
+        # Explicit SHA freezes what is pushed. No --force and no implicit refspec.
+        _snapshot_git(root, "push", "--porcelain", "--", push_url, f"{head}:{ref}")
+        observed = _snapshot_git(root, "ls-remote", "--refs", "--exit-code", "--", push_url, ref)
+        return observed.decode().splitlines() == [f"{head}\t{ref}"]
+    except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError):
         return False
 
 
@@ -196,4 +292,6 @@ if __name__ == "__main__":
         print(f"\n[SNAPSHOT] Salvato: {dest}", file=sys.stderr)
         if args.push:
             ok = push_snapshot(dest)
-            print(f"[SNAPSHOT] Push: {'OK' if ok else 'FALLITO'}", file=sys.stderr)
+            print(f"[SNAPSHOT] Push: {'VERIFICATO' if ok else 'NON VERIFICATO'}", file=sys.stderr)
+            if not ok:
+                sys.exit(1)

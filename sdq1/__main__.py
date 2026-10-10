@@ -495,7 +495,9 @@ def main(argv: list[str]) -> int:
         print(f"[SNAPSHOT] Salvato: {dest}")
         if args.push:
             ok = push_snapshot(dest)
-            print(f"[SNAPSHOT] Push GitHub: {'OK' if ok else 'FALLITO'}")
+            print(f"[SNAPSHOT] Push GitHub: {'VERIFICATO' if ok else 'NON VERIFICATO'}")
+            if not ok:
+                return 1
         return 0
 
     if args.agenti or args.agenti_autonomo:

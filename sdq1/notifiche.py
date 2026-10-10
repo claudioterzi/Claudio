@@ -399,9 +399,9 @@ def _esegui_singolo_comando(nome: str) -> None:
             dest = salva_snapshot(snap)
             ok = push_snapshot(dest)
             sc = snap.get("scanner", {})
-            notifica_completato("Push completato" if ok else "Push fallito", [
+            notifica_completato("Push verificato" if ok else "Push non verificato", [
                 f"Snapshot: {dest.name}",
-                f"GitHub: {'✅ OK' if ok else '❌ FALLITO'}",
+                f"GitHub: {'✅ VERIFICATO' if ok else '⚠ NON VERIFICATO'}",
                 f"Scanner: {sc.get('score_sistema', '?')}/100",
             ])
         except Exception as e:
