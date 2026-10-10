@@ -1486,3 +1486,33 @@ Sul fixture congelato `0cff14f3…bd127f`, Jev/TypeSafe (`jev-latest`) è stato 
 
 ### 2026-10-05 — CT-LGAI-001 resilience completion (independent)
 Supervisor candidate #113 e068cfd: 36 local tests PASS (17.01s), including actual adopted/escaped descendant cleanup, return-code preservation, progress, bounded resume grace and failure cooldown. Judge #115 73c932a: 19 tests PASS. Orchestra: 4 local mocked checks, no live authenticated inference. Railway node-a/node-v2 drainingSeconds=10 saved and read back, effective at next deployment; existing deployment IDs unchanged. ON_FAILURE/max10 update acknowledged; default fields omitted from independent configuration readback. Evidence: docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json. Remaining: authenticated cloned real-state recovery, Railway-specific sleep acceptance, online Rizzo device, authenticated Orchestra inference. No production supervisor adoption; do not merge #113 merely because local tests pass. Ancestor-mounted /proc made PID-absence tests false positives: verify actual disappearance and translate NSpid.
+
+### 2026-10-07 — Crescita autonoma verificabile: R3-020 numeri finiti
+
+Decisione: riusare il kernel evolutivo esistente per correggere un bypass reale:
+NaN/Infinity potevano ammettere candidati e interi enormi/soglie malformate
+potevano sollevare eccezioni. Candidato `R3C-FINITE-METRICS-20261007`, ramo
+`candidate/r3-evolution-finite-metrics-20261007`, classificazione PATCH,
+stato **STAGED_NOT_PRODUCTION**. Main sorgente verificato `b3e82b84bde170e50c7ffbd5bbb09de0f8b6d546`;
+sei blob sorgente/registro coincidono byte per byte con il worktree isolato.
+
+Evidenza: `docs/evidenze/R3_EVOLUTION_FINITE_20261007.json` e
+`docs/R3_EVOLUTION_FINITE_METRICS_20261007.md`. Suite congelata da agente distinto:
+17/56 → 56/56 casi conformi, 23 ammissioni invalide → zero, 11 eccezioni → zero;
+10/10 controlli eligible/HOLD conservati. 37 metodi unittest PASS, self-test,
+compilazione, copia di rollback/hash/import e ledger a due record verificati.
+I 46 REJECT attesi comprendono 44 input/config invalidi e due controlli di rifiuto.
+È integrità numerica locale, non qualità di un modello o attivazione live.
+
+Su richiesta di Claudio: fonti Python ufficiali consultate online da Codex e tre
+proposte confrontate. Tentativo Jev con client e policy condivisi realmente
+effettuato, **bloccato prima dell'HTTP** per credenziale non configurata;
+nessuna opinione Jev ottenuta e nessuna ricerca web attribuita a Jev.
+Richiesta limitata salvata con hash, senza archivio privato o segreti.
+
+Prossima azione: revisione del candidato e gate hosted; riprendere il giudizio
+quando esiste un esecutore Jev già autenticato. Blocco: manca questo binding.
+Criterio di completamento: ricevuta separata di adozione del core dopo revisione
+e controlli; eventuale risposta Jev con prova di esecuzione. Trigger di ripresa:
+revisione del draft o disponibilità del canale autenticato. I gate di #113 restano
+separati. Nessuna modifica diretta della produzione o nuova memoria automatica.

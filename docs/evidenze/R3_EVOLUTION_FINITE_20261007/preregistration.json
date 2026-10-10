@@ -1,0 +1,40 @@
+{
+  "schema": "r3-evolution-v1",
+  "record_id": "R3R-f3bbde43605e4e1c8870dc899c1e376c",
+  "timestamp": "2026-10-07T02:49:23.382673+00:00",
+  "kind": "candidate_preregistered",
+  "previous_hash": null,
+  "payload": {
+    "title": "Reject non-finite evolution evidence",
+    "subsystem": "R3-020",
+    "claim": "Non-finite evidence and invalid numeric thresholds cannot promote a candidate; valid finite decisions are preserved.",
+    "primary_metric": "invalid_promotions",
+    "direction": "lower",
+    "min_gain": 1,
+    "source_refs": [
+      "sdq1/evolution_kernel.py",
+      "source_pins.json",
+      "https://docs.python.org/3/library/math.html#math.isfinite"
+    ],
+    "falsifiers": [
+      "Any malformed numeric case obtains STAGED or AUTO_APPLY_ELIGIBLE",
+      "Any finite control changes its expected decision",
+      "Oversized integers or invalid thresholds escape as unhandled exceptions"
+    ],
+    "critical_metrics": {
+      "valid_controls": {
+        "direction": "higher",
+        "max_regression": 0
+      }
+    },
+    "scope": "core_code",
+    "risk_level": "medium",
+    "reversible": true,
+    "rollback_ref": "git:b3e82b84bde170e50c7ffbd5bbb09de0f8b6d546:sdq1/evolution_kernel.py",
+    "external_side_effects": false,
+    "candidate_id": "R3C-FINITE-METRICS-20261007",
+    "preregistered_at": "2026-10-07T02:49:23.382511+00:00",
+    "prediction_hash": "e9c8bcaee6cf5f049b93574c69b25056db19a659c2b5aa191ef6be178006f22c"
+  },
+  "record_hash": "25e937e20700567709c5ee221502c8f616ba8a06b6168c2ccc0aba32d7c751ab"
+}

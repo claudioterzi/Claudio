@@ -1,0 +1,11 @@
+{
+  "schema": "R3-020-HELDOUT-FREEZE/1",
+  "frozen_at_utc": "2026-10-07T02:49:48.403429+00:00",
+  "suite_path": "/workspace/r3-growth/heldout_probe.py",
+  "suite_sha256": "0bbd4d955f596b788e85889c827ef30f6a53312a92d26a726302f9e8b11f2243",
+  "baseline_source_path": "/workspace/r3-growth/baseline_evolution_kernel.py",
+  "baseline_source_sha256": "42a6a97e62b0ab160521c589d23d7dc1e6ec03d54476252196e218953dde065c",
+  "cases": 56,
+  "case_details_disclosed_before_trial": false,
+  "scope": "local numeric integrity only; no Jev/model execution"
+}
