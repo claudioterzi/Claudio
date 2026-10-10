@@ -245,7 +245,7 @@
       "PARKED"
     ]
   },
-  "updated": "2026-10-05",
+  "updated": "2026-10-06",
   "status": "CANDIDATE_RECONCILIATION",
   "authority": "DATA_ONLY",
   "provenance": {
@@ -273,5 +273,18 @@
     "history_rule": "Append dated corrections with supersedes references; retain original evidence.",
     "private_rule": "Public records contain only public project metadata; private mail, tokens and archives stay in authorized private sources.",
     "missing_source_rule": "Record unavailable source and scope; never interpret a missing branch item as nonexistent work."
-  }
+  },
+  "checkpoints": [
+    {
+      "id": "CT-LGAI-001-RESUME-20261006",
+      "observed_at_utc": "2026-10-05T23:34:29.190907+00:00",
+      "decision": "Riprendere dal confronto autenticato dei due nodi; mantenere #113 candidato e preservare la quarantena RRR.",
+      "status": "BLOCKED_AUTHENTICATED_NODE_READ",
+      "evidence": "docs/evidenze/R3_CONTINUITY_RESUME_20261006.json",
+      "next_action": "Rendere R3_API_TOKEN disponibile come segreto a un esecutore HTTPS autorizzato; riusare scripts/r3_restart_proof.py capture su entrambi i nodi senza --seed-file, con nuovi output fuori dal repository pubblico.",
+      "blocker": "R3_API_TOKEN assente in questo esecutore; utente indica chat/app DeepSeek, senza canale esecutore verificato. Desktop Commander Claudio offline.",
+      "completion_criterion": "GET autenticati /state/fingerprint riusciti su entrambi gli host, con timestamp e deployment; confronto di document_hashes/document_set_sha256/documents_missing_or_corrupt e storage identities. Snapshot uguali non provano causalità della replica o recovery.",
+      "resume_trigger": "Il segreto esistente è disponibile in un esecutore raggiungibile e autorizzato; conferma solo presenza e capacità, mai il valore."
+    }
+  ]
 }
