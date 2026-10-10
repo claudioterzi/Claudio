@@ -1,0 +1,41 @@
+{
+  "schema": "R3_SNAPSHOT_INSTALL_CONSUMER_DELTA_V1",
+  "utc": "2026-10-10T21:11:35.256680+00:00",
+  "source": "3659d6d01071cee99c7c16300156d51db0d89c1d",
+  "preregistration_parent": "5a3f15282abc9be35e25948632395dfe1abda1e3",
+  "reason": "Full-repository consumer check exposed CLI exit code zero after push_snapshot=False; explicit verification wording must also survive CLI/Telegram callers.",
+  "baseline": {
+    "command": "python -m unittest tests.test_snapshot_consumers.SnapshotConsumers.test_cli_unverified_push_returns_failure -v",
+    "exit_code": 1,
+    "observed_cli_code": 0,
+    "required_cli_code": 1,
+    "log_sha256": "31b44307c99ecc1f1642826bb8cbe677a3a80c9e3b9aeecc018e11aadcc20c88"
+  },
+  "additional_scope": [
+    "sdq1/__main__.py snapshot return-code/message",
+    "sdq1/notifiche.py snapshot push result wording",
+    "tests/test_snapshot_consumers.py"
+  ],
+  "windows_precheck": {
+    "tests": 25,
+    "passed": 24,
+    "errors": 1,
+    "error": "WinError 1314 creating a synthetic symlink; no account privilege was changed",
+    "next": "Skip only that unavailable Windows fixture; Linux hosted gate must run all tests without skips"
+  },
+  "consumer_plan": {
+    "tests": 6,
+    "full_modules": true,
+    "all_provider_threads_and_notifications_mocked": true
+  },
+  "external_scope": {
+    "known_local_source_files_scanned": 87,
+    "direct_references_found": 0,
+    "scheduled_scripts_checked": 2,
+    "direct_references_in_scheduled_scripts": 0,
+    "limit": "Static inventory of observed source trees and known R3 scheduled-task bindings, not proof about unknown or dynamically generated consumers"
+  },
+  "decision": "KEEP_ISOLATED_HOLD",
+  "merge": false,
+  "production_modified": false
+}
