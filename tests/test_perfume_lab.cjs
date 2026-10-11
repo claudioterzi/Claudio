@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const {calculate}=require('../public/perfume-lab.js');
+const recipe=[['A',1,25,'testa',0],['B',2,75,'fondo',1]];
+const batches=calculate(recipe,20,.85);
+assert.equal(batches[0].total,42.5);assert.equal(batches[0].blend,8.5);
+assert.equal(batches[0].ingredients[0].grams,2.125);assert.equal(batches[0].support,34);
+for(const b of batches)assert.ok(Math.abs(b.ingredients.reduce((s,x)=>s+x.grams,0)+b.support-b.total)<1e-10);
+assert.equal(batches[2].ingredients[0].grams,4*batches[0].ingredients[0].grams);
+assert.throws(()=>calculate(recipe,20,null));assert.throws(()=>calculate(recipe,0,.85));assert.throws(()=>calculate(recipe,101,.85));
+assert.throws(()=>calculate([['A',1,100,'testa',0],['B',1,1,'fondo',0]],20,.85));
+assert.equal(calculate(recipe,20,null,'g')[0].total,50);
+assert.equal(calculate(recipe,100,1)[0].support,0);
+console.log('Laboratorio: conversione, bilancio di massa, proporzioni e dati mancanti verificati.');
