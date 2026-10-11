@@ -8,9 +8,10 @@ var openRoutes=['/','/accesso','/accesso.html','/soglia','/soglia.html'];
 if(openRoutes.indexOf(p)!==-1)return;
 var privateRoutes=[
   '/privato','/privato.html','/dati','/dati.html','/orchestratore','/orchestratore.html','/r3-evoluzione','/r3-evoluzione.html',
-  '/home','/home.html','/progetti','/creazioni.html','/scritti','/scritti.html','/codice-gaia','/codice-gaia.html'
+  '/home','/home.html','/progetti','/creazioni.html','/scritti','/scritti.html','/codice-gaia','/codice-gaia.html',
+  '/idee','/idea-os','/idea-os.html','/idea-document.html'
 ];
-var isPrivate=privateRoutes.indexOf(p)!==-1;
+var isPrivate=privateRoutes.indexOf(p)!==-1 || /^\/idee\/IDEA-\d+$/i.test(p);
 var privateOK=false,publicOK=false;
 try{
   privateOK=sessionStorage.getItem(PRIVATE_SESSION_KEY)==='1';
