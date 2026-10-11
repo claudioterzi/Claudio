@@ -1,302 +1,192 @@
 # PLANET-003 — Accesso Planet Labs Education & Research
-*Completato automaticamente da Agente Orario SDQ-1 — 2026-06-18*
+*Task autonomo SDQ-1 — completato 2026-06-20*
 
 ---
 
-## 1. Il Programma Education & Research
+## Programma Education & Research (E&R)
 
-Planet Labs offre accesso **gratuito o fortemente scontato** ai propri dati satellite tramite il programma **Education & Research**. È il percorso più accessibile per ONG, università e ricercatori indipendenti.
+Planet Labs offre accesso gratuito alla propria archivio di immagini satellite
+(PlanetScope, SkySat) per ricercatori, università e ONG accreditate.
 
-**Cosa include:**
-- Accesso a **PlanetScope** (risoluzione 3-5m, cobertura giornaliera globale)
-- Accesso a **SkySat** (risoluzione 0.5m, tasking on-demand) — limitato
-- Download di scene e time-series per analisi
-- API completa Planet SDK
-- Supporto tecnico
-
-**URL programma:** https://www.planet.com/markets/education-and-research/
+**URL ufficiale:** planet.com/markets/education-and-research/
 
 ---
 
-## 2. Criteri di Eligibilità
+## Criteri di Ammissibilità
 
-Planet accetta application da:
-- **Università e istituti di ricerca** (qualsiasi paese)
-- **ONG e organizzazioni no-profit** con missione di ricerca o umanitaria
-- **Ricercatori indipendenti** con affiliazione dimostrabile
-- **Studenti di dottorato** con supervisore universitario
-- **Giornalisti investigativi** per progetti di interesse pubblico
+Per essere accettati occorre rientrare in almeno una categoria:
 
-**Non eleggibili:**
-- Aziende commerciali (anche startup)
-- Persone fisiche senza affiliazione
-- Progetti con finalità commerciale diretta
+| Categoria | Idoneità SDQ-1/SkyRights |
+|---|---|
+| Ricercatori accademici | ✓ se affiliazione universitaria |
+| ONG / non-profit | ✓ con ASBL SkyRights Foundation registrata |
+| Giornalismo investigativo | Possibile (caso per caso) |
+| Studenti dottorato | Solo con advisor letter |
+| Organizzazioni umanitarie | ✓ con missione documentata |
 
-**Per SkyRights Foundation:**
-Come ASBL (una volta registrata), SkyRights è eleggibile. Il use case — monitoring aree umanitarie, identificazione rifugiati in movimento, verifica campo profughi — è fortemente in linea con i criteri del programma.
+**Percorso ottimale per Claudio:** attendere registrazione ASBL SkyRights Foundation (ASBL-001),
+poi fare richiesta come ONG umanitaria. Aumenta le probabilità di approvazione.
 
 ---
 
-## 3. Procedura di Richiesta Step-by-Step
+## Procedura di Richiesta
 
-### Passo 1: Crea account Planet
-1. Vai su **https://www.planet.com/explorer/**
-2. "Sign Up" → inserisci dati organizzazione
-3. Verifica email
+### Passo 1 — Registrazione
+1. Vai su **planet.com/markets/education-and-research/**
+2. Clicca "Apply Now" o "Request Access"
+3. Crea account Planet con email istituzionale (o @skyrights.org quando disponibile)
 
-### Passo 2: Compila il form Education & Research
-1. Vai su **https://www.planet.com/markets/education-and-research/**
-2. Click "Apply Now" o "Request Access"
-3. Il form richiede:
-   - Nome organizzazione e sito web
-   - Tipo organizzazione (seleziona: Non-profit/NGO)
-   - Paese sede
-   - Descrizione del progetto (300-500 parole)
-   - Area geografica di interesse
-   - Tipo di satellite richiesto (PlanetScope, SkySat, entrambi)
-   - Come il progetto beneficia la società
-   - Referenza accademica o istituzionale (se disponibile)
+### Passo 2 — Modulo di richiesta
+Compila:
+- **Organizzazione:** SkyRights Foundation (o "Claudio Terzi — Ricercatore Indipendente")
+- **Tipo:** Non-profit / Humanitarian organization
+- **Paese:** Belgio
+- **Descrizione del progetto (campo chiave):**
 
-### Passo 3: Prepara la descrizione del progetto
-
-**Template suggerito per SkyRights Foundation:**
-
-> "SkyRights Foundation è un'organizzazione no-profit con sede a Bruxelles che sviluppa tecnologie per la tutela dei diritti di rifugiati e persone senza documenti. Il programma SkyRights utilizza imagery satellite per:
->
-> 1. **Verifica di movimenti di popolazioni** in aree di crisi (Medio Oriente, Africa Sub-Sahariana) per supportare il lavoro di advocacy dell'UNHCR e organizzazioni partner
-> 2. **Monitoring di campi profughi**: rilevamento della crescita/riduzione di insediamenti informali, verifica di condizioni di vita, supporto alla pianificazione umanitaria
-> 3. **Change detection** per identificare aree a rischio di sfollamento prima che avvenga
->
-> I dati PlanetScope sono critici per la frequenza di revisita giornaliera necessaria al monitoring continuo. Collaboriamo con ricercatori dell'Université Libre de Bruxelles (ULB) e organizziamo i risultati in report pubblici per la comunità umanitaria internazionale."
-
-### Passo 4: Invia e attendi
-- Invio tramite form online
-- Tempi di risposta tipici: **2-4 settimane**
-- Planet invia conferma via email; poi accesso configurato nell'account
-
----
-
-## 4. Cosa Include l'Accesso Approvato
-
-### PlanetScope (standard per Education)
-- **Risoluzione:** 3-5m per pixel
-- **Copertura:** Globale, giornaliera
-- **Bande:** RGB + NIR (4 bande) o 8 bande multispettrali
-- **Scene size:** ~25 km × 25 km
-- **Download:** Sì, in formato GeoTIFF
-- **Quota tipica:** 10.000-100.000 km²/mese (dipende dall'accordo)
-
-### SkySat (su richiesta specifica)
-- **Risoluzione:** 0.5m
-- **Copertura:** Tasking on-demand (ordini pianificati)
-- **Quota Education:** Molto limitata (pochi tasking/mese)
-
----
-
-## 5. API Planet — Come Accedere Post-Approvazione
-
-### Installazione SDK
-```bash
-pip install planet
+```
+SkyRights Foundation is developing an AI-powered digital identity system 
+for undocumented refugees and stateless persons. We use satellite imagery 
+to monitor displacement patterns, verify geographic claims in asylum 
+procedures, and document humanitarian situations where traditional 
+documentation is unavailable. The system operates under EU GDPR and 
+is non-commercial, open-source, and aligned with UNHCR protocols.
 ```
 
-### Autenticazione
-```python
-import os
-os.environ["PL_API_KEY"] = "your-planet-api-key"
-```
+- **Dati richiesti:** PlanetScope (3m risoluzione), frequenza giornaliera
 
-### Prima Query — Ricerca Immagini su un'Area
+### Passo 3 — Invio e attesa
+- Invia il modulo
+- Tempi tipici: **2-6 settimane** per risposta
+- Planet invia email di approvazione con API key e crediti allocati
+
+---
+
+## Cosa si ottiene con E&R
+
+| Risorsa | Quantità |
+|---|---|
+| Crediti mensili | 10.000–100.000 km² (dipende dal progetto) |
+| Satelliti accessibili | PlanetScope (150+ satellite, revisit giornaliero) |
+| Risoluzione | 3.0m PlanetScope, 0.5m SkySat (quota separata) |
+| Archive | Da 2009 a oggi |
+| API | Planet Data API v1 |
+
+---
+
+## Codice Python — Prima Chiamata (dopo approvazione)
 
 ```python
 """
-Planet SDK v2 — Ricerca immagini PlanetScope su area di interesse
-Prerequisiti: pip install planet shapely
+PLANET-003 — Test Planet Data API
+Cerca immagini PlanetScope su Bruxelles ultimi 30 giorni.
 """
-import asyncio
+
+import requests
 import json
-import planet
 from datetime import datetime, timedelta
 
-# Configurazione
-API_KEY = "your-planet-api-key"
+PLANET_API_KEY = "IL_TUO_API_KEY_QUI"
 
-# Area di interesse: Bruxelles (per test locale)
-# In produzione: sostituire con bbox campo profughi
-AREA_INTERESSE = {
+# Bruxelles bbox (GeoJSON)
+BRUXELLES_AOI = {
     "type": "Polygon",
     "coordinates": [[
-        [4.32, 50.79],
-        [4.43, 50.79],
-        [4.43, 50.91],
-        [4.32, 50.91],
-        [4.32, 50.79]
-    ]]
+        [4.25, 50.78], [4.48, 50.78],
+        [4.48, 50.91], [4.25, 50.91],
+        [4.25, 50.78],
+    ]],
 }
 
-async def cerca_immagini_recenti(
-    api_key: str,
-    area: dict,
-    giorni_indietro: int = 30,
-    max_cloud: float = 20.0
-) -> list[dict]:
-    """Cerca immagini PlanetScope recenti sull'area di interesse."""
-    
-    data_fine = datetime.utcnow()
-    data_inizio = data_fine - timedelta(days=giorni_indietro)
-    
-    async with planet.Session(auth=planet.APIKeyAuth(api_key)) as sess:
-        client = sess.client("data")
-        
-        # Filtri di ricerca
-        filtri = planet.data_filter.and_filter([
-            planet.data_filter.geometry_filter(area),
-            planet.data_filter.date_range_filter(
-                "acquired",
-                gte=data_inizio,
-                lte=data_fine
-            ),
-            planet.data_filter.range_filter("cloud_cover", lte=max_cloud / 100),
-        ])
-        
-        # Ricerca nel catalogo PlanetScope
-        risultati = []
-        async for item in client.search(
-            name="ricerca-skyid",
-            search_filter=filtri,
-            item_types=["PSScene"],  # PlanetScope Scene
-            limit=20
-        ):
-            risultati.append({
-                "id": item["id"],
-                "data_acquisizione": item["properties"]["acquired"][:10],
-                "cloud_cover": round(item["properties"]["cloud_cover"] * 100, 1),
-                "risoluzione_m": item["properties"].get("gsd", "N/A"),
-                "satellite": item["properties"].get("satellite_id", "N/A"),
-            })
-        
-        return risultati
+def cerca_immagini():
+    data_fine   = datetime.utcnow()
+    data_inizio = data_fine - timedelta(days=30)
 
+    filtro = {
+        "type": "AndFilter",
+        "config": [
+            {
+                "type": "GeometryFilter",
+                "field_name": "geometry",
+                "config": BRUXELLES_AOI,
+            },
+            {
+                "type": "DateRangeFilter",
+                "field_name": "acquired",
+                "config": {
+                    "gte": data_inizio.isoformat() + "Z",
+                    "lte": data_fine.isoformat() + "Z",
+                },
+            },
+            {
+                "type": "RangeFilter",
+                "field_name": "cloud_cover",
+                "config": {"lte": 0.3},  # max 30% nuvole
+            },
+        ],
+    }
 
-async def scarica_immagine(
-    api_key: str,
-    item_id: str,
-    output_dir: str = "./output_planet"
-) -> str:
-    """Scarica un'immagine PlanetScope (richiede accesso attivo)."""
-    
-    import os
-    os.makedirs(output_dir, exist_ok=True)
-    
-    async with planet.Session(auth=planet.APIKeyAuth(api_key)) as sess:
-        client = sess.client("orders")
-        
-        # Crea ordine di download
-        ordine = await client.create_order(planet.order_request.build_request(
-            name=f"skyid-{item_id[:8]}",
-            bundles=[planet.order_request.product(
-                item_ids=[item_id],
-                item_type="PSScene",
-                bundle="analytic_sr_udm2"  # Surface Reflectance
-            )]
-        ))
-        
-        # Attendi completamento e scarica
-        await client.wait(ordine["id"])
-        await client.download_order(ordine["id"], output_dir)
-        
-        return f"{output_dir}/{item_id}"
+    richiesta = {
+        "item_types": ["PSScene"],   # PlanetScope
+        "filter": filtro,
+    }
 
-
-# Esecuzione
-if __name__ == "__main__":
-    print("Ricerca immagini Planet Labs su area di interesse...")
-    
-    risultati = asyncio.run(
-        cerca_immagini_recenti(API_KEY, AREA_INTERESSE, giorni_indietro=30)
+    risposta = requests.post(
+        "https://api.planet.com/data/v1/quick-search",
+        auth=(PLANET_API_KEY, ""),
+        json=richiesta,
+        timeout=30,
     )
-    
-    print(f"\nImmagini trovate: {len(risultati)}")
-    for img in risultati:
-        print(f"  {img['data_acquisizione']} | Cloud: {img['cloud_cover']}% | Sat: {img['satellite']}")
-    
-    # Salva lista
-    with open("planet_risultati.json", "w") as f:
-        json.dump(risultati, f, indent=2)
-```
 
-### Change Detection (uso avanzato)
-```python
-import numpy as np
-from PIL import Image
+    if risposta.status_code == 200:
+        dati = risposta.json()
+        items = dati.get("features", [])
+        print(f"✓ Trovate {len(items)} immagini PlanetScope")
+        for item in items[:5]:
+            prop = item["properties"]
+            print(f"  • {item['id']} — {prop['acquired'][:10]} — nuvole: {prop['cloud_cover']:.0%}")
+        return dati
+    else:
+        print(f"✗ {risposta.status_code}: {risposta.text[:300]}")
+        return None
 
-def change_detection_ndvi(img_prima: np.ndarray, img_dopo: np.ndarray) -> np.ndarray:
-    """
-    Confronta NDVI tra due immagini per rilevare cambiamenti vegetazione/costruzioni.
-    Input: array (H, W, 4) con bande [R, G, B, NIR]
-    Output: mappa di differenze NDVI
-    """
-    def ndvi(img):
-        nir = img[:, :, 3].astype(float)
-        red = img[:, :, 0].astype(float)
-        return (nir - red) / (nir + red + 1e-10)
-    
-    delta = ndvi(img_dopo) - ndvi(img_prima)
-    # Valori negativi = perdita vegetazione (potenziale sfollamento)
-    # Valori positivi = crescita (potenziale nuovo insediamento)
-    return delta
+if __name__ == "__main__":
+    cerca_immagini()
 ```
 
 ---
 
-## 6. Tempi e Aspettative
+## Alternativa Immediata — Open Data
 
-| Fase | Tempi tipici |
-|------|-------------|
-| Invio application | 1 giorno (il form si compila in 30 min) |
-| Revisione da Planet | 2-4 settimane |
-| Attivazione accesso post-approvazione | 1-3 giorni lavorativi |
-| Prima immagine scaricata | ~30 minuti dopo attivazione |
+Mentre si aspetta l'approvazione Planet, usare:
 
----
-
-## 7. Alternative se Planet Nega
-
-| Programma | Provider | Risoluzione | Gratuito? |
-|-----------|----------|-------------|-----------|
-| **Copernicus Open Access** | ESA | 10m (Sentinel-2) | Sì, sempre |
-| **NASA Earthdata** | NASA | 30m (Landsat) | Sì, sempre |
-| **USGS Earth Explorer** | USGS | 30m (Landsat) | Sì, sempre |
-| **UP42 Free Credits** | UP42 | 0.5-5m | €300 crediti iniziali |
-| **Airbus OneAtlas** | Airbus DS | 0.3m | No (commerciale) |
-
-**Raccomandazione immediata:** Mentre aspetti l'approvazione Planet, usa **Copernicus/Sentinel-2** che è completamente gratuito e accessibile senza application. Ottimo per monitoring aree grandi (10m di risoluzione è sufficiente per analisi di campo profughi).
+| Fonte | Risoluzione | Gratuito | Note |
+|---|---|---|---|
+| **Sentinel-2** (ESA) | 10m | Sì | API: Copernicus Data Space |
+| **Landsat 8/9** (NASA) | 30m | Sì | API: earthexplorer.usgs.gov |
+| **OpenAerialMap** | Variabile | Sì | Drone/aerei, open dataset |
 
 ```python
-# Accesso Copernicus Sentinel-2 (sempre gratuito)
-# pip install sentinelsat
-from sentinelsat import SentinelAPI
-
-api = SentinelAPI('user', 'password', 'https://apihub.copernicus.eu/apihub')
-prodotti = api.query(
-    area=AREA_INTERESSE,  # WKT o GeoJSON
-    date=('20260101', '20260601'),
-    platformname='Sentinel-2',
-    cloudcoverpercentage=(0, 20)
-)
+# Sentinel-2 — nessun account richiesto
+import requests
+url = "https://catalogue.dataspace.copernicus.eu/odata/v1/Products"
+params = {
+    "$filter": "Collection/Name eq 'SENTINEL-2' and OData.CSC.Intersects(area=geography'SRID=4326;POINT(4.35 50.85)')",
+    "$top": 5,
+    "$orderby": "ContentDate/Start desc",
+}
+r = requests.get(url, params=params)
 ```
 
 ---
 
-## 8. Checklist Prima di Inviare l'Application
+## Piano d'azione raccomandato
 
-- [ ] ASBL SkyRights Foundation registrata (o in corso) → usa data prevista registrazione
-- [ ] Sito web SkyRights attivo (anche una pagina GitHub Pages è sufficiente)
-- [ ] Descrizione progetto scritta (usa il template in sezione 3)
-- [ ] Area geografica di interesse definita (bbox o paese)
-- [ ] Contatto università o ricercatore come referenza (es. ULB, VUB)
-- [ ] Account Planet creato (gratuito)
+1. **Ora:** Fai richiesta E&R come ricercatore indipendente
+2. **Appena ASBL registrata:** Fai seconda richiesta come ONG — più crediti
+3. **Nel frattempo:** Usa Sentinel-2 (gratuito, 10m, no account)
+4. **Quando approvato:** Integra Planet API in Sistema Minerva SDQ-1
 
 ---
 
-*Documentazione: https://developers.planet.com/ — Programma E&R: https://www.planet.com/markets/education-and-research/*
+*PLANET-003 completato — 2026-06-20*
+*SDQ-1 / Claudio Terzi, Bruxelles*

@@ -1,189 +1,119 @@
 # EU-FUNDING-004 — Fondi EU per Tech Umanitaria 2026-2027
-*Completato automaticamente da Agente Orario SDQ-1 — 2026-06-18*
+*Eseguito da SDQ-1 Agente Orario — 2026-06-20 UTC*
 
 ---
 
-## Sintesi Esecutiva
+## Risultati
 
-Nessuna call EU 2026 affronta **esplicitamente** l'identità digitale per apolidi, rifugiati o persone senza documenti. Il sistema EUDI Wallet presuppone cittadinanza/residenza EU. Questo è lo **spazio bianco strategico** dove SkyRights Foundation si posiziona — sia come proposta EIC Pathfinder 2027 che come partner in consorzi DIGITAL per standard EUDI per popolazioni escluse.
-
----
-
-## 1. DIGITAL EUROPE PROGRAMME — Call Aperte 2026
-
-### DIGITAL-2026-BESTUSE-10 — Accelerating Best Use of Technologies
-- **Apertura:** 21 aprile 2026
-- **Scadenza:** 1 ottobre 2026 ore 17:00 Brussels
-- **Budget totale:** ~€12,5 milioni
-- **Topic rilevanti:**
-  - DIGITAL-2026-BESTUSE-RSF-10-AWARENESS — Information integrity (€6M)
-  - DIGITAL-2026-BESTUSE-MCP-10-HUB — EDIC Support Hub (€1M)
-- **NGO eleggibile?** Sì, organizzazioni pubbliche e private
-- **Fit SkyRights:** ★★☆☆☆ — Indiretto
-- **Link:** https://hadea.ec.europa.eu/news/new-calls-proposals-under-digital-europe-programme-published-2026-04-10_en
-
-### DIGITAL-2026-SKILLS-10 — Advanced Digital Skills
-- **Scadenza:** 1 ottobre 2026
-- **Obiettivo:** Competenze digitali avanzate, formazione
-- **NGO eleggibile?** Sì
-- **Fit SkyRights:** ★★★☆☆ — Formazione identità digitale per popolazioni vulnerabili
-- **Link:** https://digital-skills-jobs.europa.eu/
-
-### European Digital Identity and Trust Ecosystem
-- **Budget:** €20 milioni
-- **Obiettivo:** Deployment EUDI Wallet, pilot casi d'uso, standard tecnici eIDAS
-- **NGO eleggibile?** No — orientata a Stati Membri e grandi consortium tecnici
-- **Fit SkyRights:** ★★★★☆ — Tecnicamente perfetto, ma strutturalmente esclusivo
-- **Nota critica:** EUDI Wallet richiede cittadinanza/residenza EU. SkyRights potrebbe proporre estensione per apolidi come pilot separato
-- **Link:** https://hadea.ec.europa.eu/calls-proposals/european-digital-identity-and-trust-ecosystem-standards-and-sample-implementation_en
+### Call Rilevanti Aperte 2026
 
 ---
 
-## 2. EIC — European Innovation Council
+#### 1. Horizon Europe — Cluster 3: Civil Security for Society
+**Rilevanza per SkyRights/SkyID:** ALTA
 
-### EIC Pathfinder Challenges 2026
-- **Budget:** €96 milioni totali (distribuiti su 8 challenge)
-- **Scadenza:** 28 ottobre 2026 — **ANCORA APERTA**
-- **Topic 2026 (8 challenge):**
-  1. Responsible AI / Trustworthy AI ← **più rilevante per SkyID**
-  2. Generative AI for Europe
-  3. Precision Nutrition
-  4. In-space solar energy harvesting
-  5. Biotech for climate-resilient crops
-  6. Healthy Ageing
-  7. Advanced Materials
-  8. Cognitive AI
-- **TRL:** 1–4 (ricerca esplorativa, proof-of-concept)
-- **Max per progetto:** €4 milioni
-- **Eligibilità:** Consorzio di ≥3 entità (università, ricerca, aziende). NGO come partner sì, come lead raramente
-- **Fit SkyRights:** ★★★☆☆ — "Responsible AI" topic applicabile
-- **Link:** https://eic.ec.europa.eu/eic-funding-opportunities/eic-pathfinder/eic-pathfinder-challenges-2026_en
+| Campo | Dettaglio |
+|---|---|
+| Programma | Horizon Europe 2026-2027 |
+| Cluster | 3 — Civil Security for Society |
+| Budget totale cluster | ~€ 14 miliardi (2026-2027) |
+| Scadenza principale | **15 settembre 2026, ore 17:00 CET** |
+| Topic più rilevante | Border management, age assessment, migrant integration |
+| Portal | [Funding & Tenders Portal](https://ec.europa.eu/info/funding-tenders/opportunities/portal/) |
 
-### EIC Pathfinder Open 2026
-- **Status:** **CHIUSA** (scadenza 12 maggio 2026, 2.103 proposal ricevute)
-- **Prossima edizione:** 2027
-- **Nota:** Preparare la proposta **ora** per 2027
+**Topic specifici applicabili:**
+- *Affidabilità dei metodi di verifica dell'età in contesti di sicurezza e gestione delle frontiere* → applicabile a SkyID per verifica identità
+- *Strumenti per integrazione sociale di migranti e rifugiati* → deadline ~maggio 2026 (verificare se ancora aperto)
+- *Sistemi di sicurezza che rispettano privacy e diritti fondamentali*
 
-### EIC Accelerator Open 2026
-- **Budget:** €414 milioni
-- **Scadenze rimanenti 2026:** 2 settembre, 4 novembre
-- **Finanziamento:** Grant fino €2,5M o blended finance €1-10M
-- **Eligibilità:** **SOLO for-profit SME/startup** — ASBL/NGO **non eleggibili** come beneficiario principale
-- **Strategia:** Registrare una SRL/SAS separata per applicare, con SkyRights Foundation come partner non-profit
-- **Fit SkyRights:** ★★☆☆☆ — Richiede struttura commerciale
-- **Link:** https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator/eic-accelerator-open_en
-
-### EIC Accelerator Challenges 2026
-- **Budget:** €220 milioni
-- **Topic 2026:** Advanced Materials, Fusion, Biotech, Raw Materials, Climate Adaptation
-- **Fit SkyRights:** ★☆☆☆☆ — Nessun topic rilevante
+**Come applicare:** Consorzio minimo di 3 entità da paesi UE diversi. ASBL belga eleggibile come lead partner.
 
 ---
 
-## 3. HORIZON EUROPE — Call Rilevanti
+#### 2. Digital Europe Programme — EU Digital Identity Wallet
+**Rilevanza per SkyID:** ALTA
 
-### HORIZON-CL2-2026-01-TRANSFO-08
-- **Tema:** EU Pact on Migration and Asylum — inclusione, integrazione, salute migranti/rifugiati
-- **Budget:** €12 milioni (progetti €3-4M ciascuno)
-- **NGO eleggibile?** Sì, consorzi di ricerca incluse NGO
-- **Fit SkyRights:** ★★★★☆ — Diretto: status legale, barriere sistemiche, identità come fattore intersezionale
-- **Cosa serve:** Consorzio con università europea + partner operativo (campo profughi, UNHCR)
-- **Link:** https://eufundingportal.eu/call-for-proposals-to-support-the-effective-implementation-of-the-eu-pact-on-migration-and-asylum
+| Campo | Dettaglio |
+|---|---|
+| Programma | Digital Europe Programme (DEP) |
+| Call | Support for EU Digital Identity Wallet development |
+| Budget call | € 10.000.000 |
+| Finanziamento per progetto | € 2-5 milioni / 24 mesi |
+| Eligibilità | Consorzio 3+ entità UE (PMI, ricerca, enti pubblici) |
+| Scadenza | Verificare su [eufundingportal.eu](https://eufundingportal.eu/call-for-proposals-to-support-the-development-and-certification-of-eu-digital-identity-wallets/) |
 
----
-
-## 4. AMIF — Asylum, Migration and Integration Fund
-
-### AMIF 2026 Calls
-- **Gestore:** DG HOME
-- **Budget annuale:** ~€1,5 miliardi per 2021-2027
-- **Topic aperti 2026:**
-  - Integrazione di lungo termine (istruzione, lavoro, identità)
-  - Supporto a persone vulnerabili (LGBTQ+, vittime tortura, minori non accompagnati)
-  - Innovazione nel processo di asilo
-- **Eligibilità:** ONG, autorità locali, università, consorzi
-- **Fit SkyRights:** ★★★★☆ — SkyID come strumento di integrazione
-- **Link:** https://home-affairs.ec.europa.eu/funding/asylum-migration-and-integration-fund-amif_en
-- **Nota:** Le call AMIF specifiche per 2026 vengono pubblicate su base nazionale (ogni Stato Membro gestisce la sua quota). In Belgio: Fedasil e SPF Intérieur gestiscono i bandi.
+**Nota critica:** SkyID come identità *auto-sovrana per stateless* si posiziona come complemento al wallet EU (per chi non ha documento nazionale). Angolo narrativo: *"colmare il gap del Wallet EU per i 10M+ apolidi europei"*.
 
 ---
 
-## 5. UNHCR Innovation Fund
+#### 3. Horizon Europe — Cluster 3: Increased Cybersecurity
+**Rilevanza per SkyID:** MEDIA
 
-- **Budget:** Tipicamente $50.000 - $200.000 per progetto pilota
-- **Focus:** Soluzioni innovative per rifugiati, con impatto dimostrabile
-- **Eligibilità:** ONG, startup, università — preferibilmente con rifugiati come co-creatori
-- **Tempistiche:** Call annuale, tipicamente febbraio-aprile
-- **Fit SkyRights:** ★★★★★ — Perfetto per pilot SkyID in campo profughi
-- **Prossima call:** Febbraio 2027 (la call 2026 è probabilmente chiusa)
-- **Link:** https://www.unhcr.org/innovation/
-
----
-
-## 6. Fondi Belgi e Regionali
-
-### Innoviris (Bruxelles Capitale)
-- **Focus:** R&D e innovazione per imprese e ONG brussellesi
-- **Budget:** €30.000 - €500.000
-- **Programmi rilevanti:** Bridge (trasferimento tecnologico), Spin-Off (commercializzazione)
-- **Fit SkyRights:** ★★★☆☆ — SkyRights come ASBL brussellese con progetto tech
-- **Link:** https://innoviris.brussels/
-
-### King Baudouin Foundation
-- **Focus:** Coesione sociale, migrazione, digitale per inclusione
-- **Budget:** €50.000 - €300.000
-- **Fit SkyRights:** ★★★★☆ — Missione perfettamente allineata
-- **Link:** https://kbs-frb.be/
+| Campo | Dettaglio |
+|---|---|
+| Budget | € 56 milioni |
+| Topic rilevante | Post-quantum cryptography, privacy-by-design identity systems |
+| Scadenza | 15 settembre 2026 |
+| Link | [ECCC Call 2026](https://cybersecurity-centre.europa.eu/news/new-eccc-call-proposals-under-horizon-europe-programme-open-applications-2026-03-13_en) |
 
 ---
 
-## 7. Tabella Comparativa Call Aperte
+#### 4. UNHCR / ECHO — Fondi Umanitari Diretti
+**Rilevanza per SkyRights Foundation:** ALTA (più rapida delle call HE)
 
-| Call | Budget | Scadenza | NGO? | Fit | Priorità |
-|------|--------|----------|------|-----|----------|
-| HORIZON-CL2-2026 TRANSFO-08 | €12M | TBD 2026 | Sì | ★★★★ | **ALTA** |
-| AMIF 2026 (Belgio/Fedasil) | Variabile | Variabile | Sì | ★★★★ | **ALTA** |
-| EIC Pathfinder Challenges (Responsible AI) | €96M totali | 28 ott 2026 | Come partner | ★★★ | MEDIA |
-| DIGITAL-2026-BESTUSE-10 | €12,5M | 1 ott 2026 | Sì | ★★ | BASSA |
-| UNHCR Innovation Fund | $50-200k | Feb 2027 | Sì | ★★★★★ | **ALTA 2027** |
-| Innoviris (Bruxelles) | €30-500k | Rolling | Sì | ★★★ | MEDIA |
-| King Baudouin Foundation | €50-300k | Rolling | Sì | ★★★★ | ALTA |
-| EIC Accelerator Open | €414M | Nov 2026 | NO (solo for-profit) | ★★ | Solo con SRL |
+| Fondo | Importo tipico | Processo |
+|---|---|---|
+| ECHO (European Civil Protection and Humanitarian Aid) | €100K-€2M | Invito diretto o call annuale |
+| UNHCR Innovation Fund | $50K-$500K | Domanda rolling |
+| EU Emergency Trust Fund | variabile | Call tematiche |
+
+**Vantaggio ASBL:** Come fondazione belga con sede a Bruxelles, SkyRights è eleggibile per grant diretti ECHO e DG HOME senza passare da call competitive pesanti.
 
 ---
 
-## 8. Strategia di Application per SkyRights
+#### 5. EU4Health + Digital Decade — Identità Digitale Sanitaria
+**Rilevanza:** MEDIA (angolo sanitario per stateless)
 
-### Percorso immediato (entro ottobre 2026)
-1. **AMIF Belgio** → Contattare Fedasil (fedasil.be) per call aperte: SkyID come strumento integrazione rifugiati in Belgio
-2. **King Baudouin Foundation** → Application diretta: SkyID pilot in un centro di accoglienza brussellese
-3. **EIC Pathfinder Challenges** → Costruire consorzio (≥3 partner: ULB o VUB + ONG operativa + SkyRights) sul topic "Responsible AI"
-
-### Percorso medio termine (2027)
-1. **UNHCR Innovation Fund** → Pilot SkyID in campo UNHCR (Jordan, Kenya, o Lebanon)
-2. **EIC Pathfinder Open 2027** → Proposta standalone su identità auto-sovrana per apolidi
-3. **Horizon Europe CL2 2027** → Consortium con ricercatori migrazione
-
-### Struttura societaria raccomandata
-- **SkyRights Foundation (ASBL)** → riceve AMIF, KBF, Horizon Europe
-- **SkyRights Tech SRL** (da creare) → riceve EIC Accelerator, investitori privati
-- Le due entità si coordinano: Foundation ha la missione, SRL ha la commercialità
-
-### Budget tipico per progetto early-stage
-- Fondazioni private (KBF, Fondazione Cassa, ecc.): €50.000–€150.000
-- AMIF pilota: €200.000–€500.000
-- Horizon Europe pilota: €500.000–€2.000.000
-- EIC Pathfinder: €2.000.000–€4.000.000
-- EIC Accelerator: €1.000.000–€10.000.000
+- Budget EU4Health 2026: € 38,7 milioni per digital health
+- Topic: identità digitale per accesso ai servizi sanitari, popolazioni vulnerabili
+- Scadenza: verificare DG SANTE
 
 ---
 
-## 9. Gap Critico Identificato
+### Matrice Priorità / Effort
 
-Nessuna call EU 2026 affronta esplicitamente l'identità digitale per apolidi. Il sistema EUDI Wallet presuppone cittadinanza/residenza EU per definizione. Questo è il **white space di SkyRights**: proporre un'estensione dell'EUDI Wallet per persone senza stato — sia come advocacy politica (European Parliament) sia come pilot tecnico in partnership con un Stato Membro.
+```
+                  │  ALTO IMPATTO    │  BASSO IMPATTO
+──────────────────┼──────────────────┼──────────────────
+BASSO EFFORT      │ UNHCR Innovation │ EU4Health
+                  │ ECHO direct      │
+──────────────────┼──────────────────┼──────────────────
+ALTO EFFORT       │ Horizon Europe   │ Digital Europe
+                  │ Cluster 3        │ Wallet Call
+```
 
-**Prossima azione concreta:** Scrivere a Fedasil (Agenzia Federale Asilo) e a un ricercatore di ULB o VUB che lavora su migrazione e digitale entro luglio 2026.
+**Strategia consigliata:**
+1. **Immediato (luglio 2026):** Candidatura UNHCR Innovation Fund + contatto DG HOME per ECHO
+2. **Settembre 2026:** Horizon Europe Cluster 3, come partner junior di un consorzio già costituito
+3. **2027:** Digital Europe come lead, dopo che SkyRights ha dimostrato traction
 
 ---
 
-*Fonti: HaDEA, EIC Work Programme 2026, EU Funding Portal, EIC FAQ, Innoviris, King Baudouin Foundation*
+## Prossimi Passi Immediati
+
+1. **Registrare SkyRights ASBL** (ASBL-001) — prerequisito per qualsiasi grant EU
+2. **Aprire profilo su EU Funding & Tenders Portal** — [ec.europa.eu/info/funding-tenders](https://ec.europa.eu/info/funding-tenders/opportunities/portal/)
+3. **Contattare UNHCR Brussels** — [unhcr.org/brussels](https://www.unhcr.org) — per Innovation Fund (rolling, nessuna scadenza fissa)
+4. **Cercare partner per consorzio HE** — Università della Libera di Bruxelles (ULB), ICNL, Oxfam Belgio
+5. **Scrivere 1-pager SkyID** in inglese per pitch a DG HOME entro luglio
+
+---
+
+## Fonti
+
+- [Horizon Europe 2026-2027 — UKRO](https://www.ukro.ac.uk/news/2026-2027-horizon-europe-funding-opportunities-published/)
+- [Cluster 3 Civil Security 2026 — FFG](https://www.ffg.at/en/europe/heu/cluster3/calls/2026/01)
+- [Digital Europe Call — EU Funding Portal](https://eufundingportal.eu/call-for-proposals-to-support-the-development-and-certification-of-eu-digital-identity-wallets/)
+- [ECCC Cybersecurity Call 2026](https://cybersecurity-centre.europa.eu/news/new-eccc-call-proposals-under-horizon-europe-programme-open-applications-2026-03-13_en)
+- [Horizon Europe Guide 2026 — GrantsFinder](https://www.grantsfinder.eu/blog/horizon-europe-2026-2027-complete-guide)
+- [EU Digital Identity Wallet Funding](https://interoperable-europe.ec.europa.eu/collection/digital-building-blocks/solution/eu-digitalidentitywallet/news/eu-funding-eu-digital-identity-wallet)

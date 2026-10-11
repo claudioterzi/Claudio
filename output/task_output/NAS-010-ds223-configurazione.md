@@ -1,450 +1,224 @@
 # NAS-010 — Configurazione Synology DS223 come Nodo SDQ-1
-*Completato automaticamente da Agente Orario SDQ-1 — 2026-06-18*
+*Task autonomo SDQ-1 — completato 2026-06-20*
 
 ---
 
-## 1. Setup Iniziale DS223
+## Setup base (IP locale: 192.168.1.188)
 
-### Accesso iniziale
-- IP locale: **192.168.1.188**
-- Accesso DSM: http://192.168.1.188:5000 (o https://192.168.1.188:5001)
-- Username predefinito: `admin`
+### 1. Accesso iniziale
 
-### Configurazione DSM 7.x
 ```
-1. Aggiornamento DSM all'ultima versione stabile
-   DSM > Pannello di Controllo > Aggiornamento DSM > Verifica aggiornamenti
+Browser → http://192.168.1.188:5000
+Login: admin / [password scelta al primo avvio]
+```
 
-2. Creazione utente dedicato sdq1
-   DSM > Pannello di Controllo > Utenti > Crea
-   - Username: sdq1
-   - Password: [password sicura]
-   - Gruppi: administrators (per Docker), users
-   - Cartella home: abilitata
+Se non risponde: verificare che DS223 sia acceso e cavo ethernet collegato.
+**Non usare WiFi per il NAS** — sempre cablato per affidabilità.
 
-3. Cartelle condivise necessarie:
-   - /volume1/sdq1-repo       ← clone del repository
-   - /volume1/sdq1-output     ← output degli script
-   - /volume1/sdq1-backups    ← backup del sistema
-   - /volume1/drive-mirror    ← mirror Google Drive
+---
 
-4. Permessi cartelle:
-   sdq1 user → Lettura/Scrittura su tutte e 4 le cartelle
+### 2. DSM aggiornamento
+
+```
+Control Panel → Update & Restore → DSM Update
+→ Installa DSM 7.2 se non già installato
+→ Riavvia se richiesto
 ```
 
 ---
 
-## 2. Docker su Synology
+### 3. Docker su DS223
 
-### Installazione Container Manager
+Il DS223 ha CPU Intel Celeron J4125 (x86-64) → supporta Docker nativamente.
+
 ```
-DSM > Package Center > Cerca "Container Manager" > Installa
+Package Center → cerca "Container Manager" → Installa
 ```
 
-### docker-compose.yml per SDQ-1
-Salva in `/volume1/sdq1-repo/docker-compose.yml`:
+Container Manager = Docker + Docker Compose integrato in DSM 7.2.
+
+---
+
+### 4. Deploy Nodo R3∞ su DS223
+
+Crea la struttura:
+
+```bash
+# Sul NAS via SSH (Control Panel → Terminal → Enable SSH)
+ssh admin@192.168.1.188
+
+mkdir -p /volume1/sdq1/r3/data/node-nas
+mkdir -p /volume1/sdq1/backups
+mkdir -p /volume1/sdq1/repo
+```
+
+File `docker-compose-nas.yml` per il NAS:
 
 ```yaml
-version: "3.8"
-
+# /volume1/sdq1/r3/docker-compose-nas.yml
 services:
-  sdq1:
-    image: python:3.11-slim
-    container_name: sdq1-nodo
+  node-nas:
+    image: python:3.12-slim
+    container_name: r3-node-nas
     restart: unless-stopped
-    
+    ports:
+      - "8004:8000"   # porta 8004 sul NAS (non conflitto con altri nodi)
     volumes:
-      - /volume1/sdq1-repo:/app          # Repository clonato
-      - /volume1/sdq1-output:/app/output  # Output persistente
-      - /volume1/sdq1-backups:/app/backups
-    
+      - /volume1/sdq1/r3:/app
+      - /volume1/sdq1/r3/data/node-nas:/data
     working_dir: /app
-    
     environment:
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
-      - TZ=Europe/Brussels
-    
-    # Installa dipendenze all'avvio
+      R3_API_TOKEN: ${R3_API_TOKEN:-changeme-nas}
+      R3_NODE_ID: node-nas
+      R3_DATA_DIR: /data
+      R3_PEERS: "http://IP_SERVER_PRINCIPALE:8001,http://IP_SERVER_PRINCIPALE:8002"
     command: >
-      sh -c "pip install --no-cache-dir -r requirements.txt &&
-             tail -f /dev/null"
-    
-    # Limiti risorse (DS223 ha risorse limitate)
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-
-  # File .env (NON committare nel repo!)
-  # Crea /volume1/sdq1-repo/.env con le API key
+      sh -c "pip install -r requirements.txt -q &&
+             uvicorn node:app --host 0.0.0.0 --port 8000"
 ```
 
-### File .env locale sul NAS
+Deploy:
 ```bash
-# /volume1/sdq1-repo/.env
-ANTHROPIC_API_KEY=sk-ant-...
-GOOGLE_API_KEY=AIza...
-DEEPSEEK_API_KEY=sk-...
-```
-
-### Avvio container
-```bash
-# Via SSH sul NAS (vedi sezione sicurezza per abilitare SSH)
-cd /volume1/sdq1-repo
-docker compose up -d
-
-# Verifica
-docker ps
-docker logs sdq1-nodo
+cd /volume1/sdq1/r3
+docker compose -f docker-compose-nas.yml up -d
 ```
 
 ---
 
-## 3. Clone e Sync Automatico del Repository
+### 5. Backup automatico del repo Git
 
-### Configurazione SSH key per GitHub (read-only)
-
-```bash
-# 1. SSH sul NAS
-ssh sdq1@192.168.1.188
-
-# 2. Genera chiave SSH dedicata
-ssh-keygen -t ed25519 -C "sdq1-nas-ds223" -f ~/.ssh/id_ed25519_github -N ""
-
-# 3. Visualizza chiave pubblica
-cat ~/.ssh/id_ed25519_github.pub
-# → Copia questa chiave
-
-# 4. Vai su GitHub → claudioterzi/Claudio → Settings → Deploy Keys
-# → Add Deploy Key: incolla la chiave pubblica
-# → Titolo: "DS223 NAS SDQ-1"
-# → Allow write access: NO (solo lettura, più sicuro)
-
-# 5. Configura SSH per usare questa chiave per GitHub
-cat > ~/.ssh/config << 'EOF'
-Host github.com
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/id_ed25519_github
-EOF
-
-# 6. Clone iniziale
-git clone git@github.com:claudioterzi/Claudio.git /volume1/sdq1-repo
-```
-
-### Script di sync automatico
-Crea `/volume1/sdq1-repo/scripts/nas_sync.sh`:
+Script `/volume1/sdq1/scripts/backup_repo.sh`:
 
 ```bash
 #!/bin/bash
-# NAS Sync Script — aggiorna il repo ogni ora
-# Logs in /volume1/sdq1-output/nas_sync.log
+# Backup repo Claudio → NAS ogni 6 ore
+REPO_DIR="/volume1/sdq1/repo/Claudio"
+BACKUP_DIR="/volume1/sdq1/backups"
+LOG_FILE="/volume1/sdq1/logs/backup.log"
+GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 
-LOG="/volume1/sdq1-output/nas_sync.log"
-REPO="/volume1/sdq1-repo"
+TIMESTAMP=$(date +%Y-%m-%d_%H-%M)
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Inizio sync..." >> "$LOG"
+echo "[$TIMESTAMP] Inizio backup repo..." >> "$LOG_FILE"
 
-cd "$REPO" || exit 1
-
-# Pull ultime modifiche
-git pull origin main >> "$LOG" 2>&1
-
-if [ $? -eq 0 ]; then
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Sync completato" >> "$LOG"
+# Clone o pull
+if [ -d "$REPO_DIR/.git" ]; then
+    cd "$REPO_DIR" && git pull origin main >> "$LOG_FILE" 2>&1
 else
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERRORE sync" >> "$LOG"
+    git clone "https://${GITHUB_TOKEN}@github.com/claudioterzi/Claudio.git" "$REPO_DIR" >> "$LOG_FILE" 2>&1
 fi
 
-# Rotazione log (max 1MB)
-if [ $(wc -c < "$LOG") -gt 1048576 ]; then
-    tail -1000 "$LOG" > "${LOG}.tmp" && mv "${LOG}.tmp" "$LOG"
-fi
+# Crea snapshot tar
+tar -czf "$BACKUP_DIR/repo_${TIMESTAMP}.tar.gz" "$REPO_DIR" >> "$LOG_FILE" 2>&1
+
+# Mantieni solo gli ultimi 30 backup
+ls -t "$BACKUP_DIR"/repo_*.tar.gz | tail -n +31 | xargs rm -f >> "$LOG_FILE" 2>&1
+
+echo "[$TIMESTAMP] Backup completato" >> "$LOG_FILE"
 ```
+
+Aggiungi a DSM → Control Panel → Task Scheduler:
+- Tipo: Script utente
+- Schedule: ogni 6 ore
+- Script: `bash /volume1/sdq1/scripts/backup_repo.sh`
+
+---
+
+### 6. Mirror Google Drive → NAS
 
 ```bash
-chmod +x /volume1/sdq1-repo/scripts/nas_sync.sh
+# Installa rclone sul NAS via SSH
+curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip
+unzip rclone-current-linux-amd64.zip
+cp rclone-*/rclone /usr/local/bin/
+chmod +x /usr/local/bin/rclone
+
+# Configura Drive
+rclone config
+# → n (new remote)
+# → nome: gdrive
+# → tipo: drive (Google Drive)
+# → segui OAuth sul browser
+
+# Test
+rclone ls gdrive:
+
+# Sync Drive → NAS (ogni notte)
+rclone sync "gdrive:Agorà Digitale — SDQ-1" /volume1/sdq1/drive_mirror/ \
+  --log-file /volume1/sdq1/logs/rclone.log \
+  --log-level INFO
 ```
 
-### Task Scheduler in DSM
-
-```
-DSM > Pannello di Controllo > Task Scheduler > Crea > Task pianificato > Script definito dall'utente
-
-Impostazioni:
-- Nome: SDQ-1 Repo Sync
-- Utente: sdq1
-- Pianificazione: Ogni ora (ogni giorno, ogni ora)
-- Comando: /volume1/sdq1-repo/scripts/nas_sync.sh
-- Email notifica errori: terziclaudio@gmail.com
-```
-
----
-
-## 4. Tailscale VPN
-
-### Installazione via Docker (metodo più affidabile su Synology)
-
-```yaml
-# Aggiungi al docker-compose.yml:
-  tailscale:
-    image: tailscale/tailscale:latest
-    container_name: tailscale-nas
-    hostname: claudio-nas-ds223
-    restart: unless-stopped
-    network_mode: host
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-    volumes:
-      - /volume1/docker/tailscale:/var/lib/tailscale
-    environment:
-      - TS_AUTHKEY=${TAILSCALE_AUTH_KEY}  # Da tailscale.com/settings/keys
-      - TS_EXTRA_ARGS=--advertise-exit-node
-      - TS_STATE_DIR=/var/lib/tailscale
-```
-
-### Configurazione Tailscale
+Task Scheduler DSM → ogni notte alle 3:00:
 ```bash
-# Ottieni auth key da: https://login.tailscale.com/admin/settings/keys
-# → Generate auth key → Tag: tag:nas → Expiry: 90 days
-
-# Aggiungi al .env del NAS:
-TAILSCALE_AUTH_KEY=tskey-auth-xxxxx
-
-# Avvia
-docker compose up -d tailscale
-
-# Verifica connessione
-docker exec tailscale-nas tailscale status
-# → claudio-nas-ds223  100.x.x.x  Synology  ✓ connected
+/usr/local/bin/rclone sync "gdrive:Agorà Digitale — SDQ-1" /volume1/sdq1/drive_mirror/ --log-file /volume1/sdq1/logs/rclone.log
 ```
-
-### MagicDNS
-Nel pannello Tailscale (tailscale.com):
-- DNS → Enable MagicDNS
-- Il NAS sarà raggiungibile come: `claudio-nas-ds223.tail-xxx.ts.net`
-
-### Accesso da iPhone
-1. Installa Tailscale su iPhone
-2. Login con stesso account
-3. Accedi al NAS: `http://claudio-nas-ds223.tail-xxx.ts.net:5000`
-4. SSH: `ssh sdq1@claudio-nas-ds223`
 
 ---
 
-## 5. Backup Google Drive
+### 7. VPN Tailscale per accesso remoto
 
-### Configurazione Cloud Sync in DSM
-
-```
-DSM > Package Center > Installa "Cloud Sync"
-
-Configurazione nuova task:
-- Provider: Google Drive
-- Account: terziclaudio@gmail.com
-- Cartella locale: /volume1/sdq1-output
-- Cartella remota (Drive): SDQ-1 Output
-- Direzione: Bidirezionale (o solo Upload se non vuoi sync inverso)
-- Pianificazione: Ogni 6 ore
-- Crittografia: abilitata (opzionale, con password)
-```
-
-### Backup specifico output task
-Crea `/volume1/sdq1-repo/scripts/nas_backup_drive.sh`:
+Tailscale permette di accedere al NAS da qualsiasi posto del mondo come se fosse in rete locale.
 
 ```bash
-#!/bin/bash
-# Sync output verso Google Drive (usa rsync locale + Cloud Sync)
-TIMESTAMP=$(date '+%Y%m%d_%H%M')
-BACKUP_DIR="/volume1/sdq1-backups/snapshots"
+# Sul NAS via SSH
+curl -fsSL https://tailscale.com/install.sh | sh
+tailscale up --authkey=INSERISCI_AUTH_KEY_TAILSCALE
+```
 
-mkdir -p "$BACKUP_DIR"
+Auth key: vai su tailscale.com → Settings → Keys → Generate auth key.
 
-# Snapshot locale compresso
-tar -czf "${BACKUP_DIR}/snapshot_${TIMESTAMP}.tar.gz" \
-    /volume1/sdq1-repo/output/ \
-    /volume1/sdq1-repo/TASK_AUTONOMI.md \
-    /volume1/sdq1-repo/MEMORIA_PROGETTO.md
+Dopo l'installazione:
+- Il NAS appare nella rete Tailscale come `synology-ds223`
+- Puoi accedere da Bruxelles, aeroporto, ovunque con `http://100.x.x.x:5000`
+- Nessuna porta aperta su internet (più sicuro di port forwarding)
 
-# Cloud Sync si occupa del resto automaticamente
-echo "[$(date)] Snapshot creato: snapshot_${TIMESTAMP}.tar.gz"
+---
 
-# Pulisci snapshot più vecchi di 30 giorni
-find "$BACKUP_DIR" -name "*.tar.gz" -mtime +30 -delete
+### 8. Struttura cartelle NAS
+
+```
+/volume1/sdq1/
+├── r3/               ← Codice nodo R3∞ + data nodo-nas
+├── repo/             ← Mirror repo GitHub (backup)
+│   └── Claudio/
+├── drive_mirror/     ← Mirror Google Drive (backup)
+│   └── Agora Digitale/
+├── backups/          ← Snapshot tar del repo (30 giorni)
+├── scripts/          ← Script di automazione
+│   └── backup_repo.sh
+└── logs/             ← Log di tutti i processi
+    ├── backup.log
+    └── rclone.log
 ```
 
 ---
 
-## 6. Esecuzione Script SDQ-1 sul NAS
+### 9. Monitoraggio salute nodo
 
-### Script agente_orario sul NAS
+Il NAS risponde su `http://192.168.1.188:8004/health` quando il container R3 è attivo.
 
-```
-DSM > Pannello di Controllo > Task Scheduler > Crea
+Il heartbeat ARGO già monitora node-a, node-b, archive.
+**Aggiungere node-nas** nell'ARGO heartbeat:
 
-Task 1: Agente Orario (locale)
-- Nome: SDQ-1 Agente Orario NAS
-- Pianificazione: Ogni ora (07:00-23:00)
-- Comando: docker exec sdq1-nodo python scripts/agente_orario.py
-- Output: /volume1/sdq1-output/nas_agente.log
-
-Task 2: Studio Notturno
-- Nome: SDQ-1 Studio Notturno NAS
-- Pianificazione: Ogni giorno alle 02:00
-- Comando: docker exec sdq1-nodo python scripts/studio_notturno.py
-- Output: /volume1/sdq1-output/nas_studio.log
-```
-
-**Nota:** Il NAS esegue gli script **in aggiunta** a GitHub Actions, non in sostituzione. Se GitHub Actions fallisce (API down, runner occupato), il NAS garantisce continuità.
-
----
-
-## 7. Backup del NAS con Hyper Backup
-
-```
-DSM > Package Center > Installa "Hyper Backup"
-
-Configurazione:
-- Destinazione: Google Drive (account Claudio)
-  - Cartella: NAS-DS223-HyperBackup
-- Cartelle da fare il backup:
-  - /volume1/sdq1-repo
-  - /volume1/sdq1-output
-  - /volume1/sdq1-backups
-- Pianificazione: Ogni giorno alle 03:00
-- Retention: 30 versioni
-- Notifiche: email su fallimento
+```javascript
+// In argo_heartbeat.gs
+const NODE_NAS_URL = "http://192.168.1.188:8004";  // o IP Tailscale
 ```
 
 ---
 
-## 8. Checklist Sicurezza
+### 10. Riepilogo porte usate
 
-### Firewall DSM
-```
-DSM > Pannello di Controllo > Sicurezza > Firewall
+| Servizio | Porta locale | Accessibile da |
+|---|---|---|
+| DSM (interfaccia) | 5000 (HTTP), 5001 (HTTPS) | Rete locale + Tailscale |
+| Nodo R3∞ | 8004 | Rete locale + Tailscale |
+| SSH | 22 | Rete locale + Tailscale |
 
-Regole consigliate:
-- Nega tutto di default
-- Consenti porte LAN (192.168.1.0/24):
-  5000 (HTTP DSM), 5001 (HTTPS DSM), 22 (SSH)
-- Consenti porte Tailscale: solo tramite VPN
-- Blocca accesso diretto da internet (tutto il traffico esterno via Tailscale)
-```
-
-### 2FA per DSM
-```
-DSM > Pannello di Controllo > Utenti > (utente admin) > Account > Abilita autenticazione a 2 fattori
-App consigliata: Google Authenticator o Authy
-```
-
-### Porte aperte verso internet
-**ZERO** porte aperte verso internet direttamente. Tutto via Tailscale VPN. Il NAS non deve essere raggiungibile da internet pubblico.
-
-```bash
-# Verifica: nessuna porta esposta su internet
-# Dal router: DMZ → disabilitato, Port Forwarding → vuoto per DS223
-```
-
-### SSH sicuro
-```bash
-# /etc/ssh/sshd_config sul NAS
-PermitRootLogin no          # Mai root via SSH
-PasswordAuthentication no   # Solo chiave SSH
-AllowUsers sdq1             # Solo utente sdq1
-Port 22                     # Considera di cambiare porta (es. 2222)
-```
+**Non aprire porte su internet.** Usa solo Tailscale per accesso remoto.
 
 ---
 
-## 9. Monitoring e Alert
-
-### Notifiche via email (DSM nativo)
-```
-DSM > Pannello di Controllo > Notifiche > Email
-- SMTP: smtp.gmail.com:587 (TLS)
-- Account: terziclaudio@gmail.com
-- Abilita notifiche per: errori disco, temperatura, task falliti
-```
-
-### Script monitoring SDQ-1
-Crea `/volume1/sdq1-repo/scripts/nas_health.sh`:
-
-```bash
-#!/bin/bash
-# Monitoring salute SDQ-1 NAS — invia alert se problemi
-
-ALERT_EMAIL="terziclaudio@gmail.com"
-LOG="/volume1/sdq1-output/nas_health.log"
-
-check_container() {
-    if ! docker ps | grep -q "sdq1-nodo"; then
-        echo "ALERT: Container sdq1-nodo non attivo!" | mail -s "SDQ-1 NAS Alert" "$ALERT_EMAIL"
-        docker compose -f /volume1/sdq1-repo/docker-compose.yml up -d sdq1
-        echo "[$(date)] Container riavviato automaticamente" >> "$LOG"
-    fi
-}
-
-check_disk() {
-    USAGE=$(df /volume1 | awk 'NR==2 {print $5}' | tr -d '%')
-    if [ "$USAGE" -gt 85 ]; then
-        echo "ALERT: Disco /volume1 al ${USAGE}%" | mail -s "SDQ-1 NAS Disco Pieno" "$ALERT_EMAIL"
-    fi
-}
-
-check_last_output() {
-    # Verifica che l'agente orario abbia prodotto output nelle ultime 2 ore
-    LAST_MOD=$(find /volume1/sdq1-output -name "*.md" -newer /tmp/sentinel 2>/dev/null | wc -l)
-    touch /tmp/sentinel
-    if [ "$LAST_MOD" -eq 0 ] && [ "$(date +%H)" -gt 9 ] && [ "$(date +%H)" -lt 22 ]; then
-        echo "ALERT: Nessun output SDQ-1 nelle ultime 2 ore" | mail -s "SDQ-1 Silenzio" "$ALERT_EMAIL"
-    fi
-}
-
-check_container
-check_disk
-check_last_output
-
-echo "[$(date)] Health check OK" >> "$LOG"
-```
-
-### Task Scheduler — Health Check
-```
-Nome: SDQ-1 Health Check
-Pianificazione: Ogni 2 ore
-Comando: /volume1/sdq1-repo/scripts/nas_health.sh
-```
-
----
-
-## 10. Riepilogo Architettura NAS
-
-```
-DS223 (192.168.1.188)
-│
-├── Tailscale VPN ──────────────────── Accesso remoto sicuro (iPhone, PC)
-│
-├── Docker
-│   ├── sdq1-nodo (Python 3.11)
-│   │   ├── agente_orario.py (ogni ora)
-│   │   └── studio_notturno.py (02:00)
-│   └── tailscale (VPN client)
-│
-├── Task Scheduler (DSM)
-│   ├── nas_sync.sh (ogni ora) ──────── git pull da GitHub
-│   ├── nas_backup_drive.sh (ogni 6h) ─ snapshot → Drive
-│   └── nas_health.sh (ogni 2h) ──────── monitoring
-│
-├── Cloud Sync
-│   └── /volume1/sdq1-output → Google Drive/SDQ-1 Output
-│
-└── Hyper Backup
-    └── Backup completo → Google Drive/NAS-DS223 (ogni notte)
-```
-
----
-
-*Documentazione: Synology DSM 7.x Help, Tailscale docs, Docker Compose v3 spec*
+*NAS-010 completato — 2026-06-20*
+*SDQ-1 / Claudio Terzi, Bruxelles*

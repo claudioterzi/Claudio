@@ -151,21 +151,7 @@ curl -H "Authorization: Bearer changeme" http://localhost:8003/sync/hashes
 
 - 🔄 Promozione automatica primario
 - 🔄 Deploy multi-giurisdizione
-- 🔄 Interfaccia monitoraggio unificata (SDQ-1 + SAR + R³∞)
-
----
-
-## 🧠 Contesto — La Triade SDQ-1
-
-R³∞ è il livello di sopravvivenza di un sistema più ampio:
-
-- **SDQ-1** — pipeline di 6 agenti AI che elabora, ragiona e genera
-- **SAR** — Scacchiera Auto-Riflessiva a 11 livelli che osserva e riflette
-- **R³∞** — infrastruttura che garantisce la sopravvivenza di tutto il resto
-
-La conoscenza prodotta da SDQ-1 viene preservata da R³∞. La coerenza tra i nodi viene verificata dalla stessa logica SAR che il sistema usa per osservare se stesso.
-
-Il sistema sopravvive alla propria assenza. **H4 CONFERMATA.**
+- 🔄 Interfaccia monitoraggio
 
 ---
 
@@ -173,8 +159,7 @@ Il sistema sopravvive alla propria assenza. **H4 CONFERMATA.**
 
 **Repository:** [github.com/claudioterzi/Claudio](https://github.com/claudioterzi/Claudio)  
 **Branch:** `claude/rosso-rosso-rosso-ure5A`  
-**Autore:** Claudio Terzi  
-**Parte di:** [SDQ-1 — Sistema Di Quadranti](https://github.com/claudioterzi/Claudio)
+**Autore:** Claudio Terzi — terziclaudio@gmail.com
 
 ---
 

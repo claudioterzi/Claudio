@@ -2,21 +2,35 @@
 R3∞ MVP — nodo singolo.
 ID documenti = SHA-256 del contenuto (content-addressed).
 Sync e integrity check delegati a sync.py esterno.
+
+RRR control plane:
+- activation events are signed by a separate controller key;
+- nodes keep only the trusted verification key;
+- the latest valid signed counter is authoritative locally;
+- sync.py relays the same signed event to peers.
 """
 
 import hashlib
-import hmac
+import json
 import logging
 import os
+import secrets
 import sqlite3
+import threading
+import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import nacl.encoding
 import nacl.signing
-from fastapi import FastAPI, HTTPException, Header, UploadFile, File
-from fastapi.responses import FileResponse
+from fastapi import Body, FastAPI, HTTPException, Header, UploadFile, File
+from fastapi.responses import FileResponse, JSONResponse
+
+try:
+    from .rrr_control import POLICY as RRR_POLICY, POLICY_SHA256 as RRR_POLICY_SHA256, PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
+except ImportError:  # Railway single-file image
+    from rrr_control import POLICY as RRR_POLICY, POLICY_SHA256 as RRR_POLICY_SHA256, PROTOCOL as RRR_PROTOCOL, RRRControlError, verify_event
 
 # ---------------------------------------------------------------------------
 # Config
@@ -27,6 +41,10 @@ DB_PATH    = DATA_DIR / "r3.db"
 API_TOKEN  = os.getenv("R3_API_TOKEN", "changeme")
 NODE_ID    = os.getenv("R3_NODE_ID", "node-a")
 SIGNING_KEY_HEX = os.getenv("R3_SIGNING_KEY_HEX", "")
+CONTROL_VERIFY_KEY_HEX = os.getenv("R3_CONTROL_VERIFY_KEY_HEX", "").strip()
+REQUIRE_RRR_ACTIVE = os.getenv("R3_REQUIRE_RRR_ACTIVE", "true").strip().lower() in {"1", "true", "yes"}
+REQUIRE_DURABLE_STATE = os.getenv("R3_REQUIRE_DURABLE_STATE", "true").strip().lower() in {"1", "true", "yes"}
+ALLOW_TEST_SHUTDOWN = os.getenv("R3_ALLOW_TEST_SHUTDOWN", "").strip().lower() in {"1", "true", "yes"}
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -67,8 +85,6 @@ VERIFY_KEY_HEX = SIGNING_KEY.verify_key.encode(nacl.encoding.HexEncoder).decode(
 def _conn() -> sqlite3.Connection:
     c = sqlite3.connect(str(DB_PATH))
     c.row_factory = sqlite3.Row
-    c.execute("PRAGMA journal_mode=WAL")   # safe concurrent reads + writes
-    c.execute("PRAGMA foreign_keys=ON")
     return c
 
 def _init_db() -> None:
@@ -92,8 +108,61 @@ def _init_db() -> None:
                 ts     TEXT NOT NULL
             )
         """)
+        db.execute("""
+            CREATE TABLE IF NOT EXISTS protocol_events (
+                event_id     TEXT PRIMARY KEY,
+                protocol     TEXT NOT NULL,
+                policy_sha256 TEXT NOT NULL DEFAULT '',
+                action       TEXT NOT NULL,
+                scope        TEXT NOT NULL,
+                counter      INTEGER NOT NULL UNIQUE,
+                issued_at    TEXT NOT NULL,
+                nonce        TEXT NOT NULL UNIQUE,
+                issuer       TEXT NOT NULL,
+                signature    TEXT NOT NULL,
+                received_at  TEXT NOT NULL,
+                source_node  TEXT
+            )
+        """)
+        columns = {
+            row[1]
+            for row in db.execute("PRAGMA table_info(protocol_events)").fetchall()
+        }
+        if "policy_sha256" not in columns:
+            db.execute(
+                "ALTER TABLE protocol_events "
+                "ADD COLUMN policy_sha256 TEXT NOT NULL DEFAULT ''"
+            )
 
 _init_db()
+
+# ---------------------------------------------------------------------------
+# Storage identity marker (Issue #86)
+#
+# A random id written once into DATA_DIR and never regenerated while the file
+# exists. Unlike the signing key it cannot be pinned through an environment
+# variable, so it changes if and only if DATA_DIR itself was lost. Restart
+# proofs compare it to distinguish "same identity because the key came from
+# env" from "same identity because durable state actually survived".
+# ---------------------------------------------------------------------------
+
+_STORAGE_ID_FILE = DATA_DIR / "storage_id"
+
+
+def _load_storage_id() -> tuple[str, bool]:
+    if _STORAGE_ID_FILE.exists():
+        value = _STORAGE_ID_FILE.read_text(encoding="utf-8").strip()
+        if value:
+            return value, False
+    value = secrets.token_hex(16)
+    _STORAGE_ID_FILE.write_text(value + "\n", encoding="utf-8")
+    log.info("Nuovo storage_id creato → %s", _STORAGE_ID_FILE)
+    return value, True
+
+
+STORAGE_ID, STORAGE_ID_CREATED_THIS_BOOT = _load_storage_id()
+PROCESS_BOOT_ID = secrets.token_hex(8)  # new every process start; proves a restart happened
+PROCESS_STARTED_AT = datetime.now(timezone.utc).isoformat()
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -105,34 +174,259 @@ def _doc_path(doc_id: str) -> Path:
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
+
+def _atomic_write_bytes(path: Path, data: bytes) -> None:
+    """Scrive nello stesso filesystem e sostituisce solo a contenuto completo."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{time.time_ns()}.tmp")
+    try:
+        tmp.write_bytes(data)
+        os.replace(tmp, path)
+    finally:
+        if tmp.exists():
+            tmp.unlink(missing_ok=True)
+
+
 def _sign(data: bytes) -> str:
     return SIGNING_KEY.sign(data).signature.hex()
 
+def _audit_db(db: sqlite3.Connection, event: str, detail: str = "") -> None:
+    db.execute(
+        "INSERT INTO audit_log (event, detail, ts) VALUES (?, ?, ?)",
+        (event, detail, datetime.now(timezone.utc).isoformat()),
+    )
+
+
 def _audit(event: str, detail: str = "") -> None:
     with _conn() as db:
-        db.execute(
-            "INSERT INTO audit_log (event, detail, ts) VALUES (?, ?, ?)",
-            (event, detail, datetime.now(timezone.utc).isoformat()),
-        )
+        _audit_db(db, event, detail)
 
 def _check_token(authorization: Optional[str]) -> None:
+    if not API_TOKEN or API_TOKEN == "changeme":
+        raise HTTPException(status_code=503, detail="Token del nodo non configurato")
     expected = f"Bearer {API_TOKEN}"
-    provided = authorization or ""
-    # compare_digest prevents timing attacks
-    if not hmac.compare_digest(provided.encode(), expected.encode()):
+    if not authorization or not secrets.compare_digest(authorization, expected):
         raise HTTPException(status_code=401, detail="Token non valido")
+
+def _rrr_latest() -> dict[str, Any] | None:
+    with _conn() as db:
+        row = db.execute(
+            """SELECT event_id, protocol, policy_sha256, action, scope, counter, issued_at,
+                      nonce, issuer, signature, received_at, source_node
+               FROM protocol_events
+               WHERE protocol = ?
+               ORDER BY counter DESC
+               LIMIT 1""",
+            (RRR_PROTOCOL,),
+        ).fetchone()
+    return dict(row) if row else None
+
+def _apply_rrr_event(event: dict[str, Any], source_node: str = "") -> tuple[str, dict[str, Any]]:
+    if not CONTROL_VERIFY_KEY_HEX:
+        raise HTTPException(
+            status_code=503,
+            detail="Controller RRR non configurato: R3_CONTROL_VERIFY_KEY_HEX assente",
+        )
+    try:
+        payload = verify_event(event, CONTROL_VERIFY_KEY_HEX)
+    except RRRControlError as exc:
+        raise HTTPException(status_code=422, detail=f"Evento RRR non valido: {exc}") from exc
+
+    event_id = str(event["event_id"])
+    signature = str(event["signature"])
+    received_at = datetime.now(timezone.utc).isoformat()
+
+    # Ordering check + insert + audit are one serialized transaction.
+    # This prevents a concurrent stale writer from being acknowledged after a
+    # newer event has already committed.
+    db = _conn()
+    try:
+        db.execute("PRAGMA busy_timeout=10000")
+        db.execute("BEGIN IMMEDIATE")
+        row = db.execute(
+            """SELECT event_id, protocol, policy_sha256, action, scope, counter,
+                      issued_at, nonce, issuer, signature, received_at, source_node
+               FROM protocol_events
+               WHERE protocol = ?
+               ORDER BY counter DESC
+               LIMIT 1""",
+            (RRR_PROTOCOL,),
+        ).fetchone()
+        latest = dict(row) if row else None
+
+        if latest and latest["event_id"] == event_id:
+            db.execute("COMMIT")
+            return "already_applied", latest
+        if latest and payload["counter"] < latest["counter"]:
+            db.execute("ROLLBACK")
+            raise HTTPException(status_code=409, detail="Evento RRR obsoleto")
+        if latest and payload["counter"] == latest["counter"]:
+            db.execute("ROLLBACK")
+            raise HTTPException(status_code=409, detail="Conflitto RRR: stesso counter, evento diverso")
+
+        try:
+            db.execute(
+                """INSERT INTO protocol_events
+                   (event_id, protocol, policy_sha256, action, scope, counter, issued_at,
+                    nonce, issuer, signature, received_at, source_node)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (
+                    event_id,
+                    payload["protocol"],
+                    payload["policy_sha256"],
+                    payload["action"],
+                    payload["scope"],
+                    payload["counter"],
+                    payload["issued_at"],
+                    payload["nonce"],
+                    payload["issuer"],
+                    signature,
+                    received_at,
+                    source_node or None,
+                ),
+            )
+        except sqlite3.IntegrityError as exc:
+            db.execute("ROLLBACK")
+            raise HTTPException(status_code=409, detail="Replay/conflitto evento RRR") from exc
+
+        _audit_db(
+            db,
+            "rrr_event",
+            f"event_id={event_id} action={payload['action']} counter={payload['counter']} "
+            f"policy_sha256={payload['policy_sha256']} issuer={payload['issuer']} "
+            f"source_reported={source_node or 'unknown'}",
+        )
+        db.execute("COMMIT")
+    except HTTPException:
+        raise
+    except Exception:
+        try:
+            db.execute("ROLLBACK")
+        except sqlite3.Error:
+            pass
+        raise
+    finally:
+        db.close()
+
+    current = _rrr_latest()
+    assert current is not None
+    return "applied", current
 
 # ---------------------------------------------------------------------------
 # App
 # ---------------------------------------------------------------------------
 
-app = FastAPI(title=f"R3∞ {NODE_ID}", version="0.1.0")
+app = FastAPI(title=f"R3∞ {NODE_ID}", version="0.2.0")
 
 
-# Health check — senza auth (usato da load balancer / monitor esterno)
+# Liveness: process is up. This deliberately does not claim network readiness.
 @app.get("/health")
 def health():
     return {"status": "healthy", "node_id": NODE_ID}
+
+
+def _durable_state_detected() -> bool:
+    """Best-effort proof that DATA_DIR is a separate mounted filesystem.
+
+    R3 stores its signing key, SQLite state, protocol events and documents under
+    DATA_DIR. On Railway the production image uses /data; an attached volume at
+    that path is a mount point, while the container's ephemeral /data directory
+    is not. This is deliberately conservative: if durability cannot be detected,
+    readiness fails rather than claiming continuity.
+
+    Limits: a mount point proves only "not the container's ephemeral layer".
+    It does not prove that every possible backend is durable (a tmpfs mount
+    would pass), and it cannot detect a non-filesystem store. If persistence
+    ever moves to a non-filesystem driver, this check must be replaced by a
+    driver-specific readiness probe; the restart proof
+    (scripts/r3_restart_proof.py, comparing storage_id across restarts) stays
+    the acceptance evidence either way.
+    """
+    try:
+        return os.path.ismount(DATA_DIR.resolve())
+    except OSError:
+        return False
+
+
+def _readiness_state() -> dict[str, Any]:
+    latest = _rrr_latest()
+    active = bool(latest and latest["action"] == "activate")
+    durable_state = _durable_state_detected()
+    reasons: list[str] = []
+    if not API_TOKEN or API_TOKEN == "changeme":
+        reasons.append("api_token_not_configured")
+    if not CONTROL_VERIFY_KEY_HEX:
+        reasons.append("rrr_controller_key_not_configured")
+    if REQUIRE_DURABLE_STATE and not durable_state:
+        reasons.append("durable_state_not_detected")
+    if REQUIRE_RRR_ACTIVE and not active:
+        reasons.append("rrr_not_active")
+    return {
+        "ready": not reasons,
+        "node_id": NODE_ID,
+        "protocol": RRR_PROTOCOL,
+        "policy_sha256": RRR_POLICY_SHA256,
+        "rrr_active": active,
+        "rrr_event_id": latest["event_id"] if latest else None,
+        "data_dir": str(DATA_DIR),
+        "durable_state_required": REQUIRE_DURABLE_STATE,
+        "durable_state_detected": durable_state,
+        "signing_key_source": "env" if SIGNING_KEY_HEX else "data_dir",
+        "storage_id_created_this_boot": STORAGE_ID_CREATED_THIS_BOOT,
+        "reasons": reasons,
+    }
+
+
+def _state_fingerprint() -> dict[str, Any]:
+    """Identity + state digest compared across restarts (Issue #86).
+
+    Contains no secret material: verify key, storage marker, latest RRR event
+    reference and the content-hash set of live documents.
+    """
+    with _conn() as db:
+        rows = db.execute(
+            "SELECT id, sha256 FROM documents WHERE deleted = 0 ORDER BY id"
+        ).fetchall()
+        protocol_event_count = db.execute(
+            "SELECT COUNT(*) FROM protocol_events"
+        ).fetchone()[0]
+    hashes = [r["sha256"] for r in rows]
+    missing_or_corrupt: list[str] = []
+    for r in rows:
+        path = _doc_path(r["id"])
+        try:
+            if _sha256(path.read_bytes()) != r["sha256"]:
+                missing_or_corrupt.append(r["id"])
+        except OSError:
+            missing_or_corrupt.append(r["id"])
+    latest = _rrr_latest()
+    return {
+        "node_id": NODE_ID,
+        "verify_key": VERIFY_KEY_HEX,
+        "signing_key_source": "env" if SIGNING_KEY_HEX else "data_dir",
+        "storage_id": STORAGE_ID,
+        "storage_id_created_this_boot": STORAGE_ID_CREATED_THIS_BOOT,
+        "process_boot_id": PROCESS_BOOT_ID,
+        "process_started_at": PROCESS_STARTED_AT,
+        "data_dir": str(DATA_DIR),
+        "durable_state_detected": _durable_state_detected(),
+        "rrr_event_id": latest["event_id"] if latest else None,
+        "rrr_counter": latest["counter"] if latest else None,
+        "rrr_action": latest["action"] if latest else None,
+        "protocol_event_count": protocol_event_count,
+        "document_count": len(hashes),
+        "document_hashes": hashes,
+        "document_set_sha256": _sha256("\n".join(hashes).encode()),
+        "documents_missing_or_corrupt": missing_or_corrupt,
+        "ts": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+# Readiness: a node may be alive while still quarantined from active network use.
+@app.get("/ready")
+def ready():
+    state = _readiness_state()
+    return JSONResponse(status_code=200 if state["ready"] else 503, content=state)
 
 
 # Stato nodo — con auth
@@ -145,12 +439,72 @@ def status(authorization: Optional[str] = Header(None)):
         ).fetchone()[0]
         storage = sum(f.stat().st_size for f in (DATA_DIR / "docs").glob("*")) \
             if (DATA_DIR / "docs").exists() else 0
+    rrr = _rrr_latest()
+    readiness = _readiness_state()
     return {
         "node_id":    NODE_ID,
         "documents":  count,
         "storage_bytes": storage,
         "verify_key": VERIFY_KEY_HEX,
+        "rrr_active": bool(rrr and rrr["action"] == "activate"),
+        "rrr_protocol": RRR_PROTOCOL,
+        "rrr_policy_sha256": RRR_POLICY_SHA256,
+        "rrr_event_id": rrr["event_id"] if rrr else None,
+        "network_ready": readiness["ready"],
+        "durable_state_required": readiness["durable_state_required"],
+        "durable_state_detected": readiness["durable_state_detected"],
+        "signing_key_source": readiness["signing_key_source"],
+        "readiness_reasons": readiness["reasons"],
         "ts":         datetime.now(timezone.utc).isoformat(),
+    }
+
+
+# Restart-proof fingerprint — authenticated: exposes document inventory.
+@app.get("/state/fingerprint")
+def state_fingerprint(authorization: Optional[str] = Header(None)):
+    _check_token(authorization)
+    return _state_fingerprint()
+
+
+# Canonical machine-readable policy. Public by design: no secret material.
+@app.get("/protocol/rrr/policy")
+def rrr_policy():
+    return {**RRR_POLICY, "policy_sha256": RRR_POLICY_SHA256}
+
+
+# RRR network state — authenticated because it exposes control-plane metadata.
+@app.get("/protocol/rrr/status")
+def rrr_status(authorization: Optional[str] = Header(None)):
+    _check_token(authorization)
+    latest = _rrr_latest()
+    return {
+        "node_id": NODE_ID,
+        "protocol": RRR_PROTOCOL,
+        "policy_sha256": RRR_POLICY_SHA256,
+        "active": bool(latest and latest["action"] == "activate"),
+        "controller_configured": bool(CONTROL_VERIFY_KEY_HEX),
+        "counter": latest["counter"] if latest else None,
+        "event_id": latest["event_id"] if latest else None,
+        "event": latest,
+        "source_node_trust": "bearer_transport_reported_not_controller_authenticated",
+    }
+
+
+@app.post("/protocol/rrr/event")
+def rrr_event(
+    event: dict[str, Any] = Body(...),
+    authorization: Optional[str] = Header(None),
+    x_r3_source_node: Optional[str] = Header(None),
+):
+    _check_token(authorization)
+    state, current = _apply_rrr_event(event, x_r3_source_node or "")
+    return {
+        "status": state,
+        "node_id": NODE_ID,
+        "active": current["action"] == "activate",
+        "protocol": current["protocol"],
+        "counter": current["counter"],
+        "event_id": current["event_id"],
     }
 
 
@@ -166,21 +520,17 @@ async def upload(
     sig    = _sign(data)
 
     dest = _doc_path(doc_id)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-
-    # Atomic write: tmp file → rename prevents partial-write corruption
-    tmp = dest.with_suffix(".tmp")
-    tmp.write_bytes(data)
-    tmp.rename(dest)
+    _atomic_write_bytes(dest, data)
 
     with _conn() as db:
-        db.execute(
-            """INSERT OR IGNORE INTO documents
-               (id, filename, sha256, signature, size, uploaded_at, deleted)
-               VALUES (?, ?, ?, ?, ?, ?, 0)""",
-            (doc_id, file.filename or doc_id, doc_id, sig,
-             len(data), datetime.now(timezone.utc).isoformat()),
-        )
+        if not db.execute("SELECT 1 FROM documents WHERE id = ?", (doc_id,)).fetchone():
+            db.execute(
+                """INSERT INTO documents
+                   (id, filename, sha256, signature, size, uploaded_at, deleted)
+                   VALUES (?, ?, ?, ?, ?, ?, 0)""",
+                (doc_id, file.filename or doc_id, doc_id, sig,
+                 len(data), datetime.now(timezone.utc).isoformat()),
+            )
 
     _audit("upload", f"id={doc_id} file={file.filename} size={len(data)}")
     log.info("Stored  id=%s  file=%s", doc_id, file.filename)
@@ -197,6 +547,9 @@ def download(
     path = _doc_path(doc_id)
     if not path.exists():
         raise HTTPException(status_code=404, detail="Documento non trovato")
+    if _sha256(path.read_bytes()) != doc_id:
+        _audit("integrity_block", f"id={doc_id} reason=content_hash_mismatch")
+        raise HTTPException(status_code=409, detail="Documento presente ma non integro")
     with _conn() as db:
         row = db.execute(
             "SELECT filename FROM documents WHERE id = ? AND deleted = 0", (doc_id,)
@@ -243,28 +596,178 @@ async def sync_receive(
     authorization: Optional[str] = Header(None),
 ):
     _check_token(authorization)
-    data        = await file.read()
+    data = await file.read()
     actual_hash = _sha256(data)
-
     dest = _doc_path(actual_hash)
+
+    repaired = False
     if dest.exists():
-        return {"status": "already_exists", "id": actual_hash}
+        try:
+            repaired = _sha256(dest.read_bytes()) != actual_hash
+        except OSError:
+            repaired = True
+        if not repaired:
+            # Il file può esistere anche se il DB è stato ricostruito: riallinea
+            # i metadati senza duplicare il contenuto.
+            sig = _sign(data)
+            with _conn() as db:
+                db.execute(
+                    """INSERT OR IGNORE INTO documents
+                       (id, filename, sha256, signature, size, uploaded_at, deleted)
+                       VALUES (?, ?, ?, ?, ?, ?, 0)""",
+                    (
+                        actual_hash,
+                        file.filename or actual_hash,
+                        actual_hash,
+                        sig,
+                        len(data),
+                        datetime.now(timezone.utc).isoformat(),
+                    ),
+                )
+            return {"status": "already_exists", "id": actual_hash}
 
     sig = _sign(data)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    tmp = dest.with_suffix(".tmp")
-    tmp.write_bytes(data)
-    tmp.rename(dest)
+    _atomic_write_bytes(dest, data)
+    now = datetime.now(timezone.utc).isoformat()
 
     with _conn() as db:
         db.execute(
-            """INSERT OR IGNORE INTO documents
+            """INSERT INTO documents
                (id, filename, sha256, signature, size, uploaded_at, deleted)
-               VALUES (?, ?, ?, ?, ?, ?, 0)""",
-            (actual_hash, file.filename or actual_hash, actual_hash, sig,
-             len(data), datetime.now(timezone.utc).isoformat()),
+               VALUES (?, ?, ?, ?, ?, ?, 0)
+               ON CONFLICT(id) DO UPDATE SET
+                 filename=excluded.filename,
+                 sha256=excluded.sha256,
+                 signature=excluded.signature,
+                 size=excluded.size,
+                 uploaded_at=excluded.uploaded_at,
+                 deleted=0""",
+            (
+                actual_hash,
+                file.filename or actual_hash,
+                actual_hash,
+                sig,
+                len(data),
+                now,
+            ),
         )
 
-    _audit("sync_receive", f"id={actual_hash} size={len(data)}")
-    log.info("Sync received  id=%s", actual_hash)
-    return {"status": "stored", "id": actual_hash}
+    event = "sync_repair" if repaired else "sync_receive"
+    _audit(event, f"id={actual_hash} size={len(data)}")
+    log.info("%s  id=%s", "Sync repaired" if repaired else "Sync received", actual_hash)
+    return {"status": "repaired" if repaired else "stored", "id": actual_hash}
+
+
+# ---------------------------------------------------------------------------
+# Test-only process shutdown hook
+# ---------------------------------------------------------------------------
+
+@app.post("/test/shutdown")
+def test_shutdown(authorization: Optional[str] = Header(None)):
+    """
+    Authenticated test hook used only by the external failover property test.
+
+    Disabled by default. It exists to make process loss observable without
+    adding a production control plane. Enabling it requires BOTH:
+      1. R3_ALLOW_TEST_SHUTDOWN=true
+      2. the normal Bearer token.
+
+    It must never be described as a production failover mechanism.
+    """
+    _check_token(authorization)
+    if not ALLOW_TEST_SHUTDOWN:
+        raise HTTPException(status_code=404, detail="Test shutdown non abilitato")
+
+    _audit("test_shutdown", f"node_id={NODE_ID}")
+    log.warning("Authenticated external property test requested process shutdown")
+
+    def _exit_process() -> None:
+        os._exit(0)
+
+    threading.Timer(0.35, _exit_process).start()
+    return {"status": "shutting_down_for_test", "node_id": NODE_ID}
+
+
+# ---------------------------------------------------------------------------
+# Preregistered seed documents + boot fingerprint (Issue #86)
+#
+# R3_PREREGISTERED_SEED_PATHS: comma-separated files (relative to the repo
+# root or absolute) ingested idempotently at boot. Content-addressed, so a
+# restart never changes the set; a seed is only ever written when missing.
+# A re-ingest after storage loss is still caught by the restart proof, because
+# storage_id is regenerated at the same time ("Nuovo storage_id creato").
+#
+# Every boot logs one R3_BOOT_FINGERPRINT line with non-secret identity/state,
+# so each restart (including wake-from-sleep) leaves its own evidence in the
+# platform logs without needing authenticated network access.
+# ---------------------------------------------------------------------------
+
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _ingest_preregistered_seeds() -> list[dict[str, str]]:
+    raw = os.getenv("R3_PREREGISTERED_SEED_PATHS", "").strip()
+    results: list[dict[str, str]] = []
+    if not raw:
+        return results
+    for item in (p.strip() for p in raw.split(",")):
+        if not item:
+            continue
+        path = Path(item)
+        if not path.is_absolute():
+            path = _REPO_ROOT / path
+        try:
+            data = path.read_bytes()
+        except OSError as exc:
+            log.warning("Seed preregistrato non leggibile: %s (%s)", item, exc)
+            results.append({"path": item, "status": "unreadable"})
+            continue
+        doc_id = _sha256(data)
+        with _conn() as db:
+            present = db.execute(
+                "SELECT 1 FROM documents WHERE id = ? AND deleted = 0", (doc_id,)
+            ).fetchone()
+        on_disk_ok = False
+        try:
+            on_disk_ok = _sha256(_doc_path(doc_id).read_bytes()) == doc_id
+        except OSError:
+            pass
+        if present and on_disk_ok:
+            status = "present"
+        else:
+            _atomic_write_bytes(_doc_path(doc_id), data)
+            with _conn() as db:
+                db.execute(
+                    """INSERT OR IGNORE INTO documents
+                       (id, filename, sha256, signature, size, uploaded_at, deleted)
+                       VALUES (?, ?, ?, ?, ?, ?, 0)""",
+                    (doc_id, path.name, doc_id, _sign(data), len(data),
+                     datetime.now(timezone.utc).isoformat()),
+                )
+                _audit_db(db, "preregistered_seed", f"id={doc_id} file={path.name}")
+            status = "ingested"
+        log.info("Seed preregistrato %s id=%s file=%s", status, doc_id, path.name)
+        results.append({"path": item, "id": doc_id, "status": status})
+    return results
+
+
+SEED_RESULTS = _ingest_preregistered_seeds()
+
+
+def _log_boot_fingerprint() -> None:
+    fp = _state_fingerprint()
+    summary = {k: fp[k] for k in (
+        "node_id", "verify_key", "signing_key_source", "storage_id",
+        "storage_id_created_this_boot", "process_boot_id", "data_dir",
+        "durable_state_detected", "rrr_event_id", "rrr_counter", "rrr_action",
+        "protocol_event_count", "document_count", "document_set_sha256",
+        "documents_missing_or_corrupt",
+    )}
+    summary["seeds"] = SEED_RESULTS
+    log.info("R3_BOOT_FINGERPRINT %s", json.dumps(summary, sort_keys=True))
+
+
+try:
+    _log_boot_fingerprint()
+except Exception as exc:  # evidence logging must never stop the node
+    log.warning("R3_BOOT_FINGERPRINT non disponibile: %s", exc)

@@ -1,59 +1,48 @@
-name: Studio Notturno SDQ-1
+name: SDQ-1 Studio Notturno
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # 00:00 UTC = 2:00 Brussels CEST
+    - cron: '0 0 * * *'   # 00:00 UTC = 02:00 AM Brussels (UTC+2 estate)
   workflow_dispatch:
 
 jobs:
-  studio:
+  studia:
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: ${{ github.ref_name }}
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+
+      - name: Configura git
+        run: |
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
 
       - name: Installa dipendenze
-        run: pip install --no-cache-dir anthropic "google-genai>=1.0.0" google-api-python-client google-auth
+        run: python3 -m pip install --quiet --no-cache-dir anthropic
 
-      - name: Esegui studio notturno + analisi portfolio
+      - name: Studio Notturno
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GOOGLE_API_KEY:    ${{ secrets.GOOGLE_API_KEY }}
-        run: python scripts/studio_notturno.py
-
-      - name: Sync su Google Drive
-        if: ${{ secrets.GOOGLE_CREDENTIALS_JSON != '' }}
-        env:
-          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
-          AGORA_FOLDER_ID:         ${{ secrets.AGORA_FOLDER_ID }}
-          DRIVE_BRIEF_FOLDER_ID:   ${{ secrets.DRIVE_BRIEF_FOLDER_ID }}
-          DRIVE_PORTFOLIO_FOLDER_ID: ${{ secrets.DRIVE_PORTFOLIO_FOLDER_ID }}
-          DRIVE_PERSONALE_FOLDER_ID: ${{ secrets.DRIVE_PERSONALE_FOLDER_ID }}
-          DRIVE_FABRIZIO_FOLDER_ID:  ${{ secrets.DRIVE_FABRIZIO_FOLDER_ID }}
-        run: python scripts/sync_to_drive.py || echo "[sync] Drive sync fallita, continuo senza"
-
-      - name: Commit e push brief
         run: |
-          git config user.name  "SDQ-1 Studio Notturno"
-          git config user.email "sdq1@claudio.local"
-          git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}
-          git add output/morning_brief/ output/portfolio/ 2>/dev/null || true
-          if git diff --staged --quiet; then
-            echo "[studio_notturno] Nessun output da salvare"
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::warning::ANTHROPIC_API_KEY non configurata — studio saltato. Aggiungerla in Settings → Secrets and variables → Actions per attivare lo Studio Notturno."
             exit 0
           fi
-          git commit -m "studio_notturno: brief + portfolio $(date +%Y-%m-%d)"
-          for attempt in 1 2 3; do
-            git push && break
-            echo "[studio_notturno] Push fallito (tentativo $attempt/3)"
-            sleep $((attempt * 4))
-            git pull --rebase origin main || true
-          done
+          python3 scripts/studio_notturno.py
+
+      - name: Salva Morning Brief nel repo
+        run: |
+          git add output/morning_brief/
+          git diff --staged --quiet || git commit -m "morning brief $(date +%Y-%m-%d) [skip ci]"
+          git push || true

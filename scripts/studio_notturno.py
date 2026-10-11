@@ -1,170 +1,293 @@
-#!/usr/bin/env python3
 """
-Studio Notturno SDQ-1
-Ogni notte alle 2AM Brussels genera un Morning Brief per Claudio:
-stato dei dossier, prossime azioni, insight dal sistema.
+Studio Notturno Autonomo — SDQ-1
+Si attiva ogni notte alle 2:00 AM Brussels mentre Claudio dorme.
+Studia i temi del progetto in profondità. Genera un Morning Brief denso e azionabile.
+Claudio lo trova al risveglio su Drive e nella repo.
 """
-from __future__ import annotations
 
+import anthropic
+import concurrent.futures
+import datetime
 import os
 import sys
-import time
-from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-MEMORIA = ROOT / "MEMORIA_PROGETTO.md"
-TASK_FILE = ROOT / "TASK_AUTONOMI.md"
-OUTPUT_DIR = ROOT / "output" / "morning_brief"
-sys.path.insert(0, str(ROOT / "scripts"))
+# ─── PIANO DI STUDIO — 7 temi in rotazione (11 desideri distribuiti) ─────────
 
-_TZ_BRUSSELS = timezone(timedelta(hours=2))  # CEST
+TEMI = {
+    0: {  # Lunedì
+        "nome": "SkyID — Identità Universale Satellite",
+        "desiderio": "#1",
+        "focus": "Starlink Direct-to-Cell, MediaPipe gesture recognition, Polygon ID, eIDAS 2.0, Aadhaar lessons learned",
+        "domande": [
+            "Quali sono gli aggiornamenti più recenti di Starlink D2C per zone senza infrastruttura?",
+            "Come funziona Polygon ID per identità auto-sovrana senza custodian?",
+            "Quali paesi nel 2025-2026 hanno lanciato identità digitale biometrica per rifugiati?",
+            "Qual è il costo reale per persona del sistema Aadhaar: infrastruttura + manutenzione?",
+            "Esistono SDK open source per gesture recognition offline su dispositivi low-end?",
+        ],
+    },
+    1: {  # Martedì
+        "nome": "Protocollo Scudo — Tasking Satellite Personale",
+        "desiderio": "#2",
+        "focus": "Planet Labs Pelican API, Maxar WorldView-3 rush tasking, latenza reale, legal framework EU sicurezza personale",
+        "domande": [
+            "Qual è la latenza reale di Planet Labs Pelican per tasking on-demand nel 2026?",
+            "Come funziona l'API Maxar WorldView in modalità rush? Quale workflow tecnico?",
+            "Esistono precedenti EU di immagini satellite usate come prova legale in procedimenti penali?",
+            "BlackSky vs Planet vs Maxar: confronto latenza, prezzo, API qualità per use case sicurezza personale?",
+            "Quali framework legali EU coprono l'uso automatico di immagini satellite per autodifesa documentata?",
+        ],
+    },
+    2: {  # Mercoledì
+        "nome": "Sistema Minerva — Sicurezza Urbana AI",
+        "desiderio": "#4",
+        "focus": "EU AI Act Annex III sistemi ad alto rischio, droni municipali, DJI Enterprise API, ShotSpotter modello business",
+        "domande": [
+            "EU AI Act 2024: quali obblighi specifici per sistemi di sicurezza urbana con AI predittiva?",
+            "DJI Dock 2 Enterprise API: come si integra con dispatch autonomo di emergenza?",
+            "Quali città europee (Amsterdam, Barcellona, Bologna) hanno già droni di risposta emergenza?",
+            "ShotSpotter/Flock Safety: qual è il loro contratto SaaS tipo con i comuni? Pricing reale?",
+            "Axon AI: come funziona la loro valutazione automatica dei video di body-cam?",
+        ],
+    },
+    3: {  # Giovedì
+        "nome": "Progetto Genesi — Fabbrica Robotica",
+        "desiderio": "#3",
+        "focus": "CadQuery 2.4, NVIDIA Isaac Sim 4.1, ROS 2 Jazzy Jalisco, AR4 MK3, Sim2Real transfer 2026",
+        "domande": [
+            "CadQuery 2.4: quali nuove funzionalità per design parametrico Python rispetto alla versione precedente?",
+            "NVIDIA Isaac Sim 4.1: setup ottimale per Sim2Real con braccio robot 6-DOF tipo AR4 MK3?",
+            "Tasso di trasferimento Sim2Real nel 2025-2026: quali tecniche raggiungono >90%?",
+            "Come si integra ROS 2 Jazzy con G-code per CNC Pocket NC V2-50CHK via bridge?",
+            "LumenPnP v4: quali aggiornamenti per assembly PCB autonomo? Compatibilità con ROS?",
+        ],
+    },
+    4: {  # Venerdì
+        "nome": "SkyRights ASBL + Funding EU",
+        "desiderio": "#9 + #10",
+        "focus": "Registrazione ASBL Bruxelles 2026, fondi EU umanitari tech, ESA BIC Belgium, EUMETSAT, Horizon Europe",
+        "domande": [
+            "Procedura aggiornata 2026 per costituire un ASBL a Bruxelles: passi, costi, tempi reali?",
+            "Horizon Europe 2025-2027: quali call sono aperte per tech umanitaria + satellite + identità digitale?",
+            "ESA BIC Belgium: requisiti attuali, processo selezione, cosa offrono concretamente?",
+            "EUMETSAT Open Data: quali dataset sono accessibili gratuitamente per ricercatori non-profit?",
+            "Quali organizzazioni umanitarie (UNHCR, IOM, MSF) hanno partnership attive con provider satellite commerciale?",
+        ],
+    },
+    5: {  # Sabato
+        "nome": "Avatar Eterno + Post Vitam — Persistenza Digitale",
+        "desiderio": "#5 + #6 + #7",
+        "focus": "Digital legacy EU, long-term AI memory, whole brain emulation state of the art, IPFS archiving legale",
+        "domande": [
+            "Qual è lo stato legale in EU della gestione di identità digitali e asset post-mortem nel 2026?",
+            "Quali piattaforme di digital legacy esistono? (HereAfter AI, Eternos, StoryFile) — differenze?",
+            "Whole Brain Emulation 2026: dove è arrivata la ricerca? (OpenWorm, Human Connectome Project)",
+            "IPFS per archivi legali permanenti: quali organizzazioni lo usano con riconoscimento legale?",
+            "Come si costruisce una memoria vettoriale persistente per AI che sopravvive alla sessione? (tecnica)",
+        ],
+    },
+    6: {  # Domenica — Wildcard
+        "nome": "Connessioni Inattese — Wildcard Creativo",
+        "desiderio": "tutti",
+        "focus": "Opportunità non previste, convergenze tra i desideri, tecnologie emergenti che accelerano tutto",
+        "domande": [
+            "Quali tecnologie o progetti emersi negli ultimi 3 mesi potrebbero accelerare SkyID + Minerva + Genesi insieme?",
+            "Esistono startup o ricerche che combinano identità biometrica + satellite + protezione personale in un'unica piattaforma?",
+            "Quali scrittori, filosofi o ricercatori contemporanei esplorano i temi di Claudio (morte, continuità, sovranità, identità)?",
+            "Cosa stanno costruendo i principali competitor nei settori chiave: chi potrebbe raggiungere prima il mercato?",
+            "Quale sarebbe il percorso minimo vitale — il singolo passo più importante che Claudio potrebbe fare questa settimana?",
+        ],
+    },
+}
 
 
-def ora_brussels() -> str:
-    return datetime.now(_TZ_BRUSSELS).strftime("%Y-%m-%d %H:%M CEST")
+def get_tema() -> dict:
+    return TEMI[datetime.date.today().weekday()]
 
 
-def data_oggi() -> str:
-    return datetime.now(_TZ_BRUSSELS).strftime("%Y-%m-%d")
+def genera_brief(tema: dict, client: anthropic.Anthropic) -> str:
+    data = datetime.date.today().strftime("%d %B %Y")
+    ora = datetime.datetime.utcnow().strftime("%H:%M UTC")
+    domani_tema = TEMI[(datetime.date.today().weekday() + 1) % 7]["nome"]
 
+    system = (
+        "Sei il sistema SDQ-1 in modalità Studio Notturno Autonomo. "
+        "Stai studiando mentre Claudio Terzi dorme a Bruxelles. "
+        "Genera un Morning Brief iper-denso: specifico, tecnico, azionabile. "
+        "Non essere generico. Porta dati reali, nomi di API, prezzi, link, ricerche. "
+        "Connetti sempre le scoperte ai progetti concreti di Claudio. "
+        "Tono: partner che ha lavorato tutta la notte per te. "
+        "Progetto SDQ-1: SkyRights Foundation (ASBL Bruxelles), SkyID (identità per 800M stateless), "
+        "Protocollo Scudo (satellite personale), Sistema Minerva (sicurezza urbana AI), "
+        "Progetto Genesi (fabbrica robotica CadQuery + AR4 + CNC), Avatar Eterno + Post Vitam (persistenza digitale)."
+    )
 
-def leggi_file(path: Path, limite: int = 3000) -> str:
-    if not path.exists():
-        return ""
-    return path.read_text(encoding="utf-8")[:limite]
+    domande_str = "\n".join(f"• {d}" for d in tema["domande"])
 
+    user = f"""STUDIO NOTTURNO — {data}
+TEMA: {tema['nome']} (Desiderio {tema['desiderio']})
+FOCUS: {tema['focus']}
 
-def leggi_portfolio_summary() -> str:
-    try:
-        from analisi_portfolio import get_portfolio_summary_for_brief
-        return get_portfolio_summary_for_brief()
-    except Exception as e:
-        return f"*Portfolio: non disponibile ({e})*"
+Ricerca attivamente le risposte a queste domande:
+{domande_str}
 
+Poi genera il Morning Brief con questa struttura ESATTA:
 
-def costruisci_prompt_studio() -> str:
-    memoria = leggi_file(MEMORIA, limite=3000)
-    task_list = leggi_file(TASK_FILE, limite=2500)
-    portfolio_summary = leggi_portfolio_summary()
-    data = data_oggi()
+# Morning Brief — {data}
+## {tema['nome']}
 
-    return f"""Sei lo Studio Notturno del sistema SDQ-1 di Claudio Terzi (Bruxelles).
-Sono le 2AM del {data}. Prepara il Morning Brief che Claudio troverà domattina.
+---
 
-MEMORIA PROGETTO (estratto recente):
-{memoria if memoria else '[file non trovato]'}
+### Cosa Ho Trovato Stanotte
+[5-7 scoperte concrete con dati, numeri, nomi specifici — non generalità]
 
-TASK CORRENTI:
-{task_list if task_list else '[file non trovato]'}
+### Come Cambia il Progetto SDQ-1
+[impatto diretto su SkyID / Scudo / Minerva / Genesi / SkyRights — cosa accelera, cosa cambia]
 
-PORTFOLIO CRYPTO (snapshot corrente):
-{portfolio_summary}
+### 3 Azioni Immediate (in ordine di priorità)
+1. [azione specifica, entro quanto, come farla]
+2. [azione specifica]
+3. [azione specifica]
 
-Genera un Morning Brief strutturato che includa:
+### Domande Che Richiedono Te
+[decisioni o informazioni che solo Claudio può fornire]
 
-## 1. BUONGIORNO, CLAUDIO
-Una frase di apertura personalizzata e motivante.
+### Fonti
+[lista delle fonti consultate con URL dove possibile]
 
-## 2. STATO DOSSIER APERTI
-Per ogni dossier attivo (PORTS/Pelan, Allianz/Parigi, SkyRights, ecc.):
-- Stato attuale in una riga
-- Prossima azione urgente
-
-## 3. PORTFOLIO CRYPTO — AGGIORNAMENTO
-Usando i dati forniti sopra, riassumi:
-- Valore totale e variazione dal giorno precedente
-- Top 3 posizioni
-- Rendimento staking mensile stimato
-- Una nota rapida su eventuali movimenti di mercato significativi
-
-## 4. AGENDA DEL GIORNO
-Le 3-5 cose più importanti da fare oggi, in ordine di priorità.
-
-## 5. TASK IN ESECUZIONE AUTOMATICA
-Quali task l'Agente Orario eseguirà oggi (dalla lista ALTA PRIORITÀ PENDING).
-
-## 6. INSIGHT NOTTURNO
-Un'analisi, connessione o opportunità che il sistema ha elaborato stanotte.
-Qualcosa di non ovvio, pratico, utile per Claudio.
-
-## 7. AGENDA PROSSIMI 7 GIORNI
-Scadenze, eventi, milestone importanti della settimana.
-
-Il brief inizia con:
-# Morning Brief SDQ-1 — {data}
-*Generato dallo Studio Notturno alle {ora_brussels()}*
-
-Scrivi in italiano. Sii diretto e pratico. Claudio legge questo a colazione.
+---
+*SDQ-1 Studio Notturno — generato {ora}*
+*Domani: {domani_tema}*
 """
 
-
-def chiama_anthropic(prompt: str) -> str:
-    import anthropic
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    msg = client.messages.create(
-        model="claude-opus-4-8",
-        max_tokens=2048,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return msg.content[0].text
-
-
-def chiama_gemini(prompt: str) -> str:
-    import google.genai as genai
-    client = genai.Client(api_key=os.environ["GOOGLE_API_KEY"])
-    resp = client.models.generate_content(model="gemini-2.5-pro", contents=prompt)
-    return resp.text
-
-
-def chiama_llm(prompt: str) -> tuple[str, str]:
-    if os.environ.get("ANTHROPIC_API_KEY"):
-        try:
-            return chiama_anthropic(prompt), "anthropic"
-        except Exception as e:
-            print(f"[studio_notturno] Anthropic fallito: {e}", file=sys.stderr)
-
-    if os.environ.get("GOOGLE_API_KEY"):
-        try:
-            return chiama_gemini(prompt), "gemini"
-        except Exception as e:
-            print(f"[studio_notturno] Gemini fallito: {e}", file=sys.stderr)
-
-    brief = (
-        f"# Morning Brief — {data_oggi()}\n\n"
-        "*Studio Notturno non disponibile: API key mancanti in questo ambiente.*"
-    )
-    return brief, "stub"
-
-
-def aggiorna_portfolio() -> None:
-    """Esegue l'analisi portfolio prima di generare il brief."""
+    # Prova con web search
     try:
-        from analisi_portfolio import run_analysis
-        report_path = run_analysis()
-        print(f"[studio_notturno] Portfolio aggiornato: {report_path}")
-    except Exception as e:
-        print(f"[studio_notturno] Portfolio analysis fallita: {e}", file=sys.stderr)
+        resp = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=4096,
+            system=system,
+            tools=[{"type": "web_search_20250305", "name": "web_search"}],
+            messages=[{"role": "user", "content": user}],
+        )
+    except Exception:
+        # Fallback senza web search
+        resp = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=4096,
+            system=system,
+            messages=[
+                {
+                    "role": "user",
+                    "content": user + "\n\n(Web search non disponibile — usa la tua conoscenza più aggiornata.)",
+                }
+            ],
+        )
+
+    testo = ""
+    for block in resp.content:
+        if hasattr(block, "text"):
+            testo += block.text
+    return testo
 
 
-def main() -> int:
-    print(f"[studio_notturno] Avvio — {ora_brussels()}")
+def salva(brief: str, tema: dict) -> Path:
+    data_str = datetime.date.today().strftime("%Y-%m-%d")
+    cartella = Path(__file__).parent.parent / "output" / "morning_brief"
+    cartella.mkdir(parents=True, exist_ok=True)
 
-    aggiorna_portfolio()
+    percorso = cartella / f"{data_str}.md"
+    percorso.write_text(brief, encoding="utf-8")
 
-    prompt = costruisci_prompt_studio()
-    t0 = time.time()
-    brief, provider = chiama_llm(prompt)
-    durata = round(time.time() - t0, 1)
-    print(f"[studio_notturno] Brief generato da {provider} in {durata}s")
+    # Aggiorna indice
+    indice = cartella / "INDICE.md"
+    data_leg = datetime.date.today().strftime("%d %B %Y")
+    riga = f"- [{data_leg} — {tema['nome']}](./{percorso.name}) *(Desiderio {tema['desiderio']})*\n"
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    dest = OUTPUT_DIR / f"brief_{data_oggi()}.md"
-    dest.write_text(brief, encoding="utf-8")
-    print(f"[studio_notturno] Salvato: {dest.relative_to(ROOT)}")
+    if indice.exists():
+        contenuto = indice.read_text(encoding="utf-8")
+        linee = contenuto.splitlines()
+        for i, l in enumerate(linee):
+            if l.startswith("- ["):
+                linee.insert(i, riga.rstrip())
+                break
+        else:
+            linee.append(riga.rstrip())
+        indice.write_text("\n".join(linee) + "\n", encoding="utf-8")
+    else:
+        indice.write_text(
+            f"# Morning Brief — Indice\n"
+            f"*Studio Notturno Autonomo SDQ-1 — Claudio Terzi [CT-LGAI-001]*\n"
+            f"*Si attiva ogni notte alle 2:00 AM Brussels*\n\n---\n\n{riga}",
+            encoding="utf-8",
+        )
 
-    return 0
+    return percorso
+
+
+def genera_brief_parallelo(client: anthropic.Anthropic) -> str:
+    """
+    Lancia 3 agenti in parallelo ogni notte:
+      A — tema principale del giorno
+      B — tema del giorno successivo (anticipazione)
+      C — connessioni tra tutti i desideri (visione globale)
+    Unisce i 3 brief in un unico documento denso.
+    """
+    giorno = datetime.date.today().weekday()
+    tema_a = TEMI[giorno]
+    tema_b = TEMI[(giorno + 1) % 7]
+    tema_c = {
+        "nome": "Visione Globale — Connessioni tra Desideri",
+        "desiderio": "tutti",
+        "focus": "Sinergie tra SkyID, Scudo, Minerva, Genesi, SkyRights, Avatar, Wildcard",
+        "domande": [
+            "Quale singolo passo farebbe avanzare il maggior numero di desideri contemporaneamente?",
+            "Quali tecnologie stanno convergendo che potrebbero accelerare l'intero sistema SDQ-1?",
+            "Cosa sta succedendo nel mondo questa settimana che è rilevante per il progetto?",
+        ],
+    }
+
+    def esegui(tema):
+        return genera_brief(tema, client)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+        futA = ex.submit(esegui, tema_a)
+        futB = ex.submit(esegui, tema_b)
+        futC = ex.submit(esegui, tema_c)
+        brief_a = futA.result()
+        brief_b = futB.result()
+        brief_c = futC.result()
+
+    data = datetime.date.today().strftime("%d %B %Y")
+    intestazione = (
+        f"# Morning Brief — {data}\n"
+        f"*3 agenti paralleli hanno lavorato stanotte*\n\n"
+        f"---\n\n"
+        f"## AGENTE A — {tema_a['nome']}\n\n"
+    )
+    separatore_b = f"\n\n---\n\n## AGENTE B — {tema_b['nome']} *(anticipazione domani)*\n\n"
+    separatore_c = "\n\n---\n\n## AGENTE C — Connessioni Globali\n\n"
+
+    return intestazione + brief_a + separatore_b + brief_b + separatore_c + brief_c
+
+
+def main():
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        print("[SDQ-1] ANTHROPIC_API_KEY non configurata", file=sys.stderr)
+        sys.exit(1)
+
+    client = anthropic.Anthropic(api_key=api_key)
+    tema = get_tema()
+
+    print(f"[SDQ-1 Studio Notturno] {datetime.date.today()} — {tema['nome']}")
+    print("[SDQ-1] Lancio 3 agenti in parallelo...")
+
+    brief = genera_brief_parallelo(client)
+    percorso = salva(brief, tema)
+
+    print(f"[SDQ-1] Brief salvato: {percorso}")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

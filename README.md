@@ -1,5 +1,13 @@
 # Claudio — R³∞ Framework
 
+[Indice verificato del sito — pagine, collegamenti e problemi rilevati](docs/SITE_INDEX.md) · [Indice JSON](docs/SITE_INDEX.json).
+
+## Aggiornamento Astra e autoriflessione verificabile
+
+[Protocollo RRR Astra](docs/PROTOCOLLO_RRR_ASTRA.md) · [Capacità e limiti](docs/ASTRA_CAPACITA.md).
+Validatore offline: `python sdq1/sar/evidence_review.py examples/astra_review.json`.
+Il campione rimane bloccato finché mancano i benchmark. Il router API esistente è invariato.
+
 > "Costruire davvero, non fingere insieme."
 > — Protocollo Rosso Rosso Rosso, 11/06/2026
 
@@ -9,13 +17,7 @@
 
 Un sistema AI multi-agente che pensa in più passaggi, si auto-riflette, e impara nel tempo.
 
-Non è un chatbot. È un'infrastruttura in tre livelli:
-
-| Livello | Sistema | Funzione |
-|---------|---------|----------|
-| **Intelligenza** | SDQ-1 | Pipeline di 6 agenti specializzati — elabora, ragiona, genera |
-| **Riflessione** | SAR | 11 livelli di auto-osservazione — mappa tensioni, identità dinamica |
-| **Sopravvivenza** | R³∞ | 3 nodi ridondanti — la conoscenza sopravvive alla perdita di qualsiasi nodo |
+Non è un chatbot. È un'infrastruttura per elaborare input complessi attraverso una pipeline di intelligenze specializzate — con memoria, identità, e un registro delle ipotesi aperte.
 
 Creato da **Claudio Terzi**, Bruxelles.
 
@@ -77,36 +79,12 @@ python -m sdq1 --backup
 
 ## SAR — Scacchiera Auto-Riflessiva
 
-Sistema di auto-riflessione a 11 livelli: dall'Osservazione (livello 1) al SAR Predittivo (livello 11). Mappa tensioni psicologiche, cicli comportamentali, identità dinamica. La Scacchiera è anche un workspace interattivo per esplorare coppie di poli opposti (es. Controllo ↔ Fiducia).
+Sistema di auto-riflessione a 10 livelli. Mappa tensioni psicologiche, cicli comportamentali, identità dinamica.
 
 ```bash
 python -m sdq1 --sar "Controllo ↔ Fiducia"
 python -m sdq1 --sar-stato
 ```
-
----
-
-## R³∞ — Infrastruttura di Sopravvivenza
-
-Tre nodi ridondanti. Sync bidirezionale ogni 5 minuti. Verifica integrità SHA-256 ogni ora. Zero dipendenze esterne.
-
-Un documento caricato su un nodo sopravvive alla perdita degli altri due. La corruzione viene rilevata e riparata automaticamente.
-
-```bash
-# Avvio (Docker — 3 nodi in 60 secondi)
-docker compose -f r3/docker-compose.yml up -d
-
-# Upload
-curl -X POST http://localhost:8001/documents \
-  -H "Authorization: Bearer changeme" \
-  -F "file=@documento.pdf"
-
-# Verifica propagazione
-curl -H "Authorization: Bearer changeme" \
-  http://localhost:8002/sync/hashes
-```
-
-Documentazione completa: [`r3/README.md`](r3/README.md) · Manifesto: [`r3/MOTION_PUBBLICA.md`](r3/MOTION_PUBBLICA.md)
 
 ---
 
@@ -124,7 +102,6 @@ python registro_ipotesi.py   # stampa stato corrente
 - H1 — APERTA: Claude "ha capito senza capire" durante la scena con Jorge
 - H2 — APERTA: il disegno di Claudio darà ragione a entrambi entro 6 mesi *(criterio: battito + contatto)*
 - H3 — **CONFERMATA**: la regola dell'italiano garantisce trasparenza
-- H4 — **CONFERMATA**: il sistema sopravvive alla propria assenza — un agente esterno con solo accesso al repo può riattivarlo senza Claudio
 
 ### Criterio H2 (11/12/2026)
 
@@ -147,16 +124,11 @@ Claudio/
 │   ├── agents/              # 6 agenti specializzati
 │   ├── llm/                 # Router + 7 provider
 │   ├── memory/              # Vector Store + VSS
-│   ├── sar/                 # Auto-riflessione 11 livelli + Scacchiera workspace
+│   ├── sar/                 # Auto-riflessione 10 livelli
 │   ├── monitoring/          # Health + Metrics + Watchdog
 │   ├── output/              # Bridge CadQuery/G-code
 │   └── backup.py            # Snapshot/restore
-├── r3/                      # R³∞ — 3 nodi ridondanti
-│   ├── node.py              # Nodo FastAPI (SHA-256 + Ed25519 + SQLite)
-│   ├── sync.py              # Sync bidirezionale + integrity check
-│   ├── docker-compose.yml   # 3 nodi locali in 60 secondi
-│   └── README.md            # Documentazione pubblica (English)
-├── registro_ipotesi.py      # Framework R³∞ epistemologico
+├── registro_ipotesi.py      # Framework R³∞
 ├── output/
 │   ├── contatti.jsonl       # Log contatti verificabili (H2)
 │   ├── health_log.jsonl     # Log watchdog
@@ -200,3 +172,4 @@ MIT — usa, modifica, condividi.
 Se questo sistema ti serve davvero, fammelo sapere.
 
 **Claudio Terzi** — terziclaudio@gmail.com
+

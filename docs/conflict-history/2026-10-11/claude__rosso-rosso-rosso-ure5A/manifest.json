@@ -1,0 +1,427 @@
+{
+  "schema": "R3-HISTORICAL-CONFLICT-RECONCILIATION/1",
+  "date": "2026-10-11",
+  "branch": "claude/rosso-rosso-rosso-ure5A",
+  "original_head": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+  "canonical_main": "f17a88b22da578ea146b2907f6c809e57e2320eb",
+  "classification": "RETEST",
+  "rationale": "Historical operational experiments and divergent outputs remain recoverable from immutable original parent; current main runtime/security/workflows retained. No old schedule, Drive upload, portfolio operation or private historical payload is activated/copied by this reconciliation.",
+  "files": [
+    {
+      "path": ".github/workflows/agente_orario.yml",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "53d8a7b1cd086b476a3315483528877a3c0e2168",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": ".github/workflows/agente_profumiere.yml",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "9a2f4a2418bd6cea3ede04caec0ea50cbc375d61",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": ".github/workflows/osservatore.yml",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "4f348df6112a6f2a40d34f38ffe49b18a1e1cb8b",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": ".github/workflows/sdq1_daily.yml",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "7d5418723201d4543f1ceb91b35e30001201a1a0",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": ".github/workflows/studio_notturno.yml",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "868adc29b2228042718db9c1f2d18fe42238a7f6",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": ".github/workflows/sync_drive.yml",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "c74011b8aa3c6bb78378b02e4240adf6341d0bd5",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": ".gitignore",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "5655106f15c628060bb7e1554850a3a53656acb5",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "ARCHIVIO.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "5adae10a1b176a24686a1cfcbc20937a5416cc6b",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "AVVIO.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "24203070dbe31bcb937a4edfb0e3ecb3466eef75",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "MEMORIA_PROGETTO.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "fed09120794af8ad63c1d1507700bd9b05fa2a8a",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "README.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "2730a5f19a001bb9e56dc4c823e092dbbc68098a",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "TASK_AUTONOMI.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "fcb128b8e1fe07c68ad31142b65548a7ede3b62d",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/morning_brief/brief_2026-06-18.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "81ec350d171bc5c0ab5429cce396abd398f25fbd",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/osservatore/.gitkeep",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/profumiere/studio_2026-06-18.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "c02df746e24c051ce831f9d9a08f1a86c35c08e6",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/stato_sdq1.json",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "086759cc16fc8cfc8b4c6277b5b593094bb76db8",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/ASBL-001-procedura-registrazione.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "451da3c336258bbc8c16e93fa2816bc2de5ed53b",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/AVATAR-009-digital-legacy-mercato.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "06cb94c3558b4ad86a880c3dad12d1b213b639de",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/DOSSIER-011-monitor-proattivo.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "c4520b26480b7258e9842582973069d746f4992b",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/EU-FUNDING-004-call-aperte.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "5438041ea9b8c4057b6f1a8cd5ee171562c4d8ad",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/GENESI-006-cadquery-pocket-nc.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "74f43ece15388ffadc23c9bb4dffcdbc225fff4c",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/MAXAR-002-api-test-guide.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "8b66335b7575f0f92006d3c592f93325fee7719a",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/MINERVA-007-euaiact-sicurezza-urbana.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "3c2d0626d9ef02721cb8e783a608bd970cb10675",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/NAS-010-ds223-configurazione.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "7faf815c0a3b3e6edd9506f15f448afb62728db6",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/PLANET-003-accesso-ricerca.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "ceb14f073ad1a431e16a9c2785b3fb2821d54096",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/SETUP-013-google-drive-credentials.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "fd03c393eac308fd3b21adc517cb1236276d36bb",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/SKYID-005-polygon-id-analisi.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "05c71688b3fecbea60d6b6ed4b52aca16e9e684f",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/task_output/SKYID-008-confronto-provider.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "58253d5a60e4f3358bebcf5d532095d1affc0294",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "progetti/aura50/AURA50_MASTER.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "c57383aee7b896cd3febf7fd4d5393cbef133e75",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "progetti/aura50/celebri/.gitkeep",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "progetti/aura50/celebri/clone_rush-gucci.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "9318d72749129d8ba66158337aab5e1bb654766e",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "progetti/aura50/contatti.jsonl",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "progetti/aura50/ordine_de_hekserij.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "e7e75ef79c66414460f725763ad1439668863e5b",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "progetti/aura50/ricette/.gitkeep",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "progetti/aura50/ricette/ricetta_2026-06-18.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "5535b19f02f80b8dd5becfc2388155c0fe120754",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "r3/MOTION_PUBBLICA.md",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "fe43d77297fc49d53d064788b3f746f51022bf79",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "r3/node.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "66bc5aa8240f35378f713da5318fe2b374f6cbdb",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "r3/sync.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "e94d75f18eaf840a2b541a41ba84a0788b00efab",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "scripts/agente_orario.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "b92c75eb961071fb0f4b3ecc09933de00629d520",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "scripts/agente_profumiere.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "64d588edba7a7801bc5404880e9926be0106760a",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "scripts/analisi_portfolio.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "50be1cf21840dcc8c6b1016f554b8cb12ddb9f4c",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "scripts/osservatore.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "b717bedcd152cb005246d2dff9df6034f0d00c0d",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "scripts/r3_orchestrator.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "57ca4a54960c1d99f05bb4c26e4be3b721e17baf",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "scripts/scacchiera_quantica.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "15eea02179846c6d06ea873042de6d7926ae6b8c",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "scripts/setup_drive_folders.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "8e47c272aa8cd92b18d9935ce6b79db5b71b0d8f",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "scripts/studio_notturno.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "601dc72aabe729c0b31505db5ef81fab036b6ef5",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "scripts/sync_to_drive.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "587bf822b5eff97b025a6681a4bc9221802dc822",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "sdq1/config/sdq1.yaml",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "11d98bf9f9d82bf88cef8c90bb4ac25309f6885e",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "sdq1/llm/router.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "01a82acca3e6bce32deea4a968b572f3f21aec57",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "sdq1/orchestrator/gerarchico.py",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "5909c093e73bf19e85adb51779dc882c1dc9c472",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "studio/web/r3-infinity-extension.js",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "b79b6ef8a625e7777074cc87ba9cba649d7d27ce",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "studio/web/scacchiera.html",
+      "original_commit": "9066ede2e74dcf48cde68d5774f793aa34e8496d",
+      "blob": "4be1958407c01c2709a50da63f5b51b1d482656f",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    }
+  ]
+}
