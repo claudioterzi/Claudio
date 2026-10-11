@@ -1,0 +1,83 @@
+{
+  "schema": "R3-HYPERDENSE/1.1-CANDIDATE",
+  "extends": "R3-HYPERDENSE/1.0",
+  "status": "CANDIDATE",
+  "purpose": "Normative canonicalization profile for reproducible R3H1 hashing and cross-implementation round trips.",
+  "canonicalization": {
+    "encoding": "UTF-8",
+    "unicode_normalization": "NFC",
+    "canonical_object_fields": [
+      "sigil",
+      "v",
+      "mid",
+      "src",
+      "dst",
+      "ts",
+      "ep",
+      "auth",
+      "priv",
+      "body",
+      "prov",
+      "e",
+      "x",
+      "risk",
+      "conf",
+      "pv",
+      "hid",
+      "eid",
+      "link",
+      "ttl"
+    ],
+    "excluded_from_hash": [
+      "hash",
+      "ack",
+      "receiver_annotations",
+      "receipt"
+    ],
+    "rules": [
+      "Parse dense shorthand into the canonical object before hashing.",
+      "sigil MUST equal తారక.",
+      "ts MUST be RFC3339 UTC using Z.",
+      "src MUST be an object with only N,P,M,T,A keys; unavailable values MUST be Q, not invented.",
+      "prov MUST be an array; unknown provenance is represented as [\"Q\"].",
+      "body MUST be either a UTF-8 string preserved exactly after NFC normalization or a JSON value canonicalized recursively.",
+      "Object keys MUST be serialized in lexicographic order.",
+      "Arrays preserve sender order.",
+      "Numbers MUST use JSON decimal representation without NaN or Infinity.",
+      "Booleans and null use standard JSON literals.",
+      "Serialization MUST use separators ',' and ':' with no insignificant whitespace.",
+      "The SHA-256 digest is computed over the canonical UTF-8 bytes and encoded as exactly 64 lowercase hexadecimal characters.",
+      "Unknown extension fields are forbidden unless nested under link/ext in a future versioned profile."
+    ],
+    "dense_aliases": {
+      "b": "body",
+      "C": "conf",
+      "N": "next_action_note",
+      "Q": "unknown_fields"
+    },
+    "note": "Aliases that are not canonical-object fields are semantic annotations and must be mapped into body or a future versioned extension before hashing."
+  },
+  "verification": {
+    "sender": [
+      "construct canonical object",
+      "serialize using canonicalization rules",
+      "compute sha256",
+      "append hash to dense envelope"
+    ],
+    "receiver": [
+      "parse dense envelope",
+      "validate required fields and sigil",
+      "reconstruct canonical object",
+      "recompute sha256",
+      "compare exact lowercase 64-hex digest",
+      "only then evaluate replay and semantics"
+    ],
+    "pass_conditions": [
+      "two independent implementations produce identical canonical bytes",
+      "two independent implementations produce identical SHA-256",
+      "encode->decode->encode yields identical canonical object",
+      "tampering any hashed field changes the digest",
+      "missing provenance/source evidence remains Q rather than inferred"
+    ]
+  }
+}
