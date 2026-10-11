@@ -1,4 +1,4 @@
-"""TypeSafe "sister" service for bounded semantic judgments in R3∞."""
+"""R3∞ System One sister service for bounded semantic judgments."""
 from __future__ import annotations
 
 import hashlib
@@ -10,18 +10,23 @@ from typing import Any, Literal, Optional
 
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
-from typesafe_sister.client import system_one
+
+from typesafe_sister.client import (
+    SystemOneNotConfigured,
+    backend_info,
+    system_one,
+)
 
 R3_API_TOKEN = os.getenv("R3_API_TOKEN", "")
-TYPESAFE_API_KEY = os.getenv("TYPESAFE_API_KEY", "")
-TYPESAFE_BASE_URL = os.getenv("TYPESAFE_BASE_URL", "https://api.typesafe.ai")
-TYPESAFE_MODEL = os.getenv("TYPESAFE_MODEL", "jev-latest")
-TYPESAFE_TIMEOUT_SECONDS = float(os.getenv("TYPESAFE_TIMEOUT_SECONDS", "30"))
+SYSTEMONE_TIMEOUT_SECONDS = float(
+    os.getenv("R3_SYSTEMONE_TIMEOUT_SECONDS", os.getenv("TYPESAFE_TIMEOUT_SECONDS", "30"))
+)
 
-log = logging.getLogger("r3.typesafe_sister")
-app = FastAPI(title="R3∞ TypeSafe Sister", version="0.2.0")
+log = logging.getLogger("r3.systemone_sister")
+app = FastAPI(title="R3∞ System One Sister", version="0.2.0")
 
 QuestionKind = Literal["choice", "noul", "score"]
+
 
 RRR_POLICY_VERSION = "RRR-JEV/1.0"
 RRR_RESERVED_PREFIX = "rrr_"
@@ -118,7 +123,7 @@ class JudgeRequest(BaseModel):
 
 
 def _check_token(authorization: Optional[str]) -> None:
-    if not R3_API_TOKEN or R3_API_TOKEN == 'changeme':
+    if not R3_API_TOKEN or R3_API_TOKEN == "changeme":
         raise HTTPException(status_code=503, detail="Token del servizio non configurato")
     if not authorization or not secrets.compare_digest(authorization, f"Bearer {R3_API_TOKEN}"):
         raise HTTPException(status_code=401, detail="Token non valido")
@@ -179,33 +184,35 @@ def _apply_rrr_policy(questions: dict[str, dict[str, Any]]) -> dict[str, dict[st
 
 
 def _system_one(state: Any, questions: dict[str, dict[str, Any]], model: str | None) -> dict[str, Any]:
-    if not TYPESAFE_API_KEY:
-        raise HTTPException(status_code=503, detail="TypeSafe API non configurata: secret TYPESAFE_API_KEY assente")
-
     try:
-        return system_one(state, questions,
-            api_key=TYPESAFE_API_KEY,
-            base_url=TYPESAFE_BASE_URL,
-            model=model or TYPESAFE_MODEL,
-            timeout=TYPESAFE_TIMEOUT_SECONDS,
+        return system_one(
+            state,
+            questions,
+            model=model,
+            timeout=SYSTEMONE_TIMEOUT_SECONDS,
         )
+    except SystemOneNotConfigured as exc:
+        raise HTTPException(status_code=503, detail="System One backend non configurato") from exc
     except HTTPException:
         raise
     except Exception as exc:
-        log.warning("TypeSafe request failed: %s", type(exc).__name__)
-        raise HTTPException(status_code=502, detail=f"TypeSafe upstream error: {type(exc).__name__}") from exc
+        log.warning("System One request failed: %s", type(exc).__name__)
+        raise HTTPException(status_code=502, detail=f"System One upstream error: {type(exc).__name__}") from exc
 
 
 @app.get("/health")
 def health() -> dict[str, Any]:
+    info = backend_info()
     return {
         "status": "healthy",
+        # Keep the service name stable so Railway/Vercel integrations do not break.
         "service": "r3-typesafe-sister",
-        "provider": "typesafe",
-        "configured": bool(TYPESAFE_API_KEY),
-        "model": TYPESAFE_MODEL,
-        "base_url": TYPESAFE_BASE_URL,
+        "provider": info["provider"],
+        "configured": info["configured"],
+        "model": info["model"],
+        "base_url": info["base_url"],
         "role": "bounded_semantic_judgment",
+        "api_contract": "typesafe-compatible-systemone",
         "rrr_active": True,
         "rrr_policy_version": RRR_POLICY_VERSION,
     }
@@ -216,28 +223,25 @@ def judge(request: JudgeRequest, authorization: Optional[str] = Header(None)) ->
     _check_token(authorization)
     user_questions = _wire_questions(request.questions)
     wire_questions = _apply_rrr_policy(user_questions)
-    state_hash = _canonical_hash(request.state)
     user_question_hash = _canonical_hash(user_questions)
+    state_hash = _canonical_hash(request.state)
     question_hash = _canonical_hash(wire_questions)
     result = _system_one(request.state, wire_questions, request.model)
+    provider = str(result.get("_r3_provider") or "unknown")
     log.info(
-        "TypeSafe RRR judgment completed state_sha256=%s user_questions_sha256=%s questions_sha256=%s model=%s policy=%s",
+        "System One judgment completed state_sha256=%s questions_sha256=%s provider=%s model=%s",
         state_hash,
-        user_question_hash,
         question_hash,
+        provider,
         result.get("model"),
-        RRR_POLICY_VERSION,
     )
     return {
-        "provider": "typesafe",
+        "provider": provider,
         "state_sha256": state_hash,
         "user_questions_sha256": user_question_hash,
         "questions_sha256": question_hash,
         "result": result,
-        "rrr": {
-            "active": True,
-            "policy_version": RRR_POLICY_VERSION,
-            "forced_questions": list(RRR_FIXED_QUESTIONS),
-        },
+        "rrr": {"active": True, "policy_version": RRR_POLICY_VERSION,
+                "forced_questions": list(RRR_FIXED_QUESTIONS)},
         "epistemic_note": "typed_model_judgment_not_independent_factual_evidence",
     }
