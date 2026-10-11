@@ -2,12 +2,12 @@ name: SDQ-1 Daily Run
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # 08:00 CET (06:00 UTC) ogni giorno
+    - cron: '0 6 * * *'   # 06:00 UTC ogni giorno
   workflow_dispatch:
 
 jobs:
   run:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: write
 
@@ -17,15 +17,27 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
       - name: Configura git
         run: |
-          git config user.name "Claude"
-          git config user.email "noreply@anthropic.com"
+          git config user.name "R3 Automation"
+          git config user.email "noreply@github.com"
 
       - name: Installa dipendenze
         run: |
           python3 -m pip install --quiet --no-cache-dir pyyaml anthropic "openai>=1.50.0" "google-genai>=1.0.0"
           sudo apt-get install -y ripgrep
+
+      # ── R3. Gate di integrità prima di qualunque ciclo autonomo
+      - name: R3 Evolution integrity gate
+        run: |
+          python3 -m sdq1.evolution_kernel --self-test
+          python3 -m sdq1.evolution_kernel --verify-ledger
 
       # ── 0a. Sync calendario Airbnb
       - name: Sync Airbnb
@@ -49,7 +61,7 @@ jobs:
           mkdir -p output
           python3 -m sdq1 --telegram-comandi
 
-      # ── 1. Ciclo 7 agenti (notifica automatica se guardian non VERDE)
+      # ── 1. Ciclo agenti
       - name: Agenti autonomi
         continue-on-error: true
         env:
@@ -62,6 +74,12 @@ jobs:
           mkdir -p output
           python3 -m sdq1 --agenti
 
+      - name: R3 Evolution snapshot
+        run: |
+          if [ -f output/agenti_stato.json ]; then
+            python3 -m sdq1.evolution_kernel --snapshot output/agenti_stato.json --label agenti
+          fi
+
       # ── 2. Scanner sicurezza + qualità
       - name: Scanner
         continue-on-error: true
@@ -69,14 +87,15 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python3 -m sdq1 --scan
 
-      # ── 3. Snapshot completo + push
-      - name: Snapshot e push
+      # ── 3. Salva lo snapshot; il commit finale include anche battito e stato pubblico.
+      # Un solo push evita un deployment Vercel intermedio del solo snapshot.
+      - name: Snapshot locale per il commit finale
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python3 -m sdq1 --snapshot --push
+        run: python3 -m sdq1 --snapshot
 
       # ── 4. Briefing operativo multi-AI su Telegram
       - name: Briefing Telegram
@@ -89,9 +108,29 @@ jobs:
           TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python3 -m sdq1 --briefing-operativo
 
-      # ── 5. Salva tutti gli output (scan_report, agenti_stato, ecc.)
-      - name: Commit output
+      # ── 5. Il battito è una prova esplicita, non un effetto collaterale.
+      - name: Registra battito e stato pubblico
+        if: ${{ always() }}
         run: |
-          git add output/ || true
-          git diff --staged --quiet || git commit -m "chore(daily): agenti + scanner + snapshot $(date +%Y-%m-%d) [skip ci]"
+          mkdir -p output public
+          DAY="$(date -u +%F)"
+          FILE="output/daily_${DAY}.txt"
+          {
+            echo "R3_DAILY_V1"
+            echo "date_utc=${DAY}"
+            echo "generated_at_utc=$(date -u +%FT%TZ)"
+            echo "workflow=sdq1_daily"
+            echo "run_id=${GITHUB_RUN_ID}"
+            echo "commit=${GITHUB_SHA}"
+            echo "job_status=${{ job.status }}"
+            echo "note=heartbeat records execution; it does not certify multi-node sync or external impact"
+          } > "${FILE}"
+          python3 scripts/build_public_status.py
+
+      # ── 6. Salva output e snapshot pubblico anche se una fase precedente ha fallito.
+      - name: Commit output e stato
+        if: ${{ always() }}
+        run: |
+          git add output/ public/r3-status.json || true
+          git diff --staged --quiet || git commit -m "chore(daily): heartbeat + evidence status $(date -u +%Y-%m-%d) [skip ci]"
           git push || true

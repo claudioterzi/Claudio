@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer"><title>{{ p.nome if p else 'La tua creazione' }} · Terzi Parfums</title>
+<link rel="stylesheet" href="/perfume-studio.css"><script src="/perfume-bottle.js" defer></script><script src="/perfume-print.js" defer></script><script src="/perfume-label.js" defer></script><script src="/perfume-studio.js" defer></script><script src="/atmosfere.js" defer></script><link rel="stylesheet" href="/perfume-lab.css"><link rel="stylesheet" href="/perfume-print.css"><script src="/perfume-lab.js" defer></script></head>
+<body><main class="studio">
+<nav class="studio-nav" aria-label="Atelier"><a href="/atelier.html">← Atelier</a><a href="/atelier/riapri">Riapri una scheda</a><a href="/atelier/archivio">Archivio</a></nav>
+{% if not p %}<section class="empty"><p class="eyebrow">L’ATELIER DI RAFFAELLO</p><h1>La tua creazione</h1><p>{{ error or 'Scrivi un’intenzione nell’Atelier per iniziare.' }}</p><a class="action" href="/atelier.html">Torna all’Atelier</a>
+{% if diagnostic %}<details class="caption"><summary>Dettagli per assistenza</summary><p>Codice: <code>{{ diagnostic.code }}</code><br>Richiesta: <code>{{ diagnostic.request_id }}</code></p></details>{% endif %}</section>
+{% else %}
+<header class="identity"><p class="eyebrow">CREAZIONE PERSONALE · {{ p.fam }}</p><h1>{{ p.nome }}</h1>{% if customer %}<p class="dedication">Creato per <strong>{{ customer }}</strong></p>{% endif %}
+{% if reopened %}<p class="caption" role="status">Scheda riaperta dal file · nessuna nuova composizione AI. Testi e provenienza appartengono alla scheda caricata.</p>{% endif %}
+<p class="intention">{{ intention }}</p>{% if dedication %}<p class="personal-dedication">{{ dedication }}</p>{% endif %}{% if p.esempio %}<p class="caption">{{ p.esempio.provenienza }}</p>{% endif %}
+<div class="print-actions"><button class="action" id="print-recipe" type="button">Stampa ricetta</button><button class="action" id="print-inspiration" type="button">Stampa ispirazione e dedica</button></div></header>
+<section class="portrait-grid" aria-label="Il tuo profumo">
+<div><button class="bottle-view" id="enlarge" aria-label="Ingrandisci il flacone" type="button">
+<img id="bottle-image" src="{{ '/images/ferro-di-luce.webp' if p.esempio else '/images/terzi-atelier.webp' }}" width="1024" height="1024" alt="Flacone Terzi Parfums di {{ p.nome }}{% if customer %}, creato per {{ customer }}{% endif %}" fetchpriority="high">
+<span class="bottle-label" aria-hidden="true"><span class="brand">TERZI PARFUMS</span><span class="label-name">{{ p.nome }}</span><span class="label-client">{{ customer or 'Atelier' }}</span><span class="label-serial">{{ record.serial if record else 'CREAZIONE · BOZZA' }}</span></span>
+</button><p class="caption" id="image-caption">{{ 'Flacone originale Ferro di Luce · immagine generata · concept Claudio Terzi' if p.esempio else 'Flacone Atelier · visualizzazione di progetto' }}</p>
+<div class="bottle-variants" role="group" aria-label="Versioni del flacone">{% if p.esempio %}<button class="action" id="bottle-original" type="button" aria-pressed="true">Originale</button>{% endif %}<button class="action" id="bottle-sculpture" type="button" aria-pressed="false">Versione Scultura</button><button class="action" id="bottle-essence" type="button" aria-pressed="false">Versione Essenza</button></div>
+<div class="actions"><button id="generate-image" class="action" data-token="{{ image_token or '' }}">Crea immagine interna della ricetta</button><button id="download-image" class="action">Scarica immagine</button><button id="print-label" class="action">Stampa etichetta</button><button id="generate-card" class="action" type="button">Crea tavola grafica</button></div>
+{% if visual and not p.esempio %}<details><summary>Il progetto del tuo flacone</summary><p>{{ visual.palette|capitalize }}; {{ visual.luce }}.</p><p>Accenti della ricetta: {{ visual.accenti|join(', ') }}.</p><p>Le versioni Scultura ed Essenza sono visualizzazioni 3D costruite dalla firma della ricetta. Sono concept da sviluppare con un produttore di flaconi.</p><p class="caption">{{ visual.attribution }}.</p>{% if not image_token %}<p>Il creatore interno funziona anche senza AI: compone il flacone e l’etichetta direttamente nel browser. La fotografia AI aggiuntiva è un passaggio facoltativo.</p>{% endif %}</details>{% endif %}
+<p role="status" id="image-status" class="status"></p>
+<section id="graphic-card" class="graphic-card" hidden aria-labelledby="graphic-card-title">
+<h2 id="graphic-card-title">Tavola grafica della creazione</h2>
+<figure><img id="graphic-card-image" alt="Tavola grafica di {{ p.nome }}"><figcaption><a id="download-graphic-card" download>Scarica la tavola grafica</a></figcaption></figure>
+<p role="status" id="graphic-card-status" class="status"></p>
+</section>
+</div>
+<aside class="creation-notes">
+{% if p.esempio %}<section aria-label="La fotografia di Claudio"><h2>Il calore del ferro</h2><img src="/images/ispirazione-cantiere.jpg" width="1536" height="1024" style="width:100%;height:auto" alt="Cantiere navale al tramonto con scintille e riflessi"><p>Il bagliore diventa un’apertura luminosa; il contrasto tra metallo, legno e acqua suggerisce una struttura asciutta, fumé e ariosa.</p></section>{% endif %}
+{% if p.foto %}<section aria-label="Dalla foto al profumo"><h2>Dalla foto al profumo</h2>
+{% if p.foto.esempio_pubblico == 'cantiere' %}<img src="/images/ispirazione-cantiere.jpg" width="1536" height="1024" style="width:100%;height:auto;border-radius:8px" alt="La fotografia di cantiere scelta da Claudio come ispirazione">{% endif %}
+<h3>Ciò che si vede</h3><ul>{% for observation in p.foto.osservazioni %}<li>{{ observation }}</li>{% endfor %}</ul>
+<h3>Le associazioni creative</h3><ul>{% for association in p.foto.associazioni %}<li><strong>{{ association.elemento }}</strong> · {{ association.evocazione }}</li>{% endfor %}</ul>
+<p>{{ p.foto.direzione }}</p>{% if p.foto.incertezze %}<p class="caption">{{ p.foto.incertezze }}</p>{% endif %}
+<p class="caption">Interpretazione visiva e olfattiva creativa. Gli odori non sono misurati dalla fotografia.</p></section>{% endif %}
+{% if p.preferenze and (p.preferenze['items'] or p.preferenze.status == 'unavailable') %}
+<section aria-label="Gusti del cliente"><h2>I gusti, prima della formula</h2>
+{% if p.preferenze.origin == 'field' %}<p>Profumi indicati nel campo ispirazioni:</p>{% elif p.preferenze.status == 'recognized' %}<p>Riferimenti riconosciuti nel racconto:</p>{% endif %}
+{% if p.preferenze.status == 'unavailable' %}<p>Riconoscimento automatico non disponibile. Per essere sicuro che i tuoi riferimenti entrino nella ricerca, inseriscili nel campo ispirazioni dell’Atelier.</p>{% endif %}
+<ul>{% for item in p.preferenze['items'] %}<li><strong>{{ item.name }}</strong> · {{ item.relation }}{% if item.clarification %}<br>Da chiarire: {{ item.clarification }}{% endif %}</li>{% endfor %}</ul>
+{% if p.gusti_cliente %}{% if not p.ricerca or p.ricerca.status != 'sourced' %}<p><strong>Lettura ipotetica dei gusti:</strong> le caratteristiche dei profumi citati non sono state verificate. Le deduzioni seguenti non sono preferenze confermate del cliente.</p>{% endif %}<p style="white-space:pre-wrap">{{ p.gusti_cliente }}</p>{% endif %}</section>
+{% endif %}
+{% if p.ricerca and p.ricerca.reference %}
+<section aria-label="Ricerca del riferimento"><h2>Il riferimento, prima della creazione</h2>
+{% if p.ricerca.status == 'sourced' %}<p>Ricerca web del {{ p.ricerca.consulted_at[:10] }} · {{ p.ricerca.reference }}</p><p style="white-space:pre-wrap">{{ p.ricerca.summary }}</p><ul>{% for source in p.ricerca.sources %}<li><a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }}</a></li>{% endfor %}</ul>
+{% if p.ricerca.suggestions %}<iframe title="Suggerimenti di ricerca Google" sandbox="allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer" srcdoc="{{ p.ricerca.suggestions }}" style="width:100%;height:180px;border:0;background:white"></iframe>{% endif %}
+{% else %}<p>Fonti non disponibili per: {{ p.ricerca.reference }}. I nomi restano indicazioni di gusto; le caratteristiche degli originali non sono verificate.</p>{% endif %}</section>
+{% endif %}
+<p class="eyebrow">IL CARATTERE</p><p class="concept">{{ p.concept }}</p>
+{% if p.ragionamento %}<h2>Perché queste materie</h2><p>{{ p.ragionamento }}</p>{% endif %}
+{% if p.riferimento %}<h2>Riferimento olfattivo</h2><p>{{ p.riferimento }}</p>{% endif %}
+<div class="record-state"><span class="eyebrow">{{ 'FORMULA ARCHIVIATA' if record else 'FORMULA NON ARCHIVIATA' }}</span>
+{% if record %}<p class="serial">{{ record.serial }}</p><p>Registrata il <time>{{ record.created_at }}</time></p><p class="caption">Conserva questo numero per ritrovare la formula nell’archivio.</p>
+{% else %}<p>{{ archive_error or 'Questa è una bozza. Scarica la scheda per conservarla.' }}</p>{% endif %}</div></aside>
+</section>
+<section class="formula"><div class="section-head"><div><p class="eyebrow">IL REGISTRO DEL NASO</p><h2>La formula</h2></div><button id="download-record" class="action">Scarica scheda e formula</button></div>
+{% if p.organo %}<p>Scelta fra {{ p.organo.materie_disponibili }} materie del tuo {{ p.organo.nome }}{% if p.organo.ondata == 2 %} completo{% endif %}. Ogni ingrediente è verificato nel catalogo.</p>
+<details><summary>Solventi e supporti del tuo organo</summary><p>{% for m in p.organo.supporti %}{{ m.nome }}{% if not loop.last %} · {% endif %}{% endfor %}</p><p>Disponibili per preparazione e diluizione; non aggiunti automaticamente alla piramide olfattiva.</p></details>{% endif %}
+{% if p.formula_code %}<p><a href="/formula.html#{{ p.formula_code }}">Apri il codice di questa formula e il calcolo delle parti →</a></p>{% endif %}
+<p>Parti relative su 100 · {{ p.liv }} · proposta didattica</p><div class="table-wrap"><table><thead><tr><th scope="col">Nota</th><th scope="col">Materia del tuo organo</th><th scope="col">Parti</th></tr></thead><tbody>
+{% for name,number,parts,level,micro in p.ricetta %}<tr><td>{{ level }}</td><td><small>N° {{ number }}</small> {{ name }}{% if micro %}<small>Forza 5 · preparazione in diluizione da precisare</small>{% endif %}</td><td>{{ parts }}</td></tr>{% endfor %}
+</tbody></table></div><p class="caption">Punto di partenza didattico, non formula finita: lavorare in diluizione e correggere col naso. Verificare i requisiti applicabili prima della vendita.</p></section>
+<section id="perfume-lab" aria-label="Dosi e valore della creazione"></section>
+<footer><p>Concept e direzione creativa: Claudio Terzi · Terzi Parfums</p><a href="/atelier.html">Componi un’altra creazione →</a></footer>
+<dialog id="image-dialog" aria-label="Flacone ingrandito"><button id="close-dialog" class="action">Chiudi</button><div id="large-bottle"></div></dialog>
+<section class="print-only"><p>TERZI PARFUMS</p><h1>{{ p.nome }}</h1><p>{{ customer }}</p><p>{{ record.serial if record else 'BOZZA · NON ARCHIVIATA' }}</p></section>
+<script type="application/json" id="perfume-data">{{ {'name':p.nome, 'customer':customer, 'dedication':dedication, 'restored_variant':restored_variant, 'serial':record.serial if record else None, 'record':record or {'schema_version':1, 'archived':False, 'customer':customer, 'intention':intention, 'perfume':p}}|tojson }}</script>
+{% endif %}
+</main></body></html>

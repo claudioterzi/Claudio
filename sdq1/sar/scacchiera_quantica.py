@@ -1,4 +1,8 @@
-"""Scacchiera Quantica v3.0 — autoriflessione algoritmica senza LLM.
+"""Scacchiera Quantica v3.0 — generatore simbolico senza LLM.
+
+I punteggi casuali non misurano accuratezza o miglioramento del modello.
+Per registri di evidenze verificabili usare il modulo evidence_review.py.
+Vedere docs/PROTOCOLLO_RRR_ASTRA.md per il ciclo di revisione.
 
 Motore di pensiero a 6 layer:
   Layer 0: Stati di coscienza (CALMA, TENSIONE, FOCUS, INCISIVO)
@@ -132,7 +136,7 @@ class Nodo:
     @property
     def id(self) -> str:
         raw = f"{self.contenuto[:30]}{self.livello}{self.timestamp}"
-        return hashlib.md5(raw.encode()).hexdigest()[:8]
+        return hashlib.md5(raw.encode(), usedforsecurity=False).hexdigest()[:8]
 
     @property
     def polo(self) -> str:
@@ -365,3 +369,4 @@ def stampa(r: dict) -> None:
                   f" [{s['direzione']}] {s['polo']}")
             print(f"    {s['contenuto'][:80]}")
     print(f"{sep}\n")
+

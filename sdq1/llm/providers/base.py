@@ -21,7 +21,7 @@ try:
         compress_system_messages=False,
         min_tokens_to_compress=400,
     )
-except ImportError:
+except Exception:  # Optional compression API/configuration must fail open to original text.
     _HEADROOM_OK = False
     _HEADROOM_CONFIG = None
 
@@ -143,6 +143,7 @@ class ProviderBase(ABC):
         inizio = time.time()
         try:
             utente, meta_headroom = self._comprimi_utente(utente)
+            inizio = time.time()  # Provider latency excludes separately measured compression.
             testo, meta = self._completa_impl(sistema, utente)
             return RispostaProvider(
                 testo=testo,

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Dispensa — lista della spesa e calcoli del banco</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c0c0e; --surface: #141418; --border: #2a2a32;
+    --gold: #c9a84c; --gold-dim: #8a6f2e;
+    --text: #e8e4d8; --text-dim: #7a7468; --red: #c96a5a;
+    --radius: 8px; --font: 'Georgia', 'Times New Roman', serif;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font);
+         min-height: 100vh; padding: 2rem 1rem 4rem; }
+  .container { max-width: 1080px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 1.6rem; }
+  header h1 { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: normal;
+              letter-spacing: 0.1em; color: var(--gold); }
+  header p { margin-top: 0.5rem; color: var(--text-dim); font-size: 0.9rem; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+              margin-bottom: 1rem; }
+  .chip { background: var(--surface); border: 1px solid var(--border);
+          color: var(--text-dim); border-radius: 999px; padding: 0.35rem 1rem;
+          font-family: var(--font); font-size: 0.8rem; cursor: pointer;
+          letter-spacing: 0.08em; text-transform: uppercase; }
+  .chip.active { border-color: var(--gold); color: var(--gold); }
+  button.oro { background: none; border: 1px solid var(--gold-dim); color: var(--gold);
+        border-radius: 999px; padding: 0.45rem 1.4rem; font-family: var(--font);
+        font-size: 0.88rem; cursor: pointer; }
+  button.oro:hover { border-color: var(--gold); }
+
+  .totali { display: flex; flex-wrap: wrap; gap: 1rem 2.2rem; justify-content: center;
+            margin-bottom: 1.4rem; }
+  .tot { text-align: center; }
+  .tot .v { color: var(--gold); font-size: 1.4rem; }
+  .tot .l { color: var(--text-dim); font-size: 0.64rem; letter-spacing: 0.14em;
+            text-transform: uppercase; margin-top: 0.15rem; }
+
+  h2.sezione { font-weight: normal; color: var(--gold); letter-spacing: 0.06em;
+               font-size: 1.25rem; margin: 2.2rem 0 0.8rem; }
+  .tavola { overflow-x: auto; background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.84rem; min-width: 720px; }
+  th { text-align: left; font-weight: normal; font-size: 0.62rem; letter-spacing: 0.13em;
+       text-transform: uppercase; color: var(--gold-dim); padding: 0.65rem 0.55rem;
+       border-bottom: 1px solid var(--gold-dim); white-space: nowrap; }
+  td { padding: 0.4rem 0.55rem; border-bottom: 1px solid var(--border);
+       vertical-align: middle; }
+  td.nome { color: var(--gold); }
+  td.dim { color: var(--text-dim); white-space: nowrap; }
+  td.num { text-align: right; white-space: nowrap; }
+  tr.preso td.nome { color: var(--text-dim); text-decoration: line-through; }
+  input[type=checkbox] { accent-color: #8a6f2e; width: 1.05em; height: 1.05em; }
+  input.usato { width: 4.2em; background: var(--bg); border: 1px solid var(--border);
+        color: var(--text); border-radius: 5px; padding: 0.15rem 0.35rem;
+        font-family: var(--font); font-size: 0.82rem; text-align: right; }
+  input.usato:focus { outline: none; border-color: var(--gold-dim); }
+  .rimasto { font-size: 0.72rem; color: var(--text-dim); }
+  .rimasto.poco { color: var(--red); }
+
+  .banco { background: var(--surface); border: 1px solid var(--border);
+           border-radius: var(--radius); padding: 1.2rem 1.5rem; }
+  .banco .riga-calc { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center;
+           font-size: 0.92rem; }
+  .banco select, .banco input[type=number] { background: var(--bg);
+        border: 1px solid var(--border); color: var(--text); border-radius: 6px;
+        padding: 0.35rem 0.6rem; font-family: var(--font); font-size: 0.9rem; }
+  .risultato { margin-top: 1rem; }
+  .risultato table { min-width: 0; }
+  .nota { margin-top: 0.8rem; font-size: 0.75rem; color: var(--text-dim);
+          line-height: 1.55; }
+  footer { text-align: center; margin-top: 2.5rem; color: var(--text-dim);
+           font-size: 0.8rem; line-height: 1.8; }
+  footer a { color: var(--gold-dim); }
+  @media print { .controls, button.oro, input { display: none; } }
+</style>
+</head>
+<body>
+<script src="soglia.js"></script>
+<script src="nav.js"></script>
+<div class="container">
+  <header>
+    <h1>La Dispensa</h1>
+    <p>Lista della spesa, scarico delle quantità e calcoli del banco — dall'Organo Terzi 300</p>
+  </header>
+
+  <div class="controls">
+    <button class="chip active" data-o="0">Ondata CORE</button>
+    <button class="chip" data-o="1">CORE + ESP</button>
+    <button class="chip" data-o="2">Organo completo</button>
+    <button class="oro" id="scarica">⬇ Scarica la lista (CSV)</button>
+    <button class="oro" id="azzera">Azzera dispensa</button>
+  </div>
+
+  <div class="totali" id="totali"></div>
+
+  <h2 class="sezione">Le materie — spunta «preso» quando arriva, segna i ml usati per lo scarico</h2>
+  <div class="tavola">
+    <table>
+      <thead><tr>
+        <th>Preso</th><th>N°</th><th>Materia</th><th>Famiglia</th><th>Forza</th>
+        <th>Fornitore</th><th>Qtà consigliata</th><th>Costo stimato</th>
+        <th>Usato (ml)</th><th>Rimasto</th>
+      </tr></thead>
+      <tbody id="corpo"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sezione">L'attrezzatura del banco — alcol, provette e tutto il necessario</h2>
+  <div class="tavola">
+    <table>
+      <thead><tr><th>Preso</th><th>Attrezzo</th><th>Costo stimato</th></tr></thead>
+      <tbody id="attrezzi"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sezione">Il calcolatore — quanti profumi vuoi fare?</h2>
+  <div class="banco">
+    <div class="riga-calc">
+      Voglio
+      <input type="number" id="c-n" value="10" min="1" max="500" style="width:4.5em">
+      flaconi da
+      <select id="c-ml"><option value="15">15 ml</option>
+        <option value="30" selected>30 ml</option><option value="50">50 ml</option></select>
+      in concentrazione
+      <select id="c-conc"><option value="10">Eau de Toilette (10%)</option>
+        <option value="15" selected>Eau de Parfum (15%)</option>
+        <option value="25">Extrait (25%)</option></select>
+    </div>
+    <div class="risultato" id="risultato"></div>
+    <p class="nota">Formule del Grimorio: 1 prova (étude) = 2,5 ml di concentrato ≈ 100
+    gocce. Le statistiche «prove possibili» usano un'efficienza prudente del 35%:
+    le materie non si consumano mai in modo uniforme. I costi sono <b>stime</b>
+    calibrate sui budget della Guida (CORE ~250–400 €, ESP ~500–900 €) — prima di
+    ordinare verifica i cataloghi: De Hekserij (DH, dehekserij.nl) e Pell Wall
+    (PW, pellwall.com); SPEC = fornitori specializzati (Hermitage Oils, ecc.).</p>
+  </div>
+
+  <footer>
+    La dispensa si salva in questo browser (spunte e scarichi). Il CSV scaricato
+    fotografa lo stato attuale.<br>
+    Le materie vengono dall'<a href="organo.html">Organo 300</a> · le ricette dal
+    <a href="parfums.html">catalogo</a> e dall'<a href="atelier.html">Atelier</a> ·
+    il metodo dal Grimorio e dal Percorso 0→10.
+  </footer>
+</div>
+
+<script>
+const M = [{"n":1,"nome":"Arancia dolce EO","fam":"Agrumi","tipo":"NAT","forza":2,"liv":"CORE","forn":"ENTR","ml":15,"costo":5.0},{"n":2,"nome":"Bergamotto EO (Calabria)","fam":"Agrumi","tipo":"NAT","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":10.5},{"n":3,"nome":"Dihydromyrcenol","fam":"Agrumi","tipo":"SIN","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":4,"nome":"Limone EO (Sicilia)","fam":"Agrumi","tipo":"NAT","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":5,"nome":"Petitgrain bigarade EO","fam":"Agrumi","tipo":"NAT","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":6,"nome":"Aldeide C-14 (g-undecalattone)","fam":"Aldeidi","tipo":"SIN","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":5.0},{"n":7,"nome":"Ambroxan","fam":"Ambrati/Resine","tipo":"SIN","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":10.5},{"n":8,"nome":"Benzoino resinoide (Siam)","fam":"Ambrati/Resine","tipo":"NAT","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":9,"nome":"Cumarina","fam":"Ambrati/Resine","tipo":"SIN","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":10,"nome":"Incenso (olibano) EO","fam":"Ambrati/Resine","tipo":"NAT","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":10.5},{"n":11,"nome":"Labdano assoluta","fam":"Ambrati/Resine","tipo":"NAT","forza":4,"liv":"CORE","forn":"PW","ml":5,"costo":10.5},{"n":12,"nome":"Lavanda EO (Provenza)","fam":"Aromatiche/Verdi","tipo":"NAT","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":13,"nome":"cis-3-Hexenol","fam":"Aromatiche/Verdi","tipo":"SIN","forza":5,"liv":"CORE","forn":"ENTR","ml":2,"costo":5.0},{"n":14,"nome":"Evernyl (Veramoss)","fam":"Chypre/Terrosi","tipo":"SIN","forza":3,"liv":"CORE","forn":"PW","ml":10,"costo":10.5},{"n":15,"nome":"Eugenolo","fam":"Fiorali vari","tipo":"SIN","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":5.0},{"n":16,"nome":"Ionone alfa","fam":"Fiorali vari","tipo":"SIN","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":17,"nome":"Ionone beta","fam":"Fiorali vari","tipo":"SIN","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":18,"nome":"Metil ionone gamma","fam":"Fiorali vari","tipo":"SIN","forza":2,"liv":"CORE","forn":"ENTR","ml":15,"costo":5.0},{"n":19,"nome":"Benzil acetato","fam":"Fiori bianchi","tipo":"SIN","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":20,"nome":"Benzil salicilato","fam":"Fiori bianchi","tipo":"SIN","forza":2,"liv":"CORE","forn":"ENTR","ml":15,"costo":5.0},{"n":21,"nome":"Hedione","fam":"Fiori bianchi","tipo":"SIN","forza":2,"liv":"CORE","forn":"ENTR","ml":15,"costo":5.0},{"n":22,"nome":"Linalil acetato","fam":"Fiori bianchi","tipo":"SIN","forza":2,"liv":"CORE","forn":"ENTR","ml":15,"costo":5.0},{"n":23,"nome":"Linalolo","fam":"Fiori bianchi","tipo":"SIN","forza":2,"liv":"CORE","forn":"ENTR","ml":15,"costo":5.0},{"n":24,"nome":"Ylang ylang extra EO","fam":"Fiori bianchi","tipo":"NAT","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":10.5},{"n":25,"nome":"Etil maltolo","fam":"Fruttati","tipo":"SIN","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":5.0},{"n":26,"nome":"g-Nonalattone","fam":"Fruttati","tipo":"SIN","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":5.0},{"n":27,"nome":"Etil vanillina","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":5.0},{"n":28,"nome":"Vanillina","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":29,"nome":"Cashmeran","fam":"Legni","tipo":"SIN","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":10.5},{"n":30,"nome":"Cedro Atlas EO","fam":"Legni","tipo":"NAT","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":31,"nome":"Cedro Virginia EO","fam":"Legni","tipo":"NAT","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":32,"nome":"Iso E Super","fam":"Legni","tipo":"SIN","forza":2,"liv":"CORE","forn":"ENTR","ml":15,"costo":5.0},{"n":33,"nome":"Patchouli EO","fam":"Legni","tipo":"NAT","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":10.5},{"n":34,"nome":"Sandalore","fam":"Legni","tipo":"SIN","forza":3,"liv":"CORE","forn":"PW","ml":10,"costo":10.5},{"n":35,"nome":"Vetiver Haiti EO","fam":"Legni","tipo":"NAT","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":10.5},{"n":36,"nome":"Ethylene brassylate","fam":"Muschi","tipo":"SIN","forza":2,"liv":"CORE","forn":"ENTR","ml":15,"costo":5.0},{"n":37,"nome":"Exaltolide","fam":"Muschi","tipo":"SIN","forza":3,"liv":"CORE","forn":"PW","ml":10,"costo":10.5},{"n":38,"nome":"Galaxolide 50% (IPM)","fam":"Muschi","tipo":"SIN","forza":2,"liv":"CORE","forn":"ENTR","ml":15,"costo":5.0},{"n":39,"nome":"Habanolide","fam":"Muschi","tipo":"SIN","forza":3,"liv":"CORE","forn":"PW","ml":10,"costo":10.5},{"n":40,"nome":"Alcol feniletilico (PEA)","fam":"Rosa","tipo":"SIN","forza":2,"liv":"CORE","forn":"ENTR","ml":15,"costo":5.0},{"n":41,"nome":"Citronellolo","fam":"Rosa","tipo":"SIN","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":42,"nome":"Geranio bourbon EO","fam":"Rosa","tipo":"NAT","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":10.5},{"n":43,"nome":"Geraniolo","fam":"Rosa","tipo":"SIN","forza":3,"liv":"CORE","forn":"ENTR","ml":10,"costo":5.0},{"n":44,"nome":"Alcol etilico profumeria 96%","fam":"Solventi/Fissativi","tipo":"SOL","forza":"-","liv":"CORE","forn":"DH","ml":250,"costo":5.0},{"n":45,"nome":"Dipropilenglicole (DPG)","fam":"Solventi/Fissativi","tipo":"SOL","forza":"-","liv":"CORE","forn":"ENTR","ml":250,"costo":5.0},{"n":46,"nome":"Isopropil miristato (IPM)","fam":"Solventi/Fissativi","tipo":"SOL","forza":"-","liv":"CORE","forn":"ENTR","ml":250,"costo":5.0},{"n":47,"nome":"Cardamomo EO","fam":"Speziati","tipo":"NAT","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":10.5},{"n":48,"nome":"Pepe nero EO","fam":"Speziati","tipo":"NAT","forza":4,"liv":"CORE","forn":"ENTR","ml":5,"costo":10.5},{"n":49,"nome":"Arancia amara EO","fam":"Agrumi","tipo":"NAT","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":10.5},{"n":50,"nome":"Citrale","fam":"Agrumi","tipo":"SIN","forza":4,"liv":"ESP","forn":"ENTR","ml":5,"costo":5.0},{"n":51,"nome":"Lime distillato EO","fam":"Agrumi","tipo":"NAT","forza":3,"liv":"ESP","forn":"ENTR","ml":10,"costo":5.0},{"n":52,"nome":"Litsea cubeba EO","fam":"Agrumi","tipo":"NAT","forza":4,"liv":"ESP","forn":"DH","ml":5,"costo":5.0},{"n":53,"nome":"Mandarino rosso EO","fam":"Agrumi","tipo":"NAT","forza":3,"liv":"ESP","forn":"ENTR","ml":10,"costo":10.5},{"n":54,"nome":"Methyl pamplemousse","fam":"Agrumi","tipo":"SIN","forza":3,"liv":"ESP","forn":"ENTR","ml":10,"costo":5.0},{"n":55,"nome":"Neroli EO","fam":"Agrumi","tipo":"NAT","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":24.0},{"n":56,"nome":"Pompelmo EO","fam":"Agrumi","tipo":"NAT","forza":3,"liv":"ESP","forn":"ENTR","ml":10,"costo":10.5},{"n":57,"nome":"d-Limonene","fam":"Agrumi","tipo":"SIN","forza":2,"liv":"ESP","forn":"ENTR","ml":15,"costo":5.0},{"n":58,"nome":"Aldeide C-10 (decanale)","fam":"Aldeidi","tipo":"SIN","forza":5,"liv":"ESP","forn":"ENTR","ml":2,"costo":5.0},{"n":59,"nome":"Aldeide C-11 undecilenica","fam":"Aldeidi","tipo":"SIN","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":5.0},{"n":60,"nome":"Aldeide C-12 MNA","fam":"Aldeidi","tipo":"SIN","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":5.0},{"n":61,"nome":"Aldeide C-12 laurica","fam":"Aldeidi","tipo":"SIN","forza":5,"liv":"ESP","forn":"ENTR","ml":2,"costo":5.0},{"n":62,"nome":"Ambra (base)","fam":"Ambrati/Resine","tipo":"BASE","forza":3,"liv":"ESP","forn":"DH","ml":10,"costo":10.5},{"n":63,"nome":"Cetalox","fam":"Ambrati/Resine","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":64,"nome":"Fava tonka assoluta","fam":"Ambrati/Resine","tipo":"NAT","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":24.0},{"n":65,"nome":"Mirra EO/resinoide","fam":"Ambrati/Resine","tipo":"NAT","forza":4,"liv":"ESP","forn":"ENTR","ml":5,"costo":10.5},{"n":66,"nome":"Opoponax resinoide","fam":"Ambrati/Resine","tipo":"NAT","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":10.5},{"n":67,"nome":"Betulla (birch tar) EO rett.","fam":"Animalic/Cuoio","tipo":"NAT","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":10.5},{"n":68,"nome":"Castoreum (base/ass.)","fam":"Animalic/Cuoio","tipo":"BASE","forza":5,"liv":"ESP","forn":"PW","ml":10,"costo":10.5},{"n":69,"nome":"Cera d'api assoluta","fam":"Animalic/Cuoio","tipo":"NAT","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":70,"nome":"Civetta (base sintetica)","fam":"Animalic/Cuoio","tipo":"BASE","forza":5,"liv":"ESP","forn":"PW","ml":10,"costo":10.5},{"n":71,"nome":"Cuoio (base)","fam":"Animalic/Cuoio","tipo":"BASE","forza":4,"liv":"ESP","forn":"DH","ml":10,"costo":10.5},{"n":72,"nome":"Isobutil chinolina (IBQ)","fam":"Animalic/Cuoio","tipo":"SIN","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":10.5},{"n":73,"nome":"Suederal","fam":"Animalic/Cuoio","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":74,"nome":"Foglie di violetta ass.","fam":"Aromatiche/Verdi","tipo":"NAT","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":24.0},{"n":75,"nome":"Galbano EO/resinoide","fam":"Aromatiche/Verdi","tipo":"NAT","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":24.0},{"n":76,"nome":"Rosmarino EO","fam":"Aromatiche/Verdi","tipo":"NAT","forza":3,"liv":"ESP","forn":"DH","ml":10,"costo":5.0},{"n":77,"nome":"Salvia sclarea EO","fam":"Aromatiche/Verdi","tipo":"NAT","forza":3,"liv":"ESP","forn":"ENTR","ml":10,"costo":10.5},{"n":78,"nome":"Stemone","fam":"Aromatiche/Verdi","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":79,"nome":"Triplal (Ligustral)","fam":"Aromatiche/Verdi","tipo":"SIN","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":5.0},{"n":80,"nome":"cis-3-Hexenyl acetate","fam":"Aromatiche/Verdi","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":5.0},{"n":81,"nome":"Muschio di quercia ass. (IFRA)","fam":"Chypre/Terrosi","tipo":"NAT","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":24.0},{"n":82,"nome":"Tabacco assoluta","fam":"Chypre/Terrosi","tipo":"NAT","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":24.0},{"n":83,"nome":"Aldeide anisica","fam":"Fiorali vari","tipo":"SIN","forza":3,"liv":"ESP","forn":"ENTR","ml":10,"costo":5.0},{"n":84,"nome":"Eliotropina (piperonale)","fam":"Fiorali vari","tipo":"SIN","forza":3,"liv":"ESP","forn":"ENTR","ml":10,"costo":5.0},{"n":85,"nome":"Iris (base)","fam":"Fiorali vari","tipo":"BASE","forza":3,"liv":"ESP","forn":"DH","ml":10,"costo":10.5},{"n":86,"nome":"Irone alfa","fam":"Fiorali vari","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":24.0},{"n":87,"nome":"Isoeugenolo","fam":"Fiorali vari","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":88,"nome":"Osmanthus assoluta","fam":"Fiorali vari","tipo":"NAT","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":24.0},{"n":89,"nome":"Terpineolo alfa","fam":"Fiorali vari","tipo":"SIN","forza":2,"liv":"ESP","forn":"ENTR","ml":15,"costo":5.0},{"n":90,"nome":"Amil salicilato","fam":"Fiori bianchi","tipo":"SIN","forza":2,"liv":"ESP","forn":"ENTR","ml":15,"costo":5.0},{"n":91,"nome":"Aurantiol","fam":"Fiori bianchi","tipo":"SIN","forza":3,"liv":"ESP","forn":"ENTR","ml":10,"costo":5.0},{"n":92,"nome":"Ciclamen aldeide","fam":"Fiori bianchi","tipo":"SIN","forza":4,"liv":"ESP","forn":"ENTR","ml":5,"costo":5.0},{"n":93,"nome":"Florosa","fam":"Fiori bianchi","tipo":"SIN","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":10.5},{"n":94,"nome":"Gelsomino grandiflorum ass.","fam":"Fiori bianchi","tipo":"NAT","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":24.0},{"n":95,"nome":"Idrossicitronellale","fam":"Fiori bianchi","tipo":"SIN","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":10.5},{"n":96,"nome":"Indolo","fam":"Fiori bianchi","tipo":"SIN","forza":5,"liv":"ESP","forn":"ENTR","ml":2,"costo":5.0},{"n":97,"nome":"Metil antranilato","fam":"Fiori bianchi","tipo":"SIN","forza":4,"liv":"ESP","forn":"ENTR","ml":5,"costo":5.0},{"n":98,"nome":"cis-Jasmone","fam":"Fiori bianchi","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":99,"nome":"Allyl amyl glycolate","fam":"Fruttati","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":5.0},{"n":100,"nome":"Cassis base (bourgeons)","fam":"Fruttati","tipo":"BASE","forza":4,"liv":"ESP","forn":"PW","ml":10,"costo":10.5},{"n":101,"nome":"Fico (base)","fam":"Fruttati","tipo":"BASE","forza":3,"liv":"ESP","forn":"DH","ml":10,"costo":10.5},{"n":102,"nome":"Frambinone (raspberry ketone)","fam":"Fruttati","tipo":"SIN","forza":3,"liv":"ESP","forn":"ENTR","ml":10,"costo":10.5},{"n":103,"nome":"Fructone","fam":"Fruttati","tipo":"SIN","forza":3,"liv":"ESP","forn":"ENTR","ml":10,"costo":5.0},{"n":104,"nome":"Manzanate","fam":"Fruttati","tipo":"SIN","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":10.5},{"n":105,"nome":"g-Decalattone","fam":"Fruttati","tipo":"SIN","forza":4,"liv":"ESP","forn":"ENTR","ml":5,"costo":5.0},{"n":106,"nome":"Vaniglia assoluta (bourbon)","fam":"Gourmand/Vaniglia","tipo":"NAT","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":24.0},{"n":107,"nome":"Amber Xtreme","fam":"Legni","tipo":"SIN","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":10.5},{"n":108,"nome":"Cedramber","fam":"Legni","tipo":"SIN","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":5.0},{"n":109,"nome":"Clearwood","fam":"Legni","tipo":"SIN","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":10.5},{"n":110,"nome":"Cypriol (nagarmotha) EO","fam":"Legni","tipo":"NAT","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":111,"nome":"Javanol","fam":"Legni","tipo":"SIN","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":24.0},{"n":112,"nome":"Kephalis","fam":"Legni","tipo":"SIN","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":5.0},{"n":113,"nome":"Norlimbanol/Timberol","fam":"Legni","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":114,"nome":"Oud (base sintetica)","fam":"Legni","tipo":"BASE","forza":5,"liv":"ESP","forn":"ENTR","ml":10,"costo":10.5},{"n":115,"nome":"Vertofix coeur","fam":"Legni","tipo":"SIN","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":5.0},{"n":116,"nome":"Vetiveryl acetato","fam":"Legni","tipo":"SIN","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":10.5},{"n":117,"nome":"Calone 1951","fam":"Marini/Ozonici","tipo":"SIN","forza":5,"liv":"ESP","forn":"ENTR","ml":2,"costo":10.5},{"n":118,"nome":"Floralozone","fam":"Marini/Ozonici","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":119,"nome":"Ambrettolide","fam":"Muschi","tipo":"SIN","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":10.5},{"n":120,"nome":"Damascenone","fam":"Rosa","tipo":"SIN","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":24.0},{"n":121,"nome":"Damascone alfa","fam":"Rosa","tipo":"SIN","forza":5,"liv":"ESP","forn":"PW","ml":2,"costo":10.5},{"n":122,"nome":"Palmarosa EO","fam":"Rosa","tipo":"NAT","forza":3,"liv":"ESP","forn":"DH","ml":10,"costo":5.0},{"n":123,"nome":"Rose oxide","fam":"Rosa","tipo":"SIN","forza":5,"liv":"ESP","forn":"ENTR","ml":2,"costo":5.0},{"n":124,"nome":"Benzil benzoato","fam":"Solventi/Fissativi","tipo":"SOL","forza":1,"liv":"ESP","forn":"ENTR","ml":250,"costo":5.0},{"n":125,"nome":"Trietil citrato (TEC)","fam":"Solventi/Fissativi","tipo":"SOL","forza":"-","liv":"ESP","forn":"PW","ml":250,"costo":5.0},{"n":126,"nome":"Cannella corteccia EO","fam":"Speziati","tipo":"NAT","forza":5,"liv":"ESP","forn":"DH","ml":2,"costo":10.5},{"n":127,"nome":"Chiodi di garofano EO","fam":"Speziati","tipo":"NAT","forza":5,"liv":"ESP","forn":"DH","ml":2,"costo":5.0},{"n":128,"nome":"Elemi EO","fam":"Speziati","tipo":"NAT","forza":3,"liv":"ESP","forn":"PW","ml":10,"costo":5.0},{"n":129,"nome":"Noce moscata EO","fam":"Speziati","tipo":"NAT","forza":4,"liv":"ESP","forn":"DH","ml":5,"costo":5.0},{"n":130,"nome":"Pepe rosa EO","fam":"Speziati","tipo":"NAT","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":131,"nome":"Safraleine","fam":"Speziati","tipo":"SIN","forza":4,"liv":"ESP","forn":"PW","ml":5,"costo":10.5},{"n":132,"nome":"Zenzero EO","fam":"Speziati","tipo":"NAT","forza":4,"liv":"ESP","forn":"ENTR","ml":5,"costo":10.5},{"n":133,"nome":"Citrathal V","fam":"Agrumi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":5.0},{"n":134,"nome":"Citronellale","fam":"Agrumi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":135,"nome":"Lemongrass EO","fam":"Agrumi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":136,"nome":"Orange terpenes","fam":"Agrumi","tipo":"SIN","forza":1,"liv":"MASTER","forn":"PW","ml":15,"costo":5.0},{"n":137,"nome":"Verbena (Lippia) EO","fam":"Agrumi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":138,"nome":"Yuzu (base/EO)","fam":"Agrumi","tipo":"BASE","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":24.0},{"n":139,"nome":"Adoxal","fam":"Aldeidi","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":10.5},{"n":140,"nome":"Aldeide C-11 undecanale","fam":"Aldeidi","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":5.0},{"n":141,"nome":"Aldeide C-16 (fragola)","fam":"Aldeidi","tipo":"SIN","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":142,"nome":"Aldeide C-8 (ottanale)","fam":"Aldeidi","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":5.0},{"n":143,"nome":"Aldeide C-9 (nonanale)","fam":"Aldeidi","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":5.0},{"n":144,"nome":"Ambermax","fam":"Ambrati/Resine","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":10.5},{"n":145,"nome":"Ambra fossile (attar fumoso)","fam":"Ambrati/Resine","tipo":"NAT","forza":5,"liv":"MASTER","forn":"SPEC","ml":2,"costo":24.0},{"n":146,"nome":"Ambrettolide","fam":"Ambrati/Resine","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":147,"nome":"Ambrinol 10%","fam":"Ambrati/Resine","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":10.5},{"n":148,"nome":"Balsamo Tolu'","fam":"Ambrati/Resine","tipo":"NAT","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":149,"nome":"Balsamo del Peru'","fam":"Ambrati/Resine","tipo":"NAT","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":150,"nome":"Cisto EO","fam":"Ambrati/Resine","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":151,"nome":"Cisto ladanifer (Spagna) EO","fam":"Ambrati/Resine","tipo":"NAT","forza":4,"liv":"MASTER","forn":"SPEC","ml":5,"costo":10.5},{"n":152,"nome":"Galbanum resinoide","fam":"Ambrati/Resine","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":153,"nome":"Labdano assoluta chiara","fam":"Ambrati/Resine","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":154,"nome":"Olibanum resinoide","fam":"Ambrati/Resine","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":155,"nome":"Sclareolide","fam":"Ambrati/Resine","tipo":"SIN","forza":2,"liv":"MASTER","forn":"PW","ml":15,"costo":5.0},{"n":156,"nome":"Storace (styrax) resinoide","fam":"Ambrati/Resine","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":157,"nome":"Sylvamber","fam":"Ambrati/Resine","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":158,"nome":"Trisamber","fam":"Ambrati/Resine","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":159,"nome":"Ambra grigia (tintura sint.)","fam":"Animalic/Cuoio","tipo":"BASE","forza":4,"liv":"MASTER","forn":"SPEC","ml":10,"costo":24.0},{"n":160,"nome":"Animalis (tipo)","fam":"Animalic/Cuoio","tipo":"BASE","forza":5,"liv":"MASTER","forn":"SPEC","ml":10,"costo":24.0},{"n":161,"nome":"Cade EO rettificato","fam":"Animalic/Cuoio","tipo":"NAT","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":5.0},{"n":162,"nome":"Civetone","fam":"Animalic/Cuoio","tipo":"SIN","forza":4,"liv":"MASTER","forn":"SPEC","ml":5,"costo":24.0},{"n":163,"nome":"Costus (sostituto)","fam":"Animalic/Cuoio","tipo":"BASE","forza":5,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":164,"nome":"Hyraceum (tintura/ass.)","fam":"Animalic/Cuoio","tipo":"NAT","forza":5,"liv":"MASTER","forn":"SPEC","ml":2,"costo":24.0},{"n":165,"nome":"Para-cresolo 10%","fam":"Animalic/Cuoio","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":5.0},{"n":166,"nome":"Skatolo 1%","fam":"Animalic/Cuoio","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":10.5},{"n":167,"nome":"Artemisia EO","fam":"Aromatiche/Verdi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":168,"nome":"Basilico EO","fam":"Aromatiche/Verdi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":169,"nome":"Eucalipto globulus EO","fam":"Aromatiche/Verdi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":170,"nome":"Eucaliptolo (1,8-cineolo)","fam":"Aromatiche/Verdi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":171,"nome":"Fieno assoluta (Foin)","fam":"Aromatiche/Verdi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":172,"nome":"Foglie di pomodoro (base)","fam":"Aromatiche/Verdi","tipo":"BASE","forza":4,"liv":"MASTER","forn":"DH","ml":10,"costo":10.5},{"n":173,"nome":"Lavandino EO","fam":"Aromatiche/Verdi","tipo":"NAT","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":174,"nome":"Liffarome","fam":"Aromatiche/Verdi","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":5.0},{"n":175,"nome":"Menta piperita EO","fam":"Aromatiche/Verdi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":176,"nome":"Menta verde EO","fam":"Aromatiche/Verdi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":177,"nome":"Mentolo","fam":"Aromatiche/Verdi","tipo":"SIN","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":178,"nome":"Timo EO","fam":"Aromatiche/Verdi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":179,"nome":"Undecavertol","fam":"Aromatiche/Verdi","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":180,"nome":"1-Otten-3-olo (fungo)","fam":"Chypre/Terrosi","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":5.0},{"n":181,"nome":"Akigalawood","fam":"Chypre/Terrosi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"SPEC","ml":10,"costo":24.0},{"n":182,"nome":"Angelica radice EO","fam":"Chypre/Terrosi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":183,"nome":"Carota semi EO","fam":"Chypre/Terrosi","tipo":"NAT","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":184,"nome":"Geosmina 1%","fam":"Chypre/Terrosi","tipo":"SIN","forza":5,"liv":"MASTER","forn":"SPEC","ml":2,"costo":24.0},{"n":185,"nome":"Immortelle (elicriso) ass.","fam":"Chypre/Terrosi","tipo":"NAT","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":24.0},{"n":186,"nome":"Lentisco EO","fam":"Chypre/Terrosi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":187,"nome":"Mate' assoluta","fam":"Chypre/Terrosi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":188,"nome":"Mousse de Saxe (tipo, base)","fam":"Chypre/Terrosi","tipo":"BASE","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":10.5},{"n":189,"nome":"Treemoss (muschio d'albero)","fam":"Chypre/Terrosi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":190,"nome":"Anisyl acetato","fam":"Fiorali vari","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":5.0},{"n":191,"nome":"Benzil alcol","fam":"Fiorali vari","tipo":"SIN","forza":1,"liv":"MASTER","forn":"DH","ml":15,"costo":5.0},{"n":192,"nome":"Cassie assoluta","fam":"Fiorali vari","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":193,"nome":"Champaca assoluta","fam":"Fiorali vari","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":194,"nome":"Farnesolo","fam":"Fiorali vari","tipo":"SIN","forza":2,"liv":"MASTER","forn":"PW","ml":15,"costo":10.5},{"n":195,"nome":"Fenilacetaldeide 50%","fam":"Fiorali vari","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":5.0},{"n":196,"nome":"Florhydral","fam":"Fiorali vari","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":197,"nome":"Frangipani assoluta","fam":"Fiorali vari","tipo":"NAT","forza":4,"liv":"MASTER","forn":"SPEC","ml":5,"costo":24.0},{"n":198,"nome":"Giacinto (base)","fam":"Fiorali vari","tipo":"BASE","forza":4,"liv":"MASTER","forn":"DH","ml":10,"costo":10.5},{"n":199,"nome":"Ginestra (broom) assoluta","fam":"Fiorali vari","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":200,"nome":"Iris/Orris butter (concreta)","fam":"Fiorali vari","tipo":"NAT","forza":5,"liv":"MASTER","forn":"SPEC","ml":2,"costo":24.0},{"n":201,"nome":"Magnolia EO","fam":"Fiorali vari","tipo":"NAT","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":202,"nome":"Mimosa assoluta","fam":"Fiorali vari","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":203,"nome":"Narciso assoluta","fam":"Fiorali vari","tipo":"NAT","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":24.0},{"n":204,"nome":"Nerolidolo","fam":"Fiorali vari","tipo":"SIN","forza":2,"liv":"MASTER","forn":"PW","ml":15,"costo":5.0},{"n":205,"nome":"Peonile","fam":"Fiorali vari","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":206,"nome":"Petalia","fam":"Fiorali vari","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":207,"nome":"Tiglio (base)","fam":"Fiorali vari","tipo":"BASE","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":10.5},{"n":208,"nome":"Violetta (base)","fam":"Fiorali vari","tipo":"BASE","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":10.5},{"n":209,"nome":"Benzil propionato","fam":"Fiori bianchi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":210,"nome":"Fiori d'arancio assoluta","fam":"Fiori bianchi","tipo":"NAT","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":24.0},{"n":211,"nome":"Gelsomino sambac ass.","fam":"Fiori bianchi","tipo":"NAT","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":24.0},{"n":212,"nome":"Hedione HC","fam":"Fiori bianchi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":213,"nome":"Lilyflore","fam":"Fiori bianchi","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":214,"nome":"Mayol","fam":"Fiori bianchi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":215,"nome":"Nerolina (yara yara)","fam":"Fiori bianchi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":5.0},{"n":216,"nome":"Styrallyl acetato","fam":"Fiori bianchi","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":217,"nome":"Tuberosa assoluta","fam":"Fiori bianchi","tipo":"NAT","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":24.0},{"n":218,"nome":"p-Cresil acetato","fam":"Fiori bianchi","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":5.0},{"n":219,"nome":"Allile caproato","fam":"Fruttati","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":5.0},{"n":220,"nome":"Davana EO","fam":"Fruttati","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":221,"nome":"Dynascone 10%","fam":"Fruttati","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":10.5},{"n":222,"nome":"Etil 2-metilbutirrato","fam":"Fruttati","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":5.0},{"n":223,"nome":"Etil decadienoato (pera)","fam":"Fruttati","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":10.5},{"n":224,"nome":"Furaneol","fam":"Fruttati","tipo":"SIN","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":10.5},{"n":225,"nome":"Isoamil acetato","fam":"Fruttati","tipo":"SIN","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":226,"nome":"Melonal","fam":"Fruttati","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":5.0},{"n":227,"nome":"Nectaryl","fam":"Fruttati","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":228,"nome":"Pesca (base)","fam":"Fruttati","tipo":"BASE","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":10.5},{"n":229,"nome":"Prunol/Prugna (base)","fam":"Fruttati","tipo":"BASE","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":10.5},{"n":230,"nome":"Veloutone","fam":"Fruttati","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":231,"nome":"Verdox","fam":"Fruttati","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":5.0},{"n":232,"nome":"d-Decalattone","fam":"Fruttati","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":5.0},{"n":233,"nome":"g-Ottalattone","fam":"Fruttati","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":5.0},{"n":234,"nome":"Acetanisolo","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":5.0},{"n":235,"nome":"Acido fenilacetico","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":5.0},{"n":236,"nome":"Benzaldeide","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":237,"nome":"Bicyclononalactone","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":238,"nome":"Cacao assoluta","fam":"Gourmand/Vaniglia","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":239,"nome":"Caffe' assoluta","fam":"Gourmand/Vaniglia","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":240,"nome":"Ciclotene (corylone)","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":5.0},{"n":241,"nome":"Filbertone 1%","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":5,"liv":"MASTER","forn":"SPEC","ml":2,"costo":10.5},{"n":242,"nome":"Isobutavan","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":243,"nome":"Lattone della quercia (whisky)","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":4,"liv":"MASTER","forn":"SPEC","ml":5,"costo":10.5},{"n":244,"nome":"Maltolo","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":245,"nome":"Miele (base)","fam":"Gourmand/Vaniglia","tipo":"BASE","forza":4,"liv":"MASTER","forn":"DH","ml":10,"costo":10.5},{"n":246,"nome":"Pralina (base)","fam":"Gourmand/Vaniglia","tipo":"BASE","forza":4,"liv":"MASTER","forn":"DH","ml":10,"costo":10.5},{"n":247,"nome":"Rhum (base boozy)","fam":"Gourmand/Vaniglia","tipo":"BASE","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":10.5},{"n":248,"nome":"d-Dodecalattone (latteo)","fam":"Gourmand/Vaniglia","tipo":"SIN","forza":3,"liv":"MASTER","forn":"SPEC","ml":10,"costo":10.5},{"n":249,"nome":"Abete balsamico ass.","fam":"Legni","tipo":"NAT","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":250,"nome":"Bacdanol","fam":"Legni","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":251,"nome":"Bois de rose (palissandro) EO","fam":"Legni","tipo":"NAT","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":252,"nome":"Boisambrene forte","fam":"Legni","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":5.0},{"n":253,"nome":"Cedryl acetato","fam":"Legni","tipo":"SIN","forza":2,"liv":"MASTER","forn":"PW","ml":15,"costo":5.0},{"n":254,"nome":"Cipresso EO","fam":"Legni","tipo":"NAT","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":255,"nome":"Ebanol","fam":"Legni","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":256,"nome":"Guaiacwood EO","fam":"Legni","tipo":"NAT","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":257,"nome":"Okoumal","fam":"Legni","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":258,"nome":"Patchouli coeur (frazionato)","fam":"Legni","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":259,"nome":"Pino silvestre EO","fam":"Legni","tipo":"NAT","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":260,"nome":"Sandalo EO (album/austrocal.)","fam":"Legni","tipo":"NAT","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":24.0},{"n":261,"nome":"Ysamber K","fam":"Legni","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":262,"nome":"Aldron","fam":"Marini/Ozonici","tipo":"SIN","forza":4,"liv":"MASTER","forn":"SPEC","ml":5,"costo":10.5},{"n":263,"nome":"Alghe assoluta (seaweed)","fam":"Marini/Ozonici","tipo":"NAT","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":24.0},{"n":264,"nome":"Azurone","fam":"Marini/Ozonici","tipo":"SIN","forza":5,"liv":"MASTER","forn":"SPEC","ml":2,"costo":24.0},{"n":265,"nome":"Cascalone","fam":"Marini/Ozonici","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":266,"nome":"Helional (dove permesso)","fam":"Marini/Ozonici","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":267,"nome":"Ozofleur","fam":"Marini/Ozonici","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":268,"nome":"Ultrazur","fam":"Marini/Ozonici","tipo":"SIN","forza":4,"liv":"MASTER","forn":"SPEC","ml":5,"costo":10.5},{"n":269,"nome":"Applelide","fam":"Muschi","tipo":"SIN","forza":2,"liv":"MASTER","forn":"PW","ml":15,"costo":10.5},{"n":270,"nome":"Cosmone","fam":"Muschi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":24.0},{"n":271,"nome":"Helvetolide","fam":"Muschi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":272,"nome":"Muscenone","fam":"Muschi","tipo":"SIN","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":24.0},{"n":273,"nome":"Nirvanolide","fam":"Muschi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"SPEC","ml":10,"costo":24.0},{"n":274,"nome":"Romandolide","fam":"Muschi","tipo":"SIN","forza":2,"liv":"MASTER","forn":"PW","ml":15,"costo":10.5},{"n":275,"nome":"Semi di ambretta EO/ass.","fam":"Muschi","tipo":"NAT","forza":4,"liv":"MASTER","forn":"SPEC","ml":5,"costo":24.0},{"n":276,"nome":"Serenolide","fam":"Muschi","tipo":"SIN","forza":2,"liv":"MASTER","forn":"SPEC","ml":15,"costo":10.5},{"n":277,"nome":"Velvione","fam":"Muschi","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":278,"nome":"Feniletil acetato","fam":"Rosa","tipo":"SIN","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":279,"nome":"Feniletil fenilacetato","fam":"Rosa","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":5.0},{"n":280,"nome":"Geranil acetato","fam":"Rosa","tipo":"SIN","forza":3,"liv":"MASTER","forn":"ENTR","ml":10,"costo":5.0},{"n":281,"nome":"Nerolo","fam":"Rosa","tipo":"SIN","forza":3,"liv":"MASTER","forn":"ENTR","ml":10,"costo":5.0},{"n":282,"nome":"Rodinol","fam":"Rosa","tipo":"SIN","forza":3,"liv":"MASTER","forn":"SPEC","ml":10,"costo":10.5},{"n":283,"nome":"Rosa centifolia assoluta","fam":"Rosa","tipo":"NAT","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":24.0},{"n":284,"nome":"Rosa damascena EO (otto)","fam":"Rosa","tipo":"NAT","forza":5,"liv":"MASTER","forn":"PW","ml":2,"costo":24.0},{"n":285,"nome":"Glucam P-20","fam":"Solventi/Fissativi","tipo":"SOL","forza":"-","liv":"MASTER","forn":"SPEC","ml":250,"costo":10.5},{"n":286,"nome":"Hercolyn D","fam":"Solventi/Fissativi","tipo":"SOL","forza":1,"liv":"MASTER","forn":"SPEC","ml":250,"costo":5.0},{"n":287,"nome":"Tonalide (Fixolide)","fam":"Solventi/Fissativi","tipo":"SIN","forza":2,"liv":"MASTER","forn":"SPEC","ml":15,"costo":10.5},{"n":288,"nome":"Anetolo","fam":"Speziati","tipo":"SIN","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":289,"nome":"Anice stellato EO","fam":"Speziati","tipo":"NAT","forza":4,"liv":"MASTER","forn":"DH","ml":5,"costo":5.0},{"n":290,"nome":"Bacche di ginepro EO","fam":"Speziati","tipo":"NAT","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":291,"nome":"Cannella foglia EO","fam":"Speziati","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":292,"nome":"Cascarilla EO","fam":"Speziati","tipo":"NAT","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":293,"nome":"Cinnamaldeide","fam":"Speziati","tipo":"SIN","forza":5,"liv":"MASTER","forn":"DH","ml":2,"costo":5.0},{"n":294,"nome":"Coriandolo EO","fam":"Speziati","tipo":"NAT","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":295,"nome":"Cumino EO","fam":"Speziati","tipo":"NAT","forza":5,"liv":"MASTER","forn":"DH","ml":2,"costo":5.0},{"n":296,"nome":"Curcuma EO","fam":"Speziati","tipo":"NAT","forza":3,"liv":"MASTER","forn":"DH","ml":10,"costo":5.0},{"n":297,"nome":"Metil diantilis","fam":"Speziati","tipo":"SIN","forza":3,"liv":"MASTER","forn":"PW","ml":10,"costo":10.5},{"n":298,"nome":"Pepe di Sichuan EO","fam":"Speziati","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":10.5},{"n":299,"nome":"Pimento (allspice) EO","fam":"Speziati","tipo":"NAT","forza":4,"liv":"MASTER","forn":"PW","ml":5,"costo":5.0},{"n":300,"nome":"Sotolone 1%","fam":"Speziati","tipo":"SIN","forza":5,"liv":"MASTER","forn":"SPEC","ml":2,"costo":24.0}];
+const ATTR = [["Bilancia di precisione 0,01 g", 25], ["Boccette vetro ambrato 10 ml × 100 (diluizioni)", 30], ["Flaconi spray 15/30 ml × 20 (prove finite)", 25], ["Beaker in vetro × 3", 12], ["Pipette Pasteur × 100", 8], ["Mouillette (strisce) × 500", 10], ["Alcol per profumeria 96° non denaturato aromatico — 1 L", 15], ["DPG (dipropilen glicole) — 500 ml", 12], ["Guanti in nitrile (scatola)", 8], ["Occhiali di protezione", 6], ["Etichette adesive (nome, %, solvente, data)", 6], ["Imbuti piccoli × 2", 5], ["Quaderno — il diario olfattivo", 5]];
+const ONDATE = [["CORE"], ["CORE","ESP"], ["CORE","ESP","MASTER"]];
+let ondata = 0;
+
+let stato = {};
+try { stato = JSON.parse(localStorage.getItem("dispensa_terzi") || "{}"); } catch (e) {}
+function salva() {
+  try { localStorage.setItem("dispensa_terzi", JSON.stringify(stato)); } catch (e) {}
+}
+function st(id) { return stato[id] || (stato[id] = { p: false, u: 0 }); }
+
+function visibili() { return M.filter(m => ONDATE[ondata].includes(m.liv)); }
+
+function render() {
+  document.querySelectorAll(".chip").forEach(c =>
+    c.classList.toggle("active", Number(c.dataset.o) === ondata));
+
+  const vis = visibili();
+  const corpo = document.getElementById("corpo");
+  corpo.innerHTML = vis.map(m => {
+    const s = st("m" + m.n);
+    const rimasto = s.p ? Math.max(0, m.ml - s.u) : null;
+    return '<tr' + (s.p ? ' class="preso"' : '') + '>' +
+      '<td><input type="checkbox" data-id="m' + m.n + '"' + (s.p ? ' checked' : '') + '></td>' +
+      '<td class="dim">' + m.n + '</td>' +
+      '<td class="nome">' + m.nome + '</td>' +
+      '<td class="dim">' + m.fam + '</td>' +
+      '<td class="dim" title="forza ' + m.forza + '/5">' +
+        "\u25cf".repeat(m.forza) + '</td>' +
+      '<td class="dim">' + m.forn + '</td>' +
+      '<td class="num">' + m.ml + ' ml</td>' +
+      '<td class="num">~' + m.costo.toFixed(1).replace(".", ",") + ' \u20ac</td>' +
+      '<td><input class="usato" type="number" min="0" step="0.5" data-u="m' + m.n +
+        '" value="' + (s.u || "") + '" placeholder="0"' + (s.p ? '' : ' disabled') + '></td>' +
+      '<td class="rimasto' + (rimasto !== null && rimasto <= m.ml * 0.2 ? ' poco' : '') + '">' +
+        (rimasto === null ? "\u2014" : rimasto.toFixed(1).replace(".", ",") + " ml") + '</td>' +
+      '</tr>';
+  }).join("");
+
+  document.getElementById("attrezzi").innerHTML = ATTR.map((a, i) => {
+    const s = st("a" + i);
+    return '<tr' + (s.p ? ' class="preso"' : '') + '>' +
+      '<td><input type="checkbox" data-id="a' + i + '"' + (s.p ? ' checked' : '') + '></td>' +
+      '<td class="nome">' + a[0] + '</td><td class="num">~' + a[1] + ' \u20ac</td></tr>';
+  }).join("");
+
+  corpo.querySelectorAll("input[type=checkbox]").forEach(c =>
+    c.addEventListener("change", () => { st(c.dataset.id).p = c.checked; salva(); render(); }));
+  document.getElementById("attrezzi").querySelectorAll("input[type=checkbox]").forEach(c =>
+    c.addEventListener("change", () => { st(c.dataset.id).p = c.checked; salva(); render(); }));
+  corpo.querySelectorAll("input.usato").forEach(i =>
+    i.addEventListener("change", () => {
+      st(i.dataset.u).u = Math.max(0, parseFloat(i.value) || 0); salva(); render(); }));
+
+  aggiornaTotali(vis);
+  calcola();
+}
+
+function aggiornaTotali(vis) {
+  const daComprare = vis.filter(m => !st("m" + m.n).p);
+  const presi = vis.filter(m => st("m" + m.n).p);
+  const mlTot = vis.reduce((a, m) => a + m.ml, 0);
+  const mlPresi = presi.reduce((a, m) => a + m.ml, 0);
+  const mlUsati = presi.reduce((a, m) => a + (st("m" + m.n).u || 0), 0);
+  const costoTot = vis.reduce((a, m) => a + m.costo, 0);
+  const costoResta = daComprare.reduce((a, m) => a + m.costo, 0);
+  const attrResta = ATTR.reduce((a, x, i) => a + (st("a" + i).p ? 0 : x[1]), 0);
+  const t = [
+    [vis.length, "materie in lista"],
+    [presi.length, "gi\u00e0 prese"],
+    ["~" + Math.round(costoTot) + " \u20ac", "costo ondata"],
+    ["~" + Math.round(costoResta + attrResta) + " \u20ac", "resta da spendere"],
+    [mlTot + " ml", "liquido totale"],
+    [(mlPresi - mlUsati).toFixed(1).replace(".", ",") + " ml", "in dispensa ora"],
+    [mlUsati.toFixed(1).replace(".", ",") + " ml", "gi\u00e0 usati"],
+  ];
+  document.getElementById("totali").innerHTML = t.map(x =>
+    '<div class="tot"><div class="v">' + x[0] + '</div><div class="l">' + x[1] +
+    '</div></div>').join("");
+}
+
+function calcola() {
+  const n = Math.max(1, parseInt(document.getElementById("c-n").value, 10) || 1);
+  const ml = parseInt(document.getElementById("c-ml").value, 10);
+  const conc = parseInt(document.getElementById("c-conc").value, 10) / 100;
+  const concentrato = n * ml * conc;
+  const alcol = n * ml * (1 - conc);
+  const vis = visibili();
+  const presi = vis.filter(m => st("m" + m.n).p);
+  const base = (presi.length ? presi : vis);
+  const mlDisp = base.reduce((a, m) =>
+    a + Math.max(0, m.ml - (st("m" + m.n).p ? (st("m" + m.n).u || 0) : 0)), 0);
+  const proveMax = Math.floor(mlDisp * 0.35 / 2.5);
+  const flaconiMax = Math.floor(mlDisp * 0.35 / (ml * conc));
+  const bottiglieAlcol = Math.ceil(alcol / 1000);
+  const fonte = presi.length ? "materie gi\u00e0 prese" : "l'ondata intera (nulla ancora preso)";
+
+  document.getElementById("risultato").innerHTML =
+    '<div class="tavola"><table>' +
+    '<tr><td>Concentrato necessario</td><td class="num">' + concentrato.toFixed(1).replace(".", ",") + ' ml</td></tr>' +
+    '<tr><td>Alcol necessario</td><td class="num">' + alcol.toFixed(0) + ' ml (' + bottiglieAlcol + ' L da comprare)</td></tr>' +
+    '<tr><td>Costo alcol stimato</td><td class="num">~' + (bottiglieAlcol * 15) + ' \u20ac</td></tr>' +
+    '<tr><td>Con ' + fonte + ' (' + mlDisp.toFixed(0) + ' ml disponibili)</td>' +
+    '<td class="num">fino a ~' + proveMax + ' prove da 100 gocce \u00b7 ~' +
+    flaconiMax + ' flaconi da ' + ml + ' ml</td></tr>' +
+    '</table></div>';
+}
+
+document.querySelectorAll(".chip").forEach(c =>
+  c.addEventListener("click", () => { ondata = Number(c.dataset.o); render(); }));
+for (const id of ["c-n", "c-ml", "c-conc"])
+  document.getElementById(id).addEventListener("input", calcola);
+
+document.getElementById("azzera").addEventListener("click", () => {
+  if (confirm("Azzerare spunte e scarichi della dispensa?")) {
+    stato = {}; salva(); render();
+  }
+});
+
+document.getElementById("scarica").addEventListener("click", () => {
+  const vis = visibili();
+  const righe = ["N;Materia;Famiglia;Forza;Fornitore;Qta_ml;Costo_stimato_EUR;Preso;Usato_ml;Rimasto_ml"];
+  for (const m of vis) {
+    const s = st("m" + m.n);
+    righe.push([m.n, '"' + m.nome + '"', '"' + m.fam + '"', m.forza, m.forn, m.ml,
+      m.costo.toFixed(1), s.p ? "SI" : "NO", s.u || 0,
+      s.p ? Math.max(0, m.ml - s.u).toFixed(1) : ""].join(";"));
+  }
+  righe.push("");
+  for (const [i, a] of ATTR.entries())
+    righe.push(['ATTR', '"' + a[0] + '"', "", "", "", "", a[1],
+      st("a" + i).p ? "SI" : "NO", "", ""].join(";"));
+  const blob = new Blob(["\ufeff" + righe.join("\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "dispensa_terzi_" + ["core", "core_esp", "completa"][ondata] + ".csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+render();
+</script>
+</body>
+</html>

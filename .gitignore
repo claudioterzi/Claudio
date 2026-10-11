@@ -8,8 +8,7 @@ studio/web/dist/
 data/
 *.json
 !registro_ipotesi.json
-!scripts/drive_manifest.json
-!sdq1/sar/sandbox_scacchiera/stato_v4.json
+!vss_state.json.sample
 !output/contatti.jsonl
 !output/benchmark/
 !output/benchmark/*.json
@@ -88,3 +87,21 @@ guardian/
 !sdq1_master.json
 !.claude/settings.json
 .guardian/
+
+# Motore caccia voli
+!sdq1/voli/package.json
+
+# Registro clienti locale: mai nel repository
+output/perfume_registry.sqlite3*
+
+
+# R3 private evolution state — owner/runtime only
+.r3/private/
+.r3/private_model/
+.r3/reuse_ml/
+output/private_r3/
+R3_PRIVATE_*
+
+# Retained tracked candidate schemas/assets
+!scripts/drive_manifest.json
+!sdq1/sar/sandbox_scacchiera/stato_v4.json

@@ -17,7 +17,8 @@ class GeminiProvider(ProviderBase):
     nome = "gemini"
 
     def _inizializza(self) -> bool:
-        key = self.api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+        key = ((self.api_key or '').strip() or os.getenv("GOOGLE_API_KEY", '').strip()
+               or os.getenv("GEMINI_API_KEY", '').strip())
         if not key:
             return False
         self.api_key = key
@@ -25,14 +26,22 @@ class GeminiProvider(ProviderBase):
 
     def _completa_impl(self, sistema: str, utente: str) -> tuple[str, dict[str, Any]]:
         modello = self.modello or "gemini-2.5-flash"
-        url = f"{_BASE_URL}/{modello}:generateContent?key={self.api_key}"
+        url = f"{_BASE_URL}/{modello}:generateContent"
 
+        gen = {
+            "temperature": self.opts.get("temperatura", 0.7),
+            "maxOutputTokens": self.opts.get("max_token", 4096),
+        }
+        # modalità JSON strutturata: Gemini garantisce output JSON valido,
+        # senza preamboli né recinti markdown (usata dall'Atelier)
+        if self.opts.get("json_mode"):
+            gen["responseMimeType"] = "application/json"
+            # spegne il "thinking" di Gemini 2.5: tutto il budget di token va
+            # all'output JSON, che altrimenti si tronca a metà
+            gen["thinkingConfig"] = {"thinkingBudget": 0}
         payload = {
             "contents": [{"role": "user", "parts": [{"text": utente}]}],
-            "generationConfig": {
-                "temperature": self.opts.get("temperatura", 0.7),
-                "maxOutputTokens": self.opts.get("max_token", 4096),
-            },
+            "generationConfig": gen,
         }
         if sistema:
             payload["systemInstruction"] = {"parts": [{"text": sistema}]}
@@ -41,7 +50,7 @@ class GeminiProvider(ProviderBase):
         req = urllib.request.Request(
             url,
             data=data,
-            headers={"Content-Type": "application/json"},
+            headers={"Content-Type": "application/json", "x-goog-api-key": self.api_key},
             method="POST",
         )
 

@@ -170,12 +170,17 @@ orchestratore:
     - 12   # stile finale
 
 memoria:
-  tipo_vettoriale: "in_memoria"
-  dimensione_vettori: 384
-  modello_embedding: "all-MiniLM-L6-v2"
-  max_risultati_recupero: 5
-  soglia_similarita: 0.45
-  qdrant:
+  # RECUPERATO (audit Fase 2.1, branch fix-bloccanti): il backend reale e'
+  # sdq1/memory/store.py — TF su n-grammi di 3 caratteri + coseno.
+  # Le chiavi 'dimensione_vettori', 'modello_embedding' e il blocco 'qdrant'
+  # NON sono lette da nessun modulo: dichiarate ma non implementate.
+  # Restano come intenzione documentata; non descriverle come stato reale.
+  tipo_vettoriale: "in_memoria"        # valore onesto: ngrammi_caratteri
+  dimensione_vettori: 384              # NON IMPLEMENTATO (niente embedding)
+  modello_embedding: "all-MiniLM-L6-v2"  # NON IMPLEMENTATO
+  max_risultati_recupero: 5            # letto in __main__.py
+  soglia_similarita: 0.45              # letto in __main__.py (default classe: 0.55)
+  qdrant:                              # NON IMPLEMENTATO — nessun modulo lo legge
     host: "localhost"
     porta: 6333
     collezione: "sdq1_memoria"
