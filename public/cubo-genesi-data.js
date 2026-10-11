@@ -131,6 +131,20 @@
     if(identityHub)addLink(circus.id,identityHub.id,'threshold');
   }
 
+  // NESSUNA TRACCIA — consolidamento genealogico 2026-09-30
+  const nt={
+    id:'nessuna-traccia-genealogia-2026-09-30',
+    title:'NESSUNA TRACCIA — Genealogia documentale Claudio × Raffaello',
+    category:CATEGORY,year:2026,importance:10,density:10,
+    url:'https://docs.google.com/document/d/18vFrBVB7Lx2XhJK6WKfnZhL57ToDv504BRTT3p-0yKw/edit',
+    color:'#e7a76f',fx:-82,fy:128,fz:18,kind:'work',date:'2026-09-30',
+    summary:'Consolidamento con provenienza separata: FATTO DOCUMENTATO, TESTIMONIANZA, INTERPRETAZIONE e FINZIONE. Collega le fonti 2024–2026 al progetto NESSUNA TRACCIA senza promuovere ipotesi a fatti.'
+  };
+  if(!byId.has(nt.id)){D.nodes.push(nt);byId.set(nt.id,nt);byTitle.set(nt.title,nt);}
+  addLink(HUB,nt.id,'consolidates');
+  [ids.letter,ids.bridge,ids.love,ids.name,ids.diary,ids.chat].filter(Boolean).forEach(id=>addLink(id,nt.id,'genealogy'));
+  if(circus)addLink(circus.id,nt.id,'echo');
+
   addLink('corpus-claudio-terzi',HUB,'family');
   D.meta.generated='2026-09-15';
   D.meta.works=D.nodes.filter(n=>n.kind==='work').length;
