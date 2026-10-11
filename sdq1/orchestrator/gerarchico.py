@@ -74,8 +74,7 @@ class OrchestratoreGerarchico:
         inizio = time.time()
         contesto: dict[str, Any] = dict(payload)
         contesto["_run_id"] = esecuzione.id   # usato dal VectorStateStore per namespace
-        # Rispetta un'origine già impostata (es. esegui_interno); default: esterno
-        contesto.setdefault("_origine", "esterno")  # input utente → SENTIN applica il filtro
+        contesto["_origine"] = "esterno"  # caller payload is not an authority channel
         self._persisti(esecuzione, contesto, stato="started")
 
         caselle = pipeline_override if pipeline_override is not None else self.pipeline_caselle
