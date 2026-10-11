@@ -60,7 +60,7 @@ function recordManual(data){
   const rec={id:'M-'+Date.now(),source:'manual-check',provider:String(data.provider||'Verifica manuale').trim(),from:normalizePlace(ctx.from),to:normalizePlace(ctx.to),month:monthOf(ctx.month),baggage:Boolean(ctx.baggage),objective:ctx.objective||'balanced',total:price,price,observed_at:now(),at:now(),verified_by:'manual',certainty:'MANUALLY_OBSERVED'};writeHistory([rec]);renderPanel();return rec;
 }
 function prefillFromIntent(){
-  const p=new URLSearchParams(location.search),saved=load(INTENT_KEY,null);const src=p.get('source')==='fabbrica'?Object.fromEntries(p.entries()):(saved&&saved.source==='fabbrica'?saved:null);if(!src)return;
+  const p=new URLSearchParams(location.search),saved=load(INTENT_KEY,null);const stored=saved&&saved.source==='fabbrica'?saved:null;const src=p.get('source')==='fabbrica'?{...(stored||{}),...Object.fromEntries(p.entries())}:stored;if(!src)return;
   const pairs=[['from','r-origine'],['to','r-dest'],['destination','r-dest']];pairs.forEach(([k,id])=>{if(src[k]&&$(id)&&!$(id).value)$(id).value=src[k]});
   const m=monthOf(src.date||src.month||'');if(m&&$('r-mese')&&!$('r-mese').value)$('r-mese').value=m;
   if(src.from&&$('o-origine')&&!$('o-origine').value)$('o-origine').value=src.from;if(m&&$('o-mese')&&!$('o-mese').value)$('o-mese').value=m;

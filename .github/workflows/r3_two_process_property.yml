@@ -1,0 +1,46 @@
+name: R3 Two-Process Property Test
+
+on:
+  push:
+    branches:
+      - r3/two-process-property-20260918
+    paths:
+      - "r3/**"
+      - "tests/test_r3_two_process_resilience.py"
+      - ".github/workflows/r3_two_process_property.yml"
+      - "sdq1_master.json"
+  workflow_dispatch:
+
+jobs:
+  property:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install R3 test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r r3/requirements.txt pytest pytest-timeout
+
+      - name: Run two-process failover/resync property
+        run: |
+          mkdir -p output/property-tests
+          set -o pipefail
+          pytest -q -s tests/test_r3_two_process_resilience.py -vv | tee output/property-tests/r3_two_process_property.log
+
+      - name: Upload raw test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-two-process-property-${{ github.run_id }}
+          path: output/property-tests/r3_two_process_property.log
+          if-no-files-found: error
