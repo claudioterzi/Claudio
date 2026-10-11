@@ -1,0 +1,29 @@
+{
+  "schema": "R3-CANDIDATE-PREREGISTRATION/1",
+  "candidate_id": "CT_PR127_INTERACTIVE_ROOT_REVIEW",
+  "created_at_utc": "2026-10-11T12:28:21.870510+00:00",
+  "authorization": "Claudio direct request to resolve PR127 autonomously; Evolution instructed to avoid concurrent PR127 writes",
+  "base_head": "dceabe8fd303cacc15bc9fc7a82002b92cfa4c57",
+  "source_revision": "7522b4949e910923144a61c1f35588723f9cf124",
+  "problem": "Existing synthetic test uses /typesafe; Railway traceback mounts /; root routing/auth/health coverage missing",
+  "source": "Railway failure419cf73f log letta_bridge_v2.py:303; PR127 exact-head test66f37703f313c3c8e4c47b3baff9bd2cef64165a",
+  "classification": "COVERAGE_GAP; no new production-code defect established",
+  "baseline": "Existing7 startup tests reproduced PASS; root mount not exercised",
+  "plan": [
+    "Preserve seven alternate-mount controls",
+    "Add literal root-mount fixture and fresh-process exact Docker layout checks",
+    "Check root and /jev health/auth/mock contracts, route precedence and root mount shadowing semantics",
+    "Keep wrapper synthetic; do not claim full Letta/MCP wrapper or production proof",
+    "Run pertinent suite and detached exact-head replay; publish only to same candidate PR127 after expected-head lease"
+  ],
+  "forbidden_effects": [
+    "Source branch changes",
+    "merge/deploy/restart",
+    "Real provider calls",
+    "Secrets reads",
+    "Paid resources",
+    "Windows permissions/tasks changes"
+  ],
+  "completion_criterion": "Root-mount coverage and preserved alternate controls pass, exact remote bytes read back, CI outcome attributed accurately",
+  "pc_access": "Desktop Commander Offline; Windows settings NOT_VERIFIED"
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "R3-CANDIDATE-RECEIPT/1",
+  "candidate_id": "CT_PR127_INTERACTIVE_ROOT_REVIEW",
+  "created_at_utc": "2026-10-11T12:32:44.165708+00:00",
+  "authorization": "Claudio direct interactive request; existing Evolution checkpoint preserved and PR127 write coordination read back",
+  "base_remote_head": "dceabe8fd303cacc15bc9fc7a82002b92cfa4c57",
+  "tested_local_head": "aeb572223a03892296b86eb2cb310540a5d9a97c",
+  "retroactive_classification": "PATCH_RETEST_COVERAGE_AND_CI_ONLY",
+  "baseline": {
+    "existing_startup_tests": "7/7 PASS",
+    "coverage_gap": "Original synthetic fixture mount/typesafe vs actual logged mount/; no product-code counterexample inferred"
+  },
+  "changes": {
+    "production_code_changed": false,
+    "tests": "Preserve alternate fixture; add observed root fixture, prefix/root health/auth/mocked response/ordering and404root-shadow behavior",
+    "ci": "Existing Test Runner narrow source-branch PR trigger and exact-head58-test job; main jobs preserve previous PR scope",
+    "original_receipt": "docs/evidenze/R3_TYPESAFE_STARTUP_COMPAT_20261011T115251Z.json",
+    "original_receipt_preserved": true
+  },
+  "evidence": {
+    "startup_tests": "20PASS0skip:7 alternate,13 root topology cases",
+    "pertinent_suite": "58PASS0skip in1.05s",
+    "exact_detached_replay": "58PASS0skip in1.04s with JUnit counts58/0/0/0",
+    "bootstrap": "PASS",
+    "py_compile": "PASS",
+    "workflow_syntax_and_scope": "PASS",
+    "git_diff_check": "PASS",
+    "health_root_and_jev": 200,
+    "missing_wrong_tokens_root_and_jev": 401,
+    "missing_config_root_and_jev": 503,
+    "unauthorized_provider_calls": 0,
+    "mocked_valid_root_equals_jev": true,
+    "unknown_root_path_status": 404,
+    "new_startup_probe_network_attempts": 0,
+    "hosted_ci": "PENDING_PUBLICATION"
+  },
+  "hashes_sha256": {
+    "tests/test_typesafe_one_runtime_startup.py": "59f7cb2c9db5ba57da46e8e2ec373c60ec237b64c54924f197f8031d20d65533",
+    ".github/workflows/test_runner.yml": "c65a182f42a55ad7d85b9d5f3e22b431dc7f41ff88cfa8ad3fee45bd3e9b7c0c"
+  },
+  "lessons": [
+    {
+      "event": "First root precedence selector raised ValueError because FastAPI retained included-router prefix metadata instead of flattened paths",
+      "classification": "HARNESS_SELECTOR_ERROR",
+      "correction": "Use existing public include_context.prefix metadata plus real HTTP assertions; corrected20testsPASS",
+      "prevention": "Inspect observable route representation without assuming flattened route paths"
+    },
+    {
+      "event": "git add rejected ignored evidence JSON",
+      "classification": "HARNESS_STAGING_RULE",
+      "correction": "Explicit force-add of named nonsecret evidence only; no unrelated ignored files"
+    }
+  ],
+  "warning": "One Starlette TestClient/httpx deprecation warning; no broad dependency upgrade performed",
+  "pc_settings": {
+    "status": "NOT_VERIFIED",
+    "cause": "Existing Dell Desktop Commander device Offline; get_config reports no device online",
+    "required_action": "Start or restart Desktop Commander Remote on Dell; this session cannot repair offline transport remotely"
+  },
+  "limits": [
+    "Wrapper is still synthetic, using literal observed mount path; complete materialized Letta/MCP wrapper not accessed",
+    "No live provider,inference,full-wrapper or Railway startup/recovery proof",
+    "Production and source7522b494 branch not changed; candidate-only publication",
+    "PR113 recovery/sleep gates unchanged"
+  ],
+  "decision": "ROOT_MOUNT_COVERAGE_LOCAL_PASS_HOSTED_GATE_PREPARED",
+  "completion_criterion": "Exact-head hosted58PASS0skip and Security result after remote readback; production recovery remains separate"
+}

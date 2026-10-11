@@ -1,0 +1,20 @@
+{
+  "schema": "R3-CANDIDATE-PREREGISTRATION/1",
+  "created_at_utc": "2026-10-11T12:31:24.986439+00:00",
+  "candidate_id": "CT_PR127_INTERACTIVE_ROOT_REVIEW",
+  "delta": "Reuse existing Test Runner workflow to execute bounded TypeSafe tests for the source-target PR; no new workflow/resource",
+  "base_head": "dceabe8fd303cacc15bc9fc7a82002b92cfa4c57",
+  "scope": [
+    "Add the exact source base branch to pull_request branches",
+    "Keep existing general and snapshot jobs restricted to their previous main PR scope",
+    "Add exact-head Python3.12 startup job with test-only pinned dependencies and contents:read",
+    "Run58 pertinent tests, require observed root+alternate58PASS0skip and preserve production/source refs"
+  ],
+  "rollback": "Revert only bounded trigger/job delta; test receipts remain immutable",
+  "effects_excluded": [
+    "production deploy/merge/restart",
+    "Secrets use",
+    "New cloud resources",
+    "new workflow file"
+  ]
+}
