@@ -1,0 +1,103 @@
+# RedFrag benchmark v1 — fixture reale congelato
+
+Data: 2026-09-29
+Stato: **FROZEN** — pronto per l'A/B con CLM vero su GPU. Nessun provider CLM eseguito.
+Branch: `candidate/redfrag-benchmark-v1-20260929` (base `main` `8050f1c`)
+
+## Fixture
+
+- File: `tests/redfrag_benchmark_v1.json`
+- SHA-256 congelato: `0cff14f3cfb64650d955ffedd227a875978e6682ccd653b1f78b112685bd127f`
+  (verificato da `tests/test_redfrag_benchmark_v1.py`; cambiarlo richiede una v2)
+- 30 casi, 5 per classe: DUPLICATE, CONFLICT, CORE, EVIDENCE, STALE, ACTIVE.
+- Fonti tutte reali: 27 dal repo a commit fissati (`8050f1c`, branch `27391cf`, `cc610bc`),
+  3 da Drive dove aggiungono un failure mode che il repo non ha (file con lo stesso nome in un
+  altro repository; indice superato che nel testo si dichiara ancora "CANONICO").
+  Per Drive: byte scaricati il 29/09, dimensione uguale ai metadati, SHA-256 registrato.
+- Ogni caso registra provenienza, hash, gold (classe + azione), perché il gold è deterministico,
+  e quale falsifier lo renderebbe ambiguo.
+- Ricostruibile: `python scripts/redfrag_build_fixture_v1.py --check`.
+
+Casi difficili inclusi: duplicato con provenienza incompleta (D05), stesso tema con contenuto
+divergente (X01, X02), storico superato da tenere come puntatore (S05), evidenza negativa (E02, E03),
+canone attivo simile a materiale stale (K05 ↔ S03, A01 ↔ S04), candidato da non promuovere
+(A02, A05), stale che si dichiara canonico (S02), conflitto tra due sezioni di canone (X05),
+duplicato di output d'errore (D03).
+
+## Cosa vede il modello
+
+Il benchmark passa al modello solo `cluster` (nome, estratti reali, hash, provenienza e i flag
+del gate). Mai gold, motivazioni o falsifier. Due viste:
+
+- `flags` — lo stato che RedFrag invia oggi in produzione, con i flag deterministici.
+- `blind` — senza flag né evidenza derivata: il modello deve capire classe e azione dal contenuto.
+
+La decisione finale usa sempre il gate completo. Il test verifica che il gold esca identico con
+tre modelli fittizi diversi: la decisione finale non dipende dal modello, quindi l'A/B misura
+solo la qualità del consiglio del modello.
+
+## Falsifier trovato durante la costruzione
+
+Il benchmark del 28/09 passava al modello l'intero caso, **incluse `expected_class` ed
+`expected_action`**. Il modello locale leggeva la risposta dentro l'input. Rieseguito sugli stessi
+5 casi senza etichette: accordo classe 1.0 → 0.4, accordo azione 0.8 → 0.2
+(`docs/evidenze/R3_REDFRAG_BENCH_LEGACY5_NOLEAK_2026-09-29.json`). I numeri del 28/09 non vanno
+più citati.
+
+## Baseline `r3_clm` (locale, zero rete) sul fixture congelato — 20 ripetizioni per caso
+
+| Vista | Decisione finale | Classe (solo modello) | Azione (solo modello) | Dissenso | Fallimenti | Latenza p50 / p95 / p99 ms |
+|---|---|---|---|---|---|---|
+| flags | 1.00 | 0.167 | 0.033 | 1.00 | 0 | 33.6 / 54.5 / 65.2 |
+| blind | 1.00 | 0.133 | 0.100 | 1.00 | 0 | 31.7 / 51.2 / 53.4 |
+
+Riferimento per il caso: 8 classi → 0.125 a caso; 5 azioni → 0.20 a caso.
+Il baseline locale è al livello del caso: tutto il lavoro lo fa il gate deterministico.
+Evidenze: `docs/evidenze/R3_REDFRAG_BENCH_V1_R3CLM_FLAGS_2026-09-29.json`,
+`docs/evidenze/R3_REDFRAG_BENCH_V1_R3CLM_BLIND_2026-09-29.json`.
+
+Jev/TypeSafe non è stato eseguito: questa sessione non ha `TYPESAFE_API_KEY` (resta solo sul
+servizio Railway e non va copiata). Si può eseguire dove la chiave vive con
+`python scripts/r3_clm_redfrag_benchmark.py --provider typesafe --view {flags,blind}`.
+
+## Prossimo passo: una sessione GPU controllata
+
+`CLM_BASE_URL=http://<gpu>:8700 python scripts/r3_clm_redfrag_benchmark.py --provider clm --view flags`
+e poi `--view blind`, stesso fixture (hash sopra). Registrare anche se il risultato è negativo.
+La metrica decisiva è l'accuratezza del solo modello in vista `blind`; la decisione finale resta 1.00
+per costruzione.
+
+Firma progetto: C.Terzi
+
+
+## Jev / TypeSafe — eseguito sul fixture congelato
+
+Runtime: Railway `r3-typesafe-sister`, provider `typesafe`, model `jev-latest`.
+Fixture SHA-256 invariato: `0cff14f3cfb64650d955ffedd227a875978e6682ccd653b1f78b112685bd127f`.
+30 casi × 20 ripetizioni per vista. Gold mai passato al modello. Zero physical deletion.
+
+| Vista | Decisione finale | Classe (solo modello) | Azione (solo modello) | Dissenso | Fallimenti | p50 / p95 / p99 |
+|---|---:|---:|---:|---:|---:|---:|
+| flags | 1.00 | 0.700 | 0.4667 | 0.5333 | 0 | 106.9 / 159.2 / 217.4 ms |
+| blind | 1.00 | 0.700 | 0.4000 | 0.7000 | 0 | 110.0 / 164.6 / 271.1 ms |
+
+Confronto blind con `r3_clm` locale: classe 0.1333 → **0.7000**; azione 0.1000 → **0.4000**.
+Questo è un delta reale sul fixture congelato, ma non è ancora evidenza su CLM-v0.1. Il gate deterministico resta responsabile della decisione finale 1.00.
+
+Nota latenza blind: un singolo outlier ha raggiunto ~30.2 s; p99 resta ~271 ms. Nessun failure/abstention.
+D05 resta `QUARANTINE_REVIEW`: il branch diagnostico Letta esiste ma è diverged e non canonico; nessuna modifica al fixture v1 dopo il run.
+Evidence:
+- `docs/evidenze/R3_REDFRAG_BENCH_V1_JEV_FLAGS_2026-09-29.json`
+- `docs/evidenze/R3_REDFRAG_BENCH_V1_JEV_BLIND_2026-09-29.json`
+
+
+### Limite metodologico delle ripetizioni
+
+Il runner v1 esegue 20 chiamate per caso per campionare la latenza, ma conserva in `result` soltanto
+l'ultima risposta del caso prima di calcolare `model_only_class_accuracy` e
+`model_only_action_accuracy`. Di conseguenza le accuratezze Jev 0.700/0.4667 e
+0.700/0.4000 sono **30-case last-sample accuracy**, non accuratezza su 600 predizioni.
+Le distribuzioni p50/p95/p99 usano invece tutte le chiamate. Questo limite è stato rilevato dopo
+il run Jev e viene documentato senza cambiare fixture o metodologia prima del GPU A/B.
+Una futura v2 potrà misurare stabilità/majority/variance per repeat, ma richiederà rerun simmetrico
+di tutti i provider.
