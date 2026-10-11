@@ -495,7 +495,9 @@ def main(argv: list[str]) -> int:
         print(f"[SNAPSHOT] Salvato: {dest}")
         if args.push:
             ok = push_snapshot(dest)
-            print(f"[SNAPSHOT] Push GitHub: {'OK' if ok else 'FALLITO'}")
+            print(f"[SNAPSHOT] Push GitHub: {'VERIFICATO' if ok else 'NON VERIFICATO'}")
+            if not ok:
+                return 1
         return 0
 
     if args.agenti or args.agenti_autonomo:
@@ -694,6 +696,14 @@ def main(argv: list[str]) -> int:
         dest = sim.salva_report(risultati)
         print(f"\nReport salvato: {dest}")
         return 0
+
+    comando_rete = " ".join(args.testo).strip().casefold()
+    if comando_rete in {"rosso rosso rosso", "attiva rosso rosso rosso"}:
+        from r3.rrr_control import main as rrr_control_main
+        return rrr_control_main(["activate"])
+    if comando_rete in {"rosso rosso rosso stato", "stato rosso rosso rosso"}:
+        from r3.rrr_control import main as rrr_control_main
+        return rrr_control_main(["status"])
 
     testo = " ".join(args.testo) or "Ciao SDQ-1, sei attivo?"
     esecuzione = orch.esegui({"testo": testo})

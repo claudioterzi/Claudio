@@ -1,5 +1,6 @@
 """Regia tests: dependencies, privacy, concurrency and persistence boundaries."""
 import copy
+from datetime import date
 import json
 from pathlib import Path
 import subprocess
@@ -7,7 +8,7 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from fabbrica import PREFIX, apply_progress, validate_plan
+from fabbrica import PREFIX, apply_progress, review_schedule, validate_plan
 from tarocchi_web import app
 
 
@@ -34,6 +35,18 @@ class MemoryRedis:
     def eval(self, script, count, *args):
         if count == 3:
             return int(self.allow_quota)
+        if count == 4:
+            parent, index, output, cache, body, ttl, status = args
+            if not self.get(parent): return 0
+            self.values.setdefault(index, set()).update([output, cache])
+            self.set(output, body)
+            if status == 'suggested': self.set(cache, body)
+            return 1
+        if count == 2:
+            parent, index = args
+            for key in self.values.get(index, set()): self.delete(key)
+            self.delete(parent); self.delete(index)
+            return 1
         key, expected, body = args
         current = self.get(key)
         if not current or json.loads(current)['version'] != expected:
@@ -88,6 +101,45 @@ class TestFabbrica(unittest.TestCase):
             example = copy.deepcopy(self.examples[0])
             example['scenes'][0]['actions'][0]['depends_on'] = dependency
             with self.assertRaises(ValueError): validate_plan(json.dumps(example))
+
+    def test_explicit_deadlines_are_reviewed_without_rewriting_history(self):
+        for when, expected in [
+            ('Entro il 25 agosto 2026', 'Da ripianificare:'),
+            ('2026-08-25', 'Da ripianificare:'),
+            ('25/08/2026', 'Da ripianificare:'),
+            ('25.08.2026', 'Da ripianificare:'),
+            ('31 settembre 2026', 'Data proposta non valida'),
+            ('2026-02-29', 'Data proposta non valida'),
+            ('20 settembre 2026', None),
+            ('Entro il 25 settembre 2026', None),
+            ('Dopo A1', None),
+            ('Appena possibile', None),
+            ('25 agosto', None),
+        ]:
+            with self.subTest(when=when):
+                plan = {'scenes': [{'actions': [{'when': when, 'status': 'proposed'}]}]}
+                reviewed = review_schedule(plan, date(2026, 9, 20))
+                result = reviewed['scenes'][0]['actions'][0]['when']
+                if expected:
+                    self.assertTrue(result.startswith(expected), result)
+                    self.assertEqual(review_schedule(reviewed, date(2026, 9, 20)), reviewed)
+                else:
+                    self.assertEqual(result, when)
+                self.assertEqual(plan['scenes'][0]['actions'][0]['when'], when)
+                plan['scenes'][0]['actions'][0]['status'] = 'reported_done'
+                self.assertEqual(review_schedule(plan, date(2026, 9, 20)), plan)
+
+    def test_reopened_legacy_deadline_is_flagged_and_keeps_stored_evidence(self):
+        record = self.generate().json
+        key = PREFIX + 'plan:' + record['id']
+        stored = json.loads(self.db.get(key))
+        stored['plan']['scenes'][0]['actions'][0]['when'] = 'Entro il 25 agosto 2000'
+        original = json.dumps(stored)
+        self.db.set(key, original)
+        reopened = self.http.get('/api/fabbrica/plans/' + record['id'])
+        self.assertEqual(reopened.status_code, 200)
+        self.assertTrue(reopened.json['plan']['scenes'][0]['actions'][0]['when'].startswith('Da ripianificare:'))
+        self.assertEqual(self.db.get(key), original)
 
     def test_out_of_order_completion_rejected_and_revoke_cascades(self):
         plan = validate_plan(json.dumps(self.examples[0]))
@@ -218,6 +270,83 @@ class TestFabbrica(unittest.TestCase):
         plan=validate_plan(json.dumps(malicious))
         self.assertEqual(plan['scenes'][0]['actions'][0]['status'],'proposed')
         self.assertIsNone(plan['scenes'][0]['actions'][0]['reported_at'])
+
+    def test_dialogue_choices_survive_two_revisions_and_reach_typesafe(self):
+        first = self.generate().json
+        question = first['plan']['questions'][0]
+        choice = dict(question=question, answer='Massimo 250 euro complessivi.', type='VINCOLO')
+        second = self.generate(parent_id=first['id'], dialogue={'answers': [choice]}, revision='Solo musica di sottofondo.').json
+        third = self.generate(parent_id=second['id'], revision='Preferisco venerdì sera.').json
+        self.assertEqual(third['root_id'], first['id'])
+        self.assertEqual(third['dialogue']['answers'][0]['answer'], choice['answer'])
+        self.assertEqual(third['dialogue']['answers'][0]['source'], 'user_choice')
+        self.assertEqual(third['dialogue']['revisions'], ['Solo musica di sottofondo.', 'Preferisco venerdì sera.'])
+        self.assertIn(choice['answer'], self.assessment.call_args.args[1])
+        self.assertEqual(self.http.get('/api/fabbrica/plans/' + third['id']).json, third)
+        self.assertEqual(self.http.get('/api/fabbrica/plans/' + first['id']).json, first)
+
+    def test_dialogue_rejects_foreign_question_and_invalid_kind_before_paid_calls(self):
+        first = self.generate().json
+        for answer in [dict(question='Una domanda estranea', answer='test', type='VINCOLO'),
+                       dict(question=first['plan']['questions'][0], answer='test', type=[]),
+                       dict(question=first['plan']['questions'][0], answer='x'*901, type='PREFERENZA')]:
+            self.assertEqual(self.generate(parent_id=first['id'], dialogue={'answers':[answer]}).status_code, 400)
+        self.assertEqual(self.calls, 1)
+
+    def test_empty_questions_are_allowed_when_details_are_complete(self):
+        example = copy.deepcopy(self.examples[0]); example['questions'] = []
+        self.assertEqual(validate_plan(json.dumps(example))['questions'], [])
+
+    def help_request(self, record, **extra):
+        body = dict(version=record['version'], question=record['plan']['questions'][0], answer='', instruction='')
+        return self.http.post('/api/fabbrica/plans/' + record['id'] + '/question-help', json={**body, **extra}, headers=self.headers)
+
+    def test_ai_help_is_a_cached_proposal_and_never_applies_choices(self):
+        first = self.generate().json
+        prompts = []
+        proposal = dict(explanation='Questa scelta orienta la cena.', suggestions=[dict(label='Semplice', answer='Preferisco una cena tranquilla.')])
+        def reply(system, prompt):
+            prompts.append(json.loads(prompt))
+            self.assertIn('DATA_ONLY', system)
+            return SimpleNamespace(via_api=True, testo=json.dumps(proposal), provider='test', modello='test-only', metadata={})
+        self.provider.completa = reply
+        first_help = self.help_request(first, instruction='Dammi una soluzione semplice.')
+        self.assertEqual(first_help.status_code, 200, first_help.json)
+        self.assertEqual(first_help.json['status'], 'suggested')
+        self.assertEqual(first_help.json['suggestions'], proposal['suggestions'])
+        self.assertNotIn('attempts', first_help.json)
+        self.assertEqual(self.help_request(first, instruction='Dammi una soluzione semplice.').json, first_help.json)
+        self.assertEqual(len(prompts), 1)
+        self.assertEqual(prompts[0]['brief'], first['brief'])
+        self.assertNotIn('owner', prompts[0])
+        self.assertEqual(self.http.get('/api/fabbrica/plans/' + first['id']).json, first)
+        self.assertTrue(any(k.startswith(PREFIX+'help:') for k in self.db.values))
+        self.assertEqual(self.http.delete('/api/fabbrica/plans/' + first['id'], headers=self.headers).status_code, 200)
+        self.assertFalse(any(k.startswith(PREFIX+'help:') or k.startswith(PREFIX+'help-cache:') for k in self.db.values))
+
+    def test_help_rejects_other_session_stale_version_and_foreign_questions(self):
+        first = self.generate().json
+        stranger = app.test_client(); stranger.get('/api/fabbrica/status')
+        url = '/api/fabbrica/plans/' + first['id'] + '/question-help'
+        self.assertEqual(stranger.post(url, json={}, headers=self.headers).status_code, 404)
+        self.assertEqual(self.http.post(url, json={}, headers={'Origin':'https://other.example', **self.headers}).status_code, 403)
+        self.assertEqual(self.help_request(first, version=0).status_code, 409)
+        self.assertEqual(self.help_request(first, version=True).status_code, 409)
+        self.assertEqual(self.help_request(first, question='Domanda di un altro piano').status_code, 400)
+        self.assertEqual(self.calls, 1)
+
+    def test_help_quota_and_invalid_provider_output_leave_plan_unchanged(self):
+        first = self.generate().json
+        self.db.allow_quota = False
+        self.assertEqual(self.help_request(first).status_code, 429)
+        self.assertEqual(self.calls, 1)
+        self.db.allow_quota = True
+        # The normal planner fixture is deliberately not a valid help response.
+        self.assertEqual(self.help_request(first).status_code, 503)
+        self.assertEqual(self.http.get('/api/fabbrica/plans/' + first['id']).json, first)
+        stored = [json.loads(v) for k, v in self.db.values.items() if k.startswith(PREFIX+'help:')]
+        self.assertEqual(len(stored), 1)
+        self.assertEqual(len(stored[0]['attempts']), 1)
 
     def test_failure_logs_diagnosis_without_private_text_or_exception_body(self):
         with patch('fabbrica.client', side_effect=RuntimeError('SECRET_CONNECTION_STRING')):
