@@ -6,7 +6,11 @@ Ottimizzazioni attive:
   C. Dynamic Timeout  – timeout diverso per profilo (governa il hedging)
   D. Model Affinity   – vincola i nodi successivi al provider già usato
   E. Response Cache   – evita chiamate duplicate entro TTL (default 5 min)
-  F. Phase Mode       – esplora/soglia/cristallizza cambiano il comportamento globale
+
+Commutazione Creativa (--fase):
+  esplora      – esplorazione ampia, provider economici, molte opzioni
+  soglia       – transizione, profilo bilanciato standard
+  cristallizza – impegno finale, provider migliore, hedging attivo
 """
 
 from __future__ import annotations
@@ -18,14 +22,15 @@ import queue
 import re
 import time
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any
 
-FaseElaborazione = Literal["esplora", "soglia", "cristallizza"]
-
+from .specializzazioni import classifica, nodo_per_problema
 from .providers import (
     AnthropicProvider,
     DeepSeekProvider,
     GeminiProvider,
+    GrokProvider,
+    MiniMaxProvider,
     OllamaProvider,
     OpenAIProvider,
     PerplexityProvider,
@@ -42,6 +47,8 @@ PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
     "deepseek":   (DeepSeekProvider,   "deepseek-chat"),
     "perplexity": (PerplexityProvider, "sonar-pro"),
     "gemini":     (GeminiProvider,     "gemini-2.5-flash"),
+    "grok":       (GrokProvider,       "grok-3"),
+    "minimax":    (MiniMaxProvider,    "MiniMax-M3"),
     "ollama":     (OllamaProvider,     "llama3.2"),
     "stub":       (StubProvider,       "stub-model"),
 }
@@ -69,6 +76,14 @@ class EsitoChiamata:
     hedged: bool = False
 
 
+# Commutazione Creativa: mappa fase → profilo router
+FASE_PROFILO: dict[str, str] = {
+    "esplora":      "esplora",
+    "soglia":       "soglia",
+    "cristallizza": "cristallizza",
+}
+
+
 class LLMRouter:
     # C: timeout di default per profilo (secondi)
     _TIMEOUT_DEFAULT: dict[str, float] = {
@@ -76,6 +91,9 @@ class LLMRouter:
         "default":      45.0,
         "ragionamento": 90.0,
         "ricerca":      60.0,
+        "esplora":      20.0,
+        "soglia":       45.0,
+        "cristallizza": 90.0,
     }
     # B: attesa prima di lanciare il provider secondario
     HEDGE_WAIT_S: float = 3.0
@@ -91,27 +109,6 @@ class LLMRouter:
         self._cache: dict[tuple[str, str], ProviderBase] = {}
         self._circuit: dict[str, float] = {}      # A: provider_name -> expiry timestamp
         self._resp_cache: dict[str, tuple[RispostaProvider, float]] = {}  # E: response cache
-        self.fase_attiva: FaseElaborazione | None = None  # F: Phase Mode
-
-    # ------------------------------------------------------------------ #
-    # F. Phase Mode                                                        #
-    # ------------------------------------------------------------------ #
-
-    def imposta_fase(self, fase: FaseElaborazione) -> None:
-        """F: imposta la fase globale di elaborazione.
-
-        esplora      – no cache, hedging attivo, budget_tentativi=2
-                       (massima esplorazione, risposta più ricca)
-        soglia       – comportamento di default (nessuna modifica)
-        cristallizza – cache aggressiva, no hedging, budget=1
-                       (velocità e coerenza, evita variabilità)
-        """
-        if fase not in ("esplora", "soglia", "cristallizza"):
-            raise ValueError(
-                f"Fase sconosciuta: '{fase}'. Valori validi: esplora | soglia | cristallizza"
-            )
-        self.fase_attiva = fase
-        log.info("F. Phase Mode attivo: %s", fase)
 
     # ------------------------------------------------------------------ #
     # E. Response Cache                                                    #
@@ -285,22 +282,36 @@ class LLMRouter:
         sistema: str,
         utente: str,
         profilo: str = "default",
+        fase: str | None = None,              # Commutazione Creativa (esplora/soglia/cristallizza)
+        problema: str | None = None,          # Routing semantico (codice/ragionamento/ricerca/...)
         hedging: bool = False,
         provider_vincolo: str | None = None,  # D: Model Affinity
         budget_tentativi: int = 1,            # Test-Time Compute: retry con prompt arricchito
         cache: bool = True,                   # E: Response Cache
+        auto_classifica: bool = False,        # classifica automaticamente il testo se problema=None
     ) -> EsitoChiamata:
-        # F. Phase Mode: applica preset basati sulla fase globale attiva
-        if self.fase_attiva == "esplora":
-            cache = False
-            hedging = True
-            budget_tentativi = max(budget_tentativi, 2)
-        elif self.fase_attiva == "cristallizza":
-            cache = True
-            hedging = False
-            budget_tentativi = 1
-        # "soglia" o None = comportamento di default, nessuna modifica
+        # Routing semantico: classifica automatica se richiesta
+        if problema is None and auto_classifica:
+            problema = classifica(utente)
+            if problema:
+                log.debug("Auto-classificazione: '%s'", problema)
 
+        # Routing semantico: problema sovrascrive provider_vincolo di default
+        if problema is not None and provider_vincolo is None:
+            nodo = nodo_per_problema(problema)
+            if nodo:
+                provider_vincolo = nodo.provider
+                log.debug("Routing semantico: %s → %s", problema, nodo.provider)
+
+        # Commutazione Creativa: fase sovrascrive profilo se specificata
+        if fase is not None:
+            profilo_fase = FASE_PROFILO.get(fase)
+            if profilo_fase:
+                profilo = profilo_fase
+                if fase == "cristallizza":
+                    hedging = True
+            else:
+                log.warning("Fase sconosciuta '%s', uso profilo '%s'", fase, profilo)
         regola = self.regole.get(profilo) or self.regole["default"]
 
         # E. Response Cache: restituisce risposta cached se disponibile

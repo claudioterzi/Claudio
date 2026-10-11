@@ -1,0 +1,24 @@
+{
+  "concept": "Claudio Terzi — Ferro di Luce",
+  "mode": "built-in image_gen",
+  "prompt": "Use case: product-mockup. Asset type: square photographic perfume concept image for a website. Concept: Claudio Terzi, Ferro di Luce. Create exactly ONE original sculptural perfume bottle, never a copy of a commercial bottle, in luxury editorial photorealism. Input image 1 is a STYLE REFERENCE ONLY for physical shipyard-at-sunset atmosphere, rich amber grazing light, cool shadows, aged metal and tactile realism; do not reproduce people or the shipyard scene. Bottle design: smoked amber optical glass and bronze, a sculptural oval body with a massive substantial glass base and a satin-finished metal cap. Full bottle entirely visible, straight-on frontal view, centered and upright, occupying horizontal x25–75% and vertical y12–86% of the square canvas. The bottle has one rectangular, perfectly blank dark front plaque, exactly frontal and flat, occupying approximately x37–63% and y47–65% of the entire image, deliberately clear and unobstructed for a precise label to be applied later in the website UI. The plaque must remain completely blank. Warm raking sunset light and architectural shadows, sophisticated believable reflections and refraction in real glass. A restrained weathered metal surface and deeply shadowed industrial backdrop evoke a shipyard at dusk without people. Suggest grapefruit, lavender, cedar and a metallic smoky accent only through tonal nuance, material and light; no ingredients inside the bottle and no literal ingredient display. The full bottle is the sole hero object. Perfectly square composition, premium editorial photography, coherent optics, tangible imperfections, understated richness. No text, letters, labels, brand marks, logos, watermarks, UI, duplicate bottles, illustration or synthetic CGI sheen. Generate exactly one image, no variants.",
+  "reference_path": "/workspace/scratch/b7c6b4ff49cf/upload/IMG_1059.jpeg",
+  "source_path": "/workspace/scratch/b7c6b4ff49cf/generated_images/exec-29f3e2b4-d1b9-4e59-b086-df4ba959c478.png",
+  "path": "/workspace/scratch/b7c6b4ff49cf/output/backgrounds/ferro-di-luce.png",
+  "description": "Original oval smoked-amber perfume bottle with substantial glass base, bronze satin cap and blank dark rectangular plaque; warm shipyard sunset, no people.",
+  "plaque_approximate_percent": {
+    "left": 37,
+    "top": 47.3,
+    "width": 26,
+    "height": 16.4
+  },
+  "safe_label_percent": {
+    "left": 38.5,
+    "top": 49,
+    "width": 23,
+    "height": 13
+  },
+  "width": 1254,
+  "height": 1254,
+  "bytes": 2266131
+}

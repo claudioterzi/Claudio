@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0c10"><meta name="description" content="R³∞ — Riprendi il filo: stato, dubbi aperti, ROI e prossimo passo.">
+<title>R³∞ — Riprendi il filo</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b0c10;color:#f1eee7;font-family:Georgia,'Times New Roman',serif;line-height:1.55}:root{--gold:#d4b861;--gold2:#9b7d32;--muted:#9d988c;--panel:#14171d;--line:#2b2e38;--green:#68bf8e;--blue:#7ca4e8;--amber:#e1b45d;--red:#d46a6a}.wrap{max-width:1120px;margin:auto;padding:0 1rem 4rem}header{padding:4rem 0 2rem;border-bottom:1px solid var(--line)}h1,h2,h3{font-weight:normal}h1{font-size:clamp(2.6rem,7vw,6rem);line-height:.95;margin:.4rem 0 1rem}h1 em{font-style:normal;color:var(--gold)}.kicker{letter-spacing:.18em;text-transform:uppercase;font-size:.72rem;color:var(--gold2)}.lead{max-width:54rem;color:#d2ccc1}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.card,.hero-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1rem}.metric{font-size:2rem;color:var(--gold)}.muted{color:var(--muted)}section{padding:2.4rem 0;border-bottom:1px solid var(--line)}.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.25rem .55rem;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}.fatto{color:var(--green)}.ipotesi{color:var(--amber)}.simulazione{color:var(--red)}.inferenza{color:var(--blue)}.list{display:grid;gap:.8rem}.item{background:#171a21;border:1px solid var(--line);border-radius:12px;padding:.9rem}.item strong{display:block;color:var(--gold)}.roi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}.roi .card{text-align:center}.actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}.btn{border:1px solid var(--gold2);color:var(--gold);border-radius:999px;padding:.62rem .9rem;text-decoration:none}.notice{padding:.8rem 1rem;border-left:3px solid var(--amber);background:#17140e;color:#d5c8a6}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86rem}@media(max-width:760px){.grid,.roi{grid-template-columns:1fr 1fr}}@media(max-width:520px){.grid,.roi{grid-template-columns:1fr}}
+</style>
+<script src="/site-version.js" defer></script>
+</head>
+<body>
+<script src="/soglia.js"></script><script src="/nav.js"></script>
+<div class="wrap">
+<header><p class="kicker">R³∞ · Continuità</p><h1>Riprendi<br><em>il filo.</em></h1><p class="lead">Una vista di sintesi sola-lettura della memoria locale: che cosa è stato registrato, cosa resta incerto, dove c'è evidenza e qual è il prossimo passo con il miglior ritorno operativo.</p><p class="muted">Claudio Terzi · C.Terzi</p></header>
+<section><div class="grid"><div class="hero-card"><p class="kicker">Integrità locale</p><div id="integrity" class="metric">…</div><p id="integrity-detail" class="muted">Verifica in corso.</p></div><div class="hero-card"><p class="kicker">Ultimo evento</p><div id="last-time" class="metric">—</div><p id="last-claim" class="muted">Nessuna memoria locale.</p></div></div></section>
+<section><p class="kicker">Quadro rapido</p><h2>Che cosa c'è nella memoria.</h2><div class="roi"><div class="card"><div id="count-total" class="metric">0</div><div class="muted">eventi</div></div><div class="card"><div id="count-fatto" class="metric">0</div><div class="muted">FATTO</div></div><div class="card"><div id="count-open" class="metric">0</div><div class="muted">aperti</div></div><div class="card"><div id="count-sourced" class="metric">0</div><div class="muted">con fonte</div></div></div></section>
+<section><p class="kicker">Ultimi cambiamenti</p><h2>Le 5 cose più recenti.</h2><div id="recent" class="list"></div></section>
+<section><p class="kicker">Domande aperte</p><h2>Dove non fingiamo certezza.</h2><div id="open" class="list"></div></section>
+<section><p class="kicker">ROI operativo</p><h2>Prossimo passo consigliato.</h2><div id="next" class="card"><strong>In attesa della memoria locale.</strong><p class="muted">La priorità viene scelta favorendo eventi aperti con fonte assente o evidenza debole, così il prossimo lavoro riduce incertezza e lavoro ripetuto.</p></div><div class="notice">Questa pagina non scrive né modifica il ledger. Legge soltanto <span class="mono">r3.memory.ledger.v1</span> nello stesso dominio. Nessuna sincronizzazione server viene simulata.</div></section>
+<section><div class="actions"><a class="btn" href="/r3-evoluzione">Apri Memoria Evolutiva</a><a class="btn" href="/progetti">Tutti i progetti</a></div></section>
+</div>
+<script>
+(function(){
+ const KEY='r3.memory.ledger.v1';
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const fmt=t=>{try{return new Date(t).toLocaleString('it-IT')}catch{return '—'}};
+ function load(){const raw=localStorage.getItem(KEY);if(raw===null)return [];const x=JSON.parse(raw);if(!Array.isArray(x))throw new Error('ledger non-array');return x;}
+ function validBasic(e){return e&&typeof e==='object'&&typeof e.id==='string'&&typeof e.ts==='string'&&typeof e.state==='string'&&typeof e.claim==='string'&&typeof e.hash==='string';}
+ function render(){
+  let ledger=[];try{ledger=load();if(!ledger.every(validBasic))throw new Error('schema');document.getElementById('integrity').textContent='leggibile';document.getElementById('integrity-detail').textContent='Ledger locale caricato. La verifica crittografica completa resta in Memoria Evolutiva.';}catch(e){document.getElementById('integrity').textContent='errore';document.getElementById('integrity-detail').textContent='Ledger locale non leggibile: '+e.message;ledger=[];}
+  const total=ledger.length, fatti=ledger.filter(e=>e.state==='FATTO').length, open=ledger.filter(e=>e.state!=='FATTO').length, sourced=ledger.filter(e=>String(e.source||'').trim()).length;
+  document.getElementById('count-total').textContent=total;document.getElementById('count-fatto').textContent=fatti;document.getElementById('count-open').textContent=open;document.getElementById('count-sourced').textContent=sourced;
+  const last=ledger.at(-1);if(last){document.getElementById('last-time').textContent=fmt(last.ts);document.getElementById('last-claim').textContent=last.claim;}
+  const recent=document.getElementById('recent');recent.innerHTML='';ledger.slice(-5).reverse().forEach(e=>{const a=document.createElement('article');a.className='item';a.innerHTML=`<span class="tag ${esc((e.state||'').toLowerCase())}">${esc(e.state)}</span><strong>${esc(e.claim)}</strong><span class="muted">${esc(fmt(e.ts))} · ${esc(e.source||'fonte non indicata')}</span>`;recent.appendChild(a)});if(!recent.children.length)recent.innerHTML='<p class="muted">Nessun evento locale registrato.</p>';
+  const opened=ledger.filter(e=>e.state!=='FATTO').slice(-8).reverse();const box=document.getElementById('open');box.innerHTML='';opened.forEach(e=>{const a=document.createElement('article');a.className='item';a.innerHTML=`<span class="tag ${esc((e.state||'').toLowerCase())}">${esc(e.state)}</span><strong>${esc(e.claim)}</strong><span class="muted">Cade se: ${esc(e.falsifier||'non specificato')} · Fonte: ${esc(e.source||'non indicata')}</span>`;box.appendChild(a)});if(!box.children.length)box.innerHTML='<p class="muted">Nessuna voce aperta nel ledger locale.</p>';
+  const candidates=ledger.filter(e=>e.state!=='FATTO').map(e=>({e,score:(e.source?0:3)+(e.evidence?0:2)+(e.falsifier?0:1)})).sort((a,b)=>b.score-a.score||Date.parse(b.e.ts)-Date.parse(a.e.ts));const n=candidates[0]?.e;const next=document.getElementById('next');if(n){next.innerHTML=`<span class="tag ${esc((n.state||'').toLowerCase())}">${esc(n.state)}</span><h3>${esc(n.claim)}</h3><p>${n.source?'Verificare o falsificare questa voce usando la fonte già indicata.':'Prima azione: aggiungere una fonte verificabile o un test riproducibile.'}</p><p class="muted">ROI: riduce incertezza e impedisce di ripetere lavoro già discusso.</p>`;}else if(total){next.innerHTML='<h3>Nessuna voce aperta.</h3><p>Il prossimo investimento utile è creare una nuova ipotesi soltanto quando nasce da un problema reale o da un obiettivo con ROI.</p>';}
+ }
+ render();
+})();
+</script>
+</body></html>

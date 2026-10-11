@@ -31,6 +31,12 @@ class ClaudeClient:
         "claude-sonnet-4-6":         "default",
         "claude-haiku-4-5-20251001": "veloce",
         "claude-haiku-4-5":          "veloce",
+        # Gemini — flash = veloce, pro = default (ragionamento per 2.5-pro)
+        "gemini-2.5-flash":          "veloce",
+        "gemini-2.5-pro":            "default",
+        "gemini-2.0-flash":          "veloce",
+        "gemini-1.5-flash":          "veloce",
+        "gemini-1.5-pro":            "default",
     }
 
     def __init__(self, router: LLMRouter, modello_hint: str | None = None):

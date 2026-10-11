@@ -1,0 +1,5 @@
+CI run trigger
+
+Questo file viene aggiornato automaticamente per attivare il workflow CI & Security scans.
+
+Timestamp: 2026-08-29T04:58:38Z

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Santuario — Protocollo Rosso</title>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; background: #140e0c; color: #e8d7c4; font-family: Georgia, "Times New Roman", serif; }
+    #hud { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 1.2rem 1.4rem 1.6rem; background: linear-gradient(transparent, rgba(12,8,7,.92)); pointer-events: none; text-align: center; }
+    #hud p { margin: 0; font-size: 1.05rem; text-shadow: 0 1px 12px #000; }
+    #hud .sub { margin-top: .45rem; font-size: .82rem; opacity: .72; font-style: italic; }
+    #exit-web { display: none; pointer-events: auto; margin: .8rem auto 0; background: #6b1c1c; color: #f3e6d6; border: 0; padding: .7rem 1.1rem; font: inherit; cursor: pointer; }
+    .a-enter-vr-button, .a-enter-ar-button { background: #6b1c1c !important; }
+  </style>
+</head>
+<body>
+  <div id="hud">
+    <p id="line">Il rumore resta fuori.</p>
+    <p class="sub" id="sub">Sei già all’altare. Tieni il grilletto sulla candela. Dodici secondi interi.</p>
+    <button type="button" id="exit-web">CONTINUA NEL MONDO</button>
+  </div>
+  <a-scene renderer="colorManagement: true; physicallyCorrectLights: true; exposure: 0.85" fog="type: exponential; color: #241614; density: 0.035" background="color: #1a1210" vr-mode-ui="enabled: true" loading-screen="dotsColor: #8a2a2a; backgroundColor: #140e0c">
+    <a-sky color="#2b1c1a"></a-sky>
+    <a-entity light="type: hemisphere; skyColor: #c47a4a; groundColor: #1a0e0c; intensity: 0.35"></a-entity>
+    <a-entity light="type: directional; color: #e09a62; intensity: 0.45" position="-6 8 -4"></a-entity>
+    <a-plane rotation="-90 0 0" width="48" height="48" material="color: #2c241f; roughness: 1"></a-plane>
+    <a-entity position="-4.2 2.6 -3.2"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="4.2 2.6 -3.2"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="-4.2 2.6 3.2"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="4.2 2.6 3.2"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="0 2.6 -6.4"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="0 2.6 6.4"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="-6.4 2.6 0"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="6.4 2.6 0"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-box position="0 0.42 -1.35" width="1.6" height="0.84" depth="0.85" material="color: #4a3f38; roughness: 0.96"></a-box>
+    <a-box position="0 0.92 -1.28" width="0.62" height="0.08" depth="0.42" rotation="-8 12 0" material="color: #3a342e"></a-box>
+    <a-text value="non si legge\nsi sente pesare" align="center" width="1.6" color="#cbb9a4" position="0 1.22 -1.28" rotation="-20 0 0"></a-text>
+    <a-entity id="candela" position="0.38 0.88 -1.05" class="clickable" hold-light="seconds: 12">
+      <a-cylinder radius="0.035" height="0.22" material="color: #e8dcc8"></a-cylinder>
+      <a-entity id="fiamma" visible="false" position="0 0.22 0">
+        <a-cone radius-bottom="0.04" radius-top="0.002" height="0.16" material="color: #ffb060; emissive: #ff7a20; emissiveIntensity: 1.4; transparent: true; opacity: 0.92"></a-cone>
+        <a-entity light="type: point; color: #ff9a40; intensity: 0.95; distance: 7"></a-entity>
+      </a-entity>
+    </a-entity>
+    <a-entity id="uscita" visible="false" position="0 1.55 -0.35" class="clickable" open-world>
+      <a-plane width="1.35" height="0.28" material="color: #6b1c1c; emissive: #4a1010"></a-plane>
+      <a-text value="CONTINUA NEL MONDO" align="center" width="2.4" color="#f3e6d6" position="0 0 0.01"></a-text>
+    </a-entity>
+    <a-entity id="rig" position="0 1.6 0.55">
+      <a-camera look-controls wasd-controls="acceleration: 12">
+        <a-cursor fuse="false" raycaster="objects: .clickable; far: 8" material="color: #c45c4a; shader: flat" geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.014"></a-cursor>
+      </a-camera>
+      <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable; far: 8" quest-hold-bridge="target: #candela"></a-entity>
+      <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable; far: 8" quest-hold-bridge="target: #candela"></a-entity>
+    </a-entity>
+  </a-scene>
+  <script>
+    const line = document.getElementById("line");
+    const sub = document.getElementById("sub");
+    const exitWeb = document.getElementById("exit-web");
+    const BOT = (new URLSearchParams(location.search).get("bot") || "ProtocolloRossoBot").replace(/^@/, "");
+    const worldUrl = "https://t.me/" + BOT + "?start=vr";
+    function goWorld() {
+      try { const s = document.querySelector("a-scene"); if (s && s.is && s.is("vr-mode")) s.exitVR(); } catch (e) {}
+      window.location.href = worldUrl;
+    }
+    exitWeb.addEventListener("click", goWorld);
+    AFRAME.registerComponent("quest-hold-bridge", {
+      schema: { target: { type: "selector" } },
+      init() {
+        const target = this.data.target;
+        const pointing = () => {
+          const ray = this.el.components.raycaster;
+          if (!ray || !target) return false;
+          return (ray.intersectedEls || []).some(el => el === target || target.contains(el));
+        };
+        this.onDown = () => { if (pointing() && target) target.emit("holdstart", { controller: this.el }, false); };
+        this.onUp = () => { if (target) target.emit("holdstop", {}, false); };
+        this.el.addEventListener("triggerdown", this.onDown);
+        this.el.addEventListener("triggerup", this.onUp);
+      }
+    });
+    AFRAME.registerComponent("open-world", { init() { this.el.addEventListener("click", goWorld); } });
+    AFRAME.registerComponent("hold-light", {
+      schema: { seconds: { type: "number", default: 12 } },
+      init() {
+        this.holding = false; this.acc = 0; this.done = false;
+        const start = () => { if (!this.done) this.holding = true; };
+        const stop = () => {
+          this.holding = false;
+          if (!this.done) {
+            this.acc = 0;
+            line.textContent = "Tieni premuto sulla candela. Dodici secondi interi.";
+            sub.textContent = "Se molli, ricominci. Non si accumula.";
+          }
+        };
+        this.el.addEventListener("mousedown", start);
+        this.el.addEventListener("mouseup", stop);
+        window.addEventListener("mouseup", stop);
+        this.el.addEventListener("holdstart", start);
+        this.el.addEventListener("holdstop", stop);
+      },
+      tick(t, dt) {
+        if (this.done || !this.holding) return;
+        this.acc += dt / 1000;
+        const left = Math.max(0, this.data.seconds - this.acc);
+        line.textContent = left > 0 ? ("Il gesto. Resta. " + left.toFixed(0) + "s") : "La fiamma c’è.";
+        if (this.acc >= this.data.seconds) {
+          this.done = true; this.holding = false;
+          document.getElementById("fiamma").setAttribute("visible", true);
+          document.getElementById("uscita").setAttribute("visible", true);
+          exitWeb.style.display = "inline-block";
+          line.textContent = "Candela accesa. Lento. Intero.";
+          sub.textContent = "Ora esci. Una cosa vera, che un altro account possa vedere.";
+        }
+      }
+    });
+  </script>
+</body>
+</html>
