@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "timestamp": 1782475133.00587,
+    "data_ora": "2026-06-26 13:58:53",
+    "tz": "Europe/Brussels",
+    "versione": "1.1.0"
+  },
+  "git": {
+    "branch": "main",
+    "commit": "54b173a6d952c1884c771239cd78c2202a166bb7",
+    "commit_short": "54b173a",
+    "messaggio": "feat: porta tutte le skill bot su main — 12 comandi online",
+    "autore": "Claude",
+    "data_commit": "2026-06-26 11:50:25 +0000",
+    "dirty": false,
+    "file_modificati": []
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "ced694c73b7bf94b",
+      "CLAUDE.md": "e1c1a4f8f92cbdad",
+      "sdq1/__main__.py": "d25f9e0268d07aa6",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "89db6bf7b0574e47",
+      "sdq1/snapshot.py": "2fffc6b76d22bd0f",
+      "sdq1/sar/scacchiera_quantica.py": "91645f32e7f9b9bf",
+      "sdq1/sar/agenti_autonomi.py": "20688ed2ae77ed5c",
+      "sdq1/llm/router.py": "65649bb2ce8f547e",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "f2ebac7b65c75c3b"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-06-26T11:58:53.041998",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.38,
+    "scacchiera_dir": "SEME"
+  },
+  "scanner": {
+    "agente": "CODE_SCANNER",
+    "score_sistema": 92,
+    "sicurezza_ok": true,
+    "sicurezza_livello": "VERDE",
+    "qualita_score": 81,
+    "debito_per_1k": 9.5,
+    "file_totali": 74,
+    "righe_totali": 13590,
+    "problemi_critici": 0,
+    "trovati_sicurezza": 0
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 46.0,
+      "n_chiavi": 4
+    }
+  }
+}
