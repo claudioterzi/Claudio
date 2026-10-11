@@ -1,0 +1,160 @@
+{
+  "schema": "R3-011-R3-007-REPLAY-RECEIPT/1",
+  "created_at_utc": "2026-10-09T00:53:55Z",
+  "project": "R3-011 replay against pre-existing R3-007 filesystem evidence",
+  "decision": "KEEP_ISOLATED_RETEST",
+  "status": "CANDIDATE_L0_INDEPENDENT_FIXTURE_PROVENANCE_PRESERVED",
+  "canonical_state": {
+    "repository": "claudioterzi/Claudio",
+    "main_commit": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+    "pr_76_head": "29f9523e2f3322286650e1d9e11db62da00bd380",
+    "pr_78_head": "88c89b6e9e45278538517e6bd8276bcf8b3e6a80",
+    "pr_118_head": "13a3380aa3172fa2ea3b04ba642df2d6b1b3d5cd",
+    "pr_119_head": "89309d5c72a1b58a2e43d41b6ca7d40ef6bcd3ae"
+  },
+  "candidate": {
+    "branch": "candidate/r3-011-r3-007-replay-20261009",
+    "base_receipt_commit": "49a321abbc09273885b593053eab9758c2bc3086",
+    "preregistration_commit": "7d736a63df6285286661be5117be60cf8b6b1c7a",
+    "technical_commit": "886d7142ceb70d4b3e08ce8abd9ed1a6d0129e9f",
+    "retroactive_classification": "PATCH_RETEST",
+    "ahead_of_main_before_receipt": 12,
+    "behind_main": 0,
+    "pushed": false,
+    "merged": false,
+    "deployed": false
+  },
+  "r3_020_preregistration": {
+    "candidate_id": "R3C-r3011-r3007-replay-20261009",
+    "file": "docs/evidenze/R3_011_R3_007_REPLAY_PREREGISTRATION_20261009T005211Z.json",
+    "sha256": "b15ece3b05412df2246d5cbe9c7e8567e05c0ace6ac6960f3c4cbf7534116db6",
+    "registered_before_fixture_execution_and_patch": true
+  },
+  "independent_fixture": {
+    "source_receipt_commit": "108f3c2035b7d765624c0f67a50743787dcec4b0",
+    "source_schema": "R3-007-FILESYSTEM-INTEGRATION/1",
+    "source_script": "scripts/r3_007_filesystem_integration.py",
+    "source_script_sha256": "6e067bead7912908e1c46f93d94dccf1ed69f1a2d90551acf20dfc2b32313ea5",
+    "predates_r3_011_source_changes": true,
+    "fixture_status": "VERIFIED_EPHEMERAL_FILESYSTEM_INTEGRATION",
+    "cases": [
+      "matching_read_after_write",
+      "tampered_bytes",
+      "missing_object"
+    ]
+  },
+  "falsification": {
+    "baseline": {
+      "exact_sources_preserved": 2,
+      "total_cases": 3,
+      "matching_read_after_write": {
+        "state": "FATTO",
+        "evidence_type": "AUTHORITATIVE_STATE",
+        "source_preserved": true
+      },
+      "tampered_bytes": {
+        "state": "FATTO",
+        "evidence_type": "AUTHORITATIVE_STATE",
+        "source_preserved": true
+      },
+      "missing_object": {
+        "state": "IPOTESI",
+        "evidence_type": "OTHER",
+        "input_source": "filesystem:temporary/missing.bin#read_bytes",
+        "exported_source": null,
+        "source_preserved": false
+      },
+      "failure": "A failed authoritative read stayed non-factual as required but lost the exact attempted observer source."
+    },
+    "trial": {
+      "exact_sources_preserved": 3,
+      "total_cases": 3,
+      "matching_read_after_write": {
+        "state": "FATTO",
+        "evidence_type": "AUTHORITATIVE_STATE",
+        "source": "filesystem:temporary/state.bin#read_bytes"
+      },
+      "tampered_bytes": {
+        "state": "FATTO",
+        "evidence_type": "AUTHORITATIVE_STATE",
+        "source": "filesystem:temporary/state.bin#read_bytes"
+      },
+      "missing_object": {
+        "state": "IPOTESI",
+        "evidence_type": "OTHER",
+        "source": "filesystem:temporary/missing.bin#read_bytes",
+        "promotion_support_edges": 0
+      },
+      "legacy_non_authoritative_graph_sha256": "e1b20336f3288dfe247803c7bd8b7856cc6d06213074a03c11aa0835bf108757",
+      "source_less_authoritative_state_refused": true,
+      "proxy_remains_non_authoritative": true,
+      "invalid_metadata_controls_refused": [
+        "postcondition_source on DOCUMENT",
+        "postcondition_source on factual OTHER",
+        "blank postcondition_source on non-factual OTHER"
+      ]
+    },
+    "primary_gain": 1,
+    "critical_regressions": 0
+  },
+  "contract": {
+    "rule": "postcondition_source is provenance metadata and never grants authority by itself",
+    "authoritative_state_requires_nonempty_source": true,
+    "nonfactual_other_may_preserve_validated_observation_source": true,
+    "factual_other_with_source_refused": true,
+    "document_with_source_refused": true,
+    "promotion_support_still_requires_factual_eligible_evidence": true,
+    "parallel_verifier_created": false
+  },
+  "verification": {
+    "baseline_command": "Execute the commit-pinned R3-007 filesystem integration and adapt its three R3-007-shaped cases through R3-011 at base 49a321a.",
+    "trial_command": "Replay the same commit-pinned harness after the patch and verify exact source, epistemic state, evidence type and promotion support for all three cases.",
+    "test_command": "python -m unittest tests.test_evidence_graph tests.test_evolution_kernel tests.test_benchmark_integrity tests.test_benchmark_controlled tests.test_evidence_review",
+    "evidence_graph_test_result": "23/23 PASS",
+    "combined_relevant_test_result": "56/56 PASS",
+    "py_compile": "PASS",
+    "yaml_parse": "PASS",
+    "json_parse": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "r3_020_decision": {
+    "status": "HOLD",
+    "primary_metric": "r3_007_cases_with_exact_postcondition_source_preserved",
+    "baseline": 2,
+    "trial": 3,
+    "primary_gain": 1.0,
+    "critical_regressions": {
+      "factual_state_changes": 0.0,
+      "promotion_support_expansion": 0.0,
+      "legacy_hash_drift": 0.0,
+      "source_less_authoritative_accepts": 0.0
+    },
+    "reason": "The pre-existing independent fixture now preserves all observer sources without authority expansion, but hosted compatibility and domain-specific source-authority review remain absent.",
+    "auto_apply_eligible": false,
+    "promotion_authorized": false
+  },
+  "artifact_hashes": {
+    "preregistration_sha256": "b15ece3b05412df2246d5cbe9c7e8567e05c0ace6ac6960f3c4cbf7534116db6",
+    "source_fixture_script_sha256": "6e067bead7912908e1c46f93d94dccf1ed69f1a2d90551acf20dfc2b32313ea5",
+    "evidence_graph_sha256": "d6d7792b03c353ab475b4288b2058bd0ca6c5e16b038f1a0f864978a2dbb12f2",
+    "tests_sha256": "694e326797c33f03990b290239d8a85e19558fdce66b0d2c3a4a0eb0e15ef26c"
+  },
+  "effects": {
+    "provider_requests": 0,
+    "inference_executed": false,
+    "secrets_read": false,
+    "spend": false,
+    "cloud_write": false,
+    "production_change": false,
+    "deletion": false
+  },
+  "blocker": "The independent local fixture closes the failed-observation provenance gap, but no hosted/external serialized consumer or domain authority reviewer was available.",
+  "next_action": "Run hosted compatibility and review on this exact commit, or rotate to a different independent queue item; do not add further R3-011 schema changes without a new counterexample.",
+  "completion_criterion": "The exact candidate passes hosted/consumer review; all R3-007 observation attempts preserve public-safe sources, factuality remains determined by verified state and evidence type, non-factual source metadata cannot support promotion, legacy hashes remain stable and previous falsifiers stay at zero.",
+  "resume_trigger": "Hosted compatibility result, identified external consumer, domain authority review or new R3-011/R3-007 counterexample.",
+  "limits": [
+    "The source fixture is independent in time and code history but remains local filesystem evidence.",
+    "Preserving the attempted observer source does not prove that the source is authoritative or durable.",
+    "No provider inference, production action, merge, deployment or cloud write occurred."
+  ]
+}

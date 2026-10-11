@@ -1,0 +1,90 @@
+{
+  "schema": "R3-011-PUBLICATION-READY-RECEIPT/1",
+  "created_at_utc": "2026-10-09T02:00:17Z",
+  "decision": "KEEP_LOCAL_PUBLICATION_READY",
+  "status": "EXTERNAL_WRITE_BLOCKED_REVIEW_PACKAGE_COMPLETE",
+  "canonical_state": {
+    "repository": "claudioterzi/Claudio",
+    "main_commit": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+    "pr_78_head": "88c89b6e9e45278538517e6bd8276bcf8b3e6a80",
+    "pr_118_head": "13a3380aa3172fa2ea3b04ba642df2d6b1b3d5cd",
+    "pr_119_head": "89309d5c72a1b58a2e43d41b6ca7d40ef6bcd3ae"
+  },
+  "candidate": {
+    "branch": "candidate/r3-011-r3-007-replay-20261009",
+    "technical_head_before_package": "fad754be87bb10fa5a68da8534d458593ab2300b",
+    "base_commit": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+    "diff_files_before_package": 11,
+    "diff_insertions_before_package": 1608,
+    "scope": [
+      "R3_CAPILLARY_INHERITANCE.yaml additive candidate metadata",
+      "sdq1/evidence_graph.py",
+      "tests/test_evidence_graph.py",
+      "R3-011 preregistrations and receipts"
+    ],
+    "secret_pattern_findings": 0,
+    "remote_branch_present_after_attempt": false,
+    "pushed": false,
+    "merged": false,
+    "deployed": false
+  },
+  "authorization_boundary": {
+    "promotion_intent_observed": true,
+    "requested_safe_interpretation": "publish candidate for draft review only; no merge or deployment",
+    "push_command": "git push --set-upstream origin candidate/r3-011-r3-007-replay-20261009",
+    "push_result": "BLOCKED_BY_RUNTIME_APPROVAL",
+    "runtime_reason": "External publication and third-party communication require explicit approval accepted at the action boundary.",
+    "workaround_attempted": false,
+    "remote_postcondition_verified": "branch absent via git ls-remote"
+  },
+  "review_package": {
+    "file": "docs/R3_011_HOSTED_REVIEW_2026-10-09.md",
+    "sha256": "a74f5d93cced9a11002fa7f04081bbda2bc52095cf9158335cc3914f08a360a2",
+    "proposed_title": "R3-011: recover Evidence Graph with source-safe R3-007 provenance",
+    "mode": "DRAFT_REVIEW_ONLY",
+    "contains": [
+      "exact base and candidate heads",
+      "bounded scope",
+      "measured deltas",
+      "hosted test and security checklist",
+      "consumer compatibility checks",
+      "domain authority review requirement",
+      "non-goals and rollback"
+    ]
+  },
+  "verification": {
+    "test_command": "python -m unittest tests.test_evidence_graph tests.test_evolution_kernel tests.test_benchmark_integrity tests.test_benchmark_controlled tests.test_evidence_review",
+    "combined_relevant_test_result": "56/56 PASS",
+    "py_compile": "PASS",
+    "git_diff_check": "PASS",
+    "remote_branch_absence_readback": "PASS",
+    "main_and_pr_sha_reread": "PASS"
+  },
+  "r3_020_decision": {
+    "status": "HOLD",
+    "promotion_authorized": false,
+    "merge_authorized": false,
+    "deploy_authorized": false,
+    "reason": "The candidate is locally review-ready, but no hosted checks or external consumer review have run and the remote publication did not occur."
+  },
+  "effects": {
+    "remote_branch_created": false,
+    "pull_request_created": false,
+    "provider_requests": 0,
+    "inference_executed": false,
+    "secrets_read": false,
+    "spend": false,
+    "cloud_write": false,
+    "production_change": false,
+    "deletion": false
+  },
+  "blocker": "The runtime approval gate rejected the external git push; no GitHub CLI or environment token was available for a separate draft-PR path, and no workaround is permitted.",
+  "next_action": "After an explicit publication approval is accepted at the action boundary, push this exact branch without force, verify the remote SHA, open a draft PR with the prepared review package and keep R3-020 HOLD until hosted/consumer review passes.",
+  "completion_criterion": "Remote branch SHA matches the local publication head, a draft PR targets current main, hosted test/security checks pass, serialized consumer compatibility is reviewed and no merge/deploy occurs before a separate R3-020 decision.",
+  "resume_trigger": "Explicit approval accepted for external git publication, an authorized GitHub write connector, or a reviewed hosted-result artifact.",
+  "limits": [
+    "The local review package does not constitute publication or hosted review.",
+    "The earlier technical receipt remains historically correct in recording pushed=false.",
+    "No external write, message, merge or deployment occurred."
+  ]
+}
