@@ -1,6 +1,7 @@
 """
-SDQ1 — Sistema Di Query Gerarchico
-LLM routing engine con Circuit Breaker, Hedging, Timeout Dinamici, Affinità Modello.
+SDQ-1 — Sistema Di Quadranti, Fase 1
+Architettura multi-agente con orchestratore gerarchico.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
+__phase__ = 1

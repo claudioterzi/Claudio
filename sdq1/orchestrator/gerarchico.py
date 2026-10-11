@@ -1,204 +1,158 @@
-"""
-SDQ1 Orchestratore Gerarchico
-Motore 4: Affinità di Modello — blocca la pipeline sul provider vincente
-per evitare frammentazione cognitiva tra nodi.
+"""Orchestratore gerarchico con persistenza opzionale.
 
-Pipeline features:
-  - Esecuzione parallela dei nodi senza dipendenze
-  - Esecuzione sequenziale dei nodi con depends_on
-  - Affinità di modello propagata tra nodi
-  - Context building automatico da risultati precedenti
+Ottimizzazione D (Model Affinity): dopo il primo nodo LLM con risposta
+reale, il provider usato viene iniettato nel contesto come
+'provider_vincolo' e tutti i nodi successivi lo ricevono nel payload.
 """
 
-import asyncio
+from __future__ import annotations
+
 import logging
+import time
+import uuid
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-from sdq1.llm.router import LLMRouter, LLMResponse, NodeType
+from ..agents.base import AgenteBase, MessaggioAgente, RispostaAgente
+from ..config.loader import SDQ1Config
+from ..persistence.store import StatoStore
 
-logger = logging.getLogger(__name__)
 
+log = logging.getLogger(__name__)
 
-# ─────────────────────────────────────────────────────────────
-# CONFIGURAZIONE NODO
-# ─────────────────────────────────────────────────────────────
 
 @dataclass
-class NodeConfig:
-    """
-    Configurazione di un nodo della pipeline.
-
-    prompt_template: stringa con {variabili} da sostituire.
-      Variabili disponibili: tutto ciò che sta in initial_payload
-      più i risultati dei nodi predecessori (chiave = nome nodo).
-
-    Esempio:
-        NodeConfig(
-            name="sintesi",
-            node_type=NodeType.WAVE_FAST,
-            cascade=["claude", "gpt4", "deepseek"],
-            prompt_template="Sintetizza questo: {documento}. Analisi precedente: {analisi}",
-            depends_on=["analisi"],
-            use_hedging=True,
-        )
-    """
-    name: str
-    node_type: NodeType
-    cascade: List[str]
-    prompt_template: str
-    use_hedging: bool = False
-    depends_on: List[str] = field(default_factory=list)
+class EsecuzioneGrafo:
+    id: str
+    input_iniziale: dict[str, Any]
+    passi: list[RispostaAgente] = field(default_factory=list)
+    output_finale: dict[str, Any] | None = None
+    interrotta: bool = False
+    motivo_interruzione: str | None = None
+    durata_secondi: float | None = None
 
 
-# ─────────────────────────────────────────────────────────────
-# 4. AFFINITÀ DI MODELLO — PIPELINE STATE
-# ─────────────────────────────────────────────────────────────
-
-@dataclass
-class PipelineState:
-    """
-    Stato condiviso della pipeline gerarchica.
-
-    locked_provider: una volta che un provider vince il primo nodo,
-    viene messo in testa alla cascata di tutti i nodi successivi.
-    Questo evita che la pipeline cambi "cervello" a metà esecuzione.
-    """
-    locked_provider: Optional[str] = None
-    results: Dict[str, LLMResponse] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
-    def lock_to(self, provider: str):
-        """Blocca l'affinità sul primo provider che vince un nodo reale."""
-        if not self.locked_provider and provider not in ("stub", ""):
-            self.locked_provider = provider
-            logger.info(f"[AFFINITY] Pipeline bloccata su provider: '{provider}'")
-
-    def prioritize_cascade(self, cascade: List[str]) -> List[str]:
-        """
-        Rimette il provider bloccato in testa alla cascata,
-        mantenendo il resto come fallback.
-        """
-        if not self.locked_provider or self.locked_provider not in cascade:
-            return cascade
-        return [self.locked_provider] + [p for p in cascade if p != self.locked_provider]
-
-    @property
-    def context(self) -> Dict[str, str]:
-        """Dict {nome_nodo: contenuto_risposta} per il template dei prompt."""
-        return {name: resp.content for name, resp in self.results.items()}
-
-
-# ─────────────────────────────────────────────────────────────
-# ORCHESTRATORE GERARCHICO
-# ─────────────────────────────────────────────────────────────
-
-class GerarchicOrchestrator:
-    """
-    Esegue una pipeline di nodi LLM con:
-      - Parallelismo automatico per nodi senza dipendenze
-      - Sequenzialità per nodi con depends_on
-      - Affinità di modello cross-nodo (motore 4)
-      - Propagazione del context tra nodi
-
-    Uso:
-        orch = GerarchicOrchestrator(router)
-        state = await orch.run_pipeline(nodes, initial_payload)
-        final_answer = state.results["sintesi_finale"].content
-    """
-
-    def __init__(self, router: LLMRouter):
-        self.router = router
-
-    async def run_pipeline(
+class OrchestratoreGerarchico:
+    def __init__(
         self,
-        nodes: List[NodeConfig],
-        initial_payload: Dict[str, Any],
-    ) -> PipelineState:
+        config: SDQ1Config,
+        agenti: dict[str, AgenteBase],
+        stato: StatoStore | None = None,
+    ):
+        self.config = config
+        self.agenti = agenti
+        self.stato = stato
+        self.capo_id: str = config.orchestratore["capo"]
+        if self.capo_id not in agenti:
+            raise KeyError(f"Capo {self.capo_id} non istanziato")
+        self.timeout: int = config.orchestratore["timeout_nodo_secondi"]
+        retry = config.orchestratore.get("retry", {})
+        self.retry_max: int = retry.get("max_tentativi", 0)
+        self.backoff: list[int] = retry.get("backoff_secondi", [])
+        self.pipeline_caselle = config.pipeline()
+        self.persistenza = bool(config.orchestratore.get("persistenza"))
+
+    def esegui_interno(self, payload: dict[str, Any]) -> EsecuzioneGrafo:
+        """Esegue la pipeline marcando il payload come interno.
+
+        Usa questo metodo quando SDQ-1 chiama sé stesso (es. sub-task,
+        riflessione interna, auto-revisione). SENTIN-004 non applicherà
+        il filtro jailbreak su contenuti generati internamente.
         """
-        Esegui la pipeline gerarchica.
-        I nodi pronti (dipendenze soddisfatte) vengono eseguiti in parallelo.
-        """
-        state = PipelineState()
-        pending = list(nodes)
-        node_map = {n.name: n for n in nodes}
+        payload = dict(payload)
+        payload["_origine"] = "interno"
+        return self.esegui(payload)
 
-        # Validazione dipendenze
-        known_names = {n.name for n in nodes}
-        for node in nodes:
-            for dep in node.depends_on:
-                if dep not in known_names:
-                    raise ValueError(
-                        f"[ORCH] Nodo '{node.name}' dipende da '{dep}' che non esiste nella pipeline"
-                    )
+    def esegui(self, payload: dict[str, Any]) -> EsecuzioneGrafo:
+        esecuzione = EsecuzioneGrafo(
+            id=uuid.uuid4().hex[:12], input_iniziale=payload
+        )
+        inizio = time.time()
+        contesto: dict[str, Any] = dict(payload)
+        contesto["_run_id"] = esecuzione.id   # usato dal VectorStateStore per namespace
+        contesto["_origine"] = "esterno"       # input utente — SENTIN applica il filtro
+        self._persisti(esecuzione, contesto, stato="started")
 
-        logger.info(f"[ORCH] Avvio pipeline — {len(nodes)} nodi")
-
-        while pending:
-            ready = [
-                n for n in pending
-                if all(dep in state.results for dep in n.depends_on)
-            ]
-            if not ready:
-                missing = {n.name: n.depends_on for n in pending}
-                raise RuntimeError(
-                    f"[ORCH] Stallo: dipendenze non soddisfatte o ciclo. Pending: {missing}"
-                )
-
-            logger.info(f"[ORCH] Batch pronto: {[n.name for n in ready]}")
-
-            batch_results = await asyncio.gather(
-                *[self._execute_node(node, state, initial_payload) for node in ready],
-                return_exceptions=True,
+        for casella in self.pipeline_caselle:
+            agente_cfg = self.config.agente_per_casella(casella)
+            if agente_cfg is None:
+                continue
+            agente = self.agenti[agente_cfg.id]
+            messaggio = MessaggioAgente(
+                mittente=self.capo_id,
+                destinatario=agente.id,
+                casella=casella,
+                payload=dict(contesto),
             )
+            risposta = self._esegui_con_retry(agente, messaggio)
+            esecuzione.passi.append(risposta)
 
-            for node, result in zip(ready, batch_results):
-                if isinstance(result, Exception):
-                    logger.error(f"[ORCH] Nodo '{node.name}' fallito: {result}")
-                    raise result
-                state.results[node.name] = result
-                pending.remove(node)
+            if not risposta.successo:
+                if agente.critico:
+                    esecuzione.interrotta = True
+                    esecuzione.motivo_interruzione = (
+                        f"Agente critico {agente.id} fallito: {risposta.errore}"
+                    )
+                    esecuzione.durata_secondi = round(time.time() - inizio, 3)
+                    self._persisti(esecuzione, contesto, stato="aborted")
+                    return esecuzione
+                log.warning("Agente non critico %s fallito, proseguo", agente.id)
+                continue
 
-        logger.info(f"[ORCH] Pipeline completata. Provider finale: {state.locked_provider}")
-        return state
+            contesto.update(risposta.output)
 
-    async def _execute_node(
-        self,
-        node: NodeConfig,
-        state: PipelineState,
-        initial_payload: Dict[str, Any],
-    ) -> LLMResponse:
-        # Affinità: il provider bloccato va in testa alla cascata
-        cascade = state.prioritize_cascade(node.cascade)
+            # D. Model Affinity: vincola i nodi successivi al primo provider reale usato
+            if "provider_vincolo" not in contesto:
+                p = (risposta.metadata or {}).get("provider")
+                if p and p != "stub":
+                    contesto["provider_vincolo"] = p
+                    log.debug("Affinity: provider vincolato a '%s' per questo run", p)
 
-        # Costruisce il payload: payload iniziale + risultati nodi precedenti
-        template_vars = {**initial_payload, **state.context}
+            self._persisti(esecuzione, contesto, stato="running")
+
+        esecuzione.output_finale = contesto
+        esecuzione.durata_secondi = round(time.time() - inizio, 3)
+        self._persisti(esecuzione, contesto, stato="completed")
+        return esecuzione
+
+    def _esegui_con_retry(
+        self, agente: AgenteBase, messaggio: MessaggioAgente
+    ) -> RispostaAgente:
+        tentativi = self.retry_max + 1 if agente.critico else 1
+        ultima: RispostaAgente | None = None
+        for i in range(tentativi):
+            try:
+                ultima = agente.elabora(messaggio)
+                if ultima.successo:
+                    return ultima
+            except Exception as exc:  # noqa: BLE001
+                ultima = RispostaAgente(
+                    mittente=agente.id, successo=False, output={}, errore=str(exc)
+                )
+            if i < tentativi - 1 and i < len(self.backoff):
+                time.sleep(self.backoff[i])
+        assert ultima is not None
+        return ultima
+
+    def _persisti(
+        self, esecuzione: EsecuzioneGrafo, contesto: dict[str, Any], stato: str
+    ) -> None:
+        if not self.persistenza or self.stato is None:
+            return
+        snapshot = {
+            "id": esecuzione.id,
+            "stato": stato,
+            "passi": len(esecuzione.passi),
+            "ultimo_agente": (
+                esecuzione.passi[-1].mittente if esecuzione.passi else None
+            ),
+            "contesto_keys": list(contesto.keys()),
+        }
         try:
-            prompt = node.prompt_template.format(**template_vars)
-        except KeyError as e:
-            raise ValueError(
-                f"[ORCH] Nodo '{node.name}': variabile mancante nel template: {e}"
-            ) from e
-
-        payload = {**initial_payload, "prompt": prompt}
-
-        logger.info(
-            f"[ORCH] Esecuzione '{node.name}' | tipo={node.node_type.value} "
-            f"| hedge={node.use_hedging} | cascata={cascade}"
-        )
-
-        response, winning_provider = await self.router.route_request(
-            payload=payload,
-            node_type=node.node_type,
-            cascade=cascade,
-            use_hedging=node.use_hedging,
-        )
-
-        # Blocca l'affinità sul primo provider che risponde con successo
-        state.lock_to(winning_provider)
-
-        logger.info(
-            f"[ORCH] '{node.name}' completato — provider={winning_provider} "
-            f"latenza={response.latency_ms:.0f}ms"
-        )
-        return response
+            self.stato.set(
+                f"esecuzione:{esecuzione.id}",
+                snapshot,
+                ttl_secondi=self.config.redis.get("ttl_stato_secondi"),
+            )
+        except Exception as exc:  # noqa: BLE001
+            log.warning("Persistenza snapshot fallita: %s", exc)
