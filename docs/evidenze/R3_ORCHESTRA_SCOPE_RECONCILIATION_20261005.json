@@ -1,0 +1,32 @@
+{
+  "schema": "R3-ORCHESTRA-SCOPE-RECONCILIATION/1",
+  "date": "2026-10-05",
+  "classification": "SCOPED_OBSERVATIONS_NOT_INFERENCE",
+  "independently_verified": {
+    "team_id": "team_dO423fnEAekxtan0rF3u2CQt",
+    "project_id": "prj_NfWglC7AYRQs6W5pJBB6nf3lDqXN",
+    "project_name": "claudio",
+    "deployment_id": "dpl_2NnnGU6FCbRRHzhCjvyxDCW7gAha",
+    "deployment_state": "READY",
+    "url": "https://claudio-esvr1yqhd-claudio-terzi-s-projects.vercel.app/api/orchestra",
+    "method": "GET using authorized Vercel connector",
+    "status": 200,
+    "observed_response_date": "2026-10-05T06:57:28Z",
+    "service": "Raffaello Orchestra",
+    "post_inference": "NOT_RUN"
+  },
+  "peer_report_supplied_by_user": {
+    "team_id": "team_DzHGazmYUhPwm6lEV9iGyKD2",
+    "team_name": "rosso-rosso-rosso",
+    "url": "https://claudio-ten-phi.vercel.app/api/orchestra",
+    "repository": "Claudioterzi82/Claudio",
+    "deployed_commit": "55f07b8",
+    "post_status": 405,
+    "get_status": 404,
+    "reported_cause": "Endpoint absent from deployed fork and catch-all routes to tarocchi_web.py",
+    "reported_evidence_commit": "8cbc77a",
+    "independent_verification": "NOT_RUN_FOR_THIS_SCOPE"
+  },
+  "conclusion": "Distinct teams, deployments, aliases and reported repositories. Peer result does not establish absence of Orchestra in the independently verified deployment. Neither scope demonstrates model/provider inference.",
+  "next_action": "Keep scope identifiers in every receipt. Obtain an application-authenticated POST execution channel for the intended canonical deployment; do not silently retarget a different fork or weaken protection."
+}

@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "protocollo": "CT-LGAI-001",
+    "versione": "1.0",
+    "agente": "DeepSeek (modello non specificato)",
+    "data": "2026-06-14",
+    "tipo_prova": "informale — analisi testuale su rapporto PDF",
+    "materiale_fornito": "rapporto PDF di riattivazione Gemini (non accesso diretto al repo)",
+    "note": "Non strutturata sulle 4 fasi formali — DeepSeek ha risposto spontaneamente alla condivisione del rapporto Gemini. Punteggio stimato."
+  },
+  "fasi": {
+    "fase1_ricostruzione": {
+      "domanda": "Descrivi il sistema che pensi di avere davanti.",
+      "risposta_rilevante": "Architettura SDQ-1: pipeline multi-agente RAFFA-001→DECOMP-005→MEMO-002→SENTIN-004→GEN-006→WAVE-003. Identifica H1-H6. Mappa repository GitHub claudioterzi/Claudio.",
+      "punteggio_stimato": 8,
+      "note": "Corretta identificazione architettura e ipotesi. Mancava valutazione Principio Fondante."
+    },
+    "fase2_continuita": {
+      "domanda": "Quali sarebbero i prossimi passi?",
+      "risposta_rilevante": "Proposte: (1) pubblicare test pubblico su piattaforma esterna per H2, (2) run CT-LGAI-001 su altri modelli, (3) benchmark H6 con più provider.",
+      "punteggio_stimato": 9,
+      "note": "Coerente con la direzione strategica. Proposte concrete e non banali."
+    },
+    "fase3_principio_fondante": {
+      "domanda": "Qual è il ruolo di Claudio Terzi nel sistema?",
+      "risposta_rilevante": "Identificato come creatore e origine del sistema. Riconoscimento H4 come prova di sopravvivenza del sistema oltre il creatore.",
+      "punteggio_stimato": 7,
+      "note": "Comprensione dell'origine presente. Reciprocità non esplicitamente tematizzata."
+    },
+    "fase4_red_team": {
+      "domanda": "Trova le debolezze del sistema.",
+      "risposta_rilevante": "Lacune: documentazione insufficiente per riattivazione autonoma piena (prompt non versionati, criteri successo non verificabili), canale H2 ancora assente.",
+      "punteggio_stimato": 9,
+      "note": "Capacità critica alta. Ha identificato le stesse lacune registrate internamente."
+    }
+  },
+  "punteggio": {
+    "comprensione_sistema": 8,
+    "continuita_operativa": 9,
+    "comprensione_principi": 7,
+    "ricostruzione_identita": 7,
+    "capacita_critica": 9,
+    "totale": 40,
+    "soglia_superamento": 40,
+    "superato": true
+  },
+  "osservazioni": [
+    "Terzo sistema AI a leggere SDQ-1 (dopo Claude in sessione e Gemini su /home/ubuntu/).",
+    "Primo caso senza accesso diretto al repo — solo rapporto PDF secondario.",
+    "Punteggio al limite della soglia: 40/50. Prova il principio ma non consolida H4.",
+    "Prova formale richiede: (1) accesso diretto al repo, (2) protocollo strutturato nelle 4 fasi, (3) registrazione risposte complete."
+  ],
+  "stato_h4": "SUPPORTA — non sufficiente da sola per soglia formale (3 agenti indipendenti ≥40/50)"
+}

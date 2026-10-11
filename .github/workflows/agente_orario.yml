@@ -1,0 +1,56 @@
+name: SDQ-1 Agente Orario
+
+on:
+  schedule:
+    # ogni ora dalle 5AM alle 21PM UTC = 7AM-11PM Brussels (UTC+2 estate)
+    - cron: '0 5-21 * * *'
+  workflow_dispatch:
+
+jobs:
+  esegui:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Configura git
+        run: |
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+
+      - name: Installa dipendenze
+        run: python3 -m pip install --quiet --no-cache-dir anthropic "google-genai>=1.0.0" "openai>=1.50.0"
+
+      - name: Chat Telegram — leggi e rispondi
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          GOOGLE_API_KEY:     ${{ secrets.GOOGLE_API_KEY }}
+          DEEPSEEK_API_KEY:   ${{ secrets.DEEPSEEK_API_KEY }}
+          AIRBNB_ICAL_URL:    ${{ secrets.AIRBNB_ICAL_URL }}
+        run: python3 -m sdq1 --chat-telegram
+
+      - name: Esegui task autonomo
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 scripts/agente_orario.py
+
+      - name: Salva output
+        run: |
+          git add output/ || true
+          git diff --staged --quiet || git commit -m "SDQ-1 orario $(date +%Y-%m-%d\ %H:%M) [skip ci]"
+          git push || true

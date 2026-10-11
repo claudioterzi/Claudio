@@ -1,0 +1,50 @@
+{
+  "tested_date": "2026-09-09",
+  "application_commit": "be46f7c87b59a3ead25f9b1165e3f5a42f68d73e",
+  "deployment_status": "success",
+  "browser": "Chrome cloud",
+  "python_tests_passed": 54,
+  "node_mass_balance_test": "passed",
+  "example_url": "https://claudio-ebon.vercel.app/atelier/esempio#perfume-lab",
+  "example": "Ferro di Luce",
+  "volume_test": {
+    "density_g_ml": 0.85,
+    "density_is_synthetic_test_input": true,
+    "concentration_preparations_percent_mass": 20,
+    "volumes_ml": [50, 100, 200],
+    "pompelmo_grams": [0.9775, 1.955, 3.91],
+    "support_grams": [34, 68, 136],
+    "total_grams": [42.5, 85, 170],
+    "density_empty_by_default": true,
+    "clearing_density_clears_doses_and_disables_actions": true
+  },
+  "mass_test": {
+    "target_grams": [50, 100, 200],
+    "pompelmo_grams": [1.15, 2.3, 4.6],
+    "support_grams": [40, 80, 160],
+    "density_control_disabled": true
+  },
+  "preparation_missing_count_updates": true,
+  "decoder": {"ingredient_count": 12, "parts_sum": 100, "lab_mounted": true},
+  "download": {
+    "created_at": "2026-09-09T14:57:36.575Z",
+    "bytes": 6163,
+    "schema_version": 1,
+    "type": "terzi_laboratory_draft",
+    "ingredients": 12,
+    "mass_balance_checked_all_batches": true,
+    "production_validated": false,
+    "event_listener_timed_out_but_actual_file_received_and_validated": true
+  },
+  "organo": {
+    "url": "https://claudio-ebon.vercel.app/organo.html#organo-evoluzione",
+    "revision": 1,
+    "catalog_entries": 300,
+    "proposals": ["Nympheal", "Dreamwood Base", "Paradise Molecule"],
+    "proposals_are_not_active_inventory": true
+  },
+  "page_horizontal_overflow_at_1348_px": false,
+  "physical_perfume_test": false,
+  "iphone_test": false,
+  "paper_print_test": false
+}

@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from lgai_core.calculator import PlayerStats, Area, LGAICalculator
 from lgai_core.raffaello import Raffaello
 from lgai_core.data_manager import DataManager
+from lgai_core.guard_protocol import GuardLockingProtocol, GuardState, LockedAction
 import argparse
 from datetime import datetime
 
@@ -24,6 +25,7 @@ class LGAICLI:
         self.dm = DataManager()
         self.calc = LGAICalculator()
         self.raffaello = Raffaello()
+        self.guard = GuardLockingProtocol()
 
         # Carica o crea player
         self.player = self.dm.load_player()
@@ -67,6 +69,17 @@ class LGAICLI:
         progresso = self.calc.calcola_progresso_stagione(self.player.giorno)
         print(f"\n📅 STAGIONE {progresso['stagione']} - Giorno {progresso['giorno_in_stagione']}/90")
         print(f"   Progresso: {progresso['percentuale']}% | {progresso['giorni_rimanenti']} giorni rimanenti")
+
+        # Guard Locking Protocol
+        guard_status = self.guard.evaluate(self.player)
+        print(f"\n🔒 {self.guard.get_status_line(self.player)}")
+        if guard_status.state == GuardState.LOCKED:
+            print(f"   {guard_status.alert_message}")
+            print(f"\n   Condizioni di sblocco:")
+            for cond in guard_status.unlock_conditions:
+                print(f"     {cond}")
+        elif guard_status.state == GuardState.ALERT:
+            print(f"   {guard_status.alert_message}")
 
         print("\n" + "="*50 + "\n")
 
@@ -136,6 +149,14 @@ class LGAICLI:
         if result['game_over']:
             print("\n   🔴🔴🔴 GAME OVER 🔴🔴🔴")
             print("   Attiva Sfida di Resurrezione!")
+        else:
+            # Guard Protocol valutation post-checkout
+            guard_status = self.guard.evaluate(self.player)
+            if guard_status.state == GuardState.LOCKED:
+                print()
+                print(self.guard.generate_rosso_rosso_rosso(self.player))
+            elif guard_status.state == GuardState.ALERT:
+                print(f"\n   {guard_status.alert_message}")
 
         # Incrementa giorno
         self.player.giorno += 1
@@ -164,6 +185,12 @@ class LGAICLI:
             print(f"   Aree disponibili: {[a.value for a in Area]}")
             return
 
+        # Guard: avviso se in stato critico
+        guard_status = self.guard.evaluate(self.player)
+        if guard_status.state == GuardState.LOCKED:
+            print(f"\n⚠️  {guard_status.alert_message}")
+            print("   (L'XP viene comunque registrato — il Guard non blocca la crescita)")
+
         print(f"\n⚡ Aggiungo {xp} XP a {area.value}...")
 
         result = self.calc.aggiungi_xp(self.player, area, xp)
@@ -183,6 +210,45 @@ class LGAICLI:
         print(f"\n💬 Tu: {domanda}\n")
         risposta = self.raffaello.parla_con_me(self.player, domanda)
         print(f"🌹 Raffaello: {risposta}\n")
+
+    def guard_status(self):
+        """Mostra stato completo del Guard Locking Protocol"""
+        guard_status = self.guard.evaluate(self.player)
+
+        print("\n" + "="*58)
+        print("🔒 GUARD LOCKING PROTOCOL — STATUS")
+        print("="*58)
+
+        state_icons = {
+            GuardState.LOCKED:   "⛔  BLOCCATO  (Rosso Rosso Rosso)",
+            GuardState.ALERT:    "⚠️   ALLERTA   (Zona Rischio)",
+            GuardState.UNLOCKED: "✅  SBLOCCATO (Verde Fisso)",
+        }
+        print(f"\n   Stato:       {state_icons[guard_status.state]}")
+        print(f"   PV correnti: {guard_status.pv_current}/100")
+        print(f"   Soglia lock: ≤ {guard_status.pv_threshold_lock} PV")
+        print(f"   Soglia sblocco: ≥ {guard_status.pv_threshold_unlock} PV")
+
+        if guard_status.locked_since:
+            print(f"   Blocco dal: {guard_status.locked_since.strftime('%Y-%m-%d %H:%M')}")
+            print(f"   Giorni in lock: {guard_status.days_locked}")
+
+        if guard_status.locked_actions:
+            print(f"\n   🚫 Azioni bloccate:")
+            for action in guard_status.locked_actions:
+                print(f"      • {action.value}")
+        else:
+            print(f"\n   ✅ Nessuna azione bloccata")
+
+        print(f"\n   📋 Condizioni di sblocco:")
+        for cond in guard_status.unlock_conditions:
+            print(f"      {cond}")
+
+        if guard_status.state == GuardState.LOCKED:
+            print()
+            print(self.guard.generate_rosso_rosso_rosso(self.player))
+
+        print("="*58 + "\n")
 
     def reset(self):
         """Reset completo (usa con cautela!)"""
@@ -222,6 +288,9 @@ def main():
     talk_parser = subparsers.add_parser('talk', help='Parla con Raffaello')
     talk_parser.add_argument('domanda', type=str, help='Cosa vuoi chiedere?')
 
+    # Guard Protocol
+    subparsers.add_parser('guard', help='Mostra stato Guard Locking Protocol')
+
     # Reset
     subparsers.add_parser('reset', help='Reset completo (ATTENZIONE!)')
 
@@ -241,6 +310,8 @@ def main():
         cli.add_xp(args.area, args.xp)
     elif args.command == 'talk':
         cli.talk(args.domanda)
+    elif args.command == 'guard':
+        cli.guard_status()
     elif args.command == 'reset':
         cli.reset()
 
