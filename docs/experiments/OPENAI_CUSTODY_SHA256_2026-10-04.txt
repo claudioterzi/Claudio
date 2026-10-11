@@ -1,0 +1,5 @@
+OPENAI_CUSTODY_V1
+created=2026-10-04
+scope=placebo_B_plus_5_contamination_items
+sha256=9b26358483158011f405b5cf0618ca884d9191c230b5eb59618f14480282b1d8
+status=SEALED_NOT_PUBLISHED

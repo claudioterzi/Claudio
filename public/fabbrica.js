@@ -30,6 +30,7 @@
     $('demo-button').disabled = value;
     $('new-plan').disabled = value;
     document.querySelectorAll('.microaction input, #delete-plan').forEach(el => { el.disabled = value; });
+    document.dispatchEvent(new CustomEvent('fabbrica:busy', {detail: value}));
   }
   async function api(path, options = {}) {
     const controller = new AbortController();
@@ -75,6 +76,11 @@
     const date = new Date(value);
     return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('it-IT');
   }
+  function dialogueSnapshot() {
+    return record ? {id: record.id, rootId: record.root_id || record.id, version: record.version,
+      demo: record.demo === true, questions: record.plan.questions,
+      dialogue: record.dialogue || {answers: [], notes: '', revisions: []}} : null;
+  }
   function render(scroll = true) {
     const plan = record.plan;
     const demo = record.demo === true;
@@ -83,6 +89,17 @@
     $('plan-title').textContent = plan.title;
     $('plan-type').textContent = demo ? 'ESEMPIO INTERATTIVO · NESSUNA AZIONE REALE' : 'IL TUO COPIONE · RAFFAELLO IA';
     $('plan-summary').textContent = plan.summary;
+    const assessment = record.assessment;
+    const assessed = !demo && assessment?.status === 'evaluated';
+    const assessmentNote = $('plan-assessment');
+    assessmentNote.hidden = demo;
+    assessmentNote.textContent = assessed
+      ? 'TypeSafe ha analizzato la richiesta e orientato le domande della regia. Percorso suggerito: ' + assessment.label + '.'
+      : 'La valutazione aggiuntiva TypeSafe non è disponibile per questo copione.';
+    // Uncertain judgments never force a travel suggestion. The manual travel
+    // link remains available independently of this advisory signal.
+    $('copione').dataset.travelSuggested = assessed
+      ? (assessment.signals.travel >= .75 ? 'yes' : 'no') : 'unknown';
     $('plan-meta').replaceChildren(...[
       record.brief.city || 'Luogo da scegliere', record.brief.budget || 'Budget da definire',
       record.brief.timing || 'Data da definire',
@@ -141,6 +158,7 @@
     nextBox.append(node('strong', next ? 'Il prossimo passo utile' : 'Il copione è stato percorso'), node('span', next ? next.title : 'Hai dichiarato concluse le microazioni. L’esito dell’esperienza resta da valutare insieme alle persone coinvolte.'));
     $('director-next').replaceChildren(nextBox);
     $('plan-questions').replaceChildren(...plan.questions.map(question => node('li', question)));
+    $('plan-questions').previousElementSibling.hidden = !plan.questions.length;
     $('plan-alternative').textContent = plan.alternative;
     $('refine-form').hidden = demo;
     let deleteButton = $('delete-plan');
@@ -153,6 +171,7 @@
     deleteButton.hidden = demo;
     $('copione').hidden = false;
     if (!demo) history.replaceState(null, '', '#copione/' + record.id);
+    document.dispatchEvent(new CustomEvent('fabbrica:plan-rendered', {detail: dialogueSnapshot()}));
     if (scroll) { $('copione').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('plan-title').focus({ preventScroll: true }); }
   }
   async function updateAction(id, complete) {
@@ -177,8 +196,8 @@
       lock(false); render(false); $('action-' + id)?.focus({ preventScroll: true });
     }
   }
-  async function submit(event, refine = false) {
-    event.preventDefault(); if (busy) return;
+  async function submit(event, refine = false, dialogue = null) {
+    event?.preventDefault(); if (busy) return null;
     const statusId = refine ? 'refine-status' : 'form-status';
     lock(true); message(statusId, 'Raffaello sta studiando le condizioni e scrivendo il copione…');
     try {
@@ -188,12 +207,30 @@
         if (!serviceReady) throw new Error('La progettazione IA non è disponibile adesso. Puoi esplorare il copione di esempio.');
       }
       const body = refine ? { ...record.brief, parent_id: record.id, revision: $('refine-text').value.trim() } : getBrief();
+      if (refine) {
+        if (dialogue) body.dialogue = dialogue;
+        else document.dispatchEvent(new CustomEvent('fabbrica:collect-dialogue', {detail: body}));
+      }
       record = await api('plans', { method: 'POST', body: JSON.stringify(body) });
       message(statusId, refine ? 'Nuova versione salvata. Le microazioni richiedono nuove conferme.' : 'Copione salvato. Puoi riaprirlo da questo browser o scaricarne una copia.');
       $('refine-text').value = ''; render();
-    } catch (error) { message(statusId, error.message, true); }
+      return record;
+    } catch (error) { message(statusId, error.message, true); return null; }
     finally { lock(false); if (record) render(false); }
   }
+  window.FABBRICA_DIALOGUE = Object.freeze({
+    snapshot: dialogueSnapshot,
+    refine: dialogue => record && !record.demo ? submit(null, true, dialogue) : Promise.resolve(null),
+    suggest: async (question, answer, instruction, dialogue) => {
+      if (busy || !record || record.demo) throw new Error('Apri un copione e attendi la fine dell’operazione in corso.');
+      lock(true);
+      try {
+        return await api('plans/' + record.id + '/question-help', {method: 'POST', body: JSON.stringify({
+          version: record.version, question, answer, instruction, dialogue
+        })});
+      } finally { lock(false); }
+    }
+  });
   async function deletePlan() {
     if (!record || record.demo || busy) return;
     if (!window.confirm('Eliminare questo copione e le sue conferme? Le altre versioni restano separate.')) return;
@@ -201,6 +238,7 @@
     try {
       await api('plans/' + record.id, { method: 'DELETE' });
       record = null; $('copione').hidden = true; history.replaceState(null, '', '#racconta');
+      document.dispatchEvent(new CustomEvent('fabbrica:plan-cleared'));
       message('form-status', 'Copione eliminato.'); $('racconta').scrollIntoView();
     } catch (error) { message('refine-status', error.message, true); }
     finally { lock(false); }
@@ -252,8 +290,9 @@
   $('new-plan').addEventListener('click', () => {
     if (busy) return;
     record = null; $('copione').hidden = true; history.replaceState(null, '', '#racconta');
+    document.dispatchEvent(new CustomEvent('fabbrica:plan-cleared'));
     message('form-status', 'Il copione precedente resta conservato al suo indirizzo per 30 giorni.');
-    $('dream-form').reset(); $('racconta').scrollIntoView(); $('dream-text').focus();
+    $('dream-form').reset(); updateLevel(); $('racconta').scrollIntoView(); $('dream-text').focus();
   });
   $('download-plan').addEventListener('click', () => {
     if (!record) return;
@@ -266,7 +305,7 @@
   initPromise = (async () => {
     try {
       const status = await api('status'); serviceReady = status.ai_available;
-      $('service-mode').textContent = serviceReady ? 'Progettazione IA pronta' : 'Esplora l’esempio';
+      $('service-mode').textContent = serviceReady ? 'Progettazione disponibile' : 'Esplora l’esempio';
       const requested = location.hash.match(/^#copione\/([a-f0-9]{32})$/)?.[1];
       const id = requested || status.latest_id;
       if (id) {
