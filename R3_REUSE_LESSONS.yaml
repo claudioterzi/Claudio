@@ -571,3 +571,30 @@ lessons:
       - docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md
       - docs/evidenze/R3_REDFRAG_R3CLM_BASELINE_2026-09-29.json
 
+
+  - id: RL-2026-10-05-PROCESS-NAMESPACE-001
+    capability: supervisor_orphan_cleanup_verification
+    status: CANDIDATE
+    observed_at: 2026-10-05
+    trigger: Validate Linux container descendant cleanup
+    verified_facts:
+      - "Ancestor-mounted procfs may expose host PIDs while os.getpid returns namespace PIDs."
+      - "Final local suite: 36 tests pass including actual process disappearance."
+    failure_modes:
+      - "pgrep matches the test command itself"
+      - "Missing /proc/inner-pid is mistaken for process death"
+      - "Broad waitpid steals Popen leader exit status"
+    canonical_short_path:
+      - "Reuse r3/supervise_node.py and r3/sync_progress.py"
+      - "Translate NSpid and selectively reap adopted children"
+    preconditions:
+      - "Linux subreaper and readable procfs"
+      - "Isolated disposable children"
+    verification:
+      - "Actual child disappears after TERM or KILL"
+      - "Leader exit status remains intact"
+    cleanup:
+      - "Restore handlers and subreaper state"
+    provenance:
+      - "PR #113 e068cfd"
+      - "docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json"

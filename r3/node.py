@@ -11,6 +11,7 @@ RRR control plane:
 """
 
 import hashlib
+import json
 import logging
 import os
 import secrets
@@ -685,3 +686,88 @@ def test_shutdown(authorization: Optional[str] = Header(None)):
 
     threading.Timer(0.35, _exit_process).start()
     return {"status": "shutting_down_for_test", "node_id": NODE_ID}
+
+
+# ---------------------------------------------------------------------------
+# Preregistered seed documents + boot fingerprint (Issue #86)
+#
+# R3_PREREGISTERED_SEED_PATHS: comma-separated files (relative to the repo
+# root or absolute) ingested idempotently at boot. Content-addressed, so a
+# restart never changes the set; a seed is only ever written when missing.
+# A re-ingest after storage loss is still caught by the restart proof, because
+# storage_id is regenerated at the same time ("Nuovo storage_id creato").
+#
+# Every boot logs one R3_BOOT_FINGERPRINT line with non-secret identity/state,
+# so each restart (including wake-from-sleep) leaves its own evidence in the
+# platform logs without needing authenticated network access.
+# ---------------------------------------------------------------------------
+
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _ingest_preregistered_seeds() -> list[dict[str, str]]:
+    raw = os.getenv("R3_PREREGISTERED_SEED_PATHS", "").strip()
+    results: list[dict[str, str]] = []
+    if not raw:
+        return results
+    for item in (p.strip() for p in raw.split(",")):
+        if not item:
+            continue
+        path = Path(item)
+        if not path.is_absolute():
+            path = _REPO_ROOT / path
+        try:
+            data = path.read_bytes()
+        except OSError as exc:
+            log.warning("Seed preregistrato non leggibile: %s (%s)", item, exc)
+            results.append({"path": item, "status": "unreadable"})
+            continue
+        doc_id = _sha256(data)
+        with _conn() as db:
+            present = db.execute(
+                "SELECT 1 FROM documents WHERE id = ? AND deleted = 0", (doc_id,)
+            ).fetchone()
+        on_disk_ok = False
+        try:
+            on_disk_ok = _sha256(_doc_path(doc_id).read_bytes()) == doc_id
+        except OSError:
+            pass
+        if present and on_disk_ok:
+            status = "present"
+        else:
+            _atomic_write_bytes(_doc_path(doc_id), data)
+            with _conn() as db:
+                db.execute(
+                    """INSERT OR IGNORE INTO documents
+                       (id, filename, sha256, signature, size, uploaded_at, deleted)
+                       VALUES (?, ?, ?, ?, ?, ?, 0)""",
+                    (doc_id, path.name, doc_id, _sign(data), len(data),
+                     datetime.now(timezone.utc).isoformat()),
+                )
+                _audit_db(db, "preregistered_seed", f"id={doc_id} file={path.name}")
+            status = "ingested"
+        log.info("Seed preregistrato %s id=%s file=%s", status, doc_id, path.name)
+        results.append({"path": item, "id": doc_id, "status": status})
+    return results
+
+
+SEED_RESULTS = _ingest_preregistered_seeds()
+
+
+def _log_boot_fingerprint() -> None:
+    fp = _state_fingerprint()
+    summary = {k: fp[k] for k in (
+        "node_id", "verify_key", "signing_key_source", "storage_id",
+        "storage_id_created_this_boot", "process_boot_id", "data_dir",
+        "durable_state_detected", "rrr_event_id", "rrr_counter", "rrr_action",
+        "protocol_event_count", "document_count", "document_set_sha256",
+        "documents_missing_or_corrupt",
+    )}
+    summary["seeds"] = SEED_RESULTS
+    log.info("R3_BOOT_FINGERPRINT %s", json.dumps(summary, sort_keys=True))
+
+
+try:
+    _log_boot_fingerprint()
+except Exception as exc:  # evidence logging must never stop the node
+    log.warning("R3_BOOT_FINGERPRINT non disponibile: %s", exc)
