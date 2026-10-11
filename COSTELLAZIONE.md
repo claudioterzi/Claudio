@@ -30,6 +30,9 @@ Base dei link: `https://github.com/claudioterzi/Claudio/blob/main/`
 
 ## 3 · Sistema C — Parfums 400 / Terzi Parfums
 
+- **Mouillette e Immagine ↔ Profumo**: [inserto del libro](https://claudio-ebon.vercel.app/libro.html#rubrica-olfattiva), [magazine mensile](https://claudio-ebon.vercel.app/magazine.html), [episodio lavanda](https://claudio-ebon.vercel.app/esperienza.html?id=LAVANDA). Documentari 3D in progetto; sceneggiature consultabili.
+
+
 Cartella: [studio/parfums/](https://github.com/claudioterzi/Claudio/tree/main/studio/parfums)
 
 - **La fonte** (tua): [Organo_Terzi_300.xlsx](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/Organo_Terzi_300.xlsx) → convertita da [converti_organo.py](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/converti_organo.py) in [organo_terzi_300.json](https://github.com/claudioterzi/Claudio/blob/main/studio/parfums/organo_terzi_300.json)

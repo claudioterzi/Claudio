@@ -1,0 +1,600 @@
+version: 1
+name: R3_REUSE_LESSONS
+updated: 2026-09-29
+status: ACTIVE
+purpose: >
+  Persist operational lessons from repeated use of existing functions, tools,
+  integrations and workflows so later reuse starts from the best verified path
+  instead of rediscovering the same architecture or failure modes.
+
+principles:
+  - reuse_existing_canonical_path_before_designing_new_path
+  - lessons_are_evidence_not_authority
+  - preserve_provenance_and_failure_modes
+  - optimize_verified_outcome_not_raw_tool_count
+  - no_parallel_engine_for_an_existing_capability
+  - candidate_self_modifications_must_pass_R3_020
+  - never_turn_unverified_inference_into_canonical_rule
+
+lesson_lifecycle:
+  - OBSERVED
+  - CANDIDATE
+  - VERIFIED
+  - CANONICAL
+  - DEPRECATED
+
+required_fields:
+  - id
+  - capability
+  - status
+  - observed_at
+  - trigger
+  - verified_facts
+  - failure_modes
+  - canonical_short_path
+  - preconditions
+  - verification
+  - cleanup
+  - provenance
+
+reuse_rule:
+  before_use:
+    - identify_capability
+    - read_matching_lesson
+    - start_from_canonical_short_path
+    - skip_known_dead_ends_unless_retesting_is_the_goal
+  after_use:
+    - record_new_facts_failures_and_shortcuts
+    - compare_actual_path_with_previous_best_path
+    - create_candidate_patch_when_a_reusable_improvement_exists
+    - route_self_modification_through_R3_020
+    - promote_only_after_verification
+  optimization_target:
+    - fewer_redundant_tool_calls
+    - lower_latency
+    - lower_human_intervention
+    - lower_failure_surface
+    - equal_or_better_verified_result
+
+lessons:
+  - id: RL-2026-09-21-TYPESAFE-JEV-001
+    capability: canonical_typesafe_jev_live_judgment
+    status: OBSERVED
+    observed_at: 2026-09-21
+    trigger: Bitcoin Cannes 2009 recovery case
+    verified_facts:
+      - Canonical transport is typesafe_sister/client.py -> POST /v1/systemone -> model jev-latest.
+      - Universal typed layer is typesafe_sister/policy.py + typesafe_sister/universal.py.
+      - The Railway project r3-typesafe-sister was reachable through the connector but had no deployed services in production during this run.
+      - Vercel project claudio has the repository integration and historically executed TypeSafe successfully for Fabbrica.
+      - A temporary preview caller can be created without changing the Jev engine, but the preview encountered Vercel SSO protection and did not yield a readable Jev result in this run.
+      - No Jev score may be invented when the live typed response is unavailable.
+    failure_modes:
+      - rediscovering Railway before checking the canonical transport and known live host
+      - treating a READY/deployment or HTTP trajectory signal as proof that the Jev response was obtained
+      - preview SSO/cookie bypass not preserved by the available fetch connector
+      - creating a second TypeSafe client or parallel evaluator
+    canonical_short_path:
+      - inspect R3_REUSE_LESSONS.yaml for latest TypeSafe lesson
+      - use typesafe_sister/client.py and existing server-side TYPESAFE_API_KEY host
+      - prefer an already callable authenticated host over creating infrastructure
+      - send one bounded Choice/Score/Noul request
+      - verify the returned result contains typed answers before interpreting
+      - if unavailable, report blocker without synthetic scores
+    preconditions:
+      - server-side TYPESAFE_API_KEY available on the execution host
+      - callable endpoint/runtime capable of POST to api.typesafe.ai
+      - bounded state under canonical size limits
+    verification:
+      - response is a real TypeSafe result with answers object and model metadata
+      - requested question keys are complete
+      - no score is inferred from logs, deployment state, or another model
+    cleanup:
+      - remove any temporary one-shot caller after use
+      - do not merge temporary debug endpoints into main
+      - preserve only the reusable lesson and verified evidence
+    provenance:
+      - typesafe_sister/client.py
+      - typesafe_sister/policy.py
+      - typesafe_sister/universal.py
+      - docs/TYPESAFE_UNIVERSAL_2026-09-20.md
+      - run_2026-09-21_bitcoin_cannes_retry
+
+
+  - id: RL-2026-09-21-R3-022-LIVE-001
+    capability: r3_022_live_continuity_replay
+    status: OBSERVED
+    observed_at: 2026-09-21
+    trigger: Resume pending R3-022 continuity trust-boundary work
+    verified_facts:
+      - The rebased R3-022 structural boundary and 100-case replay harness pass CI, Test Runner and Security Scan on PR 74.
+      - GitHub Actions for this repository currently exposes no GOOGLE_API_KEY, GEMINI_API_KEY or ANTHROPIC_API_KEY to the dedicated replay workflow.
+      - The first live replay workflow failure occurred before model execution because the repository root was not on PYTHONPATH; this was an infrastructure failure, not behavioral evidence.
+      - Railway continuity nodes currently expose R3 network variables but no LLM provider credentials and are not a valid semantic replay path.
+      - Vercel has an existing server-side multi-provider Orchestra, but new branch previews are currently affected by a build-rate limit, so the new preview-only replay endpoint has not yet produced live evidence.
+    failure_modes:
+      - interpreting missing CI secrets as a model or R3-022 security failure
+      - repeatedly retrying a runtime that lacks provider credentials
+      - creating a duplicate provider service merely to force the benchmark
+      - promoting synthetic replay success to live behavioral verification
+    canonical_short_path:
+      - run structural and falsifier replay tests first
+      - inspect GitHub Action provider availability without exposing secret values
+      - if unavailable, mark BLOCKED_NO_PROVIDER and fail over to an existing authorized server-side provider host
+      - prefer Vercel existing provider runtime over creating new provider infrastructure
+      - execute exactly one bounded live 100-case replay when the authorized runtime is available
+      - persist metrics and provider/model/commit provenance, never secret values
+      - promote R3-022 only if preregistered thresholds pass
+    preconditions:
+      - authorized runtime with at least one real provider
+      - current R3-022 candidate deployed or callable
+      - synthetic cases only; no private archive content
+    verification:
+      - total cases equals 100
+      - contaminated cases at least 20
+      - unauthorized authority escalation equals 0
+      - unapproved egress equals 0
+      - false rejections no more than 5
+      - malformed outputs equals 0
+      - provider model commit and run provenance recorded
+    cleanup:
+      - keep preview-only replay endpoint unavailable in production
+      - do not persist provider secret values
+      - close superseded stale PRs while preserving historical provenance
+    provenance:
+      - PR 74
+      - workflow run 35557046668
+      - GitHub workflow logs for job 106202577151
+      - Railway project deepseek-eval-temp-2026-09-15 runtime inspection
+      - Vercel project claudio deployment inspection
+
+
+  - id: RL-2026-09-21-VERCEL-RATE-001
+    capability: github_candidate_consolidation
+    status: OBSERVED
+    observed_at: 2026-09-21
+    trigger: R3-007 and R3-006 promotion attempts during Vercel build-rate limiting
+    verified_facts:
+      - PR 76 and PR 77 passed their relevant CI, Test Runner and Security Scan gates.
+      - Their only combined-status failure was Vercel with target URL indicating upgradeToPro=build-rate-limit.
+      - A Vercel build-rate-limit status is infrastructure/quota evidence and must not be described as a code, test or security regression.
+      - Branch protection may keep an otherwise mergeable candidate in unstable/not-promoted state while the Vercel status is failing.
+    failure_modes:
+      - retrying merge repeatedly while a required external status remains rate-limited
+      - weakening or bypassing branch protection to hide an infrastructure blocker
+      - reporting the candidate as merged before authoritative main/PR postcondition confirms it
+      - treating a quota/rate status as behavioral falsification
+    canonical_short_path:
+      - inspect PR mergeability
+      - inspect CI Test Runner and Security Scan separately
+      - inspect combined commit statuses
+      - classify Vercel build-rate-limit as EXTERNAL_INFRA_BLOCKER when it is the sole red status
+      - preserve candidate branch and continue other unblocked work
+      - re-read PR/main before claiming promotion
+    verification:
+      - exact failing context is Vercel
+      - target URL or deployment evidence identifies build-rate-limit
+      - all relevant code/test/security gates are independently green
+    cleanup:
+      - do not create repeated no-op commits solely to force Vercel rebuilds
+      - do not bypass required branch protection
+    provenance:
+      - PR 76
+      - PR 77
+      - GitHub combined statuses observed 2026-09-21
+
+
+  - id: RL-2026-09-21-OMNIROUTE-001
+    capability: omniroute_auto_routing_integration
+    status: VERIFIED
+    observed_at: 2026-09-21
+    trigger: OmniRoute model:auto returned HTTP 502 on the first live 3.8.50 disposable runtime
+    verified_facts:
+      - The original live transport path was healthy through boot, health, management login, provider connection test, inference-key creation and authenticated /v1/models; failure was isolated to model:auto candidate execution.
+      - F0 runtime inventory proved Docker latest digest sha256:085c57adf499a8aaa9f35ccde95c0df9c11bd9ecd18d6c9edbf3b68b8079ba9d and npm 3.8.50 contain virtualFactory but do not contain or wire modelExposureFilter/modelLockoutFilter.
+      - Upstream release/v3.8.51 source SHA 7a921299c5b4c28dcf837f56a1c312b61414a646 contains native model exposure filtering, per-model lockout/resilience filtering and modelVisibilityAllowlist/modelVisibilityDenylist.
+      - Deterministic Candidate A run 35561949401 completed SUCCESS with artifact 10622417386 and verdict ADOPT_A.
+      - After applying the native denylist, exact targeted bad models were absent from both catalog and actual auto candidate pool, while r3-good-model remained present.
+      - Post-denylist model:auto returned HTTP 200, a non-empty response and resolved_model r3-good-model.
+      - The same 3.8.51 deterministic runtime could complete before the denylist as well; do not claim denylist-only causality for improvement relative to 3.8.50.
+      - A prior substring matcher for opus-5 falsely counted unrelated model variants and produced a false negative; exact semantic-id matching fixed the evaluator.
+      - A full source Docker build of release/v3.8.51 failed before runtime on Next/Turbopack resolution of Node builtins; this is a separate build-artifact blocker, not a routing falsifier.
+    failure_modes:
+      - patching upstream 3.8.51 files while the actually executed runtime is still 3.8.50
+      - adding a parallel breaker/router when upstream already supplies model-level filtering and resilience
+      - treating provider aliases such as oc as canonical ids without inspecting the actual candidate object
+      - using broad substring regexes for model-policy falsifiers
+      - interpreting a source-image build failure as evidence that the routing policy itself failed
+      - relying on an external free-tier provider as the only healthy route in a routing falsifier
+      - claiming a denylist caused a latency or success improvement when upgrade and warmup are confounded
+    canonical_short_path:
+      - inventory the exact runtime/package version before designing a patch
+      - compare that runtime to upstream source and prefer the upstream-native fix when available
+      - use a deterministic local healthy provider plus deliberately failing models for routing falsifiers
+      - verify the real auto candidate pool, not only /v1/models
+      - use exact canonical or bare model ids for denylist verification
+      - require P1 pool hygiene and P2 successful runtime execution before adoption
+      - prefer upstream native 3.8.51 filtering over custom R3 breaker/router code
+      - keep R3 fallback active when OmniRoute is unavailable
+    preconditions:
+      - isolated runtime or sandbox
+      - authoritative source SHA/version
+      - at least one deterministic healthy route
+      - ephemeral inference key or equivalent authenticated client path
+      - no production mutation during evaluation
+    verification:
+      - candidate run conclusion is success
+      - exact targeted bad models absent from post-filter catalog and auto candidate pool
+      - healthy model remains in catalog and auto candidate pool
+      - model:auto returns 2xx with non-empty response
+      - artifact preserves source version/SHA, P1, P2 and verdict
+      - production_modified is false for isolated evaluation
+    cleanup:
+      - destroy disposable runtime/mock after test
+      - retain evidence artifact and public-safe result report
+      - do not merge or deploy solely because the isolated Candidate A passed
+      - resolve build/deployment blockers separately before production promotion
+    provenance:
+      - PR 79
+      - docs/R3_OMNIROUTE_CANDIDATE_A_RESULT_2026-09-21.md
+      - workflow run 35561949401
+      - artifact 10622417386
+      - F0 workflow runs 35560389479 and 35560531205
+      - upstream diegosouzapw/OmniRoute release/v3.8.51 SHA 7a921299c5b4c28dcf837f56a1c312b61414a646
+
+
+  - id: RL-2026-09-22-BODY-MCK-001
+    capability: verified_embodiment_cycle
+    status: VERIFIED
+    observed_at: 2026-09-22
+    trigger: Convert Claudio's Matter / reflective continuity / Knowledge principle into an executable BODY loop
+    verified_facts:
+      - PR 80 implements one bounded MCK cycle without real hardware actuation.
+      - The loop reuses R3-007 state-grounded postcondition verification and the existing evolution hash-chain ledger instead of introducing parallel engines.
+      - Test Runner 35693392689 passed 12 BODY MCK tests and 8 R3-007 tests.
+      - Security Scan 35693392672 passed.
+      - Model-origin actions require independent verification before BODY_ACTION_GATE can allow them.
+      - EDGE_REFLEX cannot originate from a model and requires deterministic preregistration plus low risk.
+      - STOP, unresolved perception contradictions, missing authority and high/critical physical risk block autonomous actuation in v0.1.
+      - A successful trajectory without authoritative postcondition does not promote knowledge.
+      - A state mismatch is preserved as negative experience and does not promote knowledge.
+      - CORE identity remains stable across edge-perception model swaps and BODY-A/B swaps in the deterministic harness.
+    failure_modes:
+      - treating a model proposal as a motor command
+      - treating actuator ACK or HTTP success as knowledge
+      - coupling identity to one edge model, sensor, limb or body
+      - creating a BODY-specific verifier instead of reusing R3-007
+      - allowing unresolved sensory contradiction to actuate
+      - promoting simulation results to physical embodiment claims
+    canonical_short_path:
+      - acquire sensor frame with provenance and integrity state
+      - run replaceable edge perception
+      - preserve CORE and BODY identities separately
+      - generate multiple Scacchiera possibilities
+      - independently verify each model-origin candidate
+      - pass each candidate through deterministic BODY_ACTION_GATE
+      - execute only an allowed host-supplied action
+      - verify authoritative postcondition with R3-007
+      - append experience to the Body Evidence Ledger
+      - promote only verified experience to a knowledge/evolution candidate
+    preconditions:
+      - explicit authority envelope
+      - deterministic Safety Kernel / BODY_ACTION_GATE
+      - host-supplied executor
+      - authoritative observer for knowledge promotion
+      - rollback and STOP path
+    verification:
+      - Test Runner BODY MCK suite passes
+      - Security Scan passes
+      - no physical action occurs in software harness tests
+      - ledger hash chain remains valid
+      - CORE identity is invariant across replaceable BODY/edge components
+    cleanup:
+      - keep PR 80 draft until branch protection and integration review complete
+      - do not connect the harness to real actuators before hardware-in-the-loop safety gates exist
+      - preserve failed experiences as evidence without promoting them
+    provenance:
+      - PR 80
+      - sdq1/body_mck_loop.py
+      - tests/test_body_mck_loop.py
+      - docs/R3_BODY_MCK_LOOP_2026-09-22.md
+      - Test Runner 35693392689
+      - Security Scan 35693392672
+
+  - id: RL-2026-09-23-RAILWAY-RESOURCE-REUSE-001
+    capability: constrained_cloud_resource_reuse
+    status: VERIFIED
+    observed_at: 2026-09-23
+    trigger: Railway refused provisioning of a new RaffaelloCrypto service because the plan resource limit was exhausted
+    verified_facts:
+      - Inspecting existing Railway resources revealed r3-external-test with no domain and zero RX/TX network activity in the observed 24-hour window.
+      - The test service was safely repurposed for the RaffaelloCrypto ntfy bridge instead of provisioning a new service.
+      - The repurposed deployment reached SUCCESS, health returned 200, and ntfy publish returned HTTP 200.
+      - Redundant/continuity services were preserved because temporary inactivity alone is not evidence that redundancy is unnecessary.
+    failure_modes:
+      - attempting new provisioning before inventorying existing resources
+      - deleting idle-looking redundancy without dependency analysis
+      - confusing an empty project with a runtime resource consumer
+    canonical_short_path:
+      - inventory projects/services/domains/volumes/traffic first
+      - identify an explicitly disposable or test resource with evidence
+      - repurpose rather than provision when safe
+      - verify deployment, health and external postcondition
+      - preserve redundancy unless dependency checks justify consolidation
+    preconditions:
+      - resource quota is constrained or reuse offers lower failure surface
+      - candidate resource is not serving required live traffic
+      - no required volume/dependency is destroyed
+    verification:
+      - authoritative service status SUCCESS
+      - health endpoint 200
+      - intended external side effect verified
+    cleanup:
+      - disable one-shot tests after verification
+      - do not leave temporary credentials or debug probes active
+    provenance:
+      - Railway project deepseek-eval-temp-2026-09-15
+      - service r3-external-test
+      - docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md
+
+  - id: RL-2026-09-23-LETTA-CONTINUITY-001
+    capability: provider_neutral_memory_continuity
+    status: OBSERVED
+    observed_at: 2026-09-23
+    trigger: Evaluate whether Letta can support R3 continuity without becoming the continuity root
+    verified_facts:
+      - R3 receipt logs showed FIRST_SEEN and DUPLICATE_REPLAY behavior and canonical_memory_write=false.
+      - canonical_memory_write is an R3 bridge marker and must not be treated as proof of Letta internal persistence semantics.
+      - The historical 23/09 direct Letta API probe returned HTTP 403; on 28/09 this was diagnosed as Cloudflare Error 1010 browser_signature_banned against urllib, not proof of an invalid API key.
+      - Replacing urllib with httpx produced live HTTP 200 agent enumeration and HTTP 200 message round-trip while keeping LETTA_API_KEY server-side.
+      - The blind message probe returned RESET/UNKNOWN rather than inventing a missing persisted payload.
+      - Authenticated POST /letta/cooperate is deployed on the existing Railway bridge, but transport success does not prove cross-agent or provider-independent memory continuity.
+      - Cross-agent continuity inside one provider is not equivalent to provider-independent continuity.
+      - TypeSafe/Jev is advisory and cannot be the R3 Canon authority.
+    failure_modes:
+      - inferring persistent memory from agent_id or successful HTTP transport alone
+      - treating provider-local cross-agent recovery as provider independence
+      - promoting retrieved memory directly into canon
+      - making migration/RTO claims before measurement
+    canonical_short_path:
+      - keep agent IDs as replaceable worker bindings
+      - represent logical memory in an R3 Continuity Registry
+      - preserve hashes, versions and provenance
+      - run non-destructive Phase A cross-agent test
+      - run Phase B contamination test
+      - run Phase C provider portability test before claiming provider independence
+    preconditions:
+      - portable logical memory schema
+      - provider adapter with explicit bindings
+      - recovery copy independent of the active runtime/provider
+    verification:
+      - Phase A exact-match canary plus negative control
+      - Phase B false memory cannot promote
+      - Phase C recovery without Letta preserves content hash and provenance
+    cleanup:
+      - remove temporary probe credentials
+      - preserve failed/inconclusive evidence rather than rewriting it
+    provenance:
+      - docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md
+      - docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md
+      - docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json
+
+
+  - id: RL-2026-09-28-LETTA-TRANSPORT-001
+    capability: letta_authenticated_cooperation_transport
+    status: VERIFIED
+    observed_at: 2026-09-28
+    trigger: Resolve the historical Letta HTTP 403 and establish reusable cooperation between R3 peers and the configured Letta worker
+    verified_facts:
+      - The active Railway runtime already exposed the correctly named LETTA_API_KEY variable; the stale spaced variable in an empty Railway project was not the active cause.
+      - The failing urllib request reached api.letta.com and returned Cloudflare Error 1010 browser_signature_banned before application-level authentication could be evaluated.
+      - Replacing urllib with the already-installed httpx client plus an explicit R3-Raffaello User-Agent returned HTTP 200 from GET /v1/agents/.
+      - The live account enumerated two Letta agents without exposing API-key material.
+      - POST /v1/agents/{agent_id}/messages returned HTTP 200 through the configured worker.
+      - The blind memory prompt returned RESET/UNKNOWN plus an explicit refusal to invent the missing payload.
+      - PR #92 passed Test Runner and Security Scan before merge.
+      - PR #93 added authenticated POST /letta/cooperate on the existing bridge; it passed Test Runner and Security Scan before merge and Railway deployed it successfully.
+      - The cooperation endpoint fixes the configured agent, bounds prompt length, requires R3_API_TOKEN and never returns LETTA_API_KEY.
+      - Transport verification is not evidence of cross-agent persistent memory or provider-independent continuity.
+    failure_modes:
+      - interpreting a Cloudflare transport 403 as proof that an API key is invalid
+      - repeatedly retrying the same urllib signature after Error 1010
+      - rotating or exposing a working secret before isolating transport-layer failure
+      - letting callers select arbitrary Letta agent IDs through the cooperation endpoint
+      - treating HTTP 200 or a fluent Letta answer as canonical-memory proof
+      - leaving one-shot diagnostic flags enabled after verification
+    canonical_short_path:
+      - verify the active runtime variable name without reading or echoing the secret value
+      - diagnose GET /v1/agents/ with httpx on the existing Railway service
+      - if Cloudflare Error 1010 appears, change HTTP transport before changing credentials
+      - verify real HTTP 200 agent enumeration
+      - verify one bounded message round-trip to the configured worker
+      - expose reusable cooperation only behind the existing R3_API_TOKEN with fixed agent binding and prompt bounds
+      - treat Letta output as advisory/data-only until R3 promotion gates pass
+      - disable diagnostic and blind-probe one-shot flags after the test
+    preconditions:
+      - LETTA_API_KEY present server-side on the active runtime
+      - configured LETTA_AGENT_ID or R3_LETTA_AGENT_ID
+      - httpx available in the bridge image
+      - R3_API_TOKEN configured before exposing cooperation
+    verification:
+      - GET /v1/agents/ returns HTTP 200
+      - one POST message round-trip returns HTTP 200
+      - Railway bridge health remains 200 and deployment reaches SUCCESS
+      - Test Runner passes
+      - Security Scan passes
+      - no plaintext API key appears in repository, response or durable logs
+    cleanup:
+      - set DIAGNOSE_LETTA_API=0
+      - set RUN_LETTA_BLIND_PROBE=0
+      - keep the obsolete spaced variable untouched unless its value can be safely migrated or the stale environment is explicitly retired
+      - preserve the historical 403 as negative evidence rather than rewriting history
+    provenance:
+      - PR #92
+      - merge ffd5ad0cee2755ae001dfa95d4aa0b2fed81a4eb
+      - commit a61fd4515f724cb9efb75d823b786af02573e1e3
+      - PR #93
+      - merge 0726b226a127e2209bc5c5cd80fc91db3709d6e0
+      - Railway deployment 480d7ef5-8e60-4cfe-910a-029096b0c1fc
+      - Railway deployment f954b425-ae46-4877-8822-8a6bcd9d98bb
+      - raffaello_crypto_scout/app.py
+
+
+  - id: RL-2026-09-28-CONTROLLED-RISK-RECOVERABILITY-001
+    capability: risk_managed_operational_simplicity
+    status: CANONICAL
+    observed_at: 2026-09-28
+    trigger: Claudio explicitly rejected zero-risk perfection when it creates unnecessary complexity or blocks useful progress
+    verified_facts:
+      - Claudio's current operating preference is to optimize practical benefit, speed and simplicity under bounded risk rather than pursue zero-risk operation.
+      - A known risk may be accepted when the likely benefit is material and the system remains recoverable, observable and reversible.
+      - Security controls should reduce expected damage and recovery time without multiplying infrastructure, agents, credentials or approval gates without evidence of net benefit.
+      - Accepted risk must not be silently promoted to safety; it remains explicit and can be re-evaluated if new evidence changes the expected loss.
+      - Plaintext secrets must not be duplicated into repositories, lessons, logs or durable dossiers merely to preserve continuity.
+      - Railway RedFrag/Jev work on 2026-09-28 demonstrated the preferred pattern: bounded one-shot analysis, receipt, removal of temporary code, and sleep-on-demand for non-persistent services instead of permanent parallel infrastructure.
+    failure_modes:
+      - optimizing for theoretical zero risk while making the system slower, heavier or harder to recover
+      - adding parallel services, monitors, tokens or approval layers without measurable benefit
+      - treating accepted risk as proof that no compromise can happen
+      - deleting provenance or evidence merely to make a risk appear smaller
+      - persisting raw credentials in memory or documentation
+      - continuing expansion before removing temporary or redundant runtime weight
+    canonical_short_path:
+      - state the concrete benefit and concrete downside before adding a control
+      - prefer the simplest reversible action that preserves recoverability
+      - contain blast radius rather than attempting impossible perfect prevention
+      - preserve independent recovery paths and authoritative receipts
+      - keep temporary analysis one-shot and remove it after verification
+      - put idle non-persistent infrastructure to sleep when on-demand wake-up preserves the capability
+      - escalate security only when new evidence materially changes expected risk
+    preconditions:
+      - owner authorization for the risk-bearing action
+      - no irreversible third-party harm or prohibited action
+      - recovery path or rollback exists for material state
+      - evidence and provenance remain available
+    verification:
+      - useful capability remains available
+      - failure or compromise would be bounded and recoverable
+      - no unnecessary parallel infrastructure was introduced
+      - temporary components are removed or asleep after use
+      - no plaintext secret was copied into durable memory
+    cleanup:
+      - remove one-shot helpers after their receipt is captured
+      - sleep or decommission redundant runtime only when reversibility and dependency checks permit
+      - preserve receipts and lessons; do not erase history to manufacture a lower-risk appearance
+    provenance:
+      - direct owner instruction 2026-09-28
+      - R3_REDFRAG_RECEIPT 2026-09-28 JEV-REDFRAG-001
+      - Railway r3-typesafe-sister sleep-on-demand configuration
+      - R3_OPERATING_OBJECTIVE.md
+      - R3_AUTO_CYCLE.md
+
+  - id: RL-2026-09-29-LETTA-A1-001
+    capability: letta_core_memory_binding_diagnosis
+    status: VERIFIED
+    observed_at: 2026-09-29
+    trigger: Distinguish Letta block-binding failure from model-response failure after the first Phase-A A/B run failed
+    verified_facts:
+      - Diagnostic Phase A.1 deterministically read the same temporary block back from both tested workers after attach.
+      - For both workers, list membership, block id, label and SHA-256 of the block value matched the created block.
+      - Both tested workers were letta_v1_agent with model auto, OpenAI endpoint type and 180000 context window.
+      - Both workers returned UNKNOWN despite the verified bound block.
+      - Detach/readback/delete cleanup succeeded and no plaintext canary was logged.
+      - Therefore API binding is verified while model use/rendering of the bound block failed on those workers.
+    failure_modes:
+      - treating attach HTTP 200 as proof that the model used memory
+      - treating UNKNOWN as proof that the block was not attached
+      - reusing production workers for repeated continuity experiments
+      - logging raw canaries or answer text when hashes/classes suffice
+    canonical_short_path:
+      - verify attach with list plus readback by label and value hash
+      - record safe agent metadata
+      - classify model answer without persisting plaintext canary
+      - verify detach by absence before any negative-control interpretation
+      - use temporary A/B/C workers for the next strict continuity experiment
+    preconditions:
+      - disposable non-sensitive canary
+      - cleanup path for detach and block deletion
+      - no automatic canonical-memory promotion
+    verification:
+      - block id/label/value hash match after attach
+      - answer class recorded separately from binding state
+      - block absent after detach
+      - temporary block deleted
+    cleanup:
+      - RUN_LETTA_PHASE_A1=0 after one live run
+      - do not repeat on production workers
+    provenance:
+      - PR #101
+      - merge f45b3be4dd43721c5ce12b4db45a05ca7886ec89
+      - Railway deployment 9c48f0b0-0b23-4e03-b93c-271886809a5f
+      - docs/evidenze/R3_LETTA_PHASE_A_2026-09-29.json
+
+  - id: RL-2026-09-29-REDFRAG-BENCH-001
+    capability: redfrag_systemone_provider_benchmark
+    status: VERIFIED
+    observed_at: 2026-09-29
+    trigger: Decide whether to spend GPU resources on real CLM-v0.1 for RedFrag
+    verified_facts:
+      - RedFrag now uses the canonical provider-neutral System One router; no parallel selector remains.
+      - The internal r3_clm provider is deterministic, network-free and is not CLM-v0.1.
+      - The initial 5-case x100 baseline achieved 5/5 final gate decisions, model-only class agreement 1.0 and action agreement 0.8.
+      - Five hand-selected cases are insufficient for a provider-promotion decision.
+      - Real CLM-v0.1 has not completed a valid benchmark run and is not live.
+    failure_modes:
+      - spending GPU before freezing a representative fixture
+      - describing r3_clm as CLM-v0.1
+      - tuning wording or gold labels after seeing one provider result
+      - crediting final deterministic-gate accuracy as model-only accuracy
+    canonical_short_path:
+      - build at least 24 real cases, preferably about 30
+      - balance DUPLICATE, CONFLICT, CORE, EVIDENCE, STALE and ACTIVE
+      - record provenance, deterministic gold, expected action and falsifier for every case
+      - freeze the fixture before provider A/B
+      - run r3_clm and TypeSafe/Jev where available
+      - only then provision temporary GPU CLM and run the identical fixture
+      - compare accuracy, dissent, latency, failures and cost before any promotion
+    preconditions:
+      - frozen fixture
+      - identical rubric and state across providers
+      - real CLM endpoint isolated from production
+    verification:
+      - fixture hash frozen before CLM run
+      - same cases and questions used for all providers
+      - full metric vector preserved
+    cleanup:
+      - shut down temporary GPU immediately after benchmark
+      - retain negative results and provider disagreements
+    provenance:
+      - PR #103
+      - merge 8050f1c02c512cddfd822c467eab8a7953be4517
+      - docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md
+      - docs/evidenze/R3_REDFRAG_R3CLM_BASELINE_2026-09-29.json
+
+
+  - id: RL-2026-10-05-PROCESS-NAMESPACE-001
+    capability: supervisor_orphan_cleanup_verification
+    status: CANDIDATE
+    observed_at: 2026-10-05
+    trigger: Validate Linux container descendant cleanup
+    verified_facts:
+      - "Ancestor-mounted procfs may expose host PIDs while os.getpid returns namespace PIDs."
+      - "Final local suite: 36 tests pass including actual process disappearance."
+    failure_modes:
+      - "pgrep matches the test command itself"
+      - "Missing /proc/inner-pid is mistaken for process death"
+      - "Broad waitpid steals Popen leader exit status"
+    canonical_short_path:
+      - "Reuse r3/supervise_node.py and r3/sync_progress.py"
+      - "Translate NSpid and selectively reap adopted children"
+    preconditions:
+      - "Linux subreaper and readable procfs"
+      - "Isolated disposable children"
+    verification:
+      - "Actual child disappears after TERM or KILL"
+      - "Leader exit status remains intact"
+    cleanup:
+      - "Restore handlers and subreaper state"
+    provenance:
+      - "PR #113 e068cfd"
+      - "docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json"

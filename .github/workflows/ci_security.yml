@@ -71,14 +71,4 @@ jobs:
             detect_secrets.out
             coverage.xml
 
-      - name: Commit minimal CI report to output/ (optional)
-        if: always()
-        run: |
-          mkdir -p output/ci-reports
-          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          echo "CI run at $TIMESTAMP" > output/ci-reports/last_run.txt
-          git config user.name "sdq1-bot"
-          git config user.email "sdq1-bot@local"
-          git add output/ci-reports/last_run.txt || true
-          git commit -m "CI reports: $TIMESTAMP" || true
-          git push || true
+      # Reports stay in run artifacts: a timestamp must not redeploy the site.

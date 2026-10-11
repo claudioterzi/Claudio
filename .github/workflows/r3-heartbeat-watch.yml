@@ -1,0 +1,46 @@
+name: R3 Heartbeat Watch
+
+on:
+  schedule:
+    - cron: '0 8 * * *'   # verifica due ore dopo il daily
+  workflow_dispatch:
+
+jobs:
+  verify-heartbeat:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verifica daily odierno
+        id: check
+        shell: bash
+        run: |
+          DAY="$(date -u +%F)"
+          FILE="output/daily_${DAY}.txt"
+          echo "day=${DAY}" >> "$GITHUB_OUTPUT"
+          if [ -f "$FILE" ]; then
+            echo "missing=false" >> "$GITHUB_OUTPUT"
+            echo "Heartbeat presente: $FILE"
+          else
+            echo "missing=true" >> "$GITHUB_OUTPUT"
+            echo "Heartbeat mancante: $FILE"
+          fi
+
+      - name: Apri issue di evidenza se manca
+        if: steps.check.outputs.missing == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DAY: ${{ steps.check.outputs.day }}
+        run: |
+          TITLE="R3 heartbeat missing ${DAY}"
+          EXISTING="$(gh issue list --state open --search "${TITLE} in:title" --json number --jq '.[0].number // empty')"
+          if [ -z "$EXISTING" ]; then
+            gh issue create \
+              --title "$TITLE" \
+              --body "FACT: alle 08:00 UTC non esisteva output/daily_${DAY}.txt. Questo è un fallimento osservabile del battito e deve essere trattato come evidenza avversa, non nascosto. Verificare il workflow SDQ-1 Daily Run e documentare causa e correzione."
+          else
+            echo "Issue già aperta: #${EXISTING}"
+          fi

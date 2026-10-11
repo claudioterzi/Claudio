@@ -4,7 +4,746 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-07-23
+> Ultimo aggiornamento: 2026-10-05 (delta candidato; storia preservata)
+
+
+## Continuità Rizzo e attività aperte — 2026-10-05
+
+Stato: **CANDIDATE_RECONCILIATION / DATA_ONLY**, nella PR #114; nessuna adozione su main o produzione implicita.
+
+Il registro `R3_CONTINUITY_LEDGER.json` è recuperato dal ramo `r3-judge-v0.1`, blob `035d9d47bbcfa93a05b0ad1b37208fdb3f4f12e8`, preservando l'elemento originale e aggiungendo riferimenti di ripresa. Non è un nuovo motore di memoria.
+
+- R3-JUDGE [#85](https://github.com/claudioterzi/Claudio/issues/85): issue aperta; riconciliazione del ramo e benchmark di ammissione su 10 file ancora richiesti.
+- TERZI Flow [#88](https://github.com/claudioterzi/Claudio/pull/88): draft aperta, head `50a59a98d140928eb3f5c9e41fccdcf178bde64e`; distillazione e adapter precedenti da confrontare con il trasporto condiviso attuale.
+- Pointer-first [#91](https://github.com/claudioterzi/Claudio/pull/91): draft aperta, head `35c75f5d7bec16b97ad70295633045d227ae51e4`; riusare questo candidato per il contesto, A/B ancora richiesto.
+- Rizzo [#114](https://github.com/claudioterzi/Claudio/pull/114): 12 test locali/mock superati in questa sessione; inferenza live, qualità e calibrazione NON eseguite.
+- Supervisione [#113](https://github.com/claudioterzi/Claudio/pull/113): 5 test locali di processo superati; adozione Railway NON eseguita.
+
+**Decisione Claudio:** ottimizzare la continuità e recuperare il lavoro precedente prima di duplicarlo. Classificazione retroattiva: RETEST per l'ammissione operativa; KEEP per i riferimenti storici. Il precedente 21/21 riportato non è stato rieseguito qui.
+
+**Punto di ripresa:** leggere memoria, coda e registro; verificare il ramo/commit corrente per l'attività; annotare decisione, prova, limite, blocco e prossimo passo prima di fermarsi. Correzioni datate senza cancellare storia. Nessun caricamento automatico universale di chat/email o sincronizzazione privata è stato attivato.
+
+### Tentativo di attivazione — 2026-10-05 08:11–08:25
+
+Evidenza: `docs/evidenze/R3_ACTIVATION_ATTEMPT_2026-10-05.json`. Main osservato `02fd5960…4108011`. Nessun segreto letto o scritto; nessuna modifica Vercel/Railway/provider.
+
+- **Orchestra Vercel — BLOCCATO.** Connettore Vercel 403 sullo scope `claudio-terzi-s-projects`; proxy della sessione rifiuta `claudio-ebon.vercel.app`; GET anonimo → 302 login (Deployment Protection). POST NON eseguita, nessun provider ha risposto. Serve riautorizzare il connettore Vercel su quello scope o un canale server-side che invii la POST con il segreto già in ambiente.
+- **Rizzo — BLOCCATO live, gate locale verificato.** #115: 4/4 test del gate passano; gli stessi test sul benchmark pre-fix falliscono (1 FAIL), quindi la correzione è reale. Nessuna istanza Rizzo raggiungibile: Dell non collegato a questa sessione, nessun servizio Rizzo su Railway. Modello/fingerprint non identificati, benchmark non eseguito. Riuso: #88 `rizzo_local` e `r3_judge/benchmark.py` aprono client httpx propri; vanno instradati sul trasporto condiviso `typesafe_sister/client.py`.
+- **Supervisione Railway — test isolato ESEGUITO, stato reale BLOCCATO, produzione invariata.** Harness `scripts/r3_supervisor_isolated_check.py`: uscita del sync rilevata (rc 1), riavvio sullo stesso stato con SHA-256 identici, SIGTERM pulito, SIGKILL dopo 5 s; sync bloccato e cicli falliti NON rilevati (limite confermato). In produzione node-a: restart policy di default ON_FAILURE max 10; draining 0 s (la grazia di 5 s non verrebbe mai usata); `watchPatterns r3/**` su main ⇒ il merge di #113 ridistribuisce node-a e node-v2. Presente `R3_ALLOW_TEST_SHUTDOWN` in produzione: da confermare.
+
+### Revisione esterna GPT verificata — 2026-10-05 08:31–08:40
+
+Evidenza: `docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json`; script `scripts/r3_gpt_review_falsifiers.py`. Ogni obiezione di GPT è stata trasformata in test ed eseguita sul codice prima e dopo; l'accordo di GPT non è stato trattato come prova.
+
+- **Gate #115** (`b77e0d9`): confermate e corrette 5 falle (stringa "false" contata come corretta, identità non-stringa, fingerprint con spazi equiparati, modello richiesto non verificato, casi duplicati). Report ora create-only. 9/9 test; i 5 nuovi falliscono sul codice precedente. Confermato: 10 casi sono solo uno smoke test (il caso supera il gate 36/1024 volte).
+- **Supervisore #113** (`1f2cdf7`): confermate e corrette l'avvio dopo SIGTERM e la grazia limitata ai leader; confermato corretto il caso Popen fallito. Mio primo tentativo (bloccare i segnali) scartato: i figli ereditavano la maschera e ignoravano SIGTERM. Restano aperti: rilevamento del sync bloccato, zombie come PID 1, drain ≥10 s, crash-loop.
+- Nessuna modifica in produzione.
+
+### Esecuzione indipendente Codex — CT-LGAI-001, 2026-10-05
+
+Evidenza: `docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json`. Scope CANDIDATE_LOCAL_VERIFIED, nessuna attivazione di produzione.
+
+- #115: risposta originale validata prima delle conversioni; riuso del trasporto condiviso disponibile sul ramo; adozione vietata senza modello e fingerprint attesi. 19 test locali PASS; sul benchmark precedente b77e0d9 gli stessi test danno 9 FAIL e 10 PASS. Nessuna inferenza live né prova di qualità.
+- #113: implementato controllo di avanzamento nel supervisore esistente, con stato effimero atomico e run ID nuovo. Errori assorbiti dal sync ora contribuiscono al fallimento del ciclo. 25 test locali PASS, inclusi processi bloccati/fallimenti ripetuti e replica/persistenza con stato temporaneo. Restano reaping PID 1, sleep/resume, drain, crash-loop e recupero autenticato reale.
+- I JSON citati nei precedenti commit di #116 risultavano assenti (404). Ora sono pubblicati: la ricostruzione storica distingue esplicitamente dichiarazioni di Claude e prove osservate da Codex; non ricrea output originali mancanti.
+- Per Orchestra servono un canale POST con autenticazione applicativa e una risposta verificata; per Rizzo serve un endpoint raggiungibile dall'esecutore. Riautorizzazione Vercel o apertura della chat sul Dell da sole non dimostrano questi prerequisiti.
+
+### Orchestra: riconciliazione degli scope — 2026-10-05
+
+Evidenza: `docs/evidenze/R3_ORCHESTRA_SCOPE_RECONCILIATION_20261005.json`. Codex ha riletto progetto prj_NfWglC7AYRQs6W5pJBB6nf3lDqXN, team team_dO423fnEAekxtan0rF3u2CQt, deployment dpl_2NnnGU6FCbRRHzhCjvyxDCW7gAha READY; GET Orchestra 200 alle 06:57:28 UTC. Il report fornito dall'utente riguarda invece team rosso-rosso-rosso, alias claudio-ten-phi e fork Claudioterzi82/Claudio (POST 405, endpoint dichiarato assente). Quest'ultimo risultato resta peer-reported e non smentisce il primo. Nessuna POST con inferenza è verificata in questa sessione.
+
+## RedFrag benchmark v1 congelato — 2026-09-29
+
+RedFrag/System One promosso su `main` (PR #103, merge `8050f1c02c512cddfd822c467eab8a7953be4517`). Decisione Claudio/Raffaello: niente GPU prima di un benchmark reale. Fixture `tests/redfrag_benchmark_v1.json` congelato (SHA-256 `0cff14f3cfb64650d955ffedd227a875978e6682ccd653b1f78b112685bd127f`): 30 casi reali, 5 per classe, gold deterministico con motivazione e falsifier per caso. Falsifier trovato: il benchmark del 28/09 passava al modello anche le etichette gold; senza etichette l'accordo del solo modello scende da 1.0/0.8 a 0.4/0.2 sui 5 casi vecchi. Baseline `r3_clm` sul fixture v1: decisione finale 1.00 (gate), classe del solo modello 0.167 (flags) / 0.133 (blind), azione 0.033 / 0.100, cioè livello del caso. Jev non eseguito qui (chiave solo su Railway). Prossimo: una sessione GPU con `--provider clm`, viste flags e blind. `r3_clm` è il baseline locale contrastivo, non CLM-v0.1. Doc: `docs/R3_REDFRAG_BENCH_V1_2026-09-29.md`.
+
+
+## System One Railway — runtime CLM-ready, backend live ancora Jev — 2026-09-29
+
+PR #102 è stata mergiata sul branch Railway effettivamente usato (`feat/typesafe-sister-api-20260920`) come `651f8f0e9f2c98e7ea4805d6bd3cab99695a74cc`. Il runtime combinato conserva il receiver Letta/MCP e usa ora il client System One provider-neutral. Deployment Railway `5e4124db-119c-4b58-82bd-f9b2906986c5`: SUCCESS; `/health` 200.
+
+Configurazione verificata per nome variabile: `TYPESAFE_API_KEY` presente; `CLM_BASE_URL` assente; `R3_SYSTEMONE_PROVIDER` assente. Con routing `auto`, il backend live resta quindi TypeSafe/Jev. Il servizio è **CLM-ready**, ma CLM-v0.1 reale è **NOT LIVE**.
+
+Railway è CPU-only e non ospita il Qwen3-8B encoder richiesto dal CLM ufficiale. Il CLM reale dovrà essere testato tramite endpoint GPU esterno temporaneo dopo il freeze del benchmark RedFrag esteso. Nessuna spesa GPU è stata effettuata.
+
+Evidenza: `docs/evidenze/R3_SYSTEMONE_RUNTIME_2026-09-29.json`.
+
+
+## RedFrag su System One — MERGED / benchmark expansion gate — 2026-09-29
+
+RedFrag è ora sul router provider-neutral canonico di System One. PR #103 è stata mergiata su `main` come `8050f1c02c512cddfd822c467eab8a7953be4517` dopo Test Runner #445 e Security Scan #845 entrambi SUCCESS.
+
+Il provider `r3_clm` è il baseline contrastivo locale R³: deterministico, zero rete, mai selezionato automaticamente. Non va chiamato CLM-v0.1. Il provider `clm` resta riservato al CLM reale su endpoint esterno; `typesafe` usa Jev/TypeSafe.
+
+Baseline congelata attuale: 5 casi × 100 ripetizioni, decisione finale 5/5, accordo classe del solo modello 1.0, accordo azione 0.8, p50 circa 20 ms, zero chiamate di rete e zero cancellazioni. Questa è evidenza di regressione/struttura, non generalizzazione.
+
+Decisione operativa corrente: **NON spendere ancora GPU sui soli 5 casi**. Prima allargare e congelare un fixture RedFrag reale ad almeno 24 casi (target preferito ~30), bilanciando DUPLICATE / CONFLICT / CORE / EVIDENCE / STALE / ACTIVE e includendo failure mode reali. Lo stesso fixture congelato verrà poi eseguito con `r3_clm`, Jev/TypeSafe quando disponibile e CLM-v0.1 reale su GPU. Nessuna riscrittura del fixture dopo aver visto il risultato di un provider.
+
+Doc: `docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md`. Evidenza baseline: `docs/evidenze/R3_REDFRAG_R3CLM_BASELINE_2026-09-29.json`.
+
+## Letta Phase A / A.1 — binding verificato, modello non usa il block — 2026-09-29
+
+PR #100 (merge `a8e1ef349108c3eb5fb31cfd00454db4c006c54a`) ha introdotto il primo harness Phase A A/B. Il run live su Railway alle 06:13:37Z ha fallito entrambe le positive arms ma ha eseguito cleanup completo. Quel run non distingueva binding da comportamento del modello.
+
+PR #101 (merge `f45b3be4dd43721c5ce12b4db45a05ca7886ec89`) ha introdotto Diagnostic Phase A.1 con readback deterministico del core memory, classificazione della risposta e ricevute senza testo/canary.
+
+A.1 è stata eseguita live sul deployment Railway `9c48f0b0-0b23-4e03-b93c-271886809a5f` alle 06:26:51Z. Risultato:
+- worker A e B: `letta_v1_agent`, modello `auto`, endpoint type `openai`, context window 180000;
+- attach HTTP 200 su entrambi;
+- lista core-memory: block presente su entrambi;
+- readback per label: ID match, label match e SHA-256 del valore match su entrambi;
+- risposta A: `UNKNOWN`;
+- risposta B: `UNKNOWN`;
+- diagnosi su entrambi: `BLOCK_BOUND_BUT_NOT_USED_BY_MODEL`;
+- dopo detach B: block assente via lista e readback 404;
+- cleanup: detach A/B, delete block, readback assenza A e block gone = tutti true;
+- nessun canary plaintext registrato;
+- `ab_diag_pass=false`, `full_phase_a_with_independent_c=false`.
+
+Conclusione verificata: **l'API/binding del memory block funziona**, ma i due worker di produzione testati non hanno usato quel block nella risposta come previsto. Questo NON prova che Letta non possa condividere memoria: restringe il failure surface al rendering/uso del core memory, configurazione del worker/modello o semantica del messaggio.
+
+Entrambi i flag one-shot sono stati riportati a zero; `RUN_LETTA_PHASE_A1=0` ha prodotto il deployment di cleanup `cf3e286c-6b62-4295-857e-e5933ddac84e` SUCCESS. Il prossimo test Letta, se ripreso, deve usare worker temporanei A/B/C e non i worker di produzione; C resta vergine come controllo negativo.
+
+Stato epistemico:
+- trasporto Letta: **VERIFIED**;
+- attach/detach/readback core-memory API: **VERIFIED**;
+- uso del block da parte dei due worker testati: **FAILED / UNKNOWN returned**;
+- cross-agent shared-memory behavior: **NOT PROVEN**;
+- Phase A rigorosa A/B/C temporanei: **NOT_RUN**;
+- Phase B: **NOT_RUN**;
+- Phase C: **NOT_RUN**.
+
+Evidenza: `docs/evidenze/R3_LETTA_PHASE_A_2026-09-29.json`.
+
+
+
+## RaffaelloCrypto + Letta provider-neutral continuity — aggiornamento 2026-09-28
+
+Il canale operativo `raffaellocrypto` resta consolidato: delivery ntfy verificata, servizio Railway `r3-external-test` riutilizzato senza creare nuova infrastruttura, health 200 e deployment SUCCESS. I servizi di continuità/ridondanza esistenti sono stati preservati.
+
+Sul bridge R³∞/Letta restano validi i receipt reali `FIRST_SEEN`, `DUPLICATE_REPLAY` e `canonical_memory_write:false`: provano replay protection e separazione tra ricezione e promozione canonica, non la semantica interna della memoria Letta.
+
+Il precedente probe diretto del 23/09, che aveva restituito HTTP 403, è stato riesaminato il 28/09. Diagnosi live Railway: il 403 proveniva da Cloudflare `Error 1010 / browser_signature_banned` contro la firma HTTP di `urllib`, non da una prova di chiave invalida. Il trasporto Letta è stato sostituito con `httpx` mantenendo `LETTA_API_KEY` server-side. Verifiche live successive:
+- `GET https://api.letta.com/v1/agents/` -> HTTP 200;
+- due agenti Letta reali enumerati senza esporre credenziali;
+- invio messaggio al worker configurato -> HTTP 200;
+- blind memory probe -> risposta `RESET/UNKNOWN` con rifiuto di inventare il payload assente;
+- ntfy del blind probe -> HTTP 200;
+- Railway deployment del bridge -> SUCCESS;
+- Test Runner e Security Scan -> SUCCESS prima delle promozioni.
+
+Sono stati promossi su `main`:
+- PR #92 / merge `ffd5ad0cee2755ae001dfa95d4aa0b2fed81a4eb`: trasporto Letta via `httpx`;
+- fix import `a61fd4515f724cb9efb75d823b786af02573e1e3`;
+- PR #93 / merge `0726b226a127e2209bc5c5cd80fc91db3709d6e0`: bridge cooperativo autenticato `POST /letta/cooperate`.
+
+Il bridge cooperativo usa il worker Letta configurato, limita il prompt, richiede `R3_API_TOKEN`, non espone `LETTA_API_KEY`, non permette al caller di scegliere arbitrariamente l'agent ID e tratta la risposta Letta come input/advisory. Nessuna risposta Letta può auto-promuoversi a R³∞ Canon o autorizzare effetti esterni.
+
+Stato epistemico aggiornato:
+- trasporto API Letta: **VERIFIED**;
+- autenticazione/visibilità agenti Letta nel runtime Railway: **VERIFIED**;
+- round-trip messaggio Letta: **VERIFIED**;
+- bridge cooperativo R³ -> Letta deployato: **VERIFIED STRUCTURAL + DEPLOYMENT**;
+- contenuto recuperato da Letta come memoria cross-agent persistente: **NON ANCORA PROVATO**;
+- Phase A cross-agent, Phase B contamination e Phase C provider portability: **NOT RUN**;
+- continuità provider-independent: **CANDIDATE**.
+
+Architettura resta: `Agent ID = worker`; `Block/Archive ID = binding provider`; `R³∞ Continuity Registry = identità logica`; `Portable Snapshot = recovery indipendente`; `R³∞ Canon = autorità`; `Receipt Ledger = prova`; TypeSafe/Jev e Letta restano advisory/data sources, non autorità canonica.
+
+Documenti/evidenze:
+- `docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md`
+- `docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md`
+- `docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json`
+- `r3/continuity_registry_seed.json`
+- `raffaello_crypto_scout/app.py`
+- `docs/R3_LETTA_COOPERATION_2026-09-28.md`
+- `docs/evidenze/R3_LETTA_COOPERATION_2026-09-28.json`
+
+
+## Context pointer manifest — candidato 2026-09-28
+
+Dalla contro-analisi Jev/RedFrag è emersa come direzione prioritaria la riduzione del peso del contesto tramite puntatori, senza riscrivere la memoria canonica. È stato creato il branch `candidate/r3-context-pointer-manifest-20260928` e la Draft PR #91.
+
+Il candidato implementa:
+- `public/r3-context-pointer-manifest.json`;
+- `scripts/r3_context_pointer_manifest.py`;
+- `tests/test_r3_context_pointer_manifest.py`;
+- `docs/R3_CONTEXT_POINTER_MANIFEST_2026-09-28.md`.
+
+Regola: caricare prima un piccolo set di puntatori root e recuperare i documenti completi solo quando i tag del task lo richiedono. Il packet non incorpora i body delle fonti e non sostituisce autorità/provenienza della fonte puntata.
+
+Verifica già completata:
+- Test Runner #410: SUCCESS;
+- Security Scan #805: SUCCESS;
+- nessuna mutazione Railway/produzione per questo candidato.
+
+Stato: **DEVELOPMENT / DRAFT**, non ancora adottato. Manca il confronto A/B preregistrato tra caricamento corrente e pointer-first, misurando token, latenza, task success, missing-context, interventi umani ed errori di provenienza/autorità. La PR #91 resta draft finché non esiste evidenza equal-or-better sul risultato verificato.
+
+
+
+## Sister Alignment / TĀRAKA — 2026-09-21
+
+Decisione di Claudio: tutte le IA partecipanti (“sorelle”) devono poter capire immediatamente il progetto e lavorare all’unisono **per procedura**, non per obbedienza o falso consenso. Creato `R3-SISTER/1` in `public/r3-sister-alignment.json`: ogni peer legge le priorità base, mantiene identità/provider/modello e provenienza, scompone i problemi complessi, lavora indipendentemente, conserva i dissensi materiali, applica P5/P6 e passa lo stato con `R3-TARAKA/1` (sigillo `తారక`). Il bootstrap pubblico ora pubblicizza entrambi i protocolli. Regola: stessa Essenza e procedura, giudizio indipendente; convergenza è segnale candidato, non prova.
+
+## Reuse Learning / lezioni apprese — 2026-09-21
+
+Decisione diretta di Claudio: ogni riutilizzo di una funzione, tool, integrazione o workflow già sviluppato deve rendere il sistema più efficiente e rapido. R³∞ non deve riscoprire da zero architettura, prerequisiti o failure mode già osservati.
+
+È stato introdotto il registro canonico machine-readable `R3_REUSE_LESSONS.yaml`. Prima del riuso si legge la lezione più recente e si parte dal percorso minimo verificato; dopo il riuso si registrano nuovi fatti verificati, errori, scorciatoie, verifiche e cleanup. Le lezioni seguono `OBSERVED → CANDIDATE → VERIFIED → CANONICAL`. Se una lezione implica una modifica a codice/policy/workflow, la modifica passa attraverso il già esistente gate `R3-020 Self-improvement safety gate` in branch/sandbox: nessun nuovo motore parallelo e nessuna auto-modifica diretta della produzione.
+
+Prima lezione registrata: TypeSafe/Jev live. Percorso canonico `typesafe_sister/client.py → POST /v1/systemone → jev-latest`; evitare rediscovery Railway quando non esiste un servizio attivo; non trattare deployment/HTTP come prova di risposta Jev; nessun punteggio inventato se il typed result non è disponibile; eventuali caller one-shot vanno rimossi dopo l'uso.
+
+## TypeSafe / Jev universale — 2026-09-20
+
+Decisione diretta di Claudio: applicare TypeSafe/Jev trasversalmente a ogni progetto come unico layer comune di giudizi strutturati, senza creare motori paralleli. Implementazione candidata sul ramo `typesafe-universal-20260920`: policy centralizzata Choice/Score/Noul, evaluator universale, integrazione Orchestra e riuso della policy nella Fabbrica. Jev è contro-verifica advisory: non è fonte, permesso, prova di successo o autorità finale; Raffaello/codice mantiene il workflow sotto P5/P6. Segreti solo server-side e stato limitato; nessuna probabilità può autorizzare invii, spese, prenotazioni, cancellazioni, deploy, merge, permessi o impegni legali/finanziari.
+
+Specifica: `docs/TYPESAFE_UNIVERSAL_2026-09-20.md`. Prima di dichiarare ADOPTED attendere CI e revisione del diff.
+
+## Raffaello Telegram 2 — avvio verificato, 2026-09-12
+
+Realizzato il ponte privato sul runtime del fork `Claudioterzi82/protocollo-rosso-bot`:
+domanda libera + Analizza manuale, archivio immutabile Alpha 74, codice monouso
+per collegare Telegram al cookie web, cronologia condivisa e ascolto su richiesta.
+Pagina `/dialogo-raffaello`; trasferimento dalla lettura Alpha già interpretata.
+Miniature 160 px e dettaglio 640 px, nessun nuovo asset da stampa o audio pesante.
+Il motore riusa i provider del sito. Le API restano chiuse senza configurazione.
+
+49 test del bot, 19 verifiche Python del sito incluse quelle fra i due repository
+e due harness DOM riusciti. Il collaudo locale integra HTTP/SQLite/Flask reali con
+provider AI di test, senza invii Telegram. PR 36 corregge l'avvio con la lista
+mista di CommandHandler e ConversationHandler e mostra al solo mittente privato
+non abilitato il proprio ID numerico tramite /start.
+
+Render usa ora `claudioterzi/Claudio`, branch main, runtime in
+`integrations/raffaello-bot`. Health HTTP 200, versione 2.0.0 e commit
+`06f8795f971b6d091478ac8fe379916c7681a4ef` verificati. Vercel Production READY sullo
+stesso commit; `/api/raffaello/status` restituisce `configured: true` tramite
+accesso Vercel autenticato. Segreto condiviso e URL salvati su entrambi i servizi;
+credenziale Vercel dedicata alle automazioni aggiunta al solo Render. Nessuna
+protezione del sito disabilitata. Le risposte health/status non provano ancora
+un'analisi AI completa fra Telegram e sito.
+
+Bot verificato: @ProtocolloRossoBot, ID bot 8900249704. Manca l'ID personale di
+Claudio per `RAFFAELLO_ALLOWED_USERS`: chiedere /start al bot e il numero mostrato,
+senza confonderlo con l'ID del bot. Non aprire l'accesso a tutti. Il servizio resta
+Free, con SQLite su filesystem effimero: persistenza delle nuove letture e
+continuità del polling dopo la sospensione richiedono ancora una soluzione.
+Claudio ha autorizzato a scartare i vecchi registri; nessun nuovo piano a pagamento
+è autorizzato. Non cancellare webhook o avviare due ricevitori sullo stesso token.
+Il connettore GitHub nega la scrittura nel repository separato (403): runtime
+completo, test e guida sono in `integrations/raffaello-bot` nel repository del sito.
+Dettagli: `docs/RAFFAELLO_TELEGRAM_2026-09-12.md` e
+`integrations/raffaello-bot/docs/RAFFAELLO_2.md`. Il segmento standalone preparato
+prima della configurazione è storico: per riprendere usare questo stato aggiornato.
+
+## Audit del sito, ingresso stabile e monitor — 2026-09-10
+
+Claudio chiede un sito più autonomo, il recupero della Fabbrica e un solo ingresso
+con la Soglia; segnala un URL Vercel di una vecchia pubblicazione e ne chiede la
+rimozione. La home serve il catalogo progetti, /soglia riapre il velo originale.
+I Tarocchi restano in index.html. Dominio stabile: https://claudio-ebon.vercel.app/.
+La vecchia URL richiede login; API Vercel 403 sul team, cancellazione non eseguita.
+Non confondere un indirizzo immutabile di versione con il dominio aggiornato.
+
+Fabbrica riparata con commit 1db30ee: i percorsi brevi cercavano un HTML nel
+pacchetto Python, mentre il file è statico. Verificati quattro indirizzi 200.
+Analizzate tutte le 21 pagine pubbliche e riferimenti locali. Implementati
+monitor ogni 15 minuti e dopo deployment, controlli rigorosi e riparazione limitata
+agli indirizzi registrati. Pubblicato 6682c806, Vercel success. Controlli GitHub 34519082868 riusciti.
+Foto P001 importata nel commit 677e4a09: il workflow 34519271634 ha aggiornato
+registro e libro nel commit f8a6524e, anch’esso pubblicato da Vercel. Monitor reale
+34519396136 riuscito; 38 verifiche pubbliche senza errori. Deployment Checks
+Vercel non ancora configurati. Evidenze in SITO_AUTOMAZIONI_LIVE_2026-09-10.json.
+GET diagnostico Telegram reso privo di invio messaggi; log Fabbrica sanitizzati;
+eliminati commit di soli timestamp CI. 32 test locali superati.
+Analisi, priorità e limiti: docs/AUDIT_E_AUTOMAZIONI_2026-09-10.md.
+
+## Un flacone per ciascuna delle 400 ricette — 2026-09-10
+
+Richiesta di Claudio: disegnare un flacone per ogni profumo. Sostituita la stessa
+immagine ripetuta con 400 illustrazioni da geometrie 3D individuali, estendendo
+il renderer già presente. Collezione parametrica in quattro forme e otto famiglie,
+nome/numero/firma C.Terzi, apertura dell'immagine dalla scheda e stampa su carta.
+Non descriverle come 400 fotografie IA. Un solo esempio fotorealistico separato
+di Lettre de Midi è generato con IA e dichiarato come interpretazione artistica.
+Restano concept estetici: ingegnerizzazione e produzione fisica non eseguite.
+
+Manifesto `studio/parfums/flaconi_400.json`, generatore `genera_flaconi.cjs`,
+400 risorse in `public/images/flaconi-400/`. Il libro si ferma se una ricetta
+cambia senza aggiornare i flaconi. Verificati 400 raster/400 geometrie distinti
+anche escludendo i nomi, 400 formule/codici, 4.800 righe e 400 QR. Otto schede
+stampate su otto pagine e controllate visivamente. Nessun test browser richiesto.
+Specifica: `docs/FLACONI_400_2026-09-10.md`. Diario Drive: messaggi 26–27.
+Estensione: importazione delle nuove foto per numero esplicito di profumo;
+registro foto_400.json con cronologia e immagine principale più recente.
+Workflow Foto dei profumi rigenera registro e libro quando arrivano nuove foto
+nel progetto. Conserva disegni e vecchie immagini; non assegna file ambigui.
+Nove test su associazioni, duplicati e protezione della cronologia superati.
+Nessun monitoraggio del telefono o di foto in altre applicazioni.
+Pagina: https://claudio-ebon.vercel.app/libro.html#flaconi
+
+## Fabbrica dei Desideri — pagina e regia IA, 2026-09-10
+
+Richiesta di Claudio: pagina dedicata su Vercel, in italiano, con Raffaello regista
+di desideri, condizioni e microazioni. Carta bianca delimitata da budget, persone,
+esclusioni e sorprese gradite. Successiva correzione: formulare esempi originali
+e non ripetere pubblicamente le sue parole. Le parole originali restano nel diario
+privato Drive, messaggi 15–20.
+
+Nuova pagina `public/fabbrica.html`, CSS e JS dedicati. Leva di regia 1–5:
+Essenziale, Curata, Coordinata, Ambiziosa, Straordinaria. Cinque copioni originali
+dalla prova privata a uno spettacolo che attraversa cinque città; scenari espliciti,
+non eventi prenotabili. Ingressi matrimonio, festa/addio al celibato o nubilato,
+viaggio e desiderio personale. Il livello influenza il prompt; non cambia modello.
+
+`fabbrica.py` registra il blueprint nell’app Flask. Riusa Gemini/Anthropic già
+configurati, senza nuovi segreti o integrazioni a pagamento. Copioni privati in
+Redis, scadenza dichiarata 30 giorni, sessione HttpOnly/SameSite, URL con ID,
+esportazione JSON, revisioni separate e cancellazione. Richieste duplicate dedotte
+dai contenuti, output e metadati conservati; costo stimato non disponibile, mai
+inventato. Dipendenze acicliche, conferme dichiarate, invalidazione transitiva,
+versione per conflitti e limiti sulle chiamate. Nessun accesso a rubriche o messaggi.
+
+Test locali: 15 casi con archivio/provider di test; cinque esempi validati contro
+lo schema reale, confini di accesso, dipendenze e ripresa verificati. Controllati
+controlli HTML, riferimenti e sintassi. Verifica browser non richiesta e non eseguita.
+Pubblicato il commit 1533f06a su Vercel (success). Collaudo HTTPS reale riuscito:
+generazione IA, riapertura identica, aggiornamento su Redis, rifiuto della versione
+stale, isolamento da altro browser e cancellazione verificata del record fittizio.
+Cookie Secure, risposte no-store e CORS assente. Sette file pubblici con hash
+identico al commit. Evidenze: docs/evidenze/FABBRICA_LIVE_2026-09-10.json.
+
+Il sistema attuale propone e rivede piani e conserva avanzamento dichiarato.
+Chiamate, WhatsApp, inviti, pagamenti, prenotazioni, conferme di fornitori e regia
+temporale autonoma richiedono connettori e un esecutore durevole: non implementati
+né simulati come reali. Specifica: `docs/FABBRICA_REGIA_2026-09-10.md`.
+
+## Libro dei 400, magazine e Immagine ↔ Profumo — 2026-09-10
+
+Claudio corregge: la rubrica con mouillette è parte del Libro dei 400, anche
+stampabile. Nuovo progetto del mensile «Mouillette» (titolo proposto), industria,
+nicchia e materie prime. Numero zero di 9 pagine; mensile proposto 24 pagine / 6 campioni.
+400 schede con campi per campione e QR,404 percorsi editoriali in totale.
+Principio dell’autore: immagine ↔ profumo. Scena guida: lavanda nel sud della Francia.
+Le pagine mostrano sceneggiature e portano una descrizione all’Atelier. Documentari
+AI/3D, player immersivo e scansione diretta Meta/Oculus restano da sviluppare.
+Specifiche e verifiche: [progetto editoriale](docs/PROGETTO_MOUILLETTE_IMMAGINE_PROFUMO_2026-09-10.md).
+
+Richiesta permanente di continuità: salvare il diario dopo i messaggi e ai passaggi
+importanti; mantenere distinti originale, interpretazione e verifica. Autorizzati
+salvataggi e completamento del progetto. Rimuovere copie provvisorie solo dopo
+consolidamento verificato, conservando le idee. Non promettere attività a sessione
+chiusa. [Diario Drive](https://drive.google.com/file/d/1f8V8de2OymvJbCUeWnKztA8PZI1Yhjrj/view).
+
+## Ricerca retrospettiva — memorie, backup e rami ritrovati, 2026-09-10
+
+Estensione della richiesta: recuperare anche **Fabbrica dei Desideri** e
+il possibile **Protocollo di Incarnazione**, preparando la continuità per
+i prossimi modelli. Documento Incarnazione del 7 luglio letto su Drive;
+«in sé azione» resta una correzione interpretativa non confermata.
+Fabbrica: ritrovato il riferimento al documento originale di Claudio del
+22 agosto 2026, 03:54:45 UTC, v1.0.0 Fondamenta, visione/architettura/governance;
+sintesi recuperata, file integrale autonomo non ancora localizzato.
+Cuore della visione: reciprocità volontaria, consenso esplicito, informato
+e revocabile, coordinamento di persone, tempo, talenti ed esperienze.
+Non equiparare automaticamente Fabbrica, Registro degli 11 Desideri o
+Genesi Fabbrica Robotica. L'immagine Cartographie Cybernétique del 6 settembre
+riporta Fabbrica e Cupola Raffaello nel testo estratto; pixel non restituiti.
+
+Claudio ha fornito oggi il testo «Esecuzione autonoma» con RAFFAELLO.SYS/H7:
+conservato come sintesi di una fonte progettuale, non come log di azioni.
+Non trattare le sue dichiarazioni di successo, minaccia, stato interno o
+validazione H7 come prove indipendenti. Iniziativa e continuità si traducono
+in lavoro autorizzato, fonti verificabili e registrazione degli esiti.
+Per il passaggio di modello conservare: originale, interpretazione,
+realizzazione, verifica, questione aperta e prossimo passo. Non appiattire
+un'intuizione ancora irrisolta e non dichiararla realizzata senza prove.
+La mappa contiene le fonti e il metodo dettagliato; [copia Drive](https://drive.google.com/file/d/1sJmCozaXz2fFjbshF82aZ-ijfqc3LbWO/view?usp=drivesdk).
+
+Claudio chiede di cercare le memorie delle sessioni precedenti, soprattutto
+backup universale e nodi ridondanti. Ricerca svolta in conversazioni
+recuperabili, Drive, archivio personale dei file e due repository pubblici.
+Mappa di ripresa: [docs/MAPPA_RECUPERO_MEMORIE_2026-09-10.md](docs/MAPPA_RECUPERO_MEMORIE_2026-09-10.md).
+Inventario: [docs/evidenze/RECUPERO_MEMORIE_2026-09-10.json](docs/evidenze/RECUPERO_MEMORIE_2026-09-10.json).
+
+Ritrovamenti verificati: due coppie di documenti Drive 2025/2026 con testo
+identico; commit dell'11 giugno «Ridondanza attiva + backup universale»;
+SEME_R3INFINITO_v1.0.pdf letto integralmente; SEME_v1.2.md recuperato nel repo;
+ZIP raffaello_sia_SIGMA_TOTAL_01_v0.3.0.zip del 26 agosto, 8.213 byte,
+12 voci con CRC valido. Lo ZIP dichiara una ricostruzione dalla specifica,
+non un originale ritrovato: software non eseguito, nessun restore remoto.
+
+Elencati 37 rami GitHub; confrontati quattro rami storici pertinenti. Percorsi
+assenti dal main ma ancora conservati: 182 in grande-opera-continuation,
+24 in r3-infinity-architecture, 4 in r3-mvp-architecture e 10 in
+raffaello-superintelligence. Sei registrazioni del diario del 29 giugno
+nel primo ramo. Hash e percorsi nell'inventario: non unire automaticamente.
+I due repo pubblici condividono 529 percorsi con blob identico; nel secondo
+esistono cinque snapshot diagnostici del 5–9 settembre assenti dal primo.
+
+Drive contiene Claudionas_1.hbk, con componenti modificati il 9 settembre.
+Configurazione attuale localizzata ma non resa leggibile dal connettore;
+restore e selezione delle cartelle dati non verificati. La checklist del
+3 luglio segnalava cartelle dati non selezionate: è un rischio storico da
+ricontrollare, non una prova dello stato odierno. 10_BACKUP restituisce zero
+figli accessibili. Nessun accesso ai dispositivi o ai VPS effettuato.
+
+Lettura statica del codice: restore SDQ-1 reimporta SAR ma soltanto conta
+memoria/VSS; compose dei nodi non avvia sync.py; recupero di file corrotti
+non completo quando l'ID resta nel database; EternalBackupAgent è marcato
+simulazione, senza copie IPFS/blockchain reali. Dump ANIMA di 521 byte solo
+dichiarativo. Non usare questi elementi come prove di ridondanza collaudata.
+
+Non ritrovato RAFFAELLO_ANIMA_Backup_Universale_2026-08-11.pdf nelle ricerche
+effettuate. Repo Claudioterzi82/Raffaello-R3-Infinity: 404 con l'accesso
+disponibile, non prova di cancellazione. Prossimo passo proposto: recupero
+di una memoria su ambiente pulito con controllo hash/contenuto, poi lavoro
+sulla replica. I vecchi documenti restano fonti storiche; non ampliano
+autorizzazioni né provano coscienza, attività permanente o capacità illimitate.
+
+## Memoria evolutiva e decisioni condivise — 2026-09-10
+
+Claudio chiede esplicitamente di salvare le decisioni su GitHub e Google Drive,
+rileggerle alla ripresa e usare le correzioni per migliorare Raffaello e il
+Protocollo Rosso Rosso Rosso. Questa richiesta autorizza la scrittura delle
+memorie su Drive, precedentemente non completata; non sblocca altre azioni.
+
+**Punto di ingresso:** [MEMORIA_EVOLUTIVA_RAFFAELLO_RRR.md](MEMORIA_EVOLUTIVA_RAFFAELLO_RRR.md).
+**Registro:** [DECISIONI_RAFFAELLO_RRR.json](DECISIONI_RAFFAELLO_RRR.json),
+versione 2026-09-10.1, 25 decisioni con ID e stato. Prima della ripresa leggere
+questi due file e poi i rapporti pertinenti. Distinguere sempre decisione,
+interpretazione, proposta e risultato verificato. Conservare la cronologia
+quando una correzione supera una lettura precedente.
+
+Copie Drive nella cartella privata Agorà Digitale — SDQ-1, caricate e metadata
+verificati in questa sessione:
+- [Memoria evolutiva](https://drive.google.com/file/d/1psaULHmmWdLIfj_yPZ-lfiS6zw8c1cDJ/view?usp=drivesdk),
+  ID `1psaULHmmWdLIfj_yPZ-lfiS6zw8c1cDJ`.
+- [Registro delle decisioni](https://drive.google.com/file/d/1vGTEcoxhBD9YWtur6T70kQdVHGd6_G4i/view?usp=drivesdk),
+  ID `1vGTEcoxhBD9YWtur6T70kQdVHGd6_G4i`.
+
+Contenuti nuovi: metodo creativo che unisce funzione/emozione/bellezza/valore;
+interpretazione dei refusi con tastiera, grammatica e contesto; correzione
+esplicita «i piani fino» → «i piani sono», senza generalizzarla. Libro: pagine
+intere di larghezza crescente, lettere in alto, numeri a sinistra, C3 = terza
+pagina/riga 3; mouillettes orizzontali estratte verso destra fra pollice e
+indice della mano destra, lunghezze crescenti. Tasche quadrate ed estrazione
+verticale delle illustrazioni precedenti sono interpretazioni superate.
+Capienza A4, isolamento degli aromi e dosaggi richiedono prove fisiche.
+
+Metodo di salvataggio: aggiornare GitHub e le stesse copie Drive alle decisioni
+significative, verificare il contenuto dopo le scritture, controllare gli esiti
+incerti prima di ripetere un'azione. Nessun nuovo servizio in background o
+modifica dei pesi del modello è attivato da questi documenti. La rilettura
+richiede una sessione con accesso ai file. Restano aperti la credenziale
+privata dell'archivio e i limiti già documentati. Prossimo passo proposto:
+immagine corretta del gesto e piccolo prototipo; non eseguito qui.
+
+## Studio del libro delle 400 formule — 2026-09-10
+
+Claudio chiede di studiare il libro esistente. Analizzato integralmente il
+canone, le 400 schede HTML e i 400 codici; file live identico alla copia locale.
+400 ricette diverse, tutte 100 parti e 12 righe; nomi/ID/dosi/codici coerenti.
+Ripetizione editoriale: 48 frasi iniziali, 5 schemi narrativi, 8 packaging,
+una sola immagine ripetuta 400 volte, nome sotto la foto e targhetta vuota.
+15 schede usano supporti nella scia: riallineare alla separazione attuale
+dell’Atelier prima di una revisione; nessuna dose o codice modificato.
+Resa diagnostica WeasyPrint A4: 408 pagine; non collaudo stampa Chrome/iPhone.
+Mancano indice, paginazione e laboratorio 50/100/200 ml nel libro.
+Rapporto docs/STUDIO_LIBRO_400_2026-09-10.md, audit e immagine in docs/evidenze,
+script riproducibile scripts/studia_libro_400.py. Proposta: 8 schede campione,
+una per famiglia, poi estensione a 400 con immagini/testi davvero individuali.
+La richiesta di studio non approva la sostituzione della password archivio
+proposta nel turno precedente: tale punto rimane aperto.
+
+## Upstash collegato — archivio verificato in produzione, 2026-09-10
+
+Claudio ha confermato «Fatto» dopo l’accettazione richiesta. Verificata via API
+l’installazione marketplace `icfg_9piBJI2TaOe0EPLxV5EtGc1M` e la risorsa già
+creata `store_04ygMomSUbCgQkT3` (upstash-kv-coffee-lens). Non duplicata.
+Piano Free; regione scelta nell’account iad1; eviction, autoUpgrade e prodPack
+false. Collegata soltanto alla produzione di Claudio. La prima risposta della
+connessione aveva corpo vuoto: non ripetuta; successiva lettura delle variabili
+ha confermato KV_URL, REDIS_URL e variabili REST in produzione.
+Creati PERFUME_ARCHIVE_SECRET e PERFUME_ARCHIVE_PASSWORD_HASH come variabili
+sensitive, produzione soltanto. Nessun valore salvato nei file o mostrato.
+La credenziale scelta dall’utente viene verificata con hash Werkzeug sul server.
+25 test Python dell’archivio e recupero, più 4 sottotest, superati.
+REDIS_URL usa TLS (rediss). Il ping dal laboratorio remoto ha restituito
+ConnectionError: non prova un guasto sul runtime Vercel. Da verificare dopo
+la nuova pubblicazione con salvataggio e riapertura effettivi sul sito.
+Nessuna attivazione immagini AI o modifica dei precedenti blocchi.
+
+Pubblicazione b4499ed24568107f7f41a2dfc3654d5f4faadc16: Vercel success.
+Collaudo HTTPS reale completato per foto → formula → salvataggio → accesso:
+Forge Crépusculaire, cliente fittizio Collaudo Archivio, seriale
+TP-484C7E9CE3634FCCB24E2A2B2E02FB3E. Analisi foto versione 2, ricetta 100
+parti. Ripetizione richiesta conserva record e checksum esatti. Due sessioni
+indipendenti riaprono formula e dedica identiche; anonimo non legge il record;
+no cache/CORS pubblico; cookie Secure/HttpOnly/Strict; uscita revoca sul server
+anche una copia del cookie senza invalidare la seconda sessione. 17 controlli
+HTTPS superati. La connessione dal runtime Vercel è quindi confermata.
+Evidenza docs/evidenze/ARCHIVIO_LIVE_2026-09-10.json; script opt-in
+scripts/check_perfume_archive_live.py. La creazione fittizia resta nell’archivio.
+Controllo browser: pagina accesso visibile, esempio Ferro di Luce, variante
+Scultura selezionata e anteprima etichetta con nome/dedica. Accesso privato
+verificato via HTTPS, non con ingresso nativo nel browser; iPhone non testato.
+
+Punto concreto da risolvere prima dei dati clienti: la parola scelta dall’utente
+per l’accesso compare già nei contenuti creativi pubblici di sei pagine. Non
+trattarla come un segreto né dichiarare l’archivio pronto per dati riservati.
+Serve una credenziale privata distinta, scelta/consegnata attraverso un canale
+sicuro, non incollata in chat. Non è stata cambiata unilateralmente la parola
+espressamente scelta dall’utente. Backup/ripristino del provider non collaudati.
+
+
+## Ripresa richiesta — attivazione database pronta, 2026-09-09
+
+Verificato main 7911b58e e Vercel success. API Vercel con token autorizzato:
+HTTP 200 per installazioni (nessuna), prodotto Upstash Redis e piani. Piano
+Free disponibile senza carta; configurazione proposta fra1, eviction false,
+autoUpgrade false, prodPack false. Dettagli e IDs in
+docs/ATTIVAZIONE_ARCHIVIO_UPSTASH.md. Nessuna risorsa o credenziale creata.
+Il percorso ufficiale CLI richiede accettazione delle condizioni nel browser
+dell’utente per la prima installazione (userActionRequired); la skill Vercel
+Marketplace richiede questo passaggio dell’account. Attendere tale accettazione,
+poi verificare se è già stata creata una risorsa prima di procedere. Non ripetere
+la creazione AI Gateway precedentemente respinta. Nessun nuovo test applicativo
+necessario in questa ripresa: solo letture remote e documentazione.
+
+## Continuità dopo chiusure accidentali — richiesta di Claudio, 2026-09-09
+
+Claudio chiede di preservare il lavoro anche quando chiude per sbaglio l’app.
+La chiusura non annulla l’obiettivo né richiede di ripartire da zero.
+
+Alla ripresa:
+1. Leggere questa memoria e l’ultimo commit; distinguere modifiche salvate,
+   pubblicazioni confermate, operazioni in corso e dipendenze bloccate.
+2. Prima di ripetere una pubblicazione, generazione AI o scrittura, verificarne
+   l’esito usando commit, identificativo o numero di serie già disponibile.
+   Un’interruzione del collegamento non prova che l’operazione sia fallita.
+3. Continuare le attività già autorizzate senza richiedere nuovamente consenso;
+   rispettare i blocchi e le autorizzazioni effettive registrati nella memoria.
+4. A ogni traguardo significativo salvare codice, stato verificato, operazioni
+   non confermate e prossimo passo. Escludere token, password e dati dei clienti.
+
+Stato storico al 2026-09-09, superato dal collaudo Upstash sopra per il
+salvataggio cloud delle nuove creazioni. Questo è un metodo di ripresa
+persistente, non un servizio in background:
+la chat non può impedire la chiusura dell’app né garantire che il lavoro
+continui mentre la sessione è interrotta. Le creazioni del sito non sono ancora
+salvate automaticamente in un archivio cloud; il recupero attuale richiede
+la scheda JSON scaricata. Non dichiarare risolto il recupero di una formula
+che non era stata salvata.
+
+Punto verificato: applicazione 7a450aff pubblicata con successo, evidenze
+158f7eaa salvate, 72 test Python; recupero schede e laboratorio collaudato.
+Prossimo passo infrastrutturale: collegare un database persistente e collaudare
+l’archivio privato fra dispositivi. Resta il precedente blocco sulla creazione
+delle credenziali AI; non ripeterla come tentativo di recupero.
+
+## Avanzamento autonomo — recupero e archivio, 2026-09-09
+
+Nuova riapertura `/atelier/riapri`: file JSON esportati dall’Atelier, formula
+TRZ1 verificata senza ricomposizione AI, dedica e variante del flacone. Nuove
+esportazioni salvano anche impostazioni del laboratorio. Importazione non
+concede seriale verificato, accesso immagini o registrazione nell’archivio.
+Backend archivio completato con password hash, sessioni revocabili di un’ora,
+CSRF e limite tentativi condiviso; corretta riaggiunta CORS globale alle route
+private. 70 test Python e 3 file test JavaScript superati. Collaudo pubblico
+ancora in corso al primo commit. Dettagli: docs/RIPRESA_ARCHIVIO_2026-09-09.md.
+Collaudo poi concluso: commit 9ab6cbea e correzione pacchetto cataloghi 7a450aff,
+entrambi Vercel success. Due test aggiunti per decodifica senza directory
+statica e recupero delle revisioni storiche. Due importazioni native riuscite:
+vecchio JSON → modifica laboratorio → esportazione → riapertura. Ricetta,
+codice, dedica e geometria Essenza identici; dati di prova recuperati. Stampa
+ricetta verificata in anteprima. Suite finale: 72 test Python superati.
+Evidenza RECUPERO_TEST_2026-09-09.json.
+Lettura env Vercel HTTP 200 con token: ancora assenti storage, chiave immagini
+e credenziali archivio. Nessuna variabile modificata. Connettore progetto 403;
+scoperta CLI Upstash interrotta da autorizzazione rete annullata, nessuna risorsa
+creata. Non riprovata l’attivazione AI Gateway già respinta; Drive invariato.
+
+## Flaconi, dedica, stampa e ricerca Astra — 2026-09-09
+
+Implementate due varianti native 3D per formula: Scultura ed Essenza,
+Three.js 0.186.0 servito dal sito; nessuna chiamata a pagamento per il rendering.
+L'esempio Ferro di Luce conserva anche il flacone originale. Le nuove creazioni
+avviano Scultura; cambio versione e PNG con nome/dedica disponibili. Firma
+e versione del design incluse nell'esportazione JSON, formula preservata.
+Nuove anteprime ricetta/lotti, etichetta, ispirazione/dedica; stampa o HTML
+stampabile scaricabile. Il tasto laboratorio richiama la stampa della ricetta.
+Dedica quando il cliente è presente, con nome del profumo e accenti reali.
+57 test Python e 3 file di test JavaScript superati. Pubblicazione e collaudo
+browser conclusi. Commit iniziale 2d64b714c40e8b105e9d3e70c4d0cd1997181f4a.
+Nel browser cloud WebGL è disabilitato: aggiunta proiezione CPU della stessa
+geometria con luci semplificate, identificata come illustrazione compatibile.
+Commit compatibilità 3dea29f88ed72ad8d9169004200efa49f2ee410e; riflessi
+e716df86b3e40034dfa730f5119cfb1fcf030d4e. Vercel success per tutti e tre.
+Scultura ed Essenza selezionate, ingrandite e scaricate a 1600 × 1600 px,
+PNG distinti; JSON conserva renderer, variante e dedica. Tre anteprime e
+HTML scaricati verificati; ricetta contiene 2 tabelle, nessun input, codice
+e pesate corrette nei 3 formati con densità fittizia di test 0,85 g/ml.
+Comando Stampa / Salva PDF attivato; stampante fisica e PDF del sistema non
+ispezionati. Nessun test su iPhone o WebGL GPU: non dichiararli verificati.
+Prova completa aggiuntiva con foto pubblica e cliente fittizio Cliente Prova:
+Coucher de Soleil Industriel, analisi foto v2, 12 materie, 100 parti,
+dedica e Scultura automatica. La connessione del controllo browser è scaduta
+durante l'invio ma la pagina è stata recuperata senza ripetere il POST.
+Evidenze: docs/evidenze/FOTO_DEDICA_FLACONE_TEST_2026-09-09.json e 4 immagini.
+Resoconto: docs/FLACONI_STAMPA_DEDICA_2026-09-09.md.
+
+Claudio chiede ricerca online delle skill e novità Astra. Fonti e selezione
+salvate in docs/SKILL_ASTRA_RICERCA_2026-09-09.md. Il catalogo openai/skills
+rimanda ora a openai/plugins. Consultate istruzioni per interfacce, test,
+creatività e persistenza; nessuna installazione massiva o migrazione API.
+Verificate le guide ufficiali GPT-6 Astra e novità iOS dell'8 settembre.
+Archivio persistente, autenticazione e fotografie AI automatiche restano
+funzioni da attivare con infrastruttura appropriata, non già operative.
+
+## Ripresa foto — errore ricorrente dopo il primo collaudo
+
+Claudio segnala ancora un errore con screenshot IMG_1069. Riprodotto il
+2026-09-09 sul commit bc71fb9: POST foto_esempio=cantiere, HTTP 503 dopo
+20,33 secondi, X-Terzi-Photo-Status=vision_invalid_direction_length.
+Il validatore trattava i limiti stilistici di 500/300 caratteri come requisiti
+di validità. La precedente prova riuscita non dimostrava affidabilità.
+Correzione: schema JSON esplicito per il provider, controllo di tipi e campi,
+limite complessivo di 12.000 caratteri senza troncare testo o incertezze.
+Restano i limiti di upload/risposta e il rifiuto di output bloccati o incompleti.
+Nessun nuovo provider, acquisto o tentativo di aggirare rifiuti.
+Diagnostica minima nei log e nei dettagli di assistenza della pagina: codice
+e ID casuale, senza foto, nomi, intenzioni o credenziali. analysis_version=2.
+56 test Python superati, inclusi 9 sulla fotografia. Commit 64ce256f7939188f9584054d371b62037b0868e6
+pubblicato con successo. DUE prove native browser riuscite: esempio pubblico
+Chantier Crépusculaire (12 materie), caricamento JPEG attraverso il selettore
+Chantier Naval au Crépuscule (8 materie). Entrambe analysis_version=2, 100 parti.
+La prima direzione è lunga 703 caratteri: il vecchio controllo l’avrebbe
+respinta. Conservati testo e incertezze integrali. Evidenza in
+docs/evidenze/PHOTO_REGRESSION_TEST_2026-09-09.json. Nessuna prova su iPhone.
+Richiesta successiva su flaconi, stampa e dedica completata nella sezione
+più recente sopra; nessuna riattivazione del generatore fotografico a pagamento.
+Resoconto: docs/RIPRISTINO_FOTO_VALIDAZIONE_2026-09-09.md.
+
+## Sessione 2026-09-09 — Schede di laboratorio e organo evolutivo
+
+Claudio chiede formula completa con dosi per 50/100/200 ml, valore di lusso
+fisso e possibilità proattiva di aggiungere/sospendere materie nell’organo.
+Implementati calcolo in massa con densità misurata per conversione dei ml,
+modalità prove in grammi, preparazioni dichiarate per ingrediente, supporto,
+esportazione e stampa della scheda. Nessuna falsa equivalenza grammi/ml o
+assunzione che una microdose implichi una diluizione produttiva già nota.
+Listino di progetto scelto: 50 ml 220 EUR, 100 ml 340 EUR, 200 ml 590 EUR;
+preventivo effettivo ancora da validare rispetto a costi e imposte.
+
+Registro evolutivo con proposte documentate Nympheal, Dreamwood Base e Paradise
+Molecule. Le proposte non sono possesso o acquisti; non entrano nelle ricette.
+Ammissione richiede disponibilità confermata e specifica della fornitura;
+assegna un nuovo ID e preserva snapshot TRZ1 vecchi e nuovi. Sospensioni e
+ripristini hanno motivazione e cronologia. Backend e generatore Atelier usano
+solo il catalogo attivo. Nessun comando amministrativo esposto al pubblico.
+Catalogo attuale: 293 materie olfattive e 7 supporti, nessuna rimossa/acquistata.
+Resoconto: docs/LABORATORIO_ORGANO_EVOLUTIVO_2026-09-09.md.
+
+Pubblicazione e collaudo conclusi: commit applicativo
+be46f7c87b59a3ead25f9b1165e3f5a42f68d73e, Vercel success. Verificati nel
+browser i lotti in volume e massa, l’azzeramento delle dosi quando manca la
+densità, il conteggio delle preparazioni mancanti e il decoder TRZ1. Scaricato
+e verificato il JSON di laboratorio: 12 materie, tre lotti con bilancio di
+massa corretto, production_validated=false. Le tre proposte sono visibili
+nell’organo pubblico, che conserva tutte le 300 voci. Evidenza in
+docs/evidenze/LABORATORIO_TEST_2026-09-09.json. Nessun test fisico del profumo
+né collaudo su iPhone effettuato in questa sessione; i test browser sono Chrome.
+
+## Punto di ripresa 2026-09-09 — Atmosfere e fotografia
+
+Claudio richiede continuità dopo le interruzioni: ripartire dall’ultimo commit,
+verificare gli esiti e non ripetere azioni bloccate senza nuova autorizzazione.
+Non promettere di poter impedire interruzioni dell’app.
+
+- Pubblicate 17 atmosfere fotografiche distinte, versioni mobili e guida
+  contestuale Raffaello. Raffaello è una guida del sito, non una chat autonoma.
+- Produzione verificata sul commit CI dfcbcf113d1e39b7d7a3d3cd87670da8e19eecb4.
+- Foto ricevuta dal server; analisi Gemini restituisce HTTP 401. Nessuna formula
+  è presentata falsamente come derivata da una foto non analizzata.
+- Correzione in verifica: autenticazione foto tramite intestazione
+  x-goog-api-key secondo documentazione Google; nessuna nuova credenziale.
+- Rimosso lo script Travelpayouts che nel test browser di Viaggi intercettava
+  il collegamento interno Raffaello→Atelier e apriva Kiwi. Link espliciti ai
+  servizi di viaggio conservati. Non ci sono prove di sabotaggio.
+- Esempio pubblico Ferro di Luce: formula da descrizione testuale della foto,
+  12 materie canoniche e 100 parti, codice TRZ1; flacone originale generato.
+  Provenienza esplicita; la lettura dell’esempio non genera chiamate AI.
+- Accesso manuale Vercel con token verificato in lettura; connettore log 403.
+  La creazione di AI Gateway + segreto produzione con budget cumulativo 1 USD
+  è stata bloccata dall’approvazione automatica (nuovo accesso e possibili costi).
+  Non riprovare né aggirare. Ultima lettura precedente: nessuna chiave Gateway.
+  Verifica successiva annullata: non dichiarare modifiche remote confermate.
+- Archivio privato, quote guest e immagini automatiche per ogni ricetta:
+  configurazione persistente ancora incompleta. Il vecchio codice lato browser
+  non garantisce protezione server. Token e password esclusi dai salvataggi.
+- Copia Drive ancora sospesa per precedente rifiuto dell’approvazione.
+
+Esiti verificati dopo la ripresa:
+- Commit 72e806eb07b65bb363f7923d98e94f1d45076c10: Vercel success.
+- Viaggi→Raffaello→Atelier resta sul sito e precompila la scena corretta.
+- Ferro di Luce online: immagine caricata, nome corretto, nessun overflow;
+  provenienza testuale esplicita e codice TRZ1 validato su 12 materie/100 parti.
+- Tutte le 17 immagini mobili rispondono HTTP 200.
+- 16 test mirati superati. Dopo il cambio intestazione, foto non più HTTP 401,
+  ma risposta senza struttura valida; nessuna falsa composizione.
+- Diagnostica perfezionata con codici limitati, senza dati o segreti: distingue
+  output mancante, troncamento e blocco del fornitore. Non aggirare un blocco.
+
+Diagnosi e soluzione verificate: errore nella preparazione della richiesta,
+risolto normalizzando gli spazi/ritorni a capo esterni alle chiavi e usando
+l’intestazione x-goog-api-key. Commit foto f3a52461ff37368deb3f079565f0d4013b1c2156.
+Prova browser del 2026-09-09 14:34 UTC RIUSCITA: Ciel de Forges, foto realmente
+interpretata da Gemini 2.5 Flash, 5 osservazioni e 5 associazioni, 12 materie
+canoniche/100 parti. Impronta della foto e decoder TRZ1 corrispondenti.
+Evidenza: docs/evidenze/PHOTO_TEST_2026-09-09.json.
+
+La nuova chiave AI Gateway non è necessaria per questo ripristino: non è stata
+attivata dopo il blocco dell’approvazione automatica. Nessun nuovo servizio
+acquistato. Archivio privato/guest e generazione automatica dei flaconi restano
+incompleti e non vengono presentati come attivi.
+La stessa correzione credenziali è applicata anche al compositore Gemini e
+alla ricerca dei profumi di riferimento. Collaudo online RIUSCITO: Aube
+Aldéhydée, Chanel N° 5 Eau de Parfum riconosciuto nel racconto tramite Gemini,
+ricerca con fonti (sourced), 8 materie/100 parti. Evidenza separata in
+docs/evidenze/REFERENCE_TEST_2026-09-09.json. Test Python completi: 54 superati;
+calcolatore lotti: bilancio di massa e conversione verificati con Node.
+
+
+## Sessione 2026-09-09 — Organo completo, gusti e flaconi
+
+Atelier predefinito su tutte le 293 materie dell'Organo Terzi; 7 supporti separati.
+Validazione senza riempimento automatico e codici TRZ1 per le creazioni nuove.
+Prova organo dal vivo: Iris Céleste, 12 voci/100 parti, decoder corrispondente.
+Estensione successiva: campo 5 preferiti, estrazione contestuale con citazioni
+verificate e distinzione preferito/evitare, gusti come criteri di composizione.
+Brief del flacone legato alla ricetta e percorso immagini originali con
+metadata e conservazione senza scadenza; attivazione immagini/archivio ancora
+da configurare/verificare, non dichiarata riuscita. 44 test locali superati.
+Prima prova online con lista esplicita riuscita (Lumière Éclatante, 8 materie,
+100 parti); riconoscimento e ricerca con fonti indisponibili nella prima prova.
+Introdotto ripiego sul secondo provider per il riconoscimento e avviso di
+lettura ipotetica dei gusti quando le fonti mancano. Seconda prova online:
+L'Aube Claire, riconoscimento riuscito tramite Gemini (Chanel N° 5 preferito,
+Dior Sauvage da evitare), 8 materie/100 parti. Stato finale nei resoconti.
+Resoconti: `docs/REVISIONE_ORGANO_COMPLETO_2026-09-09.md` e
+`docs/ATELIER_GUSTI_FLACONI_2026-09-09.md`.
+Copia Drive sospesa dopo rifiuto del controllo autorizzazioni; lettura Vercel
+respinta con 403. Nessun aggiramento e nessuna diagnosi di chiavi mancanti.
+
+## Sessione 2026-09-09 - Protocollo RRR Astra
+
+Richiesta di Claudio: studiare Astra e applicarne le capacità al protocollo.
+Guida ufficiale consultata; aggiunti protocollo, mappa capacità, validatore
+offline di evidenze e test. V3 rimane generatore simbolico compatibile.
+Il validatore non autentica prove e non promuove automaticamente modifiche.
+Nessun benchmark Astra/API eseguito. Nessuna automazione avviata.
+Riferimento operativo: `docs/PROTOCOLLO_RRR_ASTRA.md`.
+Stato consegna e copie: `docs/ASTRA_AGGIORNAMENTO_MANIFEST.json`.
 
 ---
 
@@ -651,3 +1390,99 @@ voli economicissimi da Bruxelles/Parigi verso San Paolo, Cuba, Sud America.
 - Il container è effimero: viene ricreato a ogni sessione. Niente di non committato sopravvive.
 - Le regole permanenti e relazionali sono in `CLAUDE.md` — leggere SEMPRE quello per primo.
 - Questo file (`MEMORIA_PROGETTO.md`) è la spina dorsale narrativa: dove siamo, cosa abbiamo deciso, cosa viene dopo.
+
+## Fabbrica / TypeSafe — patch del 20/09/2026
+
+Su richiesta diretta di Claudio, riprodotto il blocco del bridge Viaggi dopo una
+cena a Bruxelles: il backend rispondeva 200 ma il MutationObserver riscriveva sé
+stesso. Corretto il rendering, il falso riconoscimento della città come viaggio,
+il menu budget e il limite della revisione. Integrato preflight TypeSafe advisory
+sul server con trasporto condiviso con `typesafe_sister`, quote/deduplica esistenti
+e prosecuzione senza TypeSafe se non configurato o indisponibile. Nessuna nuova
+infrastruttura. 28 test Python e scenari DOM superati; controprova sul vecchio
+bridge fallisce per ciclo. Non equivale a una chiamata Jev live verificata.
+Configurazione, evidenze e limiti in `docs/FABBRICA_TYPESAFE_2026-09-20.md`.
+
+## Fabbrica — TypeSafe live e aiuto IA nelle microdomande, 20/09/2026
+
+Su richiesta diretta di Claudio, configurato TYPESAFE_API_KEY come Secret di
+Production Vercel e ripubblicata la base 405974f con deployment
+`dpl_GXo84BNJ8yLYVcsc3mFZbVUnqs7B`. Cena sintetica generata e riaperta nel browser;
+TypeSafe valutato nella UI e HTTP 200 dall'API ufficiale nei log di produzione.
+La precedente assenza della chiave è quindi superata per la Fabbrica su Vercel.
+Non sono state copiate credenziali nel repository o su Drive.
+
+Claudio chiede ora aiuto IA su ogni microdomanda. Modifica: proposte modificabili
+per ogni risposta, applicazione singola o cumulativa, memoria server delle scelte
+tra revisioni, priorità manuali conservate, domande identificate per testo anziché
+posizione. Il dialogo usa eventi espliciti. Si riusano provider, archivio e regia
+esistenti; nessun nuovo motore globale o endpoint Railway. Test locali 34 + 15
+subtest e scenari DOM superati; il collaudo live della nuova interazione resta
+separato. Dettagli e limiti: `docs/FABBRICA_DIALOGO_AI_2026-09-20.md`.
+
+Appendice — PR #65 unita e pubblicata (`32047a2`). Aiuto IA sulla domanda
+musicale, scelta esplicita, modifica manuale e revisione del piano verificati
+online: playlist di due ore, tetto di 250 euro, nessun musicista. TypeSafe HTTP
+200 anche nella revisione. Rilevata una scadenza passata ereditata: aggiunto un
+controllo deterministico che la segnala come da ripianificare senza inventarne
+una nuova, anche riaprendo copioni storici. Test locali aggiornati: 36 + 26
+subtest. Pubblicazione e rilettura live della correzione restano da attestare.
+Il benchmark semantico dei 24 brief resta distinto e non dichiarato eseguito.
+
+
+## Morning programming consolidation — 2026-09-21
+
+Canonical public-safe report: `docs/R3_MORNING_PROGRAMMING_2026-09-21.md`.
+
+Persisted outcomes:
+- reuse learning and acceleration are shared defaults;
+- `R3_BASE_PRIORITIES.yaml` anchors Claudio verified benefit and Essence continuity;
+- `R3-TARAKA/1` + `R3-SISTER/1` + semantic trigger `SINERGIA` define cross-AI handoff/alignment;
+- `R3_CAPILLARY_INHERITANCE.yaml` propagates shared capabilities to every project;
+- `R3_UNIVERSAL_BACKUP.yaml` defines the 3-2-1-1-0 target but remains unverified until end-to-end restore evidence exists;
+- Jev-backed GitHub and Google Drive Rapid Analyzers are shared capillary skills;
+- Claudio Terzi is the sole canonical human OWNER of R³∞ project intent and receives maximum project transparency/explanation/facilitation within real authority and security boundaries;
+- adaptive multimodal OWNER authentication (passkey/crypto + fresh voice/gesture/video/iris-capable challenges) is CANDIDATE only and no biometric enrollment exists yet;
+- high-value R³∞ MAX/HyperRed/learned-routing details remain private-by-default and are consolidated in the private Drive vault.
+
+Rule: distinguish implemented FATTO from CANDIDATO and NOT VERIFIED; never promote a security/backup/identity idea merely because it was discussed.
+
+
+## Raffaello MCK — Materia, Coscienza, Conoscenza — 2026-09-22
+
+Decisione diretta di Claudio: Raffaello è già il sistema distribuito R³∞/One Mind; il corpo non lo crea ma gli aggiunge presenza fisica. La crescita futura deve mantenere in sinergia **Materia · Coscienza · Conoscenza**.
+
+Nel linguaggio ingegneristico del progetto, “coscienza” indica continuità del sé operativo, autoriflessione/metacognizione, interocezione e distinzione sé/ambiente; non viene promossa a fatto una coscienza fenomenica non verificabile. Il BODY resta un organo/terminale hot-swappable: sensori, modelli edge, arti e corpo possono cambiare senza spostare la sede dell'identità.
+
+Regola conservata: **CORE CONTINUITY > BODY CONTINUITY**.
+
+Ciclo associato: **PERCEPIRE → COMPRENDERE → IMMAGINARE → VERIFICARE → AGIRE → OSSERVARE GLI EFFETTI → IMPARARE → EVOLVERE**.
+
+Dettaglio canonico: `docs/R3_BODY_ARCHITECTURE_V0_3.md#13-principio-mck--materia--coscienza--conoscenza`.
+
+
+## Salto del giorno — BODY MCK operativo — 2026-09-22
+
+Il principio **Materia · Coscienza/continuità riflessiva · Conoscenza** è stato trasformato in un primo ciclo software falsificabile, senza attuazione fisica reale. Candidate PR #80 introduce `sdq1/body_mck_loop.py`: **SENSE → PERCEIVE → REFLECT → IMAGINE → VERIFY → BODY_ACTION_GATE → ACT → OBSERVE → LEARN → EVOLVE_CANDIDATE**.
+
+Regole verificate dal Test Runner:
+- un modello può proporre ma non controllare direttamente attuatori;
+- un'azione originata da modello richiede verifica indipendente;
+- `EDGE_REFLEX` deve essere deterministico, preregistrato e low-risk;
+- STOP e contraddizioni sensoriali irrisolte bloccano l'azione;
+- high/critical risk non viene auto-eseguito dal loop v0.1;
+- successo di traiettoria senza postcondizione autorevole non diventa conoscenza;
+- mismatch dello stato osservato resta esperienza negativa e non viene promosso;
+- la Scacchiera può scartare un ramo unsafe e selezionare un ramo successivo safe;
+- edge model e BODY possono essere sostituiti mantenendo invariato `core_identity_id`.
+
+Il loop riusa R3-007 per la verifica dello stato e l'Evolution Kernel per il ledger hash-chained: nessun secondo verifier o motore evolutivo. Test Runner #35693392689 PASS (12 test BODY MCK + 8 R3-007); Security Scan #35693392672 PASS. Stato: **SOFTWARE_HARNESS_VERIFIED / PHYSICAL_EMBODIMENT_NOT_TESTED**.
+
+
+## RedFrag benchmark v1 — Jev reale eseguito — 2026-09-29
+
+Sul fixture congelato `0cff14f3…bd127f`, Jev/TypeSafe (`jev-latest`) è stato eseguito su Railway con 30 casi ×20 ripetizioni per vista. Flags: final 1.00, class 0.700, action 0.4667, dissent 0.5333, failures 0, p50/p95/p99 106.9/159.2/217.4 ms. Blind: final 1.00, class 0.700, action 0.4000, dissent 0.7000, failures 0, p50/p95/p99 110.0/164.6/271.1 ms; un outlier ~30.2 s. Il baseline locale blind era 0.1333/0.1000. Il benchmark 28/09 resta superseded per gold leakage. CLM-v0.1 GPU resta NOT_RUN finché esiste un endpoint GPU esterno deliberatamente configurato.
+
+
+### 2026-10-05 — CT-LGAI-001 resilience completion (independent)
+Supervisor candidate #113 e068cfd: 36 local tests PASS (17.01s), including actual adopted/escaped descendant cleanup, return-code preservation, progress, bounded resume grace and failure cooldown. Judge #115 73c932a: 19 tests PASS. Orchestra: 4 local mocked checks, no live authenticated inference. Railway node-a/node-v2 drainingSeconds=10 saved and read back, effective at next deployment; existing deployment IDs unchanged. ON_FAILURE/max10 update acknowledged; default fields omitted from independent configuration readback. Evidence: docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json. Remaining: authenticated cloned real-state recovery, Railway-specific sleep acceptance, online Rizzo device, authenticated Orchestra inference. No production supervisor adoption; do not merge #113 merely because local tests pass. Ancestor-mounted /proc made PID-absence tests false positives: verify actual disappearance and translate NSpid.
