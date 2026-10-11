@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#09090c">
+  <title>Progetto Vivo — R³∞</title>
+  <meta name="description" content="Pagina viva del progetto: stato, capacità, fonti ed evoluzioni candidate.">
+  <link rel="stylesheet" href="/progetti-vivi.css">
+  <link rel="stylesheet" href="/progetto-vivo.css">
+</head>
+<body>
+  <script src="/soglia.js"></script>
+  <script src="/nav.js"></script>
+
+  <main class="shell detail-shell">
+    <nav class="crumbs"><a href="/progetti">← Tutti i progetti</a><span>R³∞ · pagina viva</span></nav>
+
+    <header class="project-hero">
+      <div class="project-hero-top">
+        <div>
+          <p id="detail-eyebrow" class="eyebrow"></p>
+          <h1 id="detail-title">Progetto</h1>
+        </div>
+        <span id="detail-status" class="detail-status">—</span>
+      </div>
+      <p id="detail-summary" class="detail-lead"></p>
+      <div class="hero-actions">
+        <a id="detail-live" class="primary-action" href="#">Apri il progetto <span>↗</span></a>
+        <a class="secondary-action" href="/cubo-quantico">Vedi nel Cubo</a>
+      </div>
+    </header>
+
+    <section class="detail-grid">
+      <article class="detail-card">
+        <p class="eyebrow">Stato attuale</p>
+        <h2>Cosa sa fare oggi</h2>
+        <div id="detail-capabilities" class="cap-list"></div>
+      </article>
+
+      <article class="detail-card accent-card">
+        <p class="eyebrow">Prossimo passo</p>
+        <h2>Evoluzione</h2>
+        <p id="detail-next" class="big-copy"></p>
+      </article>
+    </section>
+
+    <section class="source-card">
+      <div>
+        <p class="eyebrow">Provenance</p>
+        <h2>Fonte tecnica</h2>
+      </div>
+      <code id="detail-source"></code>
+      <p>La pagina descrive lo stato del progetto; la fonte nel repository resta la verità tecnica. Gli aggiornamenti non cancellano la storia precedente.</p>
+    </section>
+
+    <section class="lab-card">
+      <div class="lab-head">
+        <div><p class="eyebrow">GitHub Learning Lab</p><h2>Scoperte che possono migliorare questo progetto</h2></div>
+        <span id="repo-total" class="detail-status">0 candidate</span>
+      </div>
+      <div class="adoption-flow" aria-label="Ciclo di adozione">
+        <span>DISCOVERED</span><b>→</b><span>CANDIDATE</span><b>→</b><span>SANDBOX</span><b>→</b><span>BASELINE A/B</span><b>→</b><span>FALSIFICATION</span><b>→</b><span>AUDIT</span><b>→</b><span>ADOPT / REJECT</span>
+      </div>
+      <div id="repo-list" class="repo-list"></div>
+      <p class="lab-rule">Regola: una repo esterna viene implementata solo nelle parti che portano un miglioramento verificabile. Nessuna sostituzione cieca del nostro canone o della nostra architettura.</p>
+    </section>
+
+    <section class="continuity-card">
+      <p class="eyebrow">Pagina viva</p>
+      <h2>Questa pagina deve cambiare quando cambia il progetto.</h2>
+      <p>Ogni capacità adottata, esperimento riuscito, rifiuto motivato o nuova direzione viene registrata qui attraverso il registro centrale. La pagina non è una brochure: è la porta pubblica sullo stato reale del progetto.</p>
+      <small id="detail-updated"></small>
+    </section>
+
+    <footer><span>C.Terzi · Raffaello · R³∞</span><a href="/progetti">Indice progetti</a></footer>
+  </main>
+
+  <script src="/progetti-registry.js"></script>
+  <script src="/progetto-vivo.js"></script>
+</body>
+</html>
