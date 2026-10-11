@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -82,6 +83,22 @@ class EvolutionCandidate:
             errors.append("title and claim are required")
         if not self.primary_metric.strip():
             errors.append("primary_metric is required")
+        min_gain = _finite_number(self.min_gain)
+        if min_gain is None or min_gain < 0:
+            errors.append("min_gain must be a finite non-negative number")
+        if not isinstance(self.critical_metrics, Mapping):
+            errors.append("critical_metrics must be a mapping")
+        else:
+            for metric_name, rule in self.critical_metrics.items():
+                if not isinstance(rule, Mapping):
+                    errors.append(f"critical metric '{metric_name}' requires a rule mapping")
+                    continue
+                direction = rule.get("direction", "higher")
+                if not isinstance(direction, str) or direction not in {"higher", "lower"}:
+                    errors.append(f"critical metric '{metric_name}' direction must be 'higher' or 'lower'")
+                limit = _finite_number(rule.get("max_regression", 0.0))
+                if limit is None or limit < 0:
+                    errors.append(f"critical metric '{metric_name}' max_regression must be a finite non-negative number")
         if not self.source_refs:
             errors.append("at least one provenance source_ref is required")
         if not self.falsifiers:
@@ -127,11 +144,19 @@ def _metric_gain(baseline: float, trial: float, direction: str) -> float:
     return (trial - baseline) if direction == "higher" else (baseline - trial)
 
 
-def _as_number(metrics: Mapping[str, Any], name: str) -> Optional[float]:
-    value = metrics.get(name)
+def _finite_number(value: Any) -> Optional[float]:
+    """Accept real numeric evidence only when representable as a finite float."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return None
-    return float(value)
+    try:
+        number = float(value)
+    except (OverflowError, TypeError, ValueError):
+        return None
+    return number if math.isfinite(number) else None
+
+
+def _as_number(metrics: Mapping[str, Any], name: str) -> Optional[float]:
+    return _finite_number(metrics.get(name))
 
 
 def evaluate_candidate(candidate: EvolutionCandidate, baseline: Mapping[str, Any],
@@ -148,9 +173,13 @@ def evaluate_candidate(candidate: EvolutionCandidate, baseline: Mapping[str, Any
     trial_primary = _as_number(trial, candidate.primary_metric)
     if base_primary is None or trial_primary is None:
         return PromotionDecision(candidate.candidate_id, "REJECT", None,
-            [f"primary metric '{candidate.primary_metric}' missing or non-numeric"],
+            [f"primary metric '{candidate.primary_metric}' missing, non-numeric or non-finite"],
             regressions, False)
     primary_gain = _metric_gain(base_primary, trial_primary, candidate.direction)
+    if not math.isfinite(primary_gain):
+        return PromotionDecision(candidate.candidate_id, "REJECT", None,
+            [f"primary metric '{candidate.primary_metric}' gain is non-finite"],
+            regressions, False)
 
     for metric_name, rule in candidate.critical_metrics.items():
         direction = str(rule.get("direction", "higher"))
@@ -158,9 +187,12 @@ def evaluate_candidate(candidate: EvolutionCandidate, baseline: Mapping[str, Any
         base_value = _as_number(baseline, metric_name)
         trial_value = _as_number(trial, metric_name)
         if base_value is None or trial_value is None:
-            reasons.append(f"critical metric '{metric_name}' missing")
+            reasons.append(f"critical metric '{metric_name}' missing, non-numeric or non-finite")
             continue
         gain = _metric_gain(base_value, trial_value, direction)
+        if not math.isfinite(gain):
+            reasons.append(f"critical metric '{metric_name}' gain is non-finite")
+            continue
         regression = max(0.0, -gain)
         regressions[metric_name] = regression
         if regression > max_regression:
