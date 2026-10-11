@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "timestamp": 1790683650.396993,
+    "data_ora": "2026-09-29 14:07:30",
+    "tz": "Europe/Brussels",
+    "versione": "1.1.0"
+  },
+  "git": {
+    "branch": "main",
+    "commit": "f66feed60cf65e8312d9f0c536af43f4ce609f81",
+    "commit_short": "f66feed",
+    "messaggio": "Merge pull request #105 from claudioterzi/candidate/redfrag-benchmark-v1-20260929",
+    "autore": "CLaudio Terzi",
+    "data_commit": "2026-09-29 09:45:58 +0200",
+    "dirty": true,
+    "file_modificati": [
+      "M output/scan_report.json"
+    ]
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "5568e50e74ce06e0",
+      "CLAUDE.md": "aa2702dd469a6f3c",
+      "sdq1/__main__.py": "833c69f9f5369706",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "998235ef3d9ec614",
+      "sdq1/snapshot.py": "2fffc6b76d22bd0f",
+      "sdq1/sar/scacchiera_quantica.py": "a326c0669a90877e",
+      "sdq1/sar/agenti_autonomi.py": "ad03c13dab26d2e3",
+      "sdq1/llm/router.py": "830ae93bd2e79033",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "07c7d17a356f8742"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-09-29T12:07:30.549251",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.41,
+    "scacchiera_dir": "SEME"
+  },
+  "scanner": {
+    "agente": "CODE_SCANNER",
+    "score_sistema": 93,
+    "sicurezza_ok": true,
+    "sicurezza_livello": "VERDE",
+    "qualita_score": 82,
+    "debito_per_1k": 9.1,
+    "file_totali": 91,
+    "righe_totali": 16582,
+    "problemi_critici": 0,
+    "trovati_sicurezza": 0
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 6.4,
+      "n_chiavi": 4
+    }
+  }
+}

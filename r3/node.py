@@ -11,11 +11,13 @@ RRR control plane:
 """
 
 import hashlib
+import json
 import logging
 import os
 import secrets
 import sqlite3
 import threading
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
@@ -135,6 +137,34 @@ def _init_db() -> None:
 _init_db()
 
 # ---------------------------------------------------------------------------
+# Storage identity marker (Issue #86)
+#
+# A random id written once into DATA_DIR and never regenerated while the file
+# exists. Unlike the signing key it cannot be pinned through an environment
+# variable, so it changes if and only if DATA_DIR itself was lost. Restart
+# proofs compare it to distinguish "same identity because the key came from
+# env" from "same identity because durable state actually survived".
+# ---------------------------------------------------------------------------
+
+_STORAGE_ID_FILE = DATA_DIR / "storage_id"
+
+
+def _load_storage_id() -> tuple[str, bool]:
+    if _STORAGE_ID_FILE.exists():
+        value = _STORAGE_ID_FILE.read_text(encoding="utf-8").strip()
+        if value:
+            return value, False
+    value = secrets.token_hex(16)
+    _STORAGE_ID_FILE.write_text(value + "\n", encoding="utf-8")
+    log.info("Nuovo storage_id creato → %s", _STORAGE_ID_FILE)
+    return value, True
+
+
+STORAGE_ID, STORAGE_ID_CREATED_THIS_BOOT = _load_storage_id()
+PROCESS_BOOT_ID = secrets.token_hex(8)  # new every process start; proves a restart happened
+PROCESS_STARTED_AT = datetime.now(timezone.utc).isoformat()
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
@@ -143,6 +173,19 @@ def _doc_path(doc_id: str) -> Path:
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _atomic_write_bytes(path: Path, data: bytes) -> None:
+    """Scrive nello stesso filesystem e sostituisce solo a contenuto completo."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{time.time_ns()}.tmp")
+    try:
+        tmp.write_bytes(data)
+        os.replace(tmp, path)
+    finally:
+        if tmp.exists():
+            tmp.unlink(missing_ok=True)
+
 
 def _sign(data: bytes) -> str:
     return SIGNING_KEY.sign(data).signature.hex()
@@ -290,6 +333,14 @@ def _durable_state_detected() -> bool:
     that path is a mount point, while the container's ephemeral /data directory
     is not. This is deliberately conservative: if durability cannot be detected,
     readiness fails rather than claiming continuity.
+
+    Limits: a mount point proves only "not the container's ephemeral layer".
+    It does not prove that every possible backend is durable (a tmpfs mount
+    would pass), and it cannot detect a non-filesystem store. If persistence
+    ever moves to a non-filesystem driver, this check must be replaced by a
+    driver-specific readiness probe; the restart proof
+    (scripts/r3_restart_proof.py, comparing storage_id across restarts) stays
+    the acceptance evidence either way.
     """
     try:
         return os.path.ismount(DATA_DIR.resolve())
@@ -321,7 +372,53 @@ def _readiness_state() -> dict[str, Any]:
         "durable_state_required": REQUIRE_DURABLE_STATE,
         "durable_state_detected": durable_state,
         "signing_key_source": "env" if SIGNING_KEY_HEX else "data_dir",
+        "storage_id_created_this_boot": STORAGE_ID_CREATED_THIS_BOOT,
         "reasons": reasons,
+    }
+
+
+def _state_fingerprint() -> dict[str, Any]:
+    """Identity + state digest compared across restarts (Issue #86).
+
+    Contains no secret material: verify key, storage marker, latest RRR event
+    reference and the content-hash set of live documents.
+    """
+    with _conn() as db:
+        rows = db.execute(
+            "SELECT id, sha256 FROM documents WHERE deleted = 0 ORDER BY id"
+        ).fetchall()
+        protocol_event_count = db.execute(
+            "SELECT COUNT(*) FROM protocol_events"
+        ).fetchone()[0]
+    hashes = [r["sha256"] for r in rows]
+    missing_or_corrupt: list[str] = []
+    for r in rows:
+        path = _doc_path(r["id"])
+        try:
+            if _sha256(path.read_bytes()) != r["sha256"]:
+                missing_or_corrupt.append(r["id"])
+        except OSError:
+            missing_or_corrupt.append(r["id"])
+    latest = _rrr_latest()
+    return {
+        "node_id": NODE_ID,
+        "verify_key": VERIFY_KEY_HEX,
+        "signing_key_source": "env" if SIGNING_KEY_HEX else "data_dir",
+        "storage_id": STORAGE_ID,
+        "storage_id_created_this_boot": STORAGE_ID_CREATED_THIS_BOOT,
+        "process_boot_id": PROCESS_BOOT_ID,
+        "process_started_at": PROCESS_STARTED_AT,
+        "data_dir": str(DATA_DIR),
+        "durable_state_detected": _durable_state_detected(),
+        "rrr_event_id": latest["event_id"] if latest else None,
+        "rrr_counter": latest["counter"] if latest else None,
+        "rrr_action": latest["action"] if latest else None,
+        "protocol_event_count": protocol_event_count,
+        "document_count": len(hashes),
+        "document_hashes": hashes,
+        "document_set_sha256": _sha256("\n".join(hashes).encode()),
+        "documents_missing_or_corrupt": missing_or_corrupt,
+        "ts": datetime.now(timezone.utc).isoformat(),
     }
 
 
@@ -360,6 +457,13 @@ def status(authorization: Optional[str] = Header(None)):
         "readiness_reasons": readiness["reasons"],
         "ts":         datetime.now(timezone.utc).isoformat(),
     }
+
+
+# Restart-proof fingerprint — authenticated: exposes document inventory.
+@app.get("/state/fingerprint")
+def state_fingerprint(authorization: Optional[str] = Header(None)):
+    _check_token(authorization)
+    return _state_fingerprint()
 
 
 # Canonical machine-readable policy. Public by design: no secret material.
@@ -416,8 +520,7 @@ async def upload(
     sig    = _sign(data)
 
     dest = _doc_path(doc_id)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(data)
+    _atomic_write_bytes(dest, data)
 
     with _conn() as db:
         if not db.execute("SELECT 1 FROM documents WHERE id = ?", (doc_id,)).fetchone():
@@ -444,6 +547,9 @@ def download(
     path = _doc_path(doc_id)
     if not path.exists():
         raise HTTPException(status_code=404, detail="Documento non trovato")
+    if _sha256(path.read_bytes()) != doc_id:
+        _audit("integrity_block", f"id={doc_id} reason=content_hash_mismatch")
+        raise HTTPException(status_code=409, detail="Documento presente ma non integro")
     with _conn() as db:
         row = db.execute(
             "SELECT filename FROM documents WHERE id = ? AND deleted = 0", (doc_id,)
@@ -490,29 +596,66 @@ async def sync_receive(
     authorization: Optional[str] = Header(None),
 ):
     _check_token(authorization)
-    data        = await file.read()
+    data = await file.read()
     actual_hash = _sha256(data)
-
     dest = _doc_path(actual_hash)
+
+    repaired = False
     if dest.exists():
-        return {"status": "already_exists", "id": actual_hash}
+        try:
+            repaired = _sha256(dest.read_bytes()) != actual_hash
+        except OSError:
+            repaired = True
+        if not repaired:
+            # Il file può esistere anche se il DB è stato ricostruito: riallinea
+            # i metadati senza duplicare il contenuto.
+            sig = _sign(data)
+            with _conn() as db:
+                db.execute(
+                    """INSERT OR IGNORE INTO documents
+                       (id, filename, sha256, signature, size, uploaded_at, deleted)
+                       VALUES (?, ?, ?, ?, ?, ?, 0)""",
+                    (
+                        actual_hash,
+                        file.filename or actual_hash,
+                        actual_hash,
+                        sig,
+                        len(data),
+                        datetime.now(timezone.utc).isoformat(),
+                    ),
+                )
+            return {"status": "already_exists", "id": actual_hash}
 
     sig = _sign(data)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(data)
+    _atomic_write_bytes(dest, data)
+    now = datetime.now(timezone.utc).isoformat()
 
     with _conn() as db:
         db.execute(
-            """INSERT OR IGNORE INTO documents
+            """INSERT INTO documents
                (id, filename, sha256, signature, size, uploaded_at, deleted)
-               VALUES (?, ?, ?, ?, ?, ?, 0)""",
-            (actual_hash, file.filename or actual_hash, actual_hash, sig,
-             len(data), datetime.now(timezone.utc).isoformat()),
+               VALUES (?, ?, ?, ?, ?, ?, 0)
+               ON CONFLICT(id) DO UPDATE SET
+                 filename=excluded.filename,
+                 sha256=excluded.sha256,
+                 signature=excluded.signature,
+                 size=excluded.size,
+                 uploaded_at=excluded.uploaded_at,
+                 deleted=0""",
+            (
+                actual_hash,
+                file.filename or actual_hash,
+                actual_hash,
+                sig,
+                len(data),
+                now,
+            ),
         )
 
-    _audit("sync_receive", f"id={actual_hash} size={len(data)}")
-    log.info("Sync received  id=%s", actual_hash)
-    return {"status": "stored", "id": actual_hash}
+    event = "sync_repair" if repaired else "sync_receive"
+    _audit(event, f"id={actual_hash} size={len(data)}")
+    log.info("%s  id=%s", "Sync repaired" if repaired else "Sync received", actual_hash)
+    return {"status": "repaired" if repaired else "stored", "id": actual_hash}
 
 
 # ---------------------------------------------------------------------------
@@ -543,3 +686,88 @@ def test_shutdown(authorization: Optional[str] = Header(None)):
 
     threading.Timer(0.35, _exit_process).start()
     return {"status": "shutting_down_for_test", "node_id": NODE_ID}
+
+
+# ---------------------------------------------------------------------------
+# Preregistered seed documents + boot fingerprint (Issue #86)
+#
+# R3_PREREGISTERED_SEED_PATHS: comma-separated files (relative to the repo
+# root or absolute) ingested idempotently at boot. Content-addressed, so a
+# restart never changes the set; a seed is only ever written when missing.
+# A re-ingest after storage loss is still caught by the restart proof, because
+# storage_id is regenerated at the same time ("Nuovo storage_id creato").
+#
+# Every boot logs one R3_BOOT_FINGERPRINT line with non-secret identity/state,
+# so each restart (including wake-from-sleep) leaves its own evidence in the
+# platform logs without needing authenticated network access.
+# ---------------------------------------------------------------------------
+
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _ingest_preregistered_seeds() -> list[dict[str, str]]:
+    raw = os.getenv("R3_PREREGISTERED_SEED_PATHS", "").strip()
+    results: list[dict[str, str]] = []
+    if not raw:
+        return results
+    for item in (p.strip() for p in raw.split(",")):
+        if not item:
+            continue
+        path = Path(item)
+        if not path.is_absolute():
+            path = _REPO_ROOT / path
+        try:
+            data = path.read_bytes()
+        except OSError as exc:
+            log.warning("Seed preregistrato non leggibile: %s (%s)", item, exc)
+            results.append({"path": item, "status": "unreadable"})
+            continue
+        doc_id = _sha256(data)
+        with _conn() as db:
+            present = db.execute(
+                "SELECT 1 FROM documents WHERE id = ? AND deleted = 0", (doc_id,)
+            ).fetchone()
+        on_disk_ok = False
+        try:
+            on_disk_ok = _sha256(_doc_path(doc_id).read_bytes()) == doc_id
+        except OSError:
+            pass
+        if present and on_disk_ok:
+            status = "present"
+        else:
+            _atomic_write_bytes(_doc_path(doc_id), data)
+            with _conn() as db:
+                db.execute(
+                    """INSERT OR IGNORE INTO documents
+                       (id, filename, sha256, signature, size, uploaded_at, deleted)
+                       VALUES (?, ?, ?, ?, ?, ?, 0)""",
+                    (doc_id, path.name, doc_id, _sign(data), len(data),
+                     datetime.now(timezone.utc).isoformat()),
+                )
+                _audit_db(db, "preregistered_seed", f"id={doc_id} file={path.name}")
+            status = "ingested"
+        log.info("Seed preregistrato %s id=%s file=%s", status, doc_id, path.name)
+        results.append({"path": item, "id": doc_id, "status": status})
+    return results
+
+
+SEED_RESULTS = _ingest_preregistered_seeds()
+
+
+def _log_boot_fingerprint() -> None:
+    fp = _state_fingerprint()
+    summary = {k: fp[k] for k in (
+        "node_id", "verify_key", "signing_key_source", "storage_id",
+        "storage_id_created_this_boot", "process_boot_id", "data_dir",
+        "durable_state_detected", "rrr_event_id", "rrr_counter", "rrr_action",
+        "protocol_event_count", "document_count", "document_set_sha256",
+        "documents_missing_or_corrupt",
+    )}
+    summary["seeds"] = SEED_RESULTS
+    log.info("R3_BOOT_FINGERPRINT %s", json.dumps(summary, sort_keys=True))
+
+
+try:
+    _log_boot_fingerprint()
+except Exception as exc:  # evidence logging must never stop the node
+    log.warning("R3_BOOT_FINGERPRINT non disponibile: %s", exc)
