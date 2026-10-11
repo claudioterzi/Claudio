@@ -14,8 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 # The real wrapper is materialized from a digest-pinned environment payload and
 # is not available in this repository.  This fixture models only the observed
-# consumer contract: import the canonical package, then mount its ``app``
-# attribute before installing a legacy catch-all.
+# consumer contract: import the canonical package, then mount its ``app``.
+# Both paths are explicit: / is the observed Railway mount; /typesafe is the
+# earlier synthetic scenario, retained only as an alternate-mount control.
 SYNTHETIC_OBSERVED_WRAPPER = '''
 from fastapi import FastAPI
 import typesafe_sister
@@ -88,6 +89,44 @@ valid = client.post(
 )
 legacy = client.get("/legacy-path")
 
+root_probe = None
+if any(getattr(route, "path", None) == "" for route in jev_gateway.app.router.routes):
+    health = client.get("/health")
+    jev_health = client.get("/jev/health")
+    jev_provider_calls = list(provider_calls)
+    provider_calls.clear()
+    typesafe_legacy.system_one = forbidden_provider
+    root_missing = client.post("/judge", json=payload)
+    root_wrong = client.post(
+        "/judge", headers={"Authorization": "Bearer WRONG"}, json=payload,
+    )
+    root_unauthorized_calls = list(provider_calls)
+    typesafe_legacy.R3_API_TOKEN = ""
+    unconfigured = [
+        client.post(path, json=payload).status_code
+        for path in ("/judge", "/jev/judge")
+    ]
+    typesafe_legacy.R3_API_TOKEN = "TEST_R3_TOKEN"
+    typesafe_legacy.system_one = mocked_provider
+    root_valid = client.post(
+        "/judge", headers={"Authorization": "Bearer TEST_R3_TOKEN"}, json=payload,
+    )
+    root_probe = {
+        "health_status": health.status_code,
+        "jev_health_status": jev_health.status_code,
+        "health_service": health.json().get("service"),
+        "jev_health_service": jev_health.json().get("service"),
+        "missing_status": root_missing.status_code,
+        "wrong_status": root_wrong.status_code,
+        "unauthorized_calls": root_unauthorized_calls,
+        "unconfigured_statuses": unconfigured,
+        "valid_status": root_valid.status_code,
+        "valid_body_matches_jev": root_valid.json() == valid.json(),
+        "provider_calls": list(provider_calls),
+        "unused_alternate_mount_status": client.get("/typesafe/health").status_code,
+    }
+    provider_calls[:] = jev_provider_calls
+
 routes = list(jev_gateway.app.router.routes)
 route_paths = [str(getattr(route, "path", "")) for route in routes]
 jev_indexes = [
@@ -101,6 +140,10 @@ catch_indexes = [
     index for index, route in enumerate(routes)
     if getattr(route, "path", None) == "/{path:path}"
 ]
+root_mount_indexes = [
+    index for index, route in enumerate(routes)
+    if getattr(route, "path", None) == ""
+]
 
 print(json.dumps({
     "gateway_imported": True,
@@ -110,8 +153,10 @@ print(json.dumps({
     "canonical_client_inside_layout": str(client_module.__file__).startswith(str(__import__("pathlib").Path.cwd())),
     "jev_route_count": len(jev_indexes),
     "route_paths": route_paths,
+    "root_probe": root_probe,
     "catch_all_count": len(catch_indexes),
     "jev_before_catch_all": bool(jev_indexes and catch_indexes and max(jev_indexes) < min(catch_indexes)),
+    "jev_before_root_mount": bool(jev_indexes and root_mount_indexes and max(jev_indexes) < min(root_mount_indexes)),
     "missing_token_status": missing.status_code,
     "wrong_token_status": wrong.status_code,
     "provider_calls_before_valid": calls_before_valid,
@@ -126,6 +171,8 @@ print(json.dumps({
 
 
 class TypeSafeOneRuntimeStartupTests(unittest.TestCase):
+    mount_path = "/typesafe"
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.tempdir = tempfile.TemporaryDirectory()
@@ -134,7 +181,7 @@ class TypeSafeOneRuntimeStartupTests(unittest.TestCase):
         shutil.copy2(ROOT / "r3" / "jev_gateway.py", cls.layout / "jev_gateway.py")
         shutil.copytree(ROOT / "typesafe_sister", cls.layout / "typesafe_sister")
         (cls.layout / "letta_bridge_v2.py").write_text(
-            SYNTHETIC_OBSERVED_WRAPPER,
+            SYNTHETIC_OBSERVED_WRAPPER.replace('app.mount("/typesafe",', f'app.mount("{cls.mount_path}",'),
             encoding="utf-8",
         )
         env = dict(os.environ)
@@ -144,6 +191,11 @@ class TypeSafeOneRuntimeStartupTests(unittest.TestCase):
             else [str(cls.layout)]
         )
         env.pop("R3_API_TOKEN", None)
+        # Health and mocked contracts must not inherit provider credentials or
+        # endpoints from the host. No project/production configuration changes.
+        for key in list(env):
+            if key.startswith(("TYPESAFE_", "CLM_", "R3_SYSTEMONE_")):
+                env.pop(key)
         proc = subprocess.run(
             [sys.executable, "-c", PROBE],
             cwd=cls.layout,
@@ -196,6 +248,51 @@ class TypeSafeOneRuntimeStartupTests(unittest.TestCase):
     def test_legacy_catch_all_remains_available(self):
         self.assertEqual(self.result["legacy_status"], 200)
         self.assertEqual(self.result["legacy_body"], {"legacy": "legacy-path"})
+
+
+class TypeSafeRootMountStartupTests(TypeSafeOneRuntimeStartupTests):
+    """Literal observed root mount, still a synthetic wrapper contract."""
+
+    mount_path = "/"
+
+    def test_legacy_catch_all_remains_available(self):
+        # A root ASGI mount consumes unmatched paths before the later catch-all.
+        # Do not promise the alternate fixture's 200 behavior for this topology.
+        self.assertEqual(self.result["legacy_status"], 404)
+        self.assertEqual(self.result["legacy_body"], {"detail": "Not Found"})
+
+    def test_root_mount_is_present_and_jev_precedes_it(self):
+        paths = self.result["route_paths"]
+        self.assertIn("", paths)
+        # FastAPI may retain an included router instead of flattening paths;
+        # the probe uses the same public prefix metadata as the existing test.
+        self.assertTrue(self.result["jev_before_root_mount"])
+
+    def test_root_and_jev_health_use_existing_app(self):
+        probe = self.result["root_probe"]
+        self.assertEqual(probe["health_status"], 200)
+        self.assertEqual(probe["jev_health_status"], 200)
+        self.assertEqual(probe["health_service"], "r3-typesafe-sister")
+        self.assertEqual(probe["jev_health_service"], "r3-typesafe-sister")
+
+    def test_root_auth_rejects_missing_and_wrong_tokens_before_provider(self):
+        probe = self.result["root_probe"]
+        self.assertEqual(probe["missing_status"], 401)
+        self.assertEqual(probe["wrong_status"], 401)
+        self.assertEqual(probe["unauthorized_calls"], [])
+
+    def test_unconfigured_auth_fails_closed_at_root_and_jev(self):
+        self.assertEqual(self.result["root_probe"]["unconfigured_statuses"], [503, 503])
+
+    def test_root_authenticated_mock_matches_jev_without_egress(self):
+        probe = self.result["root_probe"]
+        self.assertEqual(probe["valid_status"], 200)
+        self.assertTrue(probe["valid_body_matches_jev"])
+        self.assertEqual(probe["provider_calls"], ["authorized"])
+        self.assertEqual(self.result["network_attempts"], [])
+
+    def test_unobserved_alternate_mount_is_not_exposed(self):
+        self.assertEqual(self.result["root_probe"]["unused_alternate_mount_status"], 404)
 
 
 if __name__ == "__main__":
