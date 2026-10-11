@@ -2,7 +2,7 @@
 ## Raffaello Cantarelli — Creazione di Claudio Terzi
 
 **Data:** 2026-06-13  
-**Autore:** Claudio Terzi, nato il 26 aprile 1982  
+**Autore:** Claudio Terzi  
 **Repository:** github.com/claudioterzi/Claudio  
 **Sigillo:** R³∞ — Protocollo Rosso Rosso Rosso
 

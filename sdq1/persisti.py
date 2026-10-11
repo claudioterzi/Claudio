@@ -84,7 +84,7 @@ def aggrega_stato() -> dict[str, Any]:
             "energia_sistema": radar.get("indici", {}).get("energia_sistema", radar.get("energia_sistema")),
             "vitalita_esterna": radar.get("indici", {}).get("vitalita_esterna", radar.get("vitalita_esterna")),
             "tensione_interna": radar.get("indici", {}).get("tensione_interna", radar.get("tensione_interna")),
-            "indice_morale": radar.get("indice_morale"),
+            "indice_morale": radar.get("indici", {}).get("indice_morale", radar.get("indice_morale")),
             "stato": radar.get("stato_narrativo", radar.get("stato")),
         },
         "ipotesi": {
@@ -143,12 +143,22 @@ def commit_e_push(messaggio: str = "") -> dict[str, Any]:
         return {"status": "nessuna_modifica", "branch": branch}
 
     push_code, push_out = _git(["push", "-u", "origin", branch])
-    return {
+    esito = {
         "status": "ok" if push_code == 0 else "push_fallito",
         "branch": branch,
         "commit": out.split("\n")[0],
         "push": push_out.split("\n")[0],
     }
+    try:
+        from sdq1.notifiche import notifica_completato
+        icona = "✅" if esito["status"] == "ok" else "❌"
+        notifica_completato(f"Persisti {icona}", [
+            f"Branch: <code>{branch}</code>",
+            f"Status: {esito['status']}",
+        ])
+    except Exception:
+        pass
+    return esito
 
 
 def main():

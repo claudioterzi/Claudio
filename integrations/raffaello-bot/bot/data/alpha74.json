@@ -1,0 +1,1396 @@
+{
+  "carte": [
+    {
+      "id": 1,
+      "nome": "La Scintilla",
+      "simbolo": "✦",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "vocazione che si risveglia",
+        "est": "primo gesto creativo",
+        "sud": "entusiasmo nascente",
+        "ovest": "ricordo di ciò che ti accende"
+      },
+      "ombra": {
+        "nord": "potenziale represso",
+        "est": "impulso che brucia invano",
+        "sud": "eccitazione senza radici",
+        "ovest": "rimpianto del fuoco mai acceso"
+      }
+    },
+    {
+      "id": 2,
+      "nome": "L'Orizzonte",
+      "simbolo": "─",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "visione che viene da lontano",
+        "est": "meta che chiama in avanti",
+        "sud": "speranza condivisa",
+        "ovest": "prospettiva conquistata"
+      },
+      "ombra": {
+        "nord": "miraggio mai raggiunto",
+        "est": "fuga perpetua in avanti",
+        "sud": "insoddisfazione del presente",
+        "ovest": "occasioni viste troppo tardi"
+      }
+    },
+    {
+      "id": 3,
+      "nome": "Il Richiamo",
+      "simbolo": "◎",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "istinto che sa la strada",
+        "est": "chiamata all'azione",
+        "sud": "desiderio di appartenere",
+        "ovest": "voce che torna dal passato"
+      },
+      "ombra": {
+        "nord": "sirena che inganna",
+        "est": "obbligo travestito da vocazione",
+        "sud": "bisogno di approvazione",
+        "ovest": "nostalgia che imprigiona"
+      }
+    },
+    {
+      "id": 4,
+      "nome": "La Scelta",
+      "simbolo": "⊕",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "fedeltà a ciò che sei",
+        "est": "decisione che apre la via",
+        "sud": "coraggio di preferire",
+        "ovest": "lezione delle scelte passate"
+      },
+      "ombra": {
+        "nord": "tradimento di sé",
+        "est": "paralisi del bivio",
+        "sud": "rimpianto di ogni alternativa",
+        "ovest": "scelte rimandate che decidono per te"
+      }
+    },
+    {
+      "id": 5,
+      "nome": "Il Passo",
+      "simbolo": "›",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "slancio che nasce dentro",
+        "est": "movimento in avanti",
+        "sud": "fiducia nel terreno",
+        "ovest": "cammino già fatto"
+      },
+      "ombra": {
+        "nord": "esitazione paralizzante",
+        "est": "passo nel vuoto",
+        "sud": "paura di cadere",
+        "ovest": "passi tornati indietro"
+      }
+    },
+    {
+      "id": 6,
+      "nome": "La Ricerca",
+      "simbolo": "⊙",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "sete di senso",
+        "est": "esplorazione attiva",
+        "sud": "domanda che ti tiene vivo",
+        "ovest": "saggezza accumulata cercando"
+      },
+      "ombra": {
+        "nord": "vuoto che nulla riempie",
+        "est": "fuga travestita da ricerca",
+        "sud": "insoddisfazione cronica",
+        "ovest": "ricerca che gira in tondo"
+      }
+    },
+    {
+      "id": 7,
+      "nome": "La Soglia",
+      "simbolo": "⟁",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "punto di non ritorno accettato",
+        "est": "coraggio di varcare",
+        "sud": "trepidazione del nuovo",
+        "ovest": "ciò che lasci sulla porta"
+      },
+      "ombra": {
+        "nord": "blocco sulla porta",
+        "est": "passo che non osi",
+        "sud": "paura della trasformazione",
+        "ovest": "rimpianto di non essere entrato"
+      }
+    },
+    {
+      "id": 8,
+      "nome": "L'Ignoto",
+      "simbolo": "∿",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "mistero che chiama",
+        "est": "salto nel possibile",
+        "sud": "meraviglia",
+        "ovest": "fiducia appresa nell'incerto"
+      },
+      "ombra": {
+        "nord": "terrore dell'abisso",
+        "est": "paralisi davanti al buio",
+        "sud": "angoscia dell'incerto",
+        "ovest": "fantasmi di ciò che non è stato"
+      }
+    },
+    {
+      "id": 9,
+      "nome": "La Vigilia",
+      "simbolo": "◑",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "attesa che matura",
+        "est": "preparazione attenta",
+        "sud": "trepidazione fertile",
+        "ovest": "pazienza appresa"
+      },
+      "ombra": {
+        "nord": "insonnia dell'inconscio",
+        "est": "rinvio che logora",
+        "sud": "ansia dell'imminente",
+        "ovest": "notti perse ad aspettare"
+      }
+    },
+    {
+      "id": 10,
+      "nome": "Il Varco",
+      "simbolo": "◯",
+      "ciclo": "Origine",
+      "luce": {
+        "nord": "apertura che il destino offre",
+        "est": "occasione da cogliere",
+        "sud": "liberazione",
+        "ovest": "porta riconosciuta in tempo"
+      },
+      "ombra": {
+        "nord": "trappola travestita da uscita",
+        "est": "occasione mancata",
+        "sud": "claustrofobia di chi è bloccato",
+        "ovest": "varchi chiusi alle spalle"
+      }
+    },
+    {
+      "id": 11,
+      "nome": "L'Incontro",
+      "simbolo": "⋈",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "riconoscimento profondo",
+        "est": "porta che si apre",
+        "sud": "gioia dell'altro",
+        "ovest": "incontri che ti hanno formato"
+      },
+      "ombra": {
+        "nord": "proiezione sull'altro",
+        "est": "collisione",
+        "sud": "dipendenza immediata",
+        "ovest": "incontri mai elaborati"
+      }
+    },
+    {
+      "id": 12,
+      "nome": "L'Eco",
+      "simbolo": "≋",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "risonanza che resta",
+        "est": "conseguenza che fruttifica",
+        "sud": "ricordo che scalda",
+        "ovest": "ciò che hai lasciato negli altri"
+      },
+      "ombra": {
+        "nord": "trauma che si ripete",
+        "est": "reazione a catena fuori controllo",
+        "sud": "rimuginio",
+        "ovest": "voci del passato che non tacciono"
+      }
+    },
+    {
+      "id": 13,
+      "nome": "La Fiducia",
+      "simbolo": "♡",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "sicurezza di base",
+        "est": "affidarsi e agire",
+        "sud": "apertura del cuore",
+        "ovest": "fiducia guadagnata nel tempo"
+      },
+      "ombra": {
+        "nord": "ferita del tradimento originario",
+        "est": "ingenuità che espone",
+        "sud": "sospetto",
+        "ovest": "fiducia tradita che pesa ancora"
+      }
+    },
+    {
+      "id": 14,
+      "nome": "Lo Scambio",
+      "simbolo": "⇄",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "reciprocità naturale",
+        "est": "dare e ricevere",
+        "sud": "generosità",
+        "ovest": "debiti onorati"
+      },
+      "ombra": {
+        "nord": "transazione mascherata da amore",
+        "est": "baratto interessato",
+        "sud": "calcolo",
+        "ovest": "conti mai chiusi"
+      }
+    },
+    {
+      "id": 15,
+      "nome": "L'Alleanza",
+      "simbolo": "⋒",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "patto che regge",
+        "est": "forza condivisa",
+        "sud": "lealtà",
+        "ovest": "alleanze che ti hanno salvato"
+      },
+      "ombra": {
+        "nord": "complicità nell'errore",
+        "est": "fronte comune contro qualcuno",
+        "sud": "obbligo che soffoca",
+        "ovest": "alleanze tradite"
+      }
+    },
+    {
+      "id": 16,
+      "nome": "Il Desiderio",
+      "simbolo": "♦",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "vita che spinge",
+        "est": "slancio verso ciò che vuoi",
+        "sud": "passione",
+        "ovest": "desideri che ti hanno guidato"
+      },
+      "ombra": {
+        "nord": "fame che non sazia",
+        "est": "compulsione",
+        "sud": "possesso",
+        "ovest": "desideri rinnegati"
+      }
+    },
+    {
+      "id": 17,
+      "nome": "L'Attrazione",
+      "simbolo": "⟵",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "polarità che unisce",
+        "est": "movimento verso l'altro",
+        "sud": "incanto",
+        "ovest": "ciò che ti ha sempre attratto"
+      },
+      "ombra": {
+        "nord": "calamita verso ciò che ti ferisce",
+        "est": "perdita di sé nell'altro",
+        "sud": "ossessione",
+        "ovest": "attrazioni fatali ripetute"
+      }
+    },
+    {
+      "id": 18,
+      "nome": "La Promessa",
+      "simbolo": "∞",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "impegno che radica",
+        "est": "parola data al futuro",
+        "sud": "speranza condivisa",
+        "ovest": "promesse mantenute"
+      },
+      "ombra": {
+        "nord": "vincolo che imprigiona",
+        "est": "promessa che non potrai tenere",
+        "sud": "illusione coltivata",
+        "ovest": "promesse infrante"
+      }
+    },
+    {
+      "id": 19,
+      "nome": "L'Unione",
+      "simbolo": "●",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "fusione che completa",
+        "est": "costruire insieme",
+        "sud": "intimità",
+        "ovest": "unione che ti ha reso più grande"
+      },
+      "ombra": {
+        "nord": "perdita dei confini",
+        "est": "fusione che annulla",
+        "sud": "dipendenza",
+        "ovest": "unione che ti ha diminuito"
+      }
+    },
+    {
+      "id": 20,
+      "nome": "Il Noi",
+      "simbolo": "⊎",
+      "ciclo": "Legame",
+      "luce": {
+        "nord": "appartenenza",
+        "est": "agire come uno",
+        "sud": "calore della comunità",
+        "ovest": "il noi che ti ha cresciuto"
+      },
+      "ombra": {
+        "nord": "io dissolto nel gruppo",
+        "est": "branco",
+        "sud": "conformismo",
+        "ovest": "il noi che ti ha imprigionato"
+      }
+    },
+    {
+      "id": 21,
+      "nome": "Il Dubbio",
+      "simbolo": "？",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "domanda che protegge",
+        "est": "sospensione del giudizio",
+        "sud": "umiltà",
+        "ovest": "certezze giustamente crollate"
+      },
+      "ombra": {
+        "nord": "insicurezza radicale",
+        "est": "paralisi dell'indecisione",
+        "sud": "tormento",
+        "ovest": "occasioni perse per esitazione"
+      }
+    },
+    {
+      "id": 22,
+      "nome": "La Crepa",
+      "simbolo": "⌇",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "punto dove entra la luce",
+        "est": "apertura inattesa",
+        "sud": "vulnerabilità che avvicina",
+        "ovest": "fratture che ti hanno aperto"
+      },
+      "ombra": {
+        "nord": "fragilità nascosta",
+        "est": "rottura che si allarga",
+        "sud": "senso di rottura interiore",
+        "ovest": "crepe ignorate troppo a lungo"
+      }
+    },
+    {
+      "id": 23,
+      "nome": "Il Conflitto",
+      "simbolo": "✕",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "tensione che genera",
+        "est": "confronto necessario",
+        "sud": "verità che emerge nello scontro",
+        "ovest": "conflitti che hanno chiarito"
+      },
+      "ombra": {
+        "nord": "guerra interiore",
+        "est": "distruzione reciproca",
+        "sud": "rancore",
+        "ovest": "conflitti mai risolti"
+      }
+    },
+    {
+      "id": 24,
+      "nome": "La Ferita",
+      "simbolo": "⊸",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "punto da cui nasce la forza",
+        "est": "cicatrice che protegge",
+        "sud": "guarigione",
+        "ovest": "ferite che ti hanno reso saggio"
+      },
+      "ombra": {
+        "nord": "trauma che governa",
+        "est": "riapertura continua",
+        "sud": "paralisi",
+        "ovest": "ferite che non hai mai curato"
+      }
+    },
+    {
+      "id": 25,
+      "nome": "Il Peso",
+      "simbolo": "↓",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "responsabilità che radica",
+        "est": "fardello che dà direzione",
+        "sud": "serietà",
+        "ovest": "pesi che ti hanno temprato"
+      },
+      "ombra": {
+        "nord": "colpa ereditata",
+        "est": "carico che schiaccia",
+        "sud": "oppressione",
+        "ovest": "pesi mai deposti"
+      }
+    },
+    {
+      "id": 26,
+      "nome": "Il Tradimento",
+      "simbolo": "⊘",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "fedeltà a sé contro l'aspettativa altrui",
+        "est": "rottura di un patto falso",
+        "sud": "verità dolorosa detta",
+        "ovest": "tradimenti che ti hanno liberato"
+      },
+      "ombra": {
+        "nord": "patto spezzato alla radice",
+        "est": "pugnale alle spalle",
+        "sud": "perdita della fiducia",
+        "ovest": "tradimenti che ancora sanguinano"
+      }
+    },
+    {
+      "id": 27,
+      "nome": "La Caduta",
+      "simbolo": "↯",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "discesa che insegna",
+        "est": "lasciarsi cadere con fiducia",
+        "sud": "umiltà del crollo",
+        "ovest": "cadute che ti hanno fatto crescere"
+      },
+      "ombra": {
+        "nord": "vertigine",
+        "est": "precipizio",
+        "sud": "umiliazione",
+        "ovest": "cadute mai rialzate"
+      }
+    },
+    {
+      "id": 28,
+      "nome": "La Perdita",
+      "simbolo": "◌",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "spazio che si libera",
+        "est": "lasciar andare",
+        "sud": "lutto che onora",
+        "ovest": "perdite che hanno fatto posto"
+      },
+      "ombra": {
+        "nord": "vuoto incolmabile",
+        "est": "strappo",
+        "sud": "disperazione",
+        "ovest": "perdite mai elaborate"
+      }
+    },
+    {
+      "id": 29,
+      "nome": "Il Distacco",
+      "simbolo": "⊣",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "libertà ritrovata",
+        "est": "tagliare ciò che lega",
+        "sud": "serenità della distanza",
+        "ovest": "distacchi necessari compiuti"
+      },
+      "ombra": {
+        "nord": "freddezza difensiva",
+        "est": "fuga dalla relazione",
+        "sud": "isolamento",
+        "ovest": "ponti bruciati di cui ti penti"
+      }
+    },
+    {
+      "id": 30,
+      "nome": "Il Fondo",
+      "simbolo": "▽",
+      "ciclo": "Frattura",
+      "luce": {
+        "nord": "terra solida sotto l'abisso",
+        "est": "punto da cui si risale",
+        "sud": "verità nuda",
+        "ovest": "il fondo che ti ha cambiato"
+      },
+      "ombra": {
+        "nord": "disperazione senza fondo",
+        "est": "resa",
+        "sud": "annientamento",
+        "ovest": "fondo a cui continui a tornare"
+      }
+    },
+    {
+      "id": 31,
+      "nome": "Il Silenzio",
+      "simbolo": "·",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "pienezza senza parole",
+        "est": "pausa che prepara",
+        "sud": "pace",
+        "ovest": "ciò che il silenzio ti ha insegnato"
+      },
+      "ombra": {
+        "nord": "vuoto assordante",
+        "est": "inazione",
+        "sud": "solitudine",
+        "ovest": "le cose non dette"
+      }
+    },
+    {
+      "id": 32,
+      "nome": "L'Attesa",
+      "simbolo": "◔",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "seme che lavora nel buio",
+        "est": "tempo che prepara",
+        "sud": "fiducia paziente",
+        "ovest": "attese che hanno fruttato"
+      },
+      "ombra": {
+        "nord": "stasi",
+        "est": "rinvio infinito",
+        "sud": "logorio dell'aspettare",
+        "ovest": "vita rimandata"
+      }
+    },
+    {
+      "id": 33,
+      "nome": "L'Ombra",
+      "simbolo": "◐",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "ciò che integri di te",
+        "est": "forza nascosta da reclamare",
+        "sud": "autenticità ritrovata",
+        "ovest": "lati oscuri riconosciuti"
+      },
+      "ombra": {
+        "nord": "rimosso che governa",
+        "est": "sabotaggio inconscio",
+        "sud": "vergogna",
+        "ovest": "ciò che non hai voluto vedere"
+      }
+    },
+    {
+      "id": 34,
+      "nome": "La Verità",
+      "simbolo": "◈",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "fondamento reale",
+        "est": "atto di chiarezza",
+        "sud": "sollievo del reale",
+        "ovest": "verità finalmente accettate"
+      },
+      "ombra": {
+        "nord": "verità che non sopporti",
+        "est": "rivelazione brutale",
+        "sud": "disillusione",
+        "ovest": "menzogne su cui hai costruito"
+      }
+    },
+    {
+      "id": 35,
+      "nome": "Il Crollo",
+      "simbolo": "▼",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "liberazione dalla struttura falsa",
+        "est": "ciò che cade per far spazio",
+        "sud": "sollievo dopo il crollo",
+        "ovest": "crolli che ti hanno salvato"
+      },
+      "ombra": {
+        "nord": "fondamenta che cedono",
+        "est": "rovina",
+        "sud": "panico",
+        "ovest": "ciò che hai perso nel crollo"
+      }
+    },
+    {
+      "id": 36,
+      "nome": "Il Fuoco",
+      "simbolo": "△",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "energia vitale",
+        "est": "trasformazione attiva",
+        "sud": "passione",
+        "ovest": "ciò che il fuoco ha forgiato"
+      },
+      "ombra": {
+        "nord": "rabbia che consuma",
+        "est": "distruzione incontrollata",
+        "sud": "bruciore",
+        "ovest": "ponti ridotti in cenere"
+      }
+    },
+    {
+      "id": 37,
+      "nome": "La Muta",
+      "simbolo": "⇌",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "vecchia pelle che cade",
+        "est": "cambiare forma",
+        "sud": "leggerezza del rinnovarsi",
+        "ovest": "versioni di te superate"
+      },
+      "ombra": {
+        "nord": "identità che si sgretola",
+        "est": "perdita di sé nel cambiamento",
+        "sud": "disorientamento",
+        "ovest": "vecchie pelli che ti porti dietro"
+      }
+    },
+    {
+      "id": 38,
+      "nome": "La Rinascita",
+      "simbolo": "✿",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "vita che ritorna",
+        "est": "nuovo inizio",
+        "sud": "gioia del rinnovamento",
+        "ovest": "rinascite già attraversate"
+      },
+      "ombra": {
+        "nord": "falsa rinascita",
+        "est": "ripartenza senza lezione",
+        "sud": "euforia fragile",
+        "ovest": "ricadute nel vecchio"
+      }
+    },
+    {
+      "id": 39,
+      "nome": "La Direzione",
+      "simbolo": "→",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "bussola interiore",
+        "est": "rotta scelta",
+        "sud": "senso ritrovato",
+        "ovest": "direzioni rivelatesi giuste"
+      },
+      "ombra": {
+        "nord": "perdita dell'orientamento",
+        "est": "deriva",
+        "sud": "smarrimento",
+        "ovest": "strade sbagliate prese"
+      }
+    },
+    {
+      "id": 40,
+      "nome": "Il Nuovo Giorno",
+      "simbolo": "◕",
+      "ciclo": "Trasformazione",
+      "luce": {
+        "nord": "rinascita quotidiana",
+        "est": "ricominciare",
+        "sud": "speranza dell'alba",
+        "ovest": "notti superate"
+      },
+      "ombra": {
+        "nord": "domani che fa paura",
+        "est": "fuga in avanti dal passato",
+        "sud": "stanchezza di ricominciare",
+        "ovest": "ieri che non passa"
+      }
+    },
+    {
+      "id": 41,
+      "nome": "L'Impulso",
+      "simbolo": "⤴",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "energia istintiva",
+        "est": "scatto che avvia",
+        "sud": "vitalità",
+        "ovest": "impulsi rivelatisi giusti"
+      },
+      "ombra": {
+        "nord": "reazione cieca",
+        "est": "avventatezza",
+        "sud": "irruenza",
+        "ovest": "impulsi di cui ti penti"
+      }
+    },
+    {
+      "id": 42,
+      "nome": "L'Azione",
+      "simbolo": "▶",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "potenza che si fa atto",
+        "est": "fare",
+        "sud": "soddisfazione del compiere",
+        "ovest": "azioni che hanno costruito"
+      },
+      "ombra": {
+        "nord": "iperattività vuota",
+        "est": "agitazione senza meta",
+        "sud": "fretta",
+        "ovest": "azioni avventate"
+      }
+    },
+    {
+      "id": 43,
+      "nome": "La Disciplina",
+      "simbolo": "═",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "ordine interiore",
+        "est": "costanza",
+        "sud": "dignità dell'impegno",
+        "ovest": "disciplina che ha dato frutti"
+      },
+      "ombra": {
+        "nord": "rigidità",
+        "est": "controllo ossessivo",
+        "sud": "durezza con sé",
+        "ovest": "vita irrigidita dalle regole"
+      }
+    },
+    {
+      "id": 44,
+      "nome": "La Volontà",
+      "simbolo": "⬟",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "forza che decide",
+        "est": "perseverare",
+        "sud": "determinazione",
+        "ovest": "volontà che ha vinto"
+      },
+      "ombra": {
+        "nord": "ostinazione",
+        "est": "forzare il reale",
+        "sud": "tensione cronica",
+        "ovest": "battaglie inutili vinte a caro prezzo"
+      }
+    },
+    {
+      "id": 45,
+      "nome": "La Costruzione",
+      "simbolo": "▪",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "fondamenta solide",
+        "est": "edificare",
+        "sud": "orgoglio del fatto",
+        "ovest": "ciò che hai costruito e che dura"
+      },
+      "ombra": {
+        "nord": "costruire sul falso",
+        "est": "accumulo senza senso",
+        "sud": "attaccamento all'opera",
+        "ovest": "imperi di sabbia"
+      }
+    },
+    {
+      "id": 46,
+      "nome": "La Conquista",
+      "simbolo": "✓",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "obiettivo raggiunto con merito",
+        "est": "vincere",
+        "sud": "trionfo",
+        "ovest": "conquiste che ti definiscono"
+      },
+      "ombra": {
+        "nord": "fame di dominio",
+        "est": "sopraffazione",
+        "sud": "vuoto dopo la vittoria",
+        "ovest": "vittorie che ti hanno isolato"
+      }
+    },
+    {
+      "id": 47,
+      "nome": "L'Influenza",
+      "simbolo": "≈",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "presenza che ispira",
+        "est": "muovere gli altri verso il bene",
+        "sud": "carisma",
+        "ovest": "il bene seminato negli altri"
+      },
+      "ombra": {
+        "nord": "manipolazione",
+        "est": "controllo degli altri",
+        "sud": "seduzione strumentale",
+        "ovest": "danni fatti col tuo ascendente"
+      }
+    },
+    {
+      "id": 48,
+      "nome": "La Responsabilità",
+      "simbolo": "⊛",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "rispondere di sé",
+        "est": "farsi carico",
+        "sud": "maturità",
+        "ovest": "responsabilità onorate"
+      },
+      "ombra": {
+        "nord": "colpa schiacciante",
+        "est": "carico di tutti sulle spalle",
+        "sud": "ansia del dovere",
+        "ovest": "responsabilità evitate che pesano"
+      }
+    },
+    {
+      "id": 49,
+      "nome": "L'Eredità",
+      "simbolo": "⌂",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "ciò che ricevi e custodisci",
+        "est": "trasmettere",
+        "sud": "gratitudine per le radici",
+        "ovest": "doni del passato"
+      },
+      "ombra": {
+        "nord": "fardello dei padri",
+        "est": "ripetere il copione ereditato",
+        "sud": "debito verso chi ti ha preceduto",
+        "ovest": "catene di famiglia"
+      }
+    },
+    {
+      "id": 50,
+      "nome": "Il Trono",
+      "simbolo": "■",
+      "ciclo": "Potere",
+      "luce": {
+        "nord": "autorità legittima",
+        "est": "governare con giustizia",
+        "sud": "sicurezza del proprio posto",
+        "ovest": "il potere usato bene"
+      },
+      "ombra": {
+        "nord": "potere che corrompe",
+        "est": "tirannia",
+        "sud": "solitudine del comando",
+        "ovest": "il trono che ti ha reso cieco"
+      }
+    },
+    {
+      "id": 51,
+      "nome": "Il Miraggio",
+      "simbolo": "≀",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "immagine che orienta",
+        "est": "sogno che spinge avanti",
+        "sud": "incanto del desiderio",
+        "ovest": "illusioni che ti hanno mosso"
+      },
+      "ombra": {
+        "nord": "inganno dei sensi",
+        "est": "inseguire ciò che non c'è",
+        "sud": "delusione annunciata",
+        "ovest": "miraggi a cui hai creduto"
+      }
+    },
+    {
+      "id": 52,
+      "nome": "L'Intuizione",
+      "simbolo": "◆",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "sapere senza spiegazione",
+        "est": "lampo che guida l'azione",
+        "sud": "sentire giusto",
+        "ovest": "intuizioni rivelatesi vere"
+      },
+      "ombra": {
+        "nord": "proiezione scambiata per intuito",
+        "est": "salto a conclusioni",
+        "sud": "paura travestita da presentimento",
+        "ovest": "intuizioni ignorate"
+      }
+    },
+    {
+      "id": 53,
+      "nome": "La Domanda",
+      "simbolo": "‽",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "apertura che cerca",
+        "est": "domandare che fa avanzare",
+        "sud": "curiosità viva",
+        "ovest": "domande giuste finalmente poste"
+      },
+      "ombra": {
+        "nord": "tarlo che rode",
+        "est": "interrogarsi senza agire",
+        "sud": "ansia del non sapere",
+        "ovest": "domande mai fatte"
+      }
+    },
+    {
+      "id": 54,
+      "nome": "La Comprensione",
+      "simbolo": "⊚",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "senso che si rivela",
+        "est": "capire e poter agire",
+        "sud": "pace della chiarezza",
+        "ovest": "ciò che finalmente hai capito"
+      },
+      "ombra": {
+        "nord": "illusione di aver capito",
+        "est": "analisi che blocca",
+        "sud": "freddezza del comprendere tutto",
+        "ovest": "fraintendimenti che hanno pesato"
+      }
+    },
+    {
+      "id": 55,
+      "nome": "La Memoria",
+      "simbolo": "≡",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "radice di chi sei",
+        "est": "ricordo che guida",
+        "sud": "tenerezza del passato",
+        "ovest": "memoria che custodisce"
+      },
+      "ombra": {
+        "nord": "passato che imprigiona",
+        "est": "ostaggio dei ricordi",
+        "sud": "rimpianto",
+        "ovest": "memoria che distorce"
+      }
+    },
+    {
+      "id": 56,
+      "nome": "Il Simbolo",
+      "simbolo": "⌘",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "ponte verso l'invisibile",
+        "est": "immagine che muove",
+        "sud": "significato sentito",
+        "ovest": "simboli che ti hanno parlato"
+      },
+      "ombra": {
+        "nord": "feticcio",
+        "est": "vivere di segni invece che di cose",
+        "sud": "superstizione",
+        "ovest": "simboli scambiati per realtà"
+      }
+    },
+    {
+      "id": 57,
+      "nome": "La Connessione",
+      "simbolo": "⋯",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "tutto è legato",
+        "est": "tessere relazioni",
+        "sud": "sentirsi parte",
+        "ovest": "legami che ti hanno sostenuto"
+      },
+      "ombra": {
+        "nord": "vedere nessi che non esistono",
+        "est": "rete che intrappola",
+        "sud": "iperconnessione che svuota",
+        "ovest": "legami che ti hanno trattenuto"
+      }
+    },
+    {
+      "id": 58,
+      "nome": "La Mappa",
+      "simbolo": "⊞",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "schema che orienta",
+        "est": "tracciare la rotta",
+        "sud": "sicurezza di sapere dove sei",
+        "ovest": "mappe che ti hanno guidato"
+      },
+      "ombra": {
+        "nord": "scambiare la mappa per il territorio",
+        "est": "seguire un piano cieco",
+        "sud": "rigidità del percorso",
+        "ovest": "mappe vecchie che non valgono più"
+      }
+    },
+    {
+      "id": 59,
+      "nome": "La Rivelazione",
+      "simbolo": "✶",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "velo che cade",
+        "est": "verità che cambia tutto",
+        "sud": "stupore",
+        "ovest": "rivelazioni che ti hanno aperto gli occhi"
+      },
+      "ombra": {
+        "nord": "verità che destabilizza",
+        "est": "rivelazione che non puoi gestire",
+        "sud": "shock",
+        "ovest": "ciò che avresti preferito non sapere"
+      }
+    },
+    {
+      "id": 60,
+      "nome": "La Visione",
+      "simbolo": "⊗",
+      "ciclo": "Visione",
+      "luce": {
+        "nord": "vedere ciò che sarà",
+        "est": "immaginare e creare",
+        "sud": "ispirazione",
+        "ovest": "visioni che si sono avverate"
+      },
+      "ombra": {
+        "nord": "allucinazione",
+        "est": "inseguire un sogno cieco",
+        "sud": "fanatismo della visione",
+        "ovest": "visioni che ti hanno illuso"
+      }
+    },
+    {
+      "id": 61,
+      "nome": "Il Cerchio",
+      "simbolo": "○",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "totalità che si chiude",
+        "est": "ciclo che si completa",
+        "sud": "senso di interezza",
+        "ovest": "cerchi che si sono chiusi"
+      },
+      "ombra": {
+        "nord": "circolo vizioso",
+        "est": "girare senza uscire",
+        "sud": "ripetizione che intrappola",
+        "ovest": "schemi che si ripetono"
+      }
+    },
+    {
+      "id": 62,
+      "nome": "L'Equilibrio",
+      "simbolo": "⊖",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "centro stabile",
+        "est": "tenere insieme gli opposti",
+        "sud": "serenità",
+        "ovest": "equilibri faticosamente raggiunti"
+      },
+      "ombra": {
+        "nord": "immobilità per paura di cadere",
+        "est": "compromesso che paralizza",
+        "sud": "tiepidezza",
+        "ovest": "equilibri pagati con la rinuncia"
+      }
+    },
+    {
+      "id": 63,
+      "nome": "L'Ordine",
+      "simbolo": "⊟",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "struttura che regge la vita",
+        "est": "mettere ordine",
+        "sud": "calma dell'organizzato",
+        "ovest": "ordine che ha protetto"
+      },
+      "ombra": {
+        "nord": "ossessione del controllo",
+        "est": "imporre ordine al vivente",
+        "sud": "rigidità",
+        "ovest": "ordine che ha soffocato"
+      }
+    },
+    {
+      "id": 64,
+      "nome": "Il Caos",
+      "simbolo": "⁂",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "fertilità del disordine",
+        "est": "rompere gli schemi",
+        "sud": "libertà dell'imprevisto",
+        "ovest": "caos da cui è nato il nuovo"
+      },
+      "ombra": {
+        "nord": "disgregazione",
+        "est": "perdere il controllo",
+        "sud": "angoscia del disordine",
+        "ovest": "caos che ha distrutto"
+      }
+    },
+    {
+      "id": 65,
+      "nome": "La Danza",
+      "simbolo": "↺",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "armonia col movimento della vita",
+        "est": "muoversi col ritmo",
+        "sud": "gioia del corpo",
+        "ovest": "momenti in cui eri in flusso"
+      },
+      "ombra": {
+        "nord": "trascinato senza scelta",
+        "est": "agitazione scambiata per vita",
+        "sud": "stordimento",
+        "ovest": "danze a cui non volevi partecipare"
+      }
+    },
+    {
+      "id": 66,
+      "nome": "Il Tempo",
+      "simbolo": "◴",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "ritmo che matura ogni cosa",
+        "est": "agire al momento giusto",
+        "sud": "presenza nell'ora",
+        "ovest": "il tempo che ha guarito"
+      },
+      "ombra": {
+        "nord": "tirannia dell'orologio",
+        "est": "correre contro il tempo",
+        "sud": "ansia del tardi",
+        "ovest": "tempo perso che non torna"
+      }
+    },
+    {
+      "id": 67,
+      "nome": "La Presenza",
+      "simbolo": "◉",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "essere qui pienamente",
+        "est": "agire con tutto sé",
+        "sud": "intensità del presente",
+        "ovest": "momenti vissuti davvero"
+      },
+      "ombra": {
+        "nord": "assenza a se stessi",
+        "est": "fare senza esserci",
+        "sud": "distrazione cronica",
+        "ovest": "vita guardata da fuori"
+      }
+    },
+    {
+      "id": 68,
+      "nome": "L'Accettazione",
+      "simbolo": "∪",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "pace con ciò che è",
+        "est": "smettere di lottare contro il reale",
+        "sud": "serenità",
+        "ovest": "ciò che hai imparato ad accettare"
+      },
+      "ombra": {
+        "nord": "rassegnazione",
+        "est": "resa passiva",
+        "sud": "rinuncia a cambiare",
+        "ovest": "ingiustizie subite e accettate"
+      }
+    },
+    {
+      "id": 69,
+      "nome": "Il Compimento",
+      "simbolo": "⊝",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "pienezza del realizzato",
+        "est": "portare a termine",
+        "sud": "gratitudine",
+        "ovest": "ciò che hai compiuto"
+      },
+      "ombra": {
+        "nord": "vuoto dopo la meta",
+        "est": "fine che spaventa",
+        "sud": "nostalgia del cammino",
+        "ovest": "opere finite di cui senti la mancanza"
+      }
+    },
+    {
+      "id": 70,
+      "nome": "Il Mondo",
+      "simbolo": "⊜",
+      "ciclo": "Totalità",
+      "luce": {
+        "nord": "interezza ritrovata",
+        "est": "abitare pienamente la vita",
+        "sud": "appartenenza al tutto",
+        "ovest": "il cerchio della tua vita"
+      },
+      "ombra": {
+        "nord": "peso del tutto",
+        "est": "perdersi nell'immenso",
+        "sud": "estraneità",
+        "ovest": "il mondo che cambia mentre lo conoscevi"
+      }
+    },
+    {
+      "id": 71,
+      "nome": "L'Osservatore",
+      "simbolo": "⊡",
+      "ciclo": "Trascendenti",
+      "luce": {
+        "nord": "coscienza che tutto contiene",
+        "est": "scegliere come guardare",
+        "sud": "presenza testimone",
+        "ovest": "il sé che ha sempre osservato"
+      },
+      "ombra": {
+        "nord": "distacco che non vive",
+        "est": "guardare invece di agire",
+        "sud": "freddezza dello spettatore",
+        "ovest": "vita osservata e mai vissuta"
+      }
+    },
+    {
+      "id": 72,
+      "nome": "La Possibilità",
+      "simbolo": "∾",
+      "ciclo": "Trascendenti",
+      "luce": {
+        "nord": "potenziale ancora aperto",
+        "est": "ciò che può accadere",
+        "sud": "speranza pura",
+        "ovest": "le possibilità che eri"
+      },
+      "ombra": {
+        "nord": "dispersione nel possibile",
+        "est": "non scegliere mai",
+        "sud": "vertigine delle troppe vie",
+        "ovest": "possibilità lasciate morire"
+      }
+    },
+    {
+      "id": 73,
+      "nome": "L'Emergenza",
+      "simbolo": "↑",
+      "ciclo": "Trascendenti",
+      "luce": {
+        "nord": "il nuovo che sorge dal tutto",
+        "est": "ciò che nasce dall'insieme",
+        "sud": "stupore del non previsto",
+        "ovest": "ciò che è emerso senza cercarlo"
+      },
+      "ombra": {
+        "nord": "ciò che irrompe senza controllo",
+        "est": "urgenza che travolge",
+        "sud": "panico del non previsto",
+        "ovest": "ciò che è emerso e non hai accolto"
+      }
+    },
+    {
+      "id": 74,
+      "nome": "L'Infinito",
+      "simbolo": "∞∞",
+      "ciclo": "Trascendenti",
+      "luce": {
+        "nord": "ciò che non finisce",
+        "est": "ogni fine è un inizio",
+        "sud": "pace dell'eterno",
+        "ovest": "i cicli che hai attraversato e che continuano"
+      },
+      "ombra": {
+        "nord": "vertigine del senza fine",
+        "est": "fuga dall'arrivo",
+        "sud": "angoscia dell'illimitato",
+        "ovest": "ciò che ricomincia sempre uguale"
+      }
+    }
+  ],
+  "manifesto": {
+    "nome": "Tarocchi Quantici",
+    "versione": "Alpha 0.1",
+    "visione": "Linguaggio simbolico basato su relazioni, osservazione e significato emergente.",
+    "principio": "CARTA + ASSE + POLARITÀ = SIGNIFICATO",
+    "non_predizione": "Esplorare possibilità, non predire il futuro.",
+    "luce_ombra": "Due manifestazioni della stessa energia.",
+    "osservatore": "Il significato emerge dall'incontro tra osservatore, domanda e simbolo.",
+    "doppia_interpretazione": {
+      "umano": "esperienza ed emozione",
+      "ai": "struttura e coerenza"
+    },
+    "visione_futura": "Mazzo fisico, app, AI, sistema narrativo, archivio simbolico condividono lo stesso nucleo concettuale.",
+    "conclusione": "I Tarocchi Quantici non assegnano significati. Permettono ai significati di emergere."
+  },
+  "struttura_carta": {
+    "campi": [
+      "nome",
+      "simbolo",
+      "faccia_luce",
+      "faccia_ombra"
+    ],
+    "faccia_direzioni": [
+      "nord",
+      "est",
+      "sud",
+      "ovest"
+    ],
+    "formula": "Carta + Asse (nord/est/sud/ovest) + Polarità (luce/ombra) = Significato",
+    "stati_per_carta": 8
+  },
+  "interpretazioni_chiave": {
+    "La Scintilla": "ciò che vuole nascere",
+    "La Soglia": "passaggio tra ciò che eri e ciò che diventerai",
+    "L'Eco": "ciò che continua a vivere dopo l'evento",
+    "La Ferita": "traccia lasciata dal dolore",
+    "L'Attesa": "maturazione invisibile",
+    "La Verità": "vedere ciò che c'è",
+    "Il Crollo": "caduta di ciò che non può più sostenersi",
+    "La Rinascita": "diventare qualcosa di nuovo",
+    "L'Osservatore": "coscienza che osserva",
+    "L'Infinito": "ogni fine apre un nuovo orizzonte"
+  },
+  "stato_costruzione": {
+    "cicli_completati": [
+      "Origine",
+      "Legame",
+      "Frattura",
+      "Trasformazione",
+      "Potere",
+      "Visione",
+      "Totalità",
+      "Trascendenti"
+    ],
+    "carte_completate": 74,
+    "carte_totali": 74,
+    "stati_scritti": 592,
+    "stati_totali": 592,
+    "completo": true
+  }
+}
