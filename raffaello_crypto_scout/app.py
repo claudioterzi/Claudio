@@ -390,6 +390,90 @@ def _letta_block_binding(client, agent_id, block_id, label, expected_value_sha25
     return out
 
 
+
+def run_letta_canon_write():
+    """Issue #108: persist the staged canon as a Letta block with read-after-write proof.
+
+    Reads R3_LETTA_CANON_{B64,SHA256,LABEL,AGENT_ID}. Never logs payload or secrets:
+    the returned receipt holds only ids, label, hashes, booleans and timestamps.
+    Idempotent: if the agent already has a block with this label and the exact
+    hash, it re-verifies instead of creating a duplicate.
+    """
+    import base64
+    import gzip
+    from datetime import datetime, timezone
+
+    receipt = {"issue": 108, "ts": datetime.now(timezone.utc).isoformat(), "match": False}
+    api_key = os.getenv("LETTA_API_KEY", "")
+    b64 = os.getenv("R3_LETTA_CANON_B64", "")
+    expected = os.getenv("R3_LETTA_CANON_SHA256", "").strip().lower()
+    label = os.getenv("R3_LETTA_CANON_LABEL", "").strip()
+    agent_id = os.getenv("R3_LETTA_CANON_AGENT_ID", "").strip()
+    receipt.update({"agent_id": agent_id, "label": label, "expected_sha256": expected})
+    missing = [n for n, v in (("LETTA_API_KEY", api_key), ("R3_LETTA_CANON_B64", b64),
+                              ("R3_LETTA_CANON_SHA256", expected), ("R3_LETTA_CANON_LABEL", label),
+                              ("R3_LETTA_CANON_AGENT_ID", agent_id)) if not v]
+    if missing:
+        receipt["error"] = "missing:" + ",".join(missing)
+        return receipt
+
+    value = gzip.decompress(base64.b64decode(b64)).decode("utf-8")
+    payload_sha = _sha256_text(value)
+    receipt["payload_sha256"] = payload_sha
+    receipt["payload_chars"] = len(value)
+    if payload_sha != expected:
+        receipt["error"] = "payload_hash_mismatch_abort"
+        return receipt
+
+    headers = _letta_headers(api_key)
+    with httpx.Client(timeout=90.0, follow_redirects=True, headers=headers) as client:
+        existing = client.get(f"{_LETTA_BASE}/agents/{agent_id}/core-memory/blocks/{label}")
+        receipt["preexisting_http"] = existing.status_code
+        block_id = None
+        if existing.status_code < 400 and isinstance(existing.json(), dict):
+            b = existing.json()
+            if _sha256_text(b.get("value", "")) == expected:
+                block_id = b.get("id")
+                receipt["action"] = "already_present_reverified"
+            else:
+                receipt["error"] = "label_already_bound_with_different_value_abort"
+                return receipt
+        if block_id is None:
+            blk = client.post(f"{_LETTA_BASE}/blocks/", json={
+                "label": label, "value": value, "limit": max(len(value) + 1000, 5000),
+            })
+            receipt["create_http"] = blk.status_code
+            if blk.status_code >= 400:
+                receipt["error"] = "create_failed:" + blk.text[:200]
+                return receipt
+            block_id = blk.json().get("id")
+            att = client.patch(f"{_LETTA_BASE}/agents/{agent_id}/core-memory/blocks/attach/{block_id}")
+            receipt["attach_http"] = att.status_code
+            if att.status_code >= 400:
+                receipt["error"] = "attach_failed:" + att.text[:200]
+                receipt["block_id"] = block_id
+                return receipt
+            receipt["action"] = "created_and_attached"
+        receipt["block_id"] = block_id
+
+        rb = client.get(f"{_LETTA_BASE}/agents/{agent_id}/core-memory/blocks/{label}")
+        receipt["readback_http"] = rb.status_code
+        if rb.status_code >= 400 or not isinstance(rb.json(), dict):
+            receipt["error"] = "readback_failed"
+            return receipt
+        rbj = rb.json()
+        receipt["readback_block_id_match"] = rbj.get("id") == block_id
+        receipt["readback_sha256"] = _sha256_text(rbj.get("value", ""))
+        binding = _letta_block_binding(client, agent_id, block_id, label, expected)
+        receipt["listed_on_agent"] = binding.get("listed")
+    receipt["match"] = bool(
+        receipt["readback_sha256"] == expected
+        and receipt["readback_block_id_match"]
+        and receipt["listed_on_agent"]
+    )
+    receipt["status"] = "VERIFIED" if receipt["match"] else "NOT_VERIFIED"
+    return receipt
+
 def diagnose_arm(binding, answer_class):
     if not binding.get("attach_visible"):
         return "BINDING_OR_API_PROBLEM"
@@ -653,6 +737,11 @@ if __name__ == "__main__":
                 print("blind probe ntfy status", resp.status, flush=True)
         except Exception as e:
             print("LETTA_BLIND_PROBE_FAILED", repr(e), flush=True)
+    if os.getenv("RUN_LETTA_CANON_WRITE", "0") == "1":
+        try:
+            print("LETTA_CANON_RECEIPT", json.dumps(run_letta_canon_write(), ensure_ascii=False), flush=True)
+        except Exception as e:
+            print("LETTA_CANON_FAILED", type(e).__name__, flush=True)
     print(f"RaffaelloCrypto bridge listening on :{PORT}, topic={TOPIC}", flush=True)
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
 

@@ -1,0 +1,15 @@
+{
+  "schema": "R3_SNAPSHOT_CONSUMER_BASELINE_CORRECTION_V1",
+  "utc": "2026-10-10T21:14:18.429761+00:00",
+  "supersedes_baseline_in_commit": "9a75a74eb901179e662ec9b0375b9d4d9e90f9bb",
+  "old_trial_status": "INVALID_HARNESS_ARGUMENTS: main expects argv[0]; the old test exercised the default route. Do not use that trial as evidence.",
+  "corrected_trial": "Full canonical sdq1.__main__ module temporarily restored in isolated checkout, exact original file restored after trial. argv[0] provided; one actual saved snapshot and one mocked push call asserted BEFORE checking return code.",
+  "source_commit": "3659d6d01071cee99c7c16300156d51db0d89c1d",
+  "actual_push_return": false,
+  "actual_cli_exit_code": 0,
+  "expected_cli_exit_code": 1,
+  "corrected_log_sha256": "fdf0a91bcb3b31b1f54f4ded99a896b3f6ac3952d013d46899b3e6e82fee2728",
+  "production_modified": false,
+  "provider_calls": 0,
+  "real_notifications": 0
+}
