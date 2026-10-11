@@ -1,0 +1,83 @@
+{
+  "schema": "R3-CANDIDATE-PREREGISTRATION/1",
+  "candidate_id": "CT_TYPESAFE_STARTUP_REPAIR_20261011_7522B494",
+  "created_at_utc": "2026-10-11T11:46:50Z",
+  "owner_authority": "Claudio Terzi [CT-LGAI-001] — Correggi i limiti",
+  "source_repository": "https://github.com/claudioterzi/Claudio",
+  "source_branch": "feat/typesafe-sister-api-20260920",
+  "source_revision": "7522b4949e910923144a61c1f35588723f9cf124",
+  "railway_observation": {
+    "service_id": "f512937c-c06c-4914-a611-69023af9eb40",
+    "deployment_id": "419cf73f-681b-4ecd-bff3-09bc52912003",
+    "classification": "DATA_ONLY_OWNER_SUPPLIED_RUNTIME_OBSERVATION",
+    "reported_failure": "AttributeError: module 'typesafe_sister' has no attribute 'app'"
+  },
+  "candidate_branch": "candidate/r3-typesafe-startup-compat-20261011",
+  "target_base_branch": "feat/typesafe-sister-api-20260920",
+  "retroactive_classification": "PATCH_RETEST",
+  "work_items": [
+    "R3-003",
+    "R3-007",
+    "R3-013",
+    "R3-020"
+  ],
+  "hypothesis": "The combined runtime can preserve the canonical typesafe_sister package and its client while satisfying the historical wrapper's typesafe_sister.app attribute by exposing the existing typesafe_legacy.app before importing the wrapper.",
+  "baseline": {
+    "command": "fresh-process import of jev_gateway in a TemporaryDirectory reproducing the exact Docker COPY layout with a synthetic wrapper matching the observed typesafe_sister.app consumer",
+    "wrapper_provenance": "SYNTHETIC_OBSERVED_CONTRACT_FIXTURE_NOT_RECOVERED_RUNTIME_WRAPPER",
+    "exit_code": 1,
+    "failure_type": "AttributeError",
+    "failure_message": "module 'typesafe_sister' has no attribute 'app'",
+    "gateway_imported": false
+  },
+  "scope": {
+    "product_files": [
+      "r3/jev_gateway.py"
+    ],
+    "test_files": [
+      "tests/test_typesafe_one_runtime_startup.py"
+    ],
+    "allowed_change": "A gateway-local compatibility binding established before letta_bridge_v2 import, without replacing the canonical package or changing launcher digest checks, routing, authentication, or provider selection.",
+    "forbidden_change": [
+      "edit or push the auto-deployed source branch",
+      "sys.modules alias that replaces or hides the typesafe_sister package",
+      "edit the canonical typesafe_sister package without a separately proven need",
+      "change wrapper digest verification, secrets, authentication, provider routing, or catch-all ownership",
+      "merge, deploy, restart, production probe, paid preview, or new runtime resource"
+    ]
+  },
+  "primary_metrics": {
+    "fresh_process_gateway_import_failures_target": 0,
+    "legacy_wrapper_app_identity_mismatches_target": 0,
+    "canonical_client_import_failures_target": 0,
+    "jev_routes_behind_catch_all_target": 0,
+    "unauthorized_provider_calls_target": 0,
+    "mocked_valid_request_regressions_target": 0,
+    "network_egress_target": 0
+  },
+  "falsifiers": [
+    "The exact Docker COPY layout still fails to import in a fresh process.",
+    "The synthetic observed wrapper receives an app other than typesafe_legacy.app.",
+    "typesafe_sister.client becomes unimportable or resolves through an alias.",
+    "A /jev route remains behind the legacy catch-all.",
+    "Missing or wrong bearer tokens reach any provider call.",
+    "A valid authenticated mocked request no longer returns the existing contract.",
+    "Any test performs provider or network egress."
+  ],
+  "promotion_gate": {
+    "candidate_only": true,
+    "authorized_publication": "distinct candidate branch and bounded draft PR only",
+    "requires_remote_byte_and_tree_readback": true,
+    "requires_hosted_ci_if_existing_infrastructure_allows": true,
+    "production_recovery_requires_separate_exact_runtime_proof": true,
+    "merge": false,
+    "deploy": false,
+    "restart": false,
+    "auto_apply": false
+  },
+  "known_limits": [
+    "The real environment-materialized wrapper bytes are unavailable in this session; the wrapper fixture is synthetic and tests only the observed consumer contract.",
+    "Local import and HTTP tests cannot prove Railway startup, healthcheck success, provider reachability, or production recovery.",
+    "The candidate is based on the Railway source ref rather than main because the combined runtime files do not exist on main."
+  ]
+}

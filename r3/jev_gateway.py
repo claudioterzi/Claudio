@@ -1,6 +1,16 @@
 """Expose Jev before the existing catch-all while preserving the original Letta/MCP app."""
-import letta_bridge_v2
+from importlib import import_module
+
+import typesafe_sister
 import typesafe_legacy
+
+# The environment-materialized historical wrapper imports the canonical package
+# and reads ``typesafe_sister.app`` while it is being imported.  Keep the
+# package itself intact (notably ``typesafe_sister.client``), and expose the
+# already-loaded combined-runtime app object only at that compatibility seam.
+typesafe_sister.app = typesafe_legacy.app
+
+letta_bridge_v2 = import_module("letta_bridge_v2")
 
 app = letta_bridge_v2.app
 _before = len(app.router.routes)
