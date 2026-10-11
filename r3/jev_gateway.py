@@ -9,6 +9,8 @@ import typesafe_legacy
 # package itself intact (notably ``typesafe_sister.client``), and expose the
 # already-loaded combined-runtime app object only at that compatibility seam.
 typesafe_sister.app = typesafe_legacy.app
+# The wrapper's root health endpoint delegates to the historical module too.
+typesafe_sister.health = typesafe_legacy.health
 
 letta_bridge_v2 = import_module("letta_bridge_v2")
 

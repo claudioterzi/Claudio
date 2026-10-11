@@ -23,6 +23,15 @@ import typesafe_sister
 
 app = FastAPI()
 WRAPPER_MOUNTED_APP = typesafe_sister.app
+
+# Literal consumer call observed in Railway /app/letta_bridge_v2.py:282.
+# This remains a bounded synthetic fixture, not a copy of the full wrapper.
+@app.get("/health")
+def wrapper_health():
+    base = dict(typesafe_sister.health())
+    base["wrapper_health_delegated"] = True
+    return base
+
 app.mount("/typesafe", WRAPPER_MOUNTED_APP)
 
 @app.api_route("/{path:path}", methods=["GET", "POST"])
@@ -99,6 +108,7 @@ def forbidden_provider(*args, **kwargs):
 
 typesafe_legacy.system_one = forbidden_provider
 client = TestClient(jev_gateway.app)
+wrapper_health = client.get("/health")
 payload = {
     "state": {"ready": True},
     "questions": {"present": {"type": "noul", "instructions": "present?"}},
@@ -185,6 +195,8 @@ root_mount_indexes = [
 
 print(json.dumps({
     "gateway_imported": True,
+    "wrapper_health_status": wrapper_health.status_code,
+    "wrapper_health_delegated": wrapper_health.json().get("wrapper_health_delegated"),
     "wrapper_identity_matches": letta_bridge_v2.WRAPPER_MOUNTED_APP is typesafe_legacy.app,
     "canonical_package_preserved": hasattr(typesafe_sister, "__path__"),
     "canonical_client_imported": client_module.__name__ == "typesafe_sister.client",
@@ -262,6 +274,8 @@ class TypeSafeOneRuntimeStartupTests(unittest.TestCase):
         self.assertEqual(self.exit_code, 0, self.stderr)
         self.assertTrue(self.result["gateway_imported"])
         self.assertTrue(self.result["wrapper_identity_matches"])
+        self.assertEqual(self.result["wrapper_health_status"], 200)
+        self.assertTrue(self.result["wrapper_health_delegated"])
 
     def test_canonical_package_and_client_remain_importable(self):
         self.assertTrue(self.result["canonical_package_preserved"])
