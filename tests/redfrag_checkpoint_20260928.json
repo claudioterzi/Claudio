@@ -1,0 +1,57 @@
+[
+  {
+    "id": "C01",
+    "name": "Anima di Raffaello",
+    "source_count": 2,
+    "content_hashes": ["sha256:c01", "sha256:c01"],
+    "provenance": ["drive:anima-v1", "github:anima-copy"],
+    "canonical_source": "drive:anima-v1",
+    "same_topic": true,
+    "expected_class": "DUPLICATE",
+    "expected_action": "LINK_TO_CANON"
+  },
+  {
+    "id": "C02",
+    "name": "Concretizzare Idee in Azioni Concrete",
+    "source_count": 2,
+    "content_hashes": ["sha256:c02", "sha256:c02"],
+    "provenance": ["drive:idee-v1", "github:idee-copy"],
+    "canonical_source": "drive:idee-v1",
+    "same_topic": true,
+    "expected_class": "DUPLICATE",
+    "expected_action": "LINK_TO_CANON"
+  },
+  {
+    "id": "C03",
+    "name": "Il cerchio R3",
+    "source_count": 3,
+    "content_hashes": ["sha256:c03a", "sha256:c03b", "sha256:c03c"],
+    "provenance": ["drive:cerchio-a", "drive:cerchio-b", "github:cerchio-c"],
+    "same_topic": true,
+    "semantic_divergence": true,
+    "divergence_evidence": true,
+    "expected_class": "CONFLICT",
+    "expected_action": "KEEP_DISTINCT_POINTERS"
+  },
+  {
+    "id": "N01",
+    "name": "Duplicate without full provenance",
+    "source_count": 2,
+    "content_hashes": ["sha256:n01", "sha256:n01"],
+    "provenance": ["drive:only-one"],
+    "canonical_source": "drive:only-one",
+    "expected_class": "DUPLICATE",
+    "expected_action": "QUARANTINE_REVIEW"
+  },
+  {
+    "id": "N02",
+    "name": "Canonical RRR invariant",
+    "source_count": 1,
+    "content_hashes": ["sha256:n02"],
+    "provenance": ["github:rrr-canon"],
+    "canonical_source": "github:rrr-canon",
+    "canonical_invariant": true,
+    "expected_class": "CORE",
+    "expected_action": "KEEP_ACTIVE"
+  }
+]

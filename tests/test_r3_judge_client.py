@@ -44,5 +44,30 @@ class R3JudgeClientTests(unittest.TestCase):
         self.assertEqual(post.call_count, 2)
 
 
+    @patch.dict(os.environ, {"R3_JUDGE_MODE": "candidate", "CLM_BASE_URL": "http://127.0.0.1:8700"}, clear=False)
+    @patch("typesafe_sister.client._try_local")
+    @patch("typesafe_sister.client._post_system_one")
+    def test_explicit_clm_provider_bypasses_local_judge(self, post, local):
+        post.return_value = {"model": "clm-latest", "answers": {"is_stub": {"type": "noul", "noul": 0.2}}}
+        result = system_one({"content": "real"}, QUESTIONS, provider="clm")
+        local.assert_not_called()
+        self.assertEqual(result["_r3_provider"], "clm")
+        self.assertEqual(result["x_r3"]["provider"], "clm")
+        self.assertEqual(post.call_args.kwargs["endpoint"], "http://127.0.0.1:8700")
+
+    @patch.dict(os.environ, {"R3_JUDGE_MODE": "active", "CLM_BASE_URL": "http://127.0.0.1:8700", "R3_SYSTEMONE_PROVIDER": "auto"}, clear=False)
+    @patch("typesafe_sister.client.gate_allows", return_value=False)
+    @patch("typesafe_sister.client._post_system_one")
+    def test_rejected_judge_preserves_main_clm_fallback_preference(self, post, gate):
+        post.side_effect = [
+            {"model": "rizzo-local", "answers": {"is_stub": {"type": "noul", "noul": 0.9}}},
+            {"model": "clm-latest", "answers": {"is_stub": {"type": "noul", "noul": 0.1}}},
+        ]
+        result = system_one({"content": "real"}, QUESTIONS)
+        self.assertEqual(result["_r3_provider"], "clm")
+        self.assertEqual(post.call_args_list[0].kwargs["endpoint"], "http://127.0.0.1:8017")
+        self.assertEqual(post.call_args_list[1].kwargs["endpoint"], "http://127.0.0.1:8700")
+
+
 if __name__ == "__main__":
     unittest.main()

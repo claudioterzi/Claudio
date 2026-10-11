@@ -1,4 +1,4 @@
-"""R3 sister service for bounded typed semantic judgments."""
+"""R3∞ System One sister service for bounded semantic judgments."""
 from __future__ import annotations
 
 import hashlib
@@ -10,18 +10,20 @@ from typing import Any, Literal, Optional
 
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
-from typesafe_sister.client import TypeSafeNotConfigured, configured, system_one
+
+from typesafe_sister.client import (
+    SystemOneNotConfigured,
+    backend_info,
+    system_one,
+)
 
 R3_API_TOKEN = os.getenv("R3_API_TOKEN", "")
-TYPESAFE_API_KEY = os.getenv("TYPESAFE_API_KEY", "")
-TYPESAFE_BASE_URL = os.getenv("TYPESAFE_BASE_URL", "https://api.typesafe.ai")
-TYPESAFE_MODEL = os.getenv("TYPESAFE_MODEL", "jev-latest")
-TYPESAFE_TIMEOUT_SECONDS = float(os.getenv("TYPESAFE_TIMEOUT_SECONDS", "30"))
-R3_JUDGE_MODE = os.getenv("R3_JUDGE_MODE", "off").strip().lower()
-R3_JUDGE_BASE_URL = os.getenv("R3_JUDGE_BASE_URL", "http://127.0.0.1:8017")
+SYSTEMONE_TIMEOUT_SECONDS = float(
+    os.getenv("R3_SYSTEMONE_TIMEOUT_SECONDS", os.getenv("TYPESAFE_TIMEOUT_SECONDS", "30"))
+)
 
-log = logging.getLogger("r3.typesafe_sister")
-app = FastAPI(title="R3∞ Sister Judge", version="0.2.0")
+log = logging.getLogger("r3.systemone_sister")
+app = FastAPI(title="R3∞ System One Sister", version="0.2.0")
 
 QuestionKind = Literal["choice", "noul", "score"]
 
@@ -79,32 +81,33 @@ def _system_one(state: Any, questions: dict[str, dict[str, Any]], model: str | N
         return system_one(
             state,
             questions,
-            api_key=TYPESAFE_API_KEY,
-            base_url=TYPESAFE_BASE_URL,
-            model=model or TYPESAFE_MODEL,
-            timeout=TYPESAFE_TIMEOUT_SECONDS,
+            model=model,
+            timeout=SYSTEMONE_TIMEOUT_SECONDS,
         )
-    except TypeSafeNotConfigured as exc:
-        raise HTTPException(status_code=503, detail="Nessun backend typed-judge disponibile/adottato") from exc
+    except SystemOneNotConfigured as exc:
+        raise HTTPException(status_code=503, detail="System One backend non configurato") from exc
     except HTTPException:
         raise
     except Exception as exc:
-        log.warning("Typed-judge request failed: %s", type(exc).__name__)
-        raise HTTPException(status_code=502, detail=f"Typed-judge upstream error: {type(exc).__name__}") from exc
+        log.warning("System One request failed: %s", type(exc).__name__)
+        raise HTTPException(status_code=502, detail=f"System One upstream error: {type(exc).__name__}") from exc
 
 
 @app.get("/health")
 def health() -> dict[str, Any]:
+    info = backend_info()
     return {
         "status": "healthy",
-        "service": "r3-sister-judge",
-        "router": "R3-JUDGE/1",
-        "configured": configured(),
-        "r3_judge_mode": R3_JUDGE_MODE,
-        "r3_judge_base_url": R3_JUDGE_BASE_URL,
-        "typesafe_configured": bool(TYPESAFE_API_KEY),
-        "typesafe_model": TYPESAFE_MODEL,
+        # Keep the service name stable so Railway/Vercel integrations do not break.
+        "service": "r3-typesafe-sister",
+        "provider": info["provider"],
+        "configured": info["configured"],
+        "model": info["model"],
+        "base_url": info["base_url"],
         "role": "bounded_semantic_judgment",
+        "api_contract": "typesafe-compatible-systemone",
+        "router": "R3-JUDGE/1", "r3_judge_mode": os.getenv("R3_JUDGE_MODE", "off"),
+        "r3_judge_base_url": os.getenv("R3_JUDGE_BASE_URL", "http://127.0.0.1:8017"),
         "epistemic_class": "IPOTESI",
     }
 
@@ -117,20 +120,20 @@ def judge(request: JudgeRequest, authorization: Optional[str] = Header(None)) ->
     question_hash = _canonical_hash(wire_questions)
     result = _system_one(request.state, wire_questions, request.model)
     meta = result.get("x_r3") if isinstance(result.get("x_r3"), dict) else {}
+    provider = str(result.get("_r3_provider") or meta.get("provider") or "unknown")
     log.info(
-        "R3 judgment completed state_sha256=%s questions_sha256=%s provider=%s model=%s",
+        "System One judgment completed state_sha256=%s questions_sha256=%s provider=%s model=%s",
         state_hash,
         question_hash,
-        meta.get("provider"),
+        provider,
         result.get("model"),
     )
     return {
-        "provider": meta.get("provider") or "unknown_typed_judge",
+        "provider": provider,
         "state_sha256": state_hash,
         "questions_sha256": question_hash,
         "result": result,
-        "epistemic_class": "IPOTESI",
-        "factual_authority": False,
+        "epistemic_class": "IPOTESI", "factual_authority": False,
         "falsification": meta.get("falsification") or {},
         "evidence_group_sha256": meta.get("evidence_group_sha256"),
         "independent_confirmation": False,

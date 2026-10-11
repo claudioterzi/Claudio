@@ -1,8 +1,9 @@
-"""Universal advisory typed-judgment layer for every R3 project.
+"""Universal advisory System One layer for every R3 project.
 
-This module never authorizes an external action. It returns typed judgments that
-Raffaello/application code may use as a second opinion under P5/P6. Every model
-judgment is explicitly IPOTESI rather than factual evidence.
+The shared layer can route to CLM or TypeSafe/Jev without creating a parallel
+judgment engine. It never authorizes an external action. It returns typed
+judgments that Raffaello/application code may use as a second opinion under
+P5/P6.
 """
 from __future__ import annotations
 
@@ -11,7 +12,7 @@ import json
 import logging
 import math
 
-from typesafe_sister.client import TypeSafeNotConfigured, system_one
+from typesafe_sister.client import SystemOneNotConfigured, system_one
 from typesafe_sister.policy import (
     UNIVERSAL_FOCUS,
     UNIVERSAL_POLICY_VERSION,
@@ -19,7 +20,7 @@ from typesafe_sister.policy import (
     universal_questions,
 )
 
-LOGGER = logging.getLogger("r3.typesafe_universal")
+LOGGER = logging.getLogger("r3.systemone_universal")
 MAX_STATE_BYTES = 64 * 1024
 
 
@@ -76,11 +77,24 @@ def _noul(answer):
     return _probability(answer.get("noul"))
 
 
+def _provider_from_result(result):
+    provider = str(result.get("_r3_provider") or "").strip().lower()
+    if provider:
+        return provider[:40]
+    model = str(result.get("model") or "").lower()
+    if model.startswith("clm"):
+        return "clm"
+    if model.startswith("jev"):
+        return "typesafe"
+    return "systemone"
+
+
 def assess_project_state(project_id, state, *, context=None, timeout=8):
     """Return bounded advisory judgments for any project state.
 
-    Callers decide how to use the result. No typed-model output is permission to
-    spend, publish, send, delete, deploy, merge or otherwise change external state.
+    Callers decide how to use the result. In particular, no System One output is
+    permission to spend, publish, send, delete, deploy, merge or otherwise
+    change external state.
     """
     project = str(project_id or "general").strip()[:120] or "general"
     payload = {"project": project, "state": state}
@@ -100,7 +114,7 @@ def assess_project_state(project_id, state, *, context=None, timeout=8):
         result = system_one(payload, questions, timeout=timeout)
         answers = result["answers"]
         if not isinstance(answers, dict) or set(answers) != set(questions):
-            raise ValueError("Incomplete typed-judge answers")
+            raise ValueError("Incomplete System One answers")
 
         focus = _choice(answers["focus"])
         scores = {
@@ -109,18 +123,12 @@ def assess_project_state(project_id, state, *, context=None, timeout=8):
         }
         flags = {
             key: _noul(answers[key])
-            for key in (
-                "contradiction",
-                "missing_critical_input",
-                "unsupported_claim",
-                "freshness_needed",
-                "external_side_effect",
-            )
+            for key in ("contradiction", "missing_critical_input", "unsupported_claim", "freshness_needed", "external_side_effect")
         }
         meta = result.get("x_r3") if isinstance(result.get("x_r3"), dict) else {}
         return {
             "status": "evaluated",
-            "provider": str(meta.get("provider") or "typesafe")[:100],
+            "provider": _provider_from_result(result),
             "model": str(result.get("model", "unknown"))[:100],
             "project": project,
             "focus": focus,
@@ -128,17 +136,16 @@ def assess_project_state(project_id, state, *, context=None, timeout=8):
             "flags": flags,
             "policy_version": UNIVERSAL_POLICY_VERSION,
             "input_sha256": hashlib.sha256(canonical.encode("utf-8")).hexdigest(),
-            "epistemic_class": str(meta.get("epistemic_class") or "IPOTESI")[:40],
-            "factual_authority": False,
+            "epistemic_class": "IPOTESI", "factual_authority": False,
             "falsification": meta.get("falsification") if isinstance(meta.get("falsification"), dict) else {},
             "evidence_group_sha256": meta.get("evidence_group_sha256"),
             "independent_confirmation": False,
         }
-    except TypeSafeNotConfigured:
+    except SystemOneNotConfigured:
         return {"status": "not_configured", "policy_version": UNIVERSAL_POLICY_VERSION}
     except Exception as exc:
         LOGGER.warning(json.dumps({
-            "event": "typed_judge_unavailable",
+            "event": "systemone_universal_unavailable",
             "error_class": type(exc).__name__,
             "project": project,
         }))
