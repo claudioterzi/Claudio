@@ -223,6 +223,36 @@ await check('T35','Sync remoto blocca due rami divergenti senza riscrivere il lo
  await a.api.append(input('Ramo locale'));await b.api.append(input('Ramo remoto'));const before=a.store.get(KEY);
  const result=await a.api.syncRemote(b.api.load());return {passed:result.status==='diverged'&&a.store.get(KEY)===before&&(await a.api.verify()).ok,status:result.status};
 });
+await check('T36','Una mutazione del ledger remoto mentre attende Web Locks non altera il commit',async()=>{
+ const remote=env();await remote.api.append(input('Radice remota originale'));
+ const incoming=remote.api.load();
+ const shared=sharedState(),local=env(blankCanon,{},false,{shared});
+ const lockName=KEY+'.write';
+ let releaseHold,enterHold;
+ const gate=new Promise(resolve=>releaseHold=resolve);
+ const entered=new Promise(resolve=>enterHold=resolve);
+ const held=shared.locks.request(lockName,{mode:'exclusive'},async()=>{enterHold();await gate;});
+ await entered;
+ const originalRequest=shared.locks.request.bind(shared.locks);
+ let queuedResolve;
+ const queued=new Promise(resolve=>queuedResolve=resolve);
+ shared.locks.request=(name,options,callback)=>{
+  const p=originalRequest(name,options,callback);
+  if(name===lockName)queuedResolve();
+  return p;
+ };
+ let result;
+ const before=local.store.get(KEY)??null;
+ try{
+  const pending=local.api.syncRemote(incoming);
+  await Promise.race([queued,new Promise((_,reject)=>setTimeout(()=>reject(new Error('Sync was not queued')),5000))]);
+  incoming[0].claim='Claim alterato dopo verifica';
+  releaseHold();await held;
+  result=await pending;
+ }finally{releaseHold();}
+ const verification=await local.api.verify(),records=local.api.load();
+ return {passed:result.status==='adopted_remote'&&before===null&&verification.ok&&verification.count===1&&records[0].claim==='Radice remota originale',status:result.status,verification,stored_claim:records[0].claim};
+});
 const report={schema:'R3_MEMORY_REGRESSION_V1',project_author:'Claudio Terzi',signature:'C.Terzi',source:{path:'public/r3-memory.js',git_blob_sha:blobSHA},environment:{node:process.version,dom:'minimal event/document stubs; not a browser',localStorage:'isolated in-memory Map',locks:'shared simulated cooperative lock manager',fixtures:'synthetic only',network:'none'},scope:'Targeted regression checks, not a benchmark or production end-to-end test',total:results.length,passed:results.filter(x=>x.passed).length,failed:results.filter(x=>!x.passed).length,results};
 const out=process.env.R3_TEST_OUTPUT||path.join(process.cwd(),'r3-test-results.json');
 fs.writeFileSync(out,JSON.stringify(report,null,2)+'\n');

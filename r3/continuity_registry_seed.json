@@ -11,13 +11,13 @@
   "memories": [],
   "provider_bindings": {
     "letta": {
-      "status": "TRANSPORT_VERIFIED_CONTINUITY_CANDIDATE",
+      "status": "TRANSPORT_AND_CORE_MEMORY_BINDING_VERIFIED__CONTINUITY_NOT_PROVEN",
       "worker_agent_ids_observed": [
         "agent-e359c0b3-fbee-4a99-bf7a-d0441cf2f05e"
       ],
       "block_ids": [],
       "archive_ids": [],
-      "note": "Do not infer continuity from agent_id, agent count, HTTP 200, or a fluent answer. Phase A/B/C remain required.",
+      "note": "Transport and deterministic core-memory attach/readback are verified. The tested workers returned UNKNOWN despite a correctly bound block. Do not infer shared-memory continuity. Next strict test must use temporary A/B/C workers; C remains virgin.",
       "transport": "httpx",
       "transport_verified_at": "2026-09-28",
       "agent_enumeration_http_status": 200,
@@ -30,15 +30,31 @@
         "agent_binding": "fixed_configured_worker",
         "prompt_bound_chars": 8000,
         "authority": "ADVISORY_DATA_ONLY"
+      },
+      "core_memory_binding_test": {
+        "status": "VERIFIED_API_BINDING__MODEL_USE_FAILED",
+        "test": "R3_LETTA_PHASE_A1_DIAG/1.0",
+        "deployment_id": "9c48f0b0-0b23-4e03-b93c-271886809a5f",
+        "attach_readback": {
+          "worker_a": "ID_LABEL_VALUE_SHA_MATCH",
+          "worker_b": "ID_LABEL_VALUE_SHA_MATCH"
+        },
+        "model_response": {
+          "worker_a": "UNKNOWN",
+          "worker_b": "UNKNOWN"
+        },
+        "cleanup": "VERIFIED",
+        "plaintext_canary_logged": false
       }
     }
   },
   "portable_checkpoints": [],
   "promotion_rule": "NON_CANONICAL -> deterministic validation + provenance -> CANDIDATE -> explicit R3 promotion gate -> CANONICAL",
   "test_state": {
-    "phase_a_cross_agent": "NOT_RUN",
+    "phase_a_cross_agent": "PARTIAL_RUN_FAILED_ON_MODEL_USE__STRICT_ABC_NOT_RUN",
     "phase_b_contamination": "NOT_RUN",
-    "phase_c_provider_portability": "NOT_RUN"
+    "phase_c_provider_portability": "NOT_RUN",
+    "phase_a1_diagnostic": "RUN_BINDING_VERIFIED_MODEL_USE_FAILED"
   },
-  "updated": "2026-09-28"
+  "updated": "2026-09-29"
 }
