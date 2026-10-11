@@ -18,9 +18,9 @@ redis:
   ttl_memoria_secondi: 86400
 
 modello:
-  fornitore: "anthropic"
-  nome: "claude-fable-5"
-  nome_critico: "claude-fable-5"
+  fornitore: "gemini"
+  nome: "gemini-2.5-pro"
+  nome_critico: "gemini-2.5-pro"
   temperatura: 0.7
   max_token: 4096
   timeout_secondi: 60
@@ -32,20 +32,29 @@ modello:
 router:
   regole:
     - profilo: "default"
-      timeout_s: 45        # C: timeout max per questo profilo
-      cascata: ["anthropic", "openai", "gemini", "deepseek", "stub"]
+      timeout_s: 45
+      cascata: ["gemini", "anthropic", "grok", "openai", "deepseek", "stub"]
       modelli:
+        gemini: "gemini-2.5-pro"
         anthropic: "claude-fable-5"
+        grok: "grok-3"
         openai: "gpt-4o-mini"
-        gemini: "gemini-2.5-flash"
         deepseek: "deepseek-chat"
-    - profilo: "ragionamento"
-      timeout_s: 90        # C: nodi critici hanno più tempo
-      cascata: ["anthropic", "openai", "gemini", "deepseek", "stub"]
+    - profilo: "realtime"
+      timeout_s: 60        # Grok primario: accesso live a X/Twitter + web
+      cascata: ["grok", "perplexity", "gemini", "stub"]
       modelli:
-        anthropic: "claude-fable-5"
-        openai: "gpt-4o"
+        grok: "grok-3"
+        perplexity: "sonar-pro"
         gemini: "gemini-2.5-flash"
+    - profilo: "ragionamento"
+      timeout_s: 90
+      cascata: ["gemini", "deepseek", "grok", "anthropic", "openai", "stub"]
+      modelli:
+        gemini: "gemini-2.5-pro"
+        anthropic: "claude-fable-5"
+        grok: "grok-3"
+        openai: "gpt-4o"
         deepseek: "deepseek-reasoner"
     - profilo: "veloce"
       timeout_s: 15        # C: decomposizione / sintesi rapida
@@ -74,6 +83,35 @@ router:
         ollama: "llama3.2"
         gemini: "gemini-2.5-flash"
 
+    # --- Commutazione Creativa ---
+    - profilo: "esplora"
+      timeout_s: 20        # esplorazione rapida, molte opzioni in parallelo
+      cascata: ["gemini", "deepseek", "openai", "stub"]
+      modelli:
+        gemini: "gemini-2.5-flash"
+        deepseek: "deepseek-chat"
+        openai: "gpt-4o-mini"
+    - profilo: "soglia"
+      timeout_s: 45
+      cascata: ["gemini", "anthropic", "openai", "stub"]
+      modelli:
+        gemini: "gemini-2.5-pro"
+        anthropic: "claude-fable-5"
+        openai: "gpt-4o-mini"
+    - profilo: "cristallizza"
+      timeout_s: 120       # impegno finale: massima qualità, più tempo
+      cascata: ["gemini", "anthropic", "openai", "stub"]
+      modelli:
+        gemini: "gemini-2.5-pro"
+        anthropic: "claude-fable-5"
+        openai: "gpt-4o"
+    - profilo: "potente"
+      timeout_s: 120       # profilo massima potenza: Pro + reasoning
+      cascata: ["gemini", "deepseek", "stub"]
+      modelli:
+        gemini: "gemini-2.5-pro"
+        deepseek: "deepseek-reasoner"
+
 caselle_attive:
   - 0    # Analisi Semantica         -> RAFFA-001
   - 1    # Decomposizione Intento    -> DECOMP-005   (Fase 2)
@@ -86,32 +124,32 @@ agenti_attivi:
   - id: "RAFFA-001"
     ruolo: "architetto"
     casella: 0
-    modello: "claude-fable-5"
+    modello: "gemini-2.5-pro"
     critico: true
   - id: "DECOMP-005"
     ruolo: "analista_intenti"
     casella: 1
-    modello: "claude-haiku-4-5-20251001"
+    modello: "gemini-2.5-flash"
     critico: false
   - id: "MEMO-002"
     ruolo: "custode"
     casella: 2
-    modello: "claude-sonnet-4-6"
+    modello: "gemini-2.5-flash"
     critico: false
   - id: "SENTIN-004"
     ruolo: "vigilante"
     casella: 4
-    modello: "claude-fable-5"
+    modello: "gemini-2.5-pro"
     critico: true
   - id: "GEN-006"
     ruolo: "compositore"
     casella: 3
-    modello: "claude-fable-5"
+    modello: "gemini-2.5-pro"
     critico: true
   - id: "WAVE-003"
     ruolo: "messaggero"
     casella: 12
-    modello: "claude-haiku-4-5-20251001"
+    modello: "gemini-2.5-flash"
     critico: false
 
 orchestratore:
@@ -123,7 +161,6 @@ orchestratore:
   retry:
     max_tentativi: 2
     backoff_secondi: [2, 4]
-  # Ordine logico di esecuzione (sovrascrive l'ordine numerico)
   pipeline:
     - 0    # analisi
     - 1    # decomposizione
@@ -133,12 +170,17 @@ orchestratore:
     - 12   # stile finale
 
 memoria:
-  tipo_vettoriale: "in_memoria"
-  dimensione_vettori: 384
-  modello_embedding: "all-MiniLM-L6-v2"
-  max_risultati_recupero: 5
-  soglia_similarita: 0.45   # n-gram fallback più permissivo di MiniLM
-  qdrant:
+  # RECUPERATO (audit Fase 2.1, branch fix-bloccanti): il backend reale e'
+  # sdq1/memory/store.py — TF su n-grammi di 3 caratteri + coseno.
+  # Le chiavi 'dimensione_vettori', 'modello_embedding' e il blocco 'qdrant'
+  # NON sono lette da nessun modulo: dichiarate ma non implementate.
+  # Restano come intenzione documentata; non descriverle come stato reale.
+  tipo_vettoriale: "in_memoria"        # valore onesto: ngrammi_caratteri
+  dimensione_vettori: 384              # NON IMPLEMENTATO (niente embedding)
+  modello_embedding: "all-MiniLM-L6-v2"  # NON IMPLEMENTATO
+  max_risultati_recupero: 5            # letto in __main__.py
+  soglia_similarita: 0.45              # letto in __main__.py (default classe: 0.55)
+  qdrant:                              # NON IMPLEMENTATO — nessun modulo lo legge
     host: "localhost"
     porta: 6333
     collezione: "sdq1_memoria"

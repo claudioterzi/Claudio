@@ -1,0 +1,49 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Prepara la pagina temporanea
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/private-site"
+          cat > "$RUNNER_TEMP/private-site/index.html" <<'HTML'
+          <!doctype html>
+          <html lang="it">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="robots" content="noindex,nofollow,noarchive">
+            <title>Sito temporaneamente non disponibile</title>
+          </head>
+          <body><main><h1>Sito temporaneamente non disponibile</h1></main></body>
+          </html>
+          HTML
+          cp "$RUNNER_TEMP/private-site/index.html" "$RUNNER_TEMP/private-site/404.html"
+          printf 'User-agent: *\nDisallow: /\n' > "$RUNNER_TEMP/private-site/robots.txt"
+
+      - name: Pubblica solo la pagina temporanea
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/private-site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

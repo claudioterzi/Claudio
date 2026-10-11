@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/runner/work/Claudio/Claudio/sdq1/__main__.py", line 503, in <module>
+    sys.exit(main(sys.argv))
+             ^^^^^^^^^^^^^^
+  File "/home/runner/work/Claudio/Claudio/sdq1/__main__.py", line 252, in main
+    orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/Claudio/Claudio/sdq1/__main__.py", line 66, in costruisci_sistema
+    config = carica_config()
+             ^^^^^^^^^^^^^^^
+  File "/home/runner/work/Claudio/Claudio/sdq1/config/loader.py", line 93, in carica_config
+    orchestratore=data["orchestratore"],
+                  ~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'orchestratore'
