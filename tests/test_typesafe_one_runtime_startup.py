@@ -34,17 +34,55 @@ PROBE = r'''
 import importlib
 import json
 import socket
+import threading
 
 from fastapi.testclient import TestClient
 
 network_attempts = []
 original_connect = socket.socket.connect
+original_socketpair = socket.socketpair
+socketpair_context = threading.local()
+
+def local_socketpair(*args, **kwargs):
+    # Windows implements socketpair with a loopback connect. Scope the exemption
+    # to this standard-library operation in the calling thread; all other
+    # connects, including ordinary loopback/provider requests, remain forbidden.
+    socketpair_context.active = True
+    try:
+        return original_socketpair(*args, **kwargs)
+    finally:
+        socketpair_context.active = False
 
 def refuse_network(sock, address):
+    if (
+        getattr(socketpair_context, "active", False)
+        and isinstance(address, tuple)
+        and address[0] in ("127.0.0.1", "::1")
+    ):
+        return original_connect(sock, address)
     network_attempts.append(repr(address))
     raise AssertionError("network egress forbidden by startup compatibility test")
 
 socket.socket.connect = refuse_network
+socket.socketpair = local_socketpair
+
+guard_negative_controls = 0
+with socket.socket() as guard_socket:
+    for internal_pair, address in (
+        (False, ("127.0.0.1", 1)),
+        (False, ("192.0.2.1", 443)),
+        (True, ("192.0.2.1", 443)),
+    ):
+        socketpair_context.active = internal_pair
+        try:
+            refuse_network(guard_socket, address)
+        except AssertionError:
+            guard_negative_controls += 1
+        else:
+            raise AssertionError("egress guard negative control unexpectedly allowed")
+        finally:
+            socketpair_context.active = False
+network_attempts.clear()
 
 import jev_gateway
 import letta_bridge_v2
@@ -166,6 +204,7 @@ print(json.dumps({
     "legacy_status": legacy.status_code,
     "legacy_body": legacy.json(),
     "network_attempts": network_attempts,
+    "guard_negative_controls": guard_negative_controls,
 }, sort_keys=True))
 '''
 
@@ -244,6 +283,7 @@ class TypeSafeOneRuntimeStartupTests(unittest.TestCase):
         self.assertEqual(self.result["valid_provider"], "mocked")
         self.assertEqual(self.result["provider_calls"], ["authorized"])
         self.assertEqual(self.result["network_attempts"], [])
+        self.assertEqual(self.result["guard_negative_controls"], 3)
 
     def test_legacy_catch_all_remains_available(self):
         self.assertEqual(self.result["legacy_status"], 200)
