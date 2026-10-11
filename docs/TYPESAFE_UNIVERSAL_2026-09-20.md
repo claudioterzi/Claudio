@@ -117,3 +117,20 @@ Quando un nuovo progetto nasce o un progetto esistente viene modificato, chieder
 4. i fatti esatti, le autorizzazioni e gli effetti esterni restano nel codice/verificatore appropriato?
 
 Se sì, riusare il layer. Se no, non aggiungere TypeSafe soltanto per presenza decorativa.
+
+
+## Aggiornamento 2026-09-29 — System One provider-neutral / CLM
+
+La decisione canonica è stata generalizzata: **Jev non è più l'unico backend System One previsto**. Il layer condiviso resta unico, ma può usare CLM-v0.1-8B quando un endpoint CLM è configurato, mantenendo TypeSafe/Jev come fallback/reference.
+
+Regole:
+- non creare un secondo motore globale;
+- conservare le stesse policy Choice / Score / Noul;
+- CLM viene promosso per dominio solo dopo confronto held-out con Jev;
+- `auto` preferisce CLM soltanto quando `CLM_BASE_URL` è esplicitamente configurato;
+- il nuovo primitive CLM `/v1/rank` è disponibile centralmente per ranking di azioni/evidenze, senza emulazione fittizia su Jev;
+- P5/P6, Zero-Assunto, permessi, provenance e postcondition verification restano invarianti.
+
+Documento di migrazione: `docs/R3_SYSTEMONE_CLM_2026-09-29.md`.
+
+Da questo aggiornamento, leggere “TypeSafe/Jev” nei paragrafi storici di questo documento come **backend originario del layer**, non come vincolo permanente sul provider.
