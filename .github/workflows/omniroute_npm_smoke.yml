@@ -1,0 +1,147 @@
+name: OmniRoute NPM Live Smoke
+
+on:
+  push:
+    branches:
+      - r3/omniroute-gateway-20260921
+    paths:
+      - '.github/workflows/omniroute_npm_smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install OmniRoute
+        run: npm install -g omniroute@latest
+
+      - name: Start ephemeral OmniRoute
+        shell: bash
+        run: |
+          set -euo pipefail
+          export JWT_SECRET="$(openssl rand -base64 48 | tr -d '\n')"
+          export API_KEY_SECRET="$(openssl rand -hex 32)"
+          export STORAGE_ENCRYPTION_KEY="$(openssl rand -hex 32)"
+          export INITIAL_PASSWORD="$(openssl rand -base64 24 | tr -d '\n')"
+          export DATA_DIR=/tmp/omniroute-data
+          export PORT=20128
+          export HOSTNAME=127.0.0.1
+          export OMNIROUTE_SERVER_HOST=127.0.0.1
+          export REQUIRE_API_KEY=false
+          export AUTH_COOKIE_SECURE=false
+          export APP_LOG_TO_FILE=false
+          export OMNIROUTE_DISABLE_BACKGROUND_SERVICES=true
+
+          echo "INITIAL_PASSWORD=$INITIAL_PASSWORD" >> "$GITHUB_ENV"
+          nohup omniroute --port 20128 > /tmp/omniroute.log 2>&1 &
+          echo $! > /tmp/omniroute.pid
+
+          for i in $(seq 1 90); do
+            if curl -fsS http://127.0.0.1:20128/api/health > /tmp/health.json 2>/dev/null; then
+              jq . /tmp/health.json
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::npm OmniRoute did not become healthy"
+          tail -n 120 /tmp/omniroute.log || true
+          exit 1
+
+      - name: Login and connect Kilo Gateway
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -n --arg password "$INITIAL_PASSWORD" '{password:$password}' > /tmp/login.json
+          code=$(curl -sS -o /tmp/login-response.json -w '%{http_code}'             -c /tmp/omni-cookie.txt -H 'Content-Type: application/json'             -d @/tmp/login.json http://127.0.0.1:20128/api/auth/login)
+          test "$code" -ge 200 && test "$code" -lt 300
+
+          CSRF_TOKEN=$(curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20128/api/auth/csrf | jq -r '.token // empty')
+          test -n "$CSRF_TOKEN"
+          echo "CSRF_TOKEN=$CSRF_TOKEN" >> "$GITHUB_ENV"
+
+          code=$(curl -sS -o /tmp/provider-response.json -w '%{http_code}'             -X POST -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d '{"provider":"kilo-gateway","name":"r3-smoke","apiKey":"r3-smoke-nonsecret-placeholder"}'             http://127.0.0.1:20128/api/providers)
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Kilo Gateway create failed HTTP $code"
+            jq 'del(.apiKey,.token,.secret)' /tmp/provider-response.json 2>/dev/null || cat /tmp/provider-response.json
+            exit 1
+          fi
+
+          curl -fsS -b /tmp/omni-cookie.txt http://127.0.0.1:20128/api/providers > /tmp/providers.json
+          PROVIDER_ID=$(jq -r '.id // .connection.id // empty' /tmp/provider-response.json)
+          if [ -z "$PROVIDER_ID" ]; then
+            PROVIDER_ID=$(jq -r '(.connections // .providers // [])[] | select((.provider // .providerId // "")=="kilo-gateway") | .id' /tmp/providers.json | head -n1)
+          fi
+          test -n "$PROVIDER_ID"
+          echo "PROVIDER_ID=$PROVIDER_ID" >> "$GITHUB_ENV"
+
+      - name: Create ephemeral inference key
+        shell: bash
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/key-response.json -w '%{http_code}' \
+            -X POST -b /tmp/omni-cookie.txt \
+            -H "x-omniroute-csrf: $CSRF_TOKEN" \
+            -H 'Content-Type: application/json' \
+            -d '{"name":"r3-smoke","scopes":["chat"]}' \
+            http://127.0.0.1:20128/api/keys)
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Inference key creation failed HTTP $code"
+            jq 'del(.key,.apiKey,.token,.rawKey,.secret)' /tmp/key-response.json 2>/dev/null || true
+            exit 1
+          fi
+          INFERENCE_KEY=$(jq -r '.key // .apiKey // .token // .rawKey // .secret // empty' /tmp/key-response.json)
+          test -n "$INFERENCE_KEY"
+          echo "::add-mask::$INFERENCE_KEY"
+          echo "INFERENCE_KEY=$INFERENCE_KEY" >> "$GITHUB_ENV"
+
+      - name: Test provider and auto routing
+        shell: bash
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/provider-test.json -w '%{http_code}'             -X POST -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json' -d '{}'             "http://127.0.0.1:20128/api/providers/$PROVIDER_ID/test")
+          test "$code" -ge 200 && test "$code" -lt 300
+          valid=$(jq -r '.valid // .success // false' /tmp/provider-test.json)
+          test "$valid" = "true"
+
+          curl -fsS -H "Authorization: Bearer $INFERENCE_KEY" http://127.0.0.1:20128/v1/models > /tmp/models.json
+          MODEL_COUNT=$(jq '[.data[]?] | length' /tmp/models.json)
+          test "$MODEL_COUNT" -gt 0
+
+          start=$(date +%s%3N)
+          code=$(curl -sS -o /tmp/chat.json -w '%{http_code}'             -H 'Content-Type: application/json'             -d '{"model":"auto","messages":[{"role":"user","content":"Reply only with OMNIROUTE_R3_OK"}],"temperature":0,"max_tokens":24}'             http://127.0.0.1:20128/v1/chat/completions)
+          end=$(date +%s%3N)
+          test "$code" -ge 200 && test "$code" -lt 300
+          CONTENT=$(jq -r '.choices[0].message.content // empty' /tmp/chat.json)
+          MODEL=$(jq -r '.model // "unknown"' /tmp/chat.json)
+          test -n "$CONTENT"
+
+          jq -n             --arg status PASS             --arg transport npm             --arg resolved_model "$MODEL"             --arg content "$CONTENT"             --argjson model_count "$MODEL_COUNT"             --argjson latency_ms "$((end-start))"             '{schema:"R3-OMNIROUTE-SMOKE/1",status:$status,transport:$transport,requested_model:"auto",resolved_model:$resolved_model,model_count:$model_count,latency_ms:$latency_ms,nonempty_response:($content|length>0),provider_seed:"kilo-gateway-keyless",secrets_persisted:false}'             > /tmp/r3-omniroute-npm-smoke.json
+          cat /tmp/r3-omniroute-npm-smoke.json
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-omniroute-npm-smoke-${{ github.sha }}
+          path: /tmp/r3-omniroute-npm-smoke.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Cleanup
+        if: always()
+        shell: bash
+        run: |
+          if [ -f /tmp/omniroute.pid ]; then kill "$(cat /tmp/omniroute.pid)" 2>/dev/null || true; fi
+          rm -rf /tmp/omniroute-data /tmp/login.json /tmp/login-response.json /tmp/omni-cookie.txt             /tmp/provider-response.json /tmp/providers.json /tmp/provider-test.json /tmp/key-response.json /tmp/models.json /tmp/chat.json
