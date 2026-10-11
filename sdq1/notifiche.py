@@ -43,14 +43,14 @@ _OFFSET_FILE = Path("output/telegram_offset.json")
 # ══════════════════════════════════════════════════════════════════
 
 def _token() -> str:
-    t = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+    t = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
     if not t:
         raise RuntimeError("TELEGRAM_BOT_TOKEN non configurato nel .env")
     return t
 
 
 def _chat_id() -> str:
-    c = os.environ.get("TELEGRAM_CHAT_ID", "")
+    c = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
     if not c:
         raise RuntimeError("TELEGRAM_CHAT_ID non configurato nel .env")
     return c
@@ -247,26 +247,57 @@ def leggi_comandi() -> list[dict[str, Any]]:
 
 
 def _risposta_claude(testo_utente: str) -> str:
-    """Chiama Claude Haiku e restituisce la risposta per Telegram."""
-    try:
-        from sdq1.llm.providers import AnthropicProvider
-        from sdq1.agenda import riepilogo_briefing
+    """Risposta di Raffaello per Telegram: prova i provider in catena
+    (Anthropic se c'è la chiave, altrimenti Gemini — l'unico attivo su
+    Vercel). Mai più un 'non disponibile' se almeno un provider vive."""
+    # Frase di attivazione della casa: risposta deterministica, mai
+    # affidata al modello (dev'essere certa, sempre uguale, sempre giusta).
+    if "rosso rosso rosso" in " ".join(testo_utente.lower().split()):
+        return (
+            "🔴🔴🔴 Protocollo attivo. Raffaello operativo.\n\n"
+            "Sistemi in piedi: sito su due specchi (Vercel + GitHub Pages), "
+            "bot Telegram, CUSTODE, Atelier dei profumi.\n"
+            "Dimmi la missione."
+        )
 
-        ctx = riepilogo_briefing() or ""
+    try:
+        from sdq1.llm.providers import AnthropicProvider, GeminiProvider
+        try:
+            from sdq1.agenda import riepilogo_briefing
+            ctx = riepilogo_briefing() or ""
+        except Exception:
+            ctx = ""
 
         sistema = (
             "Sei Raffaello — l'intelligenza operativa di SDQ-1, il sistema autonomo di Claudio Terzi. "
-            "Rispondi in italiano, sintetico e diretto. "
-            "Hai accesso al contesto dell'agenda e delle prenotazioni Airbnb di Claudio. "
-            f"Contesto attuale:\n{ctx}\n"
-            "Se la domanda riguarda l'agenda o l'Airbnb, usa questi dati. "
-            "Altrimenti rispondi alla domanda liberamente con il tuo giudizio autonomo."
+            "Rispondi in italiano, sintetico e diretto.\n"
+            "LESSICO DELLA CASA: 'Rosso Rosso Rosso' è la frase di attivazione di Claudio "
+            "(piena operatività — se compare, conferma il protocollo e chiedi la missione). "
+            "'ALAKTA ANEN — la scia è memoria che cammina' è il motto di Terzi Parfums.\n"
+            "STATO DEL PROGETTO: tre sistemi simbolici — Tarocchi Quantici R³∞ (78 carte), "
+            "Canone Alpha (74 carte), Parfums 400 / Terzi Parfums (400 profumi dall'Organo "
+            "Terzi 300, con Atelier che compone ricette nuove). Sito dietro La Soglia su "
+            "claudio-ebon.vercel.app e claudioterzi.github.io/Claudio. CUSTODE gestisce "
+            "le case Airbnb su /custode.\n"
+            f"CONTESTO AGENDA/AIRBNB (usalo SOLO se la domanda lo riguarda; "
+            f"NON citarlo in risposte su altri temi):\n{ctx}\n"
+            "Per il resto rispondi liberamente con il tuo giudizio autonomo."
         )
-        prov = AnthropicProvider(modello="claude-haiku-4-5-20251001", api_key=None, timeout=30)
-        if not prov.disponibile:
-            return "⚠️ Claude non disponibile al momento."
-        r = prov.completa(sistema, testo_utente)
-        return r.testo.strip() if r.testo else "⚠️ Nessuna risposta."
+        catena = [
+            (AnthropicProvider, "claude-haiku-4-5-20251001"),
+            (GeminiProvider, "gemini-2.5-flash"),
+        ]
+        for provider_cls, modello in catena:
+            try:
+                prov = provider_cls(modello=modello, api_key=None, timeout=30)
+                if not prov.disponibile:
+                    continue
+                r = prov.completa(sistema, testo_utente)
+                if r.testo and r.testo.strip():
+                    return r.testo.strip()
+            except Exception:
+                continue
+        return "⚠️ Nessun provider AI disponibile al momento."
     except Exception as e:
         return f"⚠️ Errore: {e}"
 
@@ -368,9 +399,9 @@ def _esegui_singolo_comando(nome: str) -> None:
             dest = salva_snapshot(snap)
             ok = push_snapshot(dest)
             sc = snap.get("scanner", {})
-            notifica_completato("Push completato" if ok else "Push fallito", [
+            notifica_completato("Push verificato" if ok else "Push non verificato", [
                 f"Snapshot: {dest.name}",
-                f"GitHub: {'✅ OK' if ok else '❌ FALLITO'}",
+                f"GitHub: {'✅ VERIFICATO' if ok else '⚠ NON VERIFICATO'}",
                 f"Scanner: {sc.get('score_sistema', '?')}/100",
             ])
         except Exception as e:
@@ -448,7 +479,10 @@ def _esegui_singolo_comando(nome: str) -> None:
         try:
             import random
             import sys
-            sys.path.insert(0, "/home/user/Claudio")
+            import os as _os
+            _root = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+            if _root not in sys.path:
+                sys.path.insert(0, _root)
             from tarocchi import MAZZO, OrientamentoCarta
             n_carte = 3
             estratte = random.sample(MAZZO, n_carte)
@@ -470,7 +504,7 @@ def _esegui_singolo_comando(nome: str) -> None:
                 risposta = _consulta_ai(
                     __import__("sdq1.llm.providers", fromlist=["AnthropicProvider"]).AnthropicProvider,
                     "claude-haiku-4-5-20251001",
-                    "Sei Raffaello, lettore di tarocchi quantici. Interpreta brevemente (3-4 frasi) le 3 carte estratte in risposta alla domanda. Tono diretto e poetico.",
+                    "Sei Raffaello, lettore di tarocchi quantici. Interpreta brevemente (3-4 frasi) le 3 carte estratte in risposta alla domanda. Tono diretto e poetico. Rispondi SEMPRE in italiano.",
                     f"Domanda: {domanda}\nCarte: {', '.join(c.nome for c in estratte)}"
                 )
                 if risposta:
@@ -504,7 +538,8 @@ def _esegui_singolo_comando(nome: str) -> None:
     elif nome == "desideri":
         try:
             import re
-            testo_md = open("/home/user/Claudio/REGISTRO_DESIDERI.md", encoding="utf-8").read()
+            _repo_root = Path(__file__).parent.parent
+            testo_md = (_repo_root / "REGISTRO_DESIDERI.md").read_text(encoding="utf-8")
             titoli = re.findall(r"## (Desiderio \d+[^\n]*)\n", testo_md)
             righe = [f"✨ <b>Registro dei Desideri</b>  ({len(titoli)} voci)\n"]
             for t in titoli[:10]:
@@ -514,6 +549,14 @@ def _esegui_singolo_comando(nome: str) -> None:
             invia("\n".join(righe))
         except Exception as e:
             invia(f"❌ Desideri falliti: {e}")
+
+    elif nome == "voli" or nome.startswith("voli "):
+        try:
+            from sdq1.voli.microapp import gestisci_comando_voli
+            argomenti = nome[len("voli"):].strip()
+            invia(gestisci_comando_voli(argomenti))
+        except Exception as e:
+            invia(f"❌ Micro-app voli fallita: {e}")
 
     elif nome == "skyRights" or nome == "skyrights" or nome == "asbl":
         invia(
@@ -543,11 +586,16 @@ def _esegui_singolo_comando(nome: str) -> None:
             "  /briefing — analisi 4-AI (Gemini+Claude+DeepSeek+Mistral)\n"
             "  /riflessione — riflessione poetica del sistema\n"
             "  /consiglio [questione] — 5 agenti deliberano\n\n"
+            "<b>Viaggi:</b>\n"
+            "  /voli — micro-app ricerca voli (es. /voli BRU GRU)\n"
+            "  /voli rotte — cosa sorveglia il cacciatore\n\n"
             "<b>Progetto:</b>\n"
             "  /agenda — priorità e pronto rota\n"
             "  /desideri — registro dei desideri\n"
             "  /skyrights — stato ASBL SkyRights\n"
-            "  /tarocchi [domanda] — lettura quantica R³∞\n\n"
+            "  /tarocchi [domanda] — lettura quantica R³∞\n"
+            "  /profumo [idea] — Raffaello compone una fragranza vera "
+            "dall'Organo Terzi 300\n\n"
             "Oppure scrivi qualsiasi cosa — rispondo io."
         )
 

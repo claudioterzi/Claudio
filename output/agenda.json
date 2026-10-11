@@ -3,16 +3,10 @@
   "ultima_sync": "2026-06-25T04:44:50.921584+02:00",
   "viaggi": [
     {
-      "titolo": "OUIGO Treno Classique 56 — Bruxelles → Paris Gare du Nord",
+      "titolo": "Train to Paris Nord",
       "inizio": "2026-06-25T18:38:00+02:00",
-      "fine": "2026-06-25T21:41:00+02:00",
-      "luogo": "Bruxelles-Midi → Paris Gare du Nord",
-      "dettaglio": "OUIGO Classique 56 | Carrozza 6, posto 44 | Standard class | 3h03m diretto | ⚠️ Check-in chiude 18:08 (30 min prima)",
-      "treno": "OUIGO Classique 56",
-      "carrozza": 6,
-      "posto": 44,
-      "checkin_deadline": "2026-06-25T18:08:00+02:00",
-      "biglietto": "OUIGO Essentiel Adulte"
+      "fine": "2026-06-25T19:38:00+02:00",
+      "luogo": "Bruxelles-Midi → Paris Nord"
     }
   ],
   "pronto_rota": [
@@ -22,6 +16,22 @@
       "titolo": "Airbnb — CHECK-IN OGGI 25/06",
       "dettaglio": "Nuovi ospiti arrivano OGGI. Checkout 28/06. iCal sincronizzato. ⚠️ Treno 18:38 — coordinare accesso chiavi prima della partenza.",
       "prossimo_passo": "Conferma accesso chiavi ospiti prima delle 18:00 — sei sul treno alle 18:38!",
+      "fatto": false
+    },
+    {
+      "priorita": "P0",
+      "icona": "🧹",
+      "titolo": "Kärcher Puzzi 8/1 — Sistema Pulizia Professionale",
+      "dettaglio": "CAPEX: 455€ (Kärcher Puzzi 8/1) + 29.99€ (Dirtbusters 3-in-1 5L) = 484.99€. ROI: 5 interventi × 119.60€ netto = break-even. Dal 6° intervento: profitto puro ~100%. 57 ricariche da un solo flacone.",
+      "prossimo_passo": "Acquista Kärcher Puzzi 8/1 + Dirtbusters 3-in-1 Concentrate 5L. Primo intervento: materasso matrimoniale Airbnb.",
+      "roi": {
+        "capex_totale": 484.99,
+        "ricavo_per_intervento": 120.00,
+        "costo_fluido_per_intervento": 0.40,
+        "netto_per_intervento": 119.60,
+        "break_even_interventi": 5,
+        "ricariche_disponibili": 57
+      },
       "fatto": false
     },
     {
@@ -59,16 +69,14 @@
     }
   ],
   "note": [
-    "Airbnb: ospiti check-in 25/06, checkout 28/06 — coordinare chiavi prima del treno",
-    "OGGI 25/06: treno OUIGO Classique 56 ore 18:38 Bruxelles-Midi → Paris Gare du Nord 21:41 | Carrozza 6 posto 44 | Check-in entro 18:08"
+    "Airbnb: stanzetta di servizio finché ospiti non fanno checkout (max 2-3 giorni)",
+    "Domani 25/06 ore 18:38 treno Bruxelles-Midi → Paris Nord"
   ],
   "contesto": {
-    "posizione_attuale": "In viaggio verso Parigi — treno 18:38",
+    "posizione_attuale": "Bruxelles",
     "ultimo_viaggio": "Bergamo (BGY) → Bruxelles Charleroi (CRL), Ryanair H549QQ, 23 giugno 2026",
-    "viaggio_corrente": "Bruxelles-Midi → Paris Gare du Nord, OUIGO Classique 56, 25/06/2026",
-    "arrivo_parigi": "2026-06-25T21:41:00+02:00",
     "pattern": "Spola settimanale Bruxelles ↔ Parigi",
-    "airbnb_stato": "Ospiti check-in oggi 25/06 — coordinare accesso chiavi prima partenza treno"
+    "airbnb_stato": "Ospiti presenti — Claudio in stanzetta di servizio"
   },
   "prenotazioni_airbnb": [
     {

@@ -59,9 +59,22 @@ class OpenAIProvider(_OpenAIBase):
 
 
 class DeepSeekProvider(_OpenAIBase):
+    """DeepSeek via API OpenAI-compatible.
+
+    V4.1 Flash unifica il percorso operativo DeepSeek. Le vecchie etichette
+    deepseek-chat/deepseek-reasoner restano accettate come alias interni per
+    compatibilità con configurazioni, agenti e profili SDQ-1 già esistenti.
+    """
+
     nome = "deepseek"
     env_var = "DEEPSEEK_API_KEY"
     base_url = "https://api.deepseek.com"
+    current_model = "deepseek-flash"
+    legacy_models = frozenset({"deepseek-chat", "deepseek-reasoner"})
+
+    def __init__(self, modello: str, api_key: str | None, **opts):
+        modello_effettivo = self.current_model if modello in self.legacy_models else modello
+        super().__init__(modello=modello_effettivo, api_key=api_key, **opts)
 
 
 class PerplexityProvider(_OpenAIBase):
@@ -75,6 +88,18 @@ class GrokProvider(_OpenAIBase):
     env_var = "XAI_API_KEY"
     base_url = "https://api.x.ai/v1"
 
+
+class MiniMaxProvider(_OpenAIBase):
+    """MiniMax (M-series) — API OpenAI-compatibile, quasi-frontiera a basso costo.
+
+    Endpoint e nome-modello sono sovrascrivibili via env in caso MiniMax
+    aggiorni le rotte, senza toccare il codice:
+        MINIMAX_API_KEY    (obbligatorio)
+        MINIMAX_BASE_URL   (default: https://api.minimax.io/v1)
+    """
+    nome = "minimax"
+    env_var = "MINIMAX_API_KEY"
+    base_url = os.getenv("MINIMAX_BASE_URL", "https://api.minimax.io/v1")
 
 class MistralProvider(_OpenAIBase):
     nome = "mistral"

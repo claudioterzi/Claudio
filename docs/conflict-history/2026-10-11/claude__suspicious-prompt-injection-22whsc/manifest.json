@@ -1,0 +1,155 @@
+{
+  "schema": "R3-HISTORICAL-CONFLICT-RECONCILIATION/1",
+  "date": "2026-10-11",
+  "branch": "claude/suspicious-prompt-injection-22whsc",
+  "original_head": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+  "canonical_main": "f17a88b22da578ea146b2907f6c809e57e2320eb",
+  "classification": "RETEST",
+  "rationale": "Historical operational experiments and divergent outputs remain recoverable from immutable original parent; current main runtime/security/workflows retained. No old schedule, Drive upload, portfolio operation or private historical payload is activated/copied by this reconciliation.",
+  "files": [
+    {
+      "path": ".github/workflows/agente_orario.yml",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "7df3e737af7f3640bb51ec951a84cc331d0c2e27",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": ".github/workflows/sdq1_daily.yml",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "eafd2d7d52a6ab7e6260556487ebc874aba02985",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": ".github/workflows/studio_notturno.yml",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "b4a7e0e09f47cc3ed6aeabc285476a99f92e8f01",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": ".github/workflows/test_runner.yml",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "ac1e746c151ae4a55c5e6307e86837cd90bce5cb",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/VERITA_CLAUDIO_2026-06-26.pdf",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "43bfa135ab2a5ad35fca861f2ff789879b4e1f4d",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/agenda.json",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "529a5c3e17fd65f7f992e6729fa35f789379097e",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/snapshots/snapshot_2026-06-26_13-09-41.json",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "451048155b008a70f679f14bfbd92ac037677067",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "output/snapshots/snapshot_2026-06-26_13-10-04.json",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "3ce3b37b704551c36eaccd784a6e74d8b9f3f007",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "public/home.html",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "53673c988322b91c3a7b4904623bc8b49fc3779e",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "scripts/set_menu_button.py",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "d57e3e7167826c3a090cadd423eecc6cb02a5f3c",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "sdq1/__main__.py",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "0971a18bb5ec79b4e8942bc7a207ff25770cfee4",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "sdq1/agenda.py",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "a540eebc03f2fc45912da260650fecdbbed701d1",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "sdq1/consiglio.py",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "6805d4e3886dcc58ca253f18d960edda234828bd",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "sdq1/llm/providers/__init__.py",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "c6a13d33104b702ff8e56a114b523d1be306d77c",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "sdq1/llm/providers/openai_provider.py",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "7ed06b090f293b1a3b82d7b953fa5f259bbb70e9",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "sdq1/notifiche.py",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "7506ab9ad6b7f4df47bb0b650d3ca1a03ba735fe",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "sdq1/sar/scacchiera_quantica.py",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "ed5d7651cd6e020998f5741282bd5e57edfc2d30",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    },
+    {
+      "path": "tarocchi_web.py",
+      "original_commit": "3c39a616e633dd20c1fe612153cd70f779e07e5a",
+      "blob": "a9e1207440a05aae601a78ffe8602a1253497753",
+      "classification": "RETEST",
+      "authority": "DATA_ONLY",
+      "active": false
+    }
+  ]
+}

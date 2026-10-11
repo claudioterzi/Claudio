@@ -17,6 +17,12 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
       - name: Configura git
         run: |
           git config user.name "Claude"
@@ -28,7 +34,12 @@ jobs:
       - name: Studio Notturno
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python3 scripts/studio_notturno.py
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::warning::ANTHROPIC_API_KEY non configurata — studio saltato. Aggiungerla in Settings → Secrets and variables → Actions per attivare lo Studio Notturno."
+            exit 0
+          fi
+          python3 scripts/studio_notturno.py
 
       - name: Salva Morning Brief nel repo
         run: |
