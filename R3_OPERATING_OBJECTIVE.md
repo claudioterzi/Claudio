@@ -102,3 +102,18 @@ Claudio communicates goals and confirms only actions that cannot safely or techn
 R³∞ becomes successively more capable, efficient, inspectable, persistent, reproducible, measurable, innovative and operationally autonomous while preserving truthful provenance and control over consequential actions.
 
 An "unprecedented" result is recognized only when comparative evidence supports it; aspiration is not evidence.
+
+## Durability of verified artifacts
+
+Verified, non-sensitive R³ work must not depend solely on an ephemeral workspace. When a run produces material new evidence, the preferred preservation order is:
+
+1. preserve the technical change and/or receipt in versioned Git history when it is safe to publish;
+2. preserve private or sensitive evidence only in an authorized persistent private store;
+3. record stable provenance: source revision, commit/blob identifiers and SHA-256 where available;
+4. perform read-after-write verification whenever the channel exposes it;
+5. prefer immutable commit-pinned links over moving branch links when another person needs a durable reference.
+
+Durability does not bypass the candidate/adoption boundary. Candidate code remains isolated until its gate passes; canonical files may be updated when the evidence is verified, the change belongs to the canonical operating contract, and the write channel is authorized. A request for persistence never justifies publishing private data, credentials, personal archives or secrets.
+
+If a material artifact can safely be made shareable, create or retain a public-safe receipt/pointer rather than relying on a temporary sandbox URL. Expiring private links may supplement the durable record when the sharing surface supports them, but they do not replace the durable source of truth.
+

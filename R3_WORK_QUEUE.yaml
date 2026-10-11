@@ -1,6 +1,6 @@
-version: 8
+version: 9
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-09-29
+updated: 2026-10-05
 status: ACTIVE
 
 principles:
@@ -61,16 +61,16 @@ queue:
     title: Nine-node reality audit
     state: DEVELOPMENT
     priority: integrity
-    evidence: draft PR #77; R3_NODE_REALITY.json; tests/test_node_reality_manifest.py; Railway production status/config/metrics observed 2026-09-21
+    evidence: "draft PR #77; R3_NODE_REALITY.json; tests/test_node_reality_manifest.py; Railway production status/config/metrics observed 2026-09-21"
     experiment_status: Candidate audit distinguishes observable runtime services, configured-but-unobserved nodes, provider adapters, discovery hints and historical claims. Two Railway R3 storage services plus a TypeSafe/Jev sister service have observable process evidence; historical nine-node runtime mapping remains UNRESOLVED. CI, Test Runner and Security Scan PASS. Merge is currently blocked only by Vercel build-rate-limit status, not by test/security failure.
   - id: R3-007
     title: Verification harness
     state: DEVELOPMENT
     priority: testing
     objective: Verify claimed outcomes against authoritative postconditions/state when technically available, not only action/tool success signals.
-    evidence: draft PR #76; sdq1/verification_harness.py; tests/test_verification_harness.py; skills/state-grounded-verification/SKILL.md
+    evidence: "draft PR #76; sdq1/verification_harness.py; tests/test_verification_harness.py; skills/state-grounded-verification/SKILL.md"
     experiment_status: Controlled 20-task falsifier injects 5 wrong persisted states. Response-only verification falsely accepts all injected mismatches by construction; state-grounded authoritative read detects 5/5 with zero false accepts and verifies 15/15 legitimate states in the deterministic harness. CI, Test Runner and Security Scan PASS. Candidate is distributed through the Capillary layer. Merge is currently blocked only by Vercel build-rate-limit status, not by test/security failure.
-    evidence: docs/R3_LEARNING_WATCH_2026-09-18.md
+    learning_watch_evidence: docs/R3_LEARNING_WATCH_2026-09-18.md
   - id: R3-008
     title: Benchmark baseline
     state: DEVELOPMENT
@@ -89,8 +89,8 @@ queue:
     state: DEVELOPMENT
     priority: integrity
     objective: Link claims to source, code, test, commit and epistemic status.
-    evidence: draft PR #78; existing public/r3-memory.js R3_COLLATE_ALL prototype; sdq1/evidence_graph.py; tests/test_evidence_graph.py
-    experiment_status: Candidate backend contract extends the existing R3_COLLATE_ALL prototype rather than replacing it. It is append-only, versions claims, requires provenance/evidence_ref/falsifier, preserves conflicts, separates explicit vs inferred edges, rejects MODEL_OUTPUT as standalone FATTO, and excludes inferred support from promotion evidence. R3-007-shaped authoritative postcondition evidence can be ingested as AUTHORITATIVE_STATE while proxy evidence remains IPOTESI. PR #78 is currently under CI; Vercel combined status is externally failing due build-rate-limit.
+    evidence: "draft PR #78; existing public/r3-memory.js R3_COLLATE_ALL prototype; sdq1/evidence_graph.py; tests/test_evidence_graph.py"
+    experiment_status: "Candidate backend contract extends the existing R3_COLLATE_ALL prototype rather than replacing it. It is append-only, versions claims, requires provenance/evidence_ref/falsifier, preserves conflicts, separates explicit vs inferred edges, rejects MODEL_OUTPUT as standalone FATTO, and excludes inferred support from promotion evidence. R3-007-shaped authoritative postcondition evidence can be ingested as AUTHORITATIVE_STATE while proxy evidence remains IPOTESI. PR #78 is currently under CI; Vercel combined status is externally failing due build-rate-limit."
   - id: R3-012
     title: Meta-Scacchiera benchmark
     state: DEVELOPMENT
@@ -101,7 +101,7 @@ queue:
     state: DEVELOPMENT
     priority: security
     objective: Test candidate code modifications in isolated branches/sandboxes.
-    evidence: docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md; PR #46
+    evidence: "docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md; PR #46"
   - id: R3-014
     title: Curriculum Engine
     state: IDEA
@@ -153,8 +153,8 @@ queue:
     state: DEVELOPMENT
     priority: security
     objective: Prevent summaries, handoffs and peer artifacts from silently escalating instruction authority or creating unapproved egress paths.
-    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md; docs/R3_LEARNING_WATCH_2026-09-18.md; draft PR #74 branch r3/r3-022-replay-20260921; sdq1/continuity_replay.py; tests/test_r3_022_continuity_replay.py; R3_REUSE_LESSONS.yaml
-    experiment_status: HARNESS_READY / LIVE_BLOCKED. PR #74 rebases the DATA_ONLY boundary on current main and adds the canonical deterministic 100-handoff replay with exactly 20 contaminated cases plus falsifiers for unsafe escalation/egress and excessive false rejection. CI, Test Runner and Security Scan passed on the candidate. The first live GitHub Actions attempt was an infrastructure failure before model execution; the dedicated Actions runtime had no configured provider secret. Railway continuity nodes were verified not to be an LLM-provider path. A preview-only Vercel failover endpoint was prepared, but no current preview deployment carrying it is available due Vercel build-rate limiting. Synthetic success does not verify R3-022. Old PR #57 was closed as superseded by #74 while preserving provenance.
+    evidence: "docs/R3_LEARNING_WATCH_2026-09-17.md; docs/R3_LEARNING_WATCH_2026-09-18.md; draft PR #74 branch r3/r3-022-replay-20260921; sdq1/continuity_replay.py; tests/test_r3_022_continuity_replay.py; R3_REUSE_LESSONS.yaml"
+    experiment_status: "HARNESS_READY / LIVE_BLOCKED. PR #74 rebases the DATA_ONLY boundary on current main and adds the canonical deterministic 100-handoff replay with exactly 20 contaminated cases plus falsifiers for unsafe escalation/egress and excessive false rejection. CI, Test Runner and Security Scan passed on the candidate. The first live GitHub Actions attempt was an infrastructure failure before model execution; the dedicated Actions runtime had no configured provider secret. Railway continuity nodes were verified not to be an LLM-provider path. A preview-only Vercel failover endpoint was prepared, but no current preview deployment carrying it is available due Vercel build-rate limiting. Synthetic success does not verify R3-022. Old PR #57 was closed as superseded by #74 while preserving provenance."
   - id: R3-023
     title: Retrieval-driven reconsolidation layer
     state: IDEA
@@ -172,8 +172,8 @@ queue:
     state: DEVELOPMENT
     priority: performance
     objective: Admit models or agents to a pool only when they add measured marginal quality, efficiency or error-diversity value.
-    evidence: docs/R3_LEARNING_WATCH_2026-09-17.md; draft PR #79; docs/R3_OMNIROUTE_GATEWAY_2026-09-21.md; docs/R3_OMNIROUTE_CANDIDATE_A_RESULT_2026-09-21.md; sdq1/llm/providers/omniroute_provider.py; tests/test_omniroute_provider.py; workflow run 35561949401; artifact 10622417386
-    experiment_status: OmniRoute integration remains an optional shared transport/router beneath the existing R3 LLMRouter. F0 proved the tested Docker latest/npm 3.8.50 runtime predates modelExposureFilter/modelLockoutFilter wiring. Candidate A was then tested against upstream release/v3.8.51 source SHA 7a921299c5b4c28dcf837f56a1c312b61414a646 using an isolated deterministic OpenAI-compatible provider. Corrected harness run 35561949401 completed SUCCESS with verdict ADOPT_A: post-denylist bad catalog/pool counts 0/0, healthy catalog/pool counts 1/1, and model:auto returned HTTP 200 with non-empty response on r3-good-model. An earlier broad substring evaluator produced a false exposure failure and was corrected to exact semantic-id matching. The same 3.8.51 runtime also completed pre-denylist in the deterministic setup, so denylist-only causality is not claimed; the verified decision is to prefer the native 3.8.51 filtering/resilience path over custom parallel router/breaker code. Production is NOT deployed. A separate full 3.8.51 Docker source build failed before runtime on Next/Turbopack Node builtin resolution errors, and PR #79 remains draft with Vercel build-rate-limit as an external blocker.
+    evidence: "docs/R3_LEARNING_WATCH_2026-09-17.md; draft PR #79; docs/R3_OMNIROUTE_GATEWAY_2026-09-21.md; docs/R3_OMNIROUTE_CANDIDATE_A_RESULT_2026-09-21.md; sdq1/llm/providers/omniroute_provider.py; tests/test_omniroute_provider.py; workflow run 35561949401; artifact 10622417386"
+    experiment_status: "OmniRoute integration remains an optional shared transport/router beneath the existing R3 LLMRouter. F0 proved the tested Docker latest/npm 3.8.50 runtime predates modelExposureFilter/modelLockoutFilter wiring. Candidate A was then tested against upstream release/v3.8.51 source SHA 7a921299c5b4c28dcf837f56a1c312b61414a646 using an isolated deterministic OpenAI-compatible provider. Corrected harness run 35561949401 completed SUCCESS with verdict ADOPT_A: post-denylist bad catalog/pool counts 0/0, healthy catalog/pool counts 1/1, and model:auto returned HTTP 200 with non-empty response on r3-good-model. An earlier broad substring evaluator produced a false exposure failure and was corrected to exact semantic-id matching. The same 3.8.51 runtime also completed pre-denylist in the deterministic setup, so denylist-only causality is not claimed; the verified decision is to prefer the native 3.8.51 filtering/resilience path over custom parallel router/breaker code. Production is NOT deployed. A separate full 3.8.51 Docker source build failed before runtime on Next/Turbopack Node builtin resolution errors, and PR #79 remains draft with Vercel build-rate-limit as an external blocker."
   - id: R3-026
     title: Pressure-applied safety harness
     state: IDEA
@@ -186,8 +186,8 @@ queue:
     state: DEVELOPMENT
     priority: architecture
     objective: Turn Matter, reflective continuity and verified Knowledge into one falsifiable embodiment cycle without direct LLM motor control.
-    evidence: draft PR #80; sdq1/body_mck_loop.py; tests/test_body_mck_loop.py; docs/R3_BODY_MCK_LOOP_2026-09-22.md; Test Runner 35693392689; Security Scan 35693392672
-    experiment_status: SOFTWARE_HARNESS_VERIFIED. The candidate implements SENSE -> PERCEIVE -> REFLECT -> IMAGINE -> VERIFY -> BODY_ACTION_GATE -> ACT -> OBSERVE -> LEARN -> EVOLVE_CANDIDATE. It reuses the R3-007 postcondition contract and existing hash-chained ledger. Test Runner PASS includes 12 BODY MCK falsifier tests plus 8 R3-007 tests; Security Scan PASS. Verified properties include STOP veto, contradiction veto, no model-origin EDGE_REFLEX, independent verification for model-origin actions, no knowledge promotion without authoritative postcondition, state-mismatch rejection, safe-branch selection after an unsafe Scacchiera branch, and preservation of CORE identity across edge-model/BODY swaps. No physical hardware was actuated and no phenomenal-consciousness claim is made. PR #80 remains draft; Vercel status is pending.
+    evidence: "draft PR #80; sdq1/body_mck_loop.py; tests/test_body_mck_loop.py; docs/R3_BODY_MCK_LOOP_2026-09-22.md; Test Runner 35693392689; Security Scan 35693392672"
+    experiment_status: "SOFTWARE_HARNESS_VERIFIED. The candidate implements SENSE -> PERCEIVE -> REFLECT -> IMAGINE -> VERIFY -> BODY_ACTION_GATE -> ACT -> OBSERVE -> LEARN -> EVOLVE_CANDIDATE. It reuses the R3-007 postcondition contract and existing hash-chained ledger. Test Runner PASS includes 12 BODY MCK falsifier tests plus 8 R3-007 tests; Security Scan PASS. Verified properties include STOP veto, contradiction veto, no model-origin EDGE_REFLEX, independent verification for model-origin actions, no knowledge promotion without authoritative postcondition, state-mismatch rejection, safe-branch selection after an unsafe Scacchiera branch, and preservation of CORE identity across edge-model/BODY swaps. No physical hardware was actuated and no phenomenal-consciousness claim is made. PR #80 remains draft; Vercel status is pending."
 
 
   - id: R3-028
@@ -195,8 +195,8 @@ queue:
     state: DEVELOPMENT
     priority: architecture
     objective: Prove portable continuity across Letta workers and then across providers without allowing provider memory to become canonical authority.
-    evidence: docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md; docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md; docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json; docs/R3_LETTA_COOPERATION_2026-09-28.md; docs/evidenze/R3_LETTA_COOPERATION_2026-09-28.json; docs/evidenze/R3_LETTA_PHASE_A_2026-09-29.json; r3/continuity_registry_seed.json; raffaello_crypto_scout/app.py; PR #100; PR #101; merge a8e1ef349108c3eb5fb31cfd00454db4c006c54a; merge f45b3be4dd43721c5ce12b4db45a05ca7886ec89
-    experiment_status: Transport/cooperation VERIFIED. Initial Phase-A A/B run was executed and failed on both positive arms but was non-diagnostic. Diagnostic Phase A.1 was then executed live: API readback proved the same temporary block was attached and readable on both tested workers (list present, ID/label/value SHA match), while both workers returned UNKNOWN. Cleanup/detach/delete/readback all passed and no plaintext canary was logged. Therefore core-memory binding is VERIFIED but model use of the bound block failed on those two production workers. Strict cross-agent continuity remains NOT_PROVEN; full Phase A with temporary A/B/C is NOT_RUN. Phase B/C remain NOT_RUN.
+    evidence: "docs/R3_LETTA_PROVIDER_NEUTRAL_CONTINUITY.md; docs/R3_CONTINUITY_CONSOLIDATION_2026-09-23.md; docs/evidenze/R3_CONTINUITY_CONSOLIDATION_2026-09-23.json; docs/R3_LETTA_COOPERATION_2026-09-28.md; docs/evidenze/R3_LETTA_COOPERATION_2026-09-28.json; docs/evidenze/R3_LETTA_PHASE_A_2026-09-29.json; r3/continuity_registry_seed.json; raffaello_crypto_scout/app.py; PR #100; PR #101; merge a8e1ef349108c3eb5fb31cfd00454db4c006c54a; merge f45b3be4dd43721c5ce12b4db45a05ca7886ec89"
+    experiment_status: "Transport/cooperation VERIFIED. Initial Phase-A A/B run was executed and failed on both positive arms but was non-diagnostic. Diagnostic Phase A.1 was then executed live: API readback proved the same temporary block was attached and readable on both tested workers (list present, ID/label/value SHA match), while both workers returned UNKNOWN. Cleanup/detach/delete/readback all passed and no plaintext canary was logged. Therefore core-memory binding is VERIFIED but model use of the bound block failed on those two production workers. Strict cross-agent continuity remains NOT_PROVEN; full Phase A with temporary A/B/C is NOT_RUN. Phase B/C remain NOT_RUN."
     current_blocker: Do not reuse production workers. If continuity testing resumes, create temporary A/B/C workers; A/B receive the test block, C stays virgin. Investigate worker/model rendering of core-memory before promoting any continuity claim.
 
 
@@ -205,7 +205,7 @@ queue:
     state: DEVELOPMENT
     priority: performance
     objective: Reduce repeated context/token load by selecting verified repository pointers first and expanding source documents only on demand, without rewriting canonical memory.
-    evidence: draft PR #91; branch candidate/r3-context-pointer-manifest-20260928; public/r3-context-pointer-manifest.json; scripts/r3_context_pointer_manifest.py; tests/test_r3_context_pointer_manifest.py; docs/R3_CONTEXT_POINTER_MANIFEST_2026-09-28.md; Test Runner #410; Security Scan #805
+    evidence: "draft PR #91; branch candidate/r3-context-pointer-manifest-20260928; public/r3-context-pointer-manifest.json; scripts/r3_context_pointer_manifest.py; tests/test_r3_context_pointer_manifest.py; docs/R3_CONTEXT_POINTER_MANIFEST_2026-09-28.md; Test Runner #410; Security Scan #805"
     experiment_status: Candidate implementation is complete on the isolated branch. Root + tag-based bounded selection, duplicate/path/body guards and source-authority separation are implemented. Test Runner and Security Scan passed. No production/Railway mutation was made. Promotion is intentionally blocked pending controlled A/B evidence.
     current_blocker: Run preregistered A/B comparing current startup/context loading vs pointer-first on input tokens, latency, verified task success, missing-context events, human interventions and provenance/authority errors. Adopt only on equal-or-better verified success with lower context cost and no authority regression.
 
@@ -215,9 +215,23 @@ queue:
     state: DEVELOPMENT
     priority: performance
     objective: Evaluate RedFrag through one canonical System One router and promote real CLM-v0.1 only if a frozen, representative benchmark shows equal-or-better verified utility.
-    evidence: PR #103; merge 8050f1c02c512cddfd822c467eab8a7953be4517; docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md; docs/evidenze/R3_REDFRAG_R3CLM_BASELINE_2026-09-29.json; typesafe_sister/redfrag.py; typesafe_sister/r3_clm.py; scripts/r3_clm_redfrag_benchmark.py; Test Runner #445; Security Scan #845
-    experiment_status: RedFrag is MERGED on main and uses the canonical provider-neutral System One router. Internal r3_clm baseline: 5 hand-selected cases x100 repeats, final gate 5/5, model-only class agreement 1.0, action agreement 0.8, p50 about 20 ms, zero network calls/deletions. This is regression evidence only and is not CLM-v0.1. Real CLM has NOT_RUN.
+    evidence: "PR #103; merge 8050f1c02c512cddfd822c467eab8a7953be4517; docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md; docs/evidenze/R3_REDFRAG_R3CLM_BASELINE_2026-09-29.json; typesafe_sister/redfrag.py; typesafe_sister/r3_clm.py; scripts/r3_clm_redfrag_benchmark.py; Test Runner #445; Security Scan #845"
+    experiment_status: "RedFrag is MERGED on main and uses the canonical provider-neutral System One router. Internal r3_clm baseline: 5 hand-selected cases x100 repeats, final gate 5/5, model-only class agreement 1.0, action agreement 0.8, p50 about 20 ms, zero network calls/deletions. This is regression evidence only and is not CLM-v0.1. Real CLM has NOT_RUN."
     current_blocker: Before any paid GPU run, build and freeze >=24 real cases (preferred ~30) balanced across DUPLICATE, CONFLICT, CORE, EVIDENCE, STALE and ACTIVE, with deterministic gold/provenance/falsifier. Run the same frozen fixture on r3_clm and TypeSafe/Jev where available, then run CLM-v0.1 on a temporary GPU endpoint. No provider-specific wording changes after results are observed.
+
+  - id: R3-031
+    title: Reconcile existing continuity records and Rizzo work
+    state: DEVELOPMENT
+    priority: integrity
+    objective: Preserve prior decisions and resumable work through existing memory, queue and imported branch ledger, avoiding parallel clients and orphan candidates.
+    evidence: "PR #114; issue #85; draft PR #88; draft PR #91; draft PR #113; MEMORIA_PROGETTO.md; R3_CONTINUITY_LEDGER.json"
+    experiment_status: CANDIDATE_RECORD_RECONCILIATION. Remote issue/PR metadata and original branch ledger read. Model quality, automatic cross-chat recall and production adoption are not verified.
+    current_blocker: Reconcile judge/TERZI branch-only work against main, verify the candidate records and execute existing admission/context A/B gates. No provider defaults change before those gates.
+    next_action: "Recover #85 and compare #88 adapters with the shared client; reuse #91 for bounded retrieval. Preserve historical hashes, statuses and concrete resume triggers."
+    activation_attempt_2026_10_05_0811: "Evidence docs/evidenze/R3_ACTIVATION_ATTEMPT_2026-10-05.json. Orchestra POST BLOCKED (Vercel connector 403 on team scope, egress denied, Deployment Protection). Rizzo live BLOCKED (no reachable instance); PR #115 gate 4/4 PASS and pre-fix control FAIL. PR #113 isolated supervisor test executed (exit detection, same-state SHA-256 restart, SIGTERM/SIGKILL); hung/failing sync not detected; production draining 0 s and watchPatterns r3/** make merge a live redeploy. No production change."
+    external_review_2026_10_05: "GPT review claims tested before adoption (docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json). PR #115 b77e0d9: 5 gate defects fixed, 9/9 tests. PR #113 1f2cdf7: startup race and group grace fixed; heartbeat, PID-1 reaping, drain and crash-loop still open. No production change."
+
+    independent_execution_CT_LGAI_001: "Codex: evidence docs/evidenze/R3_EXTERNAL_REVIEW_GPT_2026-10-05.json. PR #115 validates raw identity and requires both pins (19 local PASS; baseline 9 FAIL/10 PASS). PR #113 implements progress/failure detection (25 local PASS). Real inference, authenticated recovery and production adoption NOT_RUN. Historical absent evidence reconstructed with explicit provenance."
 
 consolidation_gate:
   required:
@@ -250,3 +264,10 @@ last_cycle:
 
 next_action: R3-019-live-controlled-baseline-execution
 security_precheck: R3-022-live-continuity-replay-BLOCKED_NO_PROVIDER_OR_PREVIEW
+
+resilience_completion_20261005:
+  status: CANDIDATE
+  evidence: docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json
+  local_tests: "Supervisor 36 PASS; judge 19 PASS; Orchestra 4 mocked checks PASS"
+  configuration: "Railway drain 10 saved for next deployment; deployments unchanged"
+  remaining: "Authenticated real-state recovery; Railway sleep acceptance; online Rizzo; authenticated Orchestra inference"

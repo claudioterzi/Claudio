@@ -87,14 +87,15 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python3 -m sdq1 --scan
 
-      # ── 3. Snapshot completo + push
-      - name: Snapshot e push
+      # ── 3. Salva lo snapshot; il commit finale include anche battito e stato pubblico.
+      # Un solo push evita un deployment Vercel intermedio del solo snapshot.
+      - name: Snapshot locale per il commit finale
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python3 -m sdq1 --snapshot --push
+        run: python3 -m sdq1 --snapshot
 
       # ── 4. Briefing operativo multi-AI su Telegram
       - name: Briefing Telegram
