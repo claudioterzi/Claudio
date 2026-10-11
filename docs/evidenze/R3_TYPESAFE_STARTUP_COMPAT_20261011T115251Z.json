@@ -1,0 +1,110 @@
+{
+  "schema": "R3-CANDIDATE-RECEIPT/1",
+  "candidate_id": "CT_TYPESAFE_STARTUP_REPAIR_20261011_7522B494",
+  "created_at_utc": "2026-10-11T11:52:51Z",
+  "source": {
+    "repository": "https://github.com/claudioterzi/Claudio",
+    "branch": "feat/typesafe-sister-api-20260920",
+    "revision": "7522b4949e910923144a61c1f35588723f9cf124",
+    "tree": "e95af551266a2d8cd2ef25587c246dbcbb247f6f"
+  },
+  "railway_observation": {
+    "classification": "DATA_ONLY_OWNER_SUPPLIED_RUNTIME_OBSERVATION",
+    "service_id": "f512937c-c06c-4914-a611-69023af9eb40",
+    "deployment_id": "419cf73f-681b-4ecd-bff3-09bc52912003",
+    "reported_failure": "AttributeError: module 'typesafe_sister' has no attribute 'app'"
+  },
+  "baseline": {
+    "layout": "EXACT_DOCKER_COPY_LAYOUT",
+    "wrapper_provenance": "SYNTHETIC_OBSERVED_CONTRACT_FIXTURE_NOT_RECOVERED_RUNTIME_WRAPPER",
+    "fresh_process_import_failures": 1,
+    "failure_type": "AttributeError",
+    "failure_message": "module 'typesafe_sister' has no attribute 'app'",
+    "first_attempt_limit": "HARNESS_DEPENDENCY_MISSING_FASTAPI; excluded before product execution",
+    "reproduction_exit_code": 1
+  },
+  "patch": {
+    "local_preregistration_commit": "f01454772d582652f67e40b040068bcd84c93c71",
+    "local_technical_commit": "5bd82f52cf4844623b596cd91a581cc57f8e45e4",
+    "product_files": [
+      "r3/jev_gateway.py"
+    ],
+    "test_files": [
+      "tests/test_typesafe_one_runtime_startup.py"
+    ],
+    "behavior": "Expose the already-loaded typesafe_legacy.app on the intact canonical typesafe_sister package before importing the environment wrapper.",
+    "sys_modules_aliases_added": 0,
+    "canonical_package_files_changed": 0,
+    "launcher_or_digest_files_changed": 0,
+    "auth_or_provider_policy_files_changed": 0,
+    "hashes_sha256": {
+      "r3/jev_gateway.py": "abf8b063fa4c609e8640aeb924efb029e1624df0b057ca6fa806bb05fe478436",
+      "tests/test_typesafe_one_runtime_startup.py": "9f43e34adbd6d65f0fe0b53fa1c5b485ce8bde02c59956d5a43c6ab678fc4c1b"
+    }
+  },
+  "evidence": {
+    "fresh_process_gateway_import_failures": 0,
+    "legacy_wrapper_app_identity_mismatches": 0,
+    "canonical_client_import_failures": 0,
+    "jev_routes_behind_catch_all": 0,
+    "unauthorized_provider_calls": 0,
+    "mocked_valid_request_regressions": 0,
+    "network_egress_attempts": 0,
+    "new_tests": "7/7 PASS",
+    "pertinent_tests": "48 PASS + 9 subtests PASS, 0 failure/error/skip",
+    "detached_exact_head_replay": "48 PASS + 9 subtests PASS in 0.65s",
+    "smoke": "9/9 PASS",
+    "bootstrap": "PASS",
+    "py_compile": "PASS",
+    "json_yaml_parse": "PASS",
+    "git_diff_check": "PASS",
+    "git_fsck_connectivity": "PASS_WITH_PREEXISTING_DANGLING_OBJECTS",
+    "smoke_output_restore": {
+      "path": "output/stato_sdq1.json",
+      "restored_sha256": "8c7ee3c66fb35e6f737408c5f42c4691a187b1983123a32a7db7e659e6c77d9e"
+    }
+  },
+  "publication": {
+    "authorization_scope": "THIS_TYPESAFE_STARTUP_CORRECTION_ONLY",
+    "branch": "candidate/r3-typesafe-startup-compat-20261011",
+    "remote_technical_commit": "d2ed6fab051e2ed0587bc28316edbb633f8bc9c7",
+    "remote_tree": "c1af9b77c8df60f6e002a55876bd43b1ea114d72",
+    "local_tree_before_receipt": "c1af9b77c8df60f6e002a55876bd43b1ea114d72",
+    "tree_readback_match": true,
+    "draft_pr": "https://github.com/claudioterzi/Claudio/pull/127",
+    "pr_number": 127,
+    "pr_base": "feat/typesafe-sister-api-20260920",
+    "pr_head": "candidate/r3-typesafe-startup-compat-20261011",
+    "pr_files_readback": [
+      "docs/evidenze/R3_TYPESAFE_STARTUP_COMPAT_PREREGISTRATION_20261011T114650Z.json",
+      "r3/jev_gateway.py",
+      "tests/test_typesafe_one_runtime_startup.py"
+    ],
+    "hosted_security_at_readback": "IN_PROGRESS",
+    "merge": false,
+    "deploy": false,
+    "restart": false,
+    "production_probe": false
+  },
+  "effects": {
+    "project_cloud_writes": "candidate branch and draft PR only",
+    "local_dependency_install": "Temporary test-only target /tmp/r3-typesafe-deps-PdeygI: FastAPI, httpx, pytest and transitive dependencies; no project or production environment changed",
+    "provider_or_inference_requests": 0,
+    "secret_reads_or_writes": 0,
+    "remote_node_probes": 0,
+    "paid_resources_created": 0,
+    "production_changes": 0
+  },
+  "decision": "KEEP_REVIEWABLE_CANDIDATE",
+  "status": "CANDIDATE_STARTUP_CONTRACT_PASS_REMOTE_DRAFT_REVIEW_SECURITY_PENDING",
+  "limits": [
+    "The real environment-materialized wrapper bytes were unavailable; the explicit synthetic fixture proves only the observed typesafe_sister.app consumer contract.",
+    "Local and hosted source checks do not prove that the exact Railway runtime starts, becomes healthy, reaches providers, survives sleep/resume, or is recovered in production.",
+    "The accepted launch/import contract does not prove provider inference or remote liveness.",
+    "The branch derives from the Railway source revision, not main, because the combined runtime files do not exist on main."
+  ],
+  "blocker": "Independent review and completion of hosted security remain; production recovery separately requires exact-runtime startup and health evidence.",
+  "next_action": "Review the exact draft head and hosted security result; only after distinct owner approval may the source branch be updated and the exact runtime deployed/observed.",
+  "completion_criterion": "The defect is closed in the candidate when the baseline is reproduced, the scoped import/route/auth/no-egress checks pass, and remote bytes/tree are reviewable. Production recovery additionally requires evidence from the exact runtime.",
+  "resume_trigger": "Hosted security result, independent review, exact-wrapper bytes, authorized source-branch adoption, exact-runtime startup evidence, or a new counterexample."
+}
