@@ -1516,3 +1516,15 @@ Criterio di completamento: ricevuta separata di adozione del core dopo revisione
 e controlli; eventuale risposta Jev con prova di esecuzione. Trigger di ripresa:
 revisione del draft o disponibilità del canale autenticato. I gate di #113 restano
 separati. Nessuna modifica diretta della produzione o nuova memoria automatica.
+
+### 2026-10-11 — Adozione sequenziale del kernel numerico e dell'evidenza
+
+Su autorizzazione di Claudio, #118 e #124 sono state adottate in sequenza su
+main, dopo riconciliazione senza riscrivere la storia, review indipendente e
+gate hosted aggiornati. Merge #118: `0ddb9212abfb3043d0d66b4ab57d0a99a4a02ad5`;
+merge #124: `7a77e930dc0d01889911bb393feea7a0777a054e`. Il readback di main
+coincide con l'albero testato. Ricevuta: `docs/evidenze/R3_EVOLUTION_ADOPTION_20261011.json`.
+I precedenti record STAGED restano evidenza storica. Le prove verificano soltanto
+il trattamento deterministico dei dati: nessuna nuova inferenza Jev o continuità
+Letta è attestata. Il candidato cloud `1a45f91e8fdd5910551b447a88da8d374ca31540`
+non è stato recuperato e non viene confuso con le due PR esistenti.

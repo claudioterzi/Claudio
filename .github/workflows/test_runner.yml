@@ -82,6 +82,18 @@ jobs:
       - name: Test R3-019 controlled baseline
         run: python -m unittest tests.test_benchmark_controlled
 
+      - name: Test JsonFileStore startup corruption guard
+        run: |
+          python - <<'PY'
+          import unittest
+          suite = unittest.TestSuite(unittest.defaultTestLoader.discover('tests', pattern=name) for name in ('test_json_store_startup_guard.py', 'test_json_store_decode_guard.py'))
+          if suite.countTestCases() != 21:
+              raise SystemExit('Expected exactly 21 JsonFileStore startup guard tests')
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          if result.testsRun != 21 or not result.wasSuccessful() or result.skipped:
+              raise SystemExit(1)
+          PY
+
   snapshot-safety:
     name: Snapshot safety - exact head
     runs-on: ubuntu-latest
