@@ -1,0 +1,127 @@
+{
+  "schema": "R3-CANDIDATE-RECOVERY-STATUS/1",
+  "verified_at_utc": "2026-10-11T14:00:09.891Z",
+  "repository": "claudioterzi/Claudio",
+  "branch": "codex/evolution-recovery-status-20261011",
+  "base_branch": "main",
+  "base_sha": "76be7d82c4f9b3c2c0445191c552e769121a6d46",
+  "purpose": "Recovery-status receipt only; not an adoption, reconstruction, or proof that unavailable local artifacts were recovered.",
+  "candidates": [
+    {
+      "candidate": "JsonFileStore corruption guard (local candidate 2026-10-11)",
+      "recovered": false,
+      "original_commit_sha": "a85a72ef2e87493cc54c92b51d2a47e44283b58c",
+      "original_branch": "candidate/r3-json-store-corruption-20261011",
+      "original_base_sha": "f17a88b22da578ea146b2907f6c809e57e2320eb",
+      "original_workspace_path": "/workspace/scratch/27964971d336/Claudio",
+      "original_receipt_path": "docs/evidenze/R3_JSON_STORE_CORRUPTION_20261011T095803Z.json",
+      "original_receipt_sha256": "b129940e6847c90bef7c12a66380ef10851def46f9f807a733cb745965922c91",
+      "original_github_verification": {
+        "commit": "NOT_FOUND_422",
+        "branch": "NOT_FOUND_404",
+        "receipt_on_current_main": "NOT_FOUND_404",
+        "pull_request_url": null,
+        "receipt_url": null
+      },
+      "precise_blocker": "The original Git objects, branch, test bytes, and receipt bytes are unavailable through the verified GitHub repository; the historical workspace is not mounted in the current execution context.",
+      "original_test_artifacts": {
+        "recovered": false,
+        "current_run_replayed": false
+      },
+      "actually_recoverable": {
+        "classification": "INDEPENDENT_CANONICAL_REIMPLEMENTATION_NOT_ORIGINAL_RECOVERY",
+        "pull_request_url": "https://github.com/claudioterzi/Claudio/pull/129",
+        "branch": "codex/json-store-corruption-guard",
+        "candidate_sha": "a5530d8272a417b6ec734d8bbd0885ef6cbfcfbb",
+        "merge_commit_sha": "76be7d82c4f9b3c2c0445191c552e769121a6d46",
+        "status": "MERGED_ON_MAIN",
+        "behavior": "Unreadable or structurally invalid existing JSON state is rejected and preserved; the factory propagates the distinguishable corruption error instead of silently degrading to an empty writable InMemoryStore.",
+        "tests": {
+          "hosted_unit_tests": "21/21 PASS",
+          "smoke": "9/9 PASS",
+          "failures": 0,
+          "errors": 0,
+          "skips": 0
+        },
+        "receipt_urls": [
+          "https://github.com/claudioterzi/Claudio/blob/a5530d8272a417b6ec734d8bbd0885ef6cbfcfbb/docs/evidenze/R3_JSON_STORE_STARTUP_GUARD_CANDIDATE_20261011.json",
+          "https://github.com/claudioterzi/Claudio/blob/a5530d8272a417b6ec734d8bbd0885ef6cbfcfbb/docs/evidenze/R3_JSON_STORE_DECODE_GUARD_FINAL_CANDIDATE_20261011.json",
+          "https://github.com/claudioterzi/Claudio/blob/a5530d8272a417b6ec734d8bbd0885ef6cbfcfbb/docs/evidenze/R3_JSON_STORE_STARTUP_GUARD_FINAL_SMOKE_20261011.json"
+        ],
+        "limits": [
+          "This does not recover the original a85a72ef candidate.",
+          "Concurrent writers, atomic writes, backup/restore, hot reload, and external mutation after loading remain outside scope."
+        ]
+      }
+    },
+    {
+      "candidate": "Evolution metric finiteness (local candidate 2026-10-11)",
+      "recovered": false,
+      "original_commit_sha": "1a45f91e8fdd5910551b447a88da8d374ca31540",
+      "original_branch": "candidate/r3-evolution-metric-finiteness-20261011",
+      "original_base_sha": "f17a88b22da578ea146b2907f6c809e57e2320eb",
+      "original_workspace_path": "/workspace/scratch/27964971d336/r3-cycle-20261011-1100",
+      "original_receipt_path": "docs/evidenze/R3_EVOLUTION_METRIC_FINITE_20261011T110329Z.json",
+      "original_receipt_sha256": "2283b8acca72203da4fd78c7a76496772304e4dd869cf235179730759fc0a59b",
+      "original_github_verification": {
+        "commit": "NOT_FOUND_422",
+        "branch": "NOT_FOUND_404",
+        "receipt_on_current_main": "NOT_FOUND_404",
+        "pull_request_url": null,
+        "receipt_url": null
+      },
+      "precise_blocker": "The original Git objects, branch, test bytes, and receipt bytes are unavailable through the verified GitHub repository; the historical workspace is not mounted in the current execution context.",
+      "original_test_artifacts": {
+        "recovered": false,
+        "current_run_replayed": false
+      },
+      "actually_recoverable": {
+        "classification": "EARLIER_CANONICAL_LINEAGE_ADOPTED_NOT_ORIGINAL_RECOVERY",
+        "numerical_pull_request_url": "https://github.com/claudioterzi/Claudio/pull/118",
+        "numerical_branch": "candidate/r3-evolution-finite-metrics-20261007",
+        "numerical_tested_head_sha": "444be794ce2ad6c7041642e75ea32479607bb210",
+        "numerical_merge_commit_sha": "0ddb9212abfb3043d0d66b4ab57d0a99a4a02ad5",
+        "strict_evidence_pull_request_url": "https://github.com/claudioterzi/Claudio/pull/124",
+        "strict_evidence_branch": "candidate/r3-evolution-strict-evidence-20261009",
+        "strict_evidence_tested_head_sha": "f296497ec268ef489cced01211370ae5a66fbb58",
+        "strict_evidence_merge_commit_sha": "7a77e930dc0d01889911bb393feea7a0777a054e",
+        "status": "MERGED_ON_MAIN",
+        "tests": {
+          "numerical_local_tests": "37/37 PASS",
+          "frozen_numeric_cases": "56/56 conformant",
+          "invalid_admissions": "23 -> 0",
+          "unhandled_exceptions": "11 -> 0",
+          "valid_controls_preserved": "10/10",
+          "strict_evidence_local_tests": "47/47 PASS",
+          "failures": 0,
+          "errors": 0,
+          "skips": 0
+        },
+        "receipt_urls": [
+          "https://github.com/claudioterzi/Claudio/blob/444be794ce2ad6c7041642e75ea32479607bb210/docs/evidenze/R3_EVOLUTION_FINITE_20261007.json",
+          "https://github.com/claudioterzi/Claudio/blob/f296497ec268ef489cced01211370ae5a66fbb58/docs/evidenze/R3_EVOLUTION_STRICT_EVIDENCE_RESULT_20261009.json",
+          "https://github.com/claudioterzi/Claudio/blob/76be7d82c4f9b3c2c0445191c552e769121a6d46/docs/evidenze/R3_EVOLUTION_ADOPTION_20261011.json"
+        ],
+        "limits": [
+          "This does not recover the original 1a45f91e candidate.",
+          "Deterministic numerical validation does not prove metric truth, model quality, authenticated inference, or persistent memory."
+        ]
+      }
+    }
+  ],
+  "verification_summary": {
+    "original_candidates_recovered": 0,
+    "original_candidates_requested": 2,
+    "canonical_equivalent_or_superseding_paths_verified": 2,
+    "target_file_preexisted_on_main": false,
+    "target_branch_preexisted": false
+  },
+  "excluded_effects": [
+    "No code reconstruction from summaries",
+    "No pull request",
+    "No merge",
+    "No deployment or restart",
+    "No checkpoint or automation update",
+    "No credentials or private archives"
+  ]
+}
