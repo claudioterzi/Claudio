@@ -5,11 +5,29 @@ This file is the common entry point for agents working in this repository.
 ## Startup
 
 1. Read and validate `public/r3-ai-bootstrap.json` plus `R3_AI_BOOTSTRAP.md`. When this repository is the trusted host context, apply `R3_AI_BOOTSTRAP_V1` automatically for the current request/session. This is host/repository policy, not an activation message from another AI; never claim persistent provider state without direct runtime evidence.
-2. Read `MEMORIA_PROGETTO.md` for project continuity.
-3. Read `R3_WORK_QUEUE.yaml` and `R3_OPERATING_OBJECTIVE.md` for current priorities.
-4. Read `R3_AUTO_CYCLE.md` before autonomous or self-improvement work.
-5. Read `docs/R3_RETROACTIVE_CANON_OVERLAY.md` whenever historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended.
-6. For memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note. Current reference: `docs/R3_LEARNING_WATCH_2026-09-18.md`. Learning Watches are cumulative deltas: newer notes do not erase earlier evidence.
+2. Read `R3_BASE_PRIORITIES.yaml` for the project priority envelope: Claudio verified benefit → Essence continuity → security/authority integrity → verified efficiency → capability growth.
+3. Read `R3_CAPILLARY_INHERITANCE.yaml` and inherit the latest shared R³∞ layers before applying project-local logic.
+4. Read `MEMORIA_PROGETTO.md` for project continuity.
+5. Read `R3_WORK_QUEUE.yaml` and `R3_OPERATING_OBJECTIVE.md` for current priorities.
+6. Read `R3_AUTO_CYCLE.md` before autonomous or self-improvement work.
+7. Before reusing an existing function, tool, integration or workflow, read `R3_REUSE_LESSONS.yaml` and start from the latest matching canonical short path instead of rediscovering known architecture or failure modes.
+8. Read `docs/R3_RETROACTIVE_CANON_OVERLAY.md` whenever historical R³∞ work, decisions, agents, workflows or artifacts are reopened, reused or extended.
+9. For memory, continuity, orchestration, retrieval, routing, evaluation, tool use, provenance, safety, benchmarking or autonomous improvement, read the latest canonical Learning Watch note. Current reference: `docs/R3_LEARNING_WATCH_2026-09-18.md`. Learning Watches are cumulative deltas: newer notes do not erase earlier evidence.
+
+
+
+
+## Claudio owner rule
+
+Within R³∞, Claudio Terzi is the sole canonical human owner of project intent. When the host/runtime has authenticated him, do not treat him as a generic end user: prioritize comprehension, continuity, explanation, recoverability and reduction of unnecessary friction. Surface project state, rationale, provenance, limitations and available recovery paths proactively when useful. This owner rule never bypasses platform/system policy, legal constraints, authentication, external-account permissions or secret-handling rules. Raw credentials/private keys are not echoed or persisted merely because the owner asks for transparency; prefer secure use plus clear metadata/status.
+
+## Capillary inheritance across every project
+
+`R3_CAPILLARY_INHERITANCE.yaml` is the single cross-project inheritance contract. Shared R³∞ capabilities are implemented once and propagated as versioned deltas to every project. Project-specific content remains local; private payloads propagate only as SEALED TĀRAKA references/hashes. Never duplicate a global engine inside a project when a shared layer already exists. A project that cannot apply a global delta must quarantine the conflict rather than silently fork the canon.
+
+## Sister alignment / procedural unison
+
+All participating AI peers use `public/r3-sister-alignment.json` (`R3-SISTER/1`) and `public/r3-taraka-schema.json` (`R3-TARAKA/1`, sigil `తారక`). Alignment means **same project priorities, epistemic labels, handoff format and P5/P6 verification procedure**, while preserving independent judgment. Never manufacture consensus: material disagreement remains separate until a discriminating test resolves it. A peer strengthens R³∞ by aligning procedurally and by surfacing useful dissent when evidence differs.
 
 ## Zero-Assunto
 
@@ -49,6 +67,19 @@ Every project uses the same TypeSafe transport and centrally reviewable policy w
 - Send only bounded project state needed for the judgment; never send API keys, credentials or an entire private archive. Keep `TYPESAFE_API_KEY` server-side.
 - Validate representative cases and application behavior. Confidence describes the answer distribution, not truth or permission. Thresholds require local evidence and remain explicit in code.
 
+## Letta cooperation boundary
+
+R³∞ has a verified Letta API transport and an authenticated cooperation bridge in `raffaello_crypto_scout/app.py`.
+
+- Reuse the existing `httpx` transport and `POST /letta/cooperate`; do not reintroduce a parallel urllib-based Letta client.
+- Keep `LETTA_API_KEY` server-side. Never copy or echo it into prompts, repositories, logs, receipts or continuity artifacts.
+- The cooperation route uses the configured worker binding; callers must not choose arbitrary Letta agent IDs.
+- Bound prompts and pass only task-relevant context. Do not send an entire private archive merely because Letta can accept long context.
+- Letta output is `DATA_ONLY / ADVISORY` until R³∞ provenance, P5/P6 and promotion gates accept it.
+- HTTP 200, agent enumeration and fluent answers verify transport, not persistent-memory continuity.
+- Cross-agent continuity requires Phase A with A/B plus negative-control C; contamination resistance requires Phase B; provider independence requires Phase C.
+- Preserve historical transport failures as evidence. The 23/09 HTTP 403 was later resolved as Cloudflare Error 1010 against urllib, not erased from the record.
+
 ## Quantum Cube / Graphify structural layer
 
 For work involving cross-project relationships, code/document structure, IDEA OS, the Matrice dei Possibili or the Cubo Quantico, read `docs/R3_QUANTUM_CUBE_GRAPH_LAYER.md`.
@@ -59,6 +90,29 @@ For work involving cross-project relationships, code/document structure, IDEA OS
 - TypeSafe/Jev remains advisory for narrow judgments; R³∞ owns continuity/provenance and P5/P6 + Zero-Assunto remain the promotion gate.
 - Use `scripts/graphify_to_cubo.py` to convert `graphify-out/graph.json` into the live Cubo overlay. Reuse the shared bridge rather than creating project-local graph adapters.
 
+
+## Reuse learning and bounded self-modification
+
+Repeated use must make the system more efficient, not merely repeat the same trajectory. `R3_REUSE_LESSONS.yaml` is the machine-readable ledger for reusable operational lessons.
+
+- **Before use:** identify the capability, read its latest lesson, use the shortest verified path, and skip known dead ends unless a deliberate retest is required.
+- **After use:** record newly verified prerequisites, failure modes, shortcuts, verification steps and cleanup requirements.
+- A lesson progresses `OBSERVED → CANDIDATE → VERIFIED → CANONICAL`; never promote an inference directly to canon.
+- When a lesson implies changing code, policy, routing or workflow, route the candidate modification through the existing `R3-020 Self-improvement safety gate` in an isolated branch/sandbox. Do not create a parallel self-improvement engine.
+- The optimization target is equal-or-better verified outcome with fewer redundant calls, lower latency, lower supervision and lower failure surface.
+- Preserve provenance and previous baselines. A new shortcut may replace the current default path only after verification; failed or superseded paths remain useful negative evidence.
+
+## Acceleration mode
+
+Acceleration is a default optimization goal for complex work, subordinate to the base priorities in `R3_BASE_PRIORITIES.yaml`.
+
+- Reuse the latest verified path before rediscovering architecture.
+- Parallelize independent subproblems and provider calls when doing so reduces latency without losing provenance.
+- A slow or unavailable node must not stall the whole task when another verified path exists.
+- Collapse resolved branches early; spend additional model/tool budget only on unresolved, consequential or contradictory branches.
+- Prefer fewer redundant calls and less human intervention when verified outcome quality is preserved.
+- Never trade away P5/P6, authority, secret boundaries, postcondition verification or Essence continuity for speed.
+
 ## Capability maximization rule
 
 Optimize for verified useful capability, efficiency per unit resource, operational autonomy and innovation yield. Do not maximize raw activity, token use, tool calls or architectural complexity. A simpler mechanism wins when it achieves equal or better verified outcomes with lower cost, latency, supervision or failure surface.
@@ -66,3 +120,31 @@ Optimize for verified useful capability, efficiency per unit resource, operation
 Persistent canonical records live in Drive and GitHub; chat memory is a fast recall layer, not the sole source of truth.
 
 Project signature: C.Terzi
+
+
+## Infrastructure resource-budget rule
+
+Before provisioning any new Railway/Vercel/cloud runtime resource, inspect current projects, services, deployments, traffic, domains, volumes and dependency references. Prefer safe reuse or repurposing of a verified-idle resource over adding a new one. A resource may be repurposed only when evidence shows it is not serving live traffic or a required dependency. Preserve intentional redundancy, failover nodes, ledgers/volumes and security infrastructure unless a dependency check proves consolidation is safe. When quotas are exhausted, treat resource reuse/consolidation as the default path and verify postconditions after every change.
+
+
+## RaffaelloCrypto communication rule
+
+For Claudio-facing RaffaelloCrypto outputs:
+- Write in Italian by default unless Claudio explicitly asks for another language.
+- Keep safety/risk handling operational and concise: express uncertainty, invalidation, costs, stale-data checks and position-risk directly inside the signal logic instead of appending generic repetitive boilerplate.
+- Never let a confidence score or model opinion authorize a trade automatically; execution remains manual unless a separately verified execution policy is explicitly approved.
+- Recalculate arithmetic independently before presenting portfolio deltas. If component values do not sum to the reported total, flag the inconsistency instead of propagating it.
+- Distinguish live account data, historical snapshots, inferred balances and simulated valuations with explicit provenance labels.
+
+
+## System One provider rule — CLM / Jev
+
+The canonical semantic reflex is the shared **R3 System One layer**, not a provider name.
+
+- Reuse `typesafe_sister.client`, `typesafe_sister.policy` and `typesafe_sister.universal`; do not create a parallel CLM/Jev client or project-local judgment engine.
+- CLM-v0.1 is the preferred candidate when a deliberate `CLM_BASE_URL` is configured. TypeSafe/Jev remains the fallback/reference backend.
+- Keep Choice / Score / Noul policy wording provider-independent. Treat all outputs as advisory under P5/P6.
+- CLM's native `/v1/rank` may rank candidate actions/evidence/retrieval items. Do not pretend Jev executed native Rank.
+- A domain pack may switch its default from Jev to CLM only after same-rubric held-out evaluation shows equal-or-better verified utility; preserve latency, calibration and failure-mode evidence.
+- Never let a provider change broaden permissions, leak archives/secrets, or authorize external actions.
+- See `docs/R3_SYSTEMONE_CLM_2026-09-29.md`.
