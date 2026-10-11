@@ -39,12 +39,7 @@ def _redis():
     if not url:
         return None
     import redis
-    return redis.from_url(
-        url,
-        decode_responses=True,
-        socket_connect_timeout=3,
-        socket_timeout=5,
-    )
+    return redis.from_url(url, decode_responses=True, socket_connect_timeout=3, socket_timeout=5)
 
 
 def _secret() -> str:
@@ -106,9 +101,7 @@ def _bearer() -> str:
     if not value.startswith("Bearer "):
         return ""
     token = value[7:].strip()
-    if len(token) < 32 or len(token) > 256:
-        return ""
-    return token
+    return token if 32 <= len(token) <= 256 else ""
 
 
 def _device(client):
@@ -159,8 +152,7 @@ def _valid_record(event: Any) -> bool:
         return False
     if not HEX64.fullmatch(event["hash"]):
         return False
-    calculated = hashlib.sha256(_stable(event).encode()).hexdigest()
-    return hmac.compare_digest(calculated, event["hash"])
+    return hmac.compare_digest(hashlib.sha256(_stable(event).encode()).hexdigest(), event["hash"])
 
 
 def _validate_ledger(events: Any) -> tuple[bool, str]:
@@ -183,13 +175,7 @@ def _validate_ledger(events: Any) -> tuple[bool, str]:
 
 
 def _empty_envelope() -> dict[str, Any]:
-    return {
-        "schema": "R3_SERVER_LEDGER_V1",
-        "revision": 0,
-        "updated_at": None,
-        "head": None,
-        "events": [],
-    }
+    return {"schema": "R3_SERVER_LEDGER_V1", "revision": 0, "updated_at": None, "head": None, "events": []}
 
 
 def _decode(raw: Any) -> dict[str, Any]:
@@ -211,10 +197,7 @@ def _decode(raw: Any) -> dict[str, Any]:
 def _same_prefix(prefix: list[dict[str, Any]], full: list[dict[str, Any]]) -> bool:
     if len(prefix) > len(full):
         return False
-    return all(
-        prefix[i]["hash"] == full[i]["hash"] and _stable(prefix[i]) == _stable(full[i])
-        for i in range(len(prefix))
-    )
+    return all(prefix[i]["hash"] == full[i]["hash"] and _stable(prefix[i]) == _stable(full[i]) for i in range(len(prefix)))
 
 
 def _json_size(value: Any) -> int:
@@ -269,11 +252,7 @@ def enroll():
         label = ""
     label = " ".join(label.strip().split())[:80]
     token = secrets.token_urlsafe(48)
-    device = {
-        "device_id": "R3D-" + secrets.token_hex(8),
-        "label": label or "browser",
-        "created_at": datetime.now(timezone.utc).isoformat(),
-    }
+    device = {"device_id": "R3D-" + secrets.token_hex(8), "label": label or "browser", "created_at": datetime.now(timezone.utc).isoformat()}
     client.set(DEVICE_PREFIX + _token_digest(token), json.dumps(device, separators=(",", ":")))
     return jsonify(ok=True, token=token, device=device)
 
@@ -323,7 +302,6 @@ def put_ledger():
         return jsonify(ok=False, error="invalid_ledger", reason=reason), 400
     if _json_size(events) > MAX_BYTES:
         return jsonify(ok=False, error="ledger_too_large"), 413
-
     try:
         import redis
         for _ in range(4):
@@ -333,20 +311,10 @@ def put_ledger():
                 current = _decode(pipe.get(DATA_KEY))
                 if current["revision"] != base_revision or current["head"] != base_head:
                     pipe.unwatch()
-                    return jsonify(
-                        ok=False,
-                        error="revision_conflict",
-                        revision=current["revision"],
-                        head=current["head"],
-                    ), 409
+                    return jsonify(ok=False, error="revision_conflict", revision=current["revision"], head=current["head"]), 409
                 if not _same_prefix(current["events"], events):
                     pipe.unwatch()
-                    return jsonify(
-                        ok=False,
-                        error="non_append_only",
-                        revision=current["revision"],
-                        head=current["head"],
-                    ), 409
+                    return jsonify(ok=False, error="non_append_only", revision=current["revision"], head=current["head"]), 409
                 if len(events) == len(current["events"]):
                     pipe.unwatch()
                     return jsonify(ok=True, unchanged=True, revision=current["revision"], head=current["head"])
