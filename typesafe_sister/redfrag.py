@@ -7,10 +7,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from typing import Any, Callable, Mapping
 
 from typesafe_sister.policy import REDFRAG_ACTIONS, REDFRAG_CLASSES, REDFRAG_POLICY_VERSION, redfrag_questions
-from typesafe_sister.r3_clm import system_one_local
+from typesafe_sister import client as system_one_client
 
 MAX_CLUSTER_BYTES = 48 * 1024
 
@@ -88,6 +89,16 @@ def _validate_choice(answer: Any, allowed: Mapping[str, str]) -> str:
     return choice
 
 
+def redfrag_provider() -> str:
+    """RedFrag backend. Default is the local R3-CLM baseline; set R3_REDFRAG_PROVIDER=clm
+    (with CLM_BASE_URL) to run the same pipeline on a real CLM server, or typesafe for Jev."""
+    return (os.getenv("R3_REDFRAG_PROVIDER", "r3_clm").strip().lower() or "r3_clm")
+
+
+def _default_caller(state, questions):
+    return system_one_client.system_one(state, questions, provider=redfrag_provider(), timeout=20)
+
+
 def assess_redfrag_cluster(cluster: Mapping[str, Any],
                            *, caller: Callable[[Any, Mapping[str, Mapping[str, Any]]], dict[str, Any]] | None = None) -> dict[str, Any]:
     """Classify one cluster and return a reversible plan, never a destructive action."""
@@ -102,7 +113,7 @@ def assess_redfrag_cluster(cluster: Mapping[str, Any],
     if len(canonical.encode("utf-8")) > MAX_CLUSTER_BYTES:
         return {"status": "state_too_large", "policy_version": REDFRAG_POLICY_VERSION}
 
-    invoke = caller or system_one_local
+    invoke = caller or _default_caller
     questions = redfrag_questions()
     result = invoke(state, questions)
     answers = result.get("answers")
@@ -119,7 +130,7 @@ def assess_redfrag_cluster(cluster: Mapping[str, Any],
         return {"status": "invalid_action", "policy_version": REDFRAG_POLICY_VERSION}
 
     return {"status": "evaluated", "policy_version": REDFRAG_POLICY_VERSION,
-            "provider": str(result.get("provider") or "r3_internal"),
+            "provider": str(result.get("_r3_provider") or result.get("provider") or "unknown"),
             "model": str(result.get("model") or "unknown"),
             "cluster_id": str(cluster.get("id") or "")[:160],
             "semantic_class": final_class, "action": final_action,

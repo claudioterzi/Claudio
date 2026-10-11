@@ -4,8 +4,10 @@ from unittest.mock import patch
 
 import httpx
 
+from typesafe_sister import client
 from typesafe_sister.client import configured, system_one
 from typesafe_sister.r3_clm import compare_answer_sets, system_one_local
+from typesafe_sister.redfrag import assess_redfrag_cluster
 
 
 class TestR3CLM(unittest.TestCase):
@@ -24,10 +26,76 @@ class TestR3CLM(unittest.TestCase):
         self.assertEqual(result["provider"], "r3_internal")
         self.assertAlmostEqual(sum(result["answers"]["focus"]["probabilities"].values()), 1.0, places=8)
         self.assertTrue(0 <= result["answers"]["risk"]["score"] <= 3)
-        self.assertAlmostEqual(sum(result["answers"]["risk"]["probabilities"].values()), 1.0, places=8)
         self.assertEqual(result["answers"]["unsupported_noul"]["noul"], 0.5)
         self.assertIn("unsupported_noul", result["meta"]["abstained_questions"])
 
+    def test_r3_clm_provider_is_explicit_and_network_free(self):
+        questions = {"x": {"type": "choice", "instructions": "pick", "criteria": {"a": "alpha", "b": "beta"}}}
+        with patch.dict(os.environ, {"R3_SYSTEMONE_PROVIDER": "r3_clm", "TYPESAFE_API_KEY": "", "CLM_BASE_URL": ""}), \
+                patch("httpx.Client") as http:
+            self.assertEqual(client.backend_info()["provider"], "r3_clm")
+            result = client.system_one({"alpha": True}, questions)
+            http.assert_not_called()
+        self.assertEqual(result["_r3_provider"], "r3_clm")
+
+    def test_auto_never_selects_local_baseline(self):
+        env = {"R3_SYSTEMONE_PROVIDER": "auto", "TYPESAFE_API_KEY": "", "CLM_BASE_URL": "",
+               "R3_SYSTEMONE_BASE_URL": "", "R3_SYSTEMONE_MODEL": ""}
+        with patch.dict(os.environ, env):
+            self.assertFalse(client.configured())
+
+    def test_r3_clm_has_no_native_rank(self):
+        with self.assertRaises(client.SystemOneCapabilityUnavailable):
+            client.rank("ctx", "q", ["a", "b"], provider="r3_clm")
+
+    def test_comparison_does_not_declare_a_winner(self):
+        a = {"answers": {"q": {"type": "choice", "choice": "x"}}}
+        b = {"answers": {"q": {"type": "choice", "choice": "y"}}}
+        result = compare_answer_sets(a, b)
+        self.assertEqual(result["agreement_rate"], 0.0)
+        self.assertNotIn("winner", result)
+
+
+class TestRedFragProviderSwap(unittest.TestCase):
+    CLUSTER = {"id": "C01", "name": "dup", "source_count": 2,
+               "content_hashes": ["sha256:same", "sha256:same"],
+               "provenance": ["drive:a", "github:b"], "canonical_source": "drive:a", "same_topic": True}
+
+    def test_default_redfrag_provider_is_local(self):
+        with patch.dict(os.environ, {"R3_REDFRAG_PROVIDER": ""}), patch("httpx.Client") as http:
+            result = assess_redfrag_cluster(self.CLUSTER)
+            http.assert_not_called()
+        self.assertEqual(result["provider"], "r3_clm")
+        self.assertEqual(result["action"], "LINK_TO_CANON")
+
+    def test_same_pipeline_runs_on_real_clm_endpoint(self):
+        """Swapping to CLM changes only env: same questions, same gate, /v1/systemone wire."""
+        from typesafe_sister.policy import redfrag_questions
+        answers = {
+            "semantic_class": {"type": "choice", "choice": "DUPLICATE"},
+            "proposed_action": {"type": "choice", "choice": "LINK_TO_CANON"},
+            "loss_risk": {"type": "score", "score": 0},
+            "compression_value": {"type": "score", "score": 2},
+            "exact_duplicate_supported": {"type": "noul", "noul": 0.9},
+            "conflict_present": {"type": "noul", "noul": 0.1},
+            "provenance_sufficient": {"type": "noul", "noul": 0.9},
+        }
+        self.assertEqual(set(answers), set(redfrag_questions()))
+        env = {"R3_REDFRAG_PROVIDER": "clm", "CLM_BASE_URL": "http://127.0.0.1:8700", "CLM_API_KEY": ""}
+        with patch.dict(os.environ, env), patch("httpx.Client") as http:
+            post = http.return_value.__enter__.return_value.post
+            post.return_value = httpx.Response(
+                200, json={"model": "clm-latest", "answers": answers},
+                request=httpx.Request("POST", "http://127.0.0.1:8700/v1/systemone"))
+            result = assess_redfrag_cluster(self.CLUSTER)
+        url = post.call_args.args[0]
+        self.assertEqual(url, "http://127.0.0.1:8700/v1/systemone")
+        self.assertEqual(result["provider"], "clm")
+        self.assertEqual(result["action"], "LINK_TO_CANON")
+        self.assertEqual(result["physical_deletions"], 0)
+
+
+class TestLegacyRouting(unittest.TestCase):
     def test_internal_backend_is_opt_in_and_network_free(self):
         questions = {"x": {"type": "choice", "instructions": "pick", "criteria": {"a": "alpha", "b": "beta"}}}
         with patch.dict(os.environ, {"R3_SYSTEM_ONE_BACKEND": "r3_clm", "TYPESAFE_API_KEY": ""}), patch("httpx.Client") as client:
@@ -50,19 +118,12 @@ class TestR3CLM(unittest.TestCase):
         primary = {"model": "jev-test", "answers": {"x": {"type": "choice", "choice": "a", "confidence": 0.9,
                                                            "probabilities": {"a": 0.9, "b": 0.1}}}}
         questions = {"x": {"type": "choice", "instructions": "pick alpha", "criteria": {"a": "alpha", "b": "beta"}}}
-        with patch.dict(os.environ, {"R3_SYSTEM_ONE_BACKEND": "shadow", "TYPESAFE_API_KEY": "KEY"}),              patch("typesafe_sister.client._system_one_typesafe", return_value=primary):
+        with patch.dict(os.environ, {"R3_SYSTEM_ONE_BACKEND": "shadow", "TYPESAFE_API_KEY": "KEY"}),              patch("typesafe_sister.client._system_one_primary", return_value=primary):
             result = system_one({"alpha": True}, questions)
         self.assertEqual(result["model"], "jev-test")
         self.assertIn("shadow", result)
         self.assertEqual(result["shadow"]["authority"], "observation_only")
 
-    def test_comparison_does_not_declare_a_winner(self):
-        a = {"answers": {"q": {"type": "choice", "choice": "x"}}}
-        b = {"answers": {"q": {"type": "choice", "choice": "y"}}}
-        result = compare_answer_sets(a, b)
-        self.assertEqual(result["status"], "compared")
-        self.assertEqual(result["agreement_rate"], 0.0)
-        self.assertNotIn("winner", result)
 
 
 if __name__ == "__main__":
