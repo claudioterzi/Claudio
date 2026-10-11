@@ -1,15 +1,1 @@
-/* Small images display the canonical state; they never determine a reading. */
-(function(root){
-  'use strict';
-  const rotations=Object.freeze({nord:0,est:-90,sud:180,ovest:90});
-  function resolve(card){
-    const id=Number(card.id);
-    if(!Number.isInteger(id)||id<1||id>74||!Object.hasOwn(rotations,card.asse))return null;
-    if(card.polarita!=='luce'&&card.polarita!=='ombra')return null;
-    const base='/images/alpha74/'+String(id).padStart(2,'0')+'/'+card.polarita;
-    return Object.freeze({id,thumbnail:base+'-160.webp',detail:base+'-640.webp',rotation:rotations[card.asse]});
-  }
-  const api=Object.freeze({resolve});
-  if(typeof module!=='undefined'&&module.exports)module.exports=api;
-  else root.Alpha74Art=api;
-})(typeof globalThis!=='undefined'?globalThis:this);
+(r=>{let R={nord:0,est:-90,sud:180,ovest:90};r.Alpha74Art={resolve:c=>{let id=Number(c&&c.id),pol=c&&c.polarita,axis=c&&c.asse;if(!Number.isInteger(id)||id<1||id>74||!['luce','ombra'].includes(pol)||!Object.prototype.hasOwnProperty.call(R,axis))return null;let b='/images/alpha74/'+String(id).padStart(2,'0')+'/'+pol;return{id,thumbnail:b+'-160.webp',detail:b+'-640.webp',rotation:R[axis]}}};let l=document.createElement('link');l.rel='stylesheet';l.href='/alpha74-premium.css?v=17';document.head.append(l);for(let u of ['/a74-axis-live.js?v=17','/a74-manifest.js?v=17','/a74-gallery.js?v=17','/a74-gallery-manual-fix.js?v=17','/a74-language-top.js?v=17','/a74-presentation-i18n.js?v=17','/a74-reveal.js?v=17']){let s=document.createElement('script');s.src=u;document.head.append(s)}addEventListener('load',()=>{let s=document.createElement('script');s.src='/alpha-voice.js?v=17';document.head.append(s)},{once:true})})(globalThis);
