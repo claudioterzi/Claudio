@@ -34,8 +34,11 @@ def test_score_requires_ordered_levels():
     assert exc.value.status_code == 422
 
 
-def test_missing_typesafe_secret_fails_closed(monkeypatch):
-    monkeypatch.setattr(sister, "TYPESAFE_API_KEY", "")
+def test_missing_systemone_backend_fails_closed(monkeypatch):
+    def missing(*args, **kwargs):
+        raise sister.SystemOneNotConfigured("no backend")
+    monkeypatch.setattr(sister, "system_one", missing)
+    monkeypatch.setattr(sister, "R3_API_TOKEN", "TEST_R3_TOKEN")
     with pytest.raises(HTTPException) as exc:
-        sister._system_one("state", {"present": {"type": "noul", "instructions": "present?"}}, None)
+        sister.judge(sister.JudgeRequest(state="state", questions={"present": sister.QuestionSpec(type="noul", instructions="present?")}), "Bearer TEST_R3_TOKEN")
     assert exc.value.status_code == 503

@@ -30,8 +30,13 @@ def _clean(value):
 
 def _resolve_backend(*, provider=None, api_key=None, model=None, base_url=None):
     requested = _clean(provider or os.getenv("R3_SYSTEMONE_PROVIDER", "auto")).lower()
-    if requested not in {"auto", "clm", "typesafe"}:
+    requested = {"r3-clm": "r3_clm", "internal": "r3_clm"}.get(requested, requested)
+    if requested not in {"auto", "clm", "typesafe", "r3_clm"}:
         raise ValueError("Unsupported System One provider")
+    if requested == "r3_clm":
+        # Internal deterministic baseline: local, network-free, never auto-selected.
+        from typesafe_sister.r3_clm import MODEL_ID
+        return {"provider": "r3_clm", "base_url": "local", "model": MODEL_ID, "api_key": ""}
 
     generic_url = _clean(base_url or os.getenv("R3_SYSTEMONE_BASE_URL", ""))
     generic_model = _clean(model or os.getenv("R3_SYSTEMONE_MODEL", ""))
@@ -135,6 +140,11 @@ def _post_json(path, payload, *, provider=None, api_key=None, model=None, base_u
 
 def system_one(state, questions, *, api_key=None, model=None, base_url=None, provider=None, timeout=8):
     cfg = _resolve_backend(provider=provider, api_key=api_key, model=model, base_url=base_url)
+    if cfg["provider"] == "r3_clm":
+        from typesafe_sister.r3_clm import system_one_local
+        result = dict(system_one_local(state, questions))
+        result["_r3_provider"] = "r3_clm"
+        return result
     result = _post_json(
         "/v1/systemone",
         {"state": state, "questions": questions, "model": cfg["model"]},
@@ -157,7 +167,7 @@ def rank(context, question, answers, *, api_key=None, model=None, base_url=None,
     real backend capabilities from approximations.
     """
     cfg = _resolve_backend(provider=provider, api_key=api_key, model=model, base_url=base_url)
-    if cfg["provider"] != "clm":
+    if cfg["provider"] != "clm":  # r3_clm has no native rank either
         raise SystemOneCapabilityUnavailable("Native rank requires a CLM backend")
     result = _post_json(
         "/v1/rank",

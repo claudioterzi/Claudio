@@ -1,2 +1,1 @@
-"""R3∞ TypeSafe sister compatibility package."""
-from typesafe_legacy import *
+"""R3∞ TypeSafe sister service package."""

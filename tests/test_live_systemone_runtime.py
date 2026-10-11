@@ -1,5 +1,6 @@
 import importlib.util
 import os
+import sys
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("r3_live_systemone", ROOT / "r3" / "typesafe_sister.py")
 mod = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
+sys.modules[SPEC.name] = mod
 SPEC.loader.exec_module(mod)
 
 
