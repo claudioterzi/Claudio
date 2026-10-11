@@ -1,0 +1,1 @@
+window.A74_AXES=['nord','est','sud','ovest'];

@@ -1,0 +1,67 @@
+{
+  "schema": "CT-LGAI-001/resilience-completion-v1",
+  "date": "2026-10-05",
+  "scope": "Independent local execution and provider configuration acknowledgements; no production runtime adoption",
+  "code": {
+    "supervisor_pr": 113,
+    "supervisor_head": "e068cfd34380048df3a7536ff086d5f62db0eed6",
+    "judge_pr": 115,
+    "judge_head": "73c932ab792906bf108f03516b79c00c7a9b3193"
+  },
+  "tests": {
+    "passed": 36,
+    "failed": 0,
+    "seconds": 17.01,
+    "gate_passed": 19,
+    "gate_seconds": 0.06,
+    "orchestra_mock_checks": 4
+  },
+  "falsifiers": [
+    "A mounted ancestor PID namespace invalidated /proc/<inner-pid> absence as proof. Final tests check actual process disappearance and namespace-aware adopted-child discovery.",
+    "Signal masking during spawn was rejected because children inherited blocked termination signals.",
+    "Unpinned identity and raw non-string identity failed baseline gate tests."
+  ],
+  "fixes": [
+    "Strict raw identity types, exact requested model/fingerprint pins and unique fixtures",
+    "Progress watchdog, consecutive failure limit and bounded sleep/resume grace",
+    "Subreaper with selective orphan reaping, escaped descendant shutdown and whole-group grace",
+    "Bounded failure cooldown with signal interruption"
+  ],
+  "railway": {
+    "drainingSeconds": {
+      "saved": 10,
+      "readback": true,
+      "effective": "next deployment"
+    },
+    "restartPolicy": {
+      "type": "ON_FAILURE",
+      "maxRetries": 10,
+      "write_acknowledged": true,
+      "independent_readback": "default fields omitted by API"
+    },
+    "deployment_ids_unchanged": [
+      "228371da-a4f7-4762-ba80-66d0932540ab",
+      "d8f233a5-ea81-47ea-9d6c-c9723107c9b3"
+    ],
+    "production_runtime_changed": false,
+    "rollback": "Restore drainingSeconds to prior implicit default; no deployment was triggered"
+  },
+  "orchestra": {
+    "local_mock_checks": 4,
+    "live_authenticated_inference": "NOT_RUN",
+    "canonical_project": "claudio-terzi-s-projects/claudio",
+    "other_scope": "rosso-rosso-rosso remains unauthorized and distinct"
+  },
+  "remaining": [
+    "Authenticated cloned real-state recovery and hash/replication readback",
+    "Railway-specific inactivity sleep/resume acceptance",
+    "Reachable Rizzo device/model and frozen benchmark; device Claudio is offline",
+    "Server-side authenticated Orchestra inference; no exposed application secret or existing execution session"
+  ],
+  "limits": [
+    "Local mocks do not establish provider/model inference.",
+    "Local SIGSTOP/SIGCONT does not establish Railway sleep semantics.",
+    "Railway runtime-reported sync receipt is not independent volume readback.",
+    "Railway Agent read-only attempt failed usage quota; no quota increase."
+  ]
+}

@@ -18,7 +18,13 @@ Uso:
     python3 studio/parfums/genera_libro.py
 """
 
+import sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parents[2]))
+from studio.parfums.formula_code import encode
+from studio.parfums.editoriale_olfattivo import rubrica_libro, riferimento_campione
+from studio.parfums.sincronizza_foto import sync as sincronizza_foto
 import html
+import hashlib
 import json
 from collections import Counter
 from pathlib import Path
@@ -66,33 +72,43 @@ def defs_svg(famiglie_palette):
     return "".join(parti)
 
 
-def flacone(p):
-    forma = p["packaging"]["forma"]
-    fam = p["famiglia"]
-    nome = p["nome"] if len(p["nome"]) <= 18 else p["nome"][:17] + "…"
+def flacone(p, foto=None):
+    disegno = f'images/flaconi-400/P{p["numero"]:03d}.svg'
+    photos = (foto or {}).get('photos', [])
+    ultima = photos[-1] if photos else None
+    src = ultima['src'] if ultima else disegno
+    width, height = (ultima['width'], ultima['height']) if ultima else (900, 1200)
+    tipo = ultima['label'] if ultima else 'Studio di flacone'
+    archivio = ''
+    if photos:
+        links = ''.join(f'<li><a href="{photo["src"]}">Versione {i} · {e(photo["label"])}</a></li>'
+                        for i, photo in enumerate(photos, 1))
+        archivio = (
+            '<details class="flacone-archivio"><summary>Immagini e versioni</summary><ul>'
+            f'<li><a class="disegno-collezione" href="{disegno}">Disegno della collezione</a></li>'
+            f'{links}</ul></details>')
     return (
-        f'<svg viewBox="0 0 160 230" class="flacone" aria-label="Flacone N° {p["numero"]}">'
-        f'<use href="#corpo-{forma}" fill="url(#g-{fam})" opacity="0.9"/>'
-        f'<use href="#corpo-{forma}" fill="none" stroke="#8a6f2e" stroke-width="1.2"/>'
-        f'<use href="#tappo-{forma}" fill="#2c2c34" stroke="#8a6f2e" stroke-width="0.8"/>'
-        f'<rect x="45" y="128" width="70" height="50" rx="2" fill="#efe8d8" opacity="0.97"/>'
-        f'<text x="80" y="144" text-anchor="middle" font-family="Georgia" font-size="9.5" fill="#8a6f2e">N° {p["numero"]}</text>'
-        f'<text x="80" y="157" text-anchor="middle" font-family="Georgia" font-size="7.5" fill="#2c2418">{e(nome)}</text>'
-        f'<text x="80" y="169" text-anchor="middle" font-family="Georgia" font-size="5.5" letter-spacing="1" fill="#8a6f2e">TERZI PARFUMS</text>'
-        f'</svg>')
+        '<figure class="flacone-fotonico">'
+        f'<a href="{src}" aria-label="Apri il flacone numero {p["numero"]}">'
+        f'<img src="{src}" width="{width}" height="{height}" '
+        f'loading="lazy" decoding="async" alt="Flacone di {html.escape(p["nome"], quote=True)} — N° {p["numero"]}"></a>'
+        f'<figcaption><span>N° {p["numero"]:03d} · C.Terzi</span><strong>{e(p["nome"])}</strong>'
+        f'<small>{e(tipo)}</small>{archivio}</figcaption>'
+        '</figure>')
 
 
-def scheda(p):
+def scheda(p, foto=None):
     righe = "".join(
         f'<tr><td class="lv">{LIV_LABEL[r["livello"]]}</td>'
         f'<td>{e(r["nome"])}'
         + (' <span class="micro">⚠ 1%</span>' if r["micro"] else "")
         + f'</td><td class="parti">{str(r["parti"]).replace(".", ",")}</td></tr>'
         for r in p["ricetta"])
+    code = encode(p["ricetta"])
     pk = p["packaging"]
     return f'''
-<div class="scheda">
-  <div class="colonna-flacone">{flacone(p)}
+<div class="scheda" id="profumo-{p['numero']:03d}">
+  <div class="colonna-flacone">{flacone(p, foto)}
     <div class="meta">{e(p["stagione"])} · {e(p["momento"])}<br>
     {e(p["concentrazione"])} · sillage {e(p["sillage"])}<br>
     <span class="fatt">{p["fattibilita"]}</span></div>
@@ -103,9 +119,11 @@ def scheda(p):
     <p class="concept">{e(p["concept"])}</p>
     <div class="etichetta-sezione">Ricetta — parti su 100 di concentrato</div>
     <table class="ricetta">{righe}</table>
+    <div class="codice-ricetta" style="margin:12px 0;font-size:12px;overflow-wrap:anywhere"><strong>Codice di ricostruzione</strong><br><code>{code}</code><br><a href="formula.html#{code}">Ricostruisci formula →</a></div>
     <div class="etichetta-sezione">Packaging</div>
     <p class="pack">{e(pk["flacone"])} · tappo: {e(pk["tappo"])} ·
     astuccio: {e(pk["astuccio"])}<br>etichetta: {e(pk["etichetta"])}</p>
+    {riferimento_campione(p['numero'])}
   </div>
 </div>'''
 
@@ -113,6 +131,21 @@ def scheda(p):
 def genera():
     doc = json.loads((BASE / "parfums_400.json").read_text(encoding="utf-8"))
     organo = json.loads((BASE / "organo_terzi_300.json").read_text(encoding="utf-8"))
+    # Do not silently ship a book with absent or mismatched illustrations.
+    flaconi = json.loads((BASE / "flaconi_400.json").read_text(encoding="utf-8"))
+    assert len(flaconi["perfumes"]) == len(doc["parfums"]) == 400
+    for profumo, disegno in zip(doc["parfums"], flaconi["perfumes"]):
+        assert (profumo["numero"], profumo["nome"]) == (disegno["numero"], disegno["nome"])
+        assert (REPO / "public" / disegno["src"]).is_file(), disegno["src"]
+        recipe = sorted([
+            [r['n'], int(r['parti']) if float(r['parti']).is_integer() else r['parti'],
+             r['livello'], bool(r['micro'])] for r in profumo['ricetta']])
+        fingerprint = hashlib.sha256(json.dumps(recipe, separators=(',', ':')).encode()).hexdigest()
+        if fingerprint != disegno['recipe_fingerprint']:
+            raise ValueError(f"Flacone {profumo['numero']} da rigenerare: ricetta cambiata")
+    fotografie, da_associare = sincronizza_foto(REPO)
+    if da_associare:
+        print(f"Foto da associare: {len(da_associare)}; dettagli in studio/parfums/foto_400.json")
 
     palette = {p["famiglia"]: p["packaging"]["palette"] for p in doc["parfums"]}
     conta_fam = Counter(m["famiglia"] for m in organo["materie"])
@@ -132,7 +165,7 @@ def genera():
             f'<p class="capitolo-sotto">N° {a}–{b} · dall\'organo: '
             f'{e(", ".join(finfo["organo"]))}</p>'
             f'<p class="capitolo-descr">{e(finfo["descrizione"])}</p>'
-            + "".join(scheda(p) for p in ps))
+            + "".join(scheda(p, fotografie[p['numero']]) for p in ps))
     corpo_400 = "".join(capitoli)
 
     # --- Parte III: l'organo ---------------------------------------------
@@ -156,6 +189,10 @@ def genera():
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Parfums 400 — Il Libro · Terzi Parfums</title>
+<link rel="canonical" href="https://claudio-ebon.vercel.app/libro.html">
+<meta name="description" content="Il Libro dei 400 profumi di Claudio Terzi: ricette, codici formula e progetto di rubrica con mouillette estraibili, anche in stampa.">
+<link rel="stylesheet" href="mouillette.css">
+<script src="mouillette.js" defer></script>
 <style>
   *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
   :root {{
@@ -236,10 +273,48 @@ def genera():
     body {{ background: #fff; color: #1c1810; padding: 0; }}
     :root {{ --surface: #fff; --border: #ccc; --text: #1c1810;
             --text-dim: #666; --gold: #6b5312; --gold-dim: #8a6f2e; }}
-    .scheda {{ page-break-inside: avoid; }}
+    .scheda {{ page-break-inside: avoid; padding:4mm; gap:5mm; }}
+    .scheda .colonna-flacone {{ flex-basis:30mm; }}
+    .scheda .concept {{ font-size:9pt; line-height:1.35; margin-bottom:2mm; }}
+    .scheda .colonna-testo>p {{ margin-bottom:2mm; }}
+    .scheda .etichetta-sezione {{ margin-top:2mm; }}
+    .scheda table.ricetta {{ font-size:8.5pt; }}
+    .scheda table.ricetta td {{ padding:0.5mm 1mm; }}
+    .scheda .olf-sample {{ margin-top:2mm; padding-top:2mm; }}
+    .scheda .olf-sample p {{ line-height:1.25; margin:1mm 0; }}
+    .scheda .olf-qr {{ margin:2mm 0 0; }}
     h1.capitolo, h1.parte, .copertina {{ page-break-before: always; }}
     .copertina {{ page-break-before: avoid; border-color: #8a6f2e; }}
     @page {{ size: A4; margin: 16mm; }}
+  }}
+
+  .colonna-flacone {{ flex-basis: 180px; }}
+  .flacone-fotonico {{ margin: 0 0 12px; position: relative; overflow: hidden; border-radius: 8px; background: #f6f2e9; }}
+  .flacone-fotonico img {{ display: block; width: 100%; height: auto; }}
+  .flacone-fotonico figcaption {{ padding: 10px 8px 14px; color: #ebcc86; background: #080909; }}
+  .flacone-fotonico span {{ display: block; font-size: 12px; letter-spacing: .1em; }}
+  .flacone-fotonico strong {{ display: block; font-size: 16px; line-height: 1.3; font-weight: normal; overflow-wrap: anywhere; }}
+  .flacone-fotonico small {{ display:block; margin-top:6px; font-size:11px; color:#c4b995; }}
+  .flacone-archivio {{ margin-top:10px; font-size:12px; line-height:1.5; text-align:left; }}
+  .flacone-archivio summary {{ cursor:pointer; min-height:32px; }}
+  .flacone-archivio ul {{ padding-left:16px; }}
+  .flacone-archivio a {{ color:#ebcc86; display:inline-block; padding:5px 0; }}
+  .studio-flaconi {{ border:1px solid var(--border); border-radius:8px; padding:1.5rem; margin:2rem 0; }}
+  .studio-flaconi figure {{ max-width:300px; margin:1rem auto; }}
+  .studio-flaconi img {{ width:100%; height:auto; border-radius:6px; }}
+  .studio-flaconi figcaption {{ font-size:.8rem; color:var(--text-dim); text-align:center; }}
+  .studio-flaconi a {{ color:var(--gold); }}
+  .studio-flaconi nav {{ display:flex; flex-wrap:wrap; gap:.5rem 1rem; font-size:.85rem; }}
+  @media screen and (max-width: 600px) {{ .scheda {{ flex-direction: column; padding: 16px; }} .colonna-flacone {{ flex: auto; width: min(240px,100%); margin: auto; }} }}
+  @media print {{
+    .scheda .colonna-flacone {{ flex:0 0 38mm; }}
+    .flacone-fotonico figcaption {{ background:#fff; color:#332c1c; padding:2mm 1mm; }}
+    .flacone-fotonico span,.flacone-fotonico small {{ color:#62583f; font-size:7pt; }}
+    .flacone-fotonico strong {{ font-size:10pt; }}
+    .flacone-archivio {{ display:none; }}
+    .studio-flaconi {{ break-inside:avoid; }}
+    .studio-flaconi figure {{ max-width:55mm; }}
+    .studio-flaconi nav {{ display:none; }}
   }}
 </style>
 </head>
@@ -248,6 +323,13 @@ def genera():
 <script src="nav.js"></script>
 {defs_svg(palette)}
 <div class="libro">
+
+<nav class="olf-toolbar" aria-label="Libro e stampa">
+  <button type="button" data-olf-print="book">Stampa il libro</button>
+  <a href="#rubrica-olfattiva">Mouillette estraibili</a>
+  <a href="#flaconi">I 400 flaconi</a>
+  <a href="magazine.html">Magazine mensile</a>
+</nav>
 
 <div class="copertina">
   <div class="casa">Terzi Parfums</div>
@@ -386,6 +468,33 @@ partenza, non formule finite.</p>
 {accordi}
 </div>
 
+{rubrica_libro()}
+
+<section class="studio-flaconi" id="flaconi" aria-labelledby="titolo-flaconi">
+  <h2 id="titolo-flaconi">Un flacone per ogni profumo</h2>
+  <p>Quattrocento ricette, quattrocento disegni. Ogni scheda ha uno studio di flacone
+  con proporzioni e dettagli propri, il nome del profumo e la firma <strong>C.Terzi</strong>.
+  Forme e colori riprendono le otto famiglie della collezione.</p>
+  <p>Le illustrazioni derivano da geometrie 3D individuali. Sono proposte estetiche:
+  materiali, dimensioni e fabbricazione richiedono un successivo progetto tecnico.</p>
+  <p>La collezione può crescere: ogni nuova immagine associata al numero di un profumo
+  diventa la sua immagine principale. Il disegno originale e le versioni precedenti
+  restano disponibili in <em>Immagini e versioni</em>.</p>
+  <figure>
+    <a href="images/lettre-de-midi-studio.webp"><img src="images/lettre-de-midi-studio.webp"
+      width="1024" height="1536" loading="lazy" decoding="async"
+      alt="Interpretazione artistica di Lettre de Midi: vetro dorato, tappo in ulivo ed etichetta C.Terzi"></a>
+    <figcaption>Lettre de Midi · interpretazione artistica generata con IA.<br>
+    Un esempio di finitura, accanto ai disegni delle 400 schede.</figcaption>
+  </figure>
+  <nav aria-label="Scopri i flaconi per famiglia">
+    <a href="#profumo-001">Agrumata</a><a href="#profumo-051">Floreale</a>
+    <a href="#profumo-101">Verde</a><a href="#profumo-151">Acquatica</a>
+    <a href="#profumo-201">Legnosa</a><a href="#profumo-251">Orientale</a>
+    <a href="#profumo-301">Speziata</a><a href="#profumo-351">Gourmand</a>
+  </nav>
+</section>
+
 <h1 class="parte">Parte IV — I quattrocento</h1>
 <p class="parte-sotto">otto capitoli, cinquanta schede ciascuno</p>
 
@@ -402,7 +511,7 @@ ALAKTA ANEN</p>
 '''
 
     out = REPO / "public" / "libro.html"
-    out.write_text(pagina, encoding="utf-8")
+    out.write_text('\n'.join(line.rstrip() for line in pagina.splitlines()) + '\n', encoding="utf-8")
     kb = out.stat().st_size // 1024
     print(f"✓ {out.relative_to(REPO)} — {kb} KB, "
           f"{len(doc['parfums'])} schede in {len(per_famiglia)} capitoli")

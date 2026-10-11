@@ -88,10 +88,21 @@
            border-radius: 4px; padding: 0 0.35em; font-size: 0.85em; }
   .seme { text-align: center; margin-top: 0.9rem; font-size: 0.72rem;
           color: var(--text-dim); font-style: italic; }
+  .internal-image { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .internal-image > p:first-child { color: var(--gold-dim); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+  .internal-image figure { margin: .8rem 0 0; max-width: 360px; }
+  .internal-image img { display: block; width: 100%; height: auto; border: 1px solid var(--gold-dim); border-radius: 6px; background: #10131a; }
+  .internal-image figcaption { margin-top: .5rem; font-size: .78rem; color: var(--text-dim); }
+  .internal-image figcaption a { color: var(--gold); }
+  .internal-image-status { min-height: 1.4em; font-size: .8rem; color: var(--text-dim); margin-top: .45rem; }
   footer { text-align: center; margin-top: 2.5rem; color: var(--text-dim);
            font-size: 0.8rem; line-height: 1.8; }
   footer a { color: var(--gold-dim); }
 </style>
+<link rel="stylesheet" href="/atelier-photo.css">
+<script src="/atelier-photo.js" defer></script>
+<script src="perfume-bottle.js"></script><script src="perfume-label.js"></script>
+<script src="atelier-scena.js" defer></script>
 </head>
 <body>
 <script src="soglia.js"></script>
@@ -101,12 +112,35 @@
     <h1>L'Atelier di Raffaello</h1>
     <p>Terzi Parfums · il banco dove nascono le ricette nuove, dall'Organo 300 e dalle regole del Grimorio</p>
     <p class="formula">Intenzione + Organo + Regole = Proposta</p>
-    <p class="versione">✦ Raffaello AI · v10 — il bottone apre il profumo 🧠 ✦</p>
+    <p class="versione">✦ Una formula, un flacone, una creazione personale ✦</p>
+    <p><a href="/atelier/riapri">Hai già una scheda? Riapri la tua creazione →</a></p>
+    <p><a href="/atelier/archivio">Archivio delle creazioni →</a></p>
   </header>
 
   <div class="banco">
-    <label for="intenzione">L'intenzione — di' a Raffaello cosa deve diventare profumo</label>
-    <textarea id="intenzione" placeholder="Es.: un profumo per chi torna a casa dopo tanti anni…"></textarea>
+    <label for="intenzione">L'intenzione — racconta cosa vuoi trasformare in profumo</label>
+    <textarea id="intenzione" maxlength="3000" placeholder="Es.: un profumo per chi torna a casa dopo tanti anni…"></textarea>
+    <label for="cliente">Nome del cliente — facoltativo, sull’etichetta</label>
+    <input id="cliente" type="text" maxlength="60" autocomplete="off" placeholder="Nome o dedica per questa creazione" style="width:100%;padding:.75rem;margin-bottom:1rem;font-size:1rem">
+    <label for="riferimento">Ispirazioni e profumi amati dal cliente — facoltativo</label>
+    <textarea id="riferimento" maxlength="1000" rows="3" aria-describedby="preferenze-aiuto" placeholder="Un profumo per riga, con marca e versione se le conosci.&#10;Es.: Chanel N° 5 Eau de Parfum&#10;Dior J’adore Eau de Parfum"></textarea>
+    <p id="preferenze-aiuto" class="spiega">Fino a 5 profumi, uno per riga o separati da punto e virgola. Servono a capire i gusti, non a copiare formule. Puoi anche citarli nel racconto: il riconoscimento automatico proverà a individuarli. Scrivi nell’intenzione cosa ami e cosa vuoi evitare.</p>
+    <section class="photo-inspiration" aria-labelledby="foto-titolo">
+      <h2 id="foto-titolo">Un’immagine può essere l’inizio.</h2>
+      <p>Luce, materia, paesaggio: Raffaello li interpreta e cerca una direzione olfattiva nel tuo organo. Puoi partire anche soltanto da una foto.</p>
+      <label for="foto">La tua fotografia — facoltativa</label>
+      <input id="foto" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" aria-describedby="foto-aiuto foto-stato">
+      <p id="foto-aiuto">La foto viene ridotta sul dispositivo e inviata al servizio AI per questa creazione. Nell’archivio rimane l’interpretazione, non la tua immagine. Le associazioni olfattive sono creative: una foto non misura gli odori.</p>
+      <figure id="foto-anteprima" hidden><img id="foto-preview" alt="La fotografia scelta per questa creazione"><figcaption id="foto-didascalia"></figcaption></figure>
+      <button type="button" class="oro" id="foto-rimuovi" hidden>Rimuovi la foto</button>
+      <p id="foto-stato" role="status" aria-live="polite"></p>
+      <details class="photo-example"><summary>L’esempio di Claudio · Il calore del ferro</summary>
+        <img src="/images/ispirazione-cantiere.jpg" width="1536" height="1024" loading="lazy" alt="Un cantiere navale al tramonto: scintille di saldatura, acciaio e riflessi sul suolo bagnato">
+        <p>Il ferro, le scintille, l’aria aperta. Il calore del lavoro incontra la freschezza della sera. Questa fotografia, scelta da Claudio, resta qui come punto di partenza.</p>
+        <p><a href="/atelier/esempio">Scopri Ferro di Luce · la creazione e il suo flacone →</a></p>
+        <button type="button" class="oro" id="foto-esempio">Crea dalla foto di Claudio</button>
+      </details>
+    </section>
     <div class="riga-opzioni">
       <div><label for="famiglia">Famiglia</label>
         <select id="famiglia"><option value="">Scelga Raffaello</option></select></div>
@@ -116,13 +150,15 @@
           <option value="ellena">Ellena — formula corta, 8 materie</option>
           <option value="roudnitska">Roudnitska — silhouette, cuore dominante</option>
         </select></div>
-      <div><label for="ondata">Ondata dell'organo</label>
+      <div><label for="ondata">Essenze a disposizione</label>
         <select id="ondata">
-          <option value="0">Solo CORE</option>
-          <option value="1">CORE + ESP</option>
-          <option value="2" selected>Organo completo</option>
+          <option value="2" selected>Tutto il mio Organo Terzi</option>
+          <option value="0">Limita a CORE</option>
+          <option value="1">Limita a CORE + ESP</option>
         </select></div>
     </div>
+    <p class="spiega" id="organo-info" role="status"></p>
+    <p class="spiega">Il compositore sceglie le materie adatte fra tutte quelle del tuo organo. Non occorre inserirle tutte in una singola formula. <a href="organo.html">Consulta essenze e supporti →</a></p>
     <div class="azioni">
       <button class="oro grande" id="chiedi">🧠 Chiedi a Raffaello — ascolta davvero</button>
     </div>
@@ -144,7 +180,7 @@
 
   <footer>
     Le proposte dell'Atelier sono punti di partenza didattici (metodo Carles), non formule finite.<br>
-    La stessa intenzione genera sempre la stessa proposta: il seme è la tua domanda.<br>
+    Le creazioni AI possono variare; la modalità senza AI usa un seme riproducibile.<br>
     <a href="parfums.html">Il catalogo dei 400</a> · <a href="libro.html">Il Libro</a> · <a href="creazioni.html">Le Creazioni</a>
   </footer>
 </div>
@@ -203,14 +239,11 @@ const scelta = (rng, arr) => arr[Math.floor(rng() * arr.length)];
 function livelliNota(m) { return m.nota === "-" ? [] : m.nota.split("-"); }
 
 function pesca(rng, pools, usate, ondata) {
-  for (let i = ondata; i < 3; i++) {
-    for (const pool of pools) {
-      const c = pool.filter(m => !usate.has(m.n) && ONDATE[i].includes(m.liv));
-      if (c.length) { const m = scelta(rng, c); usate.add(m.n); return m; }
-    }
+  for (const pool of pools) {
+    const c = pool.filter(m => !usate.has(m.n) && ONDATE[ondata].includes(m.liv));
+    if (c.length) { const m = scelta(rng, c); usate.add(m.n); return m; }
   }
-  const resto = pools.flat().filter(m => !usate.has(m.n));
-  const m = scelta(rng, resto); usate.add(m.n); return m;
+  throw new Error("Le essenze selezionate non bastano per questa struttura. Prova un altro stile o amplia la selezione.");
 }
 
 function componi(intenzione, nomeFam, stileKey, ondata, variazione) {
@@ -252,7 +285,7 @@ function componi(intenzione, nomeFam, stileKey, ondata, variazione) {
   const tutte = [...piramide.testa, ...piramide.cuore, ...piramide.fondo, ...sciaNote];
   const muschi = tutte.filter(m => m.fam === "Muschi");
   if (muschi.length === 1) {
-    const altri = D.materie.filter(m => m.fam === "Muschi" && !usate.has(m.n));
+    const altri = D.materie.filter(m => m.fam === "Muschi" && !usate.has(m.n) && ONDATE[ondata].includes(m.liv));
     if (altri.length) {
       const extra = { ...pesca(rng, [altri], usate, ondata), ruolo: "blend muschi" };
       sciaNote.push(extra);
@@ -357,11 +390,67 @@ function mostra(p) {
     '<div class="etich">Concept</div><p class="concept">' + p.concept + '</p>' +
     '<div class="etich">Ricetta \u2014 parti su 100 di concentrato</div>' +
     '<table class="ricetta">' + righe + '</table>' +
+    '<section class="internal-image" aria-label="Creatore interno del flacone">' +
+    '<p>Immagine della ricetta · etichetta applicata internamente</p>' +
+    '<button type="button" class="oro" id="crea-immagine-interna">Crea il flacone etichettato</button>' +
+    '<button type="button" class="oro" id="crea-tavola-grafica">Crea tavola grafica</button>' +
+    '<p class="internal-image-status" id="immagine-interna-stato" role="status"></p>' +
+    '<figure id="immagine-interna-figura" hidden><img id="immagine-interna" alt="Flacone etichettato di ' + p.nome + '"><figcaption><a id="scarica-immagine-interna" download>Scarica immagine PNG</a></figcaption></figure>' +
+    '<figure id="tavola-grafica-figura" hidden><img id="tavola-grafica" alt="Tavola grafica di ' + p.nome + '"><figcaption><a id="scarica-tavola-grafica" download>Scarica tavola grafica</a></figcaption></figure>' +
+    '</section>' +
     (p.notaBlend ? '<p class="nota-regola">Regola del Grimorio applicata: mai un muschio solo \u2014 aggiunto ' + p.notaBlend + ' al blend.</p>' : "") +
     '<p class="avvertenza">Punto di partenza didattico, non formula finita: lavorare in diluizione, ' +
     'correggere col naso, registrare nel diario. Le materie \u26a0 IFRA hanno limiti severi per uso su pelle. ' +
     'Verificare IFRA/CPSR prima di qualunque vendita.</p></div>';
   document.getElementById("scheda").classList.add("viva");
+  const internalImageButton = document.getElementById("crea-immagine-interna");
+  if (internalImageButton) internalImageButton.addEventListener("click", async () => {
+    internalImageButton.disabled = true;
+    const internalStatus = document.getElementById("immagine-interna-stato");
+    internalStatus.textContent = "Disegno il flacone e applico nome, numero e firma…";
+    try {
+      if (!window.TerziLabel) throw new Error("Creatore interno non caricato. Ricarica la pagina.");
+      const rendered = await window.TerziLabel.fromRecipe({
+        name: p.nome, perfume: p,
+        fingerprint: p.formula_code || ("locale-" + (p.seme || 0) + "-" + (p.fam || ""))
+      });
+      const internalImage = document.getElementById("immagine-interna");
+      internalImage.src = rendered.url;
+      internalImage.alt = "Flacone etichettato di " + p.nome;
+      document.getElementById("immagine-interna-figura").hidden = false;
+      const downloadInternal = document.getElementById("scarica-immagine-interna");
+      downloadInternal.href = rendered.url;
+      downloadInternal.download = (p.nome || "creazione").toLowerCase().replace(/[^a-z0-9]+/g, "_") + "-flacone.png";
+      internalStatus.textContent = "Immagine pronta: etichetta, numero e firma sono legati a questa ricetta.";
+      internalImageButton.textContent = "Rigenera il flacone etichettato";
+    } catch (error) {
+      internalStatus.textContent = error.message || "Il creatore interno non è disponibile adesso.";
+    } finally { internalImageButton.disabled = false; }
+  });
+  const graphicButton = document.getElementById("crea-tavola-grafica");
+  if (graphicButton) graphicButton.addEventListener("click", async () => {
+    graphicButton.disabled = true;
+    const graphicStatus = document.getElementById("immagine-interna-stato");
+    graphicStatus.textContent = "Compongo la tavola grafica della ricetta…";
+    try {
+      if (!window.TerziLabel) throw new Error("Creatore interno non caricato. Ricarica la pagina.");
+      const card = await window.TerziLabel.fromRecipeCard({
+        name: p.nome, perfume: p,
+        fingerprint: p.formula_code || ("locale-" + (p.seme || 0) + "-" + (p.fam || ""))
+      });
+      const graphicImage = document.getElementById("tavola-grafica");
+      graphicImage.src = card.url;
+      graphicImage.alt = "Tavola grafica di " + p.nome;
+      document.getElementById("tavola-grafica-figura").hidden = false;
+      const downloadGraphic = document.getElementById("scarica-tavola-grafica");
+      downloadGraphic.href = card.url;
+      downloadGraphic.download = (p.nome || "creazione").toLowerCase().replace(/[^a-z0-9]+/g, "_") + "-tavola-grafica.png";
+      graphicStatus.textContent = "Tavola grafica pronta: immagine editoriale separata dalla ricetta.";
+      graphicButton.textContent = "Rigenera la tavola grafica";
+    } catch (error) {
+      graphicStatus.textContent = error.message || "La tavola grafica non è disponibile adesso.";
+    } finally { graphicButton.disabled = false; }
+  });
   document.getElementById("seme").textContent = p.viaAI
     ? "composto in ascolto \u2014 ogni chiamata pu\u00f2 variare, come un naso vero"
     : "seme " + p.seme + " \u00b7 variazione " + variazione + " \u2014 stessa intenzione, stessa proposta";
@@ -391,17 +480,36 @@ function daAI(res, intenzione) {
 // funziona in ogni browser perche' e' un semplice caricamento di pagina.
 function chiediARaffaello(rilancio) {
   const i = leggi();
+  const hasPhoto = window.TerziPhoto && window.TerziPhoto.selected();
   if (!i.intenzione || i.intenzione === "senza intenzione") {
+    if (hasPhoto) i.intenzione = "Un profumo ispirato alla fotografia.";
+    else {
     document.getElementById("voce").textContent =
-      "\u2192 Scrivi prima la tua intenzione qui sopra.";
+      "Scrivi un’intenzione oppure scegli una fotografia.";
     return;
+    }
   }
   document.getElementById("voce").textContent =
     "\ud83e\udde0 Raffaello sta componendo\u2026 (si apre tra pochi secondi)";
-  let url = "/profumo?q=" + encodeURIComponent(i.intenzione) + "&ondata=" + i.ondata;
-  if (i.fam) url += "&famiglia=" + encodeURIComponent(i.fam);
-  window.location.href = url;
+  const customer = document.getElementById("cliente").value.trim();
+  document.getElementById("chiedi").disabled = true;
+  const form = document.createElement("form"); form.method = "POST"; form.action = "/profumo";
+  const values = {q:i.intenzione,cliente:customer,stile:i.stile,riferimento:document.getElementById("riferimento").value.trim(),ondata:String(i.ondata),famiglia:i.fam || "",creation_id: (window.crypto && typeof window.crypto.randomUUID === "function") ? window.crypto.randomUUID() : ""};
+  Object.entries(values).forEach(([name,value]) => {
+    const input = document.createElement("input"); input.type = "hidden"; input.name = name; input.value = value; form.appendChild(input);
+  });
+  const send = (photoInput) => {
+    if (photoInput) { form.enctype = "multipart/form-data"; form.appendChild(photoInput); }
+    document.body.appendChild(form); form.submit();
+  };
+  if (hasPhoto) window.TerziPhoto.prepareInput().then(send).catch(() => {
+    document.getElementById("voce").textContent = "La foto non è pronta. Scegli un JPEG, PNG o WebP e riprova.";
+    document.getElementById("chiedi").disabled = false;
+  });
+  else send();
 }
+
+window.addEventListener("pageshow", () => { document.getElementById("chiedi").disabled = false; });
 
 function leggi() {
   return {
@@ -413,17 +521,29 @@ function leggi() {
 }
 
 document.getElementById("chiedi").addEventListener("click", () => chiediARaffaello(false));
+function aggiornaOrgano() {
+  const ondata = leggi().ondata;
+  const count = D.materie.filter(m => ONDATE[ondata].includes(m.liv)).length;
+  document.getElementById("organo-info").textContent = count + " materie disponibili per questa composizione · " +
+    (ondata === 2 ? "organo completo, tutti i livelli inclusi" : "selezione limitata da te");
+}
+document.getElementById("ondata").addEventListener("change", aggiornaOrgano);
+aggiornaOrgano();
+function componiLocale(i) {
+  try { mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione)); }
+  catch (error) { document.getElementById("voce").textContent = error.message; }
+}
 document.getElementById("componi").addEventListener("click", (ev) => {
   ev.preventDefault();
   variazione = 0;
   const i = leggi();
-  mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione));
+  componiLocale(i);
 });
 document.getElementById("ancora").addEventListener("click", () => {
   if (corrente && corrente.viaAI) { chiediARaffaello(true); return; }
   variazione += 1;
   const i = leggi();
-  mostra(componi(i.intenzione, i.fam, i.stile, i.ondata, variazione));
+  componiLocale(i);
 });
 function formulaTesto(p, i) {
   return [
