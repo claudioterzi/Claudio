@@ -32,7 +32,8 @@ class RestoreTests(unittest.TestCase):
         self.assertEqual(result['perfume']['ricetta'],self.record['perfume']['ricetta'])
         self.assertEqual(result['perfume']['formula_code'],self.record['perfume']['formula_code'])
         self.assertEqual(result['restored_variant'],'Essenza')
-        self.assertNotIn('generate-image',response.text)
+        # The local renderer is available without granting remote AI access.
+        self.assertIn('id="generate-image" class="action" data-token=""',response.text)
         self.assertNotIn('Access-Control-Allow-Origin',response.headers)
 
     def test_modified_recipe_is_rejected_even_if_total_is_preserved(self):
@@ -53,9 +54,13 @@ class RestoreTests(unittest.TestCase):
     def test_file_claim_cannot_grant_archive_or_image_access(self):
         self.record.update(serial='TP-'+'A'*32,archived=True,image_token='forged')
         self.record['perfume']['flacone']={'prompt':'untrusted instruction','accenti':['fiction']}
-        response=self.post(self.record)
+        with patch('perfume_studio.images_ready', return_value=True), \
+                patch('perfume_studio._image_signer') as signer:
+            response=self.post(self.record)
+        signer.assert_not_called()
         self.assertEqual(response.status_code,200)
-        for forbidden in ('FORMULA ARCHIVIATA','generate-image','untrusted instruction','fiction'):
+        self.assertIn('id="generate-image" class="action" data-token=""',response.text)
+        for forbidden in ('FORMULA ARCHIVIATA','data-token="forged"','untrusted instruction','fiction'):
             self.assertNotIn(forbidden,response.text)
 
     def test_markup_escaped_links_validated_and_suggestions_not_restored(self):

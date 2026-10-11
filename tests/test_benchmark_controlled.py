@@ -16,6 +16,34 @@ DATASET = Path("benchmarks/r3_019_controlled_v1.json")
 
 
 class ControlledBenchmarkTests(unittest.TestCase):
+    def test_verified_success_requires_every_task_to_pass(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            dataset = Path(tmp) / "dataset.json"
+            dataset.write_text(json.dumps({"schema": "R3-019-DATASET/1", "dataset_version": "test", "tasks": [
+                {"id": str(i), "set": "CORE", "category": "test", "prompt": str(i),
+                 "evaluator": {"type": "contains_all", "values": ["correct"]}}
+                for i in range(2)]}), encoding="utf-8")
+            plan = freeze_plan(compare_model="m1", candidate_model="m2",
+                               dataset_path=dataset, repeats=2, commit="test")
+            for all_correct in (False, True):
+                def factory(*_):
+                    return lambda prompt: "correct" if all_correct or prompt.endswith("0") else "wrong"
+                result = run_controlled(plan=plan, dataset_path=dataset, llm_factory=factory)
+                for summary in result["summaries"].values():
+                    self.assertEqual(summary["verified_success"], all_correct)
+                    self.assertEqual(summary["accuracy"], 1 if all_correct else 0.5)
+
+    def test_completed_wrong_answers_never_count_as_verified_success(self):
+        plan = freeze_plan(compare_model="m1", candidate_model="m2",
+                           dataset_path=DATASET, repeats=2, commit="test")
+        result = run_controlled(plan=plan, dataset_path=DATASET,
+                                llm_factory=lambda *_: lambda prompt: "")
+        for summary in result["summaries"].values():
+            self.assertTrue(summary["execution_complete"])
+            self.assertEqual(summary["accuracy"], 0)
+            self.assertFalse(summary["verified_success"])
+            self.assertEqual(summary["efficiency_interpretation"], "REFUSE_FAILED_RUN")
+
     def test_dataset_has_three_required_sets(self):
         data = load_dataset(DATASET)
         self.assertEqual({task["set"] for task in data["tasks"]}, {"CORE", "NOVEL", "ADVERSARIAL"})

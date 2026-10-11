@@ -24,12 +24,16 @@ def _record(raw: Mapping[str, Any]) -> dict[str, Any]:
     provenance = str(raw.get("provenance") or "").strip()
     if not source_id or not provenance:
         raise ValueError("every RedFrag source requires id and provenance")
-    content = str(raw.get("content") or "")[:MAX_CONTENT_CHARS]
+    content = str(raw.get("content") or "")
+    fingerprint = _fingerprint(content)
+    if raw.get("content_hash") and str(raw["content_hash"]) != fingerprint:
+        raise ValueError("RedFrag content_hash does not match full source content")
     return {
         "id": source_id[:240],
         "logical_id": str(raw.get("logical_id") or source_id)[:240],
-        "content": content,
-        "hash": str(raw.get("content_hash") or _fingerprint(content)),
+        "content": content[:MAX_CONTENT_CHARS],
+        "content_truncated": len(content) > MAX_CONTENT_CHARS,
+        "hash": fingerprint,
         "provenance": provenance[:1000],
         "canonical": bool(raw.get("canonical")),
         "canonical_invariant": bool(raw.get("canonical_invariant")),
@@ -42,6 +46,10 @@ def _record(raw: Mapping[str, Any]) -> dict[str, Any]:
 
 def build_clusters(records: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
     items = [_record(x) for x in records]
+    return _clusters_from_records(items)
+
+
+def _clusters_from_records(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     if len(items) > MAX_RECORDS:
         raise ValueError("too many RedFrag records")
     groups: dict[str, list[dict[str, Any]]] = {}
@@ -74,7 +82,7 @@ def build_clusters(records: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]
 
 def plan_context(records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     items = [_record(x) for x in records]
-    clusters = build_clusters(items)
+    clusters = _clusters_from_records(items)
     plans = [assess_redfrag_cluster(cluster) for cluster in clusters]
     by_logical = {str(p["cluster_id"]): p for p in plans}
 
@@ -83,7 +91,10 @@ def plan_context(records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
         plan = by_logical[item["logical_id"]]
         action = plan["action"]
         pointer = {"source_id": item["id"], "provenance": item["provenance"], "sha256": item["hash"]}
-        if action == "KEEP_ACTIVE":
+        if action == "KEEP_ACTIVE" and item["content_truncated"]:
+            quarantined.append({**pointer, "logical_id": item["logical_id"],
+                                "action": "QUARANTINE_REVIEW", "reason": "content_exceeds_context_limit"})
+        elif action == "KEEP_ACTIVE":
             active.append({**pointer, "content": item["content"], "logical_id": item["logical_id"]})
         elif action in {"KEEP_POINTER", "LINK_TO_CANON", "KEEP_DISTINCT_POINTERS"}:
             pointers.append({**pointer, "logical_id": item["logical_id"], "action": action})

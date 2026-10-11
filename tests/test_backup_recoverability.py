@@ -91,6 +91,45 @@ class BackupRecoverabilityTests(unittest.TestCase):
             },
         )
 
+    def test_snapshot_counts_are_not_restored_memory_counts(self):
+        result = backup.ripristina_backup(self._full_backup())
+        self.assertEqual(result["restore_scope"], "SAR_ONLY")
+        self.assertFalse(result["restore_complete"])
+        self.assertEqual(result["memoria_entries"], 0)
+        self.assertEqual(result["vss_entries"], 0)
+        self.assertEqual(result["snapshot_memoria_entries"], 1)
+        self.assertEqual(result["snapshot_vss_entries"], 1)
+
+    def test_complete_restore_request_is_refused_before_writes(self):
+        path = self._full_backup()
+        (self.sar / "state.json").write_text('{"value": 2}', encoding="utf-8")
+        before = (self.sar / "state.json").read_bytes()
+        with self.assertRaises(backup.BackupIntegrityError):
+            backup.ripristina_backup(path, require_complete=True)
+        self.assertEqual((self.sar / "state.json").read_bytes(), before)
+
+    def test_removing_integrity_cannot_downgrade_new_backup_to_legacy(self):
+        path = self._full_backup()
+        data = json.loads(path.read_text(encoding="utf-8"))
+        del data["integrity"]
+        path.write_text(json.dumps(data), encoding="utf-8")
+        before = (self.sar / "state.json").read_bytes()
+        with self.assertRaises(backup.BackupIntegrityError):
+            backup.ripristina_backup(path)
+        self.assertEqual((self.sar / "state.json").read_bytes(), before)
+
+    def test_restore_checks_the_same_snapshot_it_writes(self):
+        path = self._full_backup()
+        valid = path.read_text(encoding="utf-8")
+        tampered = json.loads(valid)
+        tampered["sar"]["state.json"]["value"] = 999
+        before = (self.sar / "state.json").read_bytes()
+        # A second read must not validate different bytes from those restored.
+        with patch.object(Path, "read_text", side_effect=[json.dumps(tampered), valid]):
+            with self.assertRaises(backup.BackupIntegrityError):
+                backup.ripristina_backup(path)
+        self.assertEqual((self.sar / "state.json").read_bytes(), before)
+
     def test_partial_backup_is_preserved_but_never_claimed_complete(self):
         path = backup.crea_backup(
             memoria=BrokenMemory(),

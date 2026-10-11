@@ -216,8 +216,15 @@ def verifica_backup(path: str | Path) -> dict[str, Any]:
         raise FileNotFoundError(f"Backup non trovato: {path}")
 
     data = json.loads(p.read_text(encoding="utf-8"))
+    return _verifica_snapshot(data)
+
+
+def _verifica_snapshot(data: dict[str, Any]) -> dict[str, Any]:
+    """Verify the exact in-memory snapshot consumed by the caller."""
     integrity = data.get("integrity")
     if not isinstance(integrity, dict) or not integrity.get("payload_sha256"):
+        if data.get("meta", {}).get("schema") or "component_status" in data:
+            raise BackupIntegrityError("Structured backup is missing its integrity record")
         return {
             "verified": False,
             "legacy_unverified": True,
@@ -270,14 +277,19 @@ def _serialize_sar_file(contenuto: Any) -> str:
     return json.dumps(contenuto, indent=2, ensure_ascii=False)
 
 
-def ripristina_backup(path: str | Path) -> dict[str, Any]:
+def ripristina_backup(path: str | Path, *, require_complete: bool = False) -> dict[str, Any]:
     """Ripristina SAR solo dopo verifica; i backup legacy restano compatibili."""
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"Backup non trovato: {path}")
 
     data = json.loads(p.read_text(encoding="utf-8"))
-    verifica = verifica_backup(p)
+    if require_complete:
+        raise BackupIntegrityError(
+            "Complete restore is unsupported: only SAR files can be restored; "
+            "memory, VSS, router and configuration require verified restore adapters"
+        )
+    verifica = _verifica_snapshot(data)
     if not verifica["legacy_unverified"] and not verifica["verified"]:
         raise BackupIntegrityError(
             f"Backup alterato: expected={verifica['expected_sha256']} "
@@ -305,6 +317,11 @@ def ripristina_backup(path: str | Path) -> dict[str, Any]:
         "legacy_unverified": verifica["legacy_unverified"],
         "backup_complete": data.get("meta", {}).get("complete"),
         "file_sar_ripristinati": list(rendered.keys()),
-        "memoria_entries": len(data.get("memoria", [])),
-        "vss_entries": len(data.get("vss", [])),
+        "restore_scope": "SAR_ONLY",
+        "restore_complete": False,
+        "memoria_entries": 0,
+        "vss_entries": 0,
+        "snapshot_memoria_entries": len(data.get("memoria", [])),
+        "snapshot_vss_entries": len(data.get("vss", [])),
+        "unsupported_restore_components": ["memoria", "vss", "router", "config"],
     }

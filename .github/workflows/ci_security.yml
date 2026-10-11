@@ -2,16 +2,21 @@ name: CI & Security Scans
 
 on:
   push:
+    branches: [main]
     paths:
       - '**.py'
-      - 'requirements.txt'
+      - '**requirements*.txt'
       - '.github/workflows/**'
+  pull_request:
   workflow_dispatch: {}
 
 jobs:
   ci_security:
-    name: CI + Security
+    name: Tests (blocking) + advisory scans
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: .:integrations/raffaello-bot
 
     steps:
       - name: Checkout
@@ -25,8 +30,8 @@ jobs:
       - name: Install dependencies + tools
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
-          pip install --no-cache-dir ruff mypy pytest coverage bandit pip-audit detect-secrets
+          pip install -r requirements.txt -r r3/requirements.txt -r integrations/raffaello-bot/requirements.txt mistralai
+          pip install --no-cache-dir ruff mypy pytest pytest-timeout coverage bandit pip-audit detect-secrets
 
       - name: Run ruff (lint)
         continue-on-error: true
@@ -38,12 +43,13 @@ jobs:
         run: |
           mypy sdq1 --show-error-codes || true
 
-      - name: Run pytest (tests)
-        continue-on-error: true
+      - name: Run pytest once with coverage (blocking)
         run: |
-          pytest -q || true
-          coverage run -m pytest || true
-          coverage xml -i || true
+          python -m coverage run -m pytest -q
+
+      - name: Export coverage, including failed runs
+        if: always()
+        run: python -m coverage xml -i
 
       - name: Run pip-audit (vulns)
         continue-on-error: true
@@ -61,6 +67,7 @@ jobs:
           detect-secrets scan --all-files > detect_secrets.out || true
 
       - name: Upload scan artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ci-security-artifacts

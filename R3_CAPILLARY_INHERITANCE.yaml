@@ -101,3 +101,12 @@ backup_rule: >
   Capillary propagation does not replace backup. Canonical shared layers and each
   project's unique state must remain independently recoverable from redundant
   storage with verified restore evidence.
+
+candidate_deltas:
+  - id: R3_INTEGRITY_CI_20261009
+    version: 2026-10-09.1
+    classification: PUBLIC
+    state: CANDIDATE_NOT_ADOPTED
+    source: docs/R3_INTEGRITY_CI_20261009.md
+    evidence: docs/evidenze/R3_INTEGRITY_CI_20261009.json
+    propagation: Reviewable delta only; no runtime adoption or leaf update is inferred.
