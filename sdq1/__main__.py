@@ -233,23 +233,11 @@ def main(argv: list[str]) -> int:
                         help="Mostra agenda personale e Pronto Rota (legge output/agenda.json)")
     parser.add_argument("--sync-airbnb", metavar="URL", nargs="?", const="",
                         help="Sincronizza calendario Airbnb iCal (legge AIRBNB_ICAL_URL se URL omesso)")
-    parser.add_argument("--briefing-operativo", action="store_true",
-                        help="Briefing 4 blocchi multi-AI (Gemini+Claude+DeepSeek) → Telegram")
     parser.add_argument("--chat-telegram", action="store_true",
-                        help="Legge messaggi Telegram liberi e risponde come Raffaello (Claude)")
+                        help="Elabora i messaggi Telegram in arrivo e risponde")
+    parser.add_argument("--briefing-operativo", action="store_true",
+                        help="Genera e invia il briefing operativo multi-AI")
     args = parser.parse_args(argv[1:])
-
-    if args.watchdog:
-        from .watchdog import Watchdog
-        wd = Watchdog(health, router, intervallo_s=args.intervallo)
-        print(f"Watchdog avviato — ping ogni {args.intervallo}s — log: output/health_log.jsonl")
-        print("Ctrl+C per fermare.")
-        try:
-            wd.avvia()
-        except KeyboardInterrupt:
-            wd.ferma()
-            print("\nWatchdog fermato.")
-        return 0
 
     if args.contatto:
         _contatti = Path("output/contatti.jsonl")
@@ -295,6 +283,37 @@ def main(argv: list[str]) -> int:
         print(json.dumps(esito, indent=2, ensure_ascii=False))
         return 0
 
+    if args.sync_airbnb is not None:
+        url = args.sync_airbnb or os.environ.get("AIRBNB_ICAL_URL", "")
+        if not url:
+            print("Errore: specifica URL o imposta AIRBNB_ICAL_URL nel .env")
+            return 1
+        from .agenda import sync_airbnb, carica, salva
+        print("Fetch iCal Airbnb...")
+        bookings = sync_airbnb(url)
+        print(f"Trovate {len(bookings)} prenotazioni")
+        dati = carica()
+        dati["prenotazioni_airbnb"] = bookings
+        salva(dati)
+        for b in bookings:
+            stato_b = b.get("titolo", "?")
+            print(f"  {b.get('checkin', '')[:10]} → {b.get('checkout', '')[:10]}  {stato_b}")
+        print("Salvate in output/agenda.json")
+        return 0
+
+    if args.chat_telegram:
+        from .notifiche import esegui_comandi_e_chat
+        n = esegui_comandi_e_chat()
+        print(f"[CHAT] Messaggi elaborati: {n}")
+        return 0
+
+    if args.briefing_operativo:
+        from .notifiche import briefing_operativo
+        print("[BRIEFING] Query multi-AI in corso (Gemini + Claude + DeepSeek)...")
+        ok = briefing_operativo()
+        print(f"[BRIEFING] {'Inviato ✅' if ok else 'Fallito ❌'}")
+        return 0 if ok else 1
+
     orch, router, memoria, stato, metrics, health, vss = costruisci_sistema(args.verbose)
 
     # Startup: aggiorna circuit breaker in base allo stato reale dei provider
@@ -321,6 +340,18 @@ def main(argv: list[str]) -> int:
         for name in list(PROVIDER_REGISTRY):
             if name != "stub":
                 router._circuit[name] = time.time() + 86400  # aperto per 24h
+
+    if args.watchdog:
+        from .watchdog import Watchdog
+        wd = Watchdog(health, router, intervallo_s=args.intervallo)
+        print(f"Watchdog avviato — ping ogni {args.intervallo}s — log: output/health_log.jsonl")
+        print("Ctrl+C per fermare.")
+        try:
+            wd.avvia()
+        except KeyboardInterrupt:
+            wd.ferma()
+            print("\nWatchdog fermato.")
+        return 0
 
     if args.autoevoluzione:
         _data, _ora = _ora_brussels()
@@ -464,7 +495,9 @@ def main(argv: list[str]) -> int:
         print(f"[SNAPSHOT] Salvato: {dest}")
         if args.push:
             ok = push_snapshot(dest)
-            print(f"[SNAPSHOT] Push GitHub: {'OK' if ok else 'FALLITO'}")
+            print(f"[SNAPSHOT] Push GitHub: {'VERIFICATO' if ok else 'NON VERIFICATO'}")
+            if not ok:
+                return 1
         return 0
 
     if args.agenti or args.agenti_autonomo:
@@ -496,37 +529,6 @@ def main(argv: list[str]) -> int:
         print(f"Pronto Rota: {len(rota)} item da fare\n")
         print(riepilogo_briefing() or "(agenda vuota)")
         return 0
-
-    if args.sync_airbnb is not None:
-        url = args.sync_airbnb or os.environ.get("AIRBNB_ICAL_URL", "")
-        if not url:
-            print("Errore: specifica URL o imposta AIRBNB_ICAL_URL nel .env")
-            return 1
-        from .agenda import sync_airbnb, carica, salva
-        print("Fetch iCal Airbnb...")
-        bookings = sync_airbnb(url)
-        print(f"Trovate {len(bookings)} prenotazioni")
-        dati = carica()
-        dati["prenotazioni_airbnb"] = bookings
-        salva(dati)
-        for b in bookings:
-            stato = b.get("titolo", "?")
-            print(f"  {b.get('checkin', '')[:10]} → {b.get('checkout', '')[:10]}  {stato}")
-        print("Salvate in output/agenda.json")
-        return 0
-
-    if args.chat_telegram:
-        from .notifiche import esegui_comandi_e_chat
-        n = esegui_comandi_e_chat()
-        print(f"[CHAT] Messaggi elaborati: {n}")
-        return 0
-
-    if args.briefing_operativo:
-        from .notifiche import briefing_operativo
-        print("[BRIEFING] Query multi-AI in corso (Gemini + Claude + DeepSeek)...")
-        ok = briefing_operativo()
-        print(f"[BRIEFING] {'Inviato ✅' if ok else 'Fallito ❌'}")
-        return 0 if ok else 1
 
     if args.notifica_test or args.notifica_briefing or args.telegram_comandi:
         from .notifiche import test_connessione, briefing_mattutino, esegui_comandi
@@ -695,6 +697,14 @@ def main(argv: list[str]) -> int:
         print(f"\nReport salvato: {dest}")
         return 0
 
+    comando_rete = " ".join(args.testo).strip().casefold()
+    if comando_rete in {"rosso rosso rosso", "attiva rosso rosso rosso"}:
+        from r3.rrr_control import main as rrr_control_main
+        return rrr_control_main(["activate"])
+    if comando_rete in {"rosso rosso rosso stato", "stato rosso rosso rosso"}:
+        from r3.rrr_control import main as rrr_control_main
+        return rrr_control_main(["status"])
+
     testo = " ".join(args.testo) or "Ciao SDQ-1, sei attivo?"
     esecuzione = orch.esegui({"testo": testo})
 
@@ -717,15 +727,28 @@ def main(argv: list[str]) -> int:
 
     if args.sar:
         from .sar import ScacchieraAutoRiflessiva, report_ciclo
+        from .sar.ponte_registro import PonteRegistroSAR
 
         def _llm(sistema: str, utente: str) -> str:
             return router.chiama(sistema, utente, profilo="default").risposta.testo
 
-        sar = ScacchieraAutoRiflessiva(llm_fn=_llm, vss=vss, soggetto="Claudio")
+        # P5/P6: le conclusioni SAR entrano nel Registro come S* (mai auto-confermate)
+        ponte = PonteRegistroSAR(percorso="registro_ipotesi.json", llm_fn=_llm)
+        sar = ScacchieraAutoRiflessiva(
+            llm_fn=_llm, vss=vss, soggetto="Claudio", ponte_registro=ponte,
+        )
         if testo:
             sar.osserva(testo, tag=["input"])
         report = sar.ciclo_completo(args.sar)
         print(report_ciclo(report, soggetto="Claudio"))
+        reg = report.get("registro_ipotesi") or {}
+        if reg.get("registrata"):
+            print(
+                f"REGISTRO IPOTESI: {reg.get('id')} → {reg.get('stato')} "
+                f"(falsificabile={reg.get('falsificabile')})"
+            )
+        elif reg:
+            print(f"REGISTRO IPOTESI: non registrata ({reg.get('motivo', 'n/d')})")
         azione = sar.genera_azione(report.get("sintesi", ""))
         print("AZIONE CONCRETA (Livello 9)\n" + "─" * 60)
         print(azione)

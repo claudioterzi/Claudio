@@ -1,3 +1,22 @@
+# ⚠️ STATO 2026-09-18 — ARCHIVIO / NON PUBBLICARE COME CLAIM CORRENTI
+
+Questo file conserva bozze storiche di lancio. **Non è una descrizione affidabile dello stato attuale.**
+
+Le frasi sotto come “3 nodi in produzione”, “garantisce”, “riparazione automatica”, “no single point of failure” e analoghe **non vanno pubblicate come fatti** finché i relativi property test non esistono.
+
+Evidenza più forte disponibile al 18/09/2026:
+- test locale a due processi: PASS;
+- test remoto su due servizi distinti dello **stesso provider Railway**: PASS per A down → B serve l’oggetto esatto → A ricreato e recuperato da B;
+- provider/ASN distinti: **PENDING**;
+- storage durevole dei nodi remoti: **PENDING**;
+- autenticazione inter-peer completa: **PENDING**.
+
+Fonte di stato: `docs/R3_REMOTE_SERVICE_FAILOVER_2026-09-18.md`.
+
+Il materiale seguente resta preservato per storia e confronto, non come copy autorizzato alla pubblicazione.
+
+---
+
 # R³∞ — Kit di Distribuzione
 
 Testi pronti per ogni piattaforma. Copia, incolla, pubblica.

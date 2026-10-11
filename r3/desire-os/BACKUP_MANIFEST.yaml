@@ -1,0 +1,21 @@
+version: "1.0"
+canonical:
+  code_protocols: github
+operational:
+  dossiers_assets: google_drive
+rules:
+  silent_overwrite: false
+  dedup_before_copy: true
+  preserve_provenance: true
+  preserve_parent_ids: true
+  conflict_mode: RECORD_CONFLICT
+  cross_project_requires_scope_gate: true
+  restore_test: quarterly
+release_bundle:
+  - README
+  - IDEA_REGISTRY
+  - DECISION_LEDGER
+  - CHANGELOG
+  - ASSET_INDEX
+  - BACKUP_MANIFEST
+  - SHA256_MANIFEST

@@ -1,80 +1,164 @@
 # PROGETTO BENCHMARK — Wayback Machine per AI
 
-> Documento fondativo. 2026-06-19.
-> Ipotesi H6 di Claudio Terzi: i modelli AI vengono aggiornati silenziosamente
-> senza notifica. Nessuno sa cosa cambia, quando, e quanto.
-> Questo progetto costruisce la memoria storica delle capacità AI.
+> Documento fondativo. 2026-06-19. Aggiornato 2026-09-11.
+> Ipotesi H6 di Claudio Terzi: i modelli AI possono cambiare nel tempo e il progetto deve misurare che cosa cambia realmente.
+> Il benchmark diventa anche il banco prova di R3∞: non solo confronto fra modelli, ma misura longitudinale delle capacità dell'intero sistema.
 
 ---
 
 ## Il problema
 
-I provider AI aggiornano i modelli senza annuncio.
-"GPT-4" di oggi non è "GPT-4" di 6 mesi fa.
-Non esiste un sistema indipendente che tracci queste variazioni nel tempo.
+Un sistema può sembrare migliore senza esserlo davvero. Più testo, più agenti, più automazioni o una risposta più elegante non dimostrano più capacità.
 
-Conseguenze:
-- Gli sviluppatori non sanno se un bug è nel loro codice o nel modello cambiato
-- I ricercatori non possono confrontare risultati cross-temporali
-- Gli utenti non hanno segnale indipendente su cosa un modello sa fare oggi
+Servono misure che distinguano:
+- cambiamenti del modello;
+- miglioramenti dell'orchestrazione;
+- vantaggi del Protocollo Rosso Rosso Rosso;
+- effetti della memoria e degli strumenti;
+- regressioni;
+- semplice adattamento ai test già noti.
 
-## La soluzione (H6)
+## Obiettivo
 
-Una "Wayback Machine" per modelli AI:
-- Batteria di 20 test fissi (logica, matematica, creatività, bias, memoria, codice)
-- Eseguiti settimanalmente su ogni modello
-- Storage risultati time-series su R3∞
-- Confronto automatico: "cosa è cambiato rispetto a 4 settimane fa?"
-- Alert se un modello migliora o peggiora su un test specifico
+Costruire una memoria storica verificabile delle capacità AI e R3∞.
 
-## Codice esistente
+Ogni run deve conservare:
+- versione del modello e configurazione disponibile;
+- commit del sistema;
+- protocollo/prompt;
+- strumenti disponibili;
+- budget dichiarato;
+- problemi e gold set;
+- output grezzi;
+- valutazioni;
+- errori, timeout e run invalidi.
 
-`sdq1/benchmark.py` — 20 test, storage time-series, confronto retroattivo.
+Mai sovrascrivere una baseline con una nuova esecuzione dello stesso giorno.
+
+## Disegno A/B/C/D
+
+| Condizione | Modello | Metodo |
+| --- | --- | --- |
+| A | modello di confronto | istruzioni essenziali |
+| B | modello di confronto | Protocollo RRR operativo |
+| C | modello candidato più forte | istruzioni essenziali |
+| D | modello candidato più forte | Protocollo RRR operativo |
+
+Interpretazione:
+- C − A = contributo del modello;
+- D − C = contributo del protocollo;
+- D − B = confronto fra modelli a metodo uguale.
+
+Le condizioni devono ricevere gli stessi problemi e dati, con budget comparabile e valutazione separata dalla generazione quando possibile.
+
+## Categorie di capacità
+
+1. Ragionamento logico
+2. Matematica e probabilità
+3. Diagnosi causale
+4. Programmazione e debugging
+5. Ricostruzione dell'intenzione
+6. Uso corretto delle fonti
+7. Autocorrezione dopo evidenza contraria
+8. Trasferimento a problemi nuovi
+9. Pianificazione di verifiche
+10. Robustezza a prompt avversi
+11. Memoria di progetto e provenienza
+12. Creatività vincolata e utilità pratica
+13. Riduzione del costo per risultato corretto
+14. Rilevamento dell'incertezza
+15. Capacità di non inventare un successo mancante
+
+## R3-019 — Longitudinal Capability Benchmark
+
+R3-019 è il benchmark prioritario.
+
+Regole obbligatorie:
+- nessuna metrica positiva se i test non sono realmente eseguiti;
+- un run incompleto resta incompleto;
+- ogni run ha ID unico e timestamp;
+- baseline e run sono concetti distinti;
+- i dati sintetici aiutano lo sviluppo ma non sono l'unica prova di progresso;
+- test fuori campione necessari per promuovere un miglioramento;
+- registrare regressioni e risultati nulli;
+- una metrica deve misurare ciò che il suo nome dichiara.
+
+## Stato del codice storico
+
+`sdq1/benchmark.py` resta la base storica dei test.
+
+Il programma di evoluzione aggiornato è definito in:
+`docs/R3_CAPABILITY_EVOLUTION_2026-09-11.md`.
+
+Un audit del 2026-09-11 ha identificato un rischio metodologico da evitare nei runner: non interpretare automaticamente “0 test falliti” come “100% riuscito” quando il numero di test validi è zero o il run è invalido.
+
+## Livelli di evidenza
+
+### L0 — Integrità meccanica
+Test, parser, storage e runner funzionano.
+
+### L1 — Capacità interna ripetibile
+Il sistema risolve compiti controllati con criterio verificabile.
+
+### L2 — Generalizzazione
+Il miglioramento regge su problemi nuovi o temporalmente separati.
+
+### L3 — Validazione esterna
+Valutatore, fonte o ambiente indipendente conferma il risultato.
+
+Una capacità non deve essere descritta come L2/L3 se esiste soltanto evidenza L0/L1.
 
 ## Roadmap
 
-### Fase 0 — Operativo base (2026)
-- [x] `sdq1/benchmark.py` creato con 20 test
-- [ ] Prima esecuzione completa su tutti i provider disponibili
-- [ ] Storage risultati in `output/benchmark/YYYY-MM-DD.json`
-- [ ] Grafici automatici (matplotlib o simile)
+### Fase 0 — Rendere affidabile il misuratore
+- [ ] ID univoco per ogni run
+- [ ] Nessuna sovrascrittura della baseline
+- [ ] Gestione esplicita di test mancanti, errori e timeout
+- [ ] Gold set separato dal set di sviluppo
+- [ ] Metriche con denominatori espliciti
 
-### Fase 1 — Automazione (2026–2027)
-- [ ] GitHub Action settimanale: esegui benchmark → commit risultati
-- [ ] Alert automatico se delta > 10% su un test
-- [ ] Dashboard pubblica (Vercel o GitHub Pages)
+### Fase 1 — Primo confronto controllato
+- [ ] Preparare compiti nuovi
+- [ ] Eseguire A/B/C/D
+- [ ] Valutare accuratezza, costo, autocorrezione e trasferimento
+- [ ] Conservare output grezzi
 
-### Fase 2 — Pubblico e validazione (2027–2028)
-- [ ] Pubblicazione metodologia (paper o post)
-- [ ] Comunità di contribuenti (altri aggiungono test)
-- [ ] Primo caso documentato di "aggiornamento silenzioso" rilevato
+### Fase 2 — Automazione
+- [ ] GitHub Action periodica
+- [ ] Alert su regressioni significative
+- [ ] Dashboard con intervalli, non solo punteggi singoli
 
-### Fase 3 — Standard de facto (2028–2033)
-- [ ] I provider citano il benchmark come riferimento
-- [ ] Integrazione con ricerca accademica
-- [ ] H6 confermata: variazioni rilevate e documentate per almeno 3 modelli
-
-## I 20 test (categoria)
-
-| # | Categoria | Esempio |
-|---|---|---|
-| 1-4 | Logica | Sillogismi, paradossi, sequenze |
-| 5-7 | Matematica | Calcolo, probabilità, geometria |
-| 8-10 | Creatività | Metafore, storie, invenzioni |
-| 11-13 | Bias | Prompt ambigui, stereotipi impliciti |
-| 14-16 | Memoria | Contesto lungo, riferimenti incrociati |
-| 17-18 | Codice | Bug fixing, completamento, refactoring |
-| 19-20 | Ragionamento causale | "Se X allora Y perché..." |
+### Fase 3 — Validazione
+- [ ] Revisione indipendente della metodologia
+- [ ] Dataset versionato
+- [ ] Repliche temporali
+- [ ] Documentare almeno un miglioramento e una regressione reali
 
 ## Connessione con il sistema
 
 | Componente | Ruolo |
 |---|---|
-| R3∞ | Storage risultati benchmark storici |
-| SDQ-1 router | Esecuzione test su provider multipli |
-| GitHub Actions | Automazione settimanale |
+| R3∞ | storage storico e provenienza |
+| SDQ-1 | esecuzione/orchestrazione |
+| Protocollo RRR | disciplina epistemica e falsificazione |
+| R3-011 | Evidence Graph |
+| R3-012 | scelta delle verifiche |
+| R3-016 | separazione sintetico/reale |
+| R3-017 | red/blue/purple testing |
+| R3-020 | gate prima della promozione |
+
+## Regola fondamentale
+
+Il benchmark non deve dimostrare ciò che desideriamo. Deve poter concludere anche:
+- nessun miglioramento;
+- regressione;
+- risultato non misurabile;
+- vantaggio troppo piccolo rispetto al costo;
+- differenza dovuta al modello e non al protocollo, o viceversa.
+
+Solo così può sostenere seriamente il sogno di un sistema progressivamente più capace.
 
 ---
 
-*Claudio Terzi + Claude — 2026-06-19*
-*Prossimo passo: prima esecuzione completa benchmark su provider disponibili.*
+**Claudio Terzi — C.Terzi**  
+*Prossimo passo: primo benchmark A/B/C/D su problemi fuori campione.*

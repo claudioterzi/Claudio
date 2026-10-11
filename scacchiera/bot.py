@@ -50,7 +50,7 @@ log = logging.getLogger("scacchiera")
 # ── Stato runtime ─────────────────────────────────────────────────────────────
 
 _app: Application | None = None     # riferimento globale per l'HTTP handler
-_chat_id_live: str = CHAT_ID        # aggiornato al primo messaggio ricevuto
+_chat_id_live: str = CHAT_ID        # fixed owner binding, never learned from inbound traffic
 
 # ── Scacchiera: dati ─────────────────────────────────────────────────────────
 
@@ -82,17 +82,16 @@ def _ora() -> str:
 
 # ── Utilità: cattura chat_id ──────────────────────────────────────────────────
 
-def _aggiorna_chat_id(update: Update) -> None:
-    global _chat_id_live
+def _aggiorna_chat_id(update: Update) -> bool:
+    """Accept only the explicitly configured owner chat; never self-enroll."""
     cid = str(update.effective_chat.id) if update.effective_chat else ""
-    if cid and cid != _chat_id_live:
-        log.info("chat_id aggiornato → %s", cid)
-        _chat_id_live = cid
+    return bool(CHAT_ID and cid == str(CHAT_ID))
 
 # ── Handler IN: Scacchiera ───────────────────────────────────────────────────
 
 async def cmd_start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    _aggiorna_chat_id(update)
+    if not _aggiorna_chat_id(update):
+        return ConversationHandler.END
     await update.message.reply_text(
         "♟️ *Scacchiera Quantica* — sistema attivo.\n\n"
         "Scrivi *Rosso Rosso Rosso* per attivare il protocollo.\n"
@@ -101,7 +100,8 @@ async def cmd_start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     )
 
 async def cmd_status(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    _aggiorna_chat_id(update)
+    if not _aggiorna_chat_id(update):
+        return ConversationHandler.END
     cid = _chat_id_live or "—"
     await update.message.reply_text(
         f"📊 *Scacchiera Quantica — status*\n\n"
@@ -113,7 +113,8 @@ async def cmd_status(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     )
 
 async def cmd_help(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    _aggiorna_chat_id(update)
+    if not _aggiorna_chat_id(update):
+        return ConversationHandler.END
     await update.message.reply_text(
         "🗺️ *Comandi disponibili*\n\n"
         "*Rosso Rosso Rosso* — attiva il protocollo modale\n"
@@ -128,7 +129,8 @@ async def cmd_help(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     )
 
 async def trigger_protocollo(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    _aggiorna_chat_id(update)
+    if not _aggiorna_chat_id(update):
+        return ConversationHandler.END
     await update.message.reply_text(
         "🔴🔴🔴 *Protocollo attivato.*\n\nScegli la modalità:",
         parse_mode="Markdown",
@@ -137,6 +139,8 @@ async def trigger_protocollo(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     return SCEGLI_MODALITA
 
 async def scegli_modalita(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    if not _aggiorna_chat_id(update):
+        return ConversationHandler.END
     query = update.callback_query
     await query.answer()
     if query.data == "annulla":
@@ -153,6 +157,8 @@ async def scegli_modalita(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     return INSERISCI_TARGET
 
 async def inserisci_target(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    if not _aggiorna_chat_id(update):
+        return ConversationHandler.END
     target = update.message.text.strip()
     k = ctx.user_data.get("modalita", "manifestazione")
     emoji, nome, messaggio = MODALITA[k]
@@ -167,7 +173,8 @@ async def inserisci_target(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 async def cmd_annulla(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    _aggiorna_chat_id(update)
+    if not _aggiorna_chat_id(update):
+        return ConversationHandler.END
     await update.message.reply_text("Protocollo interrotto.")
     return ConversationHandler.END
 
@@ -178,7 +185,9 @@ async def error_handler(update: object, ctx: ContextTypes.DEFAULT_TYPE):
 
 async def http_send(request: web.Request) -> web.Response:
     """Riceve POST /send e inoltra il messaggio a Claudio via Telegram."""
-    # Autenticazione
+    # Missing configuration must never create an open message relay.
+    if not SECRET:
+        return web.Response(status=503, text="Relay authentication unavailable")
     if SECRET:
         auth = request.headers.get("Authorization", "")
         if auth != f"Bearer {SECRET}":
@@ -190,6 +199,8 @@ async def http_send(request: web.Request) -> web.Response:
     except Exception:
         return web.Response(status=400, text="JSON non valido")
 
+    if not isinstance(body, dict) or not isinstance(body.get("text", ""), str):
+        return web.Response(status=400, text="Payload non valido")
     text = body.get("text", "").strip()
     if not text:
         return web.Response(status=400, text="Campo 'text' mancante")
