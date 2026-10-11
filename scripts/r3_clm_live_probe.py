@@ -90,13 +90,14 @@ def _metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
         row["result"].get("focus", {}).get("value") == row["expected_focus"]
         for row in evaluated
     )
-    required_total = sum(len(row["must_detect_flags"]) for row in evaluated)
+    required_total = sum(len(row["must_detect_flags"]) for row in rows)
     required_hit = sum(len(row["detected_required_flags"]) for row in evaluated)
     return {
         "case_count": len(rows),
         "evaluated_count": len(evaluated),
-        "lane_accuracy": round(lane_correct / len(evaluated), 4) if evaluated else None,
-        "focus_accuracy": round(focus_correct / len(evaluated), 4) if evaluated else None,
+        "failed_count": len(rows) - len(evaluated),
+        "lane_accuracy": round(lane_correct / len(rows), 4) if rows else None,
+        "focus_accuracy": round(focus_correct / len(rows), 4) if rows else None,
         "required_flag_recall": round(required_hit / required_total, 4) if required_total else None,
         "required_flag_hits": required_hit,
         "required_flag_total": required_total,
@@ -148,9 +149,13 @@ def main() -> int:
     if cold_p50 and warm_p50:
         speedup = round(cold_p50 / warm_p50, 3)
 
+    complete = bool(cases) and all(
+        metrics["evaluated_count"] == len(cases)
+        for metrics in (cold_metrics, warm_metrics)
+    )
     payload = {
         "schema": "R3-CLM-REDFLAG-LIVE/0.1",
-        "status": "LIVE_CLM_INFERENCE_COMPLETED",
+        "status": "LIVE_CLM_INFERENCE_COMPLETED" if complete else "LIVE_CLM_INFERENCE_INCOMPLETE",
         "authority": "ADVISORY_ONLY",
         "promotion_grade": False,
         "promotion_note": (
@@ -203,7 +208,7 @@ def main() -> int:
         "cache_wall_p50_speedup": speedup,
         "output": str(out),
     }, indent=2))
-    return 0
+    return 0 if complete else 1
 
 
 if __name__ == "__main__":

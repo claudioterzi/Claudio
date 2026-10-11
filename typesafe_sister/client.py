@@ -1,8 +1,9 @@
-"""Shared provider-neutral System One transport for R³.
+"""Shared server-side System One transport for R3∞.
 
-The wire format is the TypeSafe-compatible POST /v1/systemone schema used by
-hosted Jev and local/open CLM.  Existing callers default to Jev/TypeSafe;
-CLM is opt-in and never creates a second semantic-policy stack.
+The canonical layer is provider-neutral. It can use the hosted TypeSafe/Jev API or
+an open/self-hosted Contrastive Language Model (CLM) endpoint exposing the
+TypeSafe-compatible /v1/systemone contract.  Callers keep the same policy layer
+and never gain action authority from a model score.
 """
 from __future__ import annotations
 
@@ -12,85 +13,140 @@ from urllib.parse import urlparse
 import httpx
 
 
-class TypeSafeNotConfigured(RuntimeError):
-    """Historical compatibility name for an unavailable System One provider."""
+class SystemOneNotConfigured(RuntimeError):
+    pass
 
 
-def _provider_name(provider=None):
-    value = str(provider or os.getenv("R3_SYSTEM_ONE_PROVIDER", "typesafe")).strip().lower()
-    if value in {"jev", "typesafe"}:
-        return "typesafe"
-    if value == "clm":
-        return "clm"
-    raise ValueError("provider must be typesafe/jev or clm")
+class SystemOneCapabilityUnavailable(RuntimeError):
+    pass
+
+
+# Backwards-compatible import used by older modules/tests.
+TypeSafeNotConfigured = SystemOneNotConfigured
+
+
+def _clean(value):
+    return str(value or "").strip()
 
 
 def _is_loopback(url):
     try:
-        host = (urlparse(url).hostname or "").lower()
+        parsed = urlparse(url)
+        return parsed.scheme in {"http", "https"} and parsed.hostname in {"127.0.0.1", "localhost", "::1"}
     except ValueError:
         return False
-    return host in {"127.0.0.1", "localhost", "::1"}
+
+
+def _resolve_backend(*, provider=None, api_key=None, model=None, base_url=None):
+    requested = _clean(provider or os.getenv("R3_SYSTEMONE_PROVIDER") or os.getenv("R3_SYSTEM_ONE_PROVIDER", "auto")).lower()
+    requested = {"r3-clm": "r3_clm", "internal": "r3_clm", "jev": "typesafe"}.get(requested, requested)
+    if requested not in {"auto", "clm", "typesafe", "r3_clm"}:
+        raise ValueError("Unsupported System One provider")
+    if requested == "r3_clm":
+        # Internal deterministic baseline: local, network-free, never auto-selected.
+        from typesafe_sister.r3_clm import MODEL_ID
+        return {"provider": "r3_clm", "base_url": "local", "model": MODEL_ID, "api_key": ""}
+
+    generic_url = _clean(base_url or os.getenv("R3_SYSTEMONE_BASE_URL", ""))
+    generic_model = _clean(model or os.getenv("R3_SYSTEMONE_MODEL", ""))
+    generic_key = _clean(api_key if api_key is not None else os.getenv("R3_SYSTEMONE_API_KEY", ""))
+
+    clm_url = _clean(os.getenv("CLM_BASE_URL", ""))
+    clm_key = _clean(os.getenv("CLM_API_KEY", ""))
+    clm_model = _clean(os.getenv("CLM_MODEL", "clm-latest")) or "clm-latest"
+
+    ts_url = _clean(os.getenv("TYPESAFE_BASE_URL", "https://api.typesafe.ai")) or "https://api.typesafe.ai"
+    ts_key = _clean(os.getenv("TYPESAFE_API_KEY", ""))
+    ts_model = _clean(os.getenv("TYPESAFE_MODEL", "jev-latest")) or "jev-latest"
+
+    selected = requested
+    if requested == "auto":
+        hint_model = generic_model.lower()
+        if hint_model.startswith("clm"):
+            selected = "clm"
+        elif hint_model.startswith("jev"):
+            selected = "typesafe"
+        elif generic_url and "typesafe.ai" not in generic_url.lower():
+            selected = "clm"
+        elif clm_url:
+            # CLM is the preferred candidate when an endpoint is deliberately configured.
+            selected = "clm"
+        elif ts_key:
+            selected = "typesafe"
+        else:
+            raise SystemOneNotConfigured("No System One backend is configured")
+
+    if selected == "clm":
+        endpoint = generic_url or clm_url
+        if not endpoint:
+            # Local CLM is opt-in: this default is used only when provider=clm explicitly.
+            if requested == "clm":
+                endpoint = "http://127.0.0.1:8700"
+            else:
+                raise SystemOneNotConfigured("CLM endpoint is not configured")
+        if not (generic_key or clm_key) and not _is_loopback(endpoint):
+            raise SystemOneNotConfigured("Remote CLM requires CLM_API_KEY")
+        return {
+            "provider": "clm",
+            "base_url": endpoint.rstrip("/"),
+            "model": generic_model or clm_model,
+            # Only loopback CLM may omit authentication.
+            "api_key": generic_key or clm_key,
+        }
+
+    key = generic_key or ts_key
+    if not key:
+        raise SystemOneNotConfigured("TypeSafe/Jev is not configured")
+    return {
+        "provider": "typesafe",
+        "base_url": (generic_url or ts_url).rstrip("/"),
+        "model": generic_model or ts_model,
+        "api_key": key,
+    }
+
+
+def backend_info(*, provider=None, model=None, base_url=None):
+    """Return safe backend metadata without exposing credentials."""
+    try:
+        cfg = _resolve_backend(provider=provider, model=model, base_url=base_url)
+    except SystemOneNotConfigured:
+        return {
+            "configured": False,
+            "provider": None,
+            "model": None,
+            "base_url": None,
+        }
+    return {
+        "configured": True,
+        "provider": cfg["provider"],
+        "model": cfg["model"],
+        "base_url": cfg["base_url"],
+    }
 
 
 def configured(provider=None, *, base_url=None, api_key=None):
-    selected = _provider_name(provider)
-    if selected == "typesafe":
-        key = api_key if api_key is not None else os.getenv("TYPESAFE_API_KEY", "")
-        return bool(str(key).strip())
-
-    endpoint = (base_url or os.getenv("CLM_BASE_URL", "http://127.0.0.1:8700")).rstrip("/")
-    key = api_key if api_key is not None else os.getenv("CLM_API_KEY", "")
-    # An unauthenticated CLM endpoint is accepted only on loopback.  Remote CLM
-    # deployments must provide an API key so adding CLM cannot weaken the
-    # existing credential boundary by accident.
-    return bool(str(key).strip()) or _is_loopback(endpoint)
+    try:
+        _resolve_backend(provider=provider, base_url=base_url, api_key=api_key)
+    except SystemOneNotConfigured:
+        return False
+    return True
 
 
-def system_one(
-    state,
-    questions,
-    *,
-    api_key=None,
-    model=None,
-    base_url=None,
-    timeout=8,
-    provider=None,
-):
-    """Call one TypeSafe-compatible System One endpoint.
+def _post_json(path, payload, *, provider=None, api_key=None, model=None, base_url=None, timeout=8):
+    cfg = _resolve_backend(provider=provider, api_key=api_key, model=model, base_url=base_url)
+    headers = {}
+    if cfg["api_key"]:
+        headers["Authorization"] = "Bearer " + cfg["api_key"]
 
-    provider="typesafe" (default) preserves the existing Jev behavior.
-    provider="clm" speaks the same wire schema to clm-serve.
-    """
-    selected = _provider_name(provider)
-
-    if selected == "typesafe":
-        key = (api_key if api_key is not None else os.getenv("TYPESAFE_API_KEY", "")).strip()
-        if not key:
-            raise TypeSafeNotConfigured("TypeSafe/Jev is not configured")
-        endpoint = (base_url or os.getenv("TYPESAFE_BASE_URL", "https://api.typesafe.ai")).rstrip("/")
-        request_model = model or os.getenv("TYPESAFE_MODEL", "jev-latest")
-    else:
-        endpoint = (base_url or os.getenv("CLM_BASE_URL", "http://127.0.0.1:8700")).rstrip("/")
-        key = (api_key if api_key is not None else os.getenv("CLM_API_KEY", "")).strip()
-        if not key and not _is_loopback(endpoint):
-            raise TypeSafeNotConfigured("Remote CLM requires CLM_API_KEY")
-        request_model = model or os.getenv("CLM_MODEL", "clm-latest")
-
-    headers = {"Authorization": "Bearer " + key} if key else {}
-    # No redirects or automatic retries: credentials remain at the configured
-    # endpoint and one decision request has a bounded inference budget.
+    # No redirects or automatic retries: credentials stay at the configured endpoint
+    # and one planning request has a bounded inference budget.
     with httpx.Client(timeout=timeout, follow_redirects=False) as client:
-        response = client.post(
-            endpoint + "/v1/systemone",
-            headers=headers,
-            json={"state": state, "questions": questions, "model": request_model},
-        )
+        response = client.post(cfg["base_url"] + path, headers=headers, json=payload)
         response.raise_for_status()
         if len(response.content) > 131072:
             raise ValueError("System One response too large")
         result = response.json()
-        if selected == "clm":
+        if isinstance(result, dict) and cfg["provider"] == "clm":
             latency = response.headers.get("X-CLM-Latency-Ms")
             if latency is not None:
                 try:
@@ -98,6 +154,53 @@ def system_one(
                 except (TypeError, ValueError):
                     pass
 
-    if not isinstance(result, dict) or not isinstance(result.get("answers"), dict):
+    if not isinstance(result, dict):
         raise ValueError("Invalid System One response")
+    result["_r3_provider"] = cfg["provider"]
+    return result
+
+
+def system_one(state, questions, *, api_key=None, model=None, base_url=None, provider=None, timeout=8):
+    cfg = _resolve_backend(provider=provider, api_key=api_key, model=model, base_url=base_url)
+    if cfg["provider"] == "r3_clm":
+        from typesafe_sister.r3_clm import system_one_local
+        result = dict(system_one_local(state, questions))
+        result["_r3_provider"] = "r3_clm"
+        return result
+    result = _post_json(
+        "/v1/systemone",
+        {"state": state, "questions": questions, "model": cfg["model"]},
+        provider=cfg["provider"],
+        api_key=cfg["api_key"],
+        model=cfg["model"],
+        base_url=cfg["base_url"],
+        timeout=timeout,
+    )
+    if not isinstance(result.get("answers"), dict):
+        raise ValueError("Invalid System One response")
+    return result
+
+
+def rank(context, question, answers, *, api_key=None, model=None, base_url=None, provider=None, timeout=8):
+    """Rank free-form candidate actions using CLM's native /v1/rank primitive.
+
+    Jev remains supported for typed Choice/Score/Noul calls; native rank is a CLM
+    capability and is intentionally not emulated here so callers can distinguish
+    real backend capabilities from approximations.
+    """
+    cfg = _resolve_backend(provider=provider, api_key=api_key, model=model, base_url=base_url)
+    if cfg["provider"] != "clm":  # r3_clm has no native rank either
+        raise SystemOneCapabilityUnavailable("Native rank requires a CLM backend")
+    result = _post_json(
+        "/v1/rank",
+        {"context": context, "question": question, "answers": list(answers)},
+        provider=cfg["provider"],
+        api_key=cfg["api_key"],
+        model=cfg["model"],
+        base_url=cfg["base_url"],
+        timeout=timeout,
+    )
+    ranked = result.get("ranked")
+    if not isinstance(ranked, list):
+        raise ValueError("Invalid CLM rank response")
     return result

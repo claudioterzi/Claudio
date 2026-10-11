@@ -63,3 +63,23 @@ These tests verify adapter/policy/gate behavior only. They do **not** prove the
 quality, latency or accuracy of a real CLM model. A live CLM benchmark requires
 a reachable `clm-serve` backed by its compatible encoder/head and must be
 recorded separately before any default-provider change.
+
+
+## Candidate reconciliation — 2026-10-11
+
+Classification: PATCH / RETEST. The candidate now incorporates current main;
+historical entries above describe the original 2026-09-28 implementation.
+The shared transport preserves main's explicit/auto CLM routing, hosted Jev
+fallback/reference, native CLM rank and explicit network-free r3_clm baseline.
+There is no new default-provider promotion in this reconciliation.
+
+Remote CLM now requires authentication through the existing CLM or generic
+System One key configuration; unauthenticated calls are restricted to HTTP(S)
+loopback. Both provider environment variable spellings are supported, with
+R3_SYSTEMONE_PROVIDER taking precedence, and jev remains an alias for typesafe.
+The centralized policy retains both architecture Red Flag and cluster RedFrag
+question sets. CLM server latency metadata is preserved for the live probe.
+
+Probe accuracy and required-flag recall include failed cases in their denominators.
+Empty/partial runs record LIVE_CLM_INFERENCE_INCOMPLETE and exit nonzero.
+This change supplies deterministic evidence only, not a new live model benchmark.
