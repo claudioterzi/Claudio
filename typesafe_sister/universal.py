@@ -1,7 +1,9 @@
-"""Universal advisory TypeSafe/Jev layer for every R3 project.
+"""Universal advisory System One layer for every R3 project.
 
-This module never authorizes an external action. It returns typed judgments that
-Raffaello/application code may use as a second opinion under P5/P6.
+The shared layer can route to CLM or TypeSafe/Jev without creating a parallel
+judgment engine. It never authorizes an external action. It returns typed
+judgments that Raffaello/application code may use as a second opinion under
+P5/P6.
 """
 from __future__ import annotations
 
@@ -10,7 +12,7 @@ import json
 import logging
 import math
 
-from typesafe_sister.client import TypeSafeNotConfigured, system_one
+from typesafe_sister.client import SystemOneNotConfigured, system_one
 from typesafe_sister.policy import (
     UNIVERSAL_FOCUS,
     UNIVERSAL_POLICY_VERSION,
@@ -18,7 +20,7 @@ from typesafe_sister.policy import (
     universal_questions,
 )
 
-LOGGER = logging.getLogger("r3.typesafe_universal")
+LOGGER = logging.getLogger("r3.systemone_universal")
 MAX_STATE_BYTES = 64 * 1024
 
 
@@ -75,12 +77,24 @@ def _noul(answer):
     return _probability(answer.get("noul"))
 
 
+def _provider_from_result(result):
+    provider = str(result.get("_r3_provider") or "").strip().lower()
+    if provider:
+        return provider[:40]
+    model = str(result.get("model") or "").lower()
+    if model.startswith("clm"):
+        return "clm"
+    if model.startswith("jev"):
+        return "typesafe"
+    return "systemone"
+
+
 def assess_project_state(project_id, state, *, context=None, timeout=8):
     """Return bounded advisory judgments for any project state.
 
-    Callers decide how to use the result. In particular, no TypeSafe output is
-    permission to spend, publish, send, delete, deploy, merge or otherwise change
-    external state.
+    Callers decide how to use the result. In particular, no System One output is
+    permission to spend, publish, send, delete, deploy, merge or otherwise
+    change external state.
     """
     project = str(project_id or "general").strip()[:120] or "general"
     payload = {"project": project, "state": state}
@@ -100,7 +114,7 @@ def assess_project_state(project_id, state, *, context=None, timeout=8):
         result = system_one(payload, questions, timeout=timeout)
         answers = result["answers"]
         if not isinstance(answers, dict) or set(answers) != set(questions):
-            raise ValueError("Incomplete TypeSafe answers")
+            raise ValueError("Incomplete System One answers")
 
         focus = _choice(answers["focus"])
         scores = {
@@ -113,8 +127,8 @@ def assess_project_state(project_id, state, *, context=None, timeout=8):
         }
         return {
             "status": "evaluated",
-            "provider": "typesafe",
-            "model": str(result.get("model", "jev-latest"))[:100],
+            "provider": _provider_from_result(result),
+            "model": str(result.get("model", "unknown"))[:100],
             "project": project,
             "focus": focus,
             "scores": scores,
@@ -122,11 +136,11 @@ def assess_project_state(project_id, state, *, context=None, timeout=8):
             "policy_version": UNIVERSAL_POLICY_VERSION,
             "input_sha256": hashlib.sha256(canonical.encode("utf-8")).hexdigest(),
         }
-    except TypeSafeNotConfigured:
+    except SystemOneNotConfigured:
         return {"status": "not_configured", "policy_version": UNIVERSAL_POLICY_VERSION}
     except Exception as exc:
         LOGGER.warning(json.dumps({
-            "event": "typesafe_universal_unavailable",
+            "event": "systemone_universal_unavailable",
             "error_class": type(exc).__name__,
             "project": project,
         }))
