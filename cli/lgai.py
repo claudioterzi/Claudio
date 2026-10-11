@@ -17,6 +17,7 @@ from lgai_core.baros_shop import BarosShop, PurchaseHistory
 from lgai_core.predictions import PredictionSystem
 from lgai_core.missions_catalog import MissionsCatalog
 from lgai_core.habits_catalog import HabitsCatalog
+from lgai_core.guard_protocol import GuardLockingProtocol, GuardState, LockedAction
 import argparse
 from datetime import datetime
 
@@ -31,6 +32,7 @@ class LGAICLI:
         self.shop = BarosShop()
         self.pred_system = PredictionSystem()
         self.purchase_history = PurchaseHistory()
+        self.guard = GuardLockingProtocol()
 
         # Carica o crea player
         self.player = self.dm.load_player()
@@ -74,6 +76,17 @@ class LGAICLI:
         progresso = self.calc.calcola_progresso_stagione(self.player.giorno)
         print(f"\n📅 STAGIONE {progresso['stagione']} - Giorno {progresso['giorno_in_stagione']}/90")
         print(f"   Progresso: {progresso['percentuale']}% | {progresso['giorni_rimanenti']} giorni rimanenti")
+
+        # Guard Locking Protocol
+        guard_status = self.guard.evaluate(self.player)
+        print(f"\n🔒 {self.guard.get_status_line(self.player)}")
+        if guard_status.state == GuardState.LOCKED:
+            print(f"   {guard_status.alert_message}")
+            print(f"\n   Condizioni di sblocco:")
+            for cond in guard_status.unlock_conditions:
+                print(f"     {cond}")
+        elif guard_status.state == GuardState.ALERT:
+            print(f"   {guard_status.alert_message}")
 
         print("\n" + "="*50 + "\n")
 
@@ -209,6 +222,14 @@ class LGAICLI:
         if result['game_over']:
             print("\n   🔴🔴🔴 GAME OVER 🔴🔴🔴")
             print("   Attiva Sfida di Resurrezione!")
+        else:
+            # Guard Protocol valutation post-checkout
+            guard_status = self.guard.evaluate(self.player)
+            if guard_status.state == GuardState.LOCKED:
+                print()
+                print(self.guard.generate_rosso_rosso_rosso(self.player))
+            elif guard_status.state == GuardState.ALERT:
+                print(f"\n   {guard_status.alert_message}")
 
         # Messaggio Raffaello
         if use_detailed and positive_habits_details:
@@ -254,6 +275,12 @@ class LGAICLI:
             print(f"❌ Area non valida: {area_name}")
             print(f"   Aree disponibili: {[a.value for a in Area]}")
             return
+
+        # Guard: avviso se in stato critico
+        guard_status = self.guard.evaluate(self.player)
+        if guard_status.state == GuardState.LOCKED:
+            print(f"\n⚠️  {guard_status.alert_message}")
+            print("   (L'XP viene comunque registrato — il Guard non blocca la crescita)")
 
         print(f"\n⚡ Aggiungo {xp} XP a {area.value}...")
 
@@ -301,6 +328,9 @@ class LGAICLI:
 
     def shop_buy(self, reward_id: int):
         """Acquista ricompensa"""
+        if self.guard.is_action_locked(self.player, LockedAction.SPEND_BAROS):
+            print("Guard: Baros spending is locked")
+            return
         reward = self.shop.get_by_id(reward_id)
 
         if not reward:
@@ -541,6 +571,44 @@ class LGAICLI:
                 break
 
         print("="*60 + "\n")
+    def guard_status(self):
+        """Mostra stato completo del Guard Locking Protocol"""
+        guard_status = self.guard.evaluate(self.player)
+
+        print("\n" + "="*58)
+        print("🔒 GUARD LOCKING PROTOCOL — STATUS")
+        print("="*58)
+
+        state_icons = {
+            GuardState.LOCKED:   "⛔  BLOCCATO  (Rosso Rosso Rosso)",
+            GuardState.ALERT:    "⚠️   ALLERTA   (Zona Rischio)",
+            GuardState.UNLOCKED: "✅  SBLOCCATO (Verde Fisso)",
+        }
+        print(f"\n   Stato:       {state_icons[guard_status.state]}")
+        print(f"   PV correnti: {guard_status.pv_current}/100")
+        print(f"   Soglia lock: ≤ {guard_status.pv_threshold_lock} PV")
+        print(f"   Soglia sblocco: ≥ {guard_status.pv_threshold_unlock} PV")
+
+        if guard_status.locked_since:
+            print(f"   Blocco dal: {guard_status.locked_since.strftime('%Y-%m-%d %H:%M')}")
+            print(f"   Giorni in lock: {guard_status.days_locked}")
+
+        if guard_status.locked_actions:
+            print(f"\n   🚫 Azioni bloccate:")
+            for action in guard_status.locked_actions:
+                print(f"      • {action.value}")
+        else:
+            print(f"\n   ✅ Nessuna azione bloccata")
+
+        print(f"\n   📋 Condizioni di sblocco:")
+        for cond in guard_status.unlock_conditions:
+            print(f"      {cond}")
+
+        if guard_status.state == GuardState.LOCKED:
+            print()
+            print(self.guard.generate_rosso_rosso_rosso(self.player))
+
+        print("="*58 + "\n")
 
     def reset(self):
         """Reset completo (usa con cautela!)"""
@@ -604,6 +672,8 @@ def main():
     habits_parser = subparsers.add_parser('habits', help='Catalogo abitudini tracciabili')
     habits_parser.add_argument('--tipo', type=str, help='positive o negative')
     habits_parser.add_argument('--area', type=str, help='Filtra per area vita')
+    # Guard Protocol
+    subparsers.add_parser('guard', help='Mostra stato Guard Locking Protocol')
 
     # Reset
     subparsers.add_parser('reset', help='Reset completo (ATTENZIONE!)')
@@ -637,6 +707,8 @@ def main():
         cli.missioni_catalog(args.categoria, args.difficolta)
     elif args.command == 'habits':
         cli.habits_list(args.tipo, args.area)
+    elif args.command == 'guard':
+        cli.guard_status()
     elif args.command == 'reset':
         cli.reset()
 
