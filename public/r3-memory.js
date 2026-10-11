@@ -94,21 +94,30 @@ async function append(input){
 function render(){const ledger=load();const list=document.getElementById('r3-ledger-list');const count=document.getElementById('r3-ledger-count');if(count)count.textContent=String(ledger.length);if(!list)return;list.innerHTML='';ledger.slice().reverse().slice(0,40).forEach(e=>{const a=document.createElement('article');a.className='memory-event';a.innerHTML=`<div class="event-top"><span class="tag ${esc(e.state.toLowerCase())}">${esc(e.state)}</span><code>${esc(e.priority)}</code><time>${new Date(e.ts).toLocaleString('it-IT')}</time></div><h3>${esc(e.claim)}</h3><p><strong>Evidenza:</strong> ${esc(e.evidence||'—')}</p><p><strong>Cade se:</strong> ${esc(e.falsifier||'—')}</p><p><strong>Fonte:</strong> ${esc(e.source||'locale')}</p><small>${esc(e.hash.slice(0,18))}…</small>`;list.appendChild(a)});if(!ledger.length)list.innerHTML='<p class="muted">Nessun evento locale ancora registrato.</p>';}
 function download(){const data={schema:'R3_MEMORY_LEDGER_V1',exported_at:new Date().toISOString(),events:load()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='R3_MEMORY_LEDGER_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 async function syncRemote(incoming){
- const check=await verifyLedger(incoming);
+ // Snapshot caller-owned JSON before any asynchronous verification or lock wait.
+ // JSON records only: the candidate does not support arbitrary JS prototypes.
+ let snapshot;
+ try{
+  if(!Array.isArray(incoming))throw new Error('schema');
+  const serialized=JSON.stringify(incoming);
+  if(typeof serialized!=='string'||enc.encode(serialized).length>MAX_IMPORT_BYTES)throw new Error('size');
+  snapshot=JSON.parse(serialized);
+ }catch{throw new Error('Sync remoto non valido (snapshot): memoria locale intatta.');}
+ const check=await verifyLedger(snapshot);
  if(!check.ok)throw new Error('Sync remoto non valido ('+check.reason+'): memoria locale intatta.');
  return withWriteLock(async()=>{
   const before=localStorage.getItem(KEY),current=load(),existing=await verifyLedger(current);
   if(!existing.ok)throw new Error('Catena locale non valida: sincronizzazione sospesa, nessun dato sovrascritto.');
-  const common=Math.min(current.length,incoming.length);
+  const common=Math.min(current.length,snapshot.length);
   for(let i=0;i<common;i++){
-   if(current[i].hash!==incoming[i].hash||stable(current[i])!==stable(incoming[i]))
-    return {status:'diverged',count:current.length,local_head:current.at(-1)?.hash||null,remote_head:incoming.at(-1)?.hash||null};
+   if(current[i].hash!==snapshot[i].hash||stable(current[i])!==stable(snapshot[i]))
+    return {status:'diverged',count:current.length,local_head:current.at(-1)?.hash||null,remote_head:snapshot.at(-1)?.hash||null};
   }
-  if(incoming.length>current.length){
-   commitLedger(incoming,before);
-   return {status:'adopted_remote',count:incoming.length,head:incoming.at(-1)?.hash||null};
+  if(snapshot.length>current.length){
+   commitLedger(snapshot,before);
+   return {status:'adopted_remote',count:snapshot.length,head:snapshot.at(-1)?.hash||null};
   }
-  if(current.length>incoming.length)
+  if(current.length>snapshot.length)
    return {status:'local_ahead',count:current.length,head:current.at(-1)?.hash||null};
   return {status:'equal',count:current.length,head:current.at(-1)?.hash||null};
  });
