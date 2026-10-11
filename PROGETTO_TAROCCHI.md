@@ -1,14 +1,14 @@
-# PROGETTO TAROCCHI — Due Sistemi, Un Linguaggio
+# PROGETTO TAROCCHI — Canone Alpha 74
 
 > Documento fondativo. 2026-06-19.
 > I Tarocchi Quantici non assegnano significati. Permettono ai significati di emergere.
 
 ---
 
-## Due sistemi paralleli
+## Sistema attivo e archivio
 
-### Sistema A — Tarocchi Quantici R³∞ (78 carte)
-**Stato: FUNZIONANTE E ONLINE** → https://claudio-ebon.vercel.app
+### Archivio — Tarocchi Quantici R³∞ (78 carte)
+**Stato: LEGACY · non più attivo nel sito**
 
 - 78 carte: 22 Arcani Maggiori + 56 Minori
 - Codice: `tarocchi/` (Python puro)
@@ -18,8 +18,8 @@
 - Layer 2: 7 assiomi, stati quantici, orientamenti
 - Layer 3: Doppia Ermeneutica (macchina + umano)
 
-### Sistema B — Canone Alpha 0.1 (74 carte)
-**Stato: COMPLETO** — canone scritto, 592 stati elementari per carta
+### Sistema attivo — Canone Alpha 74
+**Stato: ONLINE · unico canone Tarot utilizzato dal sito** — 592 stati elementari per carta
 
 - 74 carte in 8 cicli: Origine, Legame, Frattura, Trasformazione, Potere, Visione, Totalità, Trascendenti
 - Formula: `Carta + Asse + Polarità = Significato`
@@ -32,22 +32,26 @@
 
 La stesa può contenere da 1 a 7 carte distinte. L'ordine, la posizione, la direzione/asse e la polarità sono parte della configurazione. Per `N` carte, lo spazio è `P(74,N) × 8^N`; con sette carte raggiunge il massimo di `19.020.913.799.457.669.120` configurazioni ordinate. Il conteggio descrive configurazioni interpretative del modello, non verità assolute. Ogni lettura separa fatti osservabili, interpretazioni relazionali e ipotesi contestuali da verificare.
 
+#### Lettura vocale
+
+La lettura automatica e quella manuale espongono sempre un comando audio per l'intera risposta e per ogni carta. Il percorso server interno può usare OpenAI TTS con `TAROT_TTS_PROVIDER=openai` e `OPENAI_API_KEY`: la voce pronta consigliata è `marin` o `cedar`, impostabile con `OPENAI_TTS_VOICE`, mentre una voce proprietaria usa `OPENAI_CUSTOM_VOICE_ID`. Il percorso ElevenLabs resta compatibile tramite `TAROT_TTS_PROVIDER=elevenlabs`, `ELEVENLABS_API_KEY` e `ELEVENLABS_VOICE_ID`. Le chiavi restano variabili Vercel server-side e viene usato un solo provider alla volta. Le custom voices OpenAI richiedono accesso abilitato, consenso del proprietario e un campione audio della stessa voce; se il provider non è configurato o non risponde, il browser seleziona una voce disponibile nella lingua scelta senza bloccare la lettura.
+
 ---
 
 ## Roadmap
 
-### Sistema A — Manutenzione e miglioramento
-- [x] Online e funzionante
-- [x] 78 SVG carte
+### Archivio R³∞ — conservazione storica
+- [x] Codice e documentazione conservati
+- [x] 78 SVG carte storiche
 - [ ] Aggiornamento stile grafico SVG (opzionale)
 - [ ] Versione mobile ottimizzata
 - [ ] Log anonimo delle stese (per analisi pattern)
 
-### Sistema B — Motore di collasso web (prossimo passo)
+### Sistema attivo — Motore di collasso web
 - [x] Canone completo (592 stati scritti)
 - [ ] **MOTORE DI COLLASSO**: interfaccia web che prende domanda → asse, contesto → polarità
 - [ ] SVG 74 carte nuove (stile diverso da Sistema A)
-- [ ] Deploy Vercel Sistema B separato o integrato
+- [x] Deploy Vercel integrato nel sito principale
 - [ ] Stesa combinata A+B (opzionale — 152 carte totali)
 
 ## Dettaglio: Motore di Collasso Sistema B
