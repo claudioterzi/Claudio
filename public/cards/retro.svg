@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 600" width="350" height="600">
+  <defs>
+    <linearGradient id="bgR" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0e0e12"/>
+      <stop offset="100%" stop-color="#080810"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#c9a84c" stroke-width="0.15" opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <rect width="350" height="600" fill="url(#bgR)"/>
+  <rect width="350" height="600" fill="url(#grid)"/>
+
+  
+    <!-- bordo esterno -->
+    <rect x="12" y="12" width="326" height="576"
+          rx="10" ry="10"
+          fill="#141418" stroke="#c9a84c" stroke-width="1.8" opacity="0.95"/>
+    <!-- linea interna -->
+    <rect x="19" y="19" width="312" height="562"
+          rx="7" ry="7"
+          fill="none" stroke="#8a6a20" stroke-width="0.8" opacity="0.5"/>
+    <!-- angoli decorativi -->
+    <g stroke="#c9a84c" stroke-width="1.5" fill="none" opacity="0.8">
+      <path d="M22,34 L34,34 L34,22"/>
+      <path d="M328,34 L316,34 L316,22"/>
+      <path d="M22,566 L34,566 L34,578"/>
+      <path d="M328,566 L316,566 L316,578"/>
+    </g>
+    
+    
+
+  <!-- alone centrale -->
+  <ellipse cx="175" cy="300" rx="130" ry="130" fill="url(#glow)"/>
+
+  <!-- cerchi concentrici -->
+  <circle cx="175" cy="300" r="110" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.25"/>
+  <circle cx="175" cy="300" r="88"  fill="none" stroke="#c9a84c" stroke-width="0.6" opacity="0.3"/>
+  <circle cx="175" cy="300" r="66"  fill="none" stroke="#c9a84c" stroke-width="1"   opacity="0.35"/>
+  <circle cx="175" cy="300" r="44"  fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/>
+  <circle cx="175" cy="300" r="22"  fill="none" stroke="#c9a84c" stroke-width="0.6" opacity="0.5"/>
+
+  <!-- stella a 8 punte -->
+  <path d="M175.0,190.0L196.0,249.2L252.8,222.2L225.8,279.0L285.0,300.0L225.8,321.0L252.8,377.8L196.0,350.8L175.0,410.0L154.0,350.8L97.2,377.8L124.2,321.0L65.0,300.0L124.2,279.0L97.2,222.2L154.0,249.2Z" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.35"/>
+  <path d="M175.0,212.0L191.8,259.3L237.2,237.8L215.7,283.2L263.0,300.0L215.7,316.8L237.2,362.2L191.8,340.7L175.0,388.0L158.2,340.7L112.8,362.2L134.3,316.8L87.0,300.0L134.3,283.2L112.8,237.8L158.2,259.3Z" fill="none" stroke="#c9a84c" stroke-width="0.7" opacity="0.2"/>
+
+  <!-- linee diagonali -->
+  <g stroke="#c9a84c" stroke-width="0.6" opacity="0.2">
+    <line x1="65" y1="300" x2="285" y2="300"/>
+    <line x1="175" y1="190" x2="175" y2="410"/>
+    <line x1="97" y1="222" x2="253" y2="378"/>
+    <line x1="253" y1="222" x2="97" y2="378"/>
+  </g>
+
+  <!-- simbolo centrale R³∞ -->
+  <text x="175" y="312" text-anchor="middle"
+        font-family="Georgia, serif" font-size="38" fill="#c9a84c" opacity="0.85"
+        letter-spacing="-2">R³∞</text>
+
+  <!-- quattro simboli elementali agli angoli -->
+  <text x="55"     y="68"     text-anchor="middle" font-size="18" fill="#c9a84c" opacity="0.45" font-family="serif">🜂</text>
+  <text x="295" y="68"     text-anchor="middle" font-size="18" fill="#c9a84c" opacity="0.45" font-family="serif">🜄</text>
+  <text x="55"     y="550" text-anchor="middle" font-size="18" fill="#c9a84c" opacity="0.45" font-family="serif">🜃</text>
+  <text x="295" y="550" text-anchor="middle" font-size="18" fill="#c9a84c" opacity="0.45" font-family="serif">🜁</text>
+
+  <!-- scritta sistema in basso -->
+  <text x="175" y="572" text-anchor="middle"
+        font-family="Georgia, serif" font-size="9" fill="#c9a84c" opacity="0.4" letter-spacing="3">
+    TAROCCHI QUANTICI
+  </text>
+
+</svg>
