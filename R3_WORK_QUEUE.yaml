@@ -1,6 +1,6 @@
 version: 9
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-10-05
+updated: 2026-10-07
 status: ACTIVE
 
 principles:
@@ -271,3 +271,39 @@ resilience_completion_20261005:
   local_tests: "Supervisor 36 PASS; judge 19 PASS; Orchestra 4 mocked checks PASS"
   configuration: "Railway drain 10 saved for next deployment; deployments unchanged"
   remaining: "Authenticated real-state recovery; Railway sleep acceptance; online Rizzo; authenticated Orchestra inference"
+
+
+jev_access_and_redundant_backup_20261007:
+  status: LOCAL_TESTED_LIVE_BLOCKED
+  decision: Reuse existing /jev/judge gateway caller and shared typed policy; prepare owner-private archive and isolated restore before copying to both existing document nodes.
+  evidence: docs/evidenze/R3_JEV_ACCESS_CANDIDATE_20261007.json
+  request: docs/evidenze/R3_JEV_SKILL_REQUEST_20261007.json
+  tests: "50 unittest methods PASS; synthetic HTTP controls, no live Jev call."
+  next_action: Use verified local archive; check actual secret binding, then submit skill request and upload/download/hash-check backup on both intended nodes.
+  blocker: R3_API_TOKEN is not yet bound to this executor; no full-volume clone/restore API is available.
+  completion_criterion: Actual Jev typed receipt; separately both node copies downloaded and restored/hashchecked. Universal3-2-1-1-0 remains uncertified.
+  resume_trigger: Existing token is actually bound and observed ready on the selected executor.
+  backup_proof:
+    status: LOCAL_RESTORE_VERIFIED
+    evidence: docs/evidenze/R3_BACKUP_LOCAL_RESTORE_20261007.json
+    sealed_reference: "SEALED:R3_PRIVATE_LOCAL_BACKUP/20261007T031801.329088Z"
+    archive_sha256: "455f8e2dbe90a064d9132974c1cc52b0a954dc75123887ae7188cf96f661a8ca"
+    files_restored: "39/39; 5 local refs; 3 original attachments"
+    negative_control: Corrupted copy rejected
+    critical_smoke: "Restored evolution kernel RC0/ok=true; synthetic fixture, no network/provider"
+    limit: One failure domain; no authenticated node copies; shallow repository, incomplete remote Git history
+  dated_correction_20261007:
+    status: OFFSITE_DRIVE_RESTORE_VERIFIED_JEV_AND_RAILWAY_BLOCKED
+    decision: Reuse connected owner-private Drive for an additional backup copy; apply official skill review to correct model-visible skill-fit instructions.
+    evidence: docs/evidenze/R3_BACKUP_DRIVE_ROUNDTRIP_20261007.json
+    skill_sources: docs/R3_SKILL_DISCOVERY_20261007.md
+    request: docs/evidenze/R3_JEV_SKILL_REQUEST_20261007_V2.json
+    tests: "51 local unittest methods PASS; no live provider call."
+    verified: "Authenticated downloaded parts recomposed exact archive;39/39file;5localrefs;fsck;negativecontrol;critical synthetic smoke RC0. Two parts are one backup copy."
+    storage_systems_verified: [current_executor_workspace, Google_Drive_owner_private]
+    node_copies_verified: 0
+    universal_backup_verified: false
+    next_action: Retain sealed original and newest verified checkpoint delta; authenticate both intended node hosts and Jev with actual ready token binding.
+    blocker: R3_API_TOKEN remains absent from executor; full remote state/offline immutable copy not yet evidenced.
+    completion_criterion: Actual typed Jev result and separately authenticated node download/hash/restore plus universal restore gate.
+    resume_trigger: Actual ready binding for intended hosts on selected executor.

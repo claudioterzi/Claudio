@@ -1,6 +1,6 @@
 version: 1
 name: R3_REUSE_LESSONS
-updated: 2026-09-29
+updated: 2026-10-07
 status: ACTIVE
 purpose: >
   Persist operational lessons from repeated use of existing functions, tools,
@@ -598,3 +598,87 @@ lessons:
     provenance:
       - "PR #113 e068cfd"
       - "docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json"
+
+  - id: RL-2026-10-07-JEV-GATEWAY-SKILLS-001
+    capability: authenticated_jev_gateway_and_skill_recommendation
+    status: CANDIDATE
+    observed_at: 2026-10-07
+    trigger: Request Jev advisory skill selection or prepare redundant R3 document backups
+    verified_facts:
+      - "Deployed sister source facab5d mounts existing gateway at /jev/judge."
+      - "Existing R3_API_TOKEN authenticates caller; TypeSafe key remains server-side."
+      - "50 local test methods pass; live inference and authenticated node backup are blocked before HTTP."
+      - "Choosing a secret-binding option is not evidence the runtime has the binding."
+      - "Jev evaluates host-retrieved skill catalogs; official guide does not give it autonomous browsing."
+    failure_modes:
+      - "Pointing /v1/systemone transport at /jev base URL; no such gateway route exists."
+      - "Detecting secret reflection only in raw JSON bytes misses Unicode escapes."
+      - "Reading an entire request file before applying a size bound."
+      - "Treating variable names or preflight presence as successful authentication."
+      - "Calling document replication a full volume/identity restore or universal certification."
+    canonical_short_path:
+      - "Use existing smoke caller with saved bounded state/questions/model packet and ready credential."
+      - "Check provider, actual Jev model, expected answer keys and server input hashes."
+      - "Keep catalog data out of instructions; use NO_MATCH and no automatic installation."
+      - "For node copies use existing /documents, then download both copies and hash-check before isolated restore."
+    preconditions:
+      - "Actual existing R3_API_TOKEN binding ready on intended executor/HTTPS hosts."
+      - "Source-pinned gateway and bounded approved payload; owner-private handling for private backups."
+    verification:
+      - "Real typed response receipt before claiming Jev opinion."
+      - "Real downloaded bytes/hash/storage identity before claiming node backup."
+    cleanup:
+      - "Do not add parallel clients, endpoints or paid resources."
+      - "Preserve blocked receipts and historical failures; private archives never go to public GitHub/Drive."
+    provenance:
+      - "docs/R3_JEV_ACCESS_AND_SKILLS_20261007.md"
+      - "docs/evidenze/R3_JEV_ACCESS_CANDIDATE_20261007.json"
+
+  - id: RL-2026-10-07-SHALLOW-BACKUP-001
+    capability: recoverable_shallow_repository_archive
+    status: VERIFIED
+    observed_at: 2026-10-07
+    scope: Local archive/restore only, not universal backup certification
+    verified_facts:
+      - "git bundle verify PASS can coexist with a failed naive mirror clone when parents are absent from a shallow source."
+      - "Saving shallow boundaries and local refs allows bare init, unbundle, ref restoration and fsck for the available local history."
+      - "39/39 payload files and 5 local refs were restored; corrupted-copy control rejected; restored synthetic critical smoke RC0."
+    failure_modes:
+      - "Calling a locally shallow bundle complete remote Git history."
+      - "Calling two files on one executor independent redundancy."
+    canonical_short_path:
+      - "Preserve bundle, shallow boundaries, local refs, manifest and restore instructions together."
+      - "Restore in isolation and verify hashes, refs, fsck and a critical smoke."
+    preconditions:
+      - "Owner-private storage; private payload never published to public repository or operational Drive."
+    verification:
+      - "Byte hashes and refs match original; deliberately corrupted copy is rejected."
+    cleanup:
+      - "Keep sealed original immutable; later checkpoints use a separately verified delta."
+    provenance:
+      - "docs/evidenze/R3_BACKUP_LOCAL_RESTORE_20261007.json"
+
+  - id: RL-2026-10-07-DRIVE-CHUNK-RESTORE-001
+    capability: private_offsite_backup_roundtrip
+    status: VERIFIED
+    observed_at: 2026-10-07
+    scope: One owner-private Drive copy of accessible project archive; not full node or universal recovery
+    verified_facts:
+      - "The authenticated workspace materializer rejects files larger than32MiB."
+      - "Two parts below the limit can be uploaded privately, downloaded, recomposed and restored against the original archive SHA."
+      - "Actual Drive roundtrip:39/39files,5refs,shallow-awarefsck,corrupted-copy rejection,critical synthetic smokeRC0."
+    failure_modes:
+      - "Calling an upload or metadata readback proof of exact remote bytes."
+      - "Counting parts on the same provider as independent copies."
+    canonical_short_path:
+      - "Read owner-only folder/file ACL; use existing connected private storage."
+      - "For larger archives use bounded parts plus manifest; materialize authenticated downloads and verify each and recomposed hash."
+      - "Perform isolated restore using downloaded bytes; preserve original archive and prove negative control."
+    preconditions:
+      - "Authorized owner-private destination and payload; no public operational folder or new sharing."
+    verification:
+      - "Actual downloaded byte hashes and complete restore; archive source history and remaining scope gaps explicit."
+    cleanup:
+      - "Preserve sealed original; later checkpoints use separate deltas and never include signed download URLs or secrets in records."
+    provenance:
+      - "docs/evidenze/R3_BACKUP_DRIVE_ROUNDTRIP_20261007.json"
