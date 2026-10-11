@@ -1,0 +1,39 @@
+{
+  "schema": "R3-020-METADATA-VALIDATION-FALSIFIER/1",
+  "authority": "DATA_ONLY",
+  "observed_at_utc": "2026-10-09T10:41:34.790Z",
+  "source_repo": "claudioterzi/Claudio",
+  "source_pr": 124,
+  "base_main": "cb6ef50912c5d410a89147fa993d7d5d1985a1dc",
+  "source_head": "7b608d80cb237a4446e4bd2c8faff741daaa4fcc",
+  "source_code_blob": "083a6683720f19e2e280aadc8f1f79d0db6a0b1a",
+  "status": "PREREGISTERED_ONLY",
+  "target": "sdq1/evolution_kernel.py / EvolutionCandidate.validate()",
+  "hypothesis": "Malformed data classes can crash pre-promotion evaluation or permit malformed provenance/falsifier metadata to receive AUTO_APPLY_ELIGIBLE/STAGED. The existing core gate should instead return REJECT, without exceptions, for unsafe candidate field types.",
+  "primary_metric": "malformed_candidate_admissions_and_uncaught_errors",
+  "direction": "lower",
+  "acceptance_criteria": [
+    "same frozen test set fails on original pinned code and passes on bounded patch",
+    "malformed title/claim/primary metric/direction/risk/scope must REJECT instead of crash",
+    "non-sequence or non-text source_refs/falsifiers must REJECT",
+    "blank protected rollback_ref must REJECT",
+    "valid finite low-risk control still AUTO_APPLY_ELIGIBLE, valid protected core STAGED, and valid missing out-of-sample HOLD"
+  ],
+  "falsifiers": [
+    "unhandled exception persists for any frozen malformed input",
+    "malformed candidate obtains STAGED or AUTO_APPLY_ELIGIBLE",
+    "valid controls change status"
+  ],
+  "no_go": [
+    "no direct main modification",
+    "no merge/deploy",
+    "no external provider request",
+    "no credentials",
+    "no cloud service changes or paid resources"
+  ],
+  "classification": "PATCH",
+  "R3020_decision": "HOLD_UNTIL_INDEPENDENT_HOSTED_FALSIFICATION_AND_ROLLBACK_REVIEW",
+  "next_action": "create tests only, prove failure, patch validate() on same stacked draft branch and rerun hosted tests",
+  "completion_criterion": "zero malformed admisssions/errors on frozen fixture plus valid controls unchanged and no regressions",
+  "resume_trigger": "exact head hosted checks or independent code review"
+}
