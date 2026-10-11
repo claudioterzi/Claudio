@@ -1,6 +1,6 @@
 version: 1
 name: R3_REUSE_LESSONS
-updated: 2026-09-29
+updated: 2026-10-07
 status: ACTIVE
 purpose: >
   Persist operational lessons from repeated use of existing functions, tools,
@@ -571,7 +571,32 @@ lessons:
       - docs/R3_REDFRAG_SYSTEMONE_2026-09-29.md
       - docs/evidenze/R3_REDFRAG_R3CLM_BASELINE_2026-09-29.json
 
-
+  - id: RL-2026-10-07-SUPERVISOR-CI-001
+    capability: r3_supervisor_hosted_verification
+    status: OBSERVED
+    observed_at: 2026-10-07
+    trigger: Sentinella inspection of PR 113 hosted test coverage
+    verified_facts:
+      - Green checks on e068cfd did not invoke the five supervisor/progress regression modules.
+      - The scoped local regression command passed 24 tests in 12.41 seconds.
+    failure_modes:
+      - inferring subsystem coverage from a successful general workflow
+      - counting INFO on stderr as a runtime error solely from Railway severity
+      - using latest SKIPPED deployment metadata as the active deployment state
+    canonical_short_path:
+      - inspect exact-head workflow commands and job steps
+      - reuse R3 RRR Control for supervisor and progress regressions
+      - verify the named hosted step on the exact pushed head
+      - retain separate real-volume recovery and Railway sleep gates
+    verification:
+      - paths and pytest command include all five regression modules
+      - no continue-on-error or masked nonzero exit
+      - hosted step conclusion must be read back before claiming success
+    provenance:
+      - PR 113
+      - GitHub Test Runner run 37278732980
+      - docs/R3_SYNC_PROGRESS_CANDIDATE_20261005.md
+      - docs/evidenze/R3_SUPERVISOR_CI_CANDIDATE_20261007.jsonl
   - id: RL-2026-10-05-PROCESS-NAMESPACE-001
     capability: supervisor_orphan_cleanup_verification
     status: CANDIDATE

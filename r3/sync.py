@@ -27,6 +27,11 @@ from typing import Any
 import httpx
 
 try:
+    from .sync_progress import configure_from_environment, note_progress
+except ImportError:
+    from sync_progress import configure_from_environment, note_progress
+
+try:
     from .rrr_control import (
         SCHEMA as RRR_SCHEMA,
         RRRControlError,
@@ -94,12 +99,14 @@ def _get_hashes(node_url: str) -> dict[str, dict]:
     """Restituisce {id: {sha256, size, uploaded_at}} per un nodo."""
     resp = httpx.get(f"{node_url}/sync/hashes", headers=_headers(node_url), timeout=30)
     resp.raise_for_status()
+    note_progress()
     return {d["id"]: d for d in resp.json().get("documents", [])}
 
 
 def _pull_doc(src_url: str, doc_id: str) -> bytes:
     resp = httpx.get(f"{src_url}/documents/{doc_id}", headers=_headers(src_url), timeout=120)
     resp.raise_for_status()
+    note_progress()
     return resp.content
 
 
@@ -111,11 +118,13 @@ def _push_doc(dst_url: str, doc_id: str, data: bytes, filename: str) -> None:
         timeout=120,
     )
     resp.raise_for_status()
+    note_progress()
 
 
 def _get_rrr_status(node_url: str) -> dict[str, Any]:
     resp = httpx.get(f"{node_url}/protocol/rrr/status", headers=_headers(node_url), timeout=15)
     resp.raise_for_status()
+    note_progress()
     data = resp.json()
     if not isinstance(data, dict):
         raise ValueError("invalid RRR status")
@@ -204,6 +213,7 @@ def _push_rrr_event(dst_url: str, event: dict[str, Any]) -> dict[str, Any]:
         timeout=15,
     )
     resp.raise_for_status()
+    note_progress()
     data = resp.json()
     if not isinstance(data, dict):
         raise ValueError("invalid RRR acknowledgement")
@@ -249,7 +259,7 @@ def _repair_doc_from_peers(doc_id: str) -> str | None:
 # RRR propagation
 # ---------------------------------------------------------------------------
 
-def sync_rrr_with_peer(peer_url: str) -> None:
+def sync_rrr_with_peer(peer_url: str) -> bool:
     try:
         local_raw = _get_rrr_status(LOCAL_URL)
         peer_raw = _get_rrr_status(peer_url)
@@ -258,7 +268,7 @@ def sync_rrr_with_peer(peer_url: str) -> None:
         direction = replication_direction(local, peer)
 
         if direction in {"none", "equal"}:
-            return
+            return True
         if direction == "conflict":
             log.error(
                 "RRR conflict con %s: local counter/event=%r/%r peer=%r/%r; nessuna risoluzione automatica",
@@ -268,7 +278,7 @@ def sync_rrr_with_peer(peer_url: str) -> None:
                 peer.get("counter"),
                 peer.get("event_id"),
             )
-            return
+            return False
 
         if direction == "local_to_peer":
             event = _wire_rrr_event(local_raw)
@@ -280,7 +290,7 @@ def sync_rrr_with_peer(peer_url: str) -> None:
                 event.get("counter"),
                 ack.get("status"),
             )
-            return
+            return True
 
         event = _wire_rrr_event(peer_raw)
         ack = _push_rrr_event(LOCAL_URL, event)
@@ -291,20 +301,22 @@ def sync_rrr_with_peer(peer_url: str) -> None:
             event.get("counter"),
             ack.get("status"),
         )
+        return True
     except Exception as exc:
         # RRR propagation is independent from document replication; one failure
         # must not silently disable the other path.
         log.warning("RRR sync fallito con %s: %s", peer_url, exc)
+        return False
 
 # ---------------------------------------------------------------------------
 # Document sync logic
 # ---------------------------------------------------------------------------
 
-def sync_with_peer(peer_url: str) -> None:
+def sync_with_peer(peer_url: str) -> bool:
     log.info("Sync → %s", peer_url)
 
     # The signed RRR state is relayed independently before document sync.
-    sync_rrr_with_peer(peer_url)
+    ok = sync_rrr_with_peer(peer_url)
 
     try:
         local_docs = _get_hashes(LOCAL_URL)
@@ -320,10 +332,12 @@ def sync_with_peer(peer_url: str) -> None:
                 actual = _sha256(data)
                 if actual != doc_id:
                     log.error("Hash mismatch pull %s da %s (got %s)", doc_id, peer_url, actual)
+                    ok = False
                     continue
                 _push_doc(LOCAL_URL, doc_id, data, peer_docs[doc_id].get("filename", doc_id))
                 log.info("Pull  %s  da %s", doc_id[:12], peer_url)
             except Exception as e:
+                ok = False
                 log.warning("Pull fallito %s da %s: %s", doc_id[:12], peer_url, e)
 
         # Cosa abbiamo noi che manca al peer → push
@@ -333,10 +347,13 @@ def sync_with_peer(peer_url: str) -> None:
                 _push_doc(peer_url, doc_id, data, local_docs[doc_id].get("filename", doc_id))
                 log.info("Push  %s  su %s", doc_id[:12], peer_url)
             except Exception as e:
+                ok = False
                 log.warning("Push fallito %s su %s: %s", doc_id[:12], peer_url, e)
 
     except Exception as e:
+        ok = False
         log.error("Sync fallito con %s: %s", peer_url, e)
+    return bool(ok)
 
 
 # ---------------------------------------------------------------------------
@@ -359,6 +376,7 @@ def integrity_check() -> list[str]:
 
     corrupted: list[str] = []
     for row in rows:
+        note_progress()
         doc_id = row["id"]
         path = DATA_DIR / "docs" / doc_id
         if not path.exists():
@@ -439,7 +457,7 @@ def run_cycle_with_receipt(peer_url: str) -> dict[str, Any]:
         receipt["canary_local_to_peer_preabsent_on_peer"] = local_id not in _get_hashes(peer_url)
         receipt["canary_peer_to_local_preabsent_on_local"] = peer_id not in _get_hashes(LOCAL_URL)
 
-        sync_with_peer(peer_url)
+        sync_ok = sync_with_peer(peer_url)
 
         receipt["local_to_peer_arrived"] = _arrived(peer_url, local_id)
         receipt["peer_to_local_arrived"] = _arrived(LOCAL_URL, peer_id)
@@ -449,6 +467,7 @@ def run_cycle_with_receipt(peer_url: str) -> dict[str, Any]:
         receipt["sets_equal"] = local_set == peer_set
         receipt["set_sha256"] = _sha256("\n".join(sorted(local_set)).encode())
         receipt["pass"] = all((
+            sync_ok,
             receipt["canary_local_to_peer_preabsent_on_peer"],
             receipt["canary_peer_to_local_preabsent_on_local"],
             receipt["local_to_peer_arrived"],
@@ -469,20 +488,24 @@ def run_cycle_with_receipt(peer_url: str) -> dict[str, Any]:
 # Entry point
 # ---------------------------------------------------------------------------
 
-def run_once(check_integrity: bool = False) -> None:
+def run_once(check_integrity: bool = False) -> bool:
     global _CYCLE
     if not PEER_URLS:
         log.warning("Nessun peer configurato (R3_PEERS vuoto)")
-        return
+        return False
     canary_cycle = SYNC_CANARY and _CYCLE % SYNC_CANARY_EVERY == 0
     _CYCLE += 1
+    ok = True
     for peer in PEER_URLS:
+        note_progress()
         if canary_cycle:
-            run_cycle_with_receipt(peer)
+            peer_ok = run_cycle_with_receipt(peer).get("pass") is True
         else:
-            sync_with_peer(peer)
+            peer_ok = sync_with_peer(peer) is True
+        ok = peer_ok and ok
     if check_integrity:
-        integrity_check()
+        ok = not integrity_check() and ok
+    return ok
 
 
 def main() -> None:
@@ -502,11 +525,15 @@ def main() -> None:
         )
         if SYNC_START_DELAY:
             time.sleep(SYNC_START_DELAY)
+        configure_from_environment()
         while True:
+            note_progress()
+            ok = False
             try:
-                run_once()
+                ok = run_once()
             except Exception as exc:  # the loop must survive one bad cycle
                 log.error("Ciclo sync fallito: %s", exc)
+            note_progress("idle", success=ok)
             time.sleep(SYNC_INTERVAL)
     else:
         run_once()
