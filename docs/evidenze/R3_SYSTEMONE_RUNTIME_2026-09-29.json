@@ -1,0 +1,43 @@
+{
+  "schema": "R3_SYSTEMONE_RUNTIME_EVIDENCE/1.0",
+  "date": "2026-09-29",
+  "public_safe": true,
+  "status": "RAILWAY_RUNTIME_CLM_READY__TYPESAFE_JEV_ACTIVE__REAL_CLM_NOT_LIVE",
+  "repository": {
+    "main_redfrag_merge": "8050f1c02c512cddfd822c467eab8a7953be4517",
+    "railway_branch": "feat/typesafe-sister-api-20260920",
+    "railway_runtime_merge": "651f8f0e9f2c98e7ea4805d6bd3cab99695a74cc"
+  },
+  "railway": {
+    "project": "deepseek-eval-temp-2026-09-15",
+    "service": "r3-typesafe-sister",
+    "deployment_id": "5e4124db-119c-4b58-82bd-f9b2906986c5",
+    "deployment_status": "SUCCESS",
+    "health_http": 200,
+    "receiver_mcp_preserved_by_combined_gateway": true,
+    "variable_presence": {
+      "TYPESAFE_API_KEY": true,
+      "CLM_BASE_URL": false,
+      "R3_SYSTEMONE_PROVIDER": false
+    },
+    "inference": "With auto routing, TypeSafe/Jev remains the selected live backend until a CLM endpoint is deliberately configured."
+  },
+  "redfrag": {
+    "status": "MERGED_ON_MAIN",
+    "provider_router": "canonical System One",
+    "internal_baseline_provider": "r3_clm",
+    "internal_baseline_is_real_clm_v01": false,
+    "baseline_cases": 5,
+    "repeats_per_case": 100,
+    "final_gate_accuracy": 1,
+    "model_only_action_agreement": 0.8,
+    "real_clm_status": "NOT_RUN"
+  },
+  "gpu_gate": {
+    "decision": "DEFER_GPU",
+    "reason": "Five hand-selected cases are insufficient for provider promotion.",
+    "minimum_real_cases": 24,
+    "preferred_real_cases": 30,
+    "freeze_before_provider_results": true
+  }
+}
