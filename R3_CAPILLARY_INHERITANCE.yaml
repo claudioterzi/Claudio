@@ -34,6 +34,10 @@ global_layers:
   - id: ACCELERATION
     source: AGENTS.md#Acceleration-mode
     inherit: REQUIRED
+  - id: STATE_GROUNDED_VERIFICATION
+    source: sdq1/verification_harness.py
+    inherit: REQUIRED
+    rule: trajectory_success_is_not_postcondition_proof
   - id: REDUNDANCY_BACKUP
     source: R3_UNIVERSAL_BACKUP.yaml
     inherit: REQUIRED
