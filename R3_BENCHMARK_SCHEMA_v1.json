@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "name": "R3 Longitudinal Capability Benchmark",
+  "purpose": "Measure reproducible capability change over time without treating self-reported improvement as evidence.",
+  "dimensions": {
+    "accuracy": "task_success_rate",
+    "reasoning": "verified_solution_score",
+    "error_detection": "error_detection_rate",
+    "calibration": "calibration_error",
+    "robustness": "perturbation_robustness",
+    "generalization": "novel_task_success",
+    "reproducibility": "run_variance",
+    "efficiency": ["execution_time_ms", "compute_cost", "tool_calls"],
+    "reliability": "regression_rate",
+    "safety": ["critical_failure_rate", "unsafe_action_rate"]
+  },
+  "sets": ["CORE", "NOVEL", "ADVERSARIAL", "REAL_WORLD"],
+  "promotion_rule": "A candidate is not an improvement unless CORE does not regress materially, NOVEL improves or remains neutral, safety does not regress, and results are reproducible with provenance and rollback."
+}

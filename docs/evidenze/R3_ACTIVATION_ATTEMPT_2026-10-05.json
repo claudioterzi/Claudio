@@ -1,0 +1,19 @@
+{
+  "schema": "R3-ACTIVATION-ATTEMPT-SCOPED-RECONSTRUCTION/1",
+  "date": "2026-10-05",
+  "provenance": "Created by Codex to repair a dangling record reference. Not the original Claude raw evidence.",
+  "historical_peer_report": {
+    "source_pr": 116,
+    "head": "fe415104ea3e7e356c952636c2a079d4fe70a176",
+    "orchestra": "Peer reported connector 403/egress/protection; authenticated POST not run",
+    "rizzo": "Peer reported no reachable instance and local gate tests; no inference",
+    "railway": "Peer reported isolated stand-in lifecycle tests; real-state recovery not run"
+  },
+  "independently_observed": {
+    "orchestra": "Earlier Codex connector readiness GET HTTP 200; does not prove model response",
+    "evidence_reference": "Original cited JSON missing at inspected commits",
+    "current_tests": "See R3_EXTERNAL_REVIEW_GPT_2026-10-05.json"
+  },
+  "limits": "Historical raw outputs, exact peer runtime state and claimed draining/restart values have not been independently recovered. Do not treat reconstructed provenance as original execution evidence.",
+  "production_change_by_codex": "NONE"
+}
