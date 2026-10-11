@@ -1,0 +1,7 @@
+{
+  "tests": "6 passed",
+  "example_exit_code": 1,
+  "example_status": "blocked as expected",
+  "api_benchmark": "not run",
+  "scope": "offline evidence review and protocol integration"
+}

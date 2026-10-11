@@ -1,0 +1,90 @@
+{
+  "schema": "CT-LGAI-001-INDEPENDENT-CHECKPOINT/1",
+  "date": "2026-10-05",
+  "classification": "CANDIDATE_LOCAL_VERIFIED_NOT_DEPLOYED",
+  "provenance": {
+    "reviewer": "Codex",
+    "historical_peer": "Claude report supplied by user",
+    "historical_evidence_files": "404 at inspected PR #116 revisions 2abc1a1 and fe41510; historical raw outputs were not recovered or recreated",
+    "original_gate_head": "b77e0d938bcb0fa262c66fa17fc7703d0fb8df2f",
+    "original_supervisor_head": "1f2cdf7457d0caf73a00f046e8e5b53f94e30585"
+  },
+  "gate": {
+    "pr": 115,
+    "head": "73c932ab792906bf108f03516b79c00c7a9b3193",
+    "tests": {
+      "before": {
+        "failed": 9,
+        "passed": 10,
+        "scope": "Same local tests against original b77e0d9 benchmark; HTTP mocked, no inference"
+      },
+      "after": {
+        "failed": 0,
+        "passed": 19,
+        "seconds": 0.07,
+        "scope": "Wire identity, shared branch transport, pinned admission and earlier judge tests"
+      }
+    },
+    "changes": [
+      "Validate raw response identity before conversion",
+      "Reuse existing branch typesafe_sister.client._post_system_one with explicit endpoint and no fallback",
+      "Refuse adoption without non-empty expected model AND fingerprint",
+      "CLI rejects missing pin before inference"
+    ],
+    "dependency_verified": "Tests rerun with the exact shared client fetched from the judge branch (blob 411fa130cfd5ad37ca524a0cf88b2f22f3906699).",
+    "live_inference": "NOT_RUN",
+    "quality_adoption": "NOT_VERIFIED_10_CASE_SMOKE_ONLY"
+  },
+  "supervisor": {
+    "pr": 113,
+    "code_head": "c2e753722410a3d5746606431e8730439f143e2d",
+    "changes": [
+      "Ephemeral atomic progress record with fresh run ID",
+      "Watchdog in existing supervisor detects missing progress and consecutive failures",
+      "Sync propagates swallowed errors as unsuccessful cycles",
+      "Healthy empty cycles and normal idle intervals accepted"
+    ],
+    "tests": {
+      "passed": 25,
+      "failed": 0,
+      "seconds": 9.35,
+      "scope": "5 original process tests, 9 progress tests, 11 local signed replication/persistence/readiness tests; temporary state and loopback only",
+      "initial_run": {
+        "passed": 21,
+        "failed": 4,
+        "cause": "Isolated test assembly lacked unchanged scripts/r3_restart_proof.py; restored dependency and reran."
+      }
+    },
+    "production": "NOT_CHANGED"
+  },
+  "remaining": [
+    "PID-1 descendant reaping",
+    "Sleep/resume runtime verification",
+    "Drain and crash-loop policy",
+    "Hosted checks on exact final commits",
+    "Authenticated recovery on isolated cloned real state",
+    "Reachable Rizzo instance and held-out quality benchmark",
+    "Orchestra application-authenticated POST"
+  ],
+  "secrets": "No credentials read, copied or written",
+  "history_preserved": true,
+  "hosted_checks": {
+    "pr113": {
+      "head": "79e7c32b56facb3e5fdea32211ef459207be484f",
+      "Test_Runner": "PASS",
+      "Security_Scan": "PASS",
+      "R3_RRR_Control": "PASS"
+    },
+    "pr115": {
+      "head": "73c932ab792906bf108f03516b79c00c7a9b3193",
+      "Security_Scan": "PASS",
+      "Test_Runner": "NOT_OBSERVED"
+    },
+    "pr116": {
+      "head": "ec5c7abbd2f4133e86555e97e4075062bd88d479",
+      "Test_Runner": "PASS",
+      "Security_Scan": "PASS",
+      "scope": "Prior records checkpoint; subsequent scope reconciliation is a new revision"
+    }
+  }
+}
