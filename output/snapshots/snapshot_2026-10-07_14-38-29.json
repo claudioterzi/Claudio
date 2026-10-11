@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "timestamp": 1791376709.0856364,
+    "data_ora": "2026-10-07 14:38:29",
+    "tz": "Europe/Brussels",
+    "versione": "1.1.0"
+  },
+  "git": {
+    "branch": "main",
+    "commit": "b3e82b84bde170e50c7ffbd5bbb09de0f8b6d546",
+    "commit_short": "b3e82b8",
+    "messaggio": "chore(daily): heartbeat + evidence status 2026-10-06 [skip ci]",
+    "autore": "R3 Automation",
+    "data_commit": "2026-10-06 12:44:42 +0000",
+    "dirty": true,
+    "file_modificati": [
+      "M output/scan_report.json"
+    ]
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "808582b58d1972d4",
+      "CLAUDE.md": "aa2702dd469a6f3c",
+      "sdq1/__main__.py": "833c69f9f5369706",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "998235ef3d9ec614",
+      "sdq1/snapshot.py": "2fffc6b76d22bd0f",
+      "sdq1/sar/scacchiera_quantica.py": "a326c0669a90877e",
+      "sdq1/sar/agenti_autonomi.py": "ad03c13dab26d2e3",
+      "sdq1/llm/router.py": "830ae93bd2e79033",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "3288a6c2426a2b8e"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-10-07T12:38:29.246332",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.38,
+    "scacchiera_dir": "INVERSO"
+  },
+  "scanner": {
+    "agente": "CODE_SCANNER",
+    "score_sistema": 93,
+    "sicurezza_ok": true,
+    "sicurezza_livello": "VERDE",
+    "qualita_score": 82,
+    "debito_per_1k": 9.1,
+    "file_totali": 91,
+    "righe_totali": 16582,
+    "problemi_critici": 0,
+    "trovati_sicurezza": 0
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 6.4,
+      "n_chiavi": 4
+    }
+  }
+}

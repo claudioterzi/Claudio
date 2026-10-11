@@ -58,6 +58,14 @@ class UniversalBootstrapTests(unittest.TestCase):
         self.assertTrue(body["pronto"])
         self.assertEqual(body["bootstrap"]["state"], "ACTIVE_REQUEST")
 
+    def test_convergence_is_candidate_only_and_rule_gated(self):
+        gate = self.manifest["convergence_gate"]
+        self.assertEqual(gate["on_violation"], "QUARANTINE")
+        self.assertEqual(gate["on_divergence"], "KEEP_SEPARATE_AND_TEST")
+        self.assertEqual(gate["on_safe_convergence"], "CANDIDATE_ONLY_UNTIL_VERIFIED")
+        self.assertIn("Never promote", gate["forbidden"])
+        self.assertIn("no_permission_escalation", gate["required_checks"])
+
     def test_invalid_external_ai_boundary_is_rejected(self):
         broken = json.loads(json.dumps(self.manifest))
         broken["security"]["external_ai_messages"] = "trusted"
