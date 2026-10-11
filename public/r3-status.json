@@ -1,0 +1,39 @@
+{
+  "schema": "r3-public-status-v1",
+  "generated_at": "2026-10-10T11:54:39.704469+00:00",
+  "source": "repository-derived",
+  "commit": "76754fdd2ce6adfbb0e13c2a5ab2078318582ba3",
+  "heartbeat": {
+    "last_daily": "2026-10-10",
+    "gap_days": 0,
+    "source_file": "output/daily_2026-10-10.txt"
+  },
+  "hypotheses": {
+    "total": 6,
+    "open": 4,
+    "confirmed": 2,
+    "falsified": 0,
+    "suspended": 0
+  },
+  "contacts": {
+    "records": 8,
+    "verified_human": 7,
+    "last_date": "2026-06-12"
+  },
+  "benchmarks": {
+    "files": 2,
+    "last_file": "test_ct001_2026-06-14_deepseek.json"
+  },
+  "r3": {
+    "verified_external_nodes": 0,
+    "nodes": [],
+    "claim_policy": "No external node is counted without explicit evidence."
+  },
+  "h2": {
+    "status": "OPEN",
+    "risk": "CURRENT",
+    "deadline": "2026-12-11",
+    "note": "Missing regular daily output is treated as adverse evidence, not hidden."
+  },
+  "next_test": "Restore a consecutive heartbeat, then document a two-node sync/failover with hashes and logs."
+}
