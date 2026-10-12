@@ -13,6 +13,7 @@
     {"src":"public/**","use":"@vercel/static"}
   ],
   "routes": [
+    {"src":"/canali/?","dest":"/public/canali.html"},
     {"src":"/soglia/","dest":"/public/soglia.html"},
     {"src":"/soglia","dest":"/public/soglia.html"},
     {"src":"/","dest":"/public/r3-status.html"},
