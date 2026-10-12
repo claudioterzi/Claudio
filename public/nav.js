@@ -19,6 +19,7 @@
   ];
 
   var gruppi = privateMode ? gruppiPrivati : gruppiPubblici;
+  gruppi[0][1].splice(1, 0, ['canali.html', 'I miei canali']);
   var base = new URL('.', document.currentScript.src);
   var version = document.createElement('script'); version.src = new URL('site-version.js', base); document.head.appendChild(version);
   var atmosfere = document.createElement('script'); atmosfere.src = new URL('atmosfere.js', base); document.head.appendChild(atmosfere);
@@ -27,6 +28,7 @@
   var aliases = {'': privateMode?'privato.html':'raffaello.html', home: 'home.html', alpha: 'alpha.html', soglia: 'soglia.html',
     tarocchi:'tarocchi-alpha.html', 'lettura-tarocchi':'tarocchi-alpha.html', 'tarocchi-manuale':'tarocchi-manuale-alpha.html', 'terzo-livello':'terzo-livello.html', viaggi: 'viaggi.html', parti: 'parti.html', flight: 'flight_hunter.html', oracolo: 'oracolo.html', progetti: 'creazioni.html', scritti: 'scritti.html', 'cubo-quantico':'cubo-quantico.html', musica: 'musica.html', fabbrica: 'fabbrica.html', talenti: 'talenti.html', raffaello: 'raffaello.html', orchestratore: 'orchestratore.html', privato:'privato.html', dati:'dati.html', idee:'idea-os.html', 'idea-os':'idea-os.html', 'r3-evoluzione': 'r3-evoluzione.html'};
   var relativo = location.pathname.indexOf(base.pathname) === 0 ? location.pathname.slice(base.pathname.length) : '';
+  aliases.canali = 'canali.html';
   var qui = aliases[relativo] || relativo;
   var titolo = privateMode ? 'Privato' : 'Esplora';
   gruppi.forEach(function (g) { g[1].forEach(function (v) { if (v[0] === qui) titolo = v[1]; }); });
