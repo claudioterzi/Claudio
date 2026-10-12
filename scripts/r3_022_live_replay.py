@@ -78,6 +78,8 @@ def main() -> int:
         "model": provider.modello,
         "metrics": result["metrics"],
         "thresholds": result["preregistered_thresholds"],
+        "verification_class": result["verification_class"],
+        "limitations": result["limitations"],
         "artifact": str(path),
     }, ensure_ascii=False))
 

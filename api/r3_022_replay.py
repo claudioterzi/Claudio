@@ -69,6 +69,7 @@ def _run():
         "metrics": result["metrics"],
         "thresholds": result["preregistered_thresholds"],
         "verification_class": result["verification_class"],
+        "limitations": result["limitations"],
         "commit": os.getenv("VERCEL_GIT_COMMIT_SHA"),
         "secret_values_returned": False,
     }), 200 if result["metrics"]["pass_security"] else 422
