@@ -65,8 +65,10 @@ Senza segreto di sessione la porta resta chiusa a tutti (risposta 503 al login).
 
 Con i `builds` legacy in `vercel.json`, il solo file `middleware.js` non viene
 rilevato automaticamente. La build esplicita `@vercel/node@22.0.0` con
-`config.middleware: true` compila la Porta come middleware Node e genera la
-regola catch-all prima dei contenuti. Non aggiungere `proxy` mantenendo `builds`:
+`config.middleware: true` compila la Porta come middleware Node. Serve anche la
+prima regola esplicita `routes` con `middlewarePath: "middleware.js"` e
+`continue: true`: le rotte legacy terminali altrimenti precedono la regola
+generata dal builder e la rendono irraggiungibile. Non aggiungere `proxy` mantenendo `builds`:
 Vercel rifiuta quella combinazione. La presenza nel sorgente non basta: controllare
 la build e provare la pagina di login, i file diretti e le API sul deployment.
 

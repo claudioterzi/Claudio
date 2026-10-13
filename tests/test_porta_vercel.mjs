@@ -12,6 +12,16 @@ test('legacy builds explicitly compile the Porta as middleware', () => {
   assert.equal(cfg.proxy, undefined, 'proxy and legacy builds cannot coexist');
 });
 
+test('Porta runs before every legacy content route, including the fallback', () => {
+  assert.deepEqual(cfg.routes[0], {
+    src: '/.*', middlewarePath: 'middleware.js', continue: true,
+  });
+  assert.equal(cfg.routes.filter(r => r.middlewarePath).length, 1);
+  for (const path of ['/', '/porta/entra', '/libro', '/public/libro.html', '/api/porta-consiglio']) {
+    assert.ok(new RegExp(`^${cfg.routes[0].src}$`).test(path), path);
+  }
+});
+
 test('actual middleware entrypoint refuses direct pages, files and APIs', async () => {
   // Child process keeps all real credentials out of the fixture.
   const { spawnSync } = await import('node:child_process');
