@@ -20,6 +20,14 @@ configurata (`metadata.fallback_globale`); disattivabile con `fallback_globale: 
 nelle opzioni globali. L'hedging non aspetta più il timeout del profilo quando primario
 e secondario hanno già fallito. Test: `tests/test_router_fallback.py` (8), smoke 9/9.
 
+Sblocco del sito (13/10): Claudio sceglie **"solo per me"**, non pubblico. GitHub Pages
+resta sulla pagina "temporaneamente non disponibile" (Pages non può verificare accessi
+sul server). L'accesso riservato è già quello di Vercel: prova anonima del 13/10 su
+`/`, `/soglia`, `/privato`, `/libro`, `/public/libro.html`, `/api/raffaello` → tutti
+302 al login Vercel SSO, quindi pagine, file e API sono rifiutati senza autenticazione.
+Da confermare: l'accesso del proprietario (Claudio apre il dominio col suo login Vercel).
+Persone autorizzate: vanno aggiunte come membri del team Vercel. API Vercel 403 da qui.
+
 Jev (13/10): `api.typesafe.ai/v1/systemone` raggiungibile (403 senza credenziale); in
 questa sessione nessuna `TYPESAFE_API_KEY`, quindi nessuna chiamata Jev eseguita.
 
