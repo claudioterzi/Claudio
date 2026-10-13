@@ -96,6 +96,8 @@ class TestAgora(unittest.TestCase):
 
         def finta_api(metodo, dati):
             chiamate.append((metodo, dati))
+            if metodo == "getMe":
+                return {"ok": True, "result": {"id": 777, "username": "AssistenteRaffaelloBot"}}
             return {"ok": True, "description": "fatto", "result": {"pending_update_count": 0}}
 
         with patch.dict(os.environ, {"VERCEL_AUTOMATION_BYPASS_SECRET": "bypass123"}), \
@@ -109,6 +111,20 @@ class TestAgora(unittest.TestCase):
         self.assertIn("/home?x-vercel-protection-bypass=bypass123&x-vercel-set-bypass-cookie=true",
                       metodi["setChatMenuButton"]["menu_button"]["web_app"]["url"])
         self.assertEqual(metodi["setChatMenuButton"]["chat_id"], CHAT)
+        self.assertIn("@AssistenteRaffaelloBot", r.get_data(as_text=True))
+
+    def test_attiva_non_tocca_il_bot_in_polling_su_render(self):
+        chiamate = []
+
+        def finta_api(metodo, dati):
+            chiamate.append(metodo)
+            return {"ok": True, "result": {"id": 8900249704, "username": "ProtocolloRossoBot"}}
+
+        with patch.dict(os.environ, {"VERCEL_AUTOMATION_BYPASS_SECRET": "bypass123"}), \
+                patch.object(tarocchi_web, "_telegram_api", side_effect=finta_api):
+            r = self.client.get("/api/telegram/attiva")
+        self.assertEqual(chiamate, ["getMe"])
+        self.assertIn("polling su Render", r.get_data(as_text=True))
 
 
 if __name__ == "__main__":

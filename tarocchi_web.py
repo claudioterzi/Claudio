@@ -959,6 +959,17 @@ def telegram_attiva():
         righe.append(("✗", "Manca il segreto Vercel: Settings → Deployment Protection → "
                            "Protection Bypass for Automation → Add, poi ripubblica e riapri questa pagina."))
     else:
+        me = _telegram_api("getMe", {}).get("result") or {}
+        # I bot in polling (es. @ProtocolloRossoBot su Render) smettono di ricevere se gli si
+        # imposta un webhook: mai due ricevitori sullo stesso token.
+        polling = {x.strip() for x in os.environ.get("R3_BOT_POLLING_IDS", "8900249704").split(",") if x.strip()}
+        righe.append(("·", f"Bot del sito: @{me.get('username', '?')} (id {me.get('id', '?')})"))
+    if token and chat and bypass and str(me.get("id", "")) in polling:
+        righe.append(("✗", "Questo bot riceve già in polling su Render: non imposto un webhook, "
+                           "lo toglierei a Render. Il sito deve usare un bot diverso."))
+    elif token and chat and bypass and not me.get("id"):
+        righe.append(("✗", "Telegram non riconosce il token del bot configurato su Vercel."))
+    elif token and chat and bypass:
         passa = urllib.parse.urlencode({"x-vercel-protection-bypass": bypass})
         w = _telegram_api("setWebhook", {
             "url": f"{base}/api/telegram?{passa}",
