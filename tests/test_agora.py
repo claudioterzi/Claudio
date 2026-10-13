@@ -40,6 +40,10 @@ class TestAgora(unittest.TestCase):
         self.addCleanup(p.stop)
         self.client = tarocchi_web.app.test_client()
 
+    def webhook(self, upd, **kw):
+        intest = {"X-Telegram-Bot-Api-Secret-Token": tarocchi_web._segreto_webhook()}
+        return self.client.post("/api/telegram", json=upd, headers=intest, **kw)
+
     def agora(self, comando, dati):
         return self.client.post("/api/agora", json={"comando": comando, "initData": dati})
 
@@ -61,12 +65,12 @@ class TestAgora(unittest.TestCase):
 
     def test_webhook_legge_web_app_data(self):
         upd = {"message": {"chat": {"id": int(CHAT)}, "web_app_data": {"data": "/consiglio Dalla tastiera", "button_text": "Agorà"}}}
-        self.assertEqual(self.client.post("/api/telegram", json=upd).status_code, 200)
+        self.assertEqual(self.webhook(upd).status_code, 200)
         self.assertEqual(self.eseguiti, ["consiglio Dalla tastiera"])
 
     def test_webhook_ignora_chi_non_e_claudio(self):
         upd = {"message": {"chat": {"id": 555}, "text": "/consiglio prendo il controllo"}}
-        self.client.post("/api/telegram", json=upd)
+        self.webhook(upd)
         self.assertEqual(self.eseguiti, [])
 
     def test_webhook_con_segreto(self):
@@ -76,6 +80,35 @@ class TestAgora(unittest.TestCase):
             r = self.client.post("/api/telegram", json=upd, headers={"X-Telegram-Bot-Api-Secret-Token": "segreto-webhook"})
             self.assertEqual(r.status_code, 200)
         self.assertEqual(self.eseguiti, ["briefing"])
+
+    def test_webhook_senza_segreto_rifiutato(self):
+        upd = {"message": {"chat": {"id": int(CHAT)}, "text": "/briefing"}}
+        self.assertEqual(self.client.post("/api/telegram", json=upd).status_code, 403)
+        self.assertEqual(self.eseguiti, [])
+
+    def test_attiva_senza_segreto_vercel_spiega_cosa_fare(self):
+        with patch.dict(os.environ, {"VERCEL_AUTOMATION_BYPASS_SECRET": ""}):
+            r = self.client.get("/api/telegram/attiva")
+        self.assertIn("Protection Bypass for Automation", r.get_data(as_text=True))
+
+    def test_attiva_collega_webhook_e_pulsante(self):
+        chiamate = []
+
+        def finta_api(metodo, dati):
+            chiamate.append((metodo, dati))
+            return {"ok": True, "description": "fatto", "result": {"pending_update_count": 0}}
+
+        with patch.dict(os.environ, {"VERCEL_AUTOMATION_BYPASS_SECRET": "bypass123"}), \
+                patch.object(tarocchi_web, "_telegram_api", side_effect=finta_api):
+            r = self.client.get("/api/telegram/attiva")
+        self.assertEqual(r.status_code, 200)
+        metodi = dict(chiamate)
+        self.assertEqual(metodi["setWebhook"]["url"],
+                         "https://claudio-ebon.vercel.app/api/telegram?x-vercel-protection-bypass=bypass123")
+        self.assertEqual(metodi["setWebhook"]["secret_token"], tarocchi_web._segreto_webhook())
+        self.assertIn("/home?x-vercel-protection-bypass=bypass123&x-vercel-set-bypass-cookie=true",
+                      metodi["setChatMenuButton"]["menu_button"]["web_app"]["url"])
+        self.assertEqual(metodi["setChatMenuButton"]["chat_id"], CHAT)
 
 
 if __name__ == "__main__":
