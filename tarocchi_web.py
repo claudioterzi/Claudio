@@ -18,6 +18,7 @@ from functools import lru_cache
 import os
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -911,9 +912,85 @@ def telegram_debug():
     return response
 
 
+def _segreto_webhook() -> str:
+    """Segreto che Telegram rimanda in ogni chiamata al webhook. Derivato dal token
+    del bot se TELEGRAM_WEBHOOK_SECRET non è impostato: nessun valore da copiare."""
+    esplicito = os.environ.get("TELEGRAM_WEBHOOK_SECRET", "").strip()
+    if esplicito:
+        return esplicito
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    if not token:
+        return ""
+    return hmac.new(token.encode(), b"r3-telegram-webhook-v1", hashlib.sha256).hexdigest()[:48]
+
+
+def _telegram_api(metodo: str, dati: dict) -> dict:
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    req = urllib.request.Request(
+        f"https://api.telegram.org/bot{token}/{metodo}",
+        data=json.dumps(dati).encode(),
+        headers={"Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        try:
+            return json.loads(e.read())
+        except ValueError:
+            return {"ok": False, "description": f"HTTP {e.code}"}
+    except Exception as e:  # noqa: BLE001
+        return {"ok": False, "description": str(e)}
+
+
+@app.route("/api/telegram/attiva")
+def telegram_attiva():
+    """Collega il bot al sito: webhook e pulsante Agorà passano dal login Vercel con il
+    segreto di "Protection Bypass for Automation", che Vercel espone al sito da solo.
+    Idempotente: riaprirla rifà lo stesso collegamento."""
+    base = os.environ.get("R3_SITE_URL", "https://claudio-ebon.vercel.app").rstrip("/")
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    chat = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+    bypass = os.environ.get("VERCEL_AUTOMATION_BYPASS_SECRET", "").strip()
+    righe = []
+    if not token or not chat:
+        righe.append(("✗", "TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID mancano su Vercel."))
+    elif not bypass:
+        righe.append(("✗", "Manca il segreto Vercel: Settings → Deployment Protection → "
+                           "Protection Bypass for Automation → Add, poi ripubblica e riapri questa pagina."))
+    else:
+        passa = urllib.parse.urlencode({"x-vercel-protection-bypass": bypass})
+        w = _telegram_api("setWebhook", {
+            "url": f"{base}/api/telegram?{passa}",
+            "secret_token": _segreto_webhook(),
+            "allowed_updates": ["message"],
+        })
+        righe.append(("✓" if w.get("ok") else "✗", "Webhook: " + str(w.get("description", w.get("ok")))))
+        cookie = urllib.parse.urlencode({"x-vercel-protection-bypass": bypass, "x-vercel-set-bypass-cookie": "true"})
+        m = _telegram_api("setChatMenuButton", {
+            "chat_id": chat,
+            "menu_button": {"type": "web_app", "text": "Agorà", "web_app": {"url": f"{base}/home?{cookie}"}},
+        })
+        righe.append(("✓" if m.get("ok") else "✗", "Pulsante Agorà: " + str(m.get("description", m.get("ok")))))
+        info = _telegram_api("getWebhookInfo", {}).get("result", {})
+        if info.get("last_error_message"):
+            righe.append(("!", f"Ultimo errore visto da Telegram: {info['last_error_message']}"))
+        righe.append(("·", f"Messaggi in attesa: {info.get('pending_update_count', '?')}"))
+    corpo = "".join(f"<p>{segno} {testo}</p>" for segno, testo in righe)
+    risposta = app.response_class(
+        f"<!doctype html><meta charset=utf-8><meta name=viewport content='width=device-width'>"
+        f"<title>Collega Telegram</title><body style='font-family:Georgia,serif;background:#0c0c0e;"
+        f"color:#e8e4d8;max-width:560px;margin:2rem auto;padding:0 1rem'><h1 style='color:#c9a84c;"
+        f"font-weight:normal'>Collega Telegram</h1>{corpo}</body>",
+        mimetype="text/html",
+    )
+    risposta.headers["Cache-Control"] = "no-store"
+    return risposta
+
+
 @app.route("/api/telegram", methods=["POST"])
 def telegram_webhook():
-    segreto = os.environ.get("TELEGRAM_WEBHOOK_SECRET", "").strip()
+    segreto = _segreto_webhook()
     ricevuto = request.headers.get("X-Telegram-Bot-Api-Secret-Token", "")
     if segreto and not hmac.compare_digest(ricevuto, segreto):
         return "forbidden", 403
