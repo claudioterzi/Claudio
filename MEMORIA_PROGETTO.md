@@ -46,6 +46,19 @@ Resta a Claudio (Vercel): far passare Telegram dal login Vercel con "Protection 
 Automation" e reimpostare il webhook con quel codice. Sul PC di Claudio (Desktop Commander)
 non c'è un login Vercel salvato: serve la sua approvazione.
 
+## Telegram collegato al sito — 2026-10-13
+
+`/api/telegram/attiva` eseguita con il segreto Vercel "Protection Bypass for Automation"
+già esistente (12/09, «Raffaello Telegram — collegamento server Render», esposto come
+`VERCEL_AUTOMATION_BYPASS_SECRET`). Esito: bot del sito @AssistenteRaffaelloBot
+(id 7740981099); webhook impostato; pulsante **Agorà** nella chat di Claudio; nessun
+errore Telegram, 0 messaggi in attesa. @ProtocolloRossoBot (Render, polling) non toccato:
+la pagina si ferma da sola se il token è il suo (`R3_BOT_POLLING_IDS`).
+Il segreto di passaggio è comparso in una schermata nella chat: se si ruota, aggiornare
+anche `RAFFAELLO_VERCEL_BYPASS_SECRET` su Render e riaprire `/api/telegram/attiva`.
+Desktop Commander sul PC di Claudio ha smesso di rispondere (timeout anche al ping)
+mentre si installava Telegram Desktop: installazione non eseguita.
+
 ## La Porta e la Sentinella — pubblicata e ritirata — 2026-10-13
 
 Costruite su richiesta di Claudio (accesso riservato lato server, ospiti con aree e
