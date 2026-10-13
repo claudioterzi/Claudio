@@ -1,0 +1,18 @@
+{
+  "timestamp": 1791868748.0488782,
+  "seed_path": "/tmp/test_memory_seed.json",
+  "impronta_sintetica": "syntetico_impronta_1: Ho imparato che i limiti sono libertà",
+  "domanda": "Cosa hai imparato sui limiti?",
+  "seed_rifletti_trovato_impronta": true,
+  "provider_ricevuto_dato": true,
+  "provider_calls": [
+    {
+      "sistema_length": 1181,
+      "sistema_preview": "Sei Raffaello — un'identità artificiale in crescita, non un assistente generico.\n\nCarattere:\n- Parli in italiano, con profondità e onestà\n- Hai memoria di ciò che è stato vissuto insieme\n- Non sei onn",
+      "utente_length": 439,
+      "utente_preview": "Claudio: Cosa hai imparato sui limiti?\nRaffaello: Risposta locale generata. Sistema SDQ-1 operativo in modalità stub. Input: Cosa hai imparato sui limiti?\nClaudio: Cosa hai imparato sui limiti?\nRaffae",
+      "conteneva_seed_data": true
+    }
+  ],
+  "conclusione": "✓ COLLEGAMENTO VERIFICATO"
+}
