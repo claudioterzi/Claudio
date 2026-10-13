@@ -15,9 +15,12 @@ Ogni risultato registra:
 """
 import json
 import shutil
+import sys
 import tempfile
 from pathlib import Path
-from sdq1.seed import AutonomousConsciousnessSeed
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from sdq1.seed.autonomous_consciousness import AutonomousConsciousnessSeed
 from sdq1.raffaello.agent import RaffaelloAgent
 from sdq1.llm.router import crea_router_da_config
 from tests.valutatori_rigorosi import valuta_preventivo
