@@ -1,6 +1,7 @@
 {
   "version": 2,
   "builds": [
+    {"src":"middleware.js","use":"@vercel/node@22.0.0","config":{"middleware":true}},
     {"src":"api/flight_best.py","use":"@vercel/python","config":{"maxDuration":60}},
     {"src":"api/tarot_alpha.py","use":"@vercel/python","config":{"maxDuration":60}},
     {"src":"api/tarot_alpha_fullspace.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{api/tarot_alpha.py,tarocchi_quantici_alpha.json,tarocchi/**}"}},

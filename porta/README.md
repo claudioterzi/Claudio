@@ -63,6 +63,13 @@ Senza segreto di sessione la porta resta chiusa a tutti (risposta 503 al login).
 
 ## Attivazione in sicurezza (CLAUDE.md, 10/09)
 
+Con i `builds` legacy in `vercel.json`, il solo file `middleware.js` non viene
+rilevato automaticamente. La build esplicita `@vercel/node@22.0.0` con
+`config.middleware: true` compila la Porta come middleware Node e genera la
+regola catch-all prima dei contenuti. Non aggiungere `proxy` mantenendo `builds`:
+Vercel rifiuta quella combinazione. La presenza nel sorgente non basta: controllare
+la build e provare la pagina di login, i file diretti e le API sul deployment.
+
 Il login Vercel (Deployment Protection) resta acceso finché non sono verificati entrambi:
 l'accesso del proprietario e il rifiuto dei collegamenti diretti senza autenticazione.
 
@@ -83,6 +90,7 @@ GitHub Pages resta sulla pagina «temporaneamente non disponibile»: non verific
 
 ```
 node --test tests/test_porta.mjs
+node --test tests/test_porta_vercel.mjs
 python -m unittest tests.test_porta_consiglio
 python porta/genera_mappa.py --check
 ```

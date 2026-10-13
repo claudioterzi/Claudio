@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
     paths:
+      - 'vercel.json'
+      - 'middleware.js'
+      - 'porta/**'
+      - 'tests/test_porta*.mjs'
       - 'public/r3-memory.js'
       - 'tests/r3-memory-integrity.cjs'
       - '**.py'
@@ -62,6 +66,7 @@ jobs:
       - name: La Porta — accesso riservato e ospiti
         run: |
           node --test tests/test_porta.mjs
+          node --test tests/test_porta_vercel.mjs
           python -m unittest tests.test_porta_consiglio
           python porta/genera_mappa.py --check || echo "::warning::porta/mappa.json da rigenerare (python porta/genera_mappa.py): i file nuovi restano visibili solo al proprietario finché non la rigeneri."
 
