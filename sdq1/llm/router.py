@@ -32,6 +32,7 @@ from .providers import (
     GrokProvider,
     LocalCalculatorProvider,
     MiniMaxProvider,
+    OllamaLocalProvider,
     OllamaProvider,
     OpenAIProvider,
     PerplexityProvider,
@@ -43,16 +44,17 @@ from .providers import (
 log = logging.getLogger(__name__)
 
 PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
-    "anthropic":        (AnthropicProvider,        "claude-fable-5"),
-    "openai":           (OpenAIProvider,           "gpt-4o-mini"),
-    "deepseek":         (DeepSeekProvider,         "deepseek-chat"),
-    "perplexity":       (PerplexityProvider,       "sonar-pro"),
-    "gemini":           (GeminiProvider,           "gemini-2.5-flash"),
-    "grok":             (GrokProvider,             "grok-3"),
-    "minimax":          (MiniMaxProvider,          "MiniMax-M3"),
-    "ollama":           (OllamaProvider,           "llama3.2"),
-    "stub":             (StubProvider,             "stub-model"),
-    "local_calculator": (LocalCalculatorProvider,  "local-calculator-v1"),
+    "anthropic":         (AnthropicProvider,        "claude-fable-5"),
+    "openai":            (OpenAIProvider,           "gpt-4o-mini"),
+    "deepseek":          (DeepSeekProvider,         "deepseek-chat"),
+    "perplexity":        (PerplexityProvider,       "sonar-pro"),
+    "gemini":            (GeminiProvider,           "gemini-2.5-flash"),
+    "grok":              (GrokProvider,             "grok-3"),
+    "minimax":           (MiniMaxProvider,          "MiniMax-M3"),
+    "ollama":            (OllamaProvider,           "llama3.2"),
+    "ollama_local":      (OllamaLocalProvider,      "raffaello-r3:3b"),
+    "stub":              (StubProvider,             "stub-model"),
+    "local_calculator":  (LocalCalculatorProvider,  "local-calculator-v1"),
 }
 
 _RETRY_AFTER_RE = re.compile(r"retry.after[^\d]*(\d+)", re.IGNORECASE)
