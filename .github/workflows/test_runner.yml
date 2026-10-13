@@ -59,12 +59,6 @@ jobs:
       - name: Router LLM — fallback su modello alternativo
         run: python -m unittest tests.test_router_fallback
 
-      - name: La Porta — accesso riservato e ospiti
-        run: |
-          node --test tests/test_porta.mjs
-          python -m unittest tests.test_porta_consiglio
-          python porta/genera_mappa.py --check || echo "::warning::porta/mappa.json da rigenerare (python porta/genera_mappa.py): i file nuovi restano visibili solo al proprietario finché non la rigeneri."
-
       - name: Verifica Fabbrica, TypeSafe e dialogo IA
         run: |
           python -m unittest discover -s tests -p 'test_fabbrica*.py'

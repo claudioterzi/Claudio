@@ -28,23 +28,6 @@ sul server). L'accesso riservato è già quello di Vercel: prova anonima del 13/
 Da confermare: l'accesso del proprietario (Claudio apre il dominio col suo login Vercel).
 Persone autorizzate: vanno aggiunte come membri del team Vercel. API Vercel 403 da qui.
 
-## La Porta e la Sentinella — 2026-10-13
-
-Richiesta di Claudio: entrare sempre, creare da dentro un accesso con password per una
-persona, decidere con l'aiuto di Claude cosa vede; e una sentinella che scopre le
-invasioni, le espelle e prende in giro l'intruso, con Claudio immune.
-Costruito in `porta/` + `middleware.js` (guida: `porta/README.md`). Porta lato server su
-ogni richiesta; proprietario con l'hash dell'archivio (`PERFUME_ARCHIVE_PASSWORD_HASH`,
-sostituibile con `R3_PORTA_OWNER_HASH` via `/porta/chiave`), indipendente da Redis;
-ospiti in Upstash con aree da `porta/aree.json` (chiuso per default, Area privata mai
-concedibile); consigliere `porta/consiglio.py` via router con ripiego a regole.
-Sentinella: trappole, percorsi truccati, cookie falsi, password sbagliate, ospiti che
-frugano → bando 24 h o sospensione, esca, avviso Telegram; proprietario immune.
-Prove: 24 test Node, 7 Python, percorso completo guidato in Chromium con server locale.
-NON verificato su Vercel: se il middleware gira con la configurazione `builds` legacy.
-Il login Vercel resta acceso finché Claudio non completa i 4 passi di attivazione.
-Migrazione istantanea su nodi ridondanti: non attiva (rete R³∞ in attesa di test live).
-
 Jev (13/10): `api.typesafe.ai/v1/systemone` raggiungibile (403 senza credenziale); in
 questa sessione nessuna `TYPESAFE_API_KEY`, quindi nessuna chiamata Jev eseguita.
 
