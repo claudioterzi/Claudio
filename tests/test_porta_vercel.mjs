@@ -4,6 +4,13 @@ import test from 'node:test';
 
 const cfg = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url)));
 
+test('CommonJS entrypoint loads the ESM Porta through native dynamic imports', () => {
+  const source = readFileSync(new URL('../middleware.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(source, /import\s+[^('][\s\S]*?from\s+['"]\.\/porta\//);
+  assert.match(source, /import\('\.\/porta\/porta\.mjs'\)/);
+  assert.match(source, /import\('\.\/porta\/dati\.mjs'\)/);
+});
+
 test('legacy builds explicitly compile the Porta as middleware', () => {
   const entries = cfg.builds.filter(b => b.src === 'middleware.js');
   assert.equal(entries.length, 1);

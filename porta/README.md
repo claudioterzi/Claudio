@@ -72,6 +72,12 @@ generata dal builder e la rendono irraggiungibile. Non aggiungere `proxy` manten
 Vercel rifiuta quella combinazione. La presenza nel sorgente non basta: controllare
 la build e provare la pagina di login, i file diretti e le API sul deployment.
 
+Il builder legacy converte `middleware.js` in CommonJS: gli import della Porta
+devono restare **dinamici e nativi** (`import()`), altrimenti il wrapper Vercel
+può rifiutare `require()` dei moduli `.mjs` con `ERR_REQUIRE_ESM`. La prima build
+READY non dimostrava questa compatibilità: verificare anche il wrapper compilato
+e le risposte del deployment esatto, non soltanto il sorgente locale.
+
 Il login Vercel (Deployment Protection) resta acceso finché non sono verificati entrambi:
 l'accesso del proprietario e il rifiuto dei collegamenti diretti senza autenticazione.
 
