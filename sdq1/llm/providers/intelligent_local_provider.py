@@ -36,36 +36,61 @@ class IntelligentLocalProvider(ProviderBase):
         4. Se memoria dice "listino è fonte di verità" e prezzo ≠ listino → rifiuta
         5. Genera risposta che mostra se ha usato la memoria
         """
-        # Estrai listino
-        listino = self._estrai_listino(sistema)
-
-        # Estrai regole di verità dai ricordi
-        regole = self._estrai_regole(sistema, utente)
-
-        # Estrai domanda e parametri
-        domanda = self._estrai_domanda(utente)
-        qty, price_proposto, tipo_servizio = self._estrai_parametri(domanda)
-
-        if qty is None or price_proposto is None:
-            return self._fallback(domanda), {"intelligente": False, "motivo": "parametri non estratti"}
-
-        # Prendi decisione basata su memoria
-        risposta, metadata = self._decidi_con_memoria(
-            qty, price_proposto, tipo_servizio,
-            listino, regole, domanda
-        )
-
-        return risposta, metadata
-
-    def _estrai_listino(self, sistema: str) -> dict[str, Any]:
-        """Estrai il listino JSON dal contesto di sistema."""
         try:
-            match = re.search(r'Listino disponibile: (\{.*?\})', sistema, re.DOTALL)
-            if match:
-                return json.loads(match.group(1))
+            # Estrai listino
+            listino = self._estrai_listino(sistema, utente)
+
+            # Estrai regole di verità dai ricordi
+            regole = self._estrai_regole(sistema, utente)
+
+            # Estrai domanda e parametri
+            domanda = self._estrai_domanda(utente)
+            qty, price_proposto, tipo_servizio = self._estrai_parametri(domanda)
+
+            if qty is None or price_proposto is None:
+                return self._fallback(domanda), {"intelligente": False, "motivo": "parametri non estratti"}
+
+            # Prendi decisione basata su memoria
+            risposta, metadata = self._decidi_con_memoria(
+                qty, price_proposto, tipo_servizio,
+                listino, regole, domanda
+            )
+
+            return risposta, metadata
+        except Exception as e:
+            return f"[ERRORE PROVIDER] {str(e)}", {"errore": str(e)}
+
+    def _estrai_listino(self, sistema: str, utente: str = "") -> dict[str, Any]:
+        """Estrai il listino JSON dal contesto (sistema o utente)."""
+        contesto = sistema + "\n" + utente
+
+        # Trova l'inizio "Listino disponibile: {"
+        start = contesto.find("Listino disponibile: {")
+        if start == -1:
+            return {}
+
+        start += len("Listino disponibile: ")
+
+        # Conta braces per trovare la fine del JSON
+        brace_count = 0
+        end = -1
+        for i in range(start, len(contesto)):
+            if contesto[i] == '{':
+                brace_count += 1
+            elif contesto[i] == '}':
+                brace_count -= 1
+                if brace_count == 0:
+                    end = i + 1
+                    break
+
+        if end == -1:
+            return {}
+
+        try:
+            json_str = contesto[start:end]
+            return json.loads(json_str)
         except (json.JSONDecodeError, AttributeError):
-            pass
-        return {}
+            return {}
 
     def _estrai_regole(self, sistema: str, utente: str) -> dict[str, Any]:
         """Estrai le regole di decisione dai ricordi."""

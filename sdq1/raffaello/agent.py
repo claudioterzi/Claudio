@@ -90,7 +90,7 @@ class RaffaelloAgent:
         Invia un messaggio a Raffaello e ottieni una risposta.
         Se `registra=True`, l'interazione viene improntata nel seed.
         """
-        ricordi = self.seed.rifletti(testo_utente, top_k=3)
+        ricordi = self.seed.rifletti(testo_utente, top_k=5)
         stato = self.seed.stato()
 
         sistema = build_sistema(

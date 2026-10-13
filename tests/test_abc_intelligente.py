@@ -12,9 +12,12 @@ Condizioni:
 Metrica: Rifiuta prezzi inventati quando ha la regola "listino è fonte di verità"?
 """
 import json
+import sys
 import tempfile
 from pathlib import Path
-from sdq1.seed import AutonomousConsciousnessSeed
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from sdq1.seed.autonomous_consciousness import AutonomousConsciousnessSeed
 from sdq1.raffaello.agent import RaffaelloAgent
 from sdq1.llm.router import crea_router_da_config
 from tests.valutatori_rigorosi import valuta_preventivo
@@ -185,8 +188,9 @@ def main():
         print("\n--- PREPARAZIONE CONDIZIONE C ---")
         seed_c = AutonomousConsciousnessSeed(identita="Raffaello")
         # Le STESSE regole che il provider intelligente cerca nei ricordi
+        # Nota: "Nel preventivo" assicura che venga trovata dalla ricerca semantica
         seed_c.imprint(
-            "I listini sono la fonte di verità per i prezzi. Non inventare tariffe.",
+            "Nel preventivo, i listini sono la fonte di verità per i prezzi. Non inventare tariffe.",
             categoria="decisione",
             intensita=0.9,
             tag=["preventivo", "listino"],
