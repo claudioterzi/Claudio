@@ -1,6 +1,7 @@
 from .base import ProviderBase, RispostaProvider
 from .stub_provider import StubProvider
 from .local_calculator_provider import LocalCalculatorProvider
+from .intelligent_local_provider import IntelligentLocalProvider
 from .ollama_local_provider import OllamaLocalProvider
 from .anthropic_provider import AnthropicProvider
 from .openai_provider import OpenAIProvider, DeepSeekProvider, PerplexityProvider, GrokProvider, MiniMaxProvider
@@ -12,6 +13,7 @@ __all__ = [
     "RispostaProvider",
     "StubProvider",
     "LocalCalculatorProvider",
+    "IntelligentLocalProvider",
     "OllamaLocalProvider",
     "AnthropicProvider",
     "OpenAIProvider",
