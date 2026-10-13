@@ -101,3 +101,4 @@ output/perfume_registry.sqlite3*
 .r3/reuse_ml/
 output/private_r3/
 R3_PRIVATE_*
+*.bak
