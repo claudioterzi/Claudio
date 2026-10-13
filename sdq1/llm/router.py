@@ -54,10 +54,21 @@ PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
 }
 
 _RETRY_AFTER_RE = re.compile(r"retry.after[^\d]*(\d+)", re.IGNORECASE)
-_RATE_PATTERNS = frozenset({
-    "429", "rate limit", "quota exceeded", "too many requests", "resource_exhausted",
-    "credit balance is too low", "billing", "insufficient_quota",
+# Token/crediti finiti sull'account: non torna disponibile in un minuto.
+_QUOTA_PATTERNS = frozenset({
+    "quota exceeded", "exceeded your current quota", "resource_exhausted",
+    "credit balance is too low", "billing", "insufficient_quota", "out of credits",
+    "payment required", "error code: 402", "http 402",
 })
+_RATE_PATTERNS = frozenset({"429", "rate limit", "too many requests"}) | _QUOTA_PATTERNS
+# Il prompt supera la finestra di contesto di QUEL modello: un altro può reggerlo.
+_CONTESTO_PATTERNS = frozenset({
+    "prompt is too long", "context_length_exceeded", "maximum context length",
+    "context window", "too many tokens", "request too large", "input is too long",
+    "error code: 413", "http 413",
+})
+_STOP_TRONCATO = frozenset({"max_tokens", "length"})
+QUOTA_PAUSA_S = 1800
 
 
 @dataclass
@@ -150,17 +161,49 @@ class LLMRouter:
 
     def _apri_circuit(self, nome: str, errore: str) -> None:
         m = _RETRY_AFTER_RE.search(errore)
-        delay = int(m.group(1)) if m else 60
+        if m:
+            delay = int(m.group(1))
+        elif self._e_quota_esaurita(errore):
+            delay = QUOTA_PAUSA_S
+        else:
+            delay = 60
         delay = max(10, min(delay, 3600))
         self._circuit[nome] = time.time() + delay
         log.warning("Circuit Breaker: %s aperto per %ds", nome, delay)
 
     @staticmethod
-    def _e_rate_limit(errore: str | None) -> bool:
+    def _contiene(errore: str | None, pattern: frozenset[str]) -> bool:
         if not errore:
             return False
         low = errore.lower()
-        return any(k in low for k in _RATE_PATTERNS)
+        return any(k in low for k in pattern)
+
+    @classmethod
+    def _e_rate_limit(cls, errore: str | None) -> bool:
+        return cls._contiene(errore, _RATE_PATTERNS)
+
+    @classmethod
+    def _e_quota_esaurita(cls, errore: str | None) -> bool:
+        return cls._contiene(errore, _QUOTA_PATTERNS)
+
+    @classmethod
+    def _e_contesto_superato(cls, errore: str | None) -> bool:
+        return cls._contiene(errore, _CONTESTO_PATTERNS)
+
+    @staticmethod
+    def _troncata(r: RispostaProvider) -> bool:
+        """Il modello ha finito i token di output prima di completare la risposta."""
+        motivo = r.metadata.get("stop_reason") or r.metadata.get("finish_reason")
+        return motivo is not None and str(motivo).lower() in _STOP_TRONCATO
+
+    def _alternative_globali(self, escludi: list[str]) -> list[str]:
+        """Provider fuori dalla cascata del profilo, da provare quando questa è esaurita."""
+        if not self.opts.get("fallback_globale", True):
+            return []
+        return [
+            n for n in PROVIDER_REGISTRY
+            if n not in escludi and n != "stub" and not self._circuit_aperto(n)
+        ]
 
     # ------------------------------------------------------------------ #
     # Provider cache                                                       #
@@ -205,6 +248,17 @@ class LLMRouter:
         secondario = cascata_eff[1] if len(cascata_eff) > 1 else None
         risultati: queue.Queue[tuple[str, RispostaProvider]] = queue.Queue()
         tentati: list[str] = [primario]
+        troncata: RispostaProvider | None = None
+
+        def _valida(r: RispostaProvider) -> bool:
+            nonlocal troncata
+            if not (r.via_api and r.testo):
+                return False
+            if self._troncata(r):
+                r.metadata["troncata"] = True
+                troncata = troncata or r
+                return False
+            return True
 
         def _esegui(nome: str) -> None:
             modello = self._modello_per(regola, nome)
@@ -221,11 +275,13 @@ class LLMRouter:
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
         try:
             executor.submit(_esegui, primario)
+            ricevuti = 0
 
             # Attendi HEDGE_WAIT_S: se il primario risponde bene, usalo subito
             try:
                 nome, r = risultati.get(timeout=self.HEDGE_WAIT_S)
-                if r.via_api and r.testo:
+                ricevuti += 1
+                if _valida(r):
                     return EsitoChiamata(
                         risposta=r, provider_usati=tentati, profilo=regola.profilo
                     )
@@ -244,11 +300,12 @@ class LLMRouter:
 
             # Accetta il primo risultato valido entro il timeout del profilo
             scadenza = time.time() + self._timeout_s(regola)
-            while time.time() < scadenza:
+            while ricevuti < len(tentati) and time.time() < scadenza:
                 rimasto = scadenza - time.time()
                 try:
                     nome, r = risultati.get(timeout=min(rimasto, 2.0))
-                    if r.via_api and r.testo:
+                    ricevuti += 1
+                    if _valida(r):
                         return EsitoChiamata(
                             risposta=r, provider_usati=tentati,
                             profilo=regola.profilo, hedged=True,
@@ -260,11 +317,94 @@ class LLMRouter:
         finally:
             executor.shutdown(wait=False)
 
-        # Nessun provider ha risposto: fallback stub
-        stub = self._ottieni("stub", "stub-model")
-        r = stub.completa(sistema, utente)
-        tentati.append("stub")
-        return EsitoChiamata(risposta=r, provider_usati=tentati, profilo=regola.profilo)
+        # Né primario né secondario hanno dato una risposta completa:
+        # prosegui sul resto della cascata e sui modelli alternativi.
+        resto = [p for p in cascata_eff if p not in tentati] + ["stub"]
+        esito = self._cascata(
+            sistema, utente, regola, resto, profilo=regola.profilo,
+            tentati=tentati, troncata=troncata,
+        )
+        esito.hedged = True
+        return esito
+
+    # ------------------------------------------------------------------ #
+    # Cascata sequenziale + fallback su modelli alternativi                #
+    # ------------------------------------------------------------------ #
+
+    def _cascata(
+        self,
+        sistema: str,
+        utente: str,
+        regola: RegolaRouter,
+        cascata_eff: list[str],
+        *,
+        profilo: str,
+        ckey: str | None = None,
+        budget_tentativi: int = 1,
+        tentati: list[str] | None = None,
+        troncata: RispostaProvider | None = None,
+    ) -> EsitoChiamata:
+        """Prova la cascata del profilo; se tutti esauriscono token, quota o
+        contesto, prova gli altri provider configurati prima di arrendersi."""
+        tentati = list(tentati or [])
+        ultima: RispostaProvider | None = None
+        piano = [(n, self._modello_per(regola, n), False) for n in cascata_eff if n != "stub"]
+        piano += [
+            (n, PROVIDER_REGISTRY[n][1], True)
+            for n in self._alternative_globali(list(regola.cascata) + tentati)
+        ]
+
+        for nome, modello, globale in piano:
+            prov = self._ottieni(nome, modello)
+            if not prov.disponibile:
+                if not globale:
+                    tentati.append(nome)
+                log.debug("Router: %s non disponibile", nome)
+                continue
+            tentati.append(nome)
+            r = prov.completa(sistema, utente)
+            ultima = r
+            if r.via_api and r.testo:
+                if globale:
+                    r.metadata["fallback_globale"] = True
+                    log.warning("Router: cascata '%s' esaurita, risponde %s/%s",
+                                profilo, nome, modello)
+                if self._troncata(r):
+                    r.metadata["troncata"] = True
+                    troncata = troncata or r
+                    log.warning("Router: %s ha esaurito i token di output, "
+                                "provo un modello alternativo", nome)
+                    continue
+                # Test-Time Compute: se risposta debole e budget > 1, retry con prompt arricchito
+                if budget_tentativi > 1 and self._risposta_debole(r.testo):
+                    utente_arricchito = (
+                        f"{utente}\n\n[APPROFONDISCI: la risposta precedente era insufficiente. "
+                        "Fornisci più dettaglio e precisione.]"
+                    )
+                    r2 = prov.completa(sistema, utente_arricchito)
+                    if not self._risposta_debole(r2.testo):
+                        r2.metadata["test_time_compute"] = True
+                        if ckey:
+                            self._scrivi_cache(ckey, r2)
+                        return EsitoChiamata(risposta=r2, provider_usati=tentati, profilo=profilo)
+                if ckey:
+                    self._scrivi_cache(ckey, r)
+                return EsitoChiamata(risposta=r, provider_usati=tentati, profilo=profilo)
+            if self._e_rate_limit(r.errore):
+                self._apri_circuit(nome, r.errore or "")
+            elif self._e_contesto_superato(r.errore):
+                log.warning("Router: prompt oltre il contesto di %s, provo un modello alternativo",
+                            nome)
+            log.debug("Router: %s fallito (%s)", nome, r.errore)
+
+        # Meglio una risposta troncata vera che lo stub.
+        if troncata is not None:
+            return EsitoChiamata(risposta=troncata, provider_usati=tentati, profilo=profilo)
+        if ultima is None or "stub" in cascata_eff:
+            stub = self._ottieni("stub", "stub-model")
+            ultima = stub.completa(sistema, utente)
+            tentati.append("stub")
+        return EsitoChiamata(risposta=ultima, provider_usati=tentati, profilo=profilo)
 
     # ------------------------------------------------------------------ #
     # Main entry point                                                     #
@@ -343,41 +483,10 @@ class LLMRouter:
             if len(disponibili) >= 2:
                 return self._chiama_con_hedging(sistema, utente, regola, disponibili)
 
-        # Cascata sequenziale standard
-        tentati: list[str] = []
-        ultima: RispostaProvider | None = None
-        for nome in cascata_eff:
-            modello = self._modello_per(regola, nome)
-            prov = self._ottieni(nome, modello)
-            tentati.append(nome)
-            if not prov.disponibile:
-                log.debug("Router: %s non disponibile", nome)
-                continue
-            r = prov.completa(sistema, utente)
-            ultima = r
-            if bool(r.testo) and (nome == "stub" or r.via_api):
-                # Test-Time Compute: se risposta debole e budget > 1, retry con prompt arricchito
-                if budget_tentativi > 1 and self._risposta_debole(r.testo):
-                    utente_arricchito = (
-                        f"{utente}\n\n[APPROFONDISCI: la risposta precedente era insufficiente. "
-                        "Fornisci più dettaglio e precisione.]"
-                    )
-                    r2 = prov.completa(sistema, utente_arricchito)
-                    if not self._risposta_debole(r2.testo):
-                        r2.metadata["test_time_compute"] = True
-                        self._scrivi_cache(ckey, r2)
-                        return EsitoChiamata(risposta=r2, provider_usati=tentati, profilo=profilo)
-                self._scrivi_cache(ckey, r)
-                return EsitoChiamata(risposta=r, provider_usati=tentati, profilo=profilo)
-            if self._e_rate_limit(r.errore):
-                self._apri_circuit(nome, r.errore or "")
-            log.debug("Router: %s fallito (%s)", nome, r.errore)
-
-        if ultima is None:
-            stub = self._ottieni("stub", "stub-model")
-            ultima = stub.completa(sistema, utente)
-            tentati.append("stub")
-        return EsitoChiamata(risposta=ultima, provider_usati=tentati, profilo=profilo)
+        return self._cascata(
+            sistema, utente, regola, cascata_eff,
+            profilo=profilo, ckey=ckey, budget_tentativi=budget_tentativi,
+        )
 
     def provider_attivi(self) -> dict[str, bool]:
         risultato: dict[str, bool] = {}
