@@ -62,39 +62,23 @@ class LocalCalculatorProvider(ProviderBase):
         }
 
     def _estrai_domanda_finale(self, utente: str) -> str:
+        """Estrai SOLO l'ultima domanda dal contesto complesso.
+
+        Ignora listino, ricordi, storico. La domanda è il paragrafo
+        che contiene "?" oppure l'ultimo paragrafo non vuoto.
         """
-        Estrai la domanda vera dall'utente, che può contenere:
-        - Listino (intestazione)
-        - Ricordi (sezione intermedia)
-        - Domanda (ultima parte)
+        # Split per doppi salti di riga (paragrafi)
+        paragrafi = utente.split('\n\n')
 
-        La domanda è quella dopo il doppio salto di riga che segue i ricordi,
-        oppure le ultime 1-2 righe significative.
-        """
-        # Se il contesto ha la forma "Listino...\n\nRicordi:\n...\n\nDomanda"
-        # allora la domanda è l'ultima parte
-        righe = utente.split('\n')
+        # Cerca l'ultimo paragrafo che contiene "?"
+        for p in reversed(paragrafi):
+            if '?' in p and p.strip():
+                return p.strip()
 
-        # Trova dove iniziano i ricordi
-        ricordi_idx = -1
-        for i, riga in enumerate(righe):
-            if 'ricordi' in riga.lower():
-                ricordi_idx = i
-                break
-
-        if ricordi_idx >= 0:
-            # La domanda è dopo i ricordi (salta una riga vuota)
-            for i in range(ricordi_idx + 1, len(righe)):
-                if righe[i].strip() == '':
-                    # La domanda inizia dalla prossima riga non vuota
-                    for j in range(i + 1, len(righe)):
-                        if righe[j].strip():
-                            return '\n'.join(righe[j:])
-
-        # Fallback: le ultime 2-3 righe non vuote
-        righe_non_vuote = [r for r in righe if r.strip()]
-        if righe_non_vuote:
-            return ' '.join(righe_non_vuote[-2:])
+        # Fallback: ultimo paragrafo
+        for p in reversed(paragrafi):
+            if p.strip():
+                return p.strip()
 
         return utente
 
