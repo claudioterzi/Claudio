@@ -52,6 +52,18 @@ class TestConsiglioFallback(unittest.TestCase):
             delibera = ConsiglioAgenti(salva_output=False).delibera("Prova")
         self.assertTrue(all(v.raccomandazione == "Nessun modello ha risposto." for v in delibera.voti))
 
+    def test_disco_in_sola_lettura_non_ferma_la_delibera(self):
+        from pathlib import Path
+        registro = {
+            "openai": (_finto("openai"), "o-mini"),
+            "stub": router_mod.PROVIDER_REGISTRY["stub"],
+        }
+        c = ConsiglioAgenti(salva_output=True)
+        c._output_dir = Path("/proc/sola-lettura/consiglio")  # come /var/task su Vercel
+        with patch.dict(router_mod.PROVIDER_REGISTRY, registro, clear=True):
+            delibera = c.delibera("Prova")
+        self.assertEqual(len(delibera.voti), 5)
+
 
 if __name__ == "__main__":
     unittest.main()
