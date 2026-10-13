@@ -57,7 +57,10 @@ jobs:
           node tests/test_alpha74_frontend.cjs
 
       - name: Router LLM — fallback su modello alternativo
-        run: python -m unittest tests.test_router_fallback
+        run: python -m unittest tests.test_router_fallback tests.test_consiglio_fallback
+
+      - name: Agorà — delibere firmate e webhook del bot
+        run: python -m unittest tests.test_agora
 
       - name: Verifica Fabbrica, TypeSafe e dialogo IA
         run: |
