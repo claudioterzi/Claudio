@@ -971,6 +971,9 @@ def telegram_attiva():
         righe.append(("✗", "Telegram non riconosce il token del bot configurato su Vercel."))
     elif token and chat and bypass:
         passa = urllib.parse.urlencode({"x-vercel-protection-bypass": bypass})
+        # Da zero: con parametri uguali Telegram risponde "already set" e non garantisce
+        # di aver preso il secret_token. I messaggi in coda non si perdono.
+        _telegram_api("deleteWebhook", {"drop_pending_updates": False})
         w = _telegram_api("setWebhook", {
             "url": f"{base}/api/telegram?{passa}",
             "secret_token": _segreto_webhook(),
@@ -1007,6 +1010,36 @@ def telegram_attiva():
     )
     risposta.headers["Cache-Control"] = "no-store"
     return risposta
+
+
+@app.route("/api/telegram/prova", methods=["POST"])
+def telegram_prova():
+    """Prova completa sul server: il Consiglio delibera davvero e la delibera arriva nella
+    chat di Claudio, segnata come prova. Riporta quale modello ha risposto per ogni membro
+    e cosa vede Telegram del webhook (senza segreti)."""
+    from sdq1.consiglio import ConsiglioAgenti, invia_delibera_telegram
+
+    delibera = ConsiglioAgenti(salva_output=False).delibera(
+        "[PROVA DI COLLEGAMENTO] Il Consiglio risponde dal sito: qual è il primo passo di oggi?"
+    )
+    inviata = invia_delibera_telegram(delibera)
+    info = _telegram_api("getWebhookInfo", {}).get("result", {})
+    url = str(info.get("url", ""))
+    return jsonify({
+        "consiglio": [
+            {"membro": v.membro, "modello": v.modello or None,
+             "ok": bool(v.modello), "raccomandazione": v.raccomandazione[:120]}
+            for v in delibera.voti
+        ],
+        "inviata_in_chat": inviata,
+        "webhook": {
+            "verso_il_sito": url.split("?")[0],
+            "con_passaggio_vercel": "x-vercel-protection-bypass=" in url,
+            "in_attesa": info.get("pending_update_count"),
+            "ultimo_errore": info.get("last_error_message"),
+            "ultimo_errore_alle": info.get("last_error_date"),
+        },
+    })
 
 
 @app.route("/api/telegram", methods=["POST"])

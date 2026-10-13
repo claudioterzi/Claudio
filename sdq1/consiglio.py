@@ -320,15 +320,20 @@ class ConsiglioAgenti:
 
         return delibera
 
-    def _salva(self, delibera: Delibera) -> Path:
-        self._output_dir.mkdir(parents=True, exist_ok=True)
+    def _salva(self, delibera: Delibera) -> Path | None:
+        """Salva la delibera; su un disco in sola lettura (Vercel) prova /tmp. Il
+        salvataggio non deve mai impedire che la delibera arrivi a Claudio."""
         ts = datetime.now(_TZ).strftime("%Y%m%d_%H%M%S")
-        nome = self._output_dir / f"delibera_{ts}.json"
-        nome.write_text(
-            json.dumps(delibera.to_dict(), indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
-        return nome
+        testo = json.dumps(delibera.to_dict(), indent=2, ensure_ascii=False)
+        for cartella in (self._output_dir, Path("/tmp/consiglio")):
+            try:
+                cartella.mkdir(parents=True, exist_ok=True)
+                nome = cartella / f"delibera_{ts}.json"
+                nome.write_text(testo, encoding="utf-8")
+                return nome
+            except OSError:
+                continue
+        return None
 
 
 # ══════════════════════════════════════════════════════════════
