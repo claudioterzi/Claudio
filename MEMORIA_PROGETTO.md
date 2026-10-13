@@ -28,22 +28,18 @@ sul server). L'accesso riservato è già quello di Vercel: prova anonima del 13/
 Da confermare: l'accesso del proprietario (Claudio apre il dominio col suo login Vercel).
 Persone autorizzate: vanno aggiunte come membri del team Vercel. API Vercel 403 da qui.
 
-## La Porta e la Sentinella — 2026-10-13
+## La Porta e la Sentinella — pubblicata e ritirata — 2026-10-13
 
-Richiesta di Claudio: entrare sempre, creare da dentro un accesso con password per una
-persona, decidere con l'aiuto di Claude cosa vede; e una sentinella che scopre le
-invasioni, le espelle e prende in giro l'intruso, con Claudio immune.
-Costruito in `porta/` + `middleware.js` (guida: `porta/README.md`). Porta lato server su
-ogni richiesta; proprietario con l'hash dell'archivio (`PERFUME_ARCHIVE_PASSWORD_HASH`,
-sostituibile con `R3_PORTA_OWNER_HASH` via `/porta/chiave`), indipendente da Redis;
-ospiti in Upstash con aree da `porta/aree.json` (chiuso per default, Area privata mai
-concedibile); consigliere `porta/consiglio.py` via router con ripiego a regole.
-Sentinella: trappole, percorsi truccati, cookie falsi, password sbagliate, ospiti che
-frugano → bando 24 h o sospensione, esca, avviso Telegram; proprietario immune.
-Prove: 24 test Node, 7 Python, percorso completo guidato in Chromium con server locale.
-NON verificato su Vercel: se il middleware gira con la configurazione `builds` legacy.
-Il login Vercel resta acceso finché Claudio non completa i 4 passi di attivazione.
-Migrazione istantanea su nodi ridondanti: non attiva (rete R³∞ in attesa di test live).
+Costruite su richiesta di Claudio (accesso riservato lato server, ospiti con aree e
+password, consigliere, Sentinella con bando/esca e proprietario immune): PR #133,
+merge `8fc3343`, deploy Vercel riuscito. Subito dopo Claudio segnala che il sito non va.
+Guasto a tempo di esecuzione dietro il login Vercel, non osservabile da qui (API e
+bypass Vercel 403). Ritirata con revert per ripristinare il sito; il codice resta in
+`8fc3343` (guida `porta/README.md` lì dentro) e su Drive «LA PORTA e LA SENTINELLA».
+Ipotesi da verificare prima di ripubblicare, non accertate: il Routing Middleware
+Node (`node:crypto`) non gira con la configurazione `builds` legacy di vercel.json,
+oppure la risposta di passaggio `x-middleware-next`. Serve l'errore che vede Claudio
+(schermata) o i log runtime Vercel con il connettore autorizzato sul team.
 
 Jev (13/10): `api.typesafe.ai/v1/systemone` raggiungibile (403 senza credenziale); in
 questa sessione nessuna `TYPESAFE_API_KEY`, quindi nessuna chiamata Jev eseguita.
