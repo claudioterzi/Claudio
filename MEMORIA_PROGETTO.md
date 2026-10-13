@@ -28,6 +28,19 @@ sul server). L'accesso riservato è già quello di Vercel: prova anonima del 13/
 Da confermare: l'accesso del proprietario (Claudio apre il dominio col suo login Vercel).
 Persone autorizzate: vanno aggiunte come membri del team Vercel. API Vercel 403 da qui.
 
+## La Porta e la Sentinella — pubblicata e ritirata — 2026-10-13
+
+Costruite su richiesta di Claudio (accesso riservato lato server, ospiti con aree e
+password, consigliere, Sentinella con bando/esca e proprietario immune): PR #133,
+merge `8fc3343`, deploy Vercel riuscito. Subito dopo Claudio segnala che il sito non va.
+Guasto a tempo di esecuzione dietro il login Vercel, non osservabile da qui (API e
+bypass Vercel 403). Ritirata con revert per ripristinare il sito; il codice resta in
+`8fc3343` (guida `porta/README.md` lì dentro) e su Drive «LA PORTA e LA SENTINELLA».
+Ipotesi da verificare prima di ripubblicare, non accertate: il Routing Middleware
+Node (`node:crypto`) non gira con la configurazione `builds` legacy di vercel.json,
+oppure la risposta di passaggio `x-middleware-next`. Serve l'errore che vede Claudio
+(schermata) o i log runtime Vercel con il connettore autorizzato sul team.
+
 Jev (13/10): `api.typesafe.ai/v1/systemone` raggiungibile (403 senza credenziale); in
 questa sessione nessuna `TYPESAFE_API_KEY`, quindi nessuna chiamata Jev eseguita.
 
