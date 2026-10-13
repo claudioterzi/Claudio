@@ -112,6 +112,15 @@ class TestAgora(unittest.TestCase):
                       metodi["setChatMenuButton"]["menu_button"]["web_app"]["url"])
         self.assertEqual(metodi["setChatMenuButton"]["chat_id"], CHAT)
         self.assertIn("@AssistenteRaffaelloBot", r.get_data(as_text=True))
+        comandi = metodi["setMyCommands"]
+        self.assertEqual(comandi["scope"], {"type": "chat", "chat_id": CHAT})
+        nomi = [c["command"] for c in comandi["commands"]]
+        self.assertIn("consiglio", nomi)
+        for c in comandi["commands"]:
+            self.assertRegex(c["command"], r"^[a-z0-9_]{1,32}$")
+            self.assertTrue(3 <= len(c["description"]) <= 256)
+        self.assertLessEqual(len(metodi["setMyShortDescription"]["short_description"]), 120)
+        self.assertLessEqual(len(metodi["setMyDescription"]["description"]), 512)
 
     def test_attiva_non_tocca_il_bot_in_polling_su_render(self):
         chiamate = []

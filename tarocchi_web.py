@@ -983,6 +983,16 @@ def telegram_attiva():
             "menu_button": {"type": "web_app", "text": "Agorà", "web_app": {"url": f"{base}/home?{cookie}"}},
         })
         righe.append(("✓" if m.get("ok") else "✗", "Pulsante Agorà: " + str(m.get("description", m.get("ok")))))
+        c = _telegram_api("setMyCommands", {
+            "commands": [{"command": k, "description": v} for k, v in BOT_COMANDI],
+            "scope": {"type": "chat", "chat_id": chat},
+        })
+        righe.append(("✓" if c.get("ok") else "✗", f"Menu comandi ({len(BOT_COMANDI)}): "
+                      + str(c.get("description", c.get("ok")))))
+        d1 = _telegram_api("setMyShortDescription", {"short_description": BOT_DESCRIZIONE_BREVE})
+        d2 = _telegram_api("setMyDescription", {"description": BOT_DESCRIZIONE})
+        righe.append(("✓" if d1.get("ok") and d2.get("ok") else "✗", "Descrizione del bot: "
+                      + str(d2.get("description", d2.get("ok")))))
         info = _telegram_api("getWebhookInfo", {}).get("result", {})
         if info.get("last_error_message"):
             righe.append(("!", f"Ultimo errore visto da Telegram: {info['last_error_message']}"))
@@ -1013,6 +1023,30 @@ def telegram_webhook():
             print(f"[WEBHOOK] {e}")
     return "ok", 200
 
+
+# Menu dei comandi mostrato da Telegram nella chat di Claudio (ciò che il bot sa fare).
+BOT_COMANDI = (
+    ("consiglio", "5 agenti deliberano su una questione"),
+    ("agenda", "Priorità e pronto rota"),
+    ("tarocchi", "Lettura quantica R³∞ (con una domanda)"),
+    ("profumo", "Raffaello compone una fragranza dall'Organo Terzi 300"),
+    ("oracolo", "L'Oracolo del viaggio"),
+    ("voli", "Ricerca voli (es. /voli BRU GRU)"),
+    ("briefing", "Analisi multi-AI della giornata"),
+    ("riflessione", "Riflessione del sistema"),
+    ("desideri", "Registro dei desideri"),
+    ("skyrights", "Stato ASBL SkyRights"),
+    ("status", "Stato del sistema"),
+    ("snapshot", "Crea uno snapshot"),
+    ("scan", "Scansione del codice"),
+    ("agenti", "Ciclo dei 7 agenti autonomi"),
+    ("help", "Tutti i comandi"),
+)
+BOT_DESCRIZIONE_BREVE = "Raffaello — l'assistente SDQ-1 di Claudio Terzi."
+BOT_DESCRIZIONE = (
+    "Raffaello è l'assistente privato di Claudio Terzi: Agorà e Consiglio dei 5 agenti, "
+    "tarocchi R³∞, profumi dell'Organo Terzi, voli e agenda. Risponde soltanto a Claudio."
+)
 
 # Comandi che la pagina Agorà può inviare.
 AGORA_COMANDI = frozenset({"consiglio", "briefing", "snapshot", "tarocchi", "agenda", "riflessione"})
