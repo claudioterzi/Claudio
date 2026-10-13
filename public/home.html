@@ -470,11 +470,23 @@
     setTimeout(() => el.classList.remove('show'), 2200);
   }
 
-  // Invia comando al bot via Telegram WebApp
-  function sendCmd(cmd) {
-    if (tg) {
-      tg.sendData(cmd);
-      showToast('Inviato: ' + cmd);
+  // Invia il comando al server con la firma di Telegram (initData): funziona anche
+  // aperta dal pulsante menu, dove tg.sendData non è disponibile.
+  async function sendCmd(cmd) {
+    if (tg && tg.initData) {
+      showToast('Invio: ' + cmd);
+      try {
+        const r = await fetch('/api/agora', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ comando: cmd, initData: tg.initData })
+        });
+        const d = await r.json().catch(() => ({}));
+        showToast(r.ok ? 'Fatto: la risposta arriva in chat' : 'Non arrivato: ' + (d.errore || ('errore ' + r.status)));
+      } catch (e) {
+        showToast('Non arrivato: rete o server non raggiungibili');
+      }
     } else {
       // Dev mode: copia negli appunti
       navigator.clipboard?.writeText(cmd).catch(() => {});

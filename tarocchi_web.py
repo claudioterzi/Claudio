@@ -11,10 +11,14 @@ Endpoint:
 """
 from __future__ import annotations
 
+import hashlib
+import hmac
 import json
 from functools import lru_cache
 import os
 import sys
+import time
+import urllib.parse
 import urllib.request
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -844,9 +848,19 @@ def _comando_oracolo_telegram(args: str) -> None:
     _invia(_messaggio_oracolo_telegram(r))
 
 
+def _da_claudio(msg: dict) -> bool:
+    """Il bot esegue solo i messaggi che arrivano dalla chat di Claudio."""
+    atteso = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+    return bool(atteso) and str((msg.get("chat") or {}).get("id", "")) == atteso
+
+
 def _gestisci_update(upd: dict) -> None:
-    msg   = upd.get("message", {})
-    testo = msg.get("text", "").strip()
+    msg = upd.get("message", {})
+    if not _da_claudio(msg):
+        return
+    # La Mini App Agorà, aperta da un pulsante della tastiera, invia con sendData:
+    # il comando arriva in web_app_data, non in text.
+    testo = (msg.get("text") or (msg.get("web_app_data") or {}).get("data") or "").strip()
     if not testo:
         return
 
@@ -899,6 +913,10 @@ def telegram_debug():
 
 @app.route("/api/telegram", methods=["POST"])
 def telegram_webhook():
+    segreto = os.environ.get("TELEGRAM_WEBHOOK_SECRET", "").strip()
+    ricevuto = request.headers.get("X-Telegram-Bot-Api-Secret-Token", "")
+    if segreto and not hmac.compare_digest(ricevuto, segreto):
+        return "forbidden", 403
     upd = request.get_json(force=True, silent=True) or {}
     if upd:
         try:
@@ -906,6 +924,52 @@ def telegram_webhook():
         except Exception as e:
             print(f"[WEBHOOK] {e}")
     return "ok", 200
+
+
+# Comandi che la pagina Agorà può inviare.
+AGORA_COMANDI = frozenset({"consiglio", "briefing", "snapshot", "tarocchi", "agenda", "riflessione"})
+
+
+def _utente_da_init_data(init_data: str, token: str, max_eta_s: int = 86_400) -> dict | None:
+    """Verifica la firma di Telegram sull'initData della Mini App e restituisce l'utente.
+
+    https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app
+    """
+    if not init_data or not token or len(init_data) > 8192:
+        return None
+    campi = dict(urllib.parse.parse_qsl(init_data, keep_blank_values=True))
+    firma = campi.pop("hash", "")
+    if not firma:
+        return None
+    da_controllare = "\n".join(f"{k}={v}" for k, v in sorted(campi.items()))
+    chiave = hmac.new(b"WebAppData", token.encode(), hashlib.sha256).digest()
+    attesa = hmac.new(chiave, da_controllare.encode(), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(attesa, firma):
+        return None
+    try:
+        if time.time() - int(campi.get("auth_date", "0")) > max_eta_s:
+            return None
+        return json.loads(campi.get("user", "{}"))
+    except (ValueError, TypeError):
+        return None
+
+
+@app.route("/api/agora", methods=["POST"])
+def agora_comando():
+    """La pagina Agorà invia qui i comandi (funziona anche aperta dal pulsante menu,
+    dove sendData non è disponibile). Solo Claudio, con la firma di Telegram."""
+    dati = request.get_json(silent=True) or {}
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    chat = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+    utente = _utente_da_init_data(str(dati.get("initData", "")), token)
+    if not utente or not chat or str(utente.get("id", "")) != chat:
+        return jsonify({"errore": "non autorizzato"}), 403
+    comando = str(dati.get("comando", "")).strip()
+    nome = comando.split(maxsplit=1)[0].lstrip("/").lower() if comando.startswith("/") else ""
+    if nome not in AGORA_COMANDI or len(comando) > 1000:
+        return jsonify({"errore": "comando non previsto"}), 400
+    _gestisci_update({"message": {"chat": {"id": chat}, "text": comando}})
+    return jsonify({"ok": True})
 
 
 # ══════════════════════════════════════════════════════════════════════

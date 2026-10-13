@@ -39,6 +39,7 @@ class Voto:
     raccomandazione: str
     motivazione: str
     score_confidenza: float  # 0.0–1.0
+    modello: str = ""        # provider/modello che ha risposto davvero
 
 
 @dataclass
@@ -205,38 +206,45 @@ class ConsiglioAgenti:
         self.salva_output = salva_output
         self._output_dir = Path("output/consiglio")
 
+    # Nome del membro → chiave in PROVIDER_REGISTRY del router.
+    _PROVIDER_ROUTER = {"gemini": "gemini", "claude": "anthropic", "deepseek": "deepseek", "mistral": "mistral"}
+
     def _chiama_membro(self, membro: dict, questione: str) -> Voto:
-        try:
-            from sdq1.llm.providers import (
-                GeminiProvider, AnthropicProvider, DeepSeekProvider, MistralProvider
-            )
-            _MAP = {
-                "gemini":   (GeminiProvider,    membro["modello"]),
-                "claude":   (AnthropicProvider, membro["modello"]),
-                "deepseek": (DeepSeekProvider,  membro["modello"]),
-                "mistral":  (MistralProvider,   membro["modello"]),
-            }
-            cls, modello = _MAP[membro["provider"]]
-            prov = cls(modello=modello, api_key=None, timeout=30)
-            if not prov.disponibile:
-                return Voto(
-                    membro=membro["id"],
-                    ruolo=membro["ruolo"],
-                    raccomandazione="Provider non disponibile.",
-                    motivazione="",
-                    score_confidenza=0.0,
-                )
-            r = prov.completa(membro["sistema"], questione)
+        """Prova il modello del membro; se manca la chiave, ha finito i token o fallisce,
+        passa a un modello alternativo. Il ruolo (prompt di sistema) resta quello del membro."""
+        from sdq1.llm.router import PROVIDER_REGISTRY
+
+        preferito = self._PROVIDER_ROUTER.get(membro["provider"], membro["provider"])
+        candidati = [(preferito, membro["modello"])] + [
+            (nome, modello) for nome, (_, modello) in PROVIDER_REGISTRY.items()
+            if nome not in (preferito, "stub", "ollama")
+        ]
+        ultimo_errore = "Nessun modello disponibile."
+        for nome, modello in candidati:
+            if nome not in PROVIDER_REGISTRY:
+                continue
+            try:
+                cls, _ = PROVIDER_REGISTRY[nome]
+                prov = cls(modello=modello, api_key=None, timeout=30, timeout_secondi=30)
+                if not prov.disponibile:
+                    continue
+                r = prov.completa(membro["sistema"], questione)
+            except Exception as e:  # noqa: BLE001
+                ultimo_errore = str(e)
+                continue
             testo = r.testo.strip() if r.testo else ""
-            return _parse_voto(membro["id"], membro["ruolo"], testo)
-        except Exception as e:
-            return Voto(
-                membro=membro["id"],
-                ruolo=membro["ruolo"],
-                raccomandazione=f"Errore: {e}",
-                motivazione="",
-                score_confidenza=0.0,
-            )
+            if r.via_api and testo:
+                voto = _parse_voto(membro["id"], membro["ruolo"], testo)
+                voto.modello = f"{nome}/{modello}"
+                return voto
+            ultimo_errore = r.errore or "risposta vuota"
+        return Voto(
+            membro=membro["id"],
+            ruolo=membro["ruolo"],
+            raccomandazione="Nessun modello ha risposto.",
+            motivazione=ultimo_errore[:200],
+            score_confidenza=0.0,
+        )
 
     def _sintetizza(self, voti: list[Voto], questione: str) -> str:
         """Sintesi automatica dei voti — usata solo se Claudio non vota."""

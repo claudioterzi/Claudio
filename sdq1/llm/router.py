@@ -31,6 +31,7 @@ from .providers import (
     GeminiProvider,
     GrokProvider,
     MiniMaxProvider,
+    MistralProvider,
     OllamaProvider,
     OpenAIProvider,
     PerplexityProvider,
@@ -49,6 +50,7 @@ PROVIDER_REGISTRY: dict[str, tuple[type[ProviderBase], str]] = {
     "gemini":     (GeminiProvider,     "gemini-2.5-flash"),
     "grok":       (GrokProvider,       "grok-3"),
     "minimax":    (MiniMaxProvider,    "MiniMax-M3"),
+    "mistral":    (MistralProvider,    "mistral-small-latest"),
     "ollama":     (OllamaProvider,     "llama3.2"),
     "stub":       (StubProvider,       "stub-model"),
 }

@@ -28,6 +28,24 @@ sul server). L'accesso riservato è già quello di Vercel: prova anonima del 13/
 Da confermare: l'accesso del proprietario (Claudio apre il dominio col suo login Vercel).
 Persone autorizzate: vanno aggiunte come membri del team Vercel. API Vercel 403 da qui.
 
+## Agorà e Consiglio — riparati — 2026-10-13
+
+Verifica chiesta da Claudio: la pagina Agorà (`/home`) non faceva arrivare le delibere.
+Quattro blocchi trovati: (1) `/api/telegram` risponde 401 da fuori perché il login Vercel
+copre anche il webhook: il bot non riceve nulla; (2) il webhook leggeva solo `text`, non
+`web_app_data`; (3) `sendData` funziona solo da pulsante tastiera, la Mini App si apre dal
+menu; (4) `MistralProvider` importato ma mai esistito: tutti e 5 i voti in errore.
+Corretti nel codice: provider Mistral (API OpenAI-compatibile, `MISTRAL_API_KEY`) anche nel
+router; ogni membro del Consiglio passa a un modello alternativo se il suo manca o finisce i
+token (`Voto.modello` dice chi ha risposto); la pagina invia a `/api/agora` con l'initData
+firmato da Telegram (verificato lato server, solo l'utente = `TELEGRAM_CHAT_ID`); il webhook
+legge `web_app_data`, esegue solo i messaggi della chat di Claudio e verifica
+`TELEGRAM_WEBHOOK_SECRET` se impostato. Test: `tests/test_agora.py`,
+`tests/test_consiglio_fallback.py`.
+Resta a Claudio (Vercel): far passare Telegram dal login Vercel con "Protection Bypass for
+Automation" e reimpostare il webhook con quel codice. Sul PC di Claudio (Desktop Commander)
+non c'è un login Vercel salvato: serve la sua approvazione.
+
 ## La Porta e la Sentinella — pubblicata e ritirata — 2026-10-13
 
 Costruite su richiesta di Claudio (accesso riservato lato server, ospiti con aree e
