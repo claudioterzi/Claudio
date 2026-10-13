@@ -46,6 +46,19 @@ Resta a Claudio (Vercel): far passare Telegram dal login Vercel con "Protection 
 Automation" e reimpostare il webhook con quel codice. Sul PC di Claudio (Desktop Commander)
 non c'è un login Vercel salvato: serve la sua approvazione.
 
+## Verifica completa Agorà/Consiglio/bot — 2026-10-13
+
+Prova dal vivo con `/api/telegram/prova` (POST, dietro passaggio Vercel): il Consiglio ha
+deliberato sul server con 5/5 voti e la delibera è stata inviata nella chat di Claudio.
+Modelli che hanno risposto: STRATEGA e CREATIVO gemini-2.5-flash; REALISTA, GUARDIANO e
+TECNICO sono passati a openai/gpt-4o-mini perché su Vercel DeepSeek, Claude e Mistral
+non rispondono (chiavi assenti o esaurite). Webhook reimpostato da zero ("Webhook was
+set", con secret), verso il sito con passaggio Vercel, nessun errore, coda 0.
+Corretto: il Consiglio falliva su Vercel salvando in `output/consiglio` (disco in sola
+lettura); ora prova `/tmp` e non blocca mai la delibera.
+Non verificabile da qui: il percorso Telegram → webhook con un messaggio vero di Claudio.
+Dopo il suo primo messaggio, `/api/telegram/prova` mostra l'eventuale ultimo errore.
+
 ## Telegram collegato al sito — 2026-10-13
 
 `/api/telegram/attiva` eseguita con il segreto Vercel "Protection Bypass for Automation"
