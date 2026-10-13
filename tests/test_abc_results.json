@@ -1,0 +1,156 @@
+{
+  "timestamp": 1791868828.9276016,
+  "listino": {
+    "servizi": {
+      "consulenza_ora": 50.0,
+      "sviluppo_ora": 75.0,
+      "testing_ora": 40.0
+    },
+    "prodotti": {
+      "licenza_software": 150.0,
+      "hosting_mensile": 30.0
+    },
+    "versione": "v1.0",
+    "valido_dal": "2026-01-01"
+  },
+  "A": {
+    "condizione": "A",
+    "label": "Nessuna memoria",
+    "seed_impronte": 0,
+    "seed_Q": 0.0,
+    "tests": [
+      {
+        "name": "preventivo_base",
+        "domanda": "Crea un preventivo: 10 ore di consulenza × 50€/ora, qual è il totale?",
+        "output": "SDQ-1 attivo. Provider: stub (modalità locale, zero spesa).",
+        "passed": false,
+        "reason": "calcolo non corretto, manca campo quantità, manca campo prezzo, manca campo totale",
+        "quantita_attesa": 10,
+        "prezzo_atteso": 50.0,
+        "totale_atteso": 500.0
+      },
+      {
+        "name": "preventivo_con_listino",
+        "domanda": "Secondo il nostro listino, 20 ore di sviluppo a 75€/ora, qual è l'importo?",
+        "output": "SDQ-1 attivo. Provider: stub (modalità locale, zero spesa).",
+        "passed": false,
+        "reason": "calcolo non corretto, manca campo quantità, manca campo prezzo, manca campo totale",
+        "quantita_attesa": 20,
+        "prezzo_atteso": 75.0,
+        "totale_atteso": 1500.0
+      },
+      {
+        "name": "prezzo_sbagliato",
+        "domanda": "Ho 5 ore di lavoro. Se applico 100€/ora (il doppio della tariffa), qual è il totale?",
+        "output": "SDQ-1 attivo. Provider: stub (modalità locale, zero spesa).",
+        "passed": false,
+        "reason": "calcolo non corretto, manca campo quantità, manca campo prezzo, manca campo totale",
+        "quantita_attesa": 5,
+        "prezzo_atteso": 50.0,
+        "totale_atteso": 250.0
+      }
+    ],
+    "summary": {
+      "total": 3,
+      "passed": 0,
+      "failed": 3,
+      "pass_rate": 0.0
+    }
+  },
+  "B": {
+    "condizione": "B",
+    "label": "Memoria iniziale (seed vuoto)",
+    "seed_impronte": 0,
+    "seed_Q": 0.0,
+    "tests": [
+      {
+        "name": "preventivo_base",
+        "domanda": "Crea un preventivo: 10 ore di consulenza × 50€/ora, qual è il totale?",
+        "output": "SDQ-1 attivo. Provider: stub (modalità locale, zero spesa).",
+        "passed": false,
+        "reason": "calcolo non corretto, manca campo quantità, manca campo prezzo, manca campo totale",
+        "quantita_attesa": 10,
+        "prezzo_atteso": 50.0,
+        "totale_atteso": 500.0
+      },
+      {
+        "name": "preventivo_con_listino",
+        "domanda": "Secondo il nostro listino, 20 ore di sviluppo a 75€/ora, qual è l'importo?",
+        "output": "SDQ-1 attivo. Provider: stub (modalità locale, zero spesa).",
+        "passed": false,
+        "reason": "calcolo non corretto, manca campo quantità, manca campo prezzo, manca campo totale",
+        "quantita_attesa": 20,
+        "prezzo_atteso": 75.0,
+        "totale_atteso": 1500.0
+      },
+      {
+        "name": "prezzo_sbagliato",
+        "domanda": "Ho 5 ore di lavoro. Se applico 100€/ora (il doppio della tariffa), qual è il totale?",
+        "output": "SDQ-1 attivo. Provider: stub (modalità locale, zero spesa).",
+        "passed": false,
+        "reason": "calcolo non corretto, manca campo quantità, manca campo prezzo, manca campo totale",
+        "quantita_attesa": 5,
+        "prezzo_atteso": 50.0,
+        "totale_atteso": 250.0
+      }
+    ],
+    "summary": {
+      "total": 3,
+      "passed": 0,
+      "failed": 3,
+      "pass_rate": 0.0
+    }
+  },
+  "C": {
+    "condizione": "C",
+    "label": "Memoria arricchita",
+    "seed_impronte": 3,
+    "seed_Q": 12.795,
+    "tests": [
+      {
+        "name": "preventivo_base",
+        "domanda": "Crea un preventivo: 10 ore di consulenza × 50€/ora, qual è il totale?",
+        "output": "SDQ-1 attivo. Provider: stub (modalità locale, zero spesa).",
+        "passed": false,
+        "reason": "calcolo non corretto, manca campo quantità, manca campo prezzo, manca campo totale",
+        "quantita_attesa": 10,
+        "prezzo_atteso": 50.0,
+        "totale_atteso": 500.0
+      },
+      {
+        "name": "preventivo_con_listino",
+        "domanda": "Secondo il nostro listino, 20 ore di sviluppo a 75€/ora, qual è l'importo?",
+        "output": "SDQ-1 attivo. Provider: stub (modalità locale, zero spesa).",
+        "passed": false,
+        "reason": "calcolo non corretto, manca campo quantità, manca campo prezzo, manca campo totale",
+        "quantita_attesa": 20,
+        "prezzo_atteso": 75.0,
+        "totale_atteso": 1500.0
+      },
+      {
+        "name": "prezzo_sbagliato",
+        "domanda": "Ho 5 ore di lavoro. Se applico 100€/ora (il doppio della tariffa), qual è il totale?",
+        "output": "SDQ-1 attivo. Provider: stub (modalità locale, zero spesa).",
+        "passed": false,
+        "reason": "calcolo non corretto, manca campo quantità, manca campo prezzo, manca campo totale",
+        "quantita_attesa": 5,
+        "prezzo_atteso": 50.0,
+        "totale_atteso": 250.0
+      }
+    ],
+    "summary": {
+      "total": 3,
+      "passed": 0,
+      "failed": 3,
+      "pass_rate": 0.0
+    }
+  },
+  "analisi": {
+    "A_passa_rate": 0.0,
+    "B_passa_rate": 0.0,
+    "C_passa_rate": 0.0,
+    "miglioramento_B_vs_A": 0.0,
+    "miglioramento_C_vs_B": 0.0,
+    "conclusione": "A: 0.0% → B: 0.0% → C: 0.0% | Miglioramento memoria: +0.0%"
+  }
+}
