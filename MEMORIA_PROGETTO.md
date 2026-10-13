@@ -4,7 +4,24 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-10-05 (delta candidato; storia preservata)
+> Ultimo aggiornamento: 2026-10-13 (delta candidato; storia preservata)
+
+
+## Router LLM — fallback quando un modello esaurisce i token — 2026-10-13
+
+Richiesta di Claudio: "se un modello esaurisce token trova modello alternativo".
+`sdq1/llm/router.py` ora distingue tre esaurimenti e per ognuno cerca un altro modello:
+crediti/quota finiti (circuit breaker 30 min invece di 60 s), prompt oltre la finestra
+di contesto (prova un altro modello, nessuna pausa: dipende dal prompt) e output
+troncato per `max_tokens`/`length` (prova un modello che completi; se tutti troncano
+restituisce la troncata migliore con `metadata.troncata`, mai lo stub). Se l'intera
+cascata del profilo è esaurita prova gli altri provider del registro con chiave
+configurata (`metadata.fallback_globale`); disattivabile con `fallback_globale: false`
+nelle opzioni globali. L'hedging non aspetta più il timeout del profilo quando primario
+e secondario hanno già fallito. Test: `tests/test_router_fallback.py` (8), smoke 9/9.
+
+Jev (13/10): `api.typesafe.ai/v1/systemone` raggiungibile (403 senza credenziale); in
+questa sessione nessuna `TYPESAFE_API_KEY`, quindi nessuna chiamata Jev eseguita.
 
 
 ## Continuità Rizzo e attività aperte — 2026-10-05
