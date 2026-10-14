@@ -91,6 +91,14 @@ class PipelineTests(unittest.TestCase):
         self.assertFalse(result.json()['valid'])
         self.assertTrue(any(e['type'] == 'invalid_syntax' for e in result.json()['issues']))
 
+    def test_display_label_mismatch_is_advisory_not_proof_of_missing_feature(self):
+        blueprint = AppBlueprint(id='test', title='Tasks', description='Task list', ui_components=['React Dashboard'])
+        result = asyncio.run(PM(LLMRouter('demo')).validate_and_debug(blueprint,
+            {'frontend': FRONTEND, 'backend': BACKEND, 'database': DATABASE}, {}, 'Create a task list'))
+        self.assertTrue(result['is_valid'])
+        self.assertTrue(any(item['type'] == 'missing_component' for item in result['warnings']))
+        self.assertEqual(result['requirements_review'], 'not_executed')
+
     def test_deploy_does_not_claim_queued_work(self):
         self.assertEqual(self.client.post('/api/rrremergen/deploy', json={}).status_code, 501)
 

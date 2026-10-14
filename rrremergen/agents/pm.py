@@ -39,7 +39,10 @@ class PM:
 
         # Check 1: Code completeness
         completeness_issues = await self._check_completeness(blueprint, code)
-        validation_results['issues'].extend(completeness_issues)
+        for item in completeness_issues:
+            # Name/substring heuristics are advisory, not proof a feature is absent.
+            target = 'issues' if item['severity'] == 'error' else 'warnings'
+            validation_results[target].append(item)
 
         # Check 2: Code quality
         quality_issues = await self._check_quality(code)

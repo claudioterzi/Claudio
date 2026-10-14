@@ -41,7 +41,8 @@ class RRRemeRgenOrchestrator:
             stage = 'developer'
             yield {'type': 'stage_progress', 'stage': stage}
             code = await self.developer.generate_code(blueprint, ui_specs)
-            yield {'type': 'stage_output', 'stage': stage, 'summary': f'{len(code)} sorgenti generati'}
+            yield {'type': 'stage_output', 'stage': stage, 'summary': f'{len(code)} sorgenti generati',
+                   'data': {'code': code, 'validation_status': 'pending'}}
             stage = 'integrator'
             yield {'type': 'stage_progress', 'stage': stage}
             integrations = await self.integrator.setup_integrations(blueprint)

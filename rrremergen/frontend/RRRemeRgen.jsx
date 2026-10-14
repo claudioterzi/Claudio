@@ -138,6 +138,9 @@ export default function RRRemeRgen() {
               </a>}
               <p>Nessuna pubblicazione eseguita. Controlli statici superati; l’app generata resta da eseguire e verificare.</p>
             </div>
+            {generatedApp.validation?.warnings?.length > 0 && <ul>
+              {generatedApp.validation.warnings.map((warning, index) => <li key={index}>{warning.message}</li>)}
+            </ul>}
 
             <div className="code-preview">
               <h3>Code Preview</h3>
