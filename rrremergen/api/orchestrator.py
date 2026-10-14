@@ -11,12 +11,12 @@ from dataclasses import dataclass, asdict
 from typing import Dict, Any, AsyncGenerator
 from datetime import datetime
 
-from agents.architect import Architect
-from agents.designer import Designer
-from agents.developer import Developer
-from agents.integrator import Integrator
-from agents.pm import PM
-from router import LLMRouter, ModelAssignment
+from rrremergen.agents.architect import Architect
+from rrremergen.agents.designer import Designer
+from rrremergen.agents.developer import Developer
+from rrremergen.agents.integrator import Integrator
+from rrremergen.agents.pm import PM
+from rrremergen.api.router import LLMRouter, ModelAssignment
 
 
 @dataclass
