@@ -10,6 +10,7 @@ Attive:
 from __future__ import annotations
 
 import json
+import math
 import os
 import ssl
 import time
@@ -360,7 +361,7 @@ class FonteTravelpayouts(Fonte):
                 if not (dal <= dep_dt <= al):
                     continue
                 prezzo = float(prezzo)
-                if prezzo < 0:
+                if not math.isfinite(prezzo) or prezzo < 0:
                     continue
             except (ValueError, TypeError):
                 continue
@@ -389,7 +390,7 @@ class FonteTravelpayouts(Fonte):
                 continue
             try:
                 prezzo = float(prezzo)
-                if prezzo < 0:
+                if not math.isfinite(prezzo) or prezzo < 0:
                     continue
             except (ValueError, TypeError):
                 continue
