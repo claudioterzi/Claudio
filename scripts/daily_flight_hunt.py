@@ -29,7 +29,7 @@ from tracker_manager import TrackerManager
 
 
 SEARCH_CONFIG = {
-    "departure_cities": ["MXP", "BRU", "FCO"],
+    "departure_cities": ["MXP", "BRU", "FCO", "VCE", "GVA", "ROM"],
     "days_ahead": 14,
     "alert_threshold_eur": 45.0,
 }
