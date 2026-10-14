@@ -37,6 +37,12 @@ test('Consiglio clears only after a successful server acknowledgement',async()=>
  const x=agora();await tick();const work=x.window.inviaConsiglio();x.pending[0].resolve({ok:true,json:async()=>({ok:true})});await work;
  assert.equal(x.get('consilioInput').value,'');assert(!x.get('consilioWrap').classList.contains('visible'));assert.equal(x.get('btnConsiglio').attrs['aria-expanded'],'false');assert.match(x.get('command-status').textContent,/ricevuto dal server/);
 });
+test('Agorà does not erase a question on HTTP 200 without an application receipt',async()=>{
+ for(const data of [{},null,{ok:false}]){const x=agora();await tick();const work=x.window.inviaConsiglio();x.pending[0].resolve({ok:true,status:200,json:async()=>data});await work;assert.equal(x.get('consilioInput').value,'Domanda da conservare');assert(x.get('consilioWrap').classList.contains('visible'));assert.match(x.get('command-status').textContent,/non confermato/);assert(!x.get('consilioInput').readOnly)}
+});
+test('Agorà preserves new text changed during a pending confirmed request',async()=>{
+ const x=agora();await tick();const work=x.window.inviaConsiglio();x.get('consilioInput').value='Una nuova domanda';x.pending[0].resolve({ok:true,status:200,json:async()=>({ok:true})});await work;assert.equal(x.get('consilioInput').value,'Una nuova domanda');assert(x.get('consilioWrap').classList.contains('visible'));
+});
 test('Network errors and uncertain timeouts preserve the question',async()=>{
  for(const mode of ['network','timeout']){const x=agora();await tick();const work=x.window.inviaConsiglio();if(mode==='network')x.pending[0].reject(new Error('Rete simulata'));else [...x.timers.tasks.values()].find(x=>x.delay===45000).fn();await work;assert.equal(x.get('consilioInput').value,'Domanda da conservare');if(mode==='timeout')assert.match(x.get('command-status').textContent,/potrebbe essere arrivato/)}
 });
