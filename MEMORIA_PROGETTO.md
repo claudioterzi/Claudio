@@ -4,8 +4,126 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-10-14 (Safety Gate + prima autonoma proposta di miglioramento)
+> Ultimo aggiornamento: 2026-10-14 (RRREMERGEN web app auto-composer)
 
+
+## RRREMERGEN — Web App Auto-Composer (R³∞ Protocol) — 2026-10-14
+
+Implementazione di sistema autonomo per la composizione e deployment di applicazioni web.
+Replica intelligente di Emergent con protocollo Claudio (R³∞) e routing multi-provider LLM.
+
+**Architettura Completa:**
+
+1. **Frontend (React/Vite)**
+   - `rrremergen/frontend/RRRemeRgen.jsx` (300+ linee)
+     - Interfaccia di composizione con input naturale
+     - Visualizzazione streaming dei stage della pipeline
+     - Link di deployment (GitHub + Vercel)
+     - Animazioni Framer Motion, responsive design
+   - `rrremergen/frontend/RRRemeRgen.css` styling completo
+
+2. **Backend Multi-Agent (Python)**
+   - `rrremergen/api/orchestrator.py` — Coordina 5 agenti specializzati
+     - Pipeline: Architect → Designer → Developer → Integrator → PM
+     - Streaming stage progress, self-debugging loop (max 3 iterazioni)
+     - Safety Gate integration-ready
+   
+   - `rrremergen/agents/architect.py` (Architect)
+     - Analizza requisiti naturali → blueprint tecnico
+     - Data models, API routes, UI components
+     - Uses: Claude 3.5 Sonnet (long context reasoning)
+   
+   - `rrremergen/agents/designer.py` (Designer)
+     - Crea specifiche UI/UX (colori, tipografia, layout)
+     - Responsive design patterns
+     - Uses: Gemini 2.5 Pro (visual + design sense)
+   
+   - `rrremergen/agents/developer.py` (Developer)
+     - Genera codice full-stack:
+       * Frontend: React + Next.js components
+       * Backend: FastAPI routes + authentication
+       * Database: MongoDB schema + initialization
+     - Uses: GPT-4 Turbo (best for code generation)
+   
+   - `rrremergen/agents/integrator.py` (Integrator)
+     - Configura servizi terzi (Stripe, Slack, SendGrid, AWS S3, OAuth)
+     - Environment variables setup
+     - Webhook configuration
+   
+   - `rrremergen/agents/pm.py` (PM)
+     - Valida codice generato (completeness, quality, alignment)
+     - Security checks + warnings
+     - Self-debugging: trigger Developer per fix issues autonomamente
+     - Validation loop + max 3 iterazioni di correzione
+
+3. **LLM Router (Multi-Provider)**
+   - `rrremergen/api/router.py` — Intelligent model selection
+     - Anthropic Claude (analysis, validation, integration)
+     - OpenAI GPT-4 (code generation)
+     - Google Gemini (design, UI/UX)
+     - DeepSeek, Mistral (fallback)
+     - Task-to-model assignment
+     - Circuit breaker pattern per provider health
+     - Response caching
+
+**Flusso Operativo Completo:**
+
+```
+User: "Create a task management app with real-time collaboration and Slack integration"
+                                    ↓
+                    [Frontend: RRRemeRgen.jsx]
+                    ↓
+            [Backend: Orchestrator]
+            ├─ Architect (Claude) → Blueprint
+            ├─ Designer (Gemini) → UI Specs
+            ├─ Developer (GPT-4) → React + FastAPI + MongoDB code
+            ├─ Integrator (Claude) → Slack + Auth setup
+            └─ PM (Claude) → Validate + self-debug loop
+                    ↓
+            [Self-Debugging Loop - if issues found]
+            ├─ Iteration 1: Developer fixes issues
+            ├─ PM revalidate → if ok, done
+            ├─ Iteration 2: Developer fixes new issues
+            └─ Iteration 3: Final validation
+                    ↓
+            [Safety Gate Checkpoint]
+            - Proposal registered
+            - Testing (all tests pass)
+            - Benchmarking (performance OK)
+            - Human approval (before merge)
+                    ↓
+            [Deployment]
+            - GitHub push with code
+            - Vercel deployment (frontend + backend)
+            - Custom domain
+            - Webhook configuration
+                    ↓
+            ✅ Live app ready for use
+```
+
+**Status & Implementation:**
+- ✅ Frontend component created (RRRemeRgen.jsx + CSS)
+- ✅ Orchestrator framework (orchestrator.py)
+- ✅ All 5 agents implemented (architect, designer, developer, integrator, pm)
+- ✅ LLM router with multi-provider support
+- ⏳ Integration with existing SDQ-1 LLM router
+- ⏳ Real LLM API calls (currently placeholder)
+- ⏳ GitHub push automation
+- ⏳ Vercel deployment integration
+- ⏳ Safety Gate checkpoint integration
+- ⏳ Wire into La Soglia frontend (studio/web)
+
+**Prossimi Step (priorità):**
+1. Integrare con `sdq1/llm/router.py` esistente
+2. Implementare real LLM calls (Anthropic, OpenAI, Google APIs)
+3. Creare endpoint FastAPI `/api/rrremergen/compose`
+4. Aggiungere pagina `/rrremergen` al sito
+5. Implementare GitHub OAuth + Vercel deployment
+6. Test end-to-end composizione di un'app reale
+
+**Commit:** `c8039eb` — Introduce RRREMERGEN framework
+
+---
 
 ## R3-020: Safety Gate per miglioramenti autonomi — 2026-10-14
 
