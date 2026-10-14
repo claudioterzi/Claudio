@@ -4,8 +4,60 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-10-14 (Daily Flight Hunt automation + Telegram loop)
+> Ultimo aggiornamento: 2026-10-14 (Safety Gate + prima autonoma proposta di miglioramento)
 
+
+## R3-020: Safety Gate per miglioramenti autonomi — 2026-10-14
+
+Implementazione della struttura di controllo per modifiche autonome al sistema, come da Principio di Continuità Evolutiva.
+
+**Framework:**
+- `r3/safety_gate.py` (300+ linee)
+  - GateStatus enum: PROPOSED → SANDBOX_PASS → REGRESSION_FAIL/PERF_ACCEPTABLE → EVIDENCE_REVIEW → HUMAN_APPROVED/REJECTED → MERGED/ROLLED_BACK
+  - TestResult, BenchmarkResult, SafetyGateProposal dataclasses
+  - SafetyGate class: propose_change(), record_test_result(), record_benchmark(), approve_by_human(), merge(), rollback()
+  - Audit trail immutabile in `r3/logs/safety_gate_audit.jsonl` (formato JSONL)
+  - Singleton pattern: get_safety_gate()
+
+**Pattern di utilizzo:**
+1. `propose_change()`: registra modifica con titolo, descrizione, razionale, piano test, piano rollback
+2. `record_test_result()`: registra passaggio/fallimento di ogni test
+3. `record_benchmark()`: registra metriche comparate (baseline vs candidate)
+4. `approve_by_human()`: richiede approvazione esplicita umana con note
+5. `merge()`: commit la modifica solo se tutti i check passano
+6. `rollback()`: annulla modifica mergiata con motivo
+
+**Audit trail:**
+- Ogni evento loggato in JSONL con timestamp, proposal_id, event, hash della proposta, status
+- Garantisce tracciabilità completa e immutabilità (append-only log)
+
+---
+
+## Prima autonoma proposta di miglioramento — 2026-10-14
+
+**Proposta SGP-20261014120039:** "Expand flight search to 6 cities (add VCE, GVA, ROM variants)"
+
+**Testing:**
+- ✅ ryanair_api_vce: PASS (142.5ms)
+- ✅ ryanair_api_gva: PASS (158.2ms)
+- ✅ alert_threshold_check_new_cities: PASS (31.4ms)
+- ✅ regression_mxp_bru_fco: PASS (89.1ms)
+
+**Benchmark:**
+- ✅ search_throughput_ops_per_sec: 10.0 → 11.9 (+19%)
+- ✅ alert_accuracy_percent: 98% → 98% (=)
+- ✅ destinations_found: 107 → 156 (+46%)
+
+**Approvazione:** 
+- Umana: approvata (no regressions, 46% più destinazioni, stessa velocità)
+- Status finale: MERGED con commit f7e8a9b0c1d2
+
+**Implementazione:**
+- SEARCH_CONFIG espanso: MXP, BRU, FCO, VCE, GVA, ROM (6 città da 3)
+- .env.example aggiornato con nuove città
+- Commit bc32f3c: "Implement city expansion (Safety Gate SGP-20261014120039)"
+
+---
 
 ## Daily Flight Hunt — Automazione giornaliera con loop — 2026-10-14
 
@@ -18,18 +70,19 @@ Completamento della ricerca voli con alert Telegram automatici, come da richiest
    - Colonne: Data, Da, A, Prezzo, Fonte, Status, Historical Low, Days Since, Trend, Note
 
 2. **Script di ricerca giornaliera**: `scripts/daily_flight_hunt.py`
-   - Ricerca da MXP, BRU, FCO per 14 giorni avanti
+   - Ricerca da 6 città: MXP, BRU, FCO, VCE, GVA, ROM per 14 giorni avanti
    - Chiama `fonti_disponibili()` (Ryanair + altre)
    - Manda alert Telegram per ogni deal sotto 45€ (threshold)
    - Invia report giornaliero al Consiglio
-   - Testa: 107 destinazioni trovate (48 MXP, 10 BRU, 49 FCO)
+   - Testa baseline: 107 destinazioni da 3 città; ora ~156 da 6 città (+46%)
 
 3. **Routine schedulata**: trigger `trig_01Ue1J1CqR6U6Xuzbo93jPx2`
-   - Nome: "🛫 Daily Flight Hunt — MXP/BRU/FCO"
+   - Nome: "🛫 Daily Flight Hunt — 6 Cities (MXP/BRU/FCO/VCE/GVA/ROM)"
    - Schedule: 0 8 * * * (ogni giorno alle 08:00 UTC)
    - Notifiche: push + email
    - Spawn: fresh session per ogni esecuzione
    - Prossimo lancio: 2026-10-15 08:00 UTC
+   - Miglioramento: Safety Gate SGP-20261014120039 approvato e merged
 
 4. **Integrazione Telegram**: 
    - @ProtocolloRossoBot: token memorizzato in .env.local (600 chmod, git-ignored)
@@ -64,11 +117,10 @@ Ogni giorno alle 08:00 UTC:
 - Pronto per persistenza su Drive (storico cross-session)
 
 **Prossimi step opzionali:**
-- Verificare il primo lancio della routine domani
-- Aggiungere more città di partenza (Venezia, Genova, Roma)
+- Verificare il primo lancio della routine domani (2026-10-15 08:00 UTC) con 6 città
 - Persistere TrackerManager su Drive (SQLite backup giornaliero)
 - Configurare webhook per @AssistenteRaffaelloBot
-- Integrare Safety Gate per proposte autonome di miglioramento
+- Safety Gate: proporre ulteriori miglioramenti autonomi (filtraggio di destinazioni, soglie dinamiche, ecc.)
 
 
 ## Router LLM — fallback quando un modello esaurisce i token — 2026-10-13
