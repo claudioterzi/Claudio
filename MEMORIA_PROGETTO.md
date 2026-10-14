@@ -56,11 +56,19 @@ Ogni giorno alle 08:00 UTC:
 
 **Comandi git:** commit `0b96fc3` + `8d691ad` (fix API).
 
+**Integrazione TrackerManager (14/10/2026):**
+- TrackerManager importato in daily_flight_hunt.py
+- Ogni prezzo scoperto viene registrato con `tracker.record_price()`
+- Tracker accumula storico per rotta (min/max/avg/samples)
+- Summary esportato a ogni run e incluso nel log di esecuzione
+- Pronto per persistenza su Drive (storico cross-session)
+
 **Prossimi step opzionali:**
 - Verificare il primo lancio della routine domani
-- Aggiungere more città di partenza
-- Integrare storico prezzi nel tracker (persist attraverso le sessioni)
+- Aggiungere more città di partenza (Venezia, Genova, Roma)
+- Persistere TrackerManager su Drive (SQLite backup giornaliero)
 - Configurare webhook per @AssistenteRaffaelloBot
+- Integrare Safety Gate per proposte autonome di miglioramento
 
 
 ## Router LLM — fallback quando un modello esaurisce i token — 2026-10-13
