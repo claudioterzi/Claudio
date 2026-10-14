@@ -1,6 +1,7 @@
 {
   "version": 2,
   "builds": [
+    {"src":"rrremergen/api/main.py","use":"@vercel/python","config":{"maxDuration":180,"includeFiles":"rrremergen/**"}},
     {"src":"api/flight_best.py","use":"@vercel/python","config":{"maxDuration":60}},
     {"src":"api/tarot_alpha.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"telegram_owner_auth.py"}},
     {"src":"api/tarot_alpha_fullspace.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{api/tarot_alpha.py,tarocchi_quantici_alpha.json,tarocchi/**,telegram_owner_auth.py}"}},
@@ -13,6 +14,10 @@
     {"src":"public/**","use":"@vercel/static"}
   ],
   "routes": [
+    {"src":"/api/rrremergen/(.*)","dest":"/rrremergen/api/main.py"},
+    {"src":"/api/rrremergen","dest":"/rrremergen/api/main.py"},
+    {"src":"/rrremergen/(.+\\.(html|js|css|svg|png|json))","dest":"/public/rrremergen/$1"},
+    {"src":"/rrremergen/?","dest":"/public/rrremergen/index.html"},
     {"src":"/indra/?","dest":"/public/indra.html"},
     {"src":"/canali/?","dest":"/public/canali.html"},
     {"src":"/soglia/","dest":"/public/soglia.html"},
