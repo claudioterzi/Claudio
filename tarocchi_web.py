@@ -917,6 +917,10 @@ def telegram_debug():
 def _segreto_webhook() -> str:
     """Segreto che Telegram rimanda in ogni chiamata al webhook. Derivato dal token
     del bot se TELEGRAM_WEBHOOK_SECRET non è impostato: nessun valore da copiare."""
+    from telegram_owner_auth import bot_token_usable
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    if not bot_token_usable(token):
+        return ""
     esplicito = os.environ.get("TELEGRAM_WEBHOOK_SECRET", "").strip()
     if esplicito:
         return esplicito
@@ -1051,7 +1055,7 @@ def telegram_prova():
 def telegram_webhook():
     segreto = _segreto_webhook()
     ricevuto = request.headers.get("X-Telegram-Bot-Api-Secret-Token", "")
-    if segreto and not hmac.compare_digest(ricevuto, segreto):
+    if not segreto or not hmac.compare_digest(ricevuto, segreto):
         return "forbidden", 403
     upd = request.get_json(force=True, silent=True) or {}
     if upd:

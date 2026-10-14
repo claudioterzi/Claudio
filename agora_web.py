@@ -13,7 +13,7 @@ from itsdangerous import BadSignature
 
 from perfume_archive_auth import allow_login, password_config, password_matches, signer
 from perfume_studio import ArchiveUnavailable, _redis
-from telegram_owner_auth import telegram_owner
+from telegram_owner_auth import telegram_owner, bot_token_usable
 
 agora = Blueprint('agora_web', __name__)
 COMMANDS = frozenset({'consiglio', 'briefing', 'snapshot', 'tarocchi', 'agenda', 'riflessione'})
@@ -98,6 +98,7 @@ def session():
         if request.method == 'GET':
             authorized = browser_owner() if configured else False
             return jsonify(ok=True, autorizzato=authorized, configurato=configured,
+                           telegram_disponibile=bot_token_usable(os.getenv('AGORA_TELEGRAM_BOT_TOKEN', '')),
                            archivio='redis' if _redis() is not None else 'non disponibile')
         if not same_origin():
             return jsonify(ok=False, errore='Riapri la pagina e riprova.'), 403

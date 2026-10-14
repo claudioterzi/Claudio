@@ -4,7 +4,7 @@
   const $ = id => document.getElementById(id);
   const tg = window.Telegram?.WebApp;
   let busy = false, feedBusy = false, portfolioBusy = false, toastTimer, snapshotRevision;
-  let owner = Boolean(tg?.initData), currentRecord;
+  let owner = false, cookieOwner = false, currentRecord;
   const requestKey = 'agora.last.request.v1';
   const headers = {'Content-Type': 'application/json', 'X-Agora': '1'};
   const signed = body => ({...body, initData: tg?.initData || ''});
@@ -16,7 +16,7 @@
       ...(method === 'GET' ? {} : {body: JSON.stringify(signed(body || {}))}), signal: signal || controller.signal});
     const data = await response.json().catch(() => ({}));
     if (!response.ok || data?.ok !== true) {
-      if (response.status === 403 && !tg?.initData && path !== '/api/agora/session') accessState(false);
+      if (response.status === 403 && path !== '/api/agora/session') accessState(false);
       throw new Error(data?.errore || 'Risposta del server non valida.');
     }
     return data;
@@ -26,7 +26,7 @@
     try { if (value) sessionStorage.setItem(requestKey, value); return sessionStorage.getItem(requestKey); } catch (_) { return null; }
   }
   function accessState(value) {
-    owner = value; $('owner-form').hidden = value; $('owner-logout').hidden = !value || Boolean(tg?.initData);
+    owner = value; $('owner-form').hidden = value; $('owner-logout').hidden = !value || !cookieOwner;
     $('owner-status').textContent = value ? 'Accesso privato attivo. Le risposte si aprono qui; Telegram è una copia facoltativa.' : 'Accedi con la password dell’archivio privato per eseguire i comandi dal browser.';
   }
   function renderResult(record) {
@@ -57,9 +57,14 @@
     } catch (error) { $('history-status').textContent = 'Cronologia non disponibile: ' + error.message; }
   }
   async function initializeOwner() {
-    if (tg?.initData) { accessState(true); $('telegram-copy').checked = true; await refreshHistory(); return; }
     try {
-      const data = await api('/api/agora/session', null, 'GET'); accessState(data.autorizzato);
+      const data = await api('/api/agora/session', null, 'GET'); cookieOwner = Boolean(data.autorizzato);
+      $('telegram-copy').disabled = !data.telegram_disponibile;
+      $('telegram-copy').checked = Boolean(tg?.initData && data.telegram_disponibile);
+      $('telegram-status').textContent = data.telegram_disponibile ? '' : 'Copia Telegram temporaneamente non disponibile. I risultati restano sul sito.';
+      let verified = cookieOwner;
+      if (!verified && tg?.initData) { await api('/api/agora/history', {}); verified = true; }
+      accessState(verified);
       if (!data.configurato) $('owner-status').textContent = 'Accesso privato del sito non configurato sul server.';
       if (owner) { await refreshHistory(); if (localId()) await recover(); }
     } catch (error) { accessState(false); $('owner-status').textContent = error.message; }
@@ -186,12 +191,12 @@
   $('command-status').textContent = 'Le risposte ai comandi si aprono sul sito. Ogni esecuzione richiede la tua azione.';
   $('owner-form').addEventListener('submit', async event => {
     event.preventDefault(); $('owner-login').disabled = true;
-    try { await api('/api/agora/session', {password: $('owner-password').value}); $('owner-password').value = ''; accessState(true); await refreshHistory(); }
+    try { await api('/api/agora/session', {password: $('owner-password').value}); $('owner-password').value = ''; cookieOwner = true; accessState(true); await refreshHistory(); }
     catch (error) { $('owner-status').textContent = error.message; }
     finally { $('owner-login').disabled = false; }
   });
   $('owner-logout').addEventListener('click', async () => {
-    try { await api('/api/agora/session', {}, 'DELETE'); accessState(false); currentRecord = null; $('result-text').textContent = ''; $('result-meta').textContent = ''; $('command-history').replaceChildren(); $('result-download').hidden = true; }
+    try { await api('/api/agora/session', {}, 'DELETE'); cookieOwner = false; accessState(false); currentRecord = null; $('result-text').textContent = ''; $('result-meta').textContent = ''; $('command-history').replaceChildren(); $('result-download').hidden = true; }
     catch (error) { $('owner-status').textContent = error.message; }
   });
   $('result-download').addEventListener('click', () => {

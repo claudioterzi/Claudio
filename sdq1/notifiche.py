@@ -44,6 +44,9 @@ _OFFSET_FILE = Path("output/telegram_offset.json")
 
 def _token() -> str:
     t = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    from telegram_owner_auth import bot_token_usable
+    if t and not bot_token_usable(t):
+        raise RuntimeError('Credenziale Telegram esposta: rigenerare il token in BotFather.')
     if not t:
         raise RuntimeError("TELEGRAM_BOT_TOKEN non configurato nel .env")
     return t
@@ -70,7 +73,11 @@ def invia(testo: str, *, parse_mode: str = "HTML", bot_token: str | None = None)
     if cattura(testo):
         return True
     try:
-        url = _API.format(token=bot_token or _token(), method="sendMessage")
+        from telegram_owner_auth import bot_token_usable
+        token = bot_token or _token()
+        if not bot_token_usable(token):
+            return False
+        url = _API.format(token=token, method="sendMessage")
         payload = json.dumps({
             "chat_id":    _chat_id(),
             "text":       testo,
