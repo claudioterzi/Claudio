@@ -107,3 +107,4 @@ R3_PRIVATE_*
 !public/libro/provenienza.json
 !public/opera/manifest.json
 !public/opera-corpus.json
+r3/logs/
