@@ -4,7 +4,7 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-10-14 (RRREMERGEN web app auto-composer)
+> Ultimo aggiornamento: 2026-10-14 (RRREMERGEN + IONOS Bridge completo)
 
 
 ## RRREMERGEN — Web App Auto-Composer (R³∞ Protocol) — 2026-10-14
@@ -131,6 +131,121 @@ User: "Create a task management app with real-time collaboration and Slack integ
 - `459a88b` — Add FastAPI backend and fix orchestrator imports
 - `43368f0` — Add comprehensive RRREMERGEN setup & deployment documentation
 - `d81b735` — Implement real LLM API integrations
+- `4f8245c` — Add IONOS Bridge integration and direct deployment
+
+---
+
+## IONOS Bridge — Integrazione Completa Infrastruttura — 2026-10-14
+
+Sistema unificato di gestione di tutti i servizi IONOS + RRREMERGEN per la composizione autonoma di app con infrastruttura completa.
+
+**Architettura:**
+- `integrations/IONOS_BRIDGE.md` — Documentazione completa (80+ righe)
+- `rrremergen/integrations/ionos/` — Moduli Python per integrazione
+  - `auth.py` — Gestione credenziali IONOS (API tokens, database, S3, email)
+  - `services.py` — Adapter per 5 servizi IONOS:
+    * DNS (domain management, CNAME, MX, SPF/DKIM/DMARC)
+    * Hosting (VPS provisioning, load balancing, SSL)
+    * Database (PostgreSQL/MySQL/MongoDB, backup, replication)
+    * S3 Storage (bucket creation, CDN, encryption)
+    * Email (mailbox creation, SMTP relay, SendGrid integration)
+  - `deploy.py` — Strategie di pubblicazione diretta:
+    * SFTP: Secure file transfer (recommended)
+    * FTP: Classic file transfer fallback
+    * Git: Repository-based deployment
+    * SSH: Direct command execution
+
+- `rrremergen/agents/infrastructure_agent.py` — Agent specializzato per infrastruttura
+  - Provisioning completo: DNS, Database, Storage, Email, Monitoring
+  - Integration con RRREMERGEN pipeline
+  - Scaling e gestione risorse
+
+**Flusso Completo IONOS-RRREMERGEN:**
+
+```
+User Prompt: "Create SaaS platform with PostgreSQL, S3 storage, email"
+                                    ↓
+RRREMERGEN Agents:
+├─ Architect (Claude) → Blueprint con requisiti infrastruttura
+├─ Designer (Gemini) → UI specs
+├─ Developer (GPT-4) → Codice FastAPI + React
+├─ Infrastructure Agent (NEW) → Provisioning IONOS
+│  ├─ DNS: Setup CNAME subdomain pointing to Vercel
+│  ├─ Database: PostgreSQL 10GB on IONOS
+│  ├─ Storage: S3 bucket con CDN
+│  └─ Email: SMTP + SendGrid relay
+├─ Integrator (Claude) → Stripe, Slack, SendGrid config
+└─ PM (Claude) → Validation di code + infrastructure
+                                    ↓
+Deployment Options (Orchestrated Fallback):
+├─ SFTP (recommended) → Direct file upload
+├─ Git → Repository-based deployment
+├─ FTP → Classic file transfer
+└─ SSH → Command-based deployment
+                                    ↓
+Environment Variables Generati:
+├─ DATABASE_URL: postgresql://user:pass@ionos_host/db
+├─ S3_BUCKET, S3_ENDPOINT
+├─ SMTP_HOST: smtp.ionos.com
+├─ STRIPE_KEY, SLACK_WEBHOOK
+└─ Tutti i credential securi
+                                    ↓
+✅ Live SaaS App con Infrastruttura IONOS
+```
+
+**Services IONOS Supportati:**
+1. **DNS API** — Domain management, record updates, propagation checks
+2. **Cloud API** — VPS provisioning, networking, load balancing
+3. **Managed Database** — PostgreSQL, MySQL, MongoDB con backup
+4. **S3-Compatible Storage** — Object storage, versioning, encryption, CDN
+5. **Email Services** — Mailbox hosting, SMTP relay, security records
+
+**Partner Convenuti Integration:**
+- Stripe: Payment webhooks routed through IONOS database
+- SendGrid: Email relay from IONOS SMTP
+- Slack: Infrastructure alerts + deployment notifications
+- AWS S3: Alternative storage (IONOS S3 preferred for EU)
+- Google Cloud: Analytics and monitoring
+
+**Strategia Pubblicazione:**
+1. **SFTP (Primary)** — Secure, no credentials in URLs
+2. **Git (Secondary)** — Version control + deployment hooks
+3. **FTP (Fallback)** — Backward compatibility
+4. **SSH (Last Resort)** — Direct commands if other methods fail
+
+Orchestrator seleziona automaticamente il metodo migliore disponibile.
+
+**Deployment Endpoints:**
+```python
+# Direct FTP/SFTP to IONOS
+ftp_deployer = IONOSFTPDeployer(credentials)
+sftp_deployer = IONOSSFTPDeployer(credentials)
+
+# Git-based deployment
+git_deployer = IONOSGitDeployer(credentials)
+
+# SSH command execution
+ssh_deployer = IONOSSSHDeployer(credentials)
+
+# Orchestrated choice
+orchestrator = IONOSDeploymentOrchestrator(credentials)
+result = await orchestrator.deploy_app(app_code, app_name, config)
+```
+
+**Credenziali Richieste (in .env):**
+- IONOS_API_TOKEN, IONOS_ACCOUNT_ID, IONOS_DATACENTER
+- IONOS_DNS_API_KEY, IONOS_PRIMARY_DOMAIN
+- IONOS_DB_HOST, IONOS_DB_USER, IONOS_DB_PASSWORD
+- IONOS_S3_*, IONOS_SMTP_*, IONOS_EMAIL_API_KEY
+- FTP/SFTP/SSH credentials per direct deployment
+
+**Status:**
+- ✅ IONOS Bridge architecture
+- ✅ Service adapters per tutti i servizi
+- ✅ Infrastructure Agent integrato con RRREMERGEN
+- ✅ Multiple deployment strategies
+- ⏳ End-to-end testing
+- ⏳ Production deployment
 
 ---
 
