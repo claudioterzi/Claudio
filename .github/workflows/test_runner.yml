@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - 'public/r3-memory.js'
+      - 'public/home.html'
+      - 'public/agora.js'
+      - 'tests/test_core_ergonomia.cjs'
       - 'tests/r3-memory-integrity.cjs'
       - '**.py'
       - 'requirements*.txt'

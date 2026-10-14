@@ -89,7 +89,7 @@
     }
 
     /* ── CONTENT */
-    .content { padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 14px; }
+    .content { max-width: 900px; margin: 0 auto; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 16px; }
 
     /* ── CARDS */
     .card {
@@ -126,7 +126,7 @@
     }
 
     .agent-id   { font-size: 12px; font-weight: 700; color: var(--red); font-family: monospace; }
-    .agent-name { font-size: 12px; color: var(--text); }
+    .agent-name { font-size: 16px; color: var(--text); }
     .agent-status {
       font-size: 12px;
       display: flex;
@@ -313,6 +313,15 @@
     button:disabled { opacity: .65; cursor: wait; }
     :focus-visible { outline: 2px solid #ffb4b4; outline-offset: 3px; }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+    .status-badge { padding: 7px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-dim); font-size: 12px; text-align: center; }
+    .field-label { font-size: 14px; font-weight: 600; }
+    .field-help { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+    .feed-status a { color: #ffb4b4; text-underline-offset: 3px; }
+    .request-feedback { border-left: 4px solid #a2a2b6; color: var(--text); }
+    .request-feedback[data-state="pending"] { border-color: #e2b45f; }
+    .request-feedback[data-state="received"] { border-color: #81c69a; }
+    .request-feedback[data-state="error"] { border-color: var(--red); }
+    @media (max-width: 480px) { .log-item { flex-direction: column; gap: 5px; } .consiglio-btn { margin: 0; width: 100%; } .topbar { gap: 12px; } }
   </style>
 </head>
 <body>
@@ -326,44 +335,45 @@
       <div class="topbar-sub">SDQ-1 — Agorà Digitale</div>
     </div>
   </div>
-  <div class="status-dot" title="Disponibilità dei servizi non verificata" aria-hidden="true"></div>
+  <span class="status-badge">Comandi e archivio</span>
 </div>
 
 <div class="content">
 
   <!-- STATO AGENTI -->
   <div class="card">
-    <h2 class="card-header">Ruoli dell’interfaccia SDQ-1</h2>
+    <h2 class="card-header">Componenti del progetto</h2>
+    <p class="feed-status">Questi sono i ruoli del progetto. La loro disponibilità operativa non è verificata in questa schermata.</p>
     <div class="agents-grid">
       <div class="agent-cell">
         <div class="agent-id">RAFFA-001</div>
         <div class="agent-name">Raffaello</div>
-        <div class="agent-status">Disponibilità non verificata</div>
+        <div class="agent-status">Assistente</div>
       </div>
       <div class="agent-cell">
         <div class="agent-id">MEMO-002</div>
         <div class="agent-name">Memoria</div>
-        <div class="agent-status">Disponibilità non verificata</div>
+        <div class="agent-status">Archivio</div>
       </div>
       <div class="agent-cell">
         <div class="agent-id">DECOMP-005</div>
-        <div class="agent-name">Decomposer</div>
-        <div class="agent-status">Disponibilità non verificata</div>
+        <div class="agent-name">Scompositore</div>
+        <div class="agent-status">Scomposizione delle richieste</div>
       </div>
       <div class="agent-cell">
         <div class="agent-id">SENTIN-004</div>
         <div class="agent-name">Sentinella</div>
-        <div class="agent-status">Disponibilità non verificata</div>
+        <div class="agent-status">Supervisione</div>
       </div>
       <div class="agent-cell">
         <div class="agent-id">GEN-006</div>
         <div class="agent-name">Generatore</div>
-        <div class="agent-status">Disponibilità non verificata</div>
+        <div class="agent-status">Creazione di contenuti</div>
       </div>
       <div class="agent-cell">
         <div class="agent-id">WAVE-003</div>
         <div class="agent-name">Forma Onda</div>
-        <div class="agent-status">Disponibilità non verificata</div>
+        <div class="agent-status">Orchestrazione</div>
       </div>
     </div>
   </div>
@@ -372,24 +382,25 @@
   <button class="consiglio-btn" id="btnConsiglio" type="button" aria-expanded="false" aria-controls="consilioWrap" onclick="toggleConsiglio()">
     <div class="consiglio-icon">⚖️</div>
     <div class="consiglio-text">
-      <div class="consiglio-title">Convoca il Consiglio</div>
-      <div class="consiglio-sub">Invia una questione al Consiglio in Telegram</div>
+      <div class="consiglio-title">Consulta il Consiglio</div>
+      <div class="consiglio-sub">Richiedi una valutazione, poi decidi</div>
     </div>
   </button>
 
   <div class="consiglio-input-wrap" id="consilioWrap">
-    <label for="consilioInput">La questione per il Consiglio</label>
+    <label class="field-label" for="consilioInput">La tua domanda al Consiglio</label>
     <input
       class="consiglio-input"
       id="consilioInput"
       type="text"
       placeholder="La questione su cui deliberare…"
       maxlength="300"
+      aria-describedby="consiglioHelp"
     >
-    <button class="send-btn" id="consiglio-send" type="button" onclick="inviaConsiglio()">Delibera</button>
+    <p class="field-help" id="consiglioHelp">Fino a 300 caratteri. Se l’invio non riesce, la domanda resta qui.</p>
+    <button class="send-btn" id="consiglio-send" type="button" onclick="inviaConsiglio()">Invia al Consiglio</button>
   </div>
 
-  <p id="command-status" class="feed-status" role="status" aria-live="polite"></p>
   <!-- COMANDI RAPIDI -->
   <div class="card">
     <h2 class="card-header">Comandi rapidi</h2>
@@ -397,17 +408,17 @@
       <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/briefing')">
         <div class="cmd-icon">📡</div>
         <div class="cmd-name">Briefing</div>
-        <div class="cmd-desc">Analisi 4-AI del momento</div>
+        <div class="cmd-desc">Riepilogo dai modelli disponibili</div>
       </button>
       <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/snapshot')">
         <div class="cmd-icon">📸</div>
         <div class="cmd-name">Snapshot</div>
-        <div class="cmd-desc">Stato sistema attuale</div>
+        <div class="cmd-desc">Richiedi uno snapshot del sistema</div>
       </button>
       <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/tarocchi')">
         <div class="cmd-icon">🃏</div>
         <div class="cmd-name">Tarocchi</div>
-        <div class="cmd-desc">Lettura quantica R³∞</div>
+        <div class="cmd-desc">Lettura simbolica R³∞</div>
       </button>
       <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/agenda')">
         <div class="cmd-icon">📋</div>
@@ -416,28 +427,53 @@
       </button>
       <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/agenda asbl')">
         <div class="cmd-icon">🏛️</div>
-        <div class="cmd-name">ASBL P1</div>
-        <div class="cmd-desc">SkyRights Foundation</div>
+        <div class="cmd-name">SkyRights · agenda</div>
+        <div class="cmd-desc">Riepilogo dell’agenda generale</div>
       </button>
       <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/riflessione')">
         <div class="cmd-icon">🌊</div>
         <div class="cmd-name">Riflessione</div>
-        <div class="cmd-desc">Pensiero del sistema</div>
+        <div class="cmd-desc">Spunto di riflessione generato</div>
       </button>
     </div>
   </div>
+
+  <section class="card" aria-labelledby="request-title">
+    <h2 class="card-header" id="request-title">Ultima richiesta</h2>
+    <p id="command-status" class="feed-status request-feedback" role="status" aria-live="polite" aria-atomic="true" data-state="idle"></p>
+  </section>
 
   <!-- LOG ATTIVITÀ -->
   <section class="card" aria-labelledby="activity-title">
     <h2 class="card-header" id="activity-title">Attività documentata</h2>
     <p id="activity-status" class="feed-status" role="status" aria-live="polite">Caricamento dello snapshot…</p>
     <button id="activity-refresh" class="refresh-btn" type="button">Aggiorna i dati</button>
+    <p class="feed-status"><a href="/stato">Apri il rapporto completo di R³</a></p>
     <div class="log-list" id="logList"></div>
   </section>
   <section class="card" aria-labelledby="projects-title">
     <h2 class="card-header" id="projects-title">Progetti del portafoglio</h2>
     <p id="project-status" class="feed-status" role="status">Caricamento della proiezione IDEA OS…</p>
     <div class="log-list" id="project-list"></div>
+  </section>
+
+  <section class="card" aria-labelledby="archive-title">
+    <h2 class="card-header" id="archive-title">Archivio di Agorà</h2>
+    <p class="feed-status">Documenti e annotazioni della prima versione, con le loro date storiche.</p>
+    <div class="log-list">
+      <div class="log-item">
+        <time class="log-time" datetime="2026-06-26">26 giugno 2026</time>
+        <div class="log-msg"><b>PDF</b> «Tutta la Verità»: documento storico archiviato su Drive.</div>
+      </div>
+      <div class="log-item">
+        <time class="log-time" datetime="2026-06-26">26 giugno 2026</time>
+        <div class="log-msg"><b>Consiglio</b> presentato nella prima versione di Agorà. L’operatività attuale richiede una verifica.</div>
+      </div>
+      <div class="log-item">
+        <time class="log-time" datetime="2026-06-26">26 giugno 2026</time>
+        <div class="log-msg"><b>Briefing</b> la prima versione menzionava quattro AI, incluso Mistral. La disponibilità attuale dei modelli richiede una verifica.</div>
+      </div>
+    </div>
   </section>
 
   <!-- FOOTER -->

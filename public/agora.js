@@ -4,13 +4,13 @@
   const $ = id => document.getElementById(id);
   const tg = window.Telegram?.WebApp;
   let busy = false, feedBusy = false, portfolioBusy = false, toastTimer, snapshotRevision;
-  function showToast(message) {
+  function showToast(message, state = 'info') {
     const toast = $('toast'); toast.textContent = message; toast.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 6000);
-    $('command-status').textContent = message;
+    $('command-status').textContent = message; $('command-status').setAttribute('data-state', state);
   }
   function lock(value) {
-    busy = value;
+    busy = value; $('command-status').setAttribute('aria-busy', String(value));
     document.querySelectorAll('[data-agora-command], #consiglio-send').forEach(button => { button.disabled = value; });
     $('consilioInput').readOnly = value;
   }
@@ -20,7 +20,7 @@
       showToast('Per inviare, apri Agorà dal menu del bot Telegram. Qui non è stato inviato alcun comando.');
       return {sent: false};
     }
-    lock(true); showToast('Invio in corso. Attendi la conferma prima di riprovare.');
+    lock(true); showToast('Invio in corso. Attendi la conferma prima di riprovare.', 'pending');
     const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 45000);
     try {
       const response = await fetch('/api/agora', {
@@ -28,13 +28,13 @@
         signal: controller.signal, body: JSON.stringify({comando: command, initData: tg.initData})
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.errore || 'Errore ' + response.status);
-      showToast('Comando ricevuto dal server. Controlla la chat Telegram per la risposta.');
+      if (!response.ok || !data || data.ok !== true) throw new Error(data?.errore || 'Il server non ha confermato la ricezione.');
+      showToast('Comando ricevuto dal server. Controlla la chat Telegram per la risposta.', 'received');
       return {sent: true};
     } catch (error) {
       showToast(error.name === 'AbortError'
         ? 'Conferma non ricevuta in tempo. Il comando potrebbe essere arrivato: controlla la chat prima di riprovare. La domanda resta qui.'
-        : 'Invio non confermato: ' + (error.message || 'rete non disponibile') + '. La domanda resta qui.');
+        : 'Invio non confermato: ' + (error.message || 'rete non disponibile') + '. La domanda resta qui.', 'error');
       return {sent: false};
     } finally { clearTimeout(timeout); lock(false); }
   }
@@ -51,16 +51,17 @@
     if (!question) { showToast('Scrivi la questione su cui deliberare.'); input.focus(); return; }
     const result = await sendCmd('/consiglio ' + question);
     if (result.sent) {
-      if (input.value.trim() === question) input.value = '';
-      $('consilioWrap').classList.remove('visible');
-      $('btnConsiglio').setAttribute('aria-expanded', 'false'); $('btnConsiglio').focus();
+      if (input.value.trim() === question) {
+        input.value = ''; $('consilioWrap').classList.remove('visible');
+        $('btnConsiglio').setAttribute('aria-expanded', 'false'); $('btnConsiglio').focus();
+      }
     } else { $('consilioWrap').classList.add('visible'); $('btnConsiglio').setAttribute('aria-expanded', 'true'); input.focus(); }
   }
   const validDate = value => typeof value === 'string' && Number.isFinite(Date.parse(value));
   function dateLabel(value) {
     if (!validDate(value)) return 'Data non documentata';
     const date = new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? value + 'T00:00:00Z' : value);
-    return new Intl.DateTimeFormat('it-IT', {dateStyle: 'medium', ...(/^\d{4}-\d{2}-\d{2}$/.test(value) ? {timeZone: 'UTC'} : {timeStyle: 'short'})}).format(date);
+    return new Intl.DateTimeFormat('it-IT', {dateStyle: 'medium', ...(/^\d{4}-\d{2}-\d{2}$/.test(value) ? {timeZone: 'UTC'} : {timeStyle: 'short', timeZone: 'Europe/Paris'})}).format(date);
   }
   function row(date, message, source, href) {
     const item = document.createElement('div'); item.className = 'log-item';
