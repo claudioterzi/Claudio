@@ -118,6 +118,10 @@ jobs:
           python-version: '3.11'
       - name: Install existing CLI configuration dependency
         run: python -m pip install 'PyYAML>=6.0'
+      - name: R3 API admission gates on exact candidate head
+        run: |
+          python -m pip install 'Flask>=3.0,<4'
+          python -m unittest -v tests.test_r3_api_adoption_gates
       - name: Verify snapshot contract in full repository
         env:
           GIT_ALLOW_PROTOCOL: file
