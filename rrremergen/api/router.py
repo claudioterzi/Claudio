@@ -9,6 +9,19 @@ Supports: Anthropic Claude, OpenAI GPT, Google Gemini, DeepSeek, Mistral
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 import os
+import asyncio
+import json
+from pathlib import Path
+import sys
+import tempfile
+import time
+
+
+class ProviderError(RuntimeError):
+    """A generation failed; callers must not treat this as generated content."""
+
+
+LOCAL_MODEL = 'ollama-local/raffaello-r3:3b'
 
 
 @dataclass
@@ -22,7 +35,10 @@ class ModelAssignment:
 class LLMRouter:
     """Routes LLM requests to best-available provider."""
 
-    def __init__(self):
+    def __init__(self, mode: str = 'local'):
+        if mode not in {'local', 'demo', 'cloud'}:
+            raise ValueError('Modalità non supportata')
+        self.mode = mode
         self.providers = {
             'anthropic': {
                 'models': ['claude-3.5-sonnet', 'claude-3-opus', 'claude-3-haiku'],
@@ -30,7 +46,7 @@ class LLMRouter:
                 'priority': 1,  # Highest priority
             },
             'openai': {
-                'models': ['gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
+                'models': ['gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
                 'api_key_env': 'OPENAI_API_KEY',
                 'priority': 2,
             },
@@ -53,6 +69,8 @@ class LLMRouter:
 
         self.circuit_breaker = {}
         self.response_cache = {}
+        self.calls = []
+        self.local_runner = Path(os.getenv('RRREMERGEN_LOCAL_RUNNER', str(Path.home() / '.codex/tools/omniroute_local.py')))
 
     def select_model(
         self,
@@ -71,6 +89,12 @@ class LLMRouter:
         Returns:
             Selected model identifier
         """
+        if self.mode == 'local':
+            return LOCAL_MODEL
+        if self.mode == 'demo':
+            return 'demo-fixture'
+        if os.getenv('RRREMERGEN_ALLOW_CLOUD') != '1':
+            raise ProviderError('Provider cloud disabilitati: selezionarli e abilitarli esplicitamente sul server')
         # If preferred model is available and healthy, use it
         if preferred_model and self._is_model_healthy(preferred_model):
             return preferred_model
@@ -78,7 +102,9 @@ class LLMRouter:
         # Fallback: select based on task type
         assignments = self._get_task_assignments()
         if task_type in assignments:
-            return assignments[task_type]['model']
+            assignment = assignments[task_type]
+            if self._is_provider_healthy(assignment['provider']) and self._is_model_healthy(assignment['model']):
+                return assignment['model']
 
         # Ultimate fallback: first healthy model
         for provider, config in sorted(
@@ -89,16 +115,17 @@ class LLMRouter:
                 return config['models'][0]
 
         # Absolute fallback
-        return 'claude-3.5-sonnet'
+        raise ProviderError('Nessun provider configurato per la richiesta')
 
     def _is_model_healthy(self, model: str) -> bool:
         """Check if a model is healthy (not in circuit breaker)."""
-        return model not in self.circuit_breaker or not self.circuit_breaker[model]['active']
+        state = self.circuit_breaker.get(model, {})
+        return not state.get('active') or time.monotonic() >= state.get('until', float('inf'))
 
     def _is_provider_healthy(self, provider: str) -> bool:
         """Check if a provider has valid API key and is reachable."""
         api_key_env = self.providers[provider]['api_key_env']
-        return os.getenv(api_key_env) is not None
+        return bool(os.getenv(api_key_env, '').strip())
 
     def _get_task_assignments(self) -> Dict[str, Dict]:
         """
@@ -159,34 +186,70 @@ class LLMRouter:
         Returns:
             Dictionary with 'text' key containing the response
         """
+        if self.mode == 'demo':
+            from .demo import completion
+            return self._record({'text': completion(prompt), 'model': 'demo-fixture', 'tokens_used': 0, 'simulation': True})
+        if self.mode == 'local':
+            return self._record(await self._complete_local(prompt, min(max_tokens, 1000)))
+        if os.getenv('RRREMERGEN_ALLOW_CLOUD') != '1':
+            raise ProviderError('Provider cloud disabilitati')
         # Determine provider from model name
         provider = self._get_provider_for_model(model)
 
         if not provider:
-            return {
-                'text': f'// Placeholder response from {model}',
-                'model': model,
-                'tokens_used': 0,
-            }
+            raise ProviderError('Modello non riconosciuto')
 
-        # Route to appropriate provider
-        if provider == 'anthropic':
-            return await self._complete_anthropic(prompt, model, temperature, max_tokens)
-        elif provider == 'openai':
-            return await self._complete_openai(prompt, model, temperature, max_tokens)
-        elif provider == 'google':
-            return await self._complete_google(prompt, model, temperature, max_tokens)
-        elif provider == 'deepseek':
-            return await self._complete_deepseek(prompt, model, temperature, max_tokens)
-        elif provider == 'mistral':
-            return await self._complete_mistral(prompt, model, temperature, max_tokens)
+        if not self._is_provider_healthy(provider) or not self._is_model_healthy(model):
+            raise ProviderError('Provider non configurato o temporaneamente escluso')
+        handler = getattr(self, f'_complete_{provider}')
+        # Legacy SDK calls are synchronous: keep them off the streaming event loop.
+        result = await asyncio.to_thread(lambda: asyncio.run(handler(prompt, model, temperature, max_tokens)))
+        text = result.get('text')
+        if not isinstance(text, str) or not text.strip() or text.startswith('// Error'):
+            raise ProviderError(f'Richiesta al provider {provider} fallita; nessun contenuto generato')
+        return self._record(result)
 
-        # Fallback
-        return {
-            'text': f'// Response from {model}',
-            'model': model,
-            'tokens_used': 0,
-        }
+    def _record(self, result):
+        self.calls.append({'mode': self.mode, 'model': result['model'],
+                           'output_tokens': result.get('tokens_used', 0),
+                           'simulation': result.get('simulation', False)})
+        return result
+
+    async def _complete_local(self, prompt: str, max_tokens: int) -> dict:
+        """Reuse Claudio's existing bounded local CLI; it owns gateway authentication."""
+        if not self.local_runner.is_file():
+            raise ProviderError('Runner OmniRoute locale non disponibile su questo host')
+        if not prompt.strip() or len(prompt) > 16000:
+            raise ProviderError('Prompt locale fuori dal limite di 16000 caratteri')
+        with tempfile.TemporaryDirectory(prefix='rrremergen-') as directory:
+            path = Path(directory) / 'prompt.txt'
+            path.write_text(prompt, encoding='utf-8')
+            process = await asyncio.create_subprocess_exec(
+                getattr(sys, '_base_executable', sys.executable), '-X', 'utf8', str(self.local_runner), '--file', str(path),
+                '--max-tokens', str(max_tokens), '--timeout', '180', '--stream',
+                stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+            try:
+                stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=190)
+            except (TimeoutError, asyncio.CancelledError):
+                process.kill()
+                await process.communicate()
+                raise
+            if process.returncode:
+                try:
+                    failure = json.loads(stderr.decode('utf-8'))
+                    detail = ('HTTP ' + str(failure['http'])) if failure.get('http') else failure.get('reason')
+                except (ValueError, UnicodeError):
+                    detail = None
+                raise ProviderError('OmniRoute locale non ha completato la risposta'
+                                    + (f' ({detail})' if detail else '') + '; nessun fallback cloud')
+            result = json.loads(stdout.decode('utf-8'))
+            if result.get('model') not in {LOCAL_MODEL, 'raffaello-r3:3b'}:
+                raise ProviderError('OmniRoute ha restituito un modello diverso da quello locale richiesto')
+            answer = result.get('answer', '')
+            if not isinstance(answer, str) or not answer.strip():
+                raise ProviderError('Risposta locale vuota')
+            return {'text': answer, 'model': result.get('model', LOCAL_MODEL),
+                    'tokens_used': result.get('usage', {}).get('completion_tokens', 0), 'simulation': False}
 
     def _get_provider_for_model(self, model: str) -> str:
         """Determine provider from model identifier."""
@@ -393,3 +456,4 @@ class LLMRouter:
         # Activate circuit breaker after 3 errors
         if self.circuit_breaker[model]['error_count'] >= 3:
             self.circuit_breaker[model]['active'] = True
+            self.circuit_breaker[model]['until'] = time.monotonic() + 60

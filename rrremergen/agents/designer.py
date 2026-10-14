@@ -5,6 +5,7 @@ Designer Agent — Creates UI/UX specifications for applications.
 
 import json
 from typing import Dict, Any
+from rrremergen.output import json_object
 
 
 class Designer:
@@ -66,17 +67,22 @@ Create comprehensive UI/UX specifications including:
 Return valid JSON with nested structure for easy component generation.
 """
 
+        token_limit = 2500
+        if self.router.mode == 'local':
+            design_prompt = ('Designer agent. Return ONLY compact JSON: '
+                '{"color_palette":{"primary":"hex","background":"hex"},"typography":{"body_font":"font"}}. '
+                'Choose real colors and font for ' + blueprint.title + '. No markdown.')
+            token_limit = 160
         response = await self.router.complete(
             prompt=design_prompt,
-            model='gemini-2.5-pro',
+            model=self.router.select_model('design'),
             temperature=0.8,
-            max_tokens=2500
+            max_tokens=token_limit
         )
 
-        try:
-            ui_specs = json.loads(response.get('text', '{}'))
-        except json.JSONDecodeError:
-            ui_specs = self._default_design_spec()
+        ui_specs = json_object(response['text'])
+        if not isinstance(ui_specs.get('color_palette'), dict) or not isinstance(ui_specs.get('typography'), dict):
+            raise ValueError('Design privo di color_palette o typography')
 
         return ui_specs
 

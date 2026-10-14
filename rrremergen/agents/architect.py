@@ -6,6 +6,7 @@ Architect Agent — Analyzes requirements and creates app blueprints.
 import json
 from typing import Dict, Any, List
 from dataclasses import dataclass, field
+from rrremergen.output import json_object
 
 
 @dataclass
@@ -20,10 +21,10 @@ class AppBlueprint:
     ui_components: List[str] = field(default_factory=list)
     integrations: List[str] = field(default_factory=list)
     tech_stack: Dict[str, str] = field(default_factory=lambda: {
-        'frontend': 'React + Next.js',
+        'frontend': 'React',
         'backend': 'FastAPI',
-        'database': 'MongoDB',
-        'auth': 'JWT',
+        'database': 'schema_only',
+        'auth': 'not_configured',
     })
     constraints: List[str] = field(default_factory=list)
     deployment_platform: str = 'Vercel'
@@ -74,19 +75,33 @@ Return valid JSON only, no markdown or explanations.
 """
 
         # Call LLM to analyze
+        token_limit = 2000
+        if self.router.mode == 'local':
+            analysis_prompt = ('Architect agent. Return ONLY compact JSON with lowercase keys: '
+                'title, description (strings), requirements, ui_components, integrations, constraints (string lists), '
+                'data_models, api_routes (object lists). Routes use path and method. '
+                'Use at most 3 requirements, 1 component, 1 model, 2 routes. No markdown. App request:\n' + user_prompt)
+            token_limit = 350
         response = await self.router.complete(
             prompt=analysis_prompt,
-            model='claude-3.5-sonnet',
+            model=self.router.select_model('analysis'),
             temperature=0.7,
-            max_tokens=2000
+            max_tokens=token_limit
         )
 
         # Parse response
-        try:
-            analysis = json.loads(response.get('text', '{}'))
-        except json.JSONDecodeError:
-            # Fallback if JSON parsing fails
-            analysis = self._parse_fallback_analysis(response.get('text', ''))
+        analysis = json_object(response['text'])
+        for key in ('title', 'description'):
+            if not isinstance(analysis.get(key), str) or not analysis[key].strip():
+                raise ValueError(f'Blueprint privo di {key}')
+        for key in ('requirements', 'ui_components', 'integrations', 'constraints'):
+            if not isinstance(analysis.get(key, []), list) or any(not isinstance(x, str) for x in analysis.get(key, [])):
+                raise ValueError(f'Blueprint: {key} deve essere una lista di stringhe')
+        if not analysis.get('ui_components'):
+            raise ValueError('Blueprint privo di componenti UI')
+        for key in ('api_routes', 'data_models'):
+            if not isinstance(analysis.get(key, []), list) or any(not isinstance(x, dict) for x in analysis.get(key, [])):
+                raise ValueError(f'Blueprint: {key} deve essere una lista di oggetti')
 
         # Build blueprint
         blueprint = AppBlueprint(
@@ -102,16 +117,3 @@ Return valid JSON only, no markdown or explanations.
         )
 
         return blueprint
-
-    def _parse_fallback_analysis(self, text: str) -> Dict[str, Any]:
-        """Fallback parser if JSON fails."""
-        return {
-            'title': 'Generated Application',
-            'description': 'Auto-composed application',
-            'requirements': ['User authentication', 'Data persistence', 'Real-time updates'],
-            'data_models': [{'model': 'User', 'fields': {}}],
-            'api_routes': [],
-            'ui_components': ['Dashboard', 'Settings'],
-            'integrations': [],
-            'constraints': [],
-        }

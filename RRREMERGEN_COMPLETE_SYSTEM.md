@@ -1,5 +1,7 @@
 # 🎨 RRREMERGEN Complete System — R³∞ Protocol
 
+> Rettifica 14/10/2026: [verifica della candidata](rrremergen/VERIFICA_2026-10-14.md). Questo documento storico descrive anche obiettivi e segnaposto; non prova un deployment, provisioning IONOS o collegamento alle chat. Il flusso corretto esporta sorgenti e dichiara i limiti della verifica.
+
 **Autonomous Web App Composer with Full Infrastructure Management**
 
 **Sistema Integrato:** RRREMERGEN (Multi-Agent) + IONOS Bridge (Infrastruttura) + Vercel (CDN)

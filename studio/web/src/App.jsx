@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from 'react'
 import './App.css'
 
 // Import RRREMERGEN component
-import RRRemeRgen from '../../rrremergen/frontend/RRRemeRgen'
+import RRRemeRgen from '../../../rrremergen/frontend/RRRemeRgen'
 
 // ─── COSTANTI ────────────────────────────────────────────────────────────────
 
