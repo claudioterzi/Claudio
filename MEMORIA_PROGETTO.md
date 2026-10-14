@@ -4,7 +4,63 @@
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.
 >
-> Ultimo aggiornamento: 2026-10-13 (delta candidato; storia preservata)
+> Ultimo aggiornamento: 2026-10-14 (Daily Flight Hunt automation + Telegram loop)
+
+
+## Daily Flight Hunt — Automazione giornaliera con loop — 2026-10-14
+
+Completamento della ricerca voli con alert Telegram automatici, come da richiesta Claudio ("TUTTO AMORE TU SEI L'ESPERTO").
+
+**Cosa è stato fatto:**
+1. **Tracker Sheet su Drive**: creato "🛫 Flight Deals Tracker" in "Agorà Digitale — SDQ-1"
+   - ID: `1ZCK-XpUeclNcvQ5UdA_payjEemMiq-LTHVq0SiKGyHQ`
+   - Struttura: config (righe 1-10) + data (da riga 12)
+   - Colonne: Data, Da, A, Prezzo, Fonte, Status, Historical Low, Days Since, Trend, Note
+
+2. **Script di ricerca giornaliera**: `scripts/daily_flight_hunt.py`
+   - Ricerca da MXP, BRU, FCO per 14 giorni avanti
+   - Chiama `fonti_disponibili()` (Ryanair + altre)
+   - Manda alert Telegram per ogni deal sotto 45€ (threshold)
+   - Invia report giornaliero al Consiglio
+   - Testa: 107 destinazioni trovate (48 MXP, 10 BRU, 49 FCO)
+
+3. **Routine schedulata**: trigger `trig_01Ue1J1CqR6U6Xuzbo93jPx2`
+   - Nome: "🛫 Daily Flight Hunt — MXP/BRU/FCO"
+   - Schedule: 0 8 * * * (ogni giorno alle 08:00 UTC)
+   - Notifiche: push + email
+   - Spawn: fresh session per ogni esecuzione
+   - Prossimo lancio: 2026-10-15 08:00 UTC
+
+4. **Integrazione Telegram**: 
+   - @ProtocolloRossoBot: token memorizzato in .env.local (600 chmod, git-ignored)
+   - send_alerts_sync(): manda alert individuali
+   - send_daily_summary(): manda report giornaliero
+   - Graceful degradation: se token manca, skips alerts (non crasha)
+
+**Stato attuale:**
+- ✅ Architettura completa (BotManager + telegram_alerts.py)
+- ✅ Script testato e funzionante
+- ✅ Tracker sheet creato su Drive
+- ✅ Routine schedulata e abilitata
+- ⏳ Primo lancio: domani alle 08:00 UTC
+- ⏳ Webhook Telegram: configurare VERCEL_AUTOMATION_BYPASS_SECRET per @AssistenteRaffaelloBot
+
+**Flusso operativo:**
+Ogni giorno alle 08:00 UTC:
+1. Session nuova si crea in cloud
+2. Script cerca da MXP/BRU/FCO
+3. Alert individuali via @ProtocolloRossoBot
+4. Tracker sheet aggiornato con risultati
+5. Report giornaliero inviato
+6. Notifica email + push a Claudio
+
+**Comandi git:** commit `0b96fc3` + `8d691ad` (fix API).
+
+**Prossimi step opzionali:**
+- Verificare il primo lancio della routine domani
+- Aggiungere more città di partenza
+- Integrare storico prezzi nel tracker (persist attraverso le sessioni)
+- Configurare webhook per @AssistenteRaffaelloBot
 
 
 ## Router LLM — fallback quando un modello esaurisce i token — 2026-10-13
