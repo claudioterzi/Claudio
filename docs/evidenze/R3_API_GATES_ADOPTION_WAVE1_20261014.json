@@ -1,0 +1,68 @@
+{
+  "schema": "R3-020/CANDIDATE_REVIEW_RECEIPT_V1",
+  "id": "CT_R3_ADOPT_API_GATES_WAVE1_20261014",
+  "recorded_at_utc": "2026-10-14T08:25:08.479Z",
+  "owner": "Claudio Terzi",
+  "source_repository": "claudioterzi/Claudio",
+  "source_main_sha": "17cac359250b8af1850ac22cf21944fa0448da78",
+  "source_tree_sha": "487f69dc4c7bcb7f33c5b811b78f02bd520f0a0e",
+  "scope": [
+    "api/server.py",
+    "tests/test_r3_api_adoption_gates.py",
+    ".github/workflows/test_runner.yml"
+  ],
+  "decision": "STAGE_FOR_EXACT_HEAD_REVIEW",
+  "state": "CANDIDATE_L0_TESTED_NOT_DEPLOYED",
+  "changes": {
+    "GET /monitor": "Reuse canonical _auth before any state path access when API keys are configured; preserve documented dev mode",
+    "POST /ask": "Validate root dict and string/nonblank testo before system construction; auth before validation",
+    "POST /futures/run": "Validate root dict and optional nonempty known string scenario IDs before system/simulator/report; auth before validation",
+    "CI": "Add strict six-test exact-head gate into existing snapshot-safety job, no new workflow or runner job"
+  },
+  "baseline": {
+    "test_methods": 6,
+    "failures": 10,
+    "errors": 10,
+    "provenance": "fresh clone main, synthetic Flask test-client, 2026-10-14",
+    "no_provider_egress_observed": true
+  },
+  "candidate": {
+    "test_methods": 6,
+    "runs": 5,
+    "total_method_passes": 30,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "syntax_compile": "PASS",
+    "yaml_parse": "PASS",
+    "git_diff_check": "PASS",
+    "no_provider_egress_observed": true,
+    "file_sha256": {
+      "api/server.py": "af626490c9c24c7fa4265479d31da93a79aee22387a0594fd234b8b124e7df8a",
+      "tests/test_r3_api_adoption_gates.py": "f5a9ebf905747a3eb17a0965217440a4008b1480ee42460f66ab56bd2492832e",
+      ".github/workflows/test_runner.yml": "b8b6ab35b20f13d0e310c4958a0af7de4a06715518c68e544a8a35bdc693eb5f"
+    }
+  },
+  "negative_controls": [
+    "missing/wrong monitor token returns 401 before state reads",
+    "ask malformed root/types return 400 before system",
+    "futures malformed selection returns 400 before system/sim/report",
+    "valid ask and futures mock responses unchanged",
+    "unconfigured dev-mode monitor preserved"
+  ],
+  "deployment": {
+    "production_merge": false,
+    "production_deploy": false,
+    "production_restart": false,
+    "may_trigger_free_vercel_preview_after_branch_publication": true,
+    "vercel_plan_observed": "hobby",
+    "no_paid_resources_requested": true
+  },
+  "blocker": "Hosted exact candidate CI/security, independent review and deployed/external-consumer compatibility not yet verified",
+  "completion_criterion": "Local baseline reproduction and bounded regression suite PASS; draft PR and hosted/security remain separate gates",
+  "next_action": "Publish branch as one commit plus draft PR only if free preview gate and main ref lease remain valid; read back remote tree and hosted results; no merge/deploy until promotion gates",
+  "resume_trigger": "Exact-head CI/security pass, independent review or current-main overlap",
+  "historical_evidence_preserved": true,
+  "original_candidate_branches_untouched": true,
+  "source_code_authority": "owner direct integration request, not historical checkpoint-only"
+}
