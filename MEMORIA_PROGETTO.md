@@ -1410,6 +1410,70 @@ Due sottosistemi che si coprono a vicenda:
 
 ---
 
+## Modulo laterale: Viaggi Low Cost (2026-07-23)
+
+Modulo indipendente dai tarocchi, stessa filosofia zero-dipendenze, stessa app Flask.
+
+- **Motore**: `viaggi/` — `destinazioni.py` (25 mete low cost dall'Italia con
+  budget/giorno, volo A/R stimato, mesi ideali, consigli) + `pianificatore.py`
+  (`pianifica(budget, giorni, mese, tipo)` → proposte ordinate per punteggio,
+  con margine imprevisti del 10%).
+- **API** (in `tarocchi_web.py`): `GET /api/viaggi/destinazioni`,
+  `POST /api/viaggi/pianifica`.
+- **Web**: `public/viaggi.html` su `/viaggi` — stessa estetica oro/scuro del sito.
+- **Stato**: funzionante, testato (motore + endpoint + regressione `/api/mazzo`).
+- Branch di sviluppo: `claude/low-cost-trips-pjvxj6`.
+
+### Flight Hunter v0.1 (2026-07-23) — caccia al minimo con dati LIVE
+
+Evoluzione del modulo viaggi su proposta di Claudio ("Flight Hunter AI"),
+implementata la parte solida del progetto, scartata (con motivazione scritta
+in `flight_hunter/README.md`) quella in zona grigia o infattibile.
+
+- **`flight_hunter/`** — solo stdlib, dati live dall'API pubblica Ryanair
+  (farfnd, la stessa del loro sito; verificata funzionante dal container).
+  - `aeroporti.py` ~120 aeroporti con coordinate, ricerca per raggio.
+  - `fonti.py` interfaccia `Fonte` multi-provider + `FonteRyanair`
+    (cache, rate-limit 0.35s, fallback CA bundle per proxy).
+  - `motore.py` genera diretti + split via hub (self-transfer con orari reali
+    verificati) + posizionamento via terra; potatura PRIMA delle richieste
+    (mappe tariffe → calendari solo sui candidati; ~15-40 richieste a caccia).
+  - `costi.py` costo reale: bagagli, terra, notti forzate, margine rischio.
+  - `memoria.py` SQLite dei minimi + consiglio compra/aspetta (euristica
+    dichiarata su storico osservato).
+  - `monitor.py` giro orario, segnala solo i nuovi minimi, webhook opzionale
+    (`FLIGHT_HUNTER_WEBHOOK`). Va su macchina sempre accesa, non su Vercel.
+- **Escluso per scelta**: scraping comparatori (ToS), hidden city/throwaway
+  (violazione contratto di trasporto, rischio scaricato sull'utente),
+  fuel dump (morto), previsioni meteo/scioperi senza dati (teatro).
+- **Test live**: MXP→TIA sett. 22,43€ diretto; Genova→Riga (no diretto)
+  risolto split via STN ~98€ tutto incluso. Skopje scoperta: serve Wizz
+  (anti-bot) o Kiwi/Amadeus con chiave — prossimo passo naturale.
+- **CLI**: `python3 -m flight_hunter MXP TIA --mese 2026-09`.
+
+### Flight Hunter v0.2 (2026-07-23) — grafo + obiettivo + miniera dati
+
+Estensioni su feedback di ChatGPT (due diligence: 8,8/10 oggi, 9,8 potenziale).
+Tre proposte fattibili SENZA chiavi API, implementate e testate live:
+
+- **`grafo.py`** — la rete come grafo, percorsa con **Dijkstra pigro**: un nodo
+  si espande (1 richiesta) solo quando la frontiera più economica lo raggiunge.
+  `caccia(..., profondo=True)` / `--profondo` costruisce itinerari 2-3 tratte
+  auto-organizzati. Test live: Trapani→Riga → TPS→BGY→RIX 72,54€, e il grafo
+  ha proposto anche TPS→MLA→BGY→RIX. Niente scarico dell'intera rete.
+- **`motore.ovunque()`** — ricerca per OBIETTIVO, non per rotta: "dove posso
+  andare nel mese, entro budget?". `--ovunque --budget 60`. Test live: da MXP
+  15+ mete sotto 60€ in una manciata di richieste.
+- **Miniera dati** (`memoria.osserva` + `curva_anticipo`): ogni tratta salvata
+  con l'anticipo di prenotazione → emerge la curva prezzo/anticipo per rotta
+  (il dato che dice *quando* comprare). Tabella `osservazioni` in SQLite.
+- **Resta il vero limite**: una sola fonte live (Ryanair). Il grafo e
+  l'obiettivo brillano quanto la rete su cui girano — con Kiwi/Amadeus
+  diventano mondiali. L'architettura è già pronta (interfaccia `Fonte`).
+- **CLI nuove**: `--profondo`, `--ovunque --budget N`.
+
+---
+
 ## Prossimo passo concordato
 
 **Sessione 2026-06-22**: motore di collasso implementato e online.

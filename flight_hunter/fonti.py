@@ -303,10 +303,29 @@ class FonteTravelpayouts(Fonte):
         req = urllib.request.Request(
             f"{self._BASE}{path}?{query}",
             headers={"X-Access-Token": self.token, "User-Agent": "flight-hunter/0.2"})
-        with urllib.request.urlopen(req, timeout=20, context=self._ctx) as r:
-            dati = json.load(r)
+        try:
+            with urllib.request.urlopen(req, timeout=20, context=self._ctx) as r:
+                if r.status not in (200, 304):
+                    raise urllib.error.HTTPError(
+                        r.geturl(), r.status, f"HTTP {r.status}: {r.reason}",
+                        r.headers, None)
+                dati = json.load(r)
+        except urllib.error.HTTPError as e:
+            if e.code == 401:
+                raise ValueError("TRAVELPAYOUTS_TOKEN invalido o scaduto (401)") from e
+            elif e.code == 429:
+                raise RuntimeError("Limite di rate Travelpayouts raggiunto (429)") from e
+            elif e.code >= 500:
+                raise RuntimeError(f"Errore server Travelpayouts ({e.code})") from e
+            raise
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Risposta Travelpayouts non JSON: {e}") from e
+        except (urllib.error.URLError, ssl.SSLError, OSError) as e:
+            raise RuntimeError(f"Errore connessione Travelpayouts: {e}") from e
         self._ultima = time.monotonic()
         self.richieste_fatte += 1
+        if not isinstance(dati, dict):
+            raise ValueError(f"Risposta attesa dict, ricevuto {type(dati).__name__}")
         return dati
 
     @staticmethod
@@ -328,19 +347,29 @@ class FonteTravelpayouts(Fonte):
         dati = self._get("/v2/prices/latest", {
             "origin": da, "currency": "eur", "limit": 300, "sorting": "price",
         })
+        if "data" not in dati or not isinstance(dati["data"], list):
+            return []
         migliori: dict[str, Offerta] = {}
         for v in dati.get("data") or []:
             arrivo, prezzo = v.get("destination"), v.get("value")
             dep = v.get("depart_date") or ""
-            if not arrivo or prezzo is None or not (dal <= dep[:10] <= al):
+            if not arrivo or prezzo is None or not dep:
                 continue
-            prezzo = float(prezzo)
+            try:
+                dep_dt = dep[:10]
+                if not (dal <= dep_dt <= al):
+                    continue
+                prezzo = float(prezzo)
+                if prezzo < 0:
+                    continue
+            except (ValueError, TypeError):
+                continue
             attuale = migliori.get(arrivo)
             if attuale is None or prezzo < attuale.prezzo:
                 orario = v.get("departure_at") or dep
                 migliori[arrivo] = Offerta(
                     da=da, a=arrivo, prezzo=prezzo,
-                    giorno=dep[:10], partenza=orario, vettore=self._vettore(v))
+                    giorno=dep_dt, partenza=orario, vettore=self._vettore(v))
         return list(migliori.values())
 
     def calendario(self, da: str, a: str, mese: str) -> list[Volo]:
@@ -348,14 +377,24 @@ class FonteTravelpayouts(Fonte):
             "origin": da, "destination": a, "month": f"{mese}-01",
             "currency": "eur",
         })
+        if "data" not in dati or not isinstance(dati["data"], list):
+            return []
         voli: list[Volo] = []
         for v in dati.get("data") or []:
             prezzo = v.get("value")
             if prezzo is None:
                 continue
             dep = v.get("depart_date") or ""
+            if not dep:
+                continue
+            try:
+                prezzo = float(prezzo)
+                if prezzo < 0:
+                    continue
+            except (ValueError, TypeError):
+                continue
             orario = v.get("departure_at") or dep
             voli.append(Volo(
                 da=da, a=a, giorno=dep[:10], partenza=orario, arrivo="",
-                prezzo=float(prezzo), vettore=self._vettore(v)))
+                prezzo=prezzo, vettore=self._vettore(v)))
         return voli

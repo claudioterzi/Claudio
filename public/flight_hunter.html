@@ -69,6 +69,10 @@ document.getElementById('form-ovunque').addEventListener('submit',async e=>{e.pr
 
 document.getElementById('form-rotta').addEventListener('submit',async e=>{e.preventDefault();const context={from:document.getElementById('r-origine').value,to:document.getElementById('r-dest').value,month:document.getElementById('r-mese').value,baggage:document.getElementById('r-bagaglio').checked,objective:document.getElementById('r-objective').value};const dati=await chiama('/api/flight/migliore',{origine:context.from,destinazione:context.to,mese:context.month,raggio:Number(document.getElementById('r-raggio').value),bagaglio:context.baggage,obiettivo:context.objective},e.submitter);if(!dati)return;enrich(dati,context);titolo.textContent='Raffaello · miglior risultato trovato';if(!dati.best){out.innerHTML=scopeHtml(dati)+'<div class="stato">Nessun itinerario verificabile trovato nel perimetro cercato.</div>';return}const all=[dati.best,...(dati.alternatives||[])];out.innerHTML=scopeHtml(dati)+`<div class="card best"><span class="badge">PERCHÉ QUESTO</span><p>${esc(dati.why_best||'')}</p></div>`+all.map((it,i)=>itineraryHtml(it,i,i===0)).join('')});
 </script>
+
+<!-- Travelpayouts LinkSwitcher -->
+<script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1">(function(){var s=document.createElement("script");s.async=1;s.src='https://tp-em.com/NTU0MDU3.js?t=554057';document.head.appendChild(s)})();</script>
+
 <script src="/nav.js"></script>
 </body>
 </html>
