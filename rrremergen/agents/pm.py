@@ -4,6 +4,7 @@ PM Agent — Validates generated code and runs self-debugging loop.
 """
 
 import json
+import ast
 from typing import Dict, Any
 
 
@@ -31,11 +32,17 @@ class PM:
             'issues': [],
             'warnings': [],
             'score': 100,
+            'verification_mode': 'deterministic_structural',
+            'requirements_review': 'not_executed',
+            'runtime_verified': False,
         }
 
         # Check 1: Code completeness
         completeness_issues = await self._check_completeness(blueprint, code)
-        validation_results['issues'].extend(completeness_issues)
+        for item in completeness_issues:
+            # Name/substring heuristics are advisory, not proof a feature is absent.
+            target = 'issues' if item['severity'] == 'error' else 'warnings'
+            validation_results[target].append(item)
 
         # Check 2: Code quality
         quality_issues = await self._check_quality(code)
@@ -61,7 +68,7 @@ class PM:
 
         # Check frontend completeness
         frontend = code.get('frontend', '')
-        for component in blueprint.ui_components[:3]:  # Check first 3
+        for component in blueprint.ui_components:
             if component.lower() not in frontend.lower():
                 issues.append({
                     'severity': 'warning',
@@ -71,7 +78,7 @@ class PM:
 
         # Check backend completeness
         backend = code.get('backend', '')
-        for route in blueprint.api_routes[:3]:  # Check first 3
+        for route in blueprint.api_routes:
             path = route.get('path', '')
             if path.lower() not in backend.lower():
                 issues.append({
@@ -99,6 +106,15 @@ class PM:
         backend = code.get('backend', '')
 
         # Check for basic structure
+        for name in ('frontend', 'backend', 'database'):
+            source = code.get(name, '')
+            if not isinstance(source, str) or not source.strip() or 'placeholder' in source.lower() or source.startswith('// Error'):
+                issues.append({'severity': 'error', 'type': 'missing_code', 'message': f'Sorgente {name} incompleto'})
+        for name in ('backend', 'database'):
+            try:
+                ast.parse(code.get(name, ''))
+            except (SyntaxError, TypeError):
+                issues.append({'severity': 'error', 'type': 'invalid_syntax', 'message': f'Sintassi Python non valida in {name}'})
         if len(frontend) < 200:
             issues.append({
                 'severity': 'error',
@@ -126,12 +142,14 @@ class PM:
     async def _check_alignment(self, blueprint, original_prompt: str, code: Dict[str, str]) -> list:
         """Check if generated code aligns with original requirements."""
         # In a real implementation, this would use LLM to check alignment
-        # For now, return empty (alignment is implicitly checked by Architect)
+        # Semantic alignment is not verified by these structural checks.
         return []
 
     async def _check_security(self, code: Dict[str, str]) -> list:
         """Check for security issues."""
         warnings = []
+        warnings.append({'severity': 'info', 'type': 'verification_scope',
+                         'message': 'Controlli statici: esecuzione, sintassi JSX e aderenza completa ai requisiti restano da verificare.'})
 
         backend = code.get('backend', '')
         frontend = code.get('frontend', '')

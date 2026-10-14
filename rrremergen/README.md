@@ -1,5 +1,7 @@
 # RRREMERGEN — Web App Auto-Composer (R³∞ Protocol)
 
+> Aggiornamento verificato 14/10/2026: leggere [VERIFICA_2026-10-14.md](VERIFICA_2026-10-14.md) per il flusso locale corretto, i test e i limiti. Le descrizioni di deployment qui sotto sono documentazione storica: il risultato corrente è un archivio di sorgenti, senza pubblicazione automatica.
+
 Sistema autonomo per la composizione e deployment di applicazioni web.
 Replica di Emergent con protocollo Claudio (R³∞) e routing multi-provider LLM.
 

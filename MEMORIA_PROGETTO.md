@@ -1,5 +1,13 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/10/2026 — RRREMERGEN: candidata verificata con Codex e Claude
+
+`PATCH` isolata nella PR #153, ramo `codex/rrremergen-working-pipeline`, da base `7b4335a`. Correzioni: import frontend, proxy locale, firma e opzioni API, errori bloccanti, parsing senza blueprint inventati, gate PM, SSE e ZIP reale con provenienza. Gli avvisi sul nome dei componenti restano euristiche, non prove semantiche. I vecchi URL di deployment erano segnaposto e non sono più restituiti.
+
+Prove: 11 test backend, 4 SSE, 3 controlli del client locale, build Vite; browser → pipeline demo → ZIP. Un esempio elenco attività ha completato cinque chiamate OmniRoute locali al modello `raffaello-r3:3b`, senza cloud, arrivando al ZIP con hash riletto uguale. Sintassi Python/JSX e GET → POST → GET del backend generato sono stati verificati separatamente. La cache non garantisce la stessa latenza per nuove richieste.
+
+Il client locale canonico ha ricevuto l'opzione facoltativa `--stream`, con backup precedente conservato sul Dell; patch nel ramo. Nessun riavvio del gateway, merge in produzione, provisioning o deployment. Claude ha rivisto la candidata e non ha segnalato blocchi critici; le sue proposte restano contributi da verificare. La documentazione originale sottostante è conservata come storico.
+
 > File di continuità. Qualunque sessione di Claude Code (qualunque modello)
 > legge questo per riprendere con piena coerenza. La memoria non vive nel
 > modello — vive qui. Aggiornare a ogni decisione importante.

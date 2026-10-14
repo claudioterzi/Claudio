@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import './RRRemeRgen.css';
+import { compositionEvents } from './stream.js';
 
 export default function RRRemeRgen() {
   const [prompt, setPrompt] = useState('');
@@ -8,6 +9,7 @@ export default function RRRemeRgen() {
   const [compositionStage, setCompositionStage] = useState(null);
   const [generatedApp, setGeneratedApp] = useState(null);
   const [error, setError] = useState(null);
+  const [mode, setMode] = useState('local');
   const stagesRef = useRef(null);
 
   const stages = [
@@ -16,7 +18,7 @@ export default function RRRemeRgen() {
     { id: 'developer', label: 'Developer', desc: 'Generating code...' },
     { id: 'integrator', label: 'Integrator', desc: 'Connecting services...' },
     { id: 'pm', label: 'PM', desc: 'Validating & debugging...' },
-    { id: 'deploy', label: 'Deploy', desc: 'Deploying to Vercel...' },
+    { id: 'export', label: 'Esporta', desc: 'Preparazione dei sorgenti...' },
   ];
 
   const handleCompose = async (e) => {
@@ -37,49 +39,18 @@ export default function RRRemeRgen() {
       const response = await fetch('/api/rrremergen/compose', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt, advanced_options: { mode } }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Composition failed: ${response.statusText}`);
-      }
-
-      // Stream stages as they complete
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop(); // Keep last incomplete line
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-
-              if (data.type === 'stage_progress') {
-                setCompositionStage(data.stage);
-              } else if (data.type === 'completion') {
-                setGeneratedApp({
-                  title: data.app.title,
-                  description: data.app.description,
-                  github_url: data.app.github_url,
-                  vercel_url: data.app.vercel_url,
-                  code_preview: data.app.code_preview,
-                });
-              }
-            } catch (e) {
-              console.error('Failed to parse streaming data:', e);
-            }
-          }
+      for await (const data of compositionEvents(response)) {
+        if (data.type === 'stage_progress') {
+          setCompositionStage(data.stage);
+        } else if (data.type === 'completion') {
+          setGeneratedApp(data.app);
         }
       }
     } catch (err) {
+      setGeneratedApp(null);
       setError(err.message);
     } finally {
       setIsComposing(false);
@@ -113,6 +84,11 @@ export default function RRRemeRgen() {
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             <div className="form-group">
+              <label htmlFor="mode">Modalità:</label>
+              <select id="mode" value={mode} onChange={event => setMode(event.target.value)} disabled={isComposing}>
+                <option value="local">Generazione locale — OmniRoute / Raffaello</option>
+                <option value="demo">Prova pipeline — esempio deterministico</option>
+              </select>
               <label htmlFor="prompt">Describe your application:</label>
               <textarea
                 id="prompt"
@@ -121,6 +97,8 @@ export default function RRRemeRgen() {
                 placeholder="E.g., Create a task management app with real-time collaboration, user authentication, and integration with Slack..."
                 disabled={isComposing}
                 rows={6}
+                minLength={10}
+                maxLength={4000}
               />
             </div>
 
@@ -145,7 +123,7 @@ export default function RRRemeRgen() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="success-badge">✅ App Generated Successfully</div>
+            <div className="success-badge">{generatedApp.simulation ? 'Esempio di prova pronto' : 'Sorgenti generati'}</div>
 
             <div className="app-info">
               <h2>{generatedApp.title}</h2>
@@ -153,13 +131,16 @@ export default function RRRemeRgen() {
             </div>
 
             <div className="deployment-links">
-              <a href={generatedApp.github_url} target="_blank" rel="noopener noreferrer" className="link-button github">
-                📦 View on GitHub
-              </a>
-              <a href={generatedApp.vercel_url} target="_blank" rel="noopener noreferrer" className="link-button vercel">
-                🚀 Open Live App
-              </a>
+              {generatedApp.artifact && <a
+                href={`data:application/zip;base64,${generatedApp.artifact.content_base64}`}
+                download={generatedApp.artifact.filename} className="link-button github">
+                Scarica sorgenti ZIP
+              </a>}
+              <p>Nessuna pubblicazione eseguita. Controlli statici superati; l’app generata resta da eseguire e verificare.</p>
             </div>
+            {generatedApp.validation?.warnings?.length > 0 && <ul>
+              {generatedApp.validation.warnings.map((warning, index) => <li key={index}>{warning.message}</li>)}
+            </ul>}
 
             <div className="code-preview">
               <h3>Code Preview</h3>

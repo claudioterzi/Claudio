@@ -5,6 +5,7 @@ Developer Agent — Generates full-stack code (React + FastAPI + MongoDB).
 
 import json
 from typing import Dict, Any
+from rrremergen.output import json_object, unfence
 
 
 class Developer:
@@ -56,14 +57,20 @@ Generate clean, modern React code with:
 Return only JSX/JavaScript code.
 """
 
+        token_limit = 3000
+        if self.router.mode == 'local':
+            prompt = ('Return only complete compact React JSX, no markdown. Import React hooks. '
+                'Export default component ' + blueprint.ui_components[0] + '. App: ' + blueprint.title + '. '
+                'Requirements: ' + json.dumps(blueprint.requirements) + '. Limit to 35 lines; implement working state and controls.')
+            token_limit = 450
         response = await self.router.complete(
             prompt=prompt,
-            model='gpt-4-turbo',
+            model=self.router.select_model('code_generation'),
             temperature=0.7,
-            max_tokens=3000
+            max_tokens=token_limit
         )
 
-        return response.get('text', '// Frontend code placeholder')
+        return unfence(response['text'])
 
     async def _generate_backend(self, blueprint) -> str:
         """Generate FastAPI backend code."""
@@ -86,14 +93,20 @@ Generate:
 Return only Python code.
 """
 
+        token_limit = 3000
+        if self.router.mode == 'local':
+            prompt = ('Return ONLY complete compact FastAPI Python source, no markdown. Import dependencies; app=FastAPI(). '
+                'Use in-memory data and Pydantic models, include try/except error handling. '
+                'Routes: ' + json.dumps(blueprint.api_routes) + '. Models: ' + json.dumps(blueprint.data_models) + '. Limit to 40 lines.')
+            token_limit = 450
         response = await self.router.complete(
             prompt=prompt,
-            model='gpt-4-turbo',
+            model=self.router.select_model('code_generation'),
             temperature=0.7,
-            max_tokens=3000
+            max_tokens=token_limit
         )
 
-        return response.get('text', '# Backend code placeholder')
+        return unfence(response['text'])
 
     async def _generate_database(self, blueprint) -> str:
         """Generate MongoDB schema/initialization code."""
@@ -109,19 +122,30 @@ Generate:
 3. Initialization script
 4. Relationships between collections
 
-Return only JavaScript/Python for MongoDB.
+Return only Python for MongoDB, without markdown fences.
 """
 
+        token_limit = 1500
+        if self.router.mode == 'local':
+            prompt = ('Return ONLY a Python SCHEMA dictionary with field types for these models: '
+                + json.dumps(blueprint.data_models) + '. No markdown, no prose, maximum 8 lines.')
+            token_limit = 140
         response = await self.router.complete(
             prompt=prompt,
-            model='gpt-4-turbo',
+            model=self.router.select_model('code_generation'),
             temperature=0.7,
-            max_tokens=1500
+            max_tokens=token_limit
         )
 
-        return response.get('text', '// Database schema placeholder')
+        return unfence(response['text'])
 
     async def fix_issues(self, code: Dict[str, str], issues: list) -> Dict[str, str]:
         """Fix issues identified during validation."""
-        # Placeholder - would iterate through code fixing issues
-        return code
+        response = await self.router.complete(
+            prompt='Repair this application. Return one JSON object with frontend, backend, database as complete source strings. '
+                   'Database must be Python. No explanations.\nIssues: ' + json.dumps(issues) + '\nCode: ' + json.dumps(code),
+            model=self.router.select_model('code_generation'), temperature=0.2, max_tokens=1000)
+        fixed = json_object(response['text'])
+        if any(not isinstance(fixed.get(key), str) or not fixed[key].strip() for key in ('frontend', 'backend', 'database')):
+            raise ValueError('Riparazione incompleta')
+        return {key: unfence(fixed[key]) for key in ('frontend', 'backend', 'database')}
