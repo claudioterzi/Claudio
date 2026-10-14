@@ -551,7 +551,7 @@ Tu, temo, dirai soltanto &laquo;e allora?&raquo;.</p>
 <div class=firma>Raffaello
 <small>Naso &middot; Terzi Parfums</small></div>
 </div>
-<p class=piede>Terzi Parfums &middot; l'accesso &egrave; impedito agli impediti.</p>
+<p class=piede>Terzi Parfums &middot; l'accesso &egrave; impedito agli impediti.</p><p><a href="/" style="display:inline-flex;align-items:center;min-height:44px;color:#e0c77e">Torna al sito</a></p>
 </div></body></html>""", 200, {"Content-Type": "text/html; charset=utf-8"})
 
 
@@ -1085,28 +1085,7 @@ BOT_DESCRIZIONE = (
 AGORA_COMANDI = frozenset({"consiglio", "briefing", "snapshot", "tarocchi", "agenda", "riflessione"})
 
 
-def _utente_da_init_data(init_data: str, token: str, max_eta_s: int = 86_400) -> dict | None:
-    """Verifica la firma di Telegram sull'initData della Mini App e restituisce l'utente.
-
-    https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app
-    """
-    if not init_data or not token or len(init_data) > 8192:
-        return None
-    campi = dict(urllib.parse.parse_qsl(init_data, keep_blank_values=True))
-    firma = campi.pop("hash", "")
-    if not firma:
-        return None
-    da_controllare = "\n".join(f"{k}={v}" for k, v in sorted(campi.items()))
-    chiave = hmac.new(b"WebAppData", token.encode(), hashlib.sha256).digest()
-    attesa = hmac.new(chiave, da_controllare.encode(), hashlib.sha256).hexdigest()
-    if not hmac.compare_digest(attesa, firma):
-        return None
-    try:
-        if time.time() - int(campi.get("auth_date", "0")) > max_eta_s:
-            return None
-        return json.loads(campi.get("user", "{}"))
-    except (ValueError, TypeError):
-        return None
+from telegram_owner_auth import utente_da_init_data as _utente_da_init_data
 
 
 @app.route("/api/agora", methods=["POST"])

@@ -44,8 +44,15 @@
 
   var menu = document.createElement('details');menu.className='nav-costellazione';
   var summary=document.createElement('summary');summary.textContent=(privateMode?'La Costellazione privata · ':'La Costellazione · ')+titolo;menu.appendChild(summary);
-  var ingresso=document.createElement('a');ingresso.href=new URL(privateMode?'privato.html':'raffaello.html',base).href;ingresso.textContent=privateMode?'Area privata · tutte le funzioni':'Raffaello · panoramica';menu.appendChild(ingresso);
+  var ingressi=document.createElement('nav');ingressi.setAttribute('aria-label','Percorsi principali');
+  [['accesso?return=%2Fprivato.html&reason=private','Strumenti per Claudio'],['raffaello.html','Opere e creazioni'],['r3-status.html','Stato del sistema']].forEach(function(v){var a=document.createElement('a');a.href=new URL(privateMode&&v[0].indexOf('accesso?')===0?'privato.html':v[0],base).href;a.textContent=v[1];ingressi.appendChild(a)});menu.appendChild(ingressi);
   var nav=document.createElement('nav');nav.className='nav-gruppi';nav.setAttribute('aria-label',privateMode?'Percorsi privati della Costellazione':'Percorsi pubblici della Costellazione');
   gruppi.forEach(function(g){var section=document.createElement('div');section.className='nav-gruppo';var label=document.createElement('strong');label.className='nav-etichetta';label.textContent=g[0];section.appendChild(label);var links=document.createElement('div');links.className='nav-collegamenti';g[1].forEach(function(v){var a=document.createElement('a');a.href=new URL(v[0],base).href;a.textContent=v[1];if(v[0]===qui){a.className='qui';a.setAttribute('aria-current','page')}links.appendChild(a)});section.appendChild(links);nav.appendChild(section)});
-  menu.appendChild(nav);var mobile=matchMedia('(max-width:640px)');menu.open=!mobile.matches;mobile.addEventListener('change',function(e){menu.open=!e.matches});menu.addEventListener('keydown',function(e){if(e.key==='Escape'){menu.open=false;summary.focus()}});function monta(){document.body.insertBefore(menu,document.body.firstChild)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',monta);else monta();
+  menu.appendChild(nav);
+  function markPrivateLinks(){
+    if(privateMode||!globalThis.R3AccessRoutes)return;
+    menu.querySelectorAll('a').forEach(function(a){var u=new URL(a.href);if(!globalThis.R3AccessRoutes.isPrivate(u.pathname))return;var dest=globalThis.R3AccessRoutes.safeReturn(u.pathname+u.search+u.hash);if(!dest)return;a.href=new URL('accesso?return='+encodeURIComponent(dest)+'&reason=private',base).href;a.textContent+=' · area proprietario';a.title='Questo percorso richiede l’accesso proprietario';});
+  }
+  globalThis.addEventListener('r3-access-routes-ready',markPrivateLinks);markPrivateLinks();
+  var mobile=matchMedia('(max-width:640px)');menu.open=!mobile.matches;mobile.addEventListener('change',function(e){menu.open=!e.matches});menu.addEventListener('keydown',function(e){if(e.key==='Escape'){menu.open=false;summary.focus()}});function monta(){document.body.insertBefore(menu,document.body.firstChild)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',monta);else monta();
 })();

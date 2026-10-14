@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>SDQ-1 — Agorà</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="/idea-os-data.js" defer></script>
+  <script src="/agora.js" defer></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,12 +15,13 @@
       --surface:  #111115;
       --card:     #16161c;
       --border:   #252530;
-      --red:      #cc0000;
+      --red:      #ff8989;
+      --red-button: #b30024;
       --red-dim:  #7a1010;
       --red-glow: rgba(204,0,0,0.15);
       --text:     #e8e6e0;
-      --text-dim: #666675;
-      --text-sub: #444455;
+      --text-dim: #b9b9c6;
+      --text-sub: #a2a2b6;
       --green:    #22aa55;
       --yellow:   #cc9900;
       --font:     -apple-system, 'Helvetica Neue', Arial, sans-serif;
@@ -59,7 +62,7 @@
     .sigillo {
       width: 36px;
       height: 36px;
-      background: var(--red);
+      background: var(--red-button);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -72,14 +75,12 @@
     }
 
     .topbar-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
-    .topbar-sub   { font-size: 11px; color: var(--text-dim); }
+    .topbar-sub   { font-size: 13px; color: var(--text-dim); }
 
     .status-dot {
       width: 8px; height: 8px;
       border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 6px var(--green);
-      animation: pulse 2s ease-in-out infinite;
+      background: var(--text-dim);
     }
 
     @keyframes pulse {
@@ -100,7 +101,7 @@
 
     .card-header {
       padding: 12px 16px 8px;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 600;
       letter-spacing: 0.8px;
       text-transform: uppercase;
@@ -124,10 +125,10 @@
       gap: 4px;
     }
 
-    .agent-id   { font-size: 11px; font-weight: 700; color: var(--red); font-family: monospace; }
+    .agent-id   { font-size: 12px; font-weight: 700; color: var(--red); font-family: monospace; }
     .agent-name { font-size: 12px; color: var(--text); }
     .agent-status {
-      font-size: 10px;
+      font-size: 12px;
       display: flex;
       align-items: center;
       gap: 5px;
@@ -136,7 +137,7 @@
 
     .dot-green  { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
     .dot-yellow { width: 6px; height: 6px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; }
-    .dot-red    { width: 6px; height: 6px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+    .dot-red    { width: 6px; height: 6px; border-radius: 50%; background: var(--red-button); flex-shrink: 0; }
 
     /* ── COMANDI RAPIDI */
     .cmd-grid {
@@ -168,7 +169,7 @@
 
     .cmd-icon { font-size: 22px; line-height: 1; }
     .cmd-name { font-size: 13px; font-weight: 600; color: var(--text); }
-    .cmd-desc { font-size: 11px; color: var(--text-dim); line-height: 1.3; }
+    .cmd-desc { font-size: 13px; color: var(--text-dim); line-height: 1.3; }
 
     /* ── CONSIGLIO BTN */
     .consiglio-btn {
@@ -208,7 +209,7 @@
     .log-item:last-child { border-bottom: none; }
 
     .log-time {
-      font-size: 10px;
+      font-size: 12px;
       font-family: monospace;
       color: var(--text-sub);
       flex-shrink: 0;
@@ -216,7 +217,7 @@
       min-width: 42px;
     }
 
-    .log-msg  { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+    .log-msg  { min-width: 0; overflow-wrap: anywhere; font-size: 14px; color: var(--text-dim); line-height: 1.4; }
     .log-msg b { color: var(--text); font-weight: 600; }
 
     /* ── FOOTER */
@@ -227,14 +228,14 @@
     }
 
     .footer-sigillo {
-      font-size: 11px;
+      font-size: 13px;
       color: var(--red);
       font-weight: 700;
       letter-spacing: 2px;
     }
 
     .footer-sub {
-      font-size: 10px;
+      font-size: 12px;
       color: var(--text-sub);
       margin-top: 4px;
     }
@@ -266,7 +267,7 @@
     .consiglio-input::placeholder { color: var(--text-sub); }
 
     .send-btn {
-      background: var(--red);
+      background: var(--red-button);
       border: none;
       border-radius: var(--radius-sm);
       padding: 12px 20px;
@@ -293,7 +294,9 @@
       color: var(--text);
       opacity: 0;
       transition: all 0.3s ease;
-      white-space: nowrap;
+      white-space: normal;
+      width: min(520px, calc(100% - 32px));
+      text-align: center;
       z-index: 200;
       pointer-events: none;
     }
@@ -302,6 +305,14 @@
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
+    .feed-status { padding: 12px 16px; color: var(--text-dim); font-size: 14px; line-height: 1.5; }
+    .refresh-btn { margin: 0 16px 12px; padding: 10px 14px; min-height: 44px; background: var(--surface); color: var(--text); border: 1px solid #737382; border-radius: 8px; cursor: pointer; }
+    .log-msg a { color: #ffb4b4; text-decoration: underline; }
+    .log-msg small { display: block; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+    .log-time { min-width: 100px; white-space: normal; line-height: 1.4; }
+    button:disabled { opacity: .65; cursor: wait; }
+    :focus-visible { outline: 2px solid #ffb4b4; outline-offset: 3px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
   </style>
 </head>
 <body>
@@ -311,62 +322,63 @@
   <div class="topbar-left">
     <div class="sigillo">R</div>
     <div>
-      <div class="topbar-title">Raffaello</div>
+      <h1 class="topbar-title">Raffaello · Agorà</h1>
       <div class="topbar-sub">SDQ-1 — Agorà Digitale</div>
     </div>
   </div>
-  <div class="status-dot" title="Sistema attivo"></div>
+  <div class="status-dot" title="Disponibilità dei servizi non verificata" aria-hidden="true"></div>
 </div>
 
 <div class="content">
 
   <!-- STATO AGENTI -->
   <div class="card">
-    <div class="card-header">Agenti SDQ-1</div>
+    <h2 class="card-header">Ruoli dell’interfaccia SDQ-1</h2>
     <div class="agents-grid">
       <div class="agent-cell">
         <div class="agent-id">RAFFA-001</div>
         <div class="agent-name">Raffaello</div>
-        <div class="agent-status"><div class="dot-green"></div>Attivo</div>
+        <div class="agent-status">Disponibilità non verificata</div>
       </div>
       <div class="agent-cell">
         <div class="agent-id">MEMO-002</div>
         <div class="agent-name">Memoria</div>
-        <div class="agent-status"><div class="dot-green"></div>Attivo</div>
+        <div class="agent-status">Disponibilità non verificata</div>
       </div>
       <div class="agent-cell">
         <div class="agent-id">DECOMP-005</div>
         <div class="agent-name">Decomposer</div>
-        <div class="agent-status"><div class="dot-green"></div>Attivo</div>
+        <div class="agent-status">Disponibilità non verificata</div>
       </div>
       <div class="agent-cell">
         <div class="agent-id">SENTIN-004</div>
         <div class="agent-name">Sentinella</div>
-        <div class="agent-status"><div class="dot-green"></div>Attivo</div>
+        <div class="agent-status">Disponibilità non verificata</div>
       </div>
       <div class="agent-cell">
         <div class="agent-id">GEN-006</div>
         <div class="agent-name">Generatore</div>
-        <div class="agent-status"><div class="dot-green"></div>Attivo</div>
+        <div class="agent-status">Disponibilità non verificata</div>
       </div>
       <div class="agent-cell">
         <div class="agent-id">WAVE-003</div>
         <div class="agent-name">Forma Onda</div>
-        <div class="agent-status"><div class="dot-yellow"></div>Standby</div>
+        <div class="agent-status">Disponibilità non verificata</div>
       </div>
     </div>
   </div>
 
   <!-- CONSIGLIO -->
-  <button class="consiglio-btn" id="btnConsiglio" onclick="toggleConsiglio()">
+  <button class="consiglio-btn" id="btnConsiglio" type="button" aria-expanded="false" aria-controls="consilioWrap" onclick="toggleConsiglio()">
     <div class="consiglio-icon">⚖️</div>
     <div class="consiglio-text">
       <div class="consiglio-title">Convoca il Consiglio</div>
-      <div class="consiglio-sub">5 agenti deliberano — tu decidi</div>
+      <div class="consiglio-sub">Invia una questione al Consiglio in Telegram</div>
     </div>
   </button>
 
   <div class="consiglio-input-wrap" id="consilioWrap">
+    <label for="consilioInput">La questione per il Consiglio</label>
     <input
       class="consiglio-input"
       id="consilioInput"
@@ -374,39 +386,40 @@
       placeholder="La questione su cui deliberare…"
       maxlength="300"
     >
-    <button class="send-btn" onclick="inviaConsiglio()">Delibera</button>
+    <button class="send-btn" id="consiglio-send" type="button" onclick="inviaConsiglio()">Delibera</button>
   </div>
 
+  <p id="command-status" class="feed-status" role="status" aria-live="polite"></p>
   <!-- COMANDI RAPIDI -->
   <div class="card">
-    <div class="card-header">Comandi rapidi</div>
+    <h2 class="card-header">Comandi rapidi</h2>
     <div class="cmd-grid">
-      <button class="cmd-btn" onclick="sendCmd('/briefing')">
+      <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/briefing')">
         <div class="cmd-icon">📡</div>
         <div class="cmd-name">Briefing</div>
         <div class="cmd-desc">Analisi 4-AI del momento</div>
       </button>
-      <button class="cmd-btn" onclick="sendCmd('/snapshot')">
+      <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/snapshot')">
         <div class="cmd-icon">📸</div>
         <div class="cmd-name">Snapshot</div>
         <div class="cmd-desc">Stato sistema attuale</div>
       </button>
-      <button class="cmd-btn" onclick="sendCmd('/tarocchi')">
+      <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/tarocchi')">
         <div class="cmd-icon">🃏</div>
         <div class="cmd-name">Tarocchi</div>
         <div class="cmd-desc">Lettura quantica R³∞</div>
       </button>
-      <button class="cmd-btn" onclick="sendCmd('/agenda')">
+      <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/agenda')">
         <div class="cmd-icon">📋</div>
         <div class="cmd-name">Agenda</div>
         <div class="cmd-desc">Priorità e prossimi passi</div>
       </button>
-      <button class="cmd-btn" onclick="sendCmd('/agenda asbl')">
+      <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/agenda asbl')">
         <div class="cmd-icon">🏛️</div>
         <div class="cmd-name">ASBL P1</div>
         <div class="cmd-desc">SkyRights Foundation</div>
       </button>
-      <button class="cmd-btn" onclick="sendCmd('/riflessione')">
+      <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/riflessione')">
         <div class="cmd-icon">🌊</div>
         <div class="cmd-name">Riflessione</div>
         <div class="cmd-desc">Pensiero del sistema</div>
@@ -415,27 +428,17 @@
   </div>
 
   <!-- LOG ATTIVITÀ -->
-  <div class="card">
-    <div class="card-header">Attività recente</div>
-    <div class="log-list" id="logList">
-      <div class="log-item">
-        <div class="log-time" id="t1">--:--</div>
-        <div class="log-msg"><b>Sistema</b> online · Agorà attiva</div>
-      </div>
-      <div class="log-item">
-        <div class="log-time">oggi</div>
-        <div class="log-msg"><b>PDF</b> "Tutta la Verità" generato e su Drive</div>
-      </div>
-      <div class="log-item">
-        <div class="log-time">oggi</div>
-        <div class="log-msg"><b>Consiglio</b> istituito · voto presidenziale attivo</div>
-      </div>
-      <div class="log-item">
-        <div class="log-time">oggi</div>
-        <div class="log-msg"><b>Mistral</b> integrato nel briefing 4-AI</div>
-      </div>
-    </div>
-  </div>
+  <section class="card" aria-labelledby="activity-title">
+    <h2 class="card-header" id="activity-title">Attività documentata</h2>
+    <p id="activity-status" class="feed-status" role="status" aria-live="polite">Caricamento dello snapshot…</p>
+    <button id="activity-refresh" class="refresh-btn" type="button">Aggiorna i dati</button>
+    <div class="log-list" id="logList"></div>
+  </section>
+  <section class="card" aria-labelledby="projects-title">
+    <h2 class="card-header" id="projects-title">Progetti del portafoglio</h2>
+    <p id="project-status" class="feed-status" role="status">Caricamento della proiezione IDEA OS…</p>
+    <div class="log-list" id="project-list"></div>
+  </section>
 
   <!-- FOOTER -->
   <div class="footer">
@@ -446,85 +449,9 @@
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" aria-hidden="true"></div>
 
-<script>
-  // Telegram Web App init
-  const tg = window.Telegram?.WebApp;
-  if (tg) {
-    tg.expand();
-    tg.setHeaderColor('#111115');
-    tg.setBackgroundColor('#0a0a0c');
-  }
 
-  // Timestamp corrente
-  const now = new Date();
-  const hhmm = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-  document.getElementById('t1').textContent = hhmm;
-
-  // Mostra toast
-  function showToast(msg) {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 2200);
-  }
-
-  // Invia il comando al server con la firma di Telegram (initData): funziona anche
-  // aperta dal pulsante menu, dove tg.sendData non è disponibile.
-  async function sendCmd(cmd) {
-    if (tg && tg.initData) {
-      showToast('Invio: ' + cmd);
-      try {
-        const r = await fetch('/api/agora', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'same-origin',
-          body: JSON.stringify({ comando: cmd, initData: tg.initData })
-        });
-        const d = await r.json().catch(() => ({}));
-        showToast(r.ok ? 'Fatto: la risposta arriva in chat' : 'Non arrivato: ' + (d.errore || ('errore ' + r.status)));
-      } catch (e) {
-        showToast('Non arrivato: rete o server non raggiungibili');
-      }
-    } else {
-      // Dev mode: copia negli appunti
-      navigator.clipboard?.writeText(cmd).catch(() => {});
-      showToast('Dev: ' + cmd);
-    }
-  }
-
-  // Toggle input consiglio
-  function toggleConsiglio() {
-    const wrap = document.getElementById('consilioWrap');
-    const visible = wrap.classList.contains('visible');
-    if (visible) {
-      wrap.classList.remove('visible');
-    } else {
-      wrap.classList.add('visible');
-      setTimeout(() => document.getElementById('consilioInput').focus(), 100);
-    }
-  }
-
-  // Invia questione al consiglio
-  function inviaConsiglio() {
-    const q = document.getElementById('consilioInput').value.trim();
-    if (!q) { showToast('Scrivi la questione'); return; }
-    sendCmd('/consiglio ' + q);
-    document.getElementById('consilioInput').value = '';
-    document.getElementById('consilioWrap').classList.remove('visible');
-  }
-
-  // Enter su input consiglio
-  document.getElementById('consilioInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') inviaConsiglio();
-  });
-
-  // Back button Telegram
-  if (tg && tg.BackButton) {
-    tg.BackButton.onClick(() => tg.close());
-  }
-</script>
 <script src="nav.js"></script>
 </body>
 </html>

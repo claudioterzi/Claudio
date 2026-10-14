@@ -102,7 +102,8 @@
     <button type="submit" class="primario">Consulta l'Oracolo</button>
   </form>
 
-  <div id="out"></div>
+  <button id="search-cancel" type="button" class="primario" hidden>Annulla attesa</button>
+   <div id="out" aria-live="polite"></div>
 
   <p class="nota">
     Prezzi live dalle fonti attive (oggi Ryanair; altre si aggiungono con una
@@ -111,34 +112,22 @@
   </p>
 </div>
 
+<script src="/alpha-request.js"></script>
 <script>
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-document.getElementById('form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const btn = e.submitter;
-  const out = document.getElementById('out');
-  btn.disabled = true;
-  out.innerHTML = '<div class="stato">L\'Oracolo interroga il cielo dei prossimi giorni…</div>';
-  const budget = Number(document.getElementById('budget').value) || null;
-  try {
-    const res = await fetch('/api/flight/oracolo', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        origine: document.getElementById('origine').value,
-        giorni_avanti: Number(document.getElementById('giorni').value),
-        budget: budget,
-      }),
-    });
-    const d = await res.json();
-    if (!res.ok) throw new Error(d.errore || ('HTTP ' + res.status));
-    mostra(d);
-  } catch (err) {
-    out.innerHTML = `<div class="stato">L'Oracolo si è interrotto: ${esc(err.message)}</div>`;
-  } finally {
-    btn.disabled = false;
-  }
+let searchVersion=0;
+const cancelSearch=document.getElementById('search-cancel');
+cancelSearch.addEventListener('click',()=>AlphaRequest.cancel('oracolo-search'));
+document.getElementById('form').addEventListener('submit',async e=>{
+ e.preventDefault();const version=++searchVersion,button=e.submitter||e.target.querySelector('[type=submit]'),out=document.getElementById('out');
+ button.disabled=true;cancelSearch.hidden=false;out.innerHTML='<div class="stato">L’Oracolo interroga il cielo dei prossimi giorni…</div>';
+ try{
+  const d=await AlphaRequest.json('/api/flight/oracolo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({origine:document.getElementById('origine').value,giorni_avanti:Number(document.getElementById('giorni').value),budget:Number(document.getElementById('budget').value)||null})},{key:'oracolo-search',timeoutMs:45000});
+  if(version===searchVersion)mostra(d);
+ }catch(error){if(version===searchVersion&&!AlphaRequest.isSuperseded(error))out.innerHTML=`<div class="stato">${esc(error.message)}</div>`}
+ finally{if(version===searchVersion){button.disabled=false;cancelSearch.hidden=true}}
 });
 
 /* Travelpayouts LinkSwitcher: riscrive link di prenotazione come affiliati */

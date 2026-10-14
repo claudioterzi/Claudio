@@ -19,6 +19,8 @@
   const workNodes=allNodes.filter(n=>n.kind==='work');
   const categories=[...new Set(workNodes.map(n=>n.category))];
 
+  function refreshDataControls(){const chosen=categoryEl.value;
+    categoryEl.replaceChildren();const allOption=document.createElement('option');allOption.value='';allOption.textContent='Tutte';categoryEl.appendChild(allOption);legendEl.replaceChildren();
   document.getElementById('metric-works').textContent=workNodes.length;
   document.getElementById('metric-categories').textContent=categories.length;
   document.getElementById('metric-links').textContent=allLinks.length;
@@ -26,6 +28,10 @@
   categories.forEach(cat=>{const o=document.createElement('option');o.value=cat;o.textContent=cat;categoryEl.appendChild(o)});
   const colorByCategory={};workNodes.forEach(n=>colorByCategory[n.category]=n.color);
   categories.forEach(cat=>{const item=document.createElement('button');item.type='button';item.className='legend-item';item.innerHTML='<span class="legend-dot" style="color:'+colorByCategory[cat]+';background:'+colorByCategory[cat]+'"></span><span>'+escapeHtml(cat)+'</span>';item.addEventListener('click',()=>{categoryEl.value=categoryEl.value===cat?'':cat;applyFilter()});legendEl.appendChild(item)});
+
+    if(categories.includes(chosen))categoryEl.value=chosen;
+  }
+  refreshDataControls();
 
   let selectedId=null,graph=null;
   function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -47,7 +53,7 @@
 
   function renderCatalog(ids){
     catalogGroupsEl.innerHTML='';const visibleWorks=workNodes.filter(n=>ids.has(n.id));catalogCountEl.textContent=visibleWorks.length+' titoli visibili';
-    categories.forEach(cat=>{const rows=visibleWorks.filter(n=>n.category===cat).sort((a,b)=>a.year-b.year||b.importance-a.importance||a.title.localeCompare(b.title,'it'));if(!rows.length)return;const sec=document.createElement('section');sec.className='catalog-group';const h=document.createElement('h3');h.textContent=cat+' · '+rows.length;sec.appendChild(h);const grid=document.createElement('div');grid.className='title-grid';rows.forEach(n=>{const a=document.createElement('a');a.className='title-link';a.style.setProperty('--node-color',n.color);a.href=n.url;a.target='_blank';a.rel='noopener';a.textContent=n.title;a.title=(n.date?n.date+' · ':'')+'Apri lo scritto';a.addEventListener('mouseenter',()=>focusNode(n,false));grid.appendChild(a)});sec.appendChild(grid);catalogGroupsEl.appendChild(sec)})
+    categories.forEach(cat=>{const rows=visibleWorks.filter(n=>n.category===cat).sort((a,b)=>a.year-b.year||b.importance-a.importance||a.title.localeCompare(b.title,'it'));if(!rows.length)return;const sec=document.createElement('section');sec.className='catalog-group';const h=document.createElement('h3');h.textContent=cat+' · '+rows.length;sec.appendChild(h);const grid=document.createElement('div');grid.className='title-grid';rows.forEach(n=>{const a=document.createElement('a');a.className='title-link';a.style.setProperty('--node-color',n.color);a.href=n.url;a.target='_blank';a.rel='noopener';a.textContent=n.title;a.title=(n.date?n.date+' · ':'')+'Apri lo scritto';a.addEventListener('mouseenter',()=>focusNode(n,false));a.addEventListener('focus',()=>focusNode(n,false));const entry=document.createElement('div');entry.className='catalog-entry';const explore=document.createElement('button');explore.type='button';explore.className='explore-node';explore.textContent='Esplora nodo';explore.setAttribute('aria-label','Esplora '+n.title);explore.addEventListener('click',()=>{focusNode(n,true);detailEl.setAttribute('tabindex','-1');detailEl.focus()});entry.append(a,explore);grid.appendChild(entry)});sec.appendChild(grid);catalogGroupsEl.appendChild(sec)})
   }
 
   function relatedNodes(node){const rows=[];allLinks.forEach(l=>{const[s,t]=linkEnds(l),meta={type:l.type,evidence:linkEvidence(l),sourceSystem:l.sourceSystem||'',sourceFile:l.sourceFile||l.source_file||'',confidenceScore:l.confidenceScore??l.confidence_score};if(s===node.id&&nodeById.has(t))rows.push(Object.assign({node:nodeById.get(t)},meta));else if(t===node.id&&nodeById.has(s))rows.push(Object.assign({node:nodeById.get(s)},meta))});return rows.filter(r=>r.node.id!=='corpus-claudio-terzi').sort((a,b)=>b.node.importance-a.node.importance)}
@@ -64,7 +70,7 @@
 
   function focusNode(node,moveCamera=true){
     selectedId=node.id;renderDetail(node);location.hash=node.id;
-    if(graph){graph.nodeVal(n=>n.id===selectedId?(n.kind==='hub'?14:9):(n.kind==='category'?7:n.kind==='hub'?11:2.5+n.importance*.42)).nodeOpacity(n=>n.id===selectedId?1:.9).linkWidth(l=>{const[s,t]=linkEnds(l);return(s===selectedId||t===selectedId)?2.6:(l.type==='threshold'?1.35:.35)}).linkOpacity(.58).linkColor(l=>{const[s,t]=linkEnds(l);if(s===selectedId||t===selectedId)return'#f0d98e';if(l.type==='threshold')return'#e7a76f';return'#536073'});if(moveCamera){const distance=115,len=Math.hypot(node.fx||1,node.fy||1,node.fz||1)||1,ratio=1+distance/len;graph.cameraPosition({x:(node.fx||0)*ratio,y:(node.fy||0)*ratio,z:(node.fz||0)*ratio},{x:node.fx||0,y:node.fy||0,z:node.fz||0},900)}}
+    if(graph){graph.nodeVal(n=>n.id===selectedId?(n.kind==='hub'?14:9):(n.kind==='category'?7:n.kind==='hub'?11:2.5+n.importance*.42)).nodeOpacity(n=>n.id===selectedId?1:.9).linkWidth(l=>{const[s,t]=linkEnds(l);return(s===selectedId||t===selectedId)?2.6:(l.type==='threshold'?1.35:.35)}).linkOpacity(.58).linkColor(l=>{const[s,t]=linkEnds(l);if(s===selectedId||t===selectedId)return'#f0d98e';if(l.type==='threshold')return'#e7a76f';return'#536073'});if(moveCamera){const distance=115,len=Math.hypot(node.fx||1,node.fy||1,node.fz||1)||1,ratio=1+distance/len;graph.cameraPosition({x:(node.fx||0)*ratio,y:(node.fy||0)*ratio,z:(node.fz||0)*ratio},{x:node.fx||0,y:node.fy||0,z:node.fz||0},matchMedia('(prefers-reduced-motion: reduce)').matches?0:900)}}
   }
 
   function makeNodeObject(node){const group=new THREE.Group(),radius=node.kind==='hub'?7.6:node.kind==='category'?5.2:2.4+node.importance*.22,geometry=new THREE.SphereGeometry(radius,node.kind==='work'?14:22,node.kind==='work'?10:16),material=new THREE.MeshPhongMaterial({color:node.color,emissive:node.color,emissiveIntensity:node.kind==='work'?.28:.48,shininess:80,transparent:true,opacity:node.kind==='work'?.91:.97});group.add(new THREE.Mesh(geometry,material));if(node.kind!=='work'||node.importance>=9){const ringGeo=new THREE.RingGeometry(radius*1.45,radius*1.55,48),ringMat=new THREE.MeshBasicMaterial({color:node.color,transparent:true,opacity:.32,side:THREE.DoubleSide}),ring=new THREE.Mesh(ringGeo,ringMat);ring.rotation.x=Math.PI/2;group.add(ring)}return group}
@@ -74,14 +80,43 @@
   function initGraph(){
     if(!window.ForceGraph3D||!window.THREE){warningEl.hidden=false;renderCatalog(visibleSet());return}
     try{
-      graph=ForceGraph3D({controlType:'orbit',rendererConfig:{antialias:true,alpha:true}})(graphEl).graphData({nodes:allNodes,links:allLinks}).backgroundColor('rgba(0,0,0,0)').showNavInfo(false).nodeThreeObject(makeNodeObject).nodeLabel(n=>`<div style="max-width:260px;padding:5px 7px"><b>${escapeHtml(n.title)}</b><br><span style="opacity:.75">${escapeHtml(n.category)} · ${escapeHtml(n.date||n.year)}</span></div>`).nodeVal(n=>n.kind==='hub'?11:n.kind==='category'?7:2.5+n.importance*.42).nodeColor(n=>n.color).linkColor(l=>l.type==='threshold'?'#e7a76f':l.type==='genealogy'?'#d7b65b':l.type==='version'?'#b88fd2':'#536073').linkOpacity(.38).linkWidth(l=>l.type==='threshold'?1.35:l.type==='genealogy'?1.25:.35).linkDirectionalParticles(l=>['genealogy','derives','source','threshold'].includes(l.type)?2:0).linkDirectionalParticleWidth(1.6).linkDirectionalParticleSpeed(.004).onNodeClick(n=>focusNode(n,true)).onNodeHover(n=>{graphEl.style.cursor=n?'pointer':'grab'}).cooldownTicks(0).warmupTicks(0);
+      graph=ForceGraph3D({controlType:'orbit',rendererConfig:{antialias:true,alpha:true}})(graphEl).graphData({nodes:allNodes,links:allLinks}).backgroundColor('rgba(0,0,0,0)').showNavInfo(false).nodeThreeObject(makeNodeObject).nodeLabel(n=>`<div style="max-width:260px;padding:5px 7px"><b>${escapeHtml(n.title)}</b><br><span style="opacity:.75">${escapeHtml(n.category)} · ${escapeHtml(n.date||n.year)}</span></div>`).nodeVal(n=>n.kind==='hub'?11:n.kind==='category'?7:2.5+n.importance*.42).nodeColor(n=>n.color).linkColor(l=>l.type==='threshold'?'#e7a76f':l.type==='genealogy'?'#d7b65b':l.type==='version'?'#b88fd2':'#536073').linkOpacity(.38).linkWidth(l=>l.type==='threshold'?1.35:l.type==='genealogy'?1.25:.35).linkDirectionalParticles(l=>!matchMedia('(prefers-reduced-motion: reduce)').matches&&['genealogy','derives','source','threshold'].includes(l.type)?2:0).linkDirectionalParticleWidth(1.6).linkDirectionalParticleSpeed(.004).onNodeClick(n=>focusNode(n,true)).onNodeHover(n=>{graphEl.style.cursor=n?'pointer':'grab'}).cooldownTicks(0).warmupTicks(0);
       allNodes.forEach(n=>{n.x=n.fx;n.y=n.fy;n.z=n.fz});
       const resize=()=>{const r=graphEl.getBoundingClientRect();graph.width(r.width).height(r.height||650)};resize();window.addEventListener('resize',resize,{passive:true});addCubeAndStars();graph.cameraPosition({x:430,y:275,z:430},{x:0,y:15,z:0},0);const controls=graph.controls();if(controls){controls.enableDamping=true;controls.dampingFactor=.08;controls.minDistance=70;controls.maxDistance=900}applyFilter()
     }catch(err){console.error('Cubo Quantico:',err);warningEl.hidden=false;renderCatalog(visibleSet())}
   }
 
-  [searchEl,categoryEl,yearEl].forEach(el=>el.addEventListener(el===searchEl?'input':'change',applyFilter));connectionsEl.addEventListener('change',applyFilter);resetEl.addEventListener('click',()=>{selectedId=null;searchEl.value='';categoryEl.value='';yearEl.value='';connectionsEl.checked=true;history.replaceState(null,'',location.pathname);applyFilter();if(graph)graph.cameraPosition({x:430,y:275,z:430},{x:0,y:15,z:0},900);detailEl.innerHTML=`<p class="detail-kicker">Vista generale</p><h2>Cubo Quantico delle Opere</h2><p>Ogni punto è un titolo. X attraversa il tempo, Y misura la centralità dell’opera, Z la sua densità di relazioni. Le linee mostrano famiglie, genealogie, versioni, echi e soglie fondative.</p><div class="metrics"><div><strong>${workNodes.length}</strong><span>titoli</span></div><div><strong>${categories.length}</strong><span>costellazioni</span></div><div><strong>${allLinks.length}</strong><span>relazioni</span></div></div>`});
+  [searchEl,categoryEl,yearEl].forEach(el=>el.addEventListener(el===searchEl?'input':'change',applyFilter));connectionsEl.addEventListener('change',applyFilter);resetEl.addEventListener('click',()=>{selectedId=null;searchEl.value='';categoryEl.value='';yearEl.value='';connectionsEl.checked=true;history.replaceState(null,'',location.pathname);applyFilter();if(graph)graph.cameraPosition({x:430,y:275,z:430},{x:0,y:15,z:0},matchMedia('(prefers-reduced-motion: reduce)').matches?0:900);detailEl.innerHTML=`<p class="detail-kicker">Vista generale</p><h2>Cubo Quantico delle Opere</h2><p>Ogni punto è un titolo. X attraversa il tempo, Y misura la centralità dell’opera, Z la sua densità di relazioni. Le linee mostrano famiglie, genealogie, versioni, echi e soglie fondative.</p><div class="metrics"><div><strong>${workNodes.length}</strong><span>titoli</span></div><div><strong>${categories.length}</strong><span>costellazioni</span></div><div><strong>${allLinks.length}</strong><span>relazioni</span></div></div>`});
 
-  const initialHash=decodeURIComponent(location.hash.replace(/^#/,''));if(initialHash&&nodeById.has(initialHash))setTimeout(()=>focusNode(nodeById.get(initialHash),true),700);
-  renderCatalog(visibleSet());initGraph();
+  let initialHash='';try{initialHash=decodeURIComponent(location.hash.replace(/^#/,''))}catch(_){}if(initialHash&&nodeById.has(initialHash))setTimeout(()=>focusNode(nodeById.get(initialHash),true),700);
+  const loadButton=document.getElementById('load-graph');
+  const loadStatus=document.getElementById('graph-load-status');
+  const scriptLoads=new Map();
+  function loadScript(src,ready){
+    if(ready())return Promise.resolve();
+    if(scriptLoads.has(src))return scriptLoads.get(src);
+    const task=new Promise((resolve,reject)=>{
+      const script=document.createElement('script');let settled=false;
+      const finish=(error)=>{if(settled)return;settled=true;clearTimeout(timer);script.onload=null;script.onerror=null;if(error){script.remove();reject(error)}else resolve()};
+      const timer=setTimeout(()=>finish(new Error('Caricamento scaduto: puoi riprovare.')),20000);
+      script.src=src;script.onload=()=>finish(ready()?null:new Error('La mappa non è disponibile.'));script.onerror=()=>finish(new Error('Risorsa non disponibile: il catalogo resta consultabile.'));document.head.appendChild(script);
+    }).catch(error=>{scriptLoads.delete(src);throw error});scriptLoads.set(src,task);return task;
+  }
+  loadButton.addEventListener('click',async()=>{
+    if(graph)return;loadButton.disabled=true;loadStatus.textContent='Carico la mappa e le relazioni…';
+    try{
+      await loadScript('/cubo-graphify-data.js',()=>Boolean(window.CUBO_GRAPHIFY_DATA));
+      window.CuboGraphLayer.apply();nodeById.clear();allNodes.forEach(n=>nodeById.set(n.id,n));
+      workNodes.splice(0,workNodes.length,...allNodes.filter(n=>n.kind==='work'));
+      categories.splice(0,categories.length,...new Set(workNodes.map(n=>n.category)));
+      refreshDataControls();applyFilter();
+      await loadScript('https://unpkg.com/three@0.160.0/build/three.min.js',()=>Boolean(window.THREE));
+      await loadScript('https://unpkg.com/3d-force-graph@1.73.3/dist/3d-force-graph.min.js',()=>Boolean(window.ForceGraph3D));
+      initGraph();if(!graph)throw new Error('Questo dispositivo non mostra il3D. Usa il catalogo per esplorare tutte le opere.');
+      document.getElementById('graph-start').hidden=true;warningEl.hidden=true;
+      if(selectedId&&nodeById.has(selectedId))focusNode(nodeById.get(selectedId),true);
+    }catch(error){loadStatus.textContent=error.message;}
+    finally{loadButton.disabled=false;}
+  });
+  renderCatalog(visibleSet());
 })();
