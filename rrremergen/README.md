@@ -72,16 +72,41 @@ Replica di Emergent con protocollo Claudio (R³∞) e routing multi-provider LLM
 
 ## Status
 
-- ⏳ Frontend component (RRRemeRgen.jsx)
-- ⏳ Backend API orchestration
-- ⏳ Agent implementations
-- ⏳ LLM Router integration
-- ⏳ Safety Gate integration
+- ✅ Frontend component (RRRemeRgen.jsx) — Complete with Framer Motion animations
+- ✅ Backend API orchestration (FastAPI server with streaming)
+- ✅ Agent implementations (all 5 agents: Architect, Designer, Developer, Integrator, PM)
+- ✅ LLM Router integration (multi-provider support)
+- ✅ Frontend integration into La Soglia (hash routing #rrremergen)
+- ✅ Nav link styling (gradient + glow effect)
+- ⏳ Real LLM API connections (placeholders in place)
+- ⏳ GitHub app generation + auto-push
+- ⏳ Vercel deployment automation
+- ⏳ Safety Gate approval workflow
 
 ## Prossimi Step
 
-1. Implementare RRRemeRgen.jsx frontend
-2. Creare API endpoint `/api/rrremergen`
-3. Implementare gli agenti specializzati
-4. Integrare LLM Router
-5. Testare pipeline end-to-end
+1. **Connect Real LLM APIs** — Replace placeholder implementations with actual API calls
+2. **GitHub Integration** — Implement repository creation and code push
+3. **Vercel Deployment** — Automate Vercel deployment with generated app
+4. **Safety Gate** — Add human approval workflow before deployment
+5. **Testing & Refinement** — End-to-end testing and UX optimization
+
+## Quickstart
+
+See `SETUP.md` for detailed setup and deployment instructions.
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env  # Add your API keys
+
+# Start backend
+python api/main.py
+
+# In another terminal, start frontend
+cd studio/web && npm run dev
+
+# Navigate to http://localhost:5173/#rrremergen
+```
