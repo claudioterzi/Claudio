@@ -19,6 +19,40 @@ on:
   workflow_dispatch:
 
 jobs:
+  ergonomia:
+    name: Ergonomia, accessi e integrita dei contenuti
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Dipendenze dei controlli locali
+        run: |
+          python -m pip install flask PyYAML pytest Pillow beautifulsoup4 httpx
+          npm ci --prefix tests --ignore-scripts
+      - name: Navigazione, dati, annullamento, cataloghi e documenti
+        run: |
+          node --test tests/test_core_ergonomia.cjs
+          node tests/test_status_freshness.cjs
+          node tests/test_alpha_travel_ergonomics.cjs
+          node tests/test_profumi_ergonomia.cjs
+          node tests/test_multimedia_ergonomics.cjs
+          node tests/test_alpha74_frontend.cjs
+          node tests/test_perfume_bottle.cjs
+          node tests/test_perfume_lab.cjs
+      - name: Accesso ai provider e archivio
+        run: |
+          python -m pytest tests/test_agora.py tests/test_alpha_guest_safety.py tests/test_guest_voice_ergonomia.py tests/test_provider_owner_authorization.py tests/test_perfume_restore.py tests/test_perfume_studio.py tests/test_reader_generators.py -q
+      - name: Identita delle 400 formule e immagini
+        run: python scripts/verifica_flaconi_400.py --report /tmp/formule-ergonomia.json
+
   test:
     runs-on: ubuntu-latest
     steps:

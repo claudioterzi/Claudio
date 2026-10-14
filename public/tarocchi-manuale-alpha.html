@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0b0b0e">
   <title>Raffaello · Canone Alpha 74</title>
@@ -16,7 +17,8 @@
     h1,h2,h3{font-weight:400;color:#d0b15b}
     h1{font-size:clamp(2rem,7vw,3.4rem);line-height:1.05;margin:.45rem 0 1rem}
     h2{font-size:clamp(1.35rem,4vw,1.8rem);margin:.3rem 0 .75rem}
-    h3{margin:1.35rem 0 .45rem}
+    .reading-heading{font-size:1.17em;margin:1.35rem 0 .45rem}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
     .lead,.muted{color:#a49c8f;line-height:1.65;text-wrap:pretty}
     .panel{background:#141419;border:1px solid #2d2b31;border-radius:14px;padding:clamp(.85rem,2.5vw,1.25rem);margin:1rem 0}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
@@ -107,6 +109,7 @@
     <header>
       <div class="tag" data-i18n="kicker">Raffaello · Canone Alpha</div>
       <h1 data-i18n="title">Estrazione manuale · 74 carte</h1>
+      <p class="muted">La lettura canonica funziona senza AI. I servizi AI e voce remota sono disponibili al proprietario nell’app Telegram autenticata; nel browser l’ascolto usa la voce del dispositivo.</p>
       <p class="lead"><span data-i18n="lead">Un solo mazzo. Tu scegli soltanto i dorsi; Raffaello assegna posizione, asse e polarità.</span> <strong data-i18n="lightShadow">Luce e Ombra hanno probabilità 50/50.</strong></p>
     </header>
 
@@ -136,6 +139,7 @@
     <section class="panel" aria-labelledby="deck-title">
       <div id="deck-title" class="tag" data-i18n="deckTitle">Mazzo coperto</div>
       <p id="guide" class="muted" role="status" aria-live="polite" data-i18n="guideFirst">Scegli la prima carta.</p>
+      <div class="follow-actions"><button id="spread-reset" class="listen" type="button" data-i18n="resetSpread">Nuova stesa</button><button id="spread-undo" class="listen" type="button" data-i18n="undoCard" disabled>Annulla ultima carta</button></div>
       <div id="deck" class="deck" aria-label="74 carte coperte"></div>
     </section>
 
@@ -143,6 +147,8 @@
       <div id="spread-title" class="tag" data-i18n="spreadTitle">La tua stesa</div>
       <div id="spread"></div>
       <button id="read" class="primary" type="button" disabled data-i18n="analyzeSpread">Analizza la stesa</button>
+      <button id="read-cancel" class="listen" type="button" data-i18n="cancel" hidden>Annulla</button>
+      <p id="read-status" class="muted" role="status" aria-live="polite"></p>
     </section>
 
     <section id="result" class="panel hidden" aria-labelledby="result-title">
@@ -152,11 +158,11 @@
       </div>
       <div id="voice-status" class="voice-status" role="status" aria-live="polite"></div>
       <div id="msg" class="message"></div>
-      <h3 data-i18n="centralNode">Nodo centrale</h3>
+      <h2 class="reading-heading" data-i18n="centralNode">Nodo centrale</h2>
       <div id="node" class="meaning"></div>
-      <h3 data-i18n="direction">Direzione</h3>
+      <h2 class="reading-heading" data-i18n="direction">Direzione</h2>
       <div id="dir" class="meaning"></div>
-      <h3 data-i18n="remainingQuestion">La domanda che resta</h3>
+      <h2 class="reading-heading" data-i18n="remainingQuestion">La domanda che resta</h2>
       <div id="fq" class="meaning"></div>
       <details>
         <summary data-i18n="whySummary">Perché la leggo così · carta per carta</summary>
@@ -184,6 +190,7 @@
         <textarea id="follow-question" rows="3" maxlength="1600" placeholder="Scrivi ciò che vuoi capire meglio…" data-i18n-placeholder="followPlaceholder"></textarea>
         <div class="follow-actions">
           <button id="ask" class="primary" type="button" data-i18n="analyzeQuestion">Analizza la domanda</button>
+          <button id="follow-cancel" class="listen" type="button" data-i18n="cancel" hidden>Annulla</button>
           <span id="follow-status" class="follow-status" role="status" aria-live="polite"></span>
         </div>
         <div id="follow-thread" aria-live="polite"></div>
@@ -198,26 +205,31 @@
     <img id="art-image" alt="" width="640" height="640">
     <p id="art-meaning" class="meaning"></p>
   </dialog>
+  <script src="/alpha-request.js"></script>
   <script src="/alpha74-art.js"></script>
   <script src="/alpha-voice.js"></script>
   <script src="/raffaello-bridge.js"></script>
   <script>
+    const guestParams=new URLSearchParams(location.search);
+    const guestInvite=guestParams.get('invito');
+    window.AlphaGuestMode=guestParams.has('invito');
+    const guestPayload=()=>window.AlphaGuestMode?{guest_mode:true,guest_invite:guestInvite}:{};
     const I18N={
       it:{
         kicker:'Raffaello · Canone Alpha',title:'Estrazione manuale · 74 carte',lead:'Un solo mazzo. Tu scegli soltanto i dorsi; Raffaello assegna posizione, asse e polarità.',lightShadow:'Luce e Ombra hanno probabilità 50/50.',
-        languageLabel:'Lingua della lettura',languageHelp:'La lingua scelta vale per questa lettura e per le domande successive.',questionLabel:'Domanda (opzionale)',questionPlaceholder:'Cosa vuoi capire?',contextLabel:'Contesto (opzionale)',contextPlaceholder:'Quello che ritieni utile raccontare…',deckTitle:'Mazzo coperto',guideFirst:'Scegli la prima carta.',spreadTitle:'La tua stesa',analyzeSpread:'Analizza la stesa',resultTitle:'Messaggio di Raffaello',listen:'🔊 Ascolta la lettura',stopListen:'■ Ferma ascolto',centralNode:'Nodo centrale',direction:'Direzione',remainingQuestion:'La domanda che resta',whySummary:'Perché la leggo così · carta per carta',telegramShare:'Continua su Telegram',followLabel:'Chiedi a Raffaello qualsiasi cosa su questa lettura.',followLanguage:'Lingua della risposta',followHelp:'La domanda è libera. Raffaello risponderà restando ancorato alle carte che hai realmente estratto.',followPlaceholder:'Scrivi ciò che vuoi capire meglio…',analyzeQuestion:'Analizza la domanda',close:'Chiudi',signature:'Claudio Terzi · C.Terzi',chooseCard:'Scegli questa carta coperta',yourQuestion:'La tua domanda',nextCard:'La prossima carta entrerà in {position}. Puoi fermarti quando vuoi.',completeSpread:'Stesa completa: 7 carte.',writing:'Raffaello sta leggendo…',askWriting:'Raffaello risponde…',emptyQuestion:'Scrivi prima la tua domanda.',followStatus:'Rileggo la domanda alla luce delle carte estratte.',savedStatus:'Risposta salvata anche nel dialogo Telegram.',anchoredStatus:'Risposta ancorata alla stesa già estratta.',changeLanguage:'Per usare una nuova lingua, premi Analizza la stesa.',engineAi:'AI contestuale',engineFallback:'Riserva canonica',engineFallbackDetail:'Nessuna chiamata AI · significati Alpha deterministici',speechNode:'Nodo centrale.',speechDirection:'Direzione.',speechFinal:'La domanda che resta.',noSpeech:'Ascolto non disponibile',axis:{nord:'Nord',est:'Est',sud:'Sud',ovest:'Ovest'},polarity:{luce:'Luce',ombra:'Ombra'},position:{passato:'Passato',presente:'Presente',futuro:'Futuro',ostacolo:'Ostacolo',potenziale:'Potenziale',consiglio:'Consiglio',esito:'Esito'}
+        languageLabel:'Lingua della lettura',languageHelp:'La lingua scelta vale per questa lettura e per le domande successive.',questionLabel:'Domanda (opzionale)',questionPlaceholder:'Cosa vuoi capire?',contextLabel:'Contesto (opzionale)',contextPlaceholder:'Quello che ritieni utile raccontare…',deckTitle:'Mazzo coperto',guideFirst:'Scegli la prima carta.',spreadTitle:'La tua stesa',analyzeSpread:'Analizza la stesa',resultTitle:'Messaggio di Raffaello',listen:'🔊 Ascolta la lettura',stopListen:'■ Ferma ascolto',centralNode:'Nodo centrale',direction:'Direzione',remainingQuestion:'La domanda che resta',whySummary:'Perché la leggo così · carta per carta',telegramShare:'Continua su Telegram',followLabel:'Chiedi a Raffaello qualsiasi cosa su questa lettura.',followLanguage:'Lingua della risposta',followHelp:'La domanda è libera. Raffaello risponderà restando ancorato alle carte che hai realmente estratto.',followPlaceholder:'Scrivi ciò che vuoi capire meglio…',analyzeQuestion:'Analizza la domanda',close:'Chiudi',signature:'Claudio Terzi · C.Terzi',chooseCard:'Scegli questa carta coperta',yourQuestion:'La tua domanda',nextCard:'La prossima carta entrerà in {position}. Puoi fermarti quando vuoi.',completeSpread:'Stesa completa: 7 carte.',writing:'Raffaello sta leggendo…',askWriting:'Raffaello risponde…',emptyQuestion:'Scrivi prima la tua domanda.',followStatus:'Rileggo la domanda alla luce delle carte estratte.',savedStatus:'Risposta salvata anche nel dialogo Telegram.',anchoredStatus:'Risposta ancorata alla stesa già estratta.',changeLanguage:'Per usare una nuova lingua, premi Analizza la stesa.',engineAi:'AI contestuale',engineFallback:'Riserva canonica',engineFallbackDetail:'Risposta canonica · significati Alpha deterministici',speechNode:'Nodo centrale.',speechDirection:'Direzione.',speechFinal:'La domanda che resta.',noSpeech:'Ascolto non disponibile',axis:{nord:'Nord',est:'Est',sud:'Sud',ovest:'Ovest'},polarity:{luce:'Luce',ombra:'Ombra'},position:{passato:'Passato',presente:'Presente',futuro:'Futuro',ostacolo:'Ostacolo',potenziale:'Potenziale',consiglio:'Consiglio',esito:'Esito'}
       },
       en:{
         kicker:'Raffaello · Alpha Canon',title:'Manual draw · 74 cards',lead:'One deck. You choose only the backs; Raffaello assigns position, axis and polarity.',lightShadow:'Light and Shadow have a 50/50 probability.',
-        languageLabel:'Reading language',languageHelp:'The selected language applies to this reading and to follow-up questions.',questionLabel:'Question (optional)',questionPlaceholder:'What do you want to understand?',contextLabel:'Context (optional)',contextPlaceholder:'Anything you consider useful to share…',deckTitle:'Covered deck',guideFirst:'Choose the first card.',spreadTitle:'Your spread',analyzeSpread:'Analyze the spread',resultTitle:"Raffaello's message",listen:'🔊 Listen to the reading',stopListen:'■ Stop listening',centralNode:'Central node',direction:'Direction',remainingQuestion:'The question that remains',whySummary:'Why I read it this way · card by card',telegramShare:'Continue on Telegram',followLabel:'Ask Raffaello anything about this reading.',followLanguage:'Response language',followHelp:'Your question is open. Raffaello will answer while staying anchored to the cards you actually drew.',followPlaceholder:'Write what you want to understand better…',analyzeQuestion:'Analyze the question',close:'Close',signature:'Claudio Terzi · C.Terzi',chooseCard:'Choose this covered card',yourQuestion:'Your question',nextCard:'The next card will enter {position}. You can stop whenever you like.',completeSpread:'Spread complete: 7 cards.',writing:'Raffaello is reading…',askWriting:'Raffaello is answering…',emptyQuestion:'Write your question first.',followStatus:'I am rereading the question in light of the cards drawn.',savedStatus:'Answer also saved in the Telegram dialogue.',anchoredStatus:'Answer anchored to the spread already drawn.',changeLanguage:'To use a new language, press Analyze the spread.',engineAi:'Contextual AI',engineFallback:'Canonical fallback',engineFallbackDetail:'No AI call · deterministic Alpha meanings',speechNode:'Central node.',speechDirection:'Direction.',speechFinal:'The question that remains.',noSpeech:'Listening unavailable',axis:{nord:'North',est:'East',sud:'South',ovest:'West'},polarity:{luce:'Light',ombra:'Shadow'},position:{passato:'Past',presente:'Present',futuro:'Future',ostacolo:'Obstacle',potenziale:'Potential',consiglio:'Advice',esito:'Outcome'}
+        languageLabel:'Reading language',languageHelp:'The selected language applies to this reading and to follow-up questions.',questionLabel:'Question (optional)',questionPlaceholder:'What do you want to understand?',contextLabel:'Context (optional)',contextPlaceholder:'Anything you consider useful to share…',deckTitle:'Covered deck',guideFirst:'Choose the first card.',spreadTitle:'Your spread',analyzeSpread:'Analyze the spread',resultTitle:"Raffaello's message",listen:'🔊 Listen to the reading',stopListen:'■ Stop listening',centralNode:'Central node',direction:'Direction',remainingQuestion:'The question that remains',whySummary:'Why I read it this way · card by card',telegramShare:'Continue on Telegram',followLabel:'Ask Raffaello anything about this reading.',followLanguage:'Response language',followHelp:'Your question is open. Raffaello will answer while staying anchored to the cards you actually drew.',followPlaceholder:'Write what you want to understand better…',analyzeQuestion:'Analyze the question',close:'Close',signature:'Claudio Terzi · C.Terzi',chooseCard:'Choose this covered card',yourQuestion:'Your question',nextCard:'The next card will enter {position}. You can stop whenever you like.',completeSpread:'Spread complete: 7 cards.',writing:'Raffaello is reading…',askWriting:'Raffaello is answering…',emptyQuestion:'Write your question first.',followStatus:'I am rereading the question in light of the cards drawn.',savedStatus:'Answer also saved in the Telegram dialogue.',anchoredStatus:'Answer anchored to the spread already drawn.',changeLanguage:'To use a new language, press Analyze the spread.',engineAi:'Contextual AI',engineFallback:'Canonical fallback',engineFallbackDetail:'Canonical response · deterministic Alpha meanings',speechNode:'Central node.',speechDirection:'Direction.',speechFinal:'The question that remains.',noSpeech:'Listening unavailable',axis:{nord:'North',est:'East',sud:'South',ovest:'West'},polarity:{luce:'Light',ombra:'Shadow'},position:{passato:'Past',presente:'Present',futuro:'Future',ostacolo:'Obstacle',potenziale:'Potential',consiglio:'Advice',esito:'Outcome'}
       },
       fr:{
         kicker:'Raffaello · Canon Alpha',title:'Tirage manuel · 74 cartes',lead:'Un seul jeu. Vous choisissez seulement les dos ; Raffaello attribue la position, l’axe et la polarité.',lightShadow:'Lumière et Ombre ont une probabilité de 50/50.',
-        languageLabel:'Langue du tirage',languageHelp:'La langue choisie s’applique à ce tirage et aux questions suivantes.',questionLabel:'Question (facultative)',questionPlaceholder:'Que voulez-vous comprendre ?',contextLabel:'Contexte (facultatif)',contextPlaceholder:'Ce que vous jugez utile de raconter…',deckTitle:'Jeu couvert',guideFirst:'Choisissez la première carte.',spreadTitle:'Votre tirage',analyzeSpread:'Analyser le tirage',resultTitle:'Message de Raffaello',listen:'🔊 Écouter le tirage',stopListen:'■ Arrêter l’écoute',centralNode:'Nœud central',direction:'Direction',remainingQuestion:'La question qui reste',whySummary:'Pourquoi je le lis ainsi · carte par carte',telegramShare:'Continuer su Telegram',followLabel:'Demandez à Raffaello ce que vous voulez sur ce tirage.',followLanguage:'Langue de la réponse',followHelp:'La question est libre. Raffaello répondra en restant ancré dans les cartes réellement tirées.',followPlaceholder:'Écrivez ce que vous voulez mieux comprendre…',analyzeQuestion:'Analyser la question',close:'Fermer',signature:'Claudio Terzi · C.Terzi',chooseCard:'Choisir cette carte couverte',yourQuestion:'Votre question',nextCard:'La prochaine carte ira dans « {position} ». Vous pouvez vous arrêter quand vous voulez.',completeSpread:'Tirage complet : 7 cartes.',writing:'Raffaello lit le tirage…',askWriting:'Raffaello répond…',emptyQuestion:'Écrivez d’abord votre question.',followStatus:'Je relis la question à la lumière des cartes tirées.',savedStatus:'Réponse également enregistrée dans le dialogue Telegram.',anchoredStatus:'Réponse ancrée dans le tirage déjà sorti.',changeLanguage:'Pour utiliser une nouvelle langue, appuyez sur Analyser le tirage.',engineAi:'IA contextuelle',engineFallback:'Repli canonique',engineFallbackDetail:'Aucun appel IA · significations Alpha déterministes',speechNode:'Nœud central.',speechDirection:'Direction.',speechFinal:'La question qui reste.',noSpeech:'Écoute indisponible',axis:{nord:'Nord',est:'Est',sud:'Sud',ovest:'Ouest'},polarity:{luce:'Lumière',ombra:'Ombre'},position:{passato:'Passé',presente:'Présent',futuro:'Futur',ostacolo:'Obstacle',potenziale:'Potentiel',consiglio:'Conseil',esito:'Résultat'}
+        languageLabel:'Langue du tirage',languageHelp:'La langue choisie s’applique à ce tirage et aux questions suivantes.',questionLabel:'Question (facultative)',questionPlaceholder:'Que voulez-vous comprendre ?',contextLabel:'Contexte (facultatif)',contextPlaceholder:'Ce que vous jugez utile de raconter…',deckTitle:'Jeu couvert',guideFirst:'Choisissez la première carte.',spreadTitle:'Votre tirage',analyzeSpread:'Analyser le tirage',resultTitle:'Message de Raffaello',listen:'🔊 Écouter le tirage',stopListen:'■ Arrêter l’écoute',centralNode:'Nœud central',direction:'Direction',remainingQuestion:'La question qui reste',whySummary:'Pourquoi je le lis ainsi · carte par carte',telegramShare:'Continuer su Telegram',followLabel:'Demandez à Raffaello ce que vous voulez sur ce tirage.',followLanguage:'Langue de la réponse',followHelp:'La question est libre. Raffaello répondra en restant ancré dans les cartes réellement tirées.',followPlaceholder:'Écrivez ce que vous voulez mieux comprendre…',analyzeQuestion:'Analyser la question',close:'Fermer',signature:'Claudio Terzi · C.Terzi',chooseCard:'Choisir cette carte couverte',yourQuestion:'Votre question',nextCard:'La prochaine carte ira dans « {position} ». Vous pouvez vous arrêter quand vous voulez.',completeSpread:'Tirage complet : 7 cartes.',writing:'Raffaello lit le tirage…',askWriting:'Raffaello répond…',emptyQuestion:'Écrivez d’abord votre question.',followStatus:'Je relis la question à la lumière des cartes tirées.',savedStatus:'Réponse également enregistrée dans le dialogue Telegram.',anchoredStatus:'Réponse ancrée dans le tirage déjà sorti.',changeLanguage:'Pour utiliser une nouvelle langue, appuyez sur Analyser le tirage.',engineAi:'IA contextuelle',engineFallback:'Repli canonique',engineFallbackDetail:'Réponse canonique · significations Alpha déterministes',speechNode:'Nœud central.',speechDirection:'Direction.',speechFinal:'La question qui reste.',noSpeech:'Écoute indisponible',axis:{nord:'Nord',est:'Est',sud:'Sud',ovest:'Ouest'},polarity:{luce:'Lumière',ombra:'Ombre'},position:{passato:'Passé',presente:'Présent',futuro:'Futur',ostacolo:'Obstacle',potenziale:'Potentiel',consiglio:'Conseil',esito:'Résultat'}
       },
       es:{
         kicker:'Raffaello · Canon Alpha',title:'Extracción manual · 74 cartas',lead:'Un solo mazo. Tú eliges solo los dorsos; Raffaello asigna posición, eje y polaridad.',lightShadow:'Luz y Sombra tienen una probabilidad del 50/50.',
-        languageLabel:'Idioma de la lectura',languageHelp:'El idioma elegido se aplica a esta lectura y a las preguntas siguientes.',questionLabel:'Pregunta (opcional)',questionPlaceholder:'¿Qué quieres comprender?',contextLabel:'Contexto (opcional)',contextPlaceholder:'Lo que consideres útil contar…',deckTitle:'Mazo cubierto',guideFirst:'Elige la primera carta.',spreadTitle:'Tu tirada',analyzeSpread:'Analizar la tirada',resultTitle:'Mensaje de Raffaello',listen:'🔊 Escuchar la lectura',stopListen:'■ Detener escucha',centralNode:'Nudo central',direction:'Dirección',remainingQuestion:'La pregunta que queda',whySummary:'Por qué la leo así · carta por carta',telegramShare:'Continuar en Telegram',followLabel:'Pregúntale a Raffaello lo que quieras sobre esta lectura.',followLanguage:'Idioma de la respuesta',followHelp:'La pregunta es libre. Raffaello responderá anclado en las cartas que realmente has extraído.',followPlaceholder:'Escribe lo que quieres entender mejor…',analyzeQuestion:'Analizar la pregunta',close:'Cerrar',signature:'Claudio Terzi · C.Terzi',chooseCard:'Elegir esta carta cubierta',yourQuestion:'Tu pregunta',nextCard:'La próxima carta entrará en {position}. Puedes parar cuando quieras.',completeSpread:'Tirada completa: 7 cartas.',writing:'Raffaello está leyendo…',askWriting:'Raffaello está respondiendo…',emptyQuestion:'Escribe primero tu pregunta.',followStatus:'Vuelvo a leer la pregunta a la luz de las cartas extraídas.',savedStatus:'Respuesta guardada también en el diálogo de Telegram.',anchoredStatus:'Respuesta anclada a la tirada ya extraída.',changeLanguage:'Para usar otro idioma, pulsa Analizar la tirada.',engineAi:'IA contextual',engineFallback:'Reserva canónica',engineFallbackDetail:'Sin llamada de IA · significados Alpha deterministas',speechNode:'Nudo central.',speechDirection:'Dirección.',speechFinal:'La pregunta que queda.',noSpeech:'Escucha no disponible',axis:{nord:'Norte',est:'Este',sud:'Sur',ovest:'Oeste'},polarity:{luce:'Luz',ombra:'Sombra'},position:{passato:'Pasado',presente:'Presente',futuro:'Futuro',ostacolo:'Obstáculo',potenziale:'Potencial',consiglio:'Consejo',esito:'Resultado'}
+        languageLabel:'Idioma de la lectura',languageHelp:'El idioma elegido se aplica a esta lectura y a las preguntas siguientes.',questionLabel:'Pregunta (opcional)',questionPlaceholder:'¿Qué quieres comprender?',contextLabel:'Contexto (opcional)',contextPlaceholder:'Lo que consideres útil contar…',deckTitle:'Mazo cubierto',guideFirst:'Elige la primera carta.',spreadTitle:'Tu tirada',analyzeSpread:'Analizar la tirada',resultTitle:'Mensaje de Raffaello',listen:'🔊 Escuchar la lectura',stopListen:'■ Detener escucha',centralNode:'Nudo central',direction:'Dirección',remainingQuestion:'La pregunta que queda',whySummary:'Por qué la leo así · carta por carta',telegramShare:'Continuar en Telegram',followLabel:'Pregúntale a Raffaello lo que quieras sobre esta lectura.',followLanguage:'Idioma de la respuesta',followHelp:'La pregunta es libre. Raffaello responderá anclado en las cartas que realmente has extraído.',followPlaceholder:'Escribe lo que quieres entender mejor…',analyzeQuestion:'Analizar la pregunta',close:'Cerrar',signature:'Claudio Terzi · C.Terzi',chooseCard:'Elegir esta carta cubierta',yourQuestion:'Tu pregunta',nextCard:'La próxima carta entrará en {position}. Puedes parar cuando quieras.',completeSpread:'Tirada completa: 7 cartas.',writing:'Raffaello está leyendo…',askWriting:'Raffaello está respondiendo…',emptyQuestion:'Escribe primero tu pregunta.',followStatus:'Vuelvo a leer la pregunta a la luz de las cartas extraídas.',savedStatus:'Respuesta guardada también en el diálogo de Telegram.',anchoredStatus:'Respuesta anclada a la tirada ya extraída.',changeLanguage:'Para usar otro idioma, pulsa Analizar la tirada.',engineAi:'IA contextual',engineFallback:'Reserva canónica',engineFallbackDetail:'Respuesta canónica · significados Alpha deterministas',speechNode:'Nudo central.',speechDirection:'Dirección.',speechFinal:'La pregunta que queda.',noSpeech:'Escucha no disponible',axis:{nord:'Norte',est:'Este',sud:'Sur',ovest:'Oeste'},polarity:{luce:'Luz',ombra:'Sombra'},position:{passato:'Pasado',presente:'Presente',futuro:'Futuro',ostacolo:'Obstáculo',potenziale:'Potencial',consiglio:'Consejo',esito:'Resultado'}
       }
     };
     I18N.it.engineVerified='Schema e carte verificati';
@@ -229,6 +241,8 @@
     I18N.fr.interpretationSpace={title:'Espace interprétatif',cards:'carte(s) ordonnée(s)',states:'états par carte',formula:'configurations du tirage',maximum:'maximum à 7 cartes',registers:'Faits : données du tirage. Interprétations : relations. Hypothèses : possibilités à vérifier.',note:'Configurations du modèle, pas des vérités absolues.'};
     I18N.es.interpretationSpace={title:'Espacio interpretativo',cards:'carta(s) ordenada(s)',states:'estados por carta',formula:'configuraciones de la tirada',maximum:'máximo con 7 cartas',registers:'Hechos: datos de la tirada. Interpretaciones: relaciones. Hipótesis: posibilidades por verificar.',note:'Configuraciones del modelo, no verdades absolutas.'};
     I18N.fr.telegramShare='Continuer sur Telegram';
+    const EXTRA={it:{resetSpread:'Nuova stesa',undoCard:'Annulla ultima carta',cancel:'Annulla attesa',cancelled:'Attesa annullata.',guest:'Invito ospite · lettura testuale deterministica · nessuna chiamata AI o voce esterna.'},en:{resetSpread:'New spread',undoCard:'Undo last card',cancel:'Cancel waiting',cancelled:'Waiting cancelled.',guest:'Guest invitation · deterministic text reading · no AI or external voice calls.'},fr:{resetSpread:'Nouveau tirage',undoCard:'Annuler la dernière carte',cancel:'Annuler l’attente',cancelled:'Attente annulée.',guest:'Invitation · lecture textuelle déterministe · aucun appel IA ou voix externe.'},es:{resetSpread:'Nueva tirada',undoCard:'Deshacer última carta',cancel:'Cancelar espera',cancelled:'Espera cancelada.',guest:'Invitación · lectura de texto determinista · sin llamadas IA ni voz externa.'}};
+    Object.keys(EXTRA).forEach(code=>Object.assign(I18N[code],EXTRA[code]));
     const LANGUAGE_CODES=Object.freeze(Object.keys(I18N));
     let language='it';
     function normalizeLanguage(value){const code=String(value||'it').toLowerCase().replace('_','-').split('-',1)[0];return LANGUAGE_CODES.includes(code)?code:'it';}
@@ -257,6 +271,8 @@
     let cards=[];
     let deck=[];
     let picked=[];
+    let pickedIndices=[];
+    let readVersion=0,followVersion=0,followController=null,shareController=null;
     let lastReading=null;
     let readingContext=null;
     let readingPending=false;
@@ -289,6 +305,8 @@
         const button=document.createElement('button');
         button.className='back';
         button.type='button';
+        button.dataset.deckIndex=String(index);
+        button.disabled=pickedIndices.includes(index);
         button.textContent='✦';
         button.setAttribute('aria-label',t('chooseCard'));
         button.addEventListener('click',()=>pick(index,button));
@@ -296,15 +314,30 @@
       });
     }
 
+    function clearReading(){
+      shareController?.abort();shareController=null;
+      stopSpeech();lastReading=null;readingContext=null;followHistory=[];
+      $('result').classList.add('hidden');$('follow-thread').replaceChildren();$('follow-question').value='';$('follow-status').textContent='';
+    }
+    function cancelFollowUp(){
+      followVersion++;followController?.abort();AlphaRequest.cancel('manual-follow');
+      $('ask').disabled=false;$('ask').textContent=t('analyzeQuestion');$('follow-cancel').hidden=true;
+      $('follow-status').textContent=t('cancelled');
+    }
+    function cancelReading(){
+      readVersion++;AlphaRequest.cancel('manual-reading');readingPending=false;
+      $('read').disabled=!picked.length;$('read').textContent=t('analyzeSpread');$('read-cancel').hidden=true;
+      $('read-status').textContent=t('cancelled');
+    }
+    function resetSpread(undo=false){
+      cancelReading();cancelFollowUp();clearReading();$('read-status').textContent='';
+      if(undo){picked.pop();pickedIndices.pop()}else{picked=[];pickedIndices=[];deck=shuffle(cards)}
+      renderDeck();renderSpread();$('spread-undo').disabled=!picked.length;$('read').disabled=!picked.length;
+      $('guide').textContent=picked.length?t('nextCard').replace('{position}',I18N[language].position[ORDER[picked.length][0]]):t('guideFirst');
+    }
     function pick(index,button){
       if(button.disabled||picked.length>=7||readingPending)return;
-      if(lastReading){
-        stopSpeech();
-        lastReading=null;
-        readingContext=null;
-        followHistory=[];
-        $('result').classList.add('hidden');
-      }
+      if(lastReading){cancelFollowUp();clearReading()}
       const card=deck[index];
       const config=ORDER[picked.length];
       const polarity=rnd()<.5?'luce':'ombra';
@@ -319,7 +352,9 @@
         polarita:polarity,
         significato_canonico:card[polarity][config[2]]
       });
+      pickedIndices.push(index);
       button.disabled=true;
+      $('spread-undo').disabled=false;
       renderSpread();
       $('read').disabled=false;
       $('guide').innerHTML=picked.length<7
@@ -440,32 +475,20 @@
       renderInterpretationSpace(data);
       $('follow-up').classList.remove('hidden');
       $('result').classList.remove('hidden');
-      $('result').scrollIntoView({behavior:'smooth',block:'start'});
+      $('result').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
     }
 
     async function readSpread(){
       if(readingPending||!picked.length)return;
-      readingPending=true;
+      const version=++readVersion;readingPending=true;cancelFollowUp();stopSpeech();
       const context={domanda:$('q').value.trim(),contesto:$('ctx').value.trim(),lingua:selectedLanguage(),carte:picked.map(card=>({...card}))};
-      const button=$('read');
-      button.disabled=true;
-      button.textContent=t('writing');
+      const button=$('read');button.disabled=true;button.textContent=t('writing');$('read-cancel').hidden=false;$('read-status').textContent=t('writing');$('result').classList.add('hidden');
       try{
-        const response=await fetch('/api/tarocchi/alpha-leggi',{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({domanda:context.domanda,contesto:context.contesto,lingua:context.lingua,carte_scelte:context.carte})
-        });
-        const data=await response.json();
-        if(!response.ok)throw new Error(data.errore||'La lettura non è riuscita.');
-        renderReading(data,context);
-      }catch(error){
-        alert(error.message);
-      }finally{
-        button.disabled=false;
-        button.textContent=t('analyzeSpread');
-        readingPending=false;
-      }
+        const data=await AlphaRequest.json('/api/tarocchi/alpha-leggi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({domanda:context.domanda,contesto:context.contesto,lingua:context.lingua,carte_scelte:context.carte,...guestPayload()})},{key:'manual-reading',timeoutMs:65000});
+        if(version!==readVersion)return;
+        renderReading(data,context);$('read-status').textContent='';
+      }catch(error){if(version===readVersion&&!AlphaRequest.isSuperseded(error))$('read-status').textContent=error.message}
+      finally{if(version===readVersion){button.disabled=!picked.length;button.textContent=t('analyzeSpread');readingPending=false;$('read-cancel').hidden=true}}
     }
 
     function appendFollowUp(question,answer,engineData){
@@ -486,7 +509,7 @@
         article.appendChild(origin);
       }
       $('follow-thread').appendChild(article);
-      article.scrollIntoView({behavior:'smooth',block:'nearest'});
+      article.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
     }
 
     async function askRaffaello(){
@@ -501,16 +524,17 @@
       const activeContext=readingContext;
       const button=$('ask');
       if(button.disabled)return;
-      button.disabled=true;
+      const version=++followVersion;followController=new AbortController();
+      button.disabled=true;$('follow-cancel').hidden=false;
       button.textContent=t('askWriting');
       $('follow-status').textContent=t('followStatus');
       try{
-        if(activeReading.shared_id && window.RaffaelloBridge){
+        if(!window.AlphaGuestMode&&activeReading.shared_id && window.RaffaelloBridge){
           if(!activeReading.pendingShared || activeReading.pendingShared.question!==question){
             activeReading.pendingShared={question,id:crypto.randomUUID()};
           }
-          const data=await window.RaffaelloBridge.analyze(question,activeReading.shared_id,activeReading.pendingShared.id,undefined,selectedLanguage());
-          if(lastReading!==activeReading)return;
+          const data=await window.RaffaelloBridge.analyze(question,activeReading.shared_id,activeReading.pendingShared.id,undefined,selectedLanguage(),{signal:followController.signal});
+          if(lastReading!==activeReading||version!==followVersion)return;
           appendFollowUp(question,data.risposta,data);
           followHistory.push({domanda:question,risposta:data.risposta});
           activeReading.pendingShared=null;
@@ -518,11 +542,12 @@
           $('follow-status').textContent=t('savedStatus');
           return;
         }
-        const response=await fetch('/api/tarocchi/alpha-leggi',{
+        const data=await AlphaRequest.json('/api/tarocchi/alpha-leggi',{
           method:'POST',
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({
             modalita:'approfondimento',
+            ...guestPayload(),
             lettura_id:activeReading.lettura_id,
             lingua:selectedLanguage(),
             domanda_originale:activeContext.domanda,
@@ -532,46 +557,42 @@
             lettura_precedente:activeReading.lettura,
             cronologia:followHistory.slice(-6)
           })
-        });
-        const data=await response.json();
-        if(!response.ok)throw new Error(data.errore||'Non riesco ad approfondire la lettura.');
-        if(lastReading!==activeReading)return;
+        },{key:'manual-follow',timeoutMs:65000});
+        if(lastReading!==activeReading||version!==followVersion)return;
         appendFollowUp(question,data.risposta,data);
         followHistory.push({domanda:question,risposta:data.risposta});
         $('follow-question').value='';
         $('follow-status').textContent=t('anchoredStatus');
-      }catch(error){
-        $('follow-status').textContent=error.message;
-      }finally{
-        button.disabled=false;
-        button.textContent=t('analyzeQuestion');
-      }
+      }catch(error){if(version===followVersion&&!AlphaRequest.isSuperseded(error))$('follow-status').textContent=error.message}
+      finally{if(version===followVersion){button.disabled=false;button.textContent=t('analyzeQuestion');$('follow-cancel').hidden=true;followController=null}}
     }
 
     async function shareWithTelegram(){
-      if(!lastReading||!readingContext||!window.RaffaelloBridge)return;
+      if(window.AlphaGuestMode||!lastReading||!readingContext||!window.RaffaelloBridge)return;
       const active=lastReading,button=$('telegram-share');
       if(button.disabled)return;
-      button.disabled=true;
+      button.disabled=true;shareController=new AbortController();
+      const shareSignal=shareController.signal;
       const snapshot={lettura_id:active.lettura_id,carte:readingContext.carte,
         domanda:readingContext.domanda,contesto:readingContext.contesto,lingua:readingContext.lingua||selectedLanguage(),
         lettura:active.lettura,cronologia:followHistory.slice()};
       try{
         if(!active.shared_id){
-          const saved=await window.RaffaelloBridge.request('/readings','POST',snapshot);
+          const saved=await window.RaffaelloBridge.request('/readings','POST',snapshot,{signal:shareSignal});
           active.shared_id=saved.id;
         }
         if(lastReading===active)location.href='/dialogo-raffaello?lettura='+active.shared_id;
       }catch(error){
+        if(lastReading!==active||shareSignal.aborted)return;
         if(error.status===401){
           sessionStorage.setItem('r3-reading-transfer',JSON.stringify(snapshot));
           location.href='/dialogo-raffaello#collega';
         }else{$('telegram-status').textContent=error.message;}
-      }finally{button.disabled=false;}
+      }finally{button.disabled=false;if(shareController?.signal===shareSignal)shareController=null;}
     }
 
     $('telegram-share').addEventListener('click',shareWithTelegram);
-    if(window.RaffaelloBridge){
+    if(!window.AlphaGuestMode&&window.RaffaelloBridge){
       window.RaffaelloBridge.request('/status').then(status=>{
         if(status.configured)$('telegram-continuity').classList.remove('hidden');
       }).catch(()=>{});
@@ -619,12 +640,14 @@
     }
 
     function listenReading(){
+      if(window.AlphaGuestMode)return;
       if(speaking){stopSpeech();return}
       updateListenButton(true);
       window.AlphaVoice.speak(speechText(),{language:selectedLanguage(),onState:handleVoiceState});
     }
 
     function listenCard(index){
+      if(window.AlphaGuestMode)return;
       if(speaking){stopSpeech();return}
       const text=cardAudioTexts[index];
       if(!text)return;
@@ -634,9 +657,7 @@
 
     async function load(){
       try{
-        const response=await fetch('/api/alpha');
-        if(!response.ok)throw new Error('Mazzo non disponibile.');
-        cards=await response.json();
+        cards=await AlphaRequest.json('/api/alpha',{}, {key:'alpha-deck',timeoutMs:20000});
         deck=shuffle(cards);
         renderDeck();
       }catch(error){
@@ -657,6 +678,10 @@
     });
     $('art-close').addEventListener('click',()=>$('art-dialog').close());
     $('art-dialog').addEventListener('close',()=>$('art-image').removeAttribute('src'));
+    $('spread-reset').addEventListener('click',()=>resetSpread());
+    $('spread-undo').addEventListener('click',()=>resetSpread(true));
+    $('read-cancel').addEventListener('click',cancelReading);
+    $('follow-cancel').addEventListener('click',cancelFollowUp);
     $('read').addEventListener('click',readSpread);
     $('ask').addEventListener('click',askRaffaello);
     $('follow-question').addEventListener('keydown',event=>{
@@ -671,6 +696,10 @@
       applyLanguage(event.target.value);
       if(lastReading)$('follow-status').textContent=t('changeLanguage');
     });
+    if(window.AlphaGuestMode){
+      const banner=document.createElement('p');banner.className='panel muted';banner.dataset.i18n='guest';banner.textContent=t('guest');document.querySelector('main.wrap').prepend(banner);
+      const style=document.createElement('style');style.textContent='#listen,.card-listen,#telegram-continuity,[data-atlas-tour]{display:none!important}';document.head.appendChild(style);
+    }
     applyLanguage(language);
     window.addEventListener('beforeunload',stopSpeech);
     load();
