@@ -18,7 +18,8 @@ def utente_da_init_data(init_data: str, token: str, max_eta_s: int = 86_400) -> 
     if not hmac.compare_digest(attesa, firma):
         return None
     try:
-        if time.time() - int(campi.get("auth_date", "0")) > max_eta_s:
+        age = time.time() - int(campi.get("auth_date", "0"))
+        if age > max_eta_s or age < -30:
             return None
         return json.loads(campi.get("user", "{}"))
     except (ValueError, TypeError):

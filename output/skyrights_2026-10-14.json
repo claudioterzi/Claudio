@@ -1,0 +1,20 @@
+{
+  "schema": "SKYRIGHTS_PREPARAZIONE_V1",
+  "aggiornato": "2026-10-14",
+  "nome": "SkyRights",
+  "stato": "PREPARAZIONE",
+  "scelte_dichiarate": {
+    "fondatore_unico": true,
+    "giurisdizione_di_lavoro": "Belgio",
+    "fondi": "L'utente intende usare fondi propri; importo e disponibilita non verificati."
+  },
+  "forma_giuridica": {"ipotesi": "Fondazione privata", "stato": "DA VALIDARE"},
+  "passi": [
+    {"voce": "Provenienza del documento originale", "stato": "PARZIALE", "dettaglio": "Firma dichiarata SDQ-1 / Claude e generatore ReportLab. Conversazione autrice non identificata con certezza."},
+    {"voce": "Identita e dati del fondatore", "stato": "DA COMPLETARE", "dettaglio": "Preparare il fascicolo personale e i dati richiesti; nessun documento di identita pubblicato qui."},
+    {"voce": "Scopo, attivita e patrimonio iniziale", "stato": "DA DEFINIRE", "dettaglio": "Tradurre il progetto in un oggetto preciso e indicare una dotazione effettivamente disponibile."},
+    {"voce": "Forma giuridica e statuto", "stato": "DA VALIDARE", "dettaglio": "Verificare con il professionista competente la forma adatta al fondatore unico e rivedere la bozza prima di firmare."},
+    {"voce": "Contatto con autore o professionista", "stato": "NON ESEGUITO", "dettaglio": "Nessun contatto esterno documentato in questo fascicolo."},
+    {"voce": "Costituzione, deposito e pagamenti", "stato": "NON ESEGUITI", "dettaglio": "Non sono documentati atti firmati, registrazione o pagamenti. Il fascicolo resta preparatorio."}
+  ]
+}

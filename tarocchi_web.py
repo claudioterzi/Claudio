@@ -48,6 +48,8 @@ from perfume_studio import studio, render_result, read_record, save_record, seri
 app.register_blueprint(studio)
 from fabbrica import fabbrica
 app.register_blueprint(fabbrica)
+from agora_web import agora
+app.register_blueprint(agora)
 
 # CUSTODE (sistema per host Airbnb) montato su /custode — non deve mai
 # impedire ai Tarocchi di andare online.
@@ -108,7 +110,7 @@ def _itinerario_web(it) -> dict:
 
 @app.after_request
 def _cors(response):
-    if request.path.startswith(('/atelier/', '/api/profumo/', '/api/fabbrica/')) or request.path == '/profumo':
+    if request.path.startswith(('/atelier/', '/api/profumo/', '/api/fabbrica/', '/api/agora')) or request.path == '/profumo':
         for header in ('Access-Control-Allow-Origin', 'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'):
             response.headers.pop(header, None)
         response.headers['Cache-Control'] = 'no-store'
@@ -1017,6 +1019,9 @@ def telegram_prova():
     """Prova completa sul server: il Consiglio delibera davvero e la delibera arriva nella
     chat di Claudio, segnata come prova. Riporta quale modello ha risposto per ogni membro
     e cosa vede Telegram del webhook (senza segreti)."""
+    from agora_web import _owner
+    if not _owner(request.get_json(silent=True) or {}):
+        return jsonify(errore='Accesso privato richiesto.'), 403
     from sdq1.consiglio import ConsiglioAgenti, invia_delibera_telegram
 
     delibera = ConsiglioAgenti(salva_output=False).delibera(
@@ -1086,24 +1091,6 @@ AGORA_COMANDI = frozenset({"consiglio", "briefing", "snapshot", "tarocchi", "age
 
 
 from telegram_owner_auth import utente_da_init_data as _utente_da_init_data
-
-
-@app.route("/api/agora", methods=["POST"])
-def agora_comando():
-    """La pagina Agorà invia qui i comandi (funziona anche aperta dal pulsante menu,
-    dove sendData non è disponibile). Solo Claudio, con la firma di Telegram."""
-    dati = request.get_json(silent=True) or {}
-    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
-    chat = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
-    utente = _utente_da_init_data(str(dati.get("initData", "")), token)
-    if not utente or not chat or str(utente.get("id", "")) != chat:
-        return jsonify({"errore": "non autorizzato"}), 403
-    comando = str(dati.get("comando", "")).strip()
-    nome = comando.split(maxsplit=1)[0].lstrip("/").lower() if comando.startswith("/") else ""
-    if nome not in AGORA_COMANDI or len(comando) > 1000:
-        return jsonify({"errore": "comando non previsto"}), 400
-    _gestisci_update({"message": {"chat": {"id": chat}, "text": comando}})
-    return jsonify({"ok": True})
 
 
 # ══════════════════════════════════════════════════════════════════════
