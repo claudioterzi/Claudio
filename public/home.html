@@ -8,6 +8,7 @@
   <script src="/idea-os-data.js" defer></script>
   <script src="/agora.js" defer></script>
   <style>
+    [hidden] { display: none !important; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -321,6 +322,10 @@
     .request-feedback[data-state="pending"] { border-color: #e2b45f; }
     .request-feedback[data-state="received"] { border-color: #81c69a; }
     .request-feedback[data-state="error"] { border-color: var(--red); }
+    .result-text { margin: 16px; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.6; }
+    .owner-form { padding: 0 16px 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .owner-form input { background: var(--surface); color: var(--text); border: 1px solid #737382; padding: 12px; border-radius: 8px; min-width: 0; flex: 1; }
+    .history-button { width: 100%; text-align: left; padding: 14px 16px; color: var(--text); background: var(--card); border: 0; border-top: 1px solid var(--border); cursor: pointer; line-height: 1.5; overflow-wrap: anywhere; }
     @media (max-width: 480px) { .log-item { flex-direction: column; gap: 5px; } .consiglio-btn { margin: 0; width: 100%; } .topbar { gap: 12px; } }
   </style>
 </head>
@@ -339,6 +344,18 @@
 </div>
 
 <div class="content">
+
+  <section class="card" aria-labelledby="owner-title">
+    <h2 class="card-header" id="owner-title">Agorà sul sito e su Telegram</h2>
+    <p id="owner-status" class="feed-status" role="status">Verifica dell’accesso privato…</p>
+    <form class="owner-form" id="owner-form" hidden>
+      <label for="owner-password">Password dell’archivio privato</label>
+      <input id="owner-password" type="password" autocomplete="current-password" required maxlength="1024">
+      <button class="send-btn" type="submit" id="owner-login">Accedi</button>
+    </form>
+    <button type="button" class="refresh-btn" id="owner-logout" hidden>Esci dall’accesso comandi</button>
+    <p class="feed-status"><label><input id="telegram-copy" type="checkbox"> Invia anche una copia su Telegram</label></p>
+  </section>
 
   <!-- STATO AGENTI -->
   <div class="card">
@@ -425,10 +442,10 @@
         <div class="cmd-name">Agenda</div>
         <div class="cmd-desc">Priorità e prossimi passi</div>
       </button>
-      <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/agenda asbl')">
+      <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/agenda skyrights')">
         <div class="cmd-icon">🏛️</div>
-        <div class="cmd-name">SkyRights · agenda</div>
-        <div class="cmd-desc">Riepilogo dell’agenda generale</div>
+        <div class="cmd-name">SkyRights · fascicolo</div>
+        <div class="cmd-desc">Scelte e documenti da preparare</div>
       </button>
       <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/riflessione')">
         <div class="cmd-icon">🌊</div>
@@ -439,8 +456,18 @@
   </div>
 
   <section class="card" aria-labelledby="request-title">
-    <h2 class="card-header" id="request-title">Ultima richiesta</h2>
+    <h2 class="card-header" id="request-title">Risultato sul sito</h2>
     <p id="command-status" class="feed-status request-feedback" role="status" aria-live="polite" aria-atomic="true" data-state="idle"></p>
+    <p id="result-meta" class="feed-status"></p>
+    <pre id="result-text" class="result-text"></pre>
+    <button id="result-download" class="refresh-btn" type="button" hidden>Scarica il risultato JSON</button>
+    <button id="request-recover" class="refresh-btn" type="button" hidden>Recupera l’ultima richiesta</button>
+  </section>
+  <section class="card" aria-labelledby="history-title">
+    <h2 class="card-header" id="history-title">Cronologia dei comandi</h2>
+    <p id="history-status" class="feed-status" role="status">Le risposte sono conservate nell’archivio privato del sito per 30 giorni. Puoi scaricarne una copia.</p>
+    <button id="history-refresh" class="refresh-btn" type="button">Aggiorna la cronologia</button>
+    <div id="command-history"></div>
   </section>
 
   <!-- LOG ATTIVITÀ -->

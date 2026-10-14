@@ -2,6 +2,8 @@
 const assert=require('node:assert/strict'),test=require('node:test'),fs=require('node:fs'),vm=require('node:vm');
 const source=name=>fs.readFileSync('public/'+name,'utf8');
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
+const webcrypto=require('node:crypto').webcrypto;
+const receipt={ok:true,richiesta:{id:'f'.repeat(32),comando:'/consiglio q',data:'2026-10-14T16:00:00Z',stato:'completato',risultato:{testo:'Risposta dal sito',note:[],dati:{}}}};
 class Element{
  constructor(tag='div',doc=null){this.tagName=tag.toUpperCase();this.nodeType=1;this.ownerDocument=doc;this.children=[];this.handlers={};this.attrs={};this.value='';this._text='';this.disabled=false;this.hidden=false;const values=new Set();this.classList={add:v=>values.add(v),remove:v=>values.delete(v),contains:v=>values.has(v),toggle:(v,on)=>{on=on===undefined?!values.has(v):on;on?values.add(v):values.delete(v);return on}};}
  set textContent(v){this._text=String(v);this.children=[];}get textContent(){return this._text+this.children.map(x=>x.textContent).join('');}
@@ -23,34 +25,46 @@ function agora(connected=true){
  const doc={getElementById:get,createElement:tag=>new Element(tag),querySelectorAll:()=>[...buttons,get('consiglio-send')],addEventListener(){},visibilityState:'visible',head:{append:s=>scripts.push(s)}};
  const window={IDEA_OS_PORTFOLIO:{meta:{snapshot:'2026-09-17'},ideas:[{id:'IDEA-003',title:'Progetto verificabile',status:'PROJECT CREATED',dossier:{url:'https://example.test'}}]},Telegram:connected?{WebApp:{initData:'FIXTURE_ONLY',expand(){},setHeaderColor(){},setBackgroundColor(){},BackButton:{onClick(){}}}}:null};
  class FixedDate extends Date{static now(){return Date.parse('2026-10-14T16:00:00Z')}}
- const ctx=vm.createContext({window,document:doc,AbortController,Date:FixedDate,...timers,fetch:(url,options)=>{calls.push({url,...options});if(url==='/r3-status.json')return Promise.resolve({ok:true,json:async()=>snapshot});return new Promise((resolve,reject)=>{pending.push({resolve,reject});options.signal.addEventListener('abort',()=>{const error=new Error('Fixture timeout');error.name='AbortError';reject(error)})})}});
+ const ctx=vm.createContext({window,document:doc,AbortController,Date:FixedDate,crypto:webcrypto,sessionStorage:storage(),...timers,fetch:(url,options)=>{calls.push({url,...options});if(url==='/r3-status.json')return Promise.resolve({ok:true,json:async()=>snapshot});if(url==='/api/agora/session'&&options.method==='GET')return Promise.resolve({ok:true,json:async()=>({ok:true,autorizzato:false,configurato:true})});if(url==='/api/agora/history')return Promise.resolve({ok:true,json:async()=>({ok:true,richieste:[],conservazione_giorni:30})});return new Promise((resolve,reject)=>{pending.push({resolve,reject});options.signal?.addEventListener('abort',()=>{const error=new Error('Fixture timeout');error.name='AbortError';reject(error)})})}});
  vm.runInContext(source('agora.js'),ctx);return{window,get,timers,calls,pending,buttons,scripts,ctx};
 }
 test('Consiglio retains text and stays open while pending and after server failure',async()=>{
  const x=agora();await tick();const work=x.window.inviaConsiglio();
  assert.equal(x.get('consilioInput').value,'Domanda da conservare');assert(x.get('consilioWrap').classList.contains('visible'));assert(x.get('consilioInput').readOnly);assert(x.buttons.every(x=>x.disabled));
- await x.window.inviaConsiglio();assert.equal(x.calls.filter(x=>x.method==='POST').length,1);
+ await x.window.inviaConsiglio();assert.equal(x.calls.filter(x=>x.url==='/api/agora').length,1);
  x.pending[0].resolve({ok:false,status:500,json:async()=>({errore:'Errore simulato'})});await work;
  assert.equal(x.get('consilioInput').value,'Domanda da conservare');assert(x.get('consilioWrap').classList.contains('visible'));assert(!x.get('consilioInput').readOnly);assert.match(x.get('command-status').textContent,/non confermato/);
 });
 test('Consiglio clears only after a successful server acknowledgement',async()=>{
- const x=agora();await tick();const work=x.window.inviaConsiglio();x.pending[0].resolve({ok:true,json:async()=>({ok:true})});await work;
+ const x=agora();await tick();const work=x.window.inviaConsiglio();x.pending[0].resolve({ok:true,json:async()=>receipt});await work;
  assert.equal(x.get('consilioInput').value,'');assert(!x.get('consilioWrap').classList.contains('visible'));assert.equal(x.get('btnConsiglio').attrs['aria-expanded'],'false');assert.match(x.get('command-status').textContent,/ricevuto dal server/);
 });
 test('Agorà does not erase a question on HTTP 200 without an application receipt',async()=>{
  for(const data of [{},null,{ok:false}]){const x=agora();await tick();const work=x.window.inviaConsiglio();x.pending[0].resolve({ok:true,status:200,json:async()=>data});await work;assert.equal(x.get('consilioInput').value,'Domanda da conservare');assert(x.get('consilioWrap').classList.contains('visible'));assert.match(x.get('command-status').textContent,/non confermato/);assert(!x.get('consilioInput').readOnly)}
 });
 test('Agorà preserves new text changed during a pending confirmed request',async()=>{
- const x=agora();await tick();const work=x.window.inviaConsiglio();x.get('consilioInput').value='Una nuova domanda';x.pending[0].resolve({ok:true,status:200,json:async()=>({ok:true})});await work;assert.equal(x.get('consilioInput').value,'Una nuova domanda');assert(x.get('consilioWrap').classList.contains('visible'));
+ const x=agora();await tick();const work=x.window.inviaConsiglio();x.get('consilioInput').value='Una nuova domanda';x.pending[0].resolve({ok:true,status:200,json:async()=>receipt});await work;assert.equal(x.get('consilioInput').value,'Una nuova domanda');assert(x.get('consilioWrap').classList.contains('visible'));
 });
 test('Network errors and uncertain timeouts preserve the question',async()=>{
- for(const mode of ['network','timeout']){const x=agora();await tick();const work=x.window.inviaConsiglio();if(mode==='network')x.pending[0].reject(new Error('Rete simulata'));else [...x.timers.tasks.values()].find(x=>x.delay===45000).fn();await work;assert.equal(x.get('consilioInput').value,'Domanda da conservare');if(mode==='timeout')assert.match(x.get('command-status').textContent,/potrebbe essere arrivato/)}
+ for(const mode of ['network','timeout']){const x=agora();await tick();const work=x.window.inviaConsiglio();if(mode==='network')x.pending[0].reject(new Error('Rete simulata'));else [...x.timers.tasks.values()].find(x=>x.delay===180000).fn();await work;assert.equal(x.get('consilioInput').value,'Domanda da conservare');if(mode==='timeout')assert.match(x.get('command-status').textContent,/potrebbe essere arrivato/)}
 });
 test('Outside Telegram commands are explicit and do not POST or erase text',async()=>{
- const x=agora(false);await tick();await x.window.inviaConsiglio();assert.equal(x.calls.filter(x=>x.method==='POST').length,0);assert.equal(x.get('consilioInput').value,'Domanda da conservare');assert.match(x.get('command-status').textContent,/non è stato inviato/);
+ const x=agora(false);await tick();await x.window.inviaConsiglio();assert.equal(x.calls.filter(x=>x.url==='/api/agora').length,0);assert.equal(x.get('consilioInput').value,'Domanda da conservare');assert.match(x.get('command-status').textContent,/Non è stato inviato/);
+});
+test('Browser owner can log in, execute and read a result without Telegram',async()=>{
+ const x=agora(false);await tick();const login=x.get('owner-form').handlers.submit({preventDefault(){}});
+ x.pending[0].resolve({ok:true,json:async()=>({ok:true})});await login;
+ const command=x.window.inviaConsiglio();x.pending[1].resolve({ok:true,json:async()=>receipt});await command;
+ assert.equal(x.calls.filter(x=>x.url==='/api/agora').length,1);
+ assert.equal(x.get('result-text').textContent,'Risposta dal sito');assert.equal(x.get('consilioInput').value,'');
+ assert.equal(JSON.parse(x.calls.find(x=>x.url==='/api/agora').body).initData,'');
+ assert(!x.get('result-download').hidden);
+});
+test('Partial or failed command result stays readable and retains the question',async()=>{
+ for(const state of ['parziale','errore']){const x=agora();await tick();const work=x.window.inviaConsiglio();x.pending[0].resolve({ok:true,json:async()=>({...receipt,richiesta:{...receipt.richiesta,stato:state}})});await work;assert.equal(x.get('result-text').textContent,'Risposta dal sito');assert.equal(x.get('consilioInput').value,'Domanda da conservare');assert(x.get('consilioWrap').classList.contains('visible'))}
 });
 test('Rapid command activations are locked until the first acknowledgement',async()=>{
- const x=agora();await tick();const first=x.window.sendCmd('/briefing'),second=await x.window.sendCmd('/briefing');assert.equal(second.pending,true);assert.equal(x.calls.filter(x=>x.method==='POST').length,1);x.pending[0].resolve({ok:true,json:async()=>({})});await first;assert(x.buttons.every(x=>!x.disabled));
+ const x=agora();await tick();const first=x.window.sendCmd('/briefing'),second=await x.window.sendCmd('/briefing');assert.equal(second.pending,true);assert.equal(x.calls.filter(x=>x.url==='/api/agora').length,1);x.pending[0].resolve({ok:true,json:async()=>({})});await first;assert(x.buttons.every(x=>!x.disabled));
 });
 test('Agorà exposes dated snapshot provenance and project snapshot instead of live-agent claims',async()=>{
  const x=agora();await tick();assert.equal(x.get('logList').children.length,3);assert.match(x.get('activity-status').textContent,/repository.*2026/);assert.match(x.get('activity-status').textContent,/più vecchi di 24 ore/);assert.match(x.get('project-status').textContent,/singoli progetti non sono documentate/);assert.match(x.get('project-list').textContent,/IDEA-003/);assert.equal(x.calls[0].cache,'no-store');

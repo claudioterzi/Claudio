@@ -7,6 +7,7 @@ import os
 import time
 import unittest
 import urllib.parse
+import fakeredis
 from unittest.mock import patch
 
 import tarocchi_web
@@ -34,6 +35,9 @@ class TestAgora(unittest.TestCase):
         self.env = patch.dict(os.environ, {"TELEGRAM_BOT_TOKEN": TOKEN, "TELEGRAM_CHAT_ID": CHAT}, clear=False)
         self.env.start()
         self.addCleanup(self.env.stop)
+        storage = patch('agora_web._redis', return_value=fakeredis.FakeRedis())
+        storage.start()
+        self.addCleanup(storage.stop)
         self.eseguiti = []
         p = patch("sdq1.notifiche._esegui_singolo_comando", side_effect=self.eseguiti.append)
         p.start()
@@ -152,7 +156,7 @@ class TestAgora(unittest.TestCase):
         with patch("sdq1.consiglio.ConsiglioAgenti.delibera", return_value=finta), \
                 patch("sdq1.consiglio.invia_delibera_telegram", return_value=True), \
                 patch.object(tarocchi_web, "_telegram_api", return_value=info):
-            r = self.client.post("/api/telegram/prova")
+            r = self.client.post("/api/telegram/prova", json={'initData': init_data()})
         d = r.get_json()
         self.assertEqual([v["ok"] for v in d["consiglio"]], [True, False])
         self.assertTrue(d["inviata_in_chat"])

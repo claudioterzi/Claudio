@@ -95,6 +95,7 @@ class Delibera:
                     "raccomandazione": v.raccomandazione,
                     "motivazione": v.motivazione,
                     "score_confidenza": v.score_confidenza,
+                    "modello": v.modello,
                 }
                 for v in self.voti
             ],
@@ -202,9 +203,11 @@ class ConsiglioAgenti:
         "La delibera degli agenti è la decisione."
     )
 
-    def __init__(self, salva_output: bool = True):
+    def __init__(self, salva_output: bool = True, budget_secondi: int = 90):
         self.salva_output = salva_output
         self._output_dir = Path("output/consiglio")
+        self.budget_secondi = max(10, min(budget_secondi, 90))
+        self._deadline = None
 
     # Nome del membro → chiave in PROVIDER_REGISTRY del router.
     _PROVIDER_ROUTER = {"gemini": "gemini", "claude": "anthropic", "deepseek": "deepseek", "mistral": "mistral"}
@@ -221,11 +224,18 @@ class ConsiglioAgenti:
         ]
         ultimo_errore = "Nessun modello disponibile."
         for nome, modello in candidati:
+            import time
+            remaining = self._deadline - time.monotonic() if self._deadline else 20
+            if remaining < 2:
+                ultimo_errore = 'Tempo disponibile per il Consiglio esaurito.'
+                break
             if nome not in PROVIDER_REGISTRY:
                 continue
             try:
                 cls, _ = PROVIDER_REGISTRY[nome]
-                prov = cls(modello=modello, api_key=None, timeout=30, timeout_secondi=30)
+                timeout = min(20, remaining)
+                prov = cls(modello=modello, api_key=None, timeout=timeout, timeout_secondi=timeout,
+                           max_retries=0, max_token=900)
                 if not prov.disponibile:
                     continue
                 r = prov.completa(membro["sistema"], questione)
@@ -250,7 +260,13 @@ class ConsiglioAgenti:
         """Sintesi automatica dei voti — usata solo se Claudio non vota."""
         try:
             from sdq1.llm.providers import AnthropicProvider
-            prov = AnthropicProvider(modello="claude-haiku-4-5-20251001", api_key=None, timeout=25)
+            import time
+            remaining = self._deadline - time.monotonic() if self._deadline else 20
+            if remaining < 2:
+                return self._sintesi_manuale(voti)
+            prov = AnthropicProvider(modello="claude-haiku-4-5-20251001", api_key=None,
+                                     timeout=min(20, remaining), timeout_secondi=min(20, remaining),
+                                     max_retries=0, max_token=500)
             if not prov.disponibile:
                 return self._sintesi_manuale(voti)
             riepilogo = "\n".join(
@@ -283,6 +299,8 @@ class ConsiglioAgenti:
                               Se None, la decisione è la sintesi degli agenti.
         """
         ora = datetime.now(_TZ).strftime("%Y-%m-%d %H:%M")
+        import time
+        self._deadline = time.monotonic() + self.budget_secondi
 
         # Query parallele ai 5 membri
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
