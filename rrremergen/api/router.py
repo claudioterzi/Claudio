@@ -159,13 +159,229 @@ class LLMRouter:
         Returns:
             Dictionary with 'text' key containing the response
         """
-        # TODO: Implement actual LLM calls
-        # For now, return a placeholder
+        # Determine provider from model name
+        provider = self._get_provider_for_model(model)
+
+        if not provider:
+            return {
+                'text': f'// Placeholder response from {model}',
+                'model': model,
+                'tokens_used': 0,
+            }
+
+        # Route to appropriate provider
+        if provider == 'anthropic':
+            return await self._complete_anthropic(prompt, model, temperature, max_tokens)
+        elif provider == 'openai':
+            return await self._complete_openai(prompt, model, temperature, max_tokens)
+        elif provider == 'google':
+            return await self._complete_google(prompt, model, temperature, max_tokens)
+        elif provider == 'deepseek':
+            return await self._complete_deepseek(prompt, model, temperature, max_tokens)
+        elif provider == 'mistral':
+            return await self._complete_mistral(prompt, model, temperature, max_tokens)
+
+        # Fallback
         return {
-            'text': f'// Response from {model}\n// Task: {prompt[:50]}...',
+            'text': f'// Response from {model}',
             'model': model,
-            'tokens_used': max_tokens // 2,
+            'tokens_used': 0,
         }
+
+    def _get_provider_for_model(self, model: str) -> str:
+        """Determine provider from model identifier."""
+        model_lower = model.lower()
+
+        if 'claude' in model_lower or 'anthropic' in model_lower:
+            return 'anthropic'
+        elif 'gpt' in model_lower:
+            return 'openai'
+        elif 'gemini' in model_lower:
+            return 'google'
+        elif 'deepseek' in model_lower:
+            return 'deepseek'
+        elif 'mistral' in model_lower:
+            return 'mistral'
+
+        return None
+
+    async def _complete_anthropic(
+        self,
+        prompt: str,
+        model: str,
+        temperature: float,
+        max_tokens: int,
+    ) -> Dict[str, str]:
+        """Get completion from Anthropic Claude."""
+        try:
+            import anthropic
+
+            client = anthropic.Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
+
+            response = client.messages.create(
+                model=model,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+
+            return {
+                'text': response.content[0].text,
+                'model': model,
+                'tokens_used': response.usage.output_tokens,
+            }
+        except Exception as e:
+            self.log_error(model, str(e))
+            return {
+                'text': f'// Error calling Anthropic: {str(e)}',
+                'model': model,
+                'tokens_used': 0,
+            }
+
+    async def _complete_openai(
+        self,
+        prompt: str,
+        model: str,
+        temperature: float,
+        max_tokens: int,
+    ) -> Dict[str, str]:
+        """Get completion from OpenAI GPT."""
+        try:
+            import openai
+
+            client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+            response = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+
+            return {
+                'text': response.choices[0].message.content,
+                'model': model,
+                'tokens_used': response.usage.completion_tokens,
+            }
+        except Exception as e:
+            self.log_error(model, str(e))
+            return {
+                'text': f'// Error calling OpenAI: {str(e)}',
+                'model': model,
+                'tokens_used': 0,
+            }
+
+    async def _complete_google(
+        self,
+        prompt: str,
+        model: str,
+        temperature: float,
+        max_tokens: int,
+    ) -> Dict[str, str]:
+        """Get completion from Google Gemini."""
+        try:
+            import google.generativeai as genai
+
+            genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
+            model_obj = genai.GenerativeModel(model)
+
+            response = model_obj.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=temperature,
+                    max_output_tokens=max_tokens,
+                )
+            )
+
+            return {
+                'text': response.text,
+                'model': model,
+                'tokens_used': 0,  # Google doesn't return token count easily
+            }
+        except Exception as e:
+            self.log_error(model, str(e))
+            return {
+                'text': f'// Error calling Google Gemini: {str(e)}',
+                'model': model,
+                'tokens_used': 0,
+            }
+
+    async def _complete_deepseek(
+        self,
+        prompt: str,
+        model: str,
+        temperature: float,
+        max_tokens: int,
+    ) -> Dict[str, str]:
+        """Get completion from DeepSeek."""
+        try:
+            import openai  # DeepSeek uses OpenAI SDK
+
+            client = openai.OpenAI(
+                api_key=os.getenv('DEEPSEEK_API_KEY'),
+                base_url="https://api.deepseek.com"
+            )
+
+            response = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+
+            return {
+                'text': response.choices[0].message.content,
+                'model': model,
+                'tokens_used': response.usage.completion_tokens,
+            }
+        except Exception as e:
+            self.log_error(model, str(e))
+            return {
+                'text': f'// Error calling DeepSeek: {str(e)}',
+                'model': model,
+                'tokens_used': 0,
+            }
+
+    async def _complete_mistral(
+        self,
+        prompt: str,
+        model: str,
+        temperature: float,
+        max_tokens: int,
+    ) -> Dict[str, str]:
+        """Get completion from Mistral."""
+        try:
+            from mistralai import Mistral
+
+            client = Mistral(api_key=os.getenv('MISTRAL_API_KEY'))
+
+            response = client.chat.complete(
+                model=model,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+
+            return {
+                'text': response.choices[0].message.content,
+                'model': model,
+                'tokens_used': response.usage.completion_tokens,
+            }
+        except Exception as e:
+            self.log_error(model, str(e))
+            return {
+                'text': f'// Error calling Mistral: {str(e)}',
+                'model': model,
+                'tokens_used': 0,
+            }
 
     def log_error(self, model: str, error: str):
         """Log an error for a model and update circuit breaker."""
