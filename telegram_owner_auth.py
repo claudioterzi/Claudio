@@ -1,12 +1,20 @@
 """Shared existing Telegram signature verification. No client flag grants spend."""
 import hashlib,hmac,json,os,time,urllib.parse
 
+# Public Git history contained this credential. Retain only its one-way digest;
+# rotating the bot token produces a different digest and restores access.
+REJECTED_TOKEN_DIGESTS = frozenset({'8c54327ef7a7f69f692bbc2a8a14266cbce460c761019da5ffc92b271733a4d1'})
+
+
+def bot_token_usable(token):
+    return isinstance(token, str) and bool(token) and hashlib.sha256(token.encode()).hexdigest() not in REJECTED_TOKEN_DIGESTS
+
 def utente_da_init_data(init_data: str, token: str, max_eta_s: int = 86_400) -> dict | None:
     """Verifica la firma di Telegram sull'initData della Mini App e restituisce l'utente.
 
     https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app
     """
-    if not init_data or not token or len(init_data) > 8192:
+    if not init_data or not bot_token_usable(token) or len(init_data) > 8192:
         return None
     campi = dict(urllib.parse.parse_qsl(init_data, keep_blank_values=True))
     firma = campi.pop("hash", "")

@@ -1,5 +1,6 @@
 """Browser/Telegram command parity and owner-only durable receipts; no live AI."""
 import json
+import hashlib
 import os
 import time
 import unittest
@@ -142,6 +143,16 @@ class WebCommands(unittest.TestCase):
             self.assertEqual(self.command(rid='2' * 32, initData=init_data(eta_s=-3600)).status_code, 403)
             execute.assert_called_once()
         self.assertEqual(self.client.post('/api/telegram/prova').status_code, 403)
+
+    def test_compromised_token_cannot_sign_site_access_or_open_an_unsigned_webhook(self):
+        with patch('telegram_owner_auth.REJECTED_TOKEN_DIGESTS', {hashlib.sha256(TOKEN.encode()).hexdigest()}), patch('sdq1.notifiche._esegui_singolo_comando') as execute:
+            self.assertEqual(self.command(initData=init_data()).status_code, 403)
+            self.assertEqual(tarocchi_web._segreto_webhook(), '')
+            self.assertEqual(self.client.post('/api/telegram', json={'message': {'chat': {'id': CHAT}, 'text': '/briefing'}}).status_code, 403)
+            execute.assert_not_called()
+            self.login()
+            with patch('agora_runtime.esegui', return_value=RESULT):
+                self.assertEqual(self.command().status_code, 200)
 
     def test_all_six_commands_capture_results_without_sending_telegram(self):
         from sdq1 import notifiche
