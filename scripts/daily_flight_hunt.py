@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from flight_hunter.fonti import fonti_disponibili
 from flight_hunter.telegram_alerts import send_alerts_sync, send_daily_summary
 from sdq1.telegram import get_bot_manager, BotRole
+from tracker_manager import TrackerManager
 
 
 SEARCH_CONFIG = {
@@ -49,6 +50,7 @@ def run_daily_hunt():
         status = manager.get_bot_status()
         print(f"✅ Telegram configured: {status['configured_bots']}")
 
+    tracker = TrackerManager(sheet_id=TRACKER_SHEET_ID)
     all_deals = []
 
     # Calculate date range
@@ -88,6 +90,18 @@ def run_daily_hunt():
                 if deals:
                     print(f"   {fonte.nome}: {len(deals)} destinations")
 
+                    # Record prices in tracker
+                    for deal in deals:
+                        is_deal = deal["prezzo"] < SEARCH_CONFIG["alert_threshold_eur"]
+                        tracker.record_price(
+                            from_airport=deal["da"],
+                            to_airport=deal["a"],
+                            price=deal["prezzo"],
+                            airline=deal["vettore"],
+                            date=dal,
+                            is_deal=is_deal
+                        )
+
                     # Send individual alerts
                     result = send_alerts_sync(
                         deals=deals,
@@ -113,6 +127,9 @@ def run_daily_hunt():
         except Exception as e:
             print(f"   ❌ Summary failed: {e}")
 
+    # Export tracker summary
+    tracker_summary = tracker.export_summary()
+
     # Log execution
     log_entry = {
         "timestamp": datetime.now().isoformat(),
@@ -120,10 +137,13 @@ def run_daily_hunt():
         "deals_found": len(all_deals),
         "alerts_sent": len(all_deals),
         "threshold": SEARCH_CONFIG["alert_threshold_eur"],
+        "tracker_routes": tracker_summary["routes_tracked"],
+        "tracker_samples": tracker_summary["total_samples"],
     }
 
     print("\n" + "="*60)
     print(f"✅ HUNT COMPLETE — {len(all_deals)} deals found & alerted")
+    print(f"📊 Tracker: {tracker_summary['routes_tracked']} routes, {tracker_summary['total_samples']} samples")
     print("="*60 + "\n")
 
     return log_entry
