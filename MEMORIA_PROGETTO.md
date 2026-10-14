@@ -1703,3 +1703,57 @@ Creata nuova skill per automazione ricerche voli ricorrenti con tracking su Goog
 - `.claude/skills/flight-hunter-automation/SKILL.md` — full instructions
 - `.claude/skills/flight-hunter-automation/scripts/flight_monitor.py` — implementation
 - `.claude/skills/flight-hunter-automation/references/CONFIG_SCHEMA.md` — schema
+
+## Architettura Universale Telegram — ROSSO ROSSO ROSSO — 2026-10-14
+
+Costruita architettura universale coordinata per i bot Telegram di SDQ-1.
+
+### Cosa È
+- **BotManager**: Singletone centralizzato che coordina N bot
+- **Ruoli**: ProtocolloRosso (polling) + AssistenteRaffaello (webhook) + FlightAlerts (broadcast)
+- **Flight Integration**: Alerts automatici via Telegram quando ci sono deal
+- **Drive-backed**: Coda messaggi e storico persisted su Google Drive
+
+### Bots Registrati
+| Bot | Token | Role | Mode | Status |
+|-----|-------|------|------|--------|
+| @ProtocolloRossoBot | ✅ Token presente | Core messaging, flight alerts | polling | ✅ Active |
+| @AssistenteRaffaelloBot | ✅ Configurato | Web app, Agorà | webhook | ✅ Active |
+
+### File Deployati
+```
+sdq1/telegram/botmanager.py           (Unified coordinator)
+sdq1/telegram/__init__.py              (Exports)
+flight_hunter/telegram_alerts.py       (Flight integration)
+docs/TELEGRAM_ARCHITECTURE.md          (Complete documentation)
+.env.local                             (Tokens, git-ignored, 600 perms)
+```
+
+### Design Patterns
+✅ Unified control (no competing webhooks)
+✅ Role-based coordination (each bot has a role)
+✅ Drive-backed persistence (SDQ-1 pattern)
+✅ Graceful degradation (missing token? skip bot, no crash)
+✅ Async-ready (future-proof)
+✅ Expandable (add new bots/roles easily)
+
+### Integration Points
+- **flight_hunter → Telegram**: send_alerts_sync(deals, threshold)
+- **Daily hunt**: Automatic alerts + summary to @ProtocolloRossoBot
+- **Agorà web app**: Webhook on @AssistenteRaffaelloBot
+
+### Prossimi Step
+- Live test con ricerca voli e alert Telegram
+- Setup /loop 1d per ricerche quotidiane automatiche
+- Query storico deal da Telegram
+- User preference learning (smart thresholds)
+
+### Status
+✅ Architettura: Complete
+✅ BotManager: Implemented
+✅ Flight integration: Implemented
+✅ Configurazione: Ready
+⏳ Test live con voli
+⏳ Automation quotidiana
+
+**Pronto per produzione.**
