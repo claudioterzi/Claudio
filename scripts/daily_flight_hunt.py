@@ -22,7 +22,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from flight_hunter.fonti import FonteRyanair
+from flight_hunter.fonti import fonti_disponibili
 from flight_hunter.telegram_alerts import send_alerts_sync, send_daily_summary
 from sdq1.telegram import get_bot_manager, BotRole
 
@@ -31,7 +31,6 @@ SEARCH_CONFIG = {
     "departure_cities": ["MXP", "BRU", "FCO"],
     "days_ahead": 14,
     "alert_threshold_eur": 45.0,
-    "historical_low_tracking": True,
 }
 
 TRACKER_SHEET_ID = "1ZCK-XpUeclNcvQ5UdA_payjEemMiq-LTHVq0SiKGyHQ"
@@ -52,32 +51,54 @@ def run_daily_hunt():
 
     all_deals = []
 
+    # Calculate date range
+    today = datetime.now()
+    tomorrow = today + timedelta(days=1)
+    end_date = today + timedelta(days=SEARCH_CONFIG["days_ahead"])
+    dal = tomorrow.strftime("%Y-%m-%d")
+    al = end_date.strftime("%Y-%m-%d")
+
+    fonti = fonti_disponibili()
+    print(f"📊 Available sources: {[f.nome for f in fonti]}\n")
+
     for city in SEARCH_CONFIG["departure_cities"]:
-        print(f"\n📍 Searching from {city}...")
+        print(f"📍 Searching from {city} ({dal} to {al})...")
         try:
-            fonte = FonteRyanair()
-            deals = fonte.occasioni(
-                origin=city,
-                days=SEARCH_CONFIG["days_ahead"]
-            )
+            for fonte in fonti:
+                try:
+                    offerte = fonte.offerte(da=city, dal=dal, al=al)
+                except Exception:
+                    continue
 
-            if deals:
-                print(f"   Found {len(deals)} flights")
+                if not offerte:
+                    continue
 
-                # Send individual alerts
-                result = send_alerts_sync(
-                    deals=deals,
-                    threshold=SEARCH_CONFIG["alert_threshold_eur"],
-                    city_from=city
-                )
-                print(f"   → Sent {result['sent']} alerts, skipped {result['skipped']}")
-                all_deals.extend(result.get("alerts", []))
-            else:
-                print(f"   No flights found")
+                deals = []
+                for offerta in offerte:
+                    deals.append({
+                        "da": offerta.da,
+                        "a": offerta.a,
+                        "prezzo": offerta.prezzo,
+                        "vettore": offerta.vettore,
+                        "giorno": offerta.giorno,
+                        "nome": offerta.nome,
+                        "paese": offerta.paese,
+                    })
+
+                if deals:
+                    print(f"   {fonte.nome}: {len(deals)} destinations")
+
+                    # Send individual alerts
+                    result = send_alerts_sync(
+                        deals=deals,
+                        threshold=SEARCH_CONFIG["alert_threshold_eur"],
+                        city_from=city
+                    )
+                    print(f"   → {result['sent']} alerts sent, {result['skipped']} skipped")
+                    all_deals.extend(result.get("alerts", []))
 
         except Exception as e:
             print(f"   ❌ Error: {e}")
-            continue
 
     # Send daily summary
     if all_deals:
