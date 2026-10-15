@@ -20,7 +20,7 @@ import shlex
 import ssl
 import asyncio
 from typing import Dict, List, Optional, Any, Tuple
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import zipfile
 import io
 
@@ -34,6 +34,26 @@ _SAFE_GIT_REMOTE = re.compile(
     r'ssh://[A-Za-z0-9._-]+@[A-Za-z0-9.-]+(:\d{1,5})?/[A-Za-z0-9._/-]+'
     r'|[A-Za-z0-9._-]+@[A-Za-z0-9.-]+:[A-Za-z0-9._/-]+'
 )
+
+
+def _safe_relative_path(name: Any) -> Optional[PurePosixPath]:
+    """Return name as a relative POSIX path if it is safe to write under a deploy root.
+
+    Rejects empty names, absolute paths, Windows drives/UNC/backslashes, '.' and '..'
+    components, NTFS streams and anything that is or aliases a .git directory.
+    """
+    if not isinstance(name, str) or not name or '\\' in name or '\x00' in name or ':' in name:
+        return None
+    if name.startswith('/'):
+        return None
+    parts = name.split('/')
+    for part in parts:
+        if part in ('', '.', '..'):
+            return None
+        folded = part.rstrip(' .').lower()
+        if folded == '.git' or folded.startswith('git~'):
+            return None
+    return PurePosixPath(*parts)
 
 
 def _tls_context() -> ssl.SSLContext:
@@ -335,48 +355,50 @@ class IONOSGitDeployer:
         if not git_remote or git_remote.startswith('-') or not _SAFE_GIT_REMOTE.fullmatch(git_remote):
             return {'success': False, 'error': f"Invalid git remote: {git_remote!r}"}
 
+        # Validate every file name before writing anything or running git.
+        files = []
+        for filename, content in (app_code or {}).items():
+            relative = _safe_relative_path(filename)
+            if relative is None:
+                return {'success': False, 'error': f"Invalid file name in app_code: {filename!r}"}
+            files.append((relative, content))
+        if not files:
+            return {'success': False, 'error': 'No files to deploy'}
+
         try:
-            import subprocess
+            import subprocess  # nosec B404
             import tempfile
-            import shutil
+
+            # Git ignores the user's and system's configuration (hooks, filters, aliases).
+            git_env = {**os.environ, 'GIT_CONFIG_GLOBAL': os.devnull, 'GIT_CONFIG_NOSYSTEM': '1'}
+
+            def git(*args, **kwargs):
+                return subprocess.run(['git', *args], cwd=tmpdir, check=True, env=git_env, **kwargs)  # nosec B603
 
             # Create temporary directory for git operations
             with tempfile.TemporaryDirectory() as tmpdir:
-                # Initialize git repo
-                subprocess.run(['git', 'init'], cwd=tmpdir, check=True)
-                subprocess.run(
-                    ['git', 'config', 'user.email', 'deploy@claudio.ai'],
-                    cwd=tmpdir,
-                    check=True
-                )
-                subprocess.run(
-                    ['git', 'config', 'user.name', 'Claude Deploy'],
-                    cwd=tmpdir,
-                    check=True
-                )
+                root = Path(tmpdir).resolve()
+                git('init')
+                git('config', 'user.email', 'deploy@claudio.ai')
+                git('config', 'user.name', 'Claude Deploy')
 
-                # Write files
-                for filename, content in app_code.items():
-                    filepath = Path(tmpdir) / filename
+                # Write files, refusing anything that resolves outside the temporary root
+                for relative, content in files:
+                    filepath = root.joinpath(*relative.parts)
                     filepath.parent.mkdir(parents=True, exist_ok=True)
+                    if root not in filepath.parent.resolve().parents and filepath.parent.resolve() != root:
+                        return {'success': False, 'error': f"File escapes deploy directory: {relative}"}
+                    if filepath.is_symlink():
+                        return {'success': False, 'error': f"Refusing to write through symlink: {relative}"}
                     filepath.write_text(content)
 
                 # Commit
-                subprocess.run(['git', 'add', '.'], cwd=tmpdir, check=True)
-                subprocess.run(
-                    ['git', 'commit', '-m', 'Auto-generated app deployment'],
-                    cwd=tmpdir,
-                    check=True
-                )
+                git('add', '.')
+                git('commit', '-m', 'Auto-generated app deployment')
 
                 # Push to IONOS; git runs ssh through a shell, so quote every option
-                ssh_command = shlex.join(['ssh', *_ssh_options(self.known_hosts)])
-                subprocess.run(
-                    ['git', 'push', '-u', git_remote, 'master'],
-                    cwd=tmpdir,
-                    check=True,
-                    env={**os.environ, 'GIT_SSH_COMMAND': ssh_command},
-                )
+                git_env['GIT_SSH_COMMAND'] = shlex.join(['ssh', *_ssh_options(self.known_hosts)])
+                git('push', '-u', git_remote, 'master')
 
                 return {
                     'success': True,
