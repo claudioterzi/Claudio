@@ -38,6 +38,10 @@ jobs:
         run: |
           mypy sdq1 --show-error-codes || true
 
+      - name: Run IONOS deploy security tests (blocking)
+        run: |
+          pytest -q tests/test_ionos_deploy_security.py
+
       - name: Run pytest (tests)
         continue-on-error: true
         run: |

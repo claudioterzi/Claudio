@@ -2,7 +2,13 @@
 
 import asyncio
 import importlib.util
+import shutil
+import socket
+import ssl
+import subprocess
 import sys
+import tempfile
+import threading
 import types
 import unittest
 from pathlib import Path
@@ -114,16 +120,21 @@ class SSHHostKeyTests(unittest.TestCase):
 
 class GitRepoCreationTests(unittest.TestCase):
     def setUp(self):
-        self.deployer = deploy.IONOSGitDeployer({'git_host': 'git.example.test', 'git_username': 'u'})
+        self.deployer = deploy.IONOSGitDeployer({
+            'git_host': 'git.example.test',
+            'git_username': 'u',
+            'known_hosts': '/tmp/known hosts',
+        })
 
     def test_rejects_shell_metacharacters_in_app_name(self):
         with mock.patch('subprocess.run') as run:
-            for name in ('x; rm -rf ~', '$(id)', '../etc', '-oProxyCommand=x', '', 'a' * 65):
+            for name in ('x; rm -rf ~', '$(id)', '../etc', '-oProxyCommand=x', '', 'a' * 65,
+                         'x\n', 'x\nid'):
                 result = asyncio.run(self.deployer.create_git_repo(name))
-                self.assertFalse(result['success'], name)
+                self.assertFalse(result['success'], repr(name))
             run.assert_not_called()
 
-    def test_runs_without_local_shell(self):
+    def test_runs_without_local_shell_and_with_strict_host_keys(self):
         with mock.patch('subprocess.run') as run:
             run.return_value = mock.Mock(returncode=0)
             result = asyncio.run(self.deployer.create_git_repo('my-app_1.0'))
@@ -131,9 +142,25 @@ class GitRepoCreationTests(unittest.TestCase):
         args, kwargs = run.call_args
         self.assertEqual(
             args[0],
-            ['ssh', '--', 'u@git.example.test', 'git', 'init', '--bare', '/var/git/my-app_1.0.git'],
+            ['ssh', '-o', 'StrictHostKeyChecking=yes', '-o', 'BatchMode=yes',
+             '-o', 'UserKnownHostsFile=/tmp/known hosts', '--',
+             'u@git.example.test', 'git', 'init', '--bare', '/var/git/my-app_1.0.git'],
         )
         self.assertNotIn('shell', kwargs)
+
+    def test_git_push_uses_strict_host_keys(self):
+        with mock.patch('subprocess.run') as run:
+            result = asyncio.run(self.deployer.push_and_deploy(
+                {'index.html': '<html></html>'}, 'app', 'ssh://u@git.example.test/var/git/app.git'))
+        self.assertTrue(result['success'], result)
+        push = [c for c in run.call_args_list if c.args[0][:2] == ['git', 'push']]
+        self.assertEqual(len(push), 1)
+        ssh_command = push[0].kwargs['env']['GIT_SSH_COMMAND']
+        self.assertEqual(
+            ssh_command,
+            "ssh -o StrictHostKeyChecking=yes -o BatchMode=yes "
+            "-o 'UserKnownHostsFile=/tmp/known hosts'",
+        )
 
 
 class FTPSTests(unittest.TestCase):
@@ -145,11 +172,68 @@ class FTPSTests(unittest.TestCase):
             result = asyncio.run(deployer.upload_app({'frontend': '<html></html>'}))
         self.assertTrue(result['success'], result)
         self.assertEqual(result['method'], 'FTPS')
-        ftp_tls.assert_called_once()
         plain_ftp.assert_not_called()
+        context = ftp_tls.call_args.kwargs['context']
+        self.assertEqual(context.verify_mode, ssl.CERT_REQUIRED)
+        self.assertTrue(context.check_hostname)
         calls = [c[0] for c in ftp.method_calls]
         self.assertLess(calls.index('auth'), calls.index('login'))
         self.assertLess(calls.index('login'), calls.index('prot_p'))
+
+
+@unittest.skipUnless(shutil.which('openssl'), 'openssl CLI not available')
+class TLSHandshakeTests(unittest.TestCase):
+    """Real TLS handshakes against a local server: the FTPS context must refuse bad certs."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.TemporaryDirectory()
+        cls.cert = Path(cls.tmp.name) / 'cert.pem'
+        cls.key = Path(cls.tmp.name) / 'key.pem'
+        subprocess.run(
+            ['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1',
+             '-subj', '/CN=localhost', '-addext', 'subjectAltName=DNS:localhost',
+             '-keyout', str(cls.key), '-out', str(cls.cert)],
+            check=True, capture_output=True,
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def _serve_once(self):
+        server_ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        server_ctx.load_cert_chain(self.cert, self.key)
+        listener = socket.create_server(('127.0.0.1', 0))
+        self.addCleanup(listener.close)
+
+        def accept():
+            try:
+                conn, _ = listener.accept()
+                with server_ctx.wrap_socket(conn, server_side=True):
+                    pass
+            except (OSError, ssl.SSLError):
+                pass
+
+        threading.Thread(target=accept, daemon=True).start()
+        return listener.getsockname()[1]
+
+    def _handshake(self, context, server_hostname):
+        port = self._serve_once()
+        with socket.create_connection(('127.0.0.1', port), timeout=5) as raw, \
+                context.wrap_socket(raw, server_hostname=server_hostname):
+            pass
+
+    def test_rejects_untrusted_self_signed_certificate(self):
+        with self.assertRaises(ssl.SSLCertVerificationError):
+            self._handshake(deploy._tls_context(), 'localhost')
+
+    def test_rejects_hostname_mismatch_even_with_trusted_ca(self):
+        context = deploy._tls_context()
+        context.load_verify_locations(self.cert)
+        self._handshake(context, 'localhost')  # trusted CA + right name: accepted
+        with self.assertRaises(ssl.SSLCertVerificationError):
+            self._handshake(context, 'ftp.ionos.com')
 
 
 if __name__ == '__main__':

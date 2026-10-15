@@ -16,6 +16,8 @@ refuses unknown hosts.
 
 import os
 import re
+import shlex
+import ssl
 import asyncio
 from typing import Dict, List, Optional, Any, Tuple
 from pathlib import Path
@@ -23,7 +25,21 @@ import zipfile
 import io
 
 # Repository names end up in a remote shell command: allow only safe characters.
-_SAFE_APP_NAME = re.compile(r'^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$')
+# Always use fullmatch: '$' alone would also accept a trailing newline.
+_SAFE_APP_NAME = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}')
+
+
+def _tls_context() -> ssl.SSLContext:
+    """TLS context that verifies the server certificate and hostname."""
+    return ssl.create_default_context()
+
+
+def _ssh_options(known_hosts: Optional[str] = None) -> List[str]:
+    """OpenSSH options that refuse unknown or changed host keys, never prompting."""
+    options = ['-o', 'StrictHostKeyChecking=yes', '-o', 'BatchMode=yes']
+    if known_hosts:
+        options += ['-o', f'UserKnownHostsFile={known_hosts}']
+    return options
 
 
 def _connect_ssh_client(
@@ -78,7 +94,7 @@ class IONOSFTPDeployer:
             # TLS is negotiated before login and enforced on the data channel.
             import ftplib  # nosec B402
 
-            ftp = ftplib.FTP_TLS()  # nosec B321
+            ftp = ftplib.FTP_TLS(context=_tls_context())  # nosec B321
             ftp.connect(self.host, self.port, timeout=30)
             ftp.auth()
             ftp.login(self.username, self.password)
@@ -263,13 +279,14 @@ class IONOSGitDeployer:
         self.username = credentials.get('git_username')
         self.password = credentials.get('git_password')
         self.ssh_key = credentials.get('git_ssh_key')
+        self.known_hosts = credentials.get('known_hosts')
 
     async def create_git_repo(self, app_name: str) -> Dict[str, Any]:
         """Create Git repository on IONOS."""
         try:
             import subprocess  # nosec B404
 
-            if not _SAFE_APP_NAME.match(app_name or ''):
+            if not _SAFE_APP_NAME.fullmatch(app_name or ''):
                 return {'success': False, 'error': f"Invalid app name: {app_name!r}"}
             if not self.username or not self.host:
                 return {'success': False, 'error': 'Git SSH user or host not configured'}
@@ -278,7 +295,10 @@ class IONOSGitDeployer:
             repo_path = f"/var/git/{app_name}.git"
 
             # No local shell; '--' stops ssh from parsing the destination as an option.
-            cmd = ['ssh', '--', f"{self.username}@{self.host}", 'git', 'init', '--bare', repo_path]
+            cmd = [
+                'ssh', *_ssh_options(self.known_hosts), '--',
+                f"{self.username}@{self.host}", 'git', 'init', '--bare', repo_path,
+            ]
             result = subprocess.run(cmd, capture_output=True, timeout=60)  # nosec B603
             if result.returncode != 0:
                 return {'success': False, 'error': f"Command failed: {' '.join(cmd)}"}
@@ -332,11 +352,13 @@ class IONOSGitDeployer:
                     check=True
                 )
 
-                # Push to IONOS
+                # Push to IONOS; git runs ssh through a shell, so quote every option
+                ssh_command = shlex.join(['ssh', *_ssh_options(self.known_hosts)])
                 subprocess.run(
                     ['git', 'push', '-u', git_remote, 'master'],
                     cwd=tmpdir,
-                    check=True
+                    check=True,
+                    env={**os.environ, 'GIT_SSH_COMMAND': ssh_command},
                 )
 
                 return {
