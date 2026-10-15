@@ -3,26 +3,66 @@
 IONOS Direct Deployment — FTP/SFTP/SSH publishing for generated apps.
 
 Strategies:
-1. FTP Classic — Pure FTP upload to IONOS hosting
+1. FTPS — FTP over explicit TLS (plain FTP is refused)
 2. SFTP Secure — SFTP over SSH for secure transfer
 3. Git Push — Git repository on IONOS hosting
 4. WebDAV — WebDAV protocol for web publishing
 5. SSH Exec — Direct SSH commands for deployment
+
+Every SSH-based connection verifies the server host key against known_hosts
+(system file, or the path given as 'known_hosts' in the credentials) and
+refuses unknown hosts.
 """
 
 import os
+import re
 import asyncio
 from typing import Dict, List, Optional, Any, Tuple
 from pathlib import Path
 import zipfile
 import io
 
+# Repository names end up in a remote shell command: allow only safe characters.
+_SAFE_APP_NAME = re.compile(r'^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$')
+
+
+def _connect_ssh_client(
+    host: Optional[str],
+    port: int,
+    username: Optional[str],
+    password: Optional[str] = None,
+    key_filename: Optional[str] = None,
+    known_hosts: Optional[str] = None,
+):
+    """Open a paramiko SSHClient that rejects hosts missing from known_hosts."""
+    import paramiko
+
+    if not host:
+        raise ValueError('SSH host not configured')
+
+    client = paramiko.SSHClient()
+    client.load_system_host_keys()
+    if known_hosts:
+        client.load_host_keys(known_hosts)
+    client.set_missing_host_key_policy(paramiko.RejectPolicy())
+    client.connect(
+        host,
+        port=port,
+        username=username,
+        password=None if key_filename else password,
+        key_filename=key_filename,
+        look_for_keys=False,
+        allow_agent=False,
+        timeout=30,
+    )
+    return client
+
 
 class IONOSFTPDeployer:
-    """Deploy apps directly to IONOS hosting via FTP."""
+    """Deploy apps directly to IONOS hosting via FTPS (FTP over TLS)."""
 
     def __init__(self, credentials: Dict[str, str]):
-        """Initialize FTP deployer."""
+        """Initialize FTPS deployer."""
         self.host = credentials.get('ftp_host', 'ftp.ionos.com')
         self.username = credentials.get('ftp_username')
         self.password = credentials.get('ftp_password')
@@ -33,13 +73,16 @@ class IONOSFTPDeployer:
         app_code: Dict[str, str],  # {frontend, backend, database}
         target_path: str = '/web'
     ) -> Dict[str, Any]:
-        """Upload generated app via FTP."""
+        """Upload generated app via FTPS."""
         try:
-            import ftplib
+            # TLS is negotiated before login and enforced on the data channel.
+            import ftplib  # nosec B402
 
-            ftp = ftplib.FTP()
+            ftp = ftplib.FTP_TLS()  # nosec B321
             ftp.connect(self.host, self.port, timeout=30)
+            ftp.auth()
             ftp.login(self.username, self.password)
+            ftp.prot_p()
 
             # Create directory structure
             await self._create_directories(ftp, target_path)
@@ -68,7 +111,7 @@ class IONOSFTPDeployer:
 
             return {
                 'success': True,
-                'method': 'FTP',
+                'method': 'FTPS',
                 'url': f"https://{self.host.replace('ftp.', 'www.')}/{target_path}",
                 'frontend_path': f"{target_path}/public",
                 'backend_path': f"{target_path}/api",
@@ -78,6 +121,8 @@ class IONOSFTPDeployer:
 
     async def _create_directories(self, ftp, base_path: str) -> bool:
         """Create directory structure on FTP server."""
+        import ftplib  # nosec B402
+
         try:
             directories = [
                 base_path,
@@ -127,6 +172,7 @@ class IONOSSFTPDeployer:
         self.password = credentials.get('sftp_password')
         self.port = int(credentials.get('sftp_port', 22))
         self.private_key = credentials.get('sftp_private_key')
+        self.known_hosts = credentials.get('known_hosts')
 
     async def upload_app(
         self,
@@ -135,19 +181,15 @@ class IONOSSFTPDeployer:
     ) -> Dict[str, Any]:
         """Upload generated app via SFTP."""
         try:
-            import paramiko
-
-            transport = paramiko.Transport((self.host, self.port))
-
-            if self.private_key:
-                # Use SSH key
-                private_key = paramiko.RSAKey.from_private_key_file(self.private_key)
-                transport.connect(username=self.username, pkey=private_key)
-            else:
-                # Use password
-                transport.connect(username=self.username, password=self.password)
-
-            sftp = paramiko.SFTPClient.from_transport(transport)
+            client = _connect_ssh_client(
+                self.host,
+                self.port,
+                self.username,
+                password=self.password,
+                key_filename=self.private_key,
+                known_hosts=self.known_hosts,
+            )
+            sftp = client.open_sftp()
 
             # Create directory structure
             await self._create_directories(sftp, target_path)
@@ -177,7 +219,7 @@ class IONOSSFTPDeployer:
                 uploads.append('database')
 
             sftp.close()
-            transport.close()
+            client.close()
 
             return {
                 'success': True,
@@ -225,20 +267,21 @@ class IONOSGitDeployer:
     async def create_git_repo(self, app_name: str) -> Dict[str, Any]:
         """Create Git repository on IONOS."""
         try:
-            import subprocess
+            import subprocess  # nosec B404
 
-            # Create bare repository
+            if not _SAFE_APP_NAME.match(app_name or ''):
+                return {'success': False, 'error': f"Invalid app name: {app_name!r}"}
+            if not self.username or not self.host:
+                return {'success': False, 'error': 'Git SSH user or host not configured'}
+
+            # Create bare repository (git init creates the directory)
             repo_path = f"/var/git/{app_name}.git"
 
-            commands = [
-                f"ssh {self.username}@{self.host} 'mkdir -p {repo_path}'",
-                f"ssh {self.username}@{self.host} 'cd {repo_path} && git init --bare'",
-            ]
-
-            for cmd in commands:
-                result = subprocess.run(cmd, shell=True, capture_output=True)
-                if result.returncode != 0:
-                    return {'success': False, 'error': f"Command failed: {cmd}"}
+            # No local shell; '--' stops ssh from parsing the destination as an option.
+            cmd = ['ssh', '--', f"{self.username}@{self.host}", 'git', 'init', '--bare', repo_path]
+            result = subprocess.run(cmd, capture_output=True, timeout=60)  # nosec B603
+            if result.returncode != 0:
+                return {'success': False, 'error': f"Command failed: {' '.join(cmd)}"}
 
             return {
                 'success': True,
@@ -315,6 +358,7 @@ class IONOSSSHDeployer:
         self.password = credentials.get('ssh_password')
         self.port = int(credentials.get('ssh_port', 22))
         self.private_key = credentials.get('ssh_private_key')
+        self.known_hosts = credentials.get('known_hosts')
 
     async def execute_deployment(
         self,
@@ -324,29 +368,17 @@ class IONOSSSHDeployer:
     ) -> Dict[str, Any]:
         """Execute deployment via SSH."""
         try:
-            import paramiko
+            ssh = _connect_ssh_client(
+                self.host,
+                self.port,
+                self.username,
+                password=self.password,
+                key_filename=self.private_key,
+                known_hosts=self.known_hosts,
+            )
 
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-            if self.private_key:
-                private_key = paramiko.RSAKey.from_private_key_file(self.private_key)
-                ssh.connect(
-                    self.host,
-                    port=self.port,
-                    username=self.username,
-                    pkey=private_key
-                )
-            else:
-                ssh.connect(
-                    self.host,
-                    port=self.port,
-                    username=self.username,
-                    password=self.password
-                )
-
-            # Execute deployment script
-            stdin, stdout, stderr = ssh.exec_command(deployment_script)
+            # Execute deployment script (operator-supplied, runs on the remote host)
+            stdin, stdout, stderr = ssh.exec_command(deployment_script)  # nosec B601
 
             output = stdout.read().decode()
             error = stderr.read().decode()
