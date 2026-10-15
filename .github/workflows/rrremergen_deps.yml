@@ -1,0 +1,40 @@
+name: RRREMERGEN dependencies
+
+# Blocking check that rrremergen/requirements.txt resolves on the Vercel runtime
+# (Python 3.12, uv) and that the backend tests pass with what it installs.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'rrremergen/**'
+      - '.github/workflows/rrremergen_deps.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'rrremergen/**'
+      - '.github/workflows/rrremergen_deps.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  resolve-and-test:
+    name: Resolve, pip check and backend tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install uv
+        run: python -m pip install uv
+      - name: Resolve requirements (same resolver family as the Vercel build)
+        run: uv pip compile --python-version 3.12 rrremergen/requirements.txt -o /tmp/rrremergen-lock.txt
+      - name: Install resolved set
+        run: uv pip install --system -r /tmp/rrremergen-lock.txt pytest
+      - name: pip check
+        run: python -m pip check
+      - name: Backend tests (offline)
+        run: python -m pytest -q rrremergen/test_pipeline.py rrremergen/test_mistral_sdk.py
