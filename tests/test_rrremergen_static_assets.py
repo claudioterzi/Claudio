@@ -42,6 +42,13 @@ class RRRemergenStaticAssetsTests(unittest.TestCase):
                 missing.append(f'{ref} -> {url_path} -> {target.relative_to(ROOT)}')
         self.assertEqual(missing, [], 'assets not served:\n' + '\n'.join(missing))
 
+    def test_frontend_build_script_targets_rrremergen_base(self):
+        # The page above is build output; the next Vite build must keep the /rrremergen/ base.
+        scripts = json.loads((ROOT / 'studio' / 'web' / 'package.json').read_text())['scripts']
+        build = scripts.get('build:rrremergen', '')
+        self.assertIn('--base=/rrremergen/', build)
+        self.assertIn('--outDir ../../public/rrremergen', build)
+
 
 if __name__ == '__main__':
     unittest.main()
