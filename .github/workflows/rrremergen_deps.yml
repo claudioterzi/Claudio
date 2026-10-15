@@ -1,7 +1,11 @@
 name: RRREMERGEN dependencies
 
-# Blocking check that rrremergen/requirements.txt resolves on the Vercel runtime
-# (Python 3.12, uv) and that the backend tests pass with what it installs.
+# Blocking check of rrremergen's committed lock (requirements.txt: exact versions and
+# hashes, generated from requirements.in) on the Vercel runtime version, plus the
+# offline backend tests.
+#
+# Note: the Vercel Python builder converts requirements.txt and drops the hashes before
+# its own `uv lock`, so the hash check below protects CI installs, not the production build.
 on:
   pull_request:
     branches: [main]
@@ -28,13 +32,32 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install uv
-        run: python -m pip install uv
-      - name: Resolve requirements (same resolver family as the Vercel build)
-        run: uv pip compile --python-version 3.12 rrremergen/requirements.txt -o /tmp/rrremergen-lock.txt
-      - name: Install resolved set
-        run: uv pip install --system -r /tmp/rrremergen-lock.txt pytest
+      - name: A tampered hash must be rejected
+        run: |
+          python - <<'EOF'
+          import pathlib, re
+          lock = pathlib.Path('rrremergen/requirements.txt').read_text()
+          block = re.search(r'^python-dotenv==\S+ \\\n(?:    --hash=sha256:[0-9a-f]{64}(?: \\\n|\n))+', lock, re.M).group(0)
+          bad = re.sub(r'sha256:[0-9a-f]{64}', 'sha256:' + '0' * 64, block)
+          pathlib.Path('/tmp/tampered.txt').write_text(bad)
+          EOF
+          if python -m pip install --no-deps --require-hashes --dry-run -r /tmp/tampered.txt; then
+            echo "tampered hash was accepted"; exit 1
+          fi
+      - name: Install the committed lock with hash checking
+        run: python -m pip install --require-hashes --no-deps -r rrremergen/requirements.txt
       - name: pip check
         run: python -m pip check
+      - name: Lock satisfies requirements.in
+        run: |
+          python -m pip install --dry-run -r rrremergen/requirements.in --report /tmp/report.json --quiet
+          python - <<'EOF'
+          import json, sys
+          extra = [i['metadata']['name'] for i in json.load(open('/tmp/report.json'))['install']]
+          if extra:
+              sys.exit(f'requirements.in needs packages missing from the lock: {extra}')
+          EOF
       - name: Backend tests (offline)
-        run: python -m pytest -q rrremergen/test_pipeline.py rrremergen/test_mistral_sdk.py
+        run: |
+          python -m pip install pytest
+          python -m pytest -q rrremergen/test_pipeline.py rrremergen/test_mistral_sdk.py
