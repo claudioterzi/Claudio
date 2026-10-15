@@ -47,9 +47,12 @@ class _FakeSSHClient:
         sftp.mkdir.side_effect = OSError('exists')
         return sftp
 
+    exit_status = 0
+
     def exec_command(self, command):
         out = mock.MagicMock()
         out.read.return_value = b'ok'
+        out.channel.recv_exit_status.return_value = self.exit_status
         err = mock.MagicMock()
         err.read.return_value = b''
         return None, out, err
@@ -113,6 +116,12 @@ class SSHHostKeyTests(unittest.TestCase):
         self.assertEqual(client.connect_kwargs['key_filename'], '/keys/id_ed25519')
         self.assertIsNone(client.connect_kwargs['password'])
 
+    def test_ssh_failure_is_reported_even_with_empty_stderr(self):
+        with mock.patch.object(_FakeSSHClient, 'exit_status', 1):
+            result = asyncio.run(deploy.IONOSSSHDeployer({'ssh_host': 'h'}).execute_deployment({}, 'false'))
+        self.assertFalse(result['success'])
+        self.assertEqual(result['exit_status'], 1)
+
     def test_missing_host_is_an_error(self):
         result = asyncio.run(deploy.IONOSSSHDeployer({}).execute_deployment({}, 'true'))
         self.assertFalse(result['success'])
@@ -148,6 +157,14 @@ class GitRepoCreationTests(unittest.TestCase):
         )
         self.assertNotIn('shell', kwargs)
 
+    def test_git_push_rejects_option_like_or_foreign_remotes(self):
+        with mock.patch('subprocess.run') as run:
+            for remote in ('--receive-pack=x', '-oProxyCommand=x', '--repo=ext::sh', 'ext::sh -c id',
+                           'file:///etc', 'ssh://u@h/repo\n', '', 'u@h:repo; id'):
+                result = asyncio.run(self.deployer.push_and_deploy({'a': 'b'}, 'app', remote))
+                self.assertFalse(result['success'], repr(remote))
+            run.assert_not_called()
+
     def test_git_push_uses_strict_host_keys(self):
         with mock.patch('subprocess.run') as run:
             result = asyncio.run(self.deployer.push_and_deploy(
@@ -179,6 +196,18 @@ class FTPSTests(unittest.TestCase):
         calls = [c[0] for c in ftp.method_calls]
         self.assertLess(calls.index('auth'), calls.index('login'))
         self.assertLess(calls.index('login'), calls.index('prot_p'))
+
+
+class FTPSUploadFailureTests(unittest.TestCase):
+    def test_failed_upload_is_not_reported_as_success(self):
+        ftp = mock.MagicMock()
+        ftp.storbinary.side_effect = OSError('550 permission denied')
+        with mock.patch('ftplib.FTP_TLS', return_value=ftp):
+            deployer = deploy.IONOSFTPDeployer({'ftp_username': 'u', 'ftp_password': 'p'})
+            result = asyncio.run(deployer.upload_app({'frontend': 'x', 'backend': 'y'}))
+        self.assertFalse(result['success'])
+        self.assertIn('frontend', result['error'])
+        self.assertIn('backend', result['error'])
 
 
 @unittest.skipUnless(shutil.which('openssl'), 'openssl CLI not available')

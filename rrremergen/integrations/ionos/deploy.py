@@ -28,6 +28,13 @@ import io
 # Always use fullmatch: '$' alone would also accept a trailing newline.
 _SAFE_APP_NAME = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}')
 
+# Push targets: ssh://user@host[:port]/path or scp-style user@host:path, nothing that git
+# could read as an option or as another transport (ext::, file://, ...).
+_SAFE_GIT_REMOTE = re.compile(
+    r'ssh://[A-Za-z0-9._-]+@[A-Za-z0-9.-]+(:\d{1,5})?/[A-Za-z0-9._/-]+'
+    r'|[A-Za-z0-9._-]+@[A-Za-z0-9.-]+:[A-Za-z0-9._/-]+'
+)
+
 
 def _tls_context() -> ssl.SSLContext:
     """TLS context that verifies the server certificate and hostname."""
@@ -103,27 +110,34 @@ class IONOSFTPDeployer:
             # Create directory structure
             await self._create_directories(ftp, target_path)
 
+            failed = []
+
             # Upload frontend
             if app_code.get('frontend'):
                 frontend_path = f"{target_path}/public"
-                await self._upload_file(
+                if not await self._upload_file(
                     ftp,
                     frontend_path,
                     'index.html',
                     app_code['frontend']
-                )
+                ):
+                    failed.append('frontend')
 
             # Upload backend (PHP/Node.js compatible format)
             if app_code.get('backend'):
                 backend_path = f"{target_path}/api"
-                await self._upload_file(
+                if not await self._upload_file(
                     ftp,
                     backend_path,
                     'index.php',
                     app_code['backend']
-                )
+                ):
+                    failed.append('backend')
 
             ftp.quit()
+
+            if failed:
+                return {'success': False, 'method': 'FTPS', 'error': f"Upload failed: {', '.join(failed)}"}
 
             return {
                 'success': True,
@@ -318,6 +332,9 @@ class IONOSGitDeployer:
         git_remote: str
     ) -> Dict[str, Any]:
         """Push code and trigger deployment."""
+        if not git_remote or git_remote.startswith('-') or not _SAFE_GIT_REMOTE.fullmatch(git_remote):
+            return {'success': False, 'error': f"Invalid git remote: {git_remote!r}"}
+
         try:
             import subprocess
             import tempfile
@@ -404,12 +421,15 @@ class IONOSSSHDeployer:
 
             output = stdout.read().decode()
             error = stderr.read().decode()
+            exit_status = stdout.channel.recv_exit_status()
 
             ssh.close()
 
+            # Many tools write progress to stderr: the exit status decides.
             return {
-                'success': not error,
+                'success': exit_status == 0,
                 'method': 'SSH',
+                'exit_status': exit_status,
                 'output': output,
                 'error': error,
             }
