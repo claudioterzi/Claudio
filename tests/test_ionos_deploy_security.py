@@ -128,6 +128,77 @@ class SSHHostKeyTests(unittest.TestCase):
         self.assertFalse(result['success'])
 
 
+class _PreparedTempDir:
+    """Stand-in for tempfile.TemporaryDirectory that yields a directory prepared by the test."""
+
+    def __init__(self, path):
+        self.path = path
+
+    def __call__(self, *args, **kwargs):
+        return self
+
+    def __enter__(self):
+        return str(self.path)
+
+    def __exit__(self, *exc):
+        return False
+
+
+class GitPushFilesystemTests(unittest.TestCase):
+    def setUp(self):
+        self.deployer = deploy.IONOSGitDeployer({'git_host': 'git.example.test', 'git_username': 'u'})
+        self.base = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.base, True)
+
+    @unittest.skipUnless(hasattr(os, 'symlink'), 'symlinks not supported')
+    def test_symlinks_inside_the_deploy_root_cannot_redirect_writes(self):
+        outside = self.base / 'outside'
+        outside.mkdir()
+        sentinel = outside / 'sentinel.txt'
+        sentinel.write_text('ORIGINAL')
+        root = self.base / 'root'
+        root.mkdir()
+        try:
+            (root / 'linkdir').symlink_to(outside, target_is_directory=True)
+            (root / 'linkfile.txt').symlink_to(sentinel)
+        except OSError as exc:  # e.g. Windows without symlink privilege
+            self.skipTest(f'cannot create symlinks here: {exc}')
+
+        with mock.patch('tempfile.TemporaryDirectory', _PreparedTempDir(root)), \
+                mock.patch('subprocess.run', return_value=mock.Mock(returncode=0)):
+            via_dir = asyncio.run(self.deployer.push_and_deploy(
+                {'linkdir/new.txt': 'X'}, 'app', 'u@h.example:repo.git'))
+            via_file = asyncio.run(self.deployer.push_and_deploy(
+                {'linkfile.txt': 'X'}, 'app', 'u@h.example:repo.git'))
+
+        self.assertFalse(via_dir['success'], via_dir)
+        self.assertFalse(via_file['success'], via_file)
+        self.assertFalse((outside / 'new.txt').exists())
+        self.assertEqual(sentinel.read_text(), 'ORIGINAL')
+
+    @unittest.skipUnless(shutil.which('git'), 'git not available')
+    def test_real_git_commits_nested_files(self):
+        real_run = subprocess.run
+        pushed = {}
+
+        def run(cmd, *args, **kwargs):
+            if cmd[:2] == ['git', 'push']:
+                listing = real_run(['git', 'ls-files'], cwd=kwargs['cwd'], env=kwargs['env'],
+                                   capture_output=True, text=True, check=True)
+                pushed['files'] = sorted(listing.stdout.split())
+                pushed['ssh'] = kwargs['env']['GIT_SSH_COMMAND']
+                return mock.Mock(returncode=0)
+            return real_run(cmd, *args, capture_output=True, **kwargs)
+
+        with mock.patch('subprocess.run', side_effect=run):
+            result = asyncio.run(self.deployer.push_and_deploy(
+                {'index.html': 'a', 'public/css/site.css': 'b'}, 'app', 'u@h.example:repo.git'))
+
+        self.assertTrue(result['success'], result)
+        self.assertEqual(pushed['files'], ['index.html', 'public/css/site.css'])
+        self.assertIn('StrictHostKeyChecking=yes', pushed['ssh'])
+
+
 class GitRepoCreationTests(unittest.TestCase):
     def setUp(self):
         self.deployer = deploy.IONOSGitDeployer({
