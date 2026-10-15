@@ -2,6 +2,7 @@
 
 import asyncio
 import importlib.util
+import os
 import shutil
 import socket
 import ssl
@@ -164,6 +165,43 @@ class GitRepoCreationTests(unittest.TestCase):
                 result = asyncio.run(self.deployer.push_and_deploy({'a': 'b'}, 'app', remote))
                 self.assertFalse(result['success'], repr(remote))
             run.assert_not_called()
+
+    def test_unsafe_file_names_are_rejected_before_any_write_or_git(self):
+        outside = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, outside, True)
+        sentinel = outside / 'sentinel.txt'
+        sentinel.write_text('ORIGINAL')
+        bad_names = [str(sentinel), '/etc/passwd', '../escape.txt', 'a/../../escape.txt', './x', 'a//b',
+                     '', 'C:/x.txt', 'C:x.txt', '\\\\server\\share\\x', 'dir\\x.txt', '.git/config',
+                     '.GIT/hooks/pre-commit', 'sub/.git/config', '.git./config', '.git /config',
+                     'GIT~1/config', 'file.txt:stream', 'nul\x00.txt']
+        with mock.patch('subprocess.run') as run:
+            for name in bad_names:
+                result = asyncio.run(self.deployer.push_and_deploy(
+                    {'ok.txt': 'fine', name: 'OVERWRITTEN'}, 'app', 'ssh://u@h.example/r.git'))
+                self.assertFalse(result['success'], repr(name))
+            run.assert_not_called()
+        self.assertEqual(sentinel.read_text(), 'ORIGINAL')
+
+    def test_nested_valid_names_are_written_inside_the_temp_root(self):
+        written = {}
+
+        def fake_run(cmd, cwd=None, **kwargs):
+            if cmd[:2] == ['git', 'add']:
+                root = Path(cwd)
+                written.update({p.relative_to(root).as_posix(): p.read_text()
+                                for p in root.rglob('*') if p.is_file()})
+            return mock.Mock(returncode=0)
+
+        with mock.patch('subprocess.run', side_effect=fake_run) as run:
+            result = asyncio.run(self.deployer.push_and_deploy(
+                {'index.html': 'a', 'public/css/site.css': 'b', 'api/v1/x.py': 'c'},
+                'app', 'u@h.example:repo.git'))
+        self.assertTrue(result['success'], result)
+        self.assertEqual(written, {'index.html': 'a', 'public/css/site.css': 'b', 'api/v1/x.py': 'c'})
+        for call in run.call_args_list:
+            self.assertEqual(call.kwargs['env']['GIT_CONFIG_NOSYSTEM'], '1')
+            self.assertEqual(call.kwargs['env']['GIT_CONFIG_GLOBAL'], os.devnull)
 
     def test_git_push_uses_strict_host_keys(self):
         with mock.patch('subprocess.run') as run:
