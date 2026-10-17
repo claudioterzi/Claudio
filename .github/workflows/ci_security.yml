@@ -158,6 +158,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install the locked React dependencies
+        run: npm ci --prefix studio/web --ignore-scripts --no-audit --no-fund
+      - name: Build the standalone app and published RRREMERGEN bundle
+        run: |
+          npm run build --prefix studio/web
+          npm run build:rrremergen --prefix studio/web
+      - name: Require current checked-in production assets
+        run: |
+          git diff --exit-code -- public/rrremergen
+          test -z "$(git ls-files --others --exclude-standard -- public/rrremergen)"
+      - name: Lint the telemetry integration
+        working-directory: studio/web
+        run: npx --no-install eslint src/main.jsx src/RrremergenSpeedInsights.jsx src/speed-insights-privacy.js
       - name: Verify streaming and published asset contracts
         run: node --test rrremergen/frontend/*.test.mjs
 
