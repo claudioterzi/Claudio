@@ -3,7 +3,7 @@
 'use strict';
 var PUBLIC_HASH_KEY='raffaello.public.code.hash.v1';
 var PRIVATE_SESSION_KEY='raffaello.private.session.v1';
-var privateRoute=/^\/(?:privato|dati|orchestratore|r3-evoluzione|r3-riprendi|home|progetti|creazioni|scritti|codice-gaia|idee|idea-os|idea-document|progetti-indice)(?:\.html)?\/?$/i;
+var privateRoute=/^\/(?:libro-idee|privato|dati|orchestratore|r3-evoluzione|r3-riprendi|home|progetti|creazioni|scritti|codice-gaia|idee|idea-os|idea-document|progetti-indice)(?:\.html)?\/?$/i;
 function isPrivate(path){return privateRoute.test(path)||/^\/idee\/IDEA-\d+\/?$/i.test(path)||/^\/custode(?:\/|$)/i.test(path)}
 function safeReturn(value){
   if(typeof value!=='string'||!value.startsWith('/')||value.startsWith('//')||/[\\\x00-\x1f\x7f]/.test(value))return '';
@@ -13,7 +13,7 @@ function safeReturn(value){
     Array.from(url.searchParams.keys()).forEach(function(key){
       if(/(?:token|password|secret|bypass|initdata|tgwebapp|^code$)/i.test(key)||(/^\/atelier(?:\.html)?\/?$/.test(url.pathname)&&/^(?:q|intenzione)$/.test(key)))url.searchParams.delete(key);
     });
-    if(/(?:token|password|secret|bypass|initdata|tgwebapp)[^=&]*=|(?:^|[&#])code=/i.test(url.hash))url.hash='';
+    if(/(?:token|password|secret|bypass|initdata|tgwebapp|key)[^=&]*=|(?:^|[&#])code=/i.test(url.hash))url.hash='';
     return url.pathname+url.search+url.hash;
   }catch(e){return ''}
 }
@@ -29,6 +29,10 @@ try{
   publicOK=Boolean(localStorage.getItem(PUBLIC_HASH_KEY));
 }catch(e){}
 if((requiresPrivate&&!privateOK)||(!requiresPrivate&&!privateOK&&!publicOK)){
+  if(/^\/libro-idee\/?$/.test(location.pathname)){
+    var bookMatch=/^#key=([A-Za-z0-9_-]{43})(?:&|$)/.exec(location.hash);
+    if(bookMatch){try{sessionStorage.setItem('r3.book.pending.key.v1',bookMatch[1])}catch(_){}}
+  }
   var destination=safeReturn(location.pathname+(location.search||'')+(location.hash||''))||'/';
   location.replace('/accesso?reason='+(requiresPrivate?'private':'public')+'&return='+encodeURIComponent(destination));
 }
