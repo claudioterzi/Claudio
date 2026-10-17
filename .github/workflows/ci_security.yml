@@ -4,8 +4,16 @@ on:
   push:
     paths:
       - '**.py'
-      - 'requirements.txt'
+      - '**/requirements*.txt'
+      - 'requirements*.txt'
+      - '**/pytest.ini'
+      - 'rrremergen/frontend/**'
+      - 'public/rrremergen/**'
+      - 'studio/web/**'
+      - 'vercel.json'
       - '.github/workflows/**'
+  pull_request:
+    branches: [main]
   workflow_dispatch: {}
 
 jobs:
@@ -25,54 +33,129 @@ jobs:
       - name: Install dependencies + tools
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
+          python -m pip install -r requirements.txt
           pip install --no-cache-dir ruff mypy pytest coverage bandit pip-audit detect-secrets 'fakeredis[lua]'
 
-      - name: Run ruff (lint)
+      - name: Advisory ruff (lint)
         continue-on-error: true
         run: |
-          ruff check . --format=github > ruff.txt || true
+          ruff check . --output-format=github > ruff.txt
 
-      - name: Run mypy (typing)
+      - name: Advisory mypy (typing)
         continue-on-error: true
         run: |
-          mypy sdq1 --show-error-codes || true
+          mypy sdq1 --show-error-codes
 
       - name: Run IONOS deploy security tests (blocking)
         run: |
           pytest -q tests/test_ionos_deploy_security.py
 
-      - name: Run pytest (tests)
+      - name: Advisory pip-audit (vulns)
         continue-on-error: true
         run: |
-          pytest -q || true
-          coverage run -m pytest || true
-          coverage xml -i || true
+          if [ -f requirements.txt ]; then pip-audit -r requirements.txt -f json -o pip_audit.json; fi
 
-      - name: Run pip-audit (vulns)
+      - name: Advisory RRREMERGEN dependency audit
         continue-on-error: true
-        run: |
-          if [ -f requirements.txt ]; then pip-audit -r requirements.txt -f json -o pip_audit.json || true; fi
+        run: pip-audit -r rrremergen/requirements.txt -f json -o rrremergen_pip_audit.json
 
-      - name: Run bandit (security static)
+      - name: Advisory bot dependency audit
         continue-on-error: true
-        run: |
-          bandit -r sdq1 -f json -o bandit.json || true
+        run: pip-audit -r integrations/raffaello-bot/requirements.txt -f json -o bot_pip_audit.json
 
-      - name: Run detect-secrets (quick scan)
+      - name: Advisory bandit (security static)
         continue-on-error: true
         run: |
-          detect-secrets scan --all-files > detect_secrets.out || true
+          bandit -r sdq1 -f json -o bandit.json
+
+      - name: Advisory detect-secrets (quick scan)
+        continue-on-error: true
+        run: |
+          detect-secrets scan --all-files > detect_secrets.out
 
       - name: Upload scan artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ci-security-artifacts
           path: |
             ruff.txt
             pip_audit.json
+            rrremergen_pip_audit.json
+            bot_pip_audit.json
             bandit.json
             detect_secrets.out
-            coverage.xml
 
       # Reports stay in run artifacts: a timestamp must not redeploy the site.
+
+  python_tests:
+    name: Python tests (${{ matrix.suite }}, ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+        suite: [core, rrremergen, bot]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The core suite verifies a fixture against pinned historical commits.
+          fetch-depth: ${{ matrix.suite == 'core' && '0' || '1' }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install the suite's declared dependencies
+        env:
+          SUITE: ${{ matrix.suite }}
+        run: |
+          python -m pip install --upgrade pip
+          case "$SUITE" in
+            core) python -m pip install -r requirements.txt -r r3/requirements.txt -r integrations/raffaello-bot/requirements.txt -r requirements-test.txt ;;
+            rrremergen) python -m pip install -r rrremergen/requirements.txt -r requirements-test.txt ;;
+            bot) python -m pip install -r integrations/raffaello-bot/requirements.txt -r requirements-test.txt ;;
+            *) echo "Unknown suite: $SUITE" >&2; exit 2 ;;
+          esac
+          python -m pip check
+      - name: Run all tests in this suite (blocking)
+        env:
+          SUITE: ${{ matrix.suite }}
+          COVERAGE_FILE: ${{ github.workspace }}/.coverage
+          R3_BOT_CHECKOUT: ${{ github.workspace }}/integrations/raffaello-bot
+        run: |
+          case "$SUITE" in
+            core)
+              # The other two components run in their own environments below.
+              # Keep all remaining discovery, including custode/ and future tests.
+              python -m coverage run -m pytest -q --ignore=rrremergen --ignore=integrations/raffaello-bot
+              ;;
+            rrremergen)
+              python -m coverage run -m pytest -q rrremergen
+              ;;
+            bot)
+              cd integrations/raffaello-bot
+              python -m coverage run -m pytest -q
+              ;;
+            *) echo "Unknown suite: $SUITE" >&2; exit 2 ;;
+          esac
+      - name: Export coverage, including failed-test runs
+        if: always()
+        run: python -m coverage xml -o coverage.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-${{ matrix.suite }}-py${{ matrix.python }}
+          path: coverage.xml
+          if-no-files-found: warn
+
+  rrremergen_frontend:
+    name: RRREMERGEN frontend contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify streaming and published asset contracts
+        run: node --test rrremergen/frontend/*.test.mjs
