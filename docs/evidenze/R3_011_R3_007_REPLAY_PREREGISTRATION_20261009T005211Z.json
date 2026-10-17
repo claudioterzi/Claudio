@@ -1,0 +1,46 @@
+{
+  "schema": "R3-020-PREREGISTRATION/1",
+  "candidate_id": "R3C-r3011-r3007-replay-20261009",
+  "created_at_utc": "2026-10-09T00:52:11Z",
+  "task": "Replay R3-011 against the pre-existing R3-007 filesystem integration fixture and preserve failed-observation provenance",
+  "retroactive_classification": "PATCH_RETEST",
+  "base_commit": "49a321abbc09273885b593053eab9758c2bc3086",
+  "canonical_main_observed": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+  "independent_fixture": {
+    "source_receipt_commit": "108f3c2035b7d765624c0f67a50743787dcec4b0",
+    "source_schema": "R3-007-FILESYSTEM-INTEGRATION/1",
+    "source_script": "scripts/r3_007_filesystem_integration.py",
+    "source_script_sha256": "6e067bead7912908e1c46f93d94dccf1ed69f1a2d90551acf20dfc2b32313ea5",
+    "created_before_r3_011_source_patches": true,
+    "cases": [
+      "matching_read_after_write",
+      "tampered_bytes",
+      "missing_object"
+    ]
+  },
+  "prediction": "The pre-existing R3-007 filesystem harness will produce three valid evidence cases. The current R3-011 adapter will preserve exact postcondition_source for match and mismatch but lose it for the missing-object read error because non-factual records discard the validated observer source. A bounded patch can preserve observation provenance for all three without granting factual authority or promotion support.",
+  "prediction_sha256": "a26ceaf2362c11ab983eea449fa0bbe91519abdc5e8baa48db814d11adc68634",
+  "primary_metric": {
+    "name": "r3_007_cases_with_exact_postcondition_source_preserved",
+    "baseline_expected": 2,
+    "candidate_minimum": 3,
+    "maximum": 3
+  },
+  "critical_regression_checks": [
+    "match remains FATTO/AUTHORITATIVE_STATE",
+    "mismatch remains negative FATTO/AUTHORITATIVE_STATE",
+    "missing-object remains IPOTESI/OTHER",
+    "proxy evidence remains non-authoritative and cannot support promotion",
+    "source-less AUTHORITATIVE_STATE remains fail-closed",
+    "legacy non-authoritative graph hash remains stable",
+    "all relevant deterministic tests pass"
+  ],
+  "adoption_rule": "HOLD unless all three frozen cases preserve exact observer provenance with zero authority expansion and hosted or independent review; promotion_authorized remains false.",
+  "rollback": "Drop the isolated branch; no canonical, provider, cloud or production state is changed.",
+  "authority": {
+    "promotion_authorized": false,
+    "merge_authorized": false,
+    "deploy_authorized": false,
+    "provider_execution_authorized": false
+  }
+}

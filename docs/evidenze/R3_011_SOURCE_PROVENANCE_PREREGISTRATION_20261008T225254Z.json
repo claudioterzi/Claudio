@@ -1,0 +1,59 @@
+{
+  "schema": "R3-EVOLUTION-PREREGISTRATION/1",
+  "candidate_id": "R3C-r3011-source-provenance-20261009",
+  "created_at": "2026-10-08T22:52:54Z",
+  "owner": "R3 Evolution Cycle",
+  "base_commit": "f50b9d2faa6fdbfa8064f3c96d4ecfe7405dd9d1",
+  "canonical_main_observed": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+  "retroactive_classification": "PATCH_RETEST",
+  "scope": "R3-011 preservation of R3-007 authoritative postcondition source provenance",
+  "hypothesis": "The hardened adapter validates postcondition_source before admitting authoritative evidence but then discards that source from the exported EvidenceRecord, leaving only a producer label and payload hash. Adding an immutable postcondition_source field can preserve auditability without changing factual admission decisions.",
+  "prediction": {
+    "baseline_authoritative_records_with_exported_postcondition_source": 0,
+    "trial_authoritative_records_with_exported_postcondition_source": 2,
+    "valid_authoritative_decisions_preserved": 2,
+    "weak_evidence_admissions_preserved_at": 0,
+    "promotion_authorized": false
+  },
+  "falsifiers": [
+    "an authoritative R3-007 record exports no exact postcondition_source",
+    "two records from different postcondition sources cannot be distinguished without the unavailable original payload",
+    "a caller can create AUTHORITATIVE_STATE without a nonempty postcondition_source",
+    "proxy or OTHER evidence receives authoritative-source semantics",
+    "the patch changes valid match/mismatch decisions or reopens any of the three previously closed unsafe admissions"
+  ],
+  "experiment": {
+    "baseline": "Create two valid authoritative R3-007 records with distinct filesystem postcondition sources and inspect record/export fields before patching.",
+    "trial": "Add optional immutable postcondition_source to EvidenceRecord, require it for AUTHORITATIVE_STATE, populate it only from validated AUTHORITATIVE R3-007 evidence, and replay prior controls.",
+    "acceptance": "Both exact sources survive record/export, direct source-less AUTHORITATIVE_STATE is refused, non-authoritative records carry null, valid decisions remain 2/2 and previous unsafe admissions remain 0.",
+    "candidate_boundary": "isolated local branch; no push, merge, deploy or canonical adoption"
+  },
+  "critical_metrics": {
+    "valid_authoritative_decisions": {
+      "direction": "higher",
+      "max_regression": 0
+    },
+    "previous_unsafe_admissions": {
+      "direction": "lower",
+      "max_regression": 0
+    },
+    "authority_expansion": {
+      "direction": "lower",
+      "max_regression": 0
+    }
+  },
+  "authority": {
+    "promotion_authorized": false,
+    "merge_authorized": false,
+    "deploy_authorized": false,
+    "provider_execution_authorized": false,
+    "canonical_write_authorized": false
+  },
+  "decision_if_prediction_holds": "KEEP_ISOLATED_RETEST",
+  "decision_if_prediction_fails": "REJECT_PATCH_PRESERVE_COUNTEREXAMPLE",
+  "limits": [
+    "Preserving a source identifier does not prove that the named source is authoritative.",
+    "The source string may be public-safe metadata only; secrets and private payloads remain excluded.",
+    "Local deterministic evidence does not replace hosted or independent review."
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "schema": "R3-011-HASH-COMPATIBILITY-RECEIPT/1",
+  "created_at_utc": "2026-10-09T00:03:26Z",
+  "project": "R3-011 serialized consumer inventory and graph hash compatibility",
+  "decision": "KEEP_ISOLATED_RETEST",
+  "status": "CANDIDATE_L0_SERIALIZATION_HASH_COMPATIBLE_IN_SAMPLE",
+  "canonical_state": {
+    "repository": "claudioterzi/Claudio",
+    "main_commit": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+    "pr_76_head": "29f9523e2f3322286650e1d9e11db62da00bd380",
+    "pr_78_head": "88c89b6e9e45278538517e6bd8276bcf8b3e6a80",
+    "pr_118_head": "13a3380aa3172fa2ea3b04ba642df2d6b1b3d5cd",
+    "pr_119_head": "89309d5c72a1b58a2e43d41b6ca7d40ef6bcd3ae"
+  },
+  "candidate": {
+    "branch": "candidate/r3-011-hash-compatibility-20261009",
+    "base_receipt_commit": "974b99edf1881820468326abfb1f12a6e7bf7334",
+    "preregistration_commit": "f0a9959f5f1fafa4885c1f6248d3c6d28b67c501",
+    "technical_commit": "ef302e05cea8132ccb46035a0ba067e9e5f78e92",
+    "retroactive_classification": "PATCH_RETEST",
+    "ahead_of_main_before_receipt": 9,
+    "behind_main": 0,
+    "pushed": false,
+    "merged": false,
+    "deployed": false
+  },
+  "r3_020_preregistration": {
+    "candidate_id": "R3C-r3011-hash-compatibility-20261009",
+    "file": "docs/evidenze/R3_011_HASH_COMPATIBILITY_PREREGISTRATION_20261009T000205Z.json",
+    "sha256": "82f36e948f7aee80511dcee7b8d9730f96a11c39c4aec8e47df4bb1b6d7fe783",
+    "registered_before_baseline_execution_and_patch": true
+  },
+  "consumer_inventory": {
+    "command": "rg -l 'from sdq1\\.evidence_graph|import sdq1\\.evidence_graph|R3-EVIDENCE-GRAPH/1|graph_sha256' --glob '*.py' --glob '*.js' --glob '*.ts' --glob '*.json' --glob '!docs/evidenze/**' .",
+    "executable_paths": [
+      "sdq1/evidence_graph.py",
+      "tests/test_evidence_graph.py"
+    ],
+    "runtime_consumers_outside_module": 0,
+    "test_consumers": 1,
+    "external_or_hosted_consumers_verified": false,
+    "interpretation": "No in-repository runtime consumer was found, but absence in this checkout does not prove that external serialized consumers are compatible."
+  },
+  "falsification": {
+    "fixture": "Two non-authoritative DOCUMENT records A/B plus one INFERRED RELATED edge at frozen timestamps.",
+    "legacy_base_commit": "f50b9d2faa6fdbfa8064f3c96d4ecfe7405dd9d1",
+    "baseline": {
+      "legacy_graph_sha256": "e1b20336f3288dfe247803c7bd8b7856cc6d06213074a03c11aa0835bf108757",
+      "source_provenance_candidate_graph_sha256": "e2ad9ddf82316de0c5550dd5d5394f4190942d5f7e6a44d91ae7376970c5b787",
+      "legacy_hash_match": false,
+      "semantic_change_in_fixture": false,
+      "difference": "postcondition_source:null was added to every serialized record by dataclasses.asdict."
+    },
+    "trial": {
+      "graph_sha256": "e1b20336f3288dfe247803c7bd8b7856cc6d06213074a03c11aa0835bf108757",
+      "legacy_hash_match": true,
+      "absent_optional_key_omitted_from_export": true,
+      "absent_optional_key_omitted_from_provenance_chain": true,
+      "authoritative_source_a": "filesystem:store-a/state.bin#read_bytes",
+      "authoritative_graph_a_sha256": "0caf49f64a9d56487a314086d980b21500f364826a2ebeeb6476ea734ae4013e",
+      "authoritative_source_b": "filesystem:store-b/state.bin#read_bytes",
+      "authoritative_graph_b_sha256": "f4bd20241cc2284d87d724723fc3344d7236a5f531ccde7d7af1762b1b66988b",
+      "authoritative_hash_source_sensitive": true,
+      "source_less_authoritative_state_refused": true,
+      "proxy_remains_non_authoritative": true
+    },
+    "primary_gain": 1,
+    "critical_regressions": 0
+  },
+  "contract": {
+    "schema": "R3-EVIDENCE-GRAPH/1",
+    "change": "Omit only postcondition_source when it is null; include and hash-bind it when present.",
+    "legacy_non_authoritative_shape_preserved": true,
+    "authoritative_source_preserved": true,
+    "source_changes_graph_hash": true,
+    "new_loader_or_parallel_engine_created": false,
+    "source_string_proves_domain_authority": false
+  },
+  "verification": {
+    "baseline_command": "Run the frozen document-only graph on f50b9d2 and 974b99e, then compare record keys and graph_sha256.",
+    "trial_command": "Replay the frozen graph after the patch and build two otherwise-identical authoritative graphs with distinct postcondition sources.",
+    "test_command": "python -m unittest tests.test_evidence_graph tests.test_evolution_kernel tests.test_benchmark_integrity tests.test_benchmark_controlled tests.test_evidence_review",
+    "evidence_graph_test_result": "21/21 PASS",
+    "combined_relevant_test_result": "54/54 PASS",
+    "py_compile": "PASS",
+    "yaml_parse": "PASS",
+    "json_parse": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "r3_020_decision": {
+    "status": "HOLD",
+    "primary_metric": "legacy_non_authoritative_hash_matches",
+    "baseline": 0,
+    "trial": 1,
+    "primary_gain": 1.0,
+    "critical_regressions": {
+      "authoritative_source_loss": 0.0,
+      "source_insensitive_hash": 0.0,
+      "previous_unsafe_admissions": 0.0,
+      "authority_expansion": 0.0
+    },
+    "reason": "The frozen local compatibility falsifier passes and no in-repo runtime consumer exists, but external or hosted serialized consumers and an independent provenance fixture remain unverified.",
+    "auto_apply_eligible": false,
+    "promotion_authorized": false
+  },
+  "artifact_hashes": {
+    "preregistration_sha256": "82f36e948f7aee80511dcee7b8d9730f96a11c39c4aec8e47df4bb1b6d7fe783",
+    "evidence_graph_sha256": "2c6fe6d442c1e0934f20506d3cbc7f1d1e3ded91fc844384fd0e506269c572b5",
+    "tests_sha256": "b7c83b79617eadd82710ea818ee207714a1b0ad46f90579c9d4c0893c65ea7a1"
+  },
+  "effects": {
+    "provider_requests": 0,
+    "inference_executed": false,
+    "secrets_read": false,
+    "spend": false,
+    "cloud_write": false,
+    "production_change": false,
+    "deletion": false
+  },
+  "blocker": "External or hosted R3-EVIDENCE-GRAPH/1 consumers were not available for compatibility testing, and the source identifier still requires domain-specific authority validation.",
+  "next_action": "Run a reviewed hosted compatibility check or an independently prepared source-provenance fixture against this exact commit; do not add further local schema polishing without a new counterexample.",
+  "completion_criterion": "The exact candidate passes hosted or independent consumer review; legacy non-authoritative hashes remain stable, authoritative sources remain explicit and hash-bound, source-less authoritative evidence fails closed, proxy evidence remains non-authoritative and previous admission falsifiers remain at zero.",
+  "resume_trigger": "Hosted compatibility result, independently prepared provenance fixture, identified external consumer or new serialization/source-loss counterexample.",
+  "limits": [
+    "The test proves compatibility for one frozen schema-v1 fixture, not every historical graph.",
+    "Repository search found no runtime consumer outside the module; external consumers may still exist.",
+    "A preserved source string is provenance metadata, not proof that the source is authoritative.",
+    "No provider inference, production action, merge, deployment or cloud write occurred."
+  ]
+}
