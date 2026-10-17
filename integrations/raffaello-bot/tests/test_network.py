@@ -29,8 +29,8 @@ def http_port(monkeypatch):
     server.shutdown()
 
 
-def _get(port: int, path: str) -> tuple[int, bytes]:
-    req = Request(f"http://127.0.0.1:{port}{path}", headers={"X-Network-Secret": "test-network-secret"})
+def _get(port: int, path: str, secret: str = "test-network-secret") -> tuple[int, bytes]:
+    req = Request(f"http://127.0.0.1:{port}{path}", headers={"X-Network-Secret": secret})
     with urlopen(req, timeout=3) as r:
         return r.status, r.read()
 
@@ -86,10 +86,34 @@ def test_event_bad_json(http_port):
     assert ei.value.code == 400
 
 
-def test_network_is_closed_when_secret_is_missing(http_port, monkeypatch):
-    monkeypatch.delenv("NETWORK_SECRET", raising=False)
+@pytest.mark.parametrize("secret", [None, "", "   "])
+def test_network_is_closed_when_secret_is_missing(http_port, monkeypatch, secret):
+    if secret is None:
+        monkeypatch.delenv("NETWORK_SECRET", raising=False)
+    else:
+        monkeypatch.setenv("NETWORK_SECRET", secret)
     assert _post(http_port, "/network/v1/event", net.create_network_event("ping"))[0] == 401
     assert _post(http_port, "/ask", {"testo": "private"})[0] == 401
     with pytest.raises(HTTPError) as error:
         _get(http_port, "/network/v1/nodes")
     assert error.value.code == 401
+    assert not net.get_recent_network_events()
+    assert _get(http_port, "/health")[0] == 200
+
+
+@pytest.mark.parametrize("secret", ["", "wrong-secret"])
+def test_network_rejects_invalid_header_without_side_effects(http_port, monkeypatch, secret):
+    from bot import sdq1
+
+    def unexpected_ask(*args, **kwargs):
+        pytest.fail("Unauthorized request reached SDQ-1")
+
+    monkeypatch.setattr(sdq1, "ask", unexpected_ask)
+    headers = {"X-Network-Secret": secret}
+    assert _post(http_port, "/network/v1/event", net.create_network_event("ping"), headers)[0] == 401
+    assert _post(http_port, "/ask", {"testo": "private"}, headers)[0] == 401
+    with pytest.raises(HTTPError) as error:
+        _get(http_port, "/network/v1/nodes", secret)
+    assert error.value.code == 401
+    assert not net.get_recent_network_events()
+    assert _get(http_port, "/health", secret)[0] == 200
