@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:rrremergen": "vite build --base=/rrremergen/ --outDir ../../public/rrremergen --emptyOutDir",
+    "test:rrremergen-assets": "node --test ../../rrremergen/frontend/assets.test.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
