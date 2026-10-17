@@ -5,6 +5,7 @@ from unittest.mock import patch
 import httpx
 
 from typesafe_sister import client
+from typesafe_sister.client import configured, system_one
 from typesafe_sister.r3_clm import compare_answer_sets, system_one_local
 from typesafe_sister.redfrag import assess_redfrag_cluster
 
@@ -92,6 +93,37 @@ class TestRedFragProviderSwap(unittest.TestCase):
         self.assertEqual(result["provider"], "clm")
         self.assertEqual(result["action"], "LINK_TO_CANON")
         self.assertEqual(result["physical_deletions"], 0)
+
+
+class TestLegacyRouting(unittest.TestCase):
+    def test_internal_backend_is_opt_in_and_network_free(self):
+        questions = {"x": {"type": "choice", "instructions": "pick", "criteria": {"a": "alpha", "b": "beta"}}}
+        with patch.dict(os.environ, {"R3_SYSTEM_ONE_BACKEND": "r3_clm", "TYPESAFE_API_KEY": ""}), patch("httpx.Client") as client:
+            self.assertTrue(configured())
+            result = system_one({"alpha": True}, questions)
+            client.assert_not_called()
+        self.assertEqual(result["provider"], "r3_internal")
+
+    def test_explicit_typesafe_connection_preserves_historical_transport(self):
+        payload = {"model": "jev-test", "answers": {"x": {"type": "noul", "noul": 0.7}}}
+        with patch("httpx.Client") as client:
+            response = httpx.Response(200, json=payload, request=httpx.Request("POST", "https://api.typesafe.ai/v1/systemone"))
+            client.return_value.__enter__.return_value.post.return_value = response
+            result = system_one({"x": 1}, {"x": {"type": "noul", "instructions": "x?"}},
+                                api_key="TEST_ONLY", model="jev-test", base_url="https://api.typesafe.ai")
+        self.assertEqual(result["model"], "jev-test")
+        client.return_value.__enter__.return_value.post.assert_called_once()
+
+    def test_shadow_keeps_jev_primary_and_records_candidate(self):
+        primary = {"model": "jev-test", "answers": {"x": {"type": "choice", "choice": "a", "confidence": 0.9,
+                                                           "probabilities": {"a": 0.9, "b": 0.1}}}}
+        questions = {"x": {"type": "choice", "instructions": "pick alpha", "criteria": {"a": "alpha", "b": "beta"}}}
+        with patch.dict(os.environ, {"R3_SYSTEM_ONE_BACKEND": "shadow", "TYPESAFE_API_KEY": "KEY"}),              patch("typesafe_sister.client._system_one_primary", return_value=primary):
+            result = system_one({"alpha": True}, questions)
+        self.assertEqual(result["model"], "jev-test")
+        self.assertIn("shadow", result)
+        self.assertEqual(result["shadow"]["authority"], "observation_only")
+
 
 
 if __name__ == "__main__":
