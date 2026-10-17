@@ -99,6 +99,9 @@ jobs:
       - name: Agorà — delibere firmate e webhook del bot
         run: python -m unittest tests.test_agora tests.test_agora_web
 
+      - name: Travelpayouts — prezzi finiti sull'head esatto
+        run: python -m unittest -v tests.test_travelpayouts_finite_price tests.test_viaggi_validation
+
       - name: Verifica Fabbrica, TypeSafe e dialogo IA
         run: |
           python -m unittest discover -s tests -p 'test_fabbrica*.py'
