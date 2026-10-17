@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
 import './App.css'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 // Import RRREMERGEN component
 import RRRemeRgen from '../../../rrremergen/frontend/RRRemeRgen'
@@ -542,7 +543,12 @@ export default function App() {
 
   // RRREMERGEN page
   if (route === 'rrremergen') {
-    return <RRRemeRgen />
+    return (
+      <>
+        <RRRemeRgen />
+        <SpeedInsights />
+      </>
+    )
   }
 
   // Default: La Soglia landing page
@@ -556,6 +562,7 @@ export default function App() {
       <ChiSiamo />
       <Contatto />
       <Footer />
+      <SpeedInsights />
     </>
   )
 }
