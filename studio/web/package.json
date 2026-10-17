@@ -9,7 +9,8 @@
     "build:rrremergen": "vite build --base=/rrremergen/ --outDir ../../public/rrremergen --emptyOutDir",
     "test:rrremergen-assets": "node --test ../../rrremergen/frontend/assets.test.mjs",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:rrremergen": "vite build --base=/rrremergen/ --outDir ../../public/rrremergen --emptyOutDir"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",
