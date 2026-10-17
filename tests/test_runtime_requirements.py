@@ -10,7 +10,6 @@ import yaml
 from packaging.requirements import Requirement
 from packaging.utils import canonicalize_name
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CANONICAL = ROOT / "requirements.txt"
 
@@ -116,6 +115,6 @@ def test_packaging_workflow_is_blocking_and_propagates_failure(tmp_path):
                RUNNER_TEMP=str(tmp_path), GITHUB_WORKSPACE=str(ROOT))
     result = subprocess.run(
         ["bash", "-e", "-o", "pipefail", "-c", step["run"]],
-        cwd=ROOT, env=env, capture_output=True, text=True, timeout=10,
+        cwd=ROOT, env=env, capture_output=True, text=True, timeout=10, check=False,
     )
     assert result.returncode == 7, result.stderr

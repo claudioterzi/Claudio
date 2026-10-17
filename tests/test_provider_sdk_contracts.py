@@ -13,7 +13,6 @@ from rrremergen.api.router import LLMRouter, ProviderError
 from sdq1.llm.providers import anthropic_provider as ap
 from sdq1.llm.providers import openai_provider as op
 
-
 KEY = "synthetic-sdk-contract-key-not-a-real-credential"
 
 
