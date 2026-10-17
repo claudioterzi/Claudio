@@ -11,6 +11,7 @@ on:
       - 'public/rrremergen/**'
       - 'studio/web/**'
       - 'vercel.json'
+      - 'scripts/verify_vercel_python_builds.cjs'
       - '.github/workflows/**'
   pull_request:
     branches: [main]
@@ -159,3 +160,39 @@ jobs:
           node-version: '22'
       - name: Verify streaming and published asset contracts
         run: node --test rrremergen/frontend/*.test.mjs
+
+
+  vercel_python_packaging:
+    name: Vercel Python packaging contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install the observed production builder locally
+        run: |
+          python -m pip install uv==0.10.11
+          npm install --prefix "$RUNNER_TEMP/vercel-python-check" --ignore-scripts --no-audit --no-fund @vercel/python@25.0.0 @vercel/build-utils@14.21.0
+      - name: Advisory audit of exact production builder tooling
+        continue-on-error: true
+        run: npm audit --prefix "$RUNNER_TEMP/vercel-python-check" --json > "$RUNNER_TEMP/vercel-builder-npm-audit.json"
+      - name: Build every Python function and verify retained files (blocking)
+        run: |
+          NODE_PATH="$RUNNER_TEMP/vercel-python-check/node_modules" UV_CACHE_DIR="$RUNNER_TEMP/uv-cache" node scripts/verify_vercel_python_builds.cjs "$GITHUB_WORKSPACE" "$RUNNER_TEMP/vercel-python-preflight.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vercel-python-packaging-report
+          path: |
+            ${{ runner.temp }}/vercel-python-preflight.json
+            ${{ runner.temp }}/vercel-builder-npm-audit.json
+          if-no-files-found: warn
