@@ -49,7 +49,7 @@ jobs:
 
       - name: Run IONOS deploy security tests (blocking)
         run: |
-          pytest -q tests/test_ionos_deploy_security.py
+          pytest -q tests/test_ionos_deploy_security.py tests/test_ionos_release.py
 
       - name: Advisory pip-audit (vulns)
         continue-on-error: true
