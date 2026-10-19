@@ -96,7 +96,7 @@ def validate_envelope(
     if not isinstance(recipient, str) or not recipient.strip():
         raise ProtocolError("destinatario must be nonempty text or '*'")
     kind = envelope["tipo"]
-    if kind not in MESSAGE_TYPES:
+    if not isinstance(kind, str) or kind not in MESSAGE_TYPES:
         raise ProtocolError("unsupported message type")
     priority = envelope["priorita"]
     if type(priority) is not int or priority not in (1, 2, 3):
