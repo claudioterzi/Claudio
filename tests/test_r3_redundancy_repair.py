@@ -7,6 +7,8 @@ import importlib
 import io
 import os
 import sqlite3
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,6 +16,34 @@ from unittest.mock import patch
 
 import nacl.signing
 from fastapi import HTTPException, UploadFile
+
+
+def test_sync_import_initializes_a_fresh_log_directory(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    data_dir = tmp_path / "fresh" / "nested-data"
+    env = os.environ.copy()
+    env.update(R3_DATA_DIR=str(data_dir), PYTHONPATH=str(root))
+    result = subprocess.run(
+        [sys.executable, "-c", "import r3.sync"], cwd=tmp_path,
+        env=env, capture_output=True, text=True, timeout=15,
+    )
+    assert result.returncode == 0, result.stderr
+    assert (data_dir / "sync.log").is_file()
+    assert not (data_dir / "r3.db").exists()
+
+
+def test_integrity_cli_rejects_a_missing_database(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    data_dir = tmp_path / "fresh" / "nested-data"
+    env = os.environ.copy()
+    env.update(R3_DATA_DIR=str(data_dir), PYTHONPATH=str(root))
+    result = subprocess.run(
+        [sys.executable, "-m", "r3.sync", "--integrity"], cwd=tmp_path,
+        env=env, capture_output=True, text=True, timeout=15,
+    )
+    assert result.returncode != 0
+    assert "Integrity non verificata: DB non trovato" in result.stderr
+    assert not (data_dir / "r3.db").exists()
 
 
 class NodeRepairTests(unittest.TestCase):

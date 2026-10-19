@@ -1,23 +1,31 @@
-fastapi==0.104.1
-uvicorn==0.24.0
-pydantic==2.5.0
-python-dotenv==1.0.0
+# Canonical shared runtime for all Python functions in vercel.json.
+# Vercel's multi-entrypoint builder synchronizes one virtualenv; divergent
+# manifests can delete files already referenced by an earlier function.
+# Keep rrremergen/requirements.txt byte-identical (enforced by CI).
+# Direct entries are intentional: the current builder does not support -r includes.
 
-# LLM Providers
-anthropic>=0.8.0,<1.0.0
-openai>=1.3.0,<2.0.0
+# Site, SDQ-1 and provider integrations
+flask>=3.0.0
+Pillow>=11.3.0
+pyyaml>=6.0
+google-genai>=1.0.0
+redis>=5.0.0
+
+# RRREMERGEN service and shared HTTP/model contracts
+fastapi>=0.115.6,<1.0.0
+uvicorn>=0.29.0,<1.0.0
+pydantic>=2.10.3,<3.0.0
+python-dotenv>=1.2.2,<2.0.0
+httpx>=0.28.1,<1.0.0
+
+# Intersections of the existing site and RRREMERGEN SDK requirements
+anthropic>=0.39.0,<1.0.0
+openai>=1.50.0,<2.0.0
 google-generativeai>=0.3.0,<1.0.0
-mistralai>=0.0.11
+mistralai>=1.9.11,<2.0.0
 
-# For streaming and async
-aiohttp==3.9.0
-httpx==0.25.0
-
-# Database
-pymongo==4.6.0
+# Composer async, database and form dependencies
+aiohttp>=3.14.3,<4.0.0
+pymongo>=4.18.2,<5.0.0
 sqlalchemy==2.0.0
-
-# Utilities
-python-jose==3.3.0
-passlib==1.7.4
-python-multipart==0.0.6
+python-multipart>=0.0.31,<0.1.0

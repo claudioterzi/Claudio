@@ -6,11 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:rrremergen": "vite build --base=/rrremergen/ --outDir ../../public/rrremergen --emptyOutDir",
+    "test:rrremergen-assets": "node --test ../../rrremergen/frontend/assets.test.mjs",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "build:rrremergen": "vite build --base=/rrremergen/ --outDir ../../public/rrremergen --emptyOutDir"
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
     "framer-motion": "^12.40.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
