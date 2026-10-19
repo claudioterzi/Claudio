@@ -1,23 +1,31 @@
-# LGAI - Life Game AI System
-# Python 3.7+ sufficiente per il core LGAI.
+# Canonical shared runtime for all Python functions in vercel.json.
+# Vercel's multi-entrypoint builder synchronizes one virtualenv; divergent
+# manifests can delete files already referenced by an earlier function.
+# Keep rrremergen/requirements.txt byte-identical (enforced by CI).
+# Direct entries are intentional: the current builder does not support -r includes.
 
-# Web (Tarocchi Quantici su Vercel)
+# Site, SDQ-1 and provider integrations
 flask>=3.0.0
-Pillow>=11.3.0            # Foto Atelier: validazione, orientamento, rimozione metadati
-
-# SDQ-1 (Sistema Di Quadranti, Fase 1+2)
+Pillow>=11.3.0
 pyyaml>=6.0
+google-genai>=1.0.0
+redis>=5.0.0
 
-# SDQ-1 multi-provider LLM (tutti opzionali: fallback automatico a stub)
-anthropic>=0.39.0          # Claude (ANTHROPIC_API_KEY)
-openai>=1.50.0             # OpenAI / DeepSeek / Perplexity (compat-API)
-google-genai>=1.0.0        # Gemini (GOOGLE_API_KEY)
-redis>=5.0.0               # Persistenza orchestratore (fallback in-memory)
+# RRREMERGEN service and shared HTTP/model contracts
+fastapi>=0.115.6,<1.0.0
+uvicorn>=0.29.0,<1.0.0
+pydantic>=2.10.3,<3.0.0
+python-dotenv>=1.2.2,<2.0.0
+httpx>=0.28.1,<1.0.0
 
-httpx>=0.27.0              # Notion publish (notion_publish.py) + R³∞ sync
+# Intersections of the existing site and RRREMERGEN SDK requirements
+anthropic>=0.39.0,<1.0.0
+openai>=1.50.0,<2.0.0
+google-generativeai>=0.3.0,<1.0.0
+mistralai>=1.9.11,<2.0.0
 
-# Feature opzionali (non richieste per il core):
-# sentence-transformers>=2.2.0   # Embedding MiniLM (sostituisce n-gram TF nel VSS)
-# qdrant-client>=1.7.0           # Vector DB in produzione (sostituisce VSS in-memory)
-# cadquery>=2.4.0                # Sim-to-Real bridge; richiede: conda install -c cadquery cadquery
-# python-dateutil>=2.8.2         # Date parsing avanzato
+# Composer async, database and form dependencies
+aiohttp>=3.14.3,<4.0.0
+pymongo>=4.18.2,<5.0.0
+sqlalchemy==2.0.0
+python-multipart>=0.0.31,<0.1.0
