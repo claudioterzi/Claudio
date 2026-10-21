@@ -1,5 +1,5 @@
 {
-  "ts": "2026-10-20T10:55:35.519338",
+  "ts": "2026-10-21T11:09:25.695009",
   "score_sistema": 93,
   "sicurezza": {
     "agente": "CODE_SCANNER",
@@ -17,7 +17,7 @@
     ],
     "pattern_scansionati": 14,
     "ok": true,
-    "tempo_s": 0.085
+    "tempo_s": 0.097
   },
   "qualita": {
     "agente": "CODE_SCANNER",
@@ -50,7 +50,7 @@
     ],
     "pattern_analizzati": 11,
     "file_py_analizzati": 94,
-    "tempo_s": 0.061
+    "tempo_s": 0.06
   },
   "dipendenze": {
     "agente": "CODE_SCANNER",
@@ -101,14 +101,14 @@
         "from .openai_provider import OpenAIProvider, DeepSeekProvide",
         "from .stub_provider import StubProvider"
       ],
+      "llm.providers.stub_provider": [
+        "from .base import ProviderBase"
+      ],
       "voli.caccia": [
         "from . import lowcost, radar",
         "from .agenti import CronistaVoli, ScoutVoli, ValutatoreVoli,",
         "from .ambiente import telegram_pronto",
         "from .rotte import ROTTE, Rotta, rotte_per_tag"
-      ],
-      "llm.providers.stub_provider": [
-        "from .base import ProviderBase"
       ],
       "llm.providers.anthropic_provider": [
         "from .base import ProviderBase"
@@ -116,11 +116,11 @@
       "llm.providers.ollama_provider": [
         "from .base import ProviderBase"
       ],
-      "voli.__main__": [
-        "from .caccia import main"
-      ],
       "llm.providers.openai_provider": [
         "from .base import ProviderBase"
+      ],
+      "voli.__main__": [
+        "from .caccia import main"
       ],
       "llm.providers.gemini_provider": [
         "from .base import ProviderBase"
@@ -133,13 +133,13 @@
         "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
         "from .registry import registra"
       ],
-      "agents.registry": [
-        "from ..config.loader import AgenteConfig, SDQ1Config",
-        "from .base import AgenteBase"
-      ],
       "llm.router": [
         "from .providers import (",
         "from .specializzazioni import classifica, nodo_per_problema"
+      ],
+      "agents.registry": [
+        "from ..config.loader import AgenteConfig, SDQ1Config",
+        "from .base import AgenteBase"
       ],
       "config.__init__": [
         "from .loader import SDQ1Config, AgenteConfig, carica_config"
@@ -150,6 +150,10 @@
       "futures.__init__": [
         "from .scenari import SCENARI_DEFAULT",
         "from .simulatore import SimulatoreScenari, RisultatoScenario"
+      ],
+      "monitoring.__init__": [
+        "from .health import HealthChecker, StatoSalute",
+        "from .metrics import MetricsCollector, MetricaChiamata"
       ],
       "sar.__init__": [
         "from .archivio_vivente import ArchivioVivente",
@@ -166,40 +170,28 @@
         "from .sognatore import SognatoreSDQ, VisioneSognatrice",
         "from .tensioni import MappaTeensioni, Tensione, Polo, Osserv"
       ],
-      "monitoring.__init__": [
-        "from .health import HealthChecker, StatoSalute",
-        "from .metrics import MetricsCollector, MetricaChiamata"
-      ],
-      "sar.agenti_autonomi": [
-        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
-      ],
       "monitoring.metrics": [
         "from ..persistence.store import StatoStore"
       ],
       "monitoring.health": [
         "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
       ],
-      "sar.ciclo": [
-        "from .tensioni import Tensione"
+      "sar.agenti_autonomi": [
+        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
+      ],
+      "persistence.__init__": [
+        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
       ],
       "sar.persistence": [
         "from .coerenza import IndiceCoerenza, CoppiaCoerenza",
         "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
         "from .tensioni import MappaTeensioni, Polo, Tensione, Osserv"
       ],
+      "sar.ciclo": [
+        "from .tensioni import Tensione"
+      ],
       "sar.memoria_evolutiva": [
         "from ..memory.vss import VectorStateStore"
-      ],
-      "persistence.__init__": [
-        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
-      ],
-      "sar.sar": [
-        "from ..memory.vss import VectorStateStore",
-        "from .ciclo import CicloAutoriflessione, EsitoCiclo",
-        "from .coerenza import IndiceCoerenza",
-        "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
-        "from .persistence import PersistenzaSAR",
-        "from .tensioni import MappaTeensioni, Polo, Tensione"
       ],
       "__main__": [
         "from .agents import costruisci_agenti, implementazioni",
@@ -211,6 +203,14 @@
         "from .monitoring import HealthChecker, MetricsCollector",
         "from .orchestrator.gerarchico import OrchestratoreGerarchico",
         "from .persistence.store import crea_store"
+      ],
+      "sar.sar": [
+        "from ..memory.vss import VectorStateStore",
+        "from .ciclo import CicloAutoriflessione, EsitoCiclo",
+        "from .coerenza import IndiceCoerenza",
+        "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
+        "from .persistence import PersistenzaSAR",
+        "from .tensioni import MappaTeensioni, Polo, Tensione"
       ]
     },
     "dipendenze_esterne": {
@@ -218,10 +218,10 @@
         "email",
         "xml"
       ],
-      "github_rapid_analyzer": [
+      "drive_rapid_analyzer": [
         "typesafe_sister"
       ],
-      "drive_rapid_analyzer": [
+      "github_rapid_analyzer": [
         "typesafe_sister"
       ]
     },
@@ -231,7 +231,7 @@
       "xml"
     ],
     "circolari_sospette": [],
-    "tempo_s": 0.019
+    "tempo_s": 0.02
   },
   "metriche": {
     "agente": "CODE_SCANNER",
@@ -1140,7 +1140,7 @@
         "complessita": 3.2
       }
     },
-    "tempo_s": 0.027
+    "tempo_s": 0.035
   },
-  "tempo_totale_s": 0.192
+  "tempo_totale_s": 0.212
 }
