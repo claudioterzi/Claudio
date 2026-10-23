@@ -3,11 +3,11 @@
 
 // Publication preflight: builds local artifacts but never deploys.
 // Install the official builder in a temporary prefix, then expose its modules:
-// npm install --prefix /tmp/vercel-python-check --ignore-scripts --no-audit \
-//   @vercel/python@25.0.0 @vercel/build-utils@14.21.0
+// cp scripts/vercel-python-toolchain/package*.json /tmp/vercel-python-check/
+// npm ci --prefix /tmp/vercel-python-check --ignore-scripts --no-audit --no-fund
 // NODE_PATH=/tmp/vercel-python-check/node_modules \
 //   node scripts/verify_vercel_python_builds.cjs /path/to/checkout
-// Use Python 3.12 and uv 0.10.11 to match the observed production builder.
+// Use Python 3.12 and uv 0.13.5 to match the observed hosted preview builder.
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
@@ -41,7 +41,7 @@ async function main() {
   assert.equal(require('@vercel/python/package.json').version, '25.0.0');
   assert.equal(require('@vercel/build-utils/package.json').version, '14.21.0');
   const uvVersion = execFileSync('uv', ['--version'], {encoding:'utf8'}).trim();
-  assert.match(uvVersion, /^uv 0\.10\.11(?:\s|$)/, 'Use the production uv version');
+  assert.match(uvVersion, /^uv 0\.13\.5(?:\s|$)/, 'Use the observed hosted preview uv version');
   const staging = await fs.mkdtemp(path.join(os.tmpdir(), 'vercel-python-preflight-'));
   console.log(`STAGING ${staging}`);
   const snapshot = path.join(staging, 'source');
