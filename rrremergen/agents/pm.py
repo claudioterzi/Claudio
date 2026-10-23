@@ -5,6 +5,7 @@ PM Agent — Validates generated code and runs self-debugging loop.
 
 import json
 import ast
+import re
 from typing import Dict, Any
 
 
@@ -13,6 +14,24 @@ class PM:
 
     def __init__(self, router):
         self.router = router
+
+    @staticmethod
+    def _requires_authentication(requirements: list) -> bool:
+        """Recognize explicit auth requirements without reversing negated ones."""
+        auth = re.compile(r'\b(authentication|auth|login|sign[ -]?in|jwt)\b')
+        negated_before = re.compile(
+            r'\b(no|without|not|disabled?|senza|non)\b.{0,32}'
+            r'\b(authentication|auth|login|sign[ -]?in|jwt)\b')
+        negated_after = re.compile(
+            r'\b(authentication|auth|login|sign[ -]?in|jwt)\b.{0,32}'
+            r'\b(not required|optional|disabled?|non richiesta)\b')
+        for requirement in requirements:
+            if not isinstance(requirement, str):
+                continue
+            normalized = ' '.join(requirement.lower().split())
+            if auth.search(normalized) and not (negated_before.search(normalized) or negated_after.search(normalized)):
+                return True
+        return False
 
     async def validate_and_debug(
         self,
@@ -88,7 +107,7 @@ class PM:
                 })
 
         # Check authentication
-        if 'auth' in blueprint.requirements or any('auth' in r.lower() for r in blueprint.requirements):
+        if self._requires_authentication(blueprint.requirements):
             if 'jwt' not in backend.lower() and 'token' not in backend.lower():
                 issues.append({
                     'severity': 'error',

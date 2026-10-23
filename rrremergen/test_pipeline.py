@@ -73,6 +73,41 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             asyncio.run(Architect(router).analyze('Create an app', 'test'))
 
+    def test_local_blueprint_schema_retry_is_bounded_and_same_router(self):
+        router = LLMRouter('local')
+        invalid = json.dumps({
+            'title': 'Tasks', 'description': 'Local tasks', 'requirements': ['add'],
+            'ui_components': ['TaskList'], 'integrations': [], 'constraints': [],
+            'data_models': ['Task'], 'api_routes': [{'path': '/api/tasks', 'method': 'GET'}],
+        })
+        valid = json.dumps({
+            'title': 'Tasks', 'description': 'Local tasks', 'requirements': ['add'],
+            'ui_components': ['TaskList'], 'integrations': [], 'constraints': [],
+            'data_models': [{'model': 'Task', 'fields': {'id': 'integer'}}],
+            'api_routes': [{'path': '/api/tasks', 'method': 'GET'}],
+        })
+        router.complete = AsyncMock(side_effect=[
+            {'text': invalid, 'model': 'raffaello-r3:3b'},
+            {'text': valid, 'model': 'raffaello-r3:3b'},
+        ])
+        blueprint = asyncio.run(Architect(router).analyze('Create a local task app', 'test'))
+        self.assertEqual(blueprint.data_models[0]['model'], 'Task')
+        self.assertEqual(router.complete.await_count, 2)
+        self.assertIn('failed strict schema validation', router.complete.await_args_list[1].kwargs['prompt'])
+        self.assertTrue(all(call.kwargs['model'] == 'ollama-local/raffaello-r3:3b'
+                            for call in router.complete.await_args_list))
+
+    def test_local_blueprint_retry_does_not_invent_a_fallback(self):
+        router = LLMRouter('local')
+        router.complete = AsyncMock(return_value={'text': json.dumps({
+            'title': 'Tasks', 'description': 'Local tasks', 'requirements': [],
+            'ui_components': ['TaskList'], 'integrations': [], 'constraints': [],
+            'data_models': ['still invalid'], 'api_routes': [],
+        }), 'model': 'raffaello-r3:3b'})
+        with self.assertRaisesRegex(ValueError, 'data_models'):
+            asyncio.run(Architect(router).analyze('Create a local task app', 'test'))
+        self.assertEqual(router.complete.await_count, 2)
+
     def test_failed_pm_blocks_export_even_after_unchanged_repair(self):
         async def run():
             flow = RRRemeRgenOrchestrator(LLMRouter('demo'))
@@ -83,6 +118,27 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(stream[-1]['type'], 'error')
         self.assertEqual(stream[-1]['code'], 'validation_failed')
         self.assertFalse(any(e['type'] == 'completion' for e in stream))
+
+    def test_pm_repair_timeout_is_terminal_without_cloud_fallback(self):
+        async def run():
+            local_router = LLMRouter('local')
+            flow = RRRemeRgenOrchestrator(local_router)
+            flow.architect.analyze = AsyncMock(return_value=AppBlueprint(
+                id='test', title='Tasks', description='Task list', ui_components=['App']))
+            flow.designer.design = AsyncMock(return_value={
+                'color_palette': {'primary': '#000000'}, 'typography': {'body_font': 'sans-serif'}})
+            flow.developer.generate_code = AsyncMock(return_value={
+                'frontend': 'invalid', 'backend': 'invalid', 'database': 'invalid'})
+            flow.pm.validate_and_debug = AsyncMock(return_value={
+                'is_valid': False, 'issues': [{'type': 'invalid_syntax'}]})
+            flow.developer.fix_issues = AsyncMock(side_effect=TimeoutError())
+            stream = [event async for event in flow.compose_app('Create a local task app', {'mode': 'local'})]
+            return stream, local_router.calls
+        stream, calls = asyncio.run(run())
+        self.assertEqual(stream[-1]['type'], 'error')
+        self.assertEqual(stream[-1]['code'], 'TimeoutError')
+        self.assertFalse(any(event['type'] == 'completion' for event in stream))
+        self.assertEqual(calls, [])
 
     def test_python_syntax_failure_and_validation_endpoint_agree(self):
         source = 'invalid Python try' * 20
@@ -98,6 +154,23 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(result['is_valid'])
         self.assertTrue(any(item['type'] == 'missing_component' for item in result['warnings']))
         self.assertEqual(result['requirements_review'], 'not_executed')
+
+    def test_negated_auth_requirement_does_not_trigger_invented_repair(self):
+        for requirement in ('no authentication', 'without login', 'authentication not required',
+                            'senza autenticazione', 'auth disabled'):
+            blueprint = AppBlueprint(id='test', title='Tasks', description='Task list',
+                                     requirements=[requirement], ui_components=['App'])
+            result = asyncio.run(PM(LLMRouter('demo')).validate_and_debug(
+                blueprint, {'frontend': FRONTEND, 'backend': BACKEND, 'database': DATABASE}, {}, 'Task list'))
+            self.assertFalse(any(item['type'] == 'missing_auth' for item in result['issues']), requirement)
+
+    def test_positive_auth_requirement_still_blocks_missing_auth(self):
+        for requirement in ('authentication required', 'JWT login', 'user sign-in'):
+            blueprint = AppBlueprint(id='test', title='Tasks', description='Task list',
+                                     requirements=[requirement], ui_components=['App'])
+            result = asyncio.run(PM(LLMRouter('demo')).validate_and_debug(
+                blueprint, {'frontend': FRONTEND, 'backend': BACKEND, 'database': DATABASE}, {}, 'Task list'))
+            self.assertTrue(any(item['type'] == 'missing_auth' for item in result['issues']), requirement)
 
     def test_deploy_does_not_claim_queued_work(self):
         self.assertEqual(self.client.post('/api/rrremergen/deploy', json={}).status_code, 501)

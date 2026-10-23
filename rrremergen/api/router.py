@@ -347,23 +347,25 @@ class LLMRouter:
     ) -> Dict[str, str]:
         """Get completion from Google Gemini."""
         try:
-            import google.generativeai as genai
+            from google import genai
+            from google.genai import types
 
-            genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
-            model_obj = genai.GenerativeModel(model)
-
-            response = model_obj.generate_content(
-                prompt,
-                generation_config=genai.types.GenerationConfig(
-                    temperature=temperature,
-                    max_output_tokens=max_tokens,
+            with genai.Client(api_key=os.getenv('GOOGLE_API_KEY')) as client:
+                response = client.models.generate_content(
+                    model=model,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        temperature=temperature,
+                        max_output_tokens=max_tokens,
+                    ),
                 )
-            )
+
+            usage = response.usage_metadata
 
             return {
                 'text': response.text,
                 'model': model,
-                'tokens_used': 0,  # Google doesn't return token count easily
+                'tokens_used': usage.candidates_token_count if usage else 0,
             }
         except Exception as e:
             self.log_error(model, str(e))
