@@ -18,10 +18,9 @@ pydantic>=2.10.3,<3.0.0
 python-dotenv>=1.2.2,<2.0.0
 httpx>=0.28.1,<1.0.0
 
-# Intersections of the existing site and RRREMERGEN SDK requirements
+# Shared provider SDK requirements
 anthropic>=0.39.0,<1.0.0
 openai>=1.50.0,<2.0.0
-google-generativeai>=0.3.0,<1.0.0
 mistralai>=1.9.11,<2.0.0
 
 # Composer async, database and form dependencies
