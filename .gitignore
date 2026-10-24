@@ -93,3 +93,18 @@ guardian/
 
 # Registro clienti locale: mai nel repository
 output/perfume_registry.sqlite3*
+
+
+# R3 private evolution state — owner/runtime only
+.r3/private/
+.r3/private_model/
+.r3/reuse_ml/
+output/private_r3/
+R3_PRIVATE_*
+
+# Versioned indexes and original corpus required by the lazy readers.
+!public/libro/indice.json
+!public/libro/provenienza.json
+!public/opera/manifest.json
+!public/opera-corpus.json
+r3/logs/

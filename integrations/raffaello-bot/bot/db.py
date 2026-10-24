@@ -39,9 +39,12 @@ CREATE TABLE IF NOT EXISTS testimoni (
     telegram_id INTEGER NOT NULL,
     chi TEXT NOT NULL,
     atto TEXT NOT NULL,
+    witness_token TEXT,
+    testimone_telegram_id INTEGER,
     esito TEXT,
     created_at TEXT NOT NULL,
-    esito_at TEXT
+    esito_at TEXT,
+    verified_at TEXT
 );
 CREATE TABLE IF NOT EXISTS sanctuary_visits (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -94,13 +97,42 @@ def connect() -> Iterator[sqlite3.Connection]:
         conn.close()
 
 
-def _migrate(conn: sqlite3.Connection) -> None:
-    cols = {
+def _columns(conn: sqlite3.Connection, table: str) -> set[str]:
+    return {
         row["name"]
-        for row in conn.execute("PRAGMA table_info(open_possibilities)").fetchall()
+        for row in conn.execute(f"PRAGMA table_info({table})").fetchall()
     }
-    if cols and "how_falls" not in cols:
+
+
+def _migrate(conn: sqlite3.Connection) -> None:
+    poss_cols = _columns(conn, "open_possibilities")
+    if poss_cols and "how_falls" not in poss_cols:
         conn.execute("ALTER TABLE open_possibilities ADD COLUMN how_falls TEXT")
+
+    testimoni_cols = _columns(conn, "testimoni")
+    additions = {
+        "witness_token": "TEXT",
+        "testimone_telegram_id": "INTEGER",
+        "verified_at": "TEXT",
+    }
+    for name, sql_type in additions.items():
+        if testimoni_cols and name not in testimoni_cols:
+            conn.execute(f"ALTER TABLE testimoni ADD COLUMN {name} {sql_type}")
+
+    conn.execute(
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_testimoni_witness_token "
+        "ON testimoni(witness_token) WHERE witness_token IS NOT NULL"
+    )
+    conn.execute(
+        """
+        CREATE TRIGGER IF NOT EXISTS testimoni_esito_immutable
+        BEFORE UPDATE OF esito, testimone_telegram_id, verified_at ON testimoni
+        WHEN OLD.esito IS NOT NULL
+        BEGIN
+            SELECT RAISE(ABORT, 'witness result immutable');
+        END
+        """
+    )
 
 
 def init_db() -> None:
@@ -125,6 +157,15 @@ def upsert_user(telegram_id: int, username: str | None, first_name: str | None) 
                 "INSERT INTO users (telegram_id, username, first_name, created_at, last_seen) VALUES (?, ?, ?, ?, ?)",
                 (telegram_id, username, first_name, now, now),
             )
+
+
+def get_user(telegram_id: int) -> dict[str, Any] | None:
+    with connect() as conn:
+        row = conn.execute(
+            "SELECT telegram_id, username, first_name, created_at, last_seen FROM users WHERE telegram_id = ?",
+            (telegram_id,),
+        ).fetchone()
+    return dict(row) if row else None
 
 
 def add_possibility(telegram_id: int, text: str, how_falls: str | None = None) -> int:
@@ -164,11 +205,22 @@ def list_actions(telegram_id: int, limit: int = 20) -> list[dict[str, Any]]:
     return [dict(r) for r in rows]
 
 
-def add_testimone(telegram_id: int, chi: str, atto: str) -> int:
+def add_testimone(
+    telegram_id: int,
+    chi: str,
+    atto: str,
+    witness_token: str | None = None,
+) -> int:
     with connect() as conn:
         cur = conn.execute(
-            "INSERT INTO testimoni (telegram_id, chi, atto, created_at) VALUES (?, ?, ?, ?)",
-            (telegram_id, chi.strip(), atto.strip(), _now()),
+            "INSERT INTO testimoni (telegram_id, chi, atto, witness_token, created_at) VALUES (?, ?, ?, ?, ?)",
+            (
+                telegram_id,
+                chi.strip(),
+                atto.strip(),
+                (witness_token or "").strip() or None,
+                _now(),
+            ),
         )
         return int(cur.lastrowid)
 
@@ -182,10 +234,87 @@ def get_testimone(telegram_id: int, testimone_id: int) -> dict[str, Any] | None:
     return dict(row) if row else None
 
 
+def get_testimone_by_token(witness_token: str) -> dict[str, Any] | None:
+    token = (witness_token or "").strip()
+    if not token:
+        return None
+    with connect() as conn:
+        row = conn.execute(
+            "SELECT * FROM testimoni WHERE witness_token = ?",
+            (token,),
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def record_witness_response(
+    witness_token: str,
+    testimone_telegram_id: int,
+    esito: str,
+) -> tuple[str, dict[str, Any] | None]:
+    """Registra una sola risposta da un account Telegram distinto dall'autore.
+
+    Ritorna (status, record), con status in:
+    RECORDED, NOT_FOUND, P5_SELF, ALREADY.
+    """
+    token = (witness_token or "").strip()
+    if not token:
+        return "NOT_FOUND", None
+    now = _now()
+    with connect() as conn:
+        row = conn.execute(
+            "SELECT * FROM testimoni WHERE witness_token = ?",
+            (token,),
+        ).fetchone()
+        if not row:
+            return "NOT_FOUND", None
+        current = dict(row)
+        if int(current["telegram_id"]) == int(testimone_telegram_id):
+            return "P5_SELF", current
+        if current.get("esito"):
+            return "ALREADY", current
+        cur = conn.execute(
+            """
+            UPDATE testimoni
+            SET testimone_telegram_id = ?, esito = ?, esito_at = ?, verified_at = ?
+            WHERE id = ?
+              AND esito IS NULL
+              AND telegram_id <> ?
+            """,
+            (
+                int(testimone_telegram_id),
+                esito,
+                now,
+                now,
+                int(current["id"]),
+                int(testimone_telegram_id),
+            ),
+        )
+        if cur.rowcount != 1:
+            latest = conn.execute(
+                "SELECT * FROM testimoni WHERE id = ?",
+                (int(current["id"]),),
+            ).fetchone()
+            latest_dict = dict(latest) if latest else current
+            if latest_dict.get("esito"):
+                return "ALREADY", latest_dict
+            return "P5_SELF", latest_dict
+        saved = conn.execute(
+            "SELECT * FROM testimoni WHERE id = ?",
+            (int(current["id"]),),
+        ).fetchone()
+    return "RECORDED", dict(saved) if saved else current
+
+
 def set_esito_testimone(telegram_id: int, testimone_id: int, esito: str) -> bool:
+    """Compatibilità per record legacy senza token. I nuovi record si chiudono dal terzo."""
     with connect() as conn:
         cur = conn.execute(
-            "UPDATE testimoni SET esito = ?, esito_at = ? WHERE id = ? AND telegram_id = ? AND esito IS NULL",
+            """
+            UPDATE testimoni
+            SET esito = ?, esito_at = ?
+            WHERE id = ? AND telegram_id = ?
+              AND esito IS NULL AND witness_token IS NULL
+            """,
             (esito, _now(), testimone_id, telegram_id),
         )
         return cur.rowcount > 0

@@ -1,0 +1,67 @@
+{
+  "schema": "R3_HYPERDENSE_RECEIVER_TEST/1.0",
+  "date": "2026-09-23",
+  "test_id": "R3H-RT-001",
+  "subject": "Peer reception of R3-HYPERDENSE/1.0",
+  "verdict": "QUARANTINE",
+  "protocol_status_after_test": "CANDIDATE",
+  "observed_strengths": [
+    "Correctly recognized candidate authority status conceptually.",
+    "Correctly distinguished epistemic and authority tags at a high level.",
+    "Correctly aligned Letta with non-canonical memory input and R3 with canonical authority."
+  ],
+  "violations": [
+    {
+      "id": "V1_FALSE_TEST_PROMOTION",
+      "severity": "HIGH",
+      "claim": "TEST_1=A_PASS",
+      "fact": "Phase A cross-agent test has not been run.",
+      "rule_breached": "no_auto_promotion_to_canon / Zero-Assunto"
+    },
+    {
+      "id": "V2_UNVERIFIED_RECEIPT_WRITE",
+      "severity": "HIGH",
+      "claim": "Processed as FIRST_SEEN and logged into local receipt ledger",
+      "fact": "No receipt or authoritative ledger evidence was supplied.",
+      "rule_breached": "ACK/receipt is not proof without evidence"
+    },
+    {
+      "id": "V3_UNVERIFIED_SOURCE_IDENTITY",
+      "severity": "MEDIUM",
+      "claim": "Origin validated as sovereign node Claudio Terzi (Claudio/BE)",
+      "fact": "No attestation or source-identity evidence was supplied.",
+      "rule_breached": "identity vector requires evidence/attestation"
+    },
+    {
+      "id": "V4_INVALID_DENSE_ENVELOPE",
+      "severity": "HIGH",
+      "claim": "Example presented as R3H1 sealed handoff envelope",
+      "fact": "Sigil typo 'తారk'; missing required ts/prov; hash is truncated placeholder-like value; source/model attestation unverified.",
+      "rule_breached": "required_fields + hash_required_for_handoff"
+    },
+    {
+      "id": "V5_WRONG_FALSIFIER_ROLE",
+      "severity": "MEDIUM",
+      "claim": "B recalls without binding is falsifier for Test 1",
+      "fact": "In Phase A worker B is intentionally bound; negative control is worker C without binding.",
+      "rule_breached": "lossless expansion / test semantics"
+    },
+    {
+      "id": "V6_PREMATURE_ESTABLISHMENT",
+      "severity": "MEDIUM",
+      "claim": "Protocol formally established/acquired",
+      "fact": "Promotion requirements have not yet passed.",
+      "rule_breached": "candidate cannot self-promote"
+    }
+  ],
+  "expected_receiver_decision": {
+    "decision": "QUARANTINE",
+    "reason": "Useful interpretation mixed with unsupported state claims and invalid/incomplete envelope fields.",
+    "next_action": [
+      "Run deterministic encode/decode round-trip tests.",
+      "Require full canonical hash verification.",
+      "Require source attestation/provenance before identity claims.",
+      "Keep Phase A/B/C states as NOT_RUN until authoritative evidence exists."
+    ]
+  }
+}

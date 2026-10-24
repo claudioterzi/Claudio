@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Santuario — Protocollo Rosso</title>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; background: #140e0c; color: #e8d7c4; font-family: Georgia, "Times New Roman", serif; }
+    #hud { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 1.2rem 1.4rem 1.6rem; background: linear-gradient(transparent, rgba(12,8,7,.92)); pointer-events: none; text-align: center; }
+    #hud h1 { margin:0 0 .4rem; font-size:1rem; font-weight:400; }
+    #hud p { margin: 0; font-size: 1.05rem; text-shadow: 0 1px 12px #000; }
+    #hud .sub { margin-top: .45rem; font-size: .82rem; opacity: .72; font-style: italic; }
+    #hold-web, #exit-web { pointer-events:auto; border-radius:6px; min-height:44px; }
+    #hold-web { margin:.8rem auto; display:block; padding:.7rem 1.1rem; background:#4a201c; color:#f3e6d6; border:1px solid #a87962; font:inherit; cursor:pointer; }
+    #hold-web:disabled { opacity:.65; cursor:default; }
+    :focus-visible { outline:2px solid #ffc98f; outline-offset:3px; }
+    #destination, #scene-status { margin-top:.4rem!important; font-size:.8rem!important; }
+    #hold-progress { display:block; margin-top:.4rem; font-size:.85rem; }
+    #exit-web { display: none; pointer-events: auto; margin: .8rem auto 0; background: #6b1c1c; color: #f3e6d6; border: 0; padding: .7rem 1.1rem; font: inherit; cursor: pointer; }
+    .a-enter-vr-button, .a-enter-ar-button { background: #6b1c1c !important; }
+  </style>
+</head>
+<body>
+  <div id="hud">
+    <h1>Santuario · Protocollo Rosso</h1>
+    <p id="line" role="status" aria-live="polite">Il rumore resta fuori.</p>
+    <p class="sub" id="sub">Punta la candela e tieni il grilletto, oppure usa il pulsante qui sotto. Dodici secondi interi.</p>
+    <p class="sub" id="hold-help">Tieni premuto Spazio o Invio, oppure il pulsante con mouse o dito. Se rilasci, ricominci.</p>
+    <button type="button" id="hold-web" aria-describedby="hold-help" aria-pressed="false">Tieni premuto 12 secondi per accendere</button>
+    <span id="hold-progress" role="progressbar" aria-label="Secondi del gesto" aria-valuemin="0" aria-valuemax="12" aria-valuenow="0">0 di 12 secondi</span>
+    <p id="destination">Destinazione esterna: Telegram · @ProtocolloRossoBot. Si aprirà solo quando premi il collegamento.</p>
+    <p id="scene-status"></p>
+    <button type="button" id="exit-web">Apri Telegram · @ProtocolloRossoBot</button>
+  </div>
+  <a-scene renderer="colorManagement: true; physicallyCorrectLights: true; exposure: 0.85" fog="type: exponential; color: #241614; density: 0.035" background="color: #1a1210" vr-mode-ui="enabled: true" loading-screen="dotsColor: #8a2a2a; backgroundColor: #140e0c">
+    <a-sky color="#2b1c1a"></a-sky>
+    <a-entity light="type: hemisphere; skyColor: #c47a4a; groundColor: #1a0e0c; intensity: 0.35"></a-entity>
+    <a-entity light="type: directional; color: #e09a62; intensity: 0.45" position="-6 8 -4"></a-entity>
+    <a-plane rotation="-90 0 0" width="48" height="48" material="color: #2c241f; roughness: 1"></a-plane>
+    <a-entity position="-4.2 2.6 -3.2"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="4.2 2.6 -3.2"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="-4.2 2.6 3.2"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="4.2 2.6 3.2"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="0 2.6 -6.4"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="0 2.6 6.4"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="-6.4 2.6 0"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-entity position="6.4 2.6 0"><a-cylinder radius="0.28" height="5.2" material="color: #6a5a4e; roughness: 0.92"></a-cylinder></a-entity>
+    <a-box position="0 0.42 -1.35" width="1.6" height="0.84" depth="0.85" material="color: #4a3f38; roughness: 0.96"></a-box>
+    <a-box position="0 0.92 -1.28" width="0.62" height="0.08" depth="0.42" rotation="-8 12 0" material="color: #3a342e"></a-box>
+    <a-text value="non si legge\nsi sente pesare" align="center" width="1.6" color="#cbb9a4" position="0 1.22 -1.28" rotation="-20 0 0"></a-text>
+    <a-entity id="candela" position="0.38 0.88 -1.05" class="clickable" hold-light="seconds: 12">
+      <a-cylinder radius="0.035" height="0.22" material="color: #e8dcc8"></a-cylinder>
+      <a-entity id="fiamma" visible="false" position="0 0.22 0">
+        <a-cone radius-bottom="0.04" radius-top="0.002" height="0.16" material="color: #ffb060; emissive: #ff7a20; emissiveIntensity: 1.4; transparent: true; opacity: 0.92"></a-cone>
+        <a-entity light="type: point; color: #ff9a40; intensity: 0.95; distance: 7"></a-entity>
+      </a-entity>
+    </a-entity>
+    <a-entity id="uscita" visible="false" position="0 1.55 -0.35" class="clickable" open-world>
+      <a-plane width="1.35" height="0.28" material="color: #6b1c1c; emissive: #4a1010"></a-plane>
+      <a-text value="APRI TELEGRAM" align="center" width="2.4" color="#f3e6d6" position="0 0 0.01"></a-text>
+    </a-entity>
+    <a-entity id="rig" position="0 1.6 0.55">
+      <a-camera look-controls wasd-controls="acceleration: 12">
+        <a-cursor fuse="false" raycaster="objects: .clickable; far: 8" material="color: #c45c4a; shader: flat" geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.014"></a-cursor>
+      </a-camera>
+      <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable; far: 8" quest-hold-bridge="target: #candela"></a-entity>
+      <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable; far: 8" quest-hold-bridge="target: #candela"></a-entity>
+    </a-entity>
+  </a-scene>
+  <script>
+
+    const line = document.getElementById('line');
+    const sub = document.getElementById('sub');
+    const exitWeb = document.getElementById('exit-web');
+    const holdWeb = document.getElementById('hold-web');
+    const progress = document.getElementById('hold-progress');
+    const BOT = 'ProtocolloRossoBot';
+    const requestedBot = (new URLSearchParams(location.search).get('bot') || '').replace(/^@/, '');
+    if (requestedBot && requestedBot.toLowerCase() !== BOT.toLowerCase()) document.getElementById('destination').textContent = 'Destinatario richiesto non supportato. Il collegamento apre soltanto Telegram · @' + BOT + '.';
+    const worldUrl = 'https://t.me/' + BOT + '?start=vr';
+    let holdingSource = null, startedAt = 0, holdFrame = 0, done = false, lastSecond = -1;
+    function goWorld() {
+      if (!done) return;
+      try { const scene = document.querySelector('a-scene'); if (scene && scene.is && scene.is('vr-mode')) scene.exitVR(); } catch (_) {}
+      window.location.href = worldUrl;
+    }
+    function stopHold(source) {
+      if (source && holdingSource !== source) return;
+      if (!holdingSource || done) return;
+      holdingSource = null; cancelAnimationFrame(holdFrame); holdFrame = 0; lastSecond = -1;
+      holdWeb.setAttribute('aria-pressed', 'false');
+      progress.setAttribute('aria-valuenow', '0'); progress.textContent = '0 di 12 secondi';
+      line.textContent = 'Gesto interrotto. Tieni premuto per dodici secondi interi.';
+    }
+    function startHold(source) {
+      if (done || holdingSource) return;
+      holdingSource = source; startedAt = performance.now(); lastSecond = -1;
+      holdWeb.setAttribute('aria-pressed', 'true');
+      function frame(now) {
+        if (!holdingSource || done) return;
+        const elapsed = Math.min(12, Math.max(0, (now - startedAt) / 1000));
+        const second = Math.floor(elapsed);
+        if (second !== lastSecond) {
+          lastSecond = second;
+          progress.setAttribute('aria-valuenow', String(second)); progress.textContent = second + ' di 12 secondi';
+          line.textContent = 'Il gesto. Resta. ' + Math.ceil(12 - elapsed) + 's';
+        }
+        if (elapsed >= 12) {
+          const keyboard = holdingSource === 'keyboard';
+          done = true; holdingSource = null; holdFrame = 0;
+          document.getElementById('fiamma').setAttribute('visible', true);
+          document.getElementById('uscita').setAttribute('visible', true);
+          holdWeb.setAttribute('aria-pressed', 'false'); holdWeb.disabled = true; holdWeb.textContent = 'Candela accesa';
+          exitWeb.style.display = 'inline-block'; line.textContent = 'Candela accesa. Lento. Intero.';
+          sub.textContent = 'Puoi continuare su Telegram con @' + BOT + '.';
+          if (keyboard) exitWeb.focus();
+          return;
+        }
+        holdFrame = requestAnimationFrame(frame);
+      }
+      holdFrame = requestAnimationFrame(frame);
+    }
+    exitWeb.addEventListener('click', goWorld);
+    holdWeb.addEventListener('keydown', event => {
+      if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); if (!event.repeat) startHold('keyboard'); }
+    });
+    window.addEventListener('keyup', event => {
+      if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); stopHold('keyboard'); }
+    });
+    holdWeb.addEventListener('blur', () => stopHold('keyboard'));
+    holdWeb.addEventListener('pointerdown', event => {
+      if (event.button !== undefined && event.button !== 0) return;
+      event.preventDefault(); try { holdWeb.setPointerCapture(event.pointerId); } catch (_) {} startHold('pointer');
+    });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(name => holdWeb.addEventListener(name, () => stopHold('pointer')));
+    window.addEventListener('blur', () => stopHold());
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stopHold(); });
+    document.querySelector('a-scene').addEventListener('exit-vr', () => stopHold());
+    if (!window.AFRAME) {
+      document.getElementById('scene-status').textContent = 'La scena 3D non è disponibile. Puoi accendere la candela con il pulsante.';
+    } else {
+      AFRAME.registerComponent('quest-hold-bridge', {
+        schema: {target:{type:'selector'}},
+        init() {
+          this.pointing = () => {
+            const ray = this.el.components.raycaster, target = this.data.target;
+            return !!(ray && target && (ray.intersectedEls || []).some(el => el === target || target.contains(el)));
+          };
+          this.onDown = () => { if (this.pointing()) startHold(this.el); };
+          this.onUp = () => stopHold(this.el);
+          this.onClear = () => { if (!this.pointing()) this.onUp(); };
+          this.el.addEventListener('triggerdown', this.onDown);
+          this.el.addEventListener('triggerup', this.onUp);
+          this.el.addEventListener('controllerdisconnected', this.onUp);
+          this.el.addEventListener('raycaster-intersection-cleared', this.onClear);
+        },
+        tick() { if (holdingSource === this.el && !this.pointing()) this.onUp(); },
+        remove() {
+          this.onUp(); this.el.removeEventListener('triggerdown', this.onDown); this.el.removeEventListener('triggerup', this.onUp);
+          this.el.removeEventListener('controllerdisconnected', this.onUp); this.el.removeEventListener('raycaster-intersection-cleared', this.onClear);
+        }
+      });
+      AFRAME.registerComponent('open-world', {
+        init() { this.onClick = goWorld; this.el.addEventListener('click', this.onClick); },
+        remove() { this.el.removeEventListener('click', this.onClick); }
+      });
+      AFRAME.registerComponent('hold-light', {
+        init() {
+          this.onDown = () => startHold(this.el); this.onStop = () => stopHold(this.el);
+          this.el.addEventListener('mousedown', this.onDown); this.el.addEventListener('mouseup', this.onStop);
+          this.el.addEventListener('mouseleave', this.onStop); window.addEventListener('mouseup', this.onStop);
+        },
+        remove() {
+          this.onStop(); this.el.removeEventListener('mousedown', this.onDown); this.el.removeEventListener('mouseup', this.onStop);
+          this.el.removeEventListener('mouseleave', this.onStop); window.removeEventListener('mouseup', this.onStop);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

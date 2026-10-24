@@ -49,8 +49,9 @@ PAGINA = """<!doctype html><html lang="it"><head><meta charset="utf-8">
  .esito{background:#fff;border:2px solid #b3532e;padding:1rem;white-space:pre-wrap;
       font-family:monospace}
  .avviso{background:#fff3cd;border:1px solid #d9b64c;padding:.6rem 1rem}
+.table-wrap{max-width:100%;overflow-x:auto;min-width:0}.table-wrap:focus-visible{outline:3px solid #874322;outline-offset:3px}label{display:block;font-weight:600}form.scheda>label{min-width:0}form.scheda>label input,form.scheda>label textarea,form.scheda>label select{margin-top:.25rem}.custode-nav{display:flex;flex-wrap:wrap;gap:.75rem}.custode-nav a{display:inline-flex;align-items:center;min-height:44px;color:#7d351b}.error{color:#8a251c}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #874322;outline-offset:3px}@media(max-width:600px){form.scheda{grid-template-columns:minmax(0,1fr)}.largo{grid-column:auto}input,select,textarea{font-size:16px}.table-wrap table{min-width:520px}}
 </style></head><body>
-<h1>CUSTODE · Catalogo &amp; Inventario</h1>
+<nav class="custode-nav" aria-label="Percorsi principali"><a href="/privato">← Strumenti per Claudio</a><a href="/stato">Stato del sistema</a></nav><h1>CUSTODE · Catalogo &amp; Inventario</h1>
 {% if effimero %}<p class="avviso">⚠ Archivio temporaneo: le schede si perdono
 al riavvio. Configura <code>REDIS_URL</code> su Vercel (Upstash, gratuito).</p>
 {% endif %}
@@ -63,19 +64,19 @@ al riavvio. Configura <code>REDIS_URL</code> su Vercel (Upstash, gratuito).</p>
 <h2>Inventario ({{ schede|length }} oggetti a catalogo)</h2>
 <form method="post" action="{{ url_for('custode.inventario') }}">
  <p>EPC letti dal palmare — uno per riga (in v2 arrivano dal lettore Bluetooth):</p>
- <textarea name="epc_letti" rows="5" placeholder="E280-0001&#10;E280-0002"></textarea>
+ <label for="epc-letti">EPC letti</label><textarea id="epc-letti" name="epc_letti" rows="5" placeholder="E280-0001&#10;E280-0002"></textarea>
  <p><button class="bottone-inventario" type="submit">🔍 ANALIZZA OGGETTI MANCANTI</button></p>
 </form>
 
 <h2>Schede</h2>
-<table><tr><th>Categoria</th><th>Nome</th><th>Dettagli</th><th>Zona</th>
+<div class="table-wrap" role="region" aria-label="Schede oggetti: tabella scorrevole" tabindex="0"><table><tr><th>Categoria</th><th>Nome</th><th>Dettagli</th><th>Zona</th>
 <th>Valore €</th><th>Tag nascosto</th><th>EPC</th></tr>
 {% for s in schede %}
 <tr><td>{{ s.categoria }}</td><td><b>{{ s.nome }}</b></td>
 <td>{% for k, v in s.campi.items() %}{{ k }}: {{ v }}<br>{% endfor %}{{ s.note }}</td>
 <td>{{ s.zona_id }}</td><td>{{ "%.2f"|format(s.valore_eur) }}</td>
 <td>{{ s.posizione_tag }}</td><td><code>{{ s.epc }}</code></td></tr>
-{% endfor %}</table>
+{% endfor %}</table></div>
 
 <h2>📷 Schedatura rapida — due foto e basta</h2>
 <p>Foto 1: frontespizio del libro (o l'oggetto). Foto 2: il tag prima di
@@ -91,28 +92,28 @@ nasconderlo. La scheda si compila da sola — controlla e salva.</p>
 
 <h2>Scheda {{ "precompilata — controlla e salva" if pre else "manuale" }}</h2>
 <form class="scheda" method="post" action="{{ url_for('custode.nuova_scheda') }}">
- <input name="epc" placeholder="EPC del tag (obbligatorio)" required
-        value="{{ pre.get('epc','') }}">
- <select name="categoria">
+ <label for="custode-epc">EPC del tag<input id="custode-epc" name="epc" placeholder="EPC del tag (obbligatorio)" required
+        value="{{ pre.get('epc','') }}"></label>
+ <label for="custode-categoria">Categoria<select id="custode-categoria" name="categoria">
   {% for c in ["libro","elettronica","biancheria","arredo","cucina","oggetto"] %}
   <option value="{{ c }}" {{ "selected" if pre.get("categoria")==c }}>{{ c }}</option>
   {% endfor %}
- </select>
- <input class="largo" name="nome" placeholder="Nome / titolo (obbligatorio)" required
-        value="{{ pre.get('nome','') }}">
- <input name="autore" placeholder="Autore (per i libri)"
-        value="{{ pre.get('autore','') }}">
- <input name="isbn" placeholder="ISBN (per i libri)"
-        value="{{ pre.get('isbn','') }}">
- <input name="zona_id" placeholder="Zona, es. soggiorno/libreria-ripiano-2"
-        value="{{ pre.get('zona_id','') }}">
- <input name="valore_eur" type="number" step="0.01" min="0" placeholder="Valore €"
-        value="{{ pre.get('valore_eur','') }}">
- <input class="largo" name="posizione_tag"
+ </select></label>
+ <label class="largo" for="custode-nome">Nome o titolo<input id="custode-nome" class="largo" name="nome" placeholder="Nome / titolo (obbligatorio)" required
+        value="{{ pre.get('nome','') }}"></label>
+ <label for="custode-autore">Autore<input id="custode-autore" name="autore" placeholder="Autore (per i libri)"
+        value="{{ pre.get('autore','') }}"></label>
+ <label for="custode-isbn">ISBN<input id="custode-isbn" name="isbn" placeholder="ISBN (per i libri)"
+        value="{{ pre.get('isbn','') }}"></label>
+ <label for="custode-zona_id">Zona<input id="custode-zona_id" name="zona_id" placeholder="Zona, es. soggiorno/libreria-ripiano-2"
+        value="{{ pre.get('zona_id','') }}"></label>
+ <label for="custode-valore_eur">Valore in euro<input id="custode-valore_eur" name="valore_eur" type="number" step="0.01" min="0" placeholder="Valore €"
+        value="{{ pre.get('valore_eur','') }}"></label>
+ <label class="largo" for="custode-posizione_tag">Posizione del tag<input id="custode-posizione_tag" class="largo" name="posizione_tag"
         placeholder="Dove è nascosto il tag, es. incollato tra pagina 142 e 143"
-        value="{{ pre.get('posizione_tag','') }}">
- <textarea class="largo" name="note" rows="2"
-        placeholder="Note">{{ pre.get('note','') }}</textarea>
+        value="{{ pre.get('posizione_tag','') }}"></label>
+ <label class="largo" for="custode-note">Note<textarea id="custode-note" class="largo" name="note" rows="2"
+        placeholder="Note">{{ pre.get('note','') }}</textarea></label>
  <button class="largo" type="submit">Salva scheda</button>
 </form>
 {% endif %}
@@ -125,11 +126,12 @@ LOGIN = """<!doctype html><html lang="it"><head><meta charset="utf-8">
       background:#f4f1ea;color:#2b2b2b;text-align:center}
  input,button{padding:.7rem;font:inherit;width:100%;box-sizing:border-box;margin:.3rem 0}
  button{background:#b3532e;color:#fff;border:0;cursor:pointer}
+.table-wrap{max-width:100%;overflow-x:auto;min-width:0}.table-wrap:focus-visible{outline:3px solid #874322;outline-offset:3px}label{display:block;font-weight:600}form.scheda>label{min-width:0}form.scheda>label input,form.scheda>label textarea,form.scheda>label select{margin-top:.25rem}.custode-nav{display:flex;flex-wrap:wrap;gap:.75rem}.custode-nav a{display:inline-flex;align-items:center;min-height:44px;color:#7d351b}.error{color:#8a251c}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #874322;outline-offset:3px}@media(max-width:600px){form.scheda{grid-template-columns:minmax(0,1fr)}.largo{grid-column:auto}input,select,textarea{font-size:16px}.table-wrap table{min-width:520px}}
 </style></head><body>
 <h1><i>CUSTODE</i></h1>
-{% if errore %}<p style="color:#b3532e">Password errata.</p>{% endif %}
+{% if errore %}<p class="error" role="alert">Password errata. Puoi riprovare.</p>{% endif %}
 <form method="post">
- <input type="password" name="password" placeholder="Password" autofocus required>
+ <label for="custode-password">Password Custode</label><input id="custode-password" type="password" name="password" autocomplete="current-password" autofocus required>
  <button type="submit">Entra</button>
 </form></body></html>"""
 

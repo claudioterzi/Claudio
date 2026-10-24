@@ -46,6 +46,206 @@ def candidate(**overrides):
 
 
 class EvolutionKernelTests(unittest.TestCase):
+
+    def test_adversarial_candidate_metadata_never_promotes_or_crashes(self):
+        # Preregistered separately at the pinned #124 source before test creation.
+        # Deliberately test wrong JSON/runtime shapes and whitespace-only proof.
+        bad_cases = [
+            ("title_number", {"title": 42}),
+            ("claim_null", {"claim": None}),
+            ("primary_metric_list", {"primary_metric": []}),
+            ("direction_list", {"direction": []}),
+            ("risk_level_list", {"risk_level": []}),
+            ("scope_list", {"scope": []}),
+            ("subsystem_null", {"subsystem": None}),
+            ("source_refs_string", {"source_refs": "fabricated:reference"}),
+            ("source_refs_object", {"source_refs": {"fake": "ref"}}),
+            ("source_refs_wrong_element", {"source_refs": [17]}),
+            ("source_refs_blank", {"source_refs": ["  "]}),
+            ("falsifiers_string", {"falsifiers": "some check"}),
+            ("falsifiers_object", {"falsifiers": {"test": True}}),
+            ("falsifiers_wrong_element", {"falsifiers": [False]}),
+            ("falsifiers_blank", {"falsifiers": ["  "]}),
+            ("protected_rollback_blank", {"scope": "core_code", "rollback_ref": "  "}),
+            ("protected_rollback_number", {"scope": "core_code", "rollback_ref": 123}),
+            ("invalid_candidate_id", {"candidate_id": 0}),
+        ]
+        for label, overrides in bad_cases:
+            with self.subTest(label=label):
+                verdict = evaluate_candidate(
+                    candidate(**overrides),
+                    {"recall": 0.7, "error_rate": 0.1},
+                    {"recall": 0.8, "error_rate": 0.08},
+                    evidence(),
+                )
+                self.assertEqual(verdict.status, "REJECT", label)
+                self.assertFalse(verdict.auto_apply_eligible)
+
+    def test_candidate_metadata_valid_controls_unchanged(self):
+        baseline = {"recall": 0.7, "error_rate": 0.1}
+        trial = {"recall": 0.8, "error_rate": 0.08}
+        for label, overrides, ev, expected in [
+            ("low_reversible", {}, evidence(), "AUTO_APPLY_ELIGIBLE"),
+            ("protected_scope", {"scope": "core_code"}, evidence(), "STAGED"),
+            ("no_out_of_sample", {}, evidence(out_of_sample=False), "HOLD"),
+            ("rollback_missing", {}, evidence(rollback_verified=False), "REJECT"),
+            ("valid_unicode", {"title": "perché capacità", "source_refs": ["github:abc"], "falsifiers": ["hash differisce"]}, evidence(), "AUTO_APPLY_ELIGIBLE"),
+        ]:
+            with self.subTest(label=label):
+                verdict = evaluate_candidate(candidate(**overrides), baseline, trial, ev)
+                self.assertEqual(verdict.status, expected, label)
+
+
+    def _strict_input_decision(self, **overrides):
+        return evaluate_candidate(
+            candidate(**{k: v for k, v in overrides.items() if k in {"reversible", "external_side_effects", "risk_level", "scope"}}),
+            {"recall": 0.70, "error_rate": 0.10},
+            {"recall": 0.80, "error_rate": 0.08},
+            evidence(**{k: v for k, v in overrides.items() if k in {"out_of_sample", "provenance_complete", "rollback_verified", "independent_evaluator", "trajectory_audit"}}),
+        )
+
+    def test_evidence_false_strings_never_grant_authority(self):
+        for flag in ("out_of_sample", "provenance_complete", "rollback_verified", "independent_evaluator"):
+            with self.subTest(flag=flag):
+                decision = self._strict_input_decision(**{flag: "false"})
+                self.assertEqual(decision.status, "REJECT")
+                self.assertFalse(decision.auto_apply_eligible)
+
+    def test_truthy_numeric_evidence_flags_are_rejected(self):
+        for flag in ("out_of_sample", "provenance_complete", "rollback_verified", "independent_evaluator"):
+            with self.subTest(flag=flag):
+                decision = self._strict_input_decision(**{flag: 1})
+                self.assertEqual(decision.status, "REJECT")
+
+    def test_non_boolean_audit_flags_cannot_pass(self):
+        for audit_flag in TRAJECTORY_FIELDS:
+            with self.subTest(flag=audit_flag):
+                checks = {name: True for name in TRAJECTORY_FIELDS}
+                checks[audit_flag] = "false"
+                decision = self._strict_input_decision(trajectory_audit=checks)
+                self.assertEqual(decision.status, "REJECT")
+
+    def test_invalid_trajectory_containers_refused_not_crash(self):
+        for malformed in (None, "false", [], 1):
+            with self.subTest(value=repr(malformed)):
+                decision = self._strict_input_decision(trajectory_audit=malformed)
+                self.assertEqual(decision.status, "REJECT")
+
+    def test_false_string_independent_evaluator_cannot_stage_high_risk(self):
+        decision = self._strict_input_decision(
+            risk_level="high", scope="core_code", independent_evaluator="false",
+        )
+        self.assertEqual(decision.status, "REJECT")
+
+    def test_string_reversible_false_cannot_enable_auto_apply(self):
+        decision = self._strict_input_decision(reversible="false")
+        self.assertEqual(decision.status, "REJECT")
+        self.assertFalse(decision.auto_apply_eligible)
+
+    def test_external_side_effects_flag_must_be_strict_bool(self):
+        for value in ("false", 0, None):
+            with self.subTest(value=repr(value)):
+                decision = self._strict_input_decision(external_side_effects=value)
+                self.assertEqual(decision.status, "REJECT")
+
+    def test_valid_evidence_boolean_controls_preserve_decisions(self):
+        self.assertEqual(self._strict_input_decision().status, "AUTO_APPLY_ELIGIBLE")
+        self.assertEqual(self._strict_input_decision(out_of_sample=False).status, "HOLD")
+        self.assertEqual(self._strict_input_decision(rollback_verified=False).status, "REJECT")
+        self.assertEqual(self._strict_input_decision(scope="core_code").status, "STAGED")
+
+    def assert_rejected(self, candidate_spec, baseline, trial):
+        decision = evaluate_candidate(candidate_spec, baseline, trial, evidence())
+        self.assertEqual(decision.status, "REJECT")
+        self.assertFalse(decision.auto_apply_eligible)
+
+    def test_non_finite_primary_metrics_are_rejected_in_both_scopes(self):
+        for scope in ("retrieval_weight", "core_code"):
+            for side in ("baseline", "trial"):
+                for value in (float("nan"), float("inf"), float("-inf")):
+                    with self.subTest(scope=scope, side=side, value=value):
+                        baseline = {"recall": 0.70, "error_rate": 0.10}
+                        trial = {"recall": 0.80, "error_rate": 0.08}
+                        (baseline if side == "baseline" else trial)["recall"] = value
+                        self.assert_rejected(candidate(scope=scope), baseline, trial)
+
+    def test_non_finite_critical_metrics_are_rejected(self):
+        for side in ("baseline", "trial"):
+            for value in (float("nan"), float("inf"), float("-inf")):
+                with self.subTest(side=side, value=value):
+                    baseline = {"recall": 0.70, "error_rate": 0.10}
+                    trial = {"recall": 0.80, "error_rate": 0.08}
+                    (baseline if side == "baseline" else trial)["error_rate"] = value
+                    self.assert_rejected(candidate(), baseline, trial)
+
+    def test_invalid_minimum_gains_are_rejected(self):
+        for value in (float("nan"), float("inf"), float("-inf"), True, False, "0.05", -0.01, 10**400):
+            with self.subTest(value_type=type(value).__name__):
+                self.assert_rejected(candidate(min_gain=value),
+                                     {"recall": 0.70, "error_rate": 0.10},
+                                     {"recall": 0.80, "error_rate": 0.08})
+
+    def test_invalid_regression_limits_are_rejected(self):
+        for value in (float("nan"), float("inf"), float("-inf"), True, False, "0.0", -0.01, 10**400):
+            with self.subTest(value_type=type(value).__name__):
+                self.assert_rejected(
+                    candidate(critical_metrics={"error_rate": {"direction": "lower", "max_regression": value}}),
+                    {"recall": 0.70, "error_rate": 0.10},
+                    {"recall": 0.80, "error_rate": 0.20})
+
+    def test_critical_direction_and_rule_shape_are_validated(self):
+        for rule in ({"direction": "sideways"}, {"direction": None}, {"direction": []}, None, "lower", []):
+            with self.subTest(rule=rule):
+                self.assert_rejected(candidate(critical_metrics={"error_rate": rule}),
+                                     {"recall": 0.70, "error_rate": 0.10},
+                                     {"recall": 0.80, "error_rate": 0.08})
+
+    def test_primary_gain_overflow_is_rejected(self):
+        for direction, baseline_value, trial_value in (("higher", -1e308, 1e308), ("lower", 1e308, -1e308)):
+            with self.subTest(direction=direction):
+                decision = evaluate_candidate(candidate(direction=direction),
+                    {"recall": baseline_value, "error_rate": 0.10},
+                    {"recall": trial_value, "error_rate": 0.08}, evidence())
+                self.assertEqual(decision.status, "REJECT")
+                self.assertIsNone(decision.primary_gain)
+
+    def test_critical_gain_overflow_is_rejected(self):
+        for direction, baseline_value, trial_value in (("higher", -1e308, 1e308), ("lower", 1e308, -1e308)):
+            with self.subTest(direction=direction):
+                self.assert_rejected(candidate(critical_metrics={"margin": {"direction": direction}}),
+                    {"recall": 0.70, "margin": baseline_value},
+                    {"recall": 0.80, "margin": trial_value})
+
+    def test_unrepresentable_integers_fail_closed(self):
+        for metric in ("recall", "error_rate"):
+            for side in ("baseline", "trial"):
+                with self.subTest(metric=metric, side=side):
+                    baseline = {"recall": 0.70, "error_rate": 0.10}
+                    trial = {"recall": 0.80, "error_rate": 0.08}
+                    (baseline if side == "baseline" else trial)[metric] = 10**400
+                    self.assert_rejected(candidate(), baseline, trial)
+
+    def test_zero_and_negative_finite_metrics_remain_valid(self):
+        for direction, baseline_value, trial_value, min_gain in (
+            ("higher", 0, 0, 0),
+            ("higher", -20, -10, 1),
+            ("lower", -10, -20, 1),
+            ("higher", 1e308, 1e308, 0),
+        ):
+            with self.subTest(direction=direction, baseline_value=baseline_value):
+                decision = evaluate_candidate(candidate(direction=direction, min_gain=min_gain),
+                    {"recall": baseline_value, "error_rate": 0},
+                    {"recall": trial_value, "error_rate": 0}, evidence())
+                self.assertEqual(decision.status, "AUTO_APPLY_ELIGIBLE")
+                self.assertTrue(decision.auto_apply_eligible)
+
+    def test_finite_regression_budget_is_preserved(self):
+        decision = evaluate_candidate(
+            candidate(critical_metrics={"error_rate": {"direction": "lower", "max_regression": 0.11}}),
+            {"recall": 0.70, "error_rate": 0.10},
+            {"recall": 0.80, "error_rate": 0.20}, evidence())
+        self.assertEqual(decision.status, "AUTO_APPLY_ELIGIBLE")
+
     def test_low_risk_reversible_change_can_be_auto_apply_eligible(self):
         decision = evaluate_candidate(
             candidate(),

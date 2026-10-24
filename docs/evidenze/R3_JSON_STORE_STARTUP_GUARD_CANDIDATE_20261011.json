@@ -1,0 +1,23 @@
+{
+  "schema": "r3-json-store-startup-guard-trial/1",
+  "origin": "NUOVA_SU_BASE_VERIFICATA",
+  "base_revision": "4b31a350a4508e789e1bde397bdc9a8f22fe0f66",
+  "phase": "candidate",
+  "recorded_at_utc": "2026-10-11T13:16:25.391220+00:00",
+  "python": "3.12.6",
+  "platform": "Windows-11-10.0.22631-SP0",
+  "source_sha256": "be64028dbfb2620c46e348bcb51c03e92d4ec093aa156a58179a8525dc7a1b59",
+  "tests_sha256": "b068d365de29a5053e81a9de76bc211d166d39461e3dbf7c828458d9a58f93dc",
+  "prereg_sha256": "84c9848c8363ad3832e3aea2b6df9f12cda349893e2fc59d8d1d0277199d253a",
+  "log_sha256": "da3a68633d03c0099913b9ecd2f6b3a33c4dec553763e61aa85c7ad3492199d9",
+  "tests_run": 19,
+  "failure_entries": 0,
+  "error_entries": 0,
+  "skips": 0,
+  "successful": true,
+  "duration_seconds": 0.459853,
+  "network": "socket.connect/connect_ex denied; Redis mocked in factory cases",
+  "state_scope": "synthetic per-test TemporaryDirectory only",
+  "failed_test_ids": [],
+  "error_test_ids": []
+}
