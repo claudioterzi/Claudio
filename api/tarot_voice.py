@@ -239,7 +239,12 @@ def _handle_voice():
     body = request.get_json(silent=True)
     if not isinstance(body, dict):
         return jsonify({"errore": "Serve un oggetto JSON."}), 400
+    if any(key in body for key in ("guest_invite", "guest_mode", "invito")):
+        return jsonify({"errore": "Le prove ospite sono letture canoniche senza voce esterna.", "mode": "guest-canonical"}), 403
 
+    from telegram_owner_auth import telegram_owner
+    if not telegram_owner(body):
+        return jsonify({"errore": "La voce esterna richiede l’accesso firmato del proprietario da Telegram.", "fallback": "browser-speech-synthesis"}), 403
     raw_text = body.get("testo") or body.get("text")
     if not isinstance(raw_text, str) or not raw_text.strip():
         return jsonify({"errore": "Serve il testo da leggere."}), 400

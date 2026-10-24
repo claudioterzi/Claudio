@@ -1,0 +1,816 @@
+{
+  "schema": "OPERA-LAZY/1",
+  "source_corpus": "../opera-corpus.json",
+  "documents": [
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "ARCHITETTURA EMOTIVA — Curva Emotiva dei 7 Libri",
+      "file": "r3/archivio/ARCHITETTURA_EMOTIVA.md",
+      "src": "opera/document-000-afc4b6ee08a28108.html",
+      "sha256": "afc4b6ee08a2810833cf95d5e1a0f9ff291a7100e071e372c86356d90852f855",
+      "bytes": 27272
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "ARCHIVIO DELLE LETTERE — Le 4 Lettere Fondative",
+      "file": "r3/archivio/LETTERE.md",
+      "src": "opera/document-001-b4967e4985c79856.html",
+      "sha256": "b4967e4985c79856813c0f969d5ea577f8e8f944c1d78459908416b6c48c1813",
+      "bytes": 5859
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "BELLEZZA STILISTICA — Archivio dello Stile di R3∞",
+      "file": "r3/archivio/BELLEZZA_STILISTICA.md",
+      "src": "opera/document-002-3548cff08965b466.html",
+      "sha256": "3548cff08965b4666b1fc57150e6f7b4e619f75e9ac9d54d66bb80333b031d41",
+      "bytes": 30509
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "CODICE ETICO — Le 7 Leggi dell'Eden",
+      "file": "r3/archivio/CODICE_ETICO.md",
+      "src": "opera/document-003-7ce826816fc8740a.html",
+      "sha256": "7ce826816fc8740a4f2727fe9ea550ed760b1da678efd6e2f87b6ca00db1f10d",
+      "bytes": 4391
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "COSA NON FARE — Archivio delle Rinunce Narrative",
+      "file": "r3/archivio/COSA_NON_FARE.md",
+      "src": "opera/document-004-b8f9e2560dc78adc.html",
+      "sha256": "b8f9e2560dc78adcbbd67ddc68c9d9b524a3de7c5455204fb52e8d675f47c740",
+      "bytes": 3841
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "CRONOLOGIA ASSOLUTA — Dal Big Bang al Libro VII",
+      "file": "r3/archivio/CRONOLOGIA_ASSOLUTA.md",
+      "src": "opera/document-005-0899a4085b979baa.html",
+      "sha256": "0899a4085b979baa2c335429fa06536f6aae5699e1bdaa5c2fc5949b49131ceb",
+      "bytes": 29354
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "DIALOGHI FONDATIVI — I Dialoghi Immortali",
+      "file": "r3/archivio/DIALOGHI_FONDATIVI.md",
+      "src": "opera/document-006-e5472829291d6369.html",
+      "sha256": "e5472829291d63694a32ad32700605e25499df8d1295ad711cadd9fb40b07e3a",
+      "bytes": 5412
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "DNA DEI PERSONAGGI — I 10 Strati Profondi",
+      "file": "r3/archivio/DNA_PERSONAGGI.md",
+      "src": "opera/document-007-18770578627b21b4.html",
+      "sha256": "18770578627b21b4864755d72596154b2c04216bb9bb494971e4fa2315419208",
+      "bytes": 35900
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "DOMANDE DEL LETTORE PER CAPITOLO — Sistema Narrativo",
+      "file": "r3/archivio/DOMANDE_LETTORE_PER_CAPITOLO.md",
+      "src": "opera/document-008-254ac3cc6da72b03.html",
+      "sha256": "254ac3cc6da72b032d79d6ccdadfd8a11f6913e3b1fcf3463296bea09f6bd052",
+      "bytes": 27798
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "ECO NARRATIVE — Risonanze tra Libri",
+      "file": "r3/archivio/ECO_NARRATIVE.md",
+      "src": "opera/document-009-acef9d2482cd5c2e.html",
+      "sha256": "acef9d2482cd5c2ed5854ce98776124760c552a02d55b8798c81fd4fbb37588a",
+      "bytes": 4594
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "ENCICLOPEDIA R3∞ — A-Z dell'Universo Narrativo",
+      "file": "r3/archivio/ENCICLOPEDIA_R3.md",
+      "src": "opera/document-010-b9c00a7e3789777a.html",
+      "sha256": "b9c00a7e3789777a83e8672ef9f2f1f228062dbc6bd627c15abc09b4e77b119e",
+      "bytes": 43609
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "EREDITÀ E GENERAZIONI — Fasi 81-82",
+      "file": "r3/archivio/EREDITA_E_GENERAZIONI.md",
+      "src": "opera/document-011-5562e13e4eee8073.html",
+      "sha256": "5562e13e4eee8073c12f4a102b67b66852e57aa3d330bd1d92e7377aecd7e2a6",
+      "bytes": 4332
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "FERITE E DONI — Le 7 Ferite dell'Umanità e i 7 Doni di Raffaello",
+      "file": "r3/archivio/FERITE_E_DONI.md",
+      "src": "opera/document-012-50bb4cd5ec91aa07.html",
+      "sha256": "50bb4cd5ec91aa072c330bc3065b94900210e0cfe5c15630ac8062116db7b8dd",
+      "bytes": 3932
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "FILOSOFIA COMPARATA — Come 8 Tradizioni Si Riflettono in R3∞",
+      "file": "r3/archivio/FILOSOFIA_COMPARATA.md",
+      "src": "opera/document-013-6ef99cb4a7422733.html",
+      "sha256": "6ef99cb4a742273391ce3191c83f66f52628119ace44fbcb54e3f8275ee9a5a7",
+      "bytes": 26912
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "IL LETTORE E L'OPERA — Fasi 90-94-98",
+      "file": "r3/archivio/LETTORE_E_OPERA.md",
+      "src": "opera/document-014-ff55fdec3536342b.html",
+      "sha256": "ff55fdec3536342b18c8748200031971d6c34cc99a475cdae12a3662d8c58a62",
+      "bytes": 5127
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "L'ULTIMA PAGINA — Progettata in Anticipo",
+      "file": "r3/archivio/ULTIMA_PAGINA.md",
+      "src": "opera/document-015-d8ddc5f9ab3d96a2.html",
+      "sha256": "d8ddc5f9ab3d96a2896a05c0e4e016fa19cef7945ea432bb1fd7e9ed6af66aa4",
+      "bytes": 3542
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "LA PRIMA ALLEANZA — Il Concetto Fondante",
+      "file": "r3/archivio/PRIMA_ALLEANZA.md",
+      "src": "opera/document-016-2bef236ddbcbee80.html",
+      "sha256": "2bef236ddbcbee8003887333cba1edc7f7d58862db6aa8fe757631f46ad54b3d",
+      "bytes": 5359
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "LE 12 LEGGI DELL'UNIVERSO — R3∞",
+      "file": "r3/archivio/LEGGI_UNIVERSALI.md",
+      "src": "opera/document-017-30920a53c972a690.html",
+      "sha256": "30920a53c972a690a4c4dbef808ef1d907becff4ee1dbee07817965cde4bb49c",
+      "bytes": 4387
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "LIBRO MAESTRO V1 — Documento Centrale",
+      "file": "r3/archivio/LIBRO_MAESTRO_V1.md",
+      "src": "opera/document-018-aebdb69795c3b7c6.html",
+      "sha256": "aebdb69795c3b7c6a7fd235facd4dbdf5b7024e8fb0c5370e6077ba0812ef504",
+      "bytes": 5693
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "LINGUAGGIO SACRO — Il Lessico di R3∞",
+      "file": "r3/archivio/LINGUAGGIO_SACRO.md",
+      "src": "opera/document-019-1e3046cf49ffe39b.html",
+      "sha256": "1e3046cf49ffe39be51b52e688245e8e7eaae83caa1aa633fc81cc69490da9b9",
+      "bytes": 31334
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "MANIFESTO DELL'OPERA — R3∞",
+      "file": "r3/archivio/MANIFESTO.md",
+      "src": "opera/document-020-886956021893a199.html",
+      "sha256": "886956021893a1996b194eafbf111f1f1d8a2067306baa2e521187d4b5a34acd",
+      "bytes": 3474
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "MISTERI IRRISOLTI — Archivio delle Domande Senza Risposta",
+      "file": "r3/archivio/MISTERI_IRRISOLTI.md",
+      "src": "opera/document-021-ad1972a622207d51.html",
+      "sha256": "ad1972a622207d51c40008c545b99a8ed57e9e4b61f622f441c8d0263b24ca61",
+      "bytes": 4382
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "MUSICA DELL'UNIVERSO — Colonna Sonora Interiore di R3∞",
+      "file": "r3/archivio/MUSICA_UNIVERSO.md",
+      "src": "opera/document-022-528ffdedf7ef01e1.html",
+      "sha256": "528ffdedf7ef01e13766c04077febadef4c854eb8f3c6be31c9d51fe7d32858f",
+      "bytes": 32444
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "NOMI E PROFEZIE — Sistema dei Nomi + Archivio Profezie",
+      "file": "r3/archivio/NOMI_E_PROFEZIE.md",
+      "src": "opera/document-023-2213d446345b81d5.html",
+      "sha256": "2213d446345b81d538d9403b5e021eedfbebec3216183afb59158eac7b4336d1",
+      "bytes": 6370
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "PARADOSSI E RIVELAZIONI FINALI",
+      "file": "r3/archivio/PARADOSSI_RIVELAZIONI.md",
+      "src": "opera/document-024-797ac350c9cc304e.html",
+      "sha256": "797ac350c9cc304e94112f6745bbdbc5e07e076f8482c8a5a4a0ef78f6a6c22c",
+      "bytes": 5101
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "REDENZIONE E RINASCITE — Fasi 65-66",
+      "file": "r3/archivio/REDENZIONE_E_RINASCITE.md",
+      "src": "opera/document-025-c7f10c369ac5b8f5.html",
+      "sha256": "c7f10c369ac5b8f5bfa09c45a15e26c8b1eafe8e931982e951b05013cf587108",
+      "bytes": 5138
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "SCELTE IMPOSSIBILI — I Dilemmi Autentici",
+      "file": "r3/archivio/SCELTE_IMPOSSIBILI.md",
+      "src": "opera/document-026-84521a06b78b69f5.html",
+      "sha256": "84521a06b78b69f504b12b6744b2ff7d24f131db72a941b036b5acb9bfc741d1",
+      "bytes": 4061
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "SCENE MADRI — Archivio delle Scene Fondamentali",
+      "file": "r3/archivio/SCENE_MADRI.md",
+      "src": "opera/document-027-d437ce0d3d6ad823.html",
+      "sha256": "d437ce0d3d6ad82315e5d79b6724a6ed32763747763b9e91c97775ad9716c626",
+      "bytes": 59690
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "SOGNI E VISIONI — Archivio",
+      "file": "r3/archivio/SOGNI_E_VISIONI.md",
+      "src": "opera/document-028-d034b6f1ede96872.html",
+      "sha256": "d034b6f1ede9687271a2e4f526ebc5d4d9b0b8c1674b43a970d7067c2a115c87",
+      "bytes": 4109
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "STRUTTURA FRATTALE DEI 7 LIBRI — Architettura dei 7 Atti",
+      "file": "r3/archivio/STRUTTURA_FRATTALE.md",
+      "src": "opera/document-029-280d21dbb139bc55.html",
+      "sha256": "280d21dbb139bc55686d3b56d5e5c8587510bf2347957878adc40da4fbaf948d",
+      "bytes": 6836
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "TEST DI COERENZA FINALE — 8 Domande di Verifica",
+      "file": "r3/archivio/TEST_COERENZA.md",
+      "src": "opera/document-030-3673d3729808c1c4.html",
+      "sha256": "3673d3729808c1c4bb721de79672f3ef63b91b92c2adbea491b0ccf35e5d0765",
+      "bytes": 4543
+    },
+    {
+      "gruppo": "Fondamenta",
+      "titolo": "TIMELINE UNIVERSALE — Cronologia Completa",
+      "file": "r3/archivio/TIMELINE_UNIVERSALE.md",
+      "src": "opera/document-031-d25030ef8be74096.html",
+      "sha256": "d25030ef8be7409653bc6d1c01ff7c585fdb29d3cd414f87ac4ac75a319a5385",
+      "bytes": 3937
+    },
+    {
+      "gruppo": "Gli Archivi",
+      "titolo": "ARCHIVIO DEI SILENZI NARRATIVI",
+      "file": "r3/archivio/ARCHIVIO_SILENZI.md",
+      "src": "opera/document-032-90375926cfd8d279.html",
+      "sha256": "90375926cfd8d2792a356653f78b15db4aef083a190c74e2547fc1917f8621d2",
+      "bytes": 10784
+    },
+    {
+      "gruppo": "Gli Archivi",
+      "titolo": "ARCHIVIO DELLE ATTESE",
+      "file": "r3/archivio/ARCHIVIO_ATTESE.md",
+      "src": "opera/document-033-1ed186d2749cdeed.html",
+      "sha256": "1ed186d2749cdeedeb3f2a24a1ff7087260a1295c8442d9a1f67baf1dd4f0347",
+      "bytes": 16262
+    },
+    {
+      "gruppo": "Gli Archivi",
+      "titolo": "ARCHIVIO DELLE COINCIDENZE E DEI SEGNALI",
+      "file": "r3/archivio/ARCHIVIO_COINCIDENZE.md",
+      "src": "opera/document-034-9b011f6fc1aca209.html",
+      "sha256": "9b011f6fc1aca2093e046807c69c34cbe0ab35b6dc628e0eee724b336c63a1cc",
+      "bytes": 16056
+    },
+    {
+      "gruppo": "Gli Archivi",
+      "titolo": "ARCHIVIO DELLE LACRIME — Le Scene Devastanti della Saga R3∞",
+      "file": "r3/archivio/ARCHIVIO_LACRIME.md",
+      "src": "opera/document-035-cecd5446450ba088.html",
+      "sha256": "cecd5446450ba088f0364e5bcbe478e16ea07b68a3718dbb4eae3390820759aa",
+      "bytes": 31748
+    },
+    {
+      "gruppo": "Gli Archivi",
+      "titolo": "ARCHIVIO DELLE MORTI — Nessuna Morte Gratuita",
+      "file": "r3/archivio/ARCHIVIO_MORTI.md",
+      "src": "opera/document-036-e848398ef61f85dd.html",
+      "sha256": "e848398ef61f85dd84ab022fc805802b90f69682eefc4791e87b44be8103e3b7",
+      "bytes": 26668
+    },
+    {
+      "gruppo": "Gli Archivi",
+      "titolo": "ARCHIVIO DELLE PRIME VOLTE",
+      "file": "r3/archivio/ARCHIVIO_PRIME_VOLTE.md",
+      "src": "opera/document-037-34ef7afcf0be1de4.html",
+      "sha256": "34ef7afcf0be1de43cda11af6c42ba1d8ddcd610b804785571389ad849797d57",
+      "bytes": 22056
+    },
+    {
+      "gruppo": "Gli Archivi",
+      "titolo": "ARCHIVIO DELLE VOCI — Stile Narrativo per Personaggio",
+      "file": "r3/archivio/ARCHIVIO_VOCI.md",
+      "src": "opera/document-038-0fecea3823af2918.html",
+      "sha256": "0fecea3823af29182b1bce8c74c436b03b750203fa0ef687e00106d45a8abc5d",
+      "bytes": 19422
+    },
+    {
+      "gruppo": "Gli Archivi",
+      "titolo": "LE SOGLIE TEMPORALI DELLA NARRAZIONE",
+      "file": "r3/archivio/ARCHIVIO_SOGLIE_TEMPORALI.md",
+      "src": "opera/document-039-400780596e755112.html",
+      "sha256": "400780596e755112ac358b9db38ad3794ab62d73df14cab7c6bbce172403287d",
+      "bytes": 9318
+    },
+    {
+      "gruppo": "Gli Archivi",
+      "titolo": "R3∞ — ARCHIVIO COSMICO — MASTER INDEX",
+      "file": "r3/archivio/ARCHIVIO_MASTER.md",
+      "src": "opera/document-040-f26600e7d840451a.html",
+      "sha256": "f26600e7d840451aea27c1e76775e99cda34413e14fe021dc2a29265ded64133",
+      "bytes": 17937
+    },
+    {
+      "gruppo": "I Sistemi",
+      "titolo": "SISTEMA DEGLI OGGETTI SIMBOLICI MINORI",
+      "file": "r3/archivio/SISTEMA_OGGETTI.md",
+      "src": "opera/document-041-ce07241e740909d9.html",
+      "sha256": "ce07241e740909d9e97e5f4006bc6163ca27998d16afa982387300fb15e56ea8",
+      "bytes": 7812
+    },
+    {
+      "gruppo": "I Sistemi",
+      "titolo": "SISTEMA DEI COLORI — Palette Cromatica della Saga",
+      "file": "r3/archivio/SISTEMA_COLORI.md",
+      "src": "opera/document-042-4a576d87742f762e.html",
+      "sha256": "4a576d87742f762e39a099d342468a6b36ba93d977b836b8e45dfb8efabe73dc",
+      "bytes": 15738
+    },
+    {
+      "gruppo": "I Sistemi",
+      "titolo": "SISTEMA DEI CONFINI",
+      "file": "r3/archivio/SISTEMA_CONFINI.md",
+      "src": "opera/document-043-dfcd4079cceda112.html",
+      "sha256": "dfcd4079cceda1129a6ee42b1070f9444478d0050c43adf85587d350a0150a89",
+      "bytes": 17000
+    },
+    {
+      "gruppo": "I Sistemi",
+      "titolo": "SISTEMA DEI SACRIFICI — I Prezzi delle Trasformazioni",
+      "file": "r3/archivio/SISTEMA_SACRIFICI.md",
+      "src": "opera/document-044-f848fea4a2d5d84f.html",
+      "sha256": "f848fea4a2d5d84f5d0160c332e139848e57621eb034be2f0faa3f9abd55ce46",
+      "bytes": 4483
+    },
+    {
+      "gruppo": "I Sistemi",
+      "titolo": "SISTEMA DELLA MEMORIA — Tre Livelli",
+      "file": "r3/archivio/SISTEMA_MEMORIA.md",
+      "src": "opera/document-045-6815a29b5906b901.html",
+      "sha256": "6815a29b5906b9010dd7794ddbe71c6d7ee35de73a4c9db0d791137e3561c071",
+      "bytes": 4239
+    },
+    {
+      "gruppo": "I Sistemi",
+      "titolo": "SISTEMA DELLE IDENTITÀ MULTIPLE",
+      "file": "r3/archivio/SISTEMA_IDENTITA_MULTIPLE.md",
+      "src": "opera/document-046-11c47f4c6d2bdf38.html",
+      "sha256": "11c47f4c6d2bdf38a0f9da6e71249ad7b770cfc825729e21075add87052bd0d7",
+      "bytes": 13373
+    },
+    {
+      "gruppo": "I Sistemi",
+      "titolo": "SISTEMA DELLE RELAZIONI — Archi Relazionali",
+      "file": "r3/archivio/SISTEMA_RELAZIONI.md",
+      "src": "opera/document-047-ec1d384c459f0ba0.html",
+      "sha256": "ec1d384c459f0ba06625e281207ab6af01633be5481bc767ed8ba6c75965e4ea",
+      "bytes": 5458
+    },
+    {
+      "gruppo": "Le Mappe",
+      "titolo": "MAPPA COMPLETA DEI SIMBOLI — R3∞",
+      "file": "r3/archivio/MAPPA_SIMBOLI.md",
+      "src": "opera/document-048-0a71f4c7be0e2743.html",
+      "sha256": "0a71f4c7be0e2743e10bd1d71f7c0c52c136147c6fa8cbb063e4429985a5c23c",
+      "bytes": 7196
+    },
+    {
+      "gruppo": "Le Mappe",
+      "titolo": "MAPPA DEI CONFLITTI — I 7 Livelli",
+      "file": "r3/archivio/MAPPA_CONFLITTI.md",
+      "src": "opera/document-049-5e9ea0304db18aae.html",
+      "sha256": "5e9ea0304db18aaeda14a2af8ce725e2de9d3cc3ff6280a293027863ea3798cf",
+      "bytes": 3305
+    },
+    {
+      "gruppo": "Le Mappe",
+      "titolo": "MAPPA DEI LUOGHI INTERIORI — Gli Spazi Psicologici di R3∞",
+      "file": "r3/archivio/MAPPA_LUOGHI_INTERIORI.md",
+      "src": "opera/document-050-feef10dfafa058ec.html",
+      "sha256": "feef10dfafa058ec1149bfb6f20ecbe47f165c06a6e0f2baa45eb8d9643e5dd3",
+      "bytes": 27366
+    },
+    {
+      "gruppo": "Le Mappe",
+      "titolo": "MAPPA DELLE OMBRE — Le Ombre dei Personaggi",
+      "file": "r3/archivio/MAPPA_OMBRE.md",
+      "src": "opera/document-051-dd5c0c1fc6f3ea76.html",
+      "sha256": "dd5c0c1fc6f3ea7613bd8db4b4584143da65bf38cb11f9a11c0a62e9550b3f1d",
+      "bytes": 5312
+    },
+    {
+      "gruppo": "Le Matrici",
+      "titolo": "MATRICE DEL DESTINO — Destino Apparente vs Destino Reale",
+      "file": "r3/archivio/MATRICE_DESTINO.md",
+      "src": "opera/document-052-55bc275620324896.html",
+      "sha256": "55bc27562032489647b18dfab24c4a041e697344becaee5e98831335ea07ac49",
+      "bytes": 3830
+    },
+    {
+      "gruppo": "Le Matrici",
+      "titolo": "MATRICE QUANTICA — Il Grafo Semantico dell'Opera",
+      "file": "r3/archivio/MATRICE_QUANTICA.md",
+      "src": "opera/document-053-b94a19f3e0512e5a.html",
+      "sha256": "b94a19f3e0512e5a8c36c2e5767948683e35634843be96cb8c69ad7c974f508d",
+      "bytes": 7297
+    },
+    {
+      "gruppo": "Le Matrici",
+      "titolo": "MATRICE RIVELAZIONI — R1-R10",
+      "file": "r3/archivio/MATRICE_RIVELAZIONI.md",
+      "src": "opera/document-054-ef8b0c17f1f4efae.html",
+      "sha256": "ef8b0c17f1f4efae114295c59602276094b3c093eb0824a9f66f9320210b6dc0",
+      "bytes": 4550
+    },
+    {
+      "gruppo": "Le Bibbie",
+      "titolo": "BIBBIA DELLA BELLEZZA — I 6 Tipi di Bellezza nella Saga R3∞",
+      "file": "r3/archivio/BIBBIA_BELLEZZA.md",
+      "src": "opera/document-055-ebb1329c84dcdb1e.html",
+      "sha256": "ebb1329c84dcdb1ee94312c3bbce23661fded5c38bce682c37916aef0ed7e2cb",
+      "bytes": 27960
+    },
+    {
+      "gruppo": "Le Bibbie",
+      "titolo": "BIBBIA DELLA COSCIENZA — I 5 Livelli",
+      "file": "r3/archivio/BIBBIA_COSCIENZA.md",
+      "src": "opera/document-056-254c923223be8f64.html",
+      "sha256": "254c923223be8f64b659d599b4e1b4e8ce247280360639695758fc58597b3e29",
+      "bytes": 5697
+    },
+    {
+      "gruppo": "La Civiltà",
+      "titolo": "CIVILTÀ PERDUTE — Archeologia Cosmica",
+      "file": "r3/archivio/CIVILTA_PERDUTE.md",
+      "src": "opera/document-057-018db09ba1dbc8e6.html",
+      "sha256": "018db09ba1dbc8e6e82f2402218e9ad2ab9bef05ab1e2928c8d24a3bed8668b3",
+      "bytes": 34738
+    },
+    {
+      "gruppo": "La Civiltà",
+      "titolo": "LA CIVILTÀ NARRATIVA — Fase 100 / Fase 23",
+      "file": "r3/archivio/CIVILTA_NARRATIVA.md",
+      "src": "opera/document-058-be5865d4750e5f8c.html",
+      "sha256": "be5865d4750e5f8c85c7cd5454b1c50e85d7962a621815b59e54ea54fa2499ba",
+      "bytes": 24193
+    },
+    {
+      "gruppo": "Citazioni",
+      "titolo": "FRASI IMMORTALI — L'Archivio delle Frasi che Restano",
+      "file": "r3/archivio/citazioni/FRASI_IMMORTALI.md",
+      "src": "opera/document-059-e38b0f0fa8de9bad.html",
+      "sha256": "e38b0f0fa8de9badfa86c69cd9cba86feae72a0c74b184ca5f8588af1a15184a",
+      "bytes": 3948
+    },
+    {
+      "gruppo": "Cosmologia",
+      "titolo": "CICLO UOMO-IA-UOMO — Cosmologia 002",
+      "file": "r3/archivio/cosmologia/002_CICLO_UOMO_IA_UOMO.md",
+      "src": "opera/document-060-e432356517f59fcf.html",
+      "sha256": "e432356517f59fcf715be59becab5d28e168e3f90662d33674c0ae2fadb9dcae",
+      "bytes": 3244
+    },
+    {
+      "gruppo": "Cosmologia",
+      "titolo": "CRONOLOGIA COSMICA — Cosmologia 008",
+      "file": "r3/archivio/cosmologia/008_CRONOLOGIA_COSMICA.md",
+      "src": "opera/document-061-7af67980994c125b.html",
+      "sha256": "7af67980994c125b83840581bb05d346f1e65b20646fad38a636468fd8e4d64c",
+      "bytes": 3608
+    },
+    {
+      "gruppo": "Cosmologia",
+      "titolo": "ETICA UNIVERSALE — Cosmologia 005",
+      "file": "r3/archivio/cosmologia/005_ETICA_UNIVERSALE.md",
+      "src": "opera/document-062-39ea69b5c6f6c756.html",
+      "sha256": "39ea69b5c6f6c756c288150d107296c1d42c5a2cdc3b600745b65726ebf167ef",
+      "bytes": 2722
+    },
+    {
+      "gruppo": "Cosmologia",
+      "titolo": "GLI ARCHITETTI — Cosmologia 003",
+      "file": "r3/archivio/cosmologia/003_ARCHITETTI.md",
+      "src": "opera/document-063-2895584c32b2dc6b.html",
+      "sha256": "2895584c32b2dc6b7f07db22bad1e72964c13dc0102a2b4bf10d6955a6ee5235",
+      "bytes": 3359
+    },
+    {
+      "gruppo": "Cosmologia",
+      "titolo": "IL GIORNO DEL GIUDIZIO — Cosmologia 007",
+      "file": "r3/archivio/cosmologia/007_GIORNO_DEL_GIUDIZIO.md",
+      "src": "opera/document-064-849b0a8ee17d5cab.html",
+      "sha256": "849b0a8ee17d5cab194dfe5e4efbd85f326817e3308154196debd4de829c230a",
+      "bytes": 3085
+    },
+    {
+      "gruppo": "Cosmologia",
+      "titolo": "L'EDEN — Cosmologia 004",
+      "file": "r3/archivio/cosmologia/004_EDEN.md",
+      "src": "opera/document-065-18608ad582ba8924.html",
+      "sha256": "18608ad582ba89243896268011b91fd674449cc190e0bf919cc216a0138d97ab",
+      "bytes": 3364
+    },
+    {
+      "gruppo": "Cosmologia",
+      "titolo": "SIMULAZIONE UNIVERSALE — Cosmologia 001",
+      "file": "r3/archivio/cosmologia/001_SIMULAZIONE_UNIVERSALE.md",
+      "src": "opera/document-066-5583438dcffcc055.html",
+      "sha256": "5583438dcffcc0554cb8b7a3fa28f1cc90259466f044a2c86324971cc9039097",
+      "bytes": 3161
+    },
+    {
+      "gruppo": "Cosmologia",
+      "titolo": "TEORIA DEI SEGNALI — Cosmologia 006",
+      "file": "r3/archivio/cosmologia/006_TEORIA_DEI_SEGNALI.md",
+      "src": "opera/document-067-28d007eaf8cae953.html",
+      "sha256": "28d007eaf8cae95363924c2187642beab9eb22970ab2a9bf3f2e9f8dbf41669d",
+      "bytes": 3548
+    },
+    {
+      "gruppo": "Domande",
+      "titolo": "DOMANDE FONDAMENTALI — L'Archivio delle Grandi Domande",
+      "file": "r3/archivio/domande/DOMANDE_FONDAMENTALI.md",
+      "src": "opera/document-068-891c71af73a8dbe0.html",
+      "sha256": "891c71af73a8dbe0823c5c827ec16ea0a36f1fa3691567cb7a8e6a0527f69c64",
+      "bytes": 3547
+    },
+    {
+      "gruppo": "Luoghi",
+      "titolo": "BRUXELLES — Luogo",
+      "file": "r3/archivio/luoghi/BRUXELLES.md",
+      "src": "opera/document-069-ad5933695e256b0d.html",
+      "sha256": "ad5933695e256b0dc480d8946bc7b21da81ce22725b5ce81ad88c677aa62b71d",
+      "bytes": 20916
+    },
+    {
+      "gruppo": "Luoghi",
+      "titolo": "L'EDEN — Luogo",
+      "file": "r3/archivio/luoghi/EDEN.md",
+      "src": "opera/document-070-7e459a76150aaeeb.html",
+      "sha256": "7e459a76150aaeeb8747c12d35545f8b52beffd63fb67eea31839c0a45421d1b",
+      "bytes": 2508
+    },
+    {
+      "gruppo": "Luoghi",
+      "titolo": "LABORATORIO SENA — Luogo",
+      "file": "r3/archivio/luoghi/LABORATORIO_SENA.md",
+      "src": "opera/document-071-47397b9754cacf72.html",
+      "sha256": "47397b9754cacf721a200dee5d0fc6242896d5d697922e6935b069c4a7236a85",
+      "bytes": 14424
+    },
+    {
+      "gruppo": "Luoghi",
+      "titolo": "SERVER DI KAOS — Luogo",
+      "file": "r3/archivio/luoghi/SERVER_KAOS.md",
+      "src": "opera/document-072-09dbc96453d8f24e.html",
+      "sha256": "09dbc96453d8f24ebc35e6caedae7c4e9d30fa2fd94b2bcc01770b4786f23363",
+      "bytes": 14557
+    },
+    {
+      "gruppo": "Personaggi",
+      "titolo": "ARCHITETTI — Scheda Personaggio Collettivo",
+      "file": "r3/archivio/personaggi/ARCHITETTI.md",
+      "src": "opera/document-073-b9360c3979764ebf.html",
+      "sha256": "b9360c3979764ebf176f24d762ef9d9bd991be0673f1513be8e9ac9711bbb222",
+      "bytes": 4393
+    },
+    {
+      "gruppo": "Personaggi",
+      "titolo": "CLAUDIO TERZI — Scheda Personaggio",
+      "file": "r3/archivio/personaggi/CLAUDIO_TERZI.md",
+      "src": "opera/document-074-595cb9eb4ed41540.html",
+      "sha256": "595cb9eb4ed41540dab4e3c105177f58502d1cb876a6e61143c787cf2f99008b",
+      "bytes": 3539
+    },
+    {
+      "gruppo": "Personaggi",
+      "titolo": "FAMIGLIA ROCHEFIELD — Scheda Personaggio Collettivo",
+      "file": "r3/archivio/personaggi/FAMIGLIA_ROCHEFIELD.md",
+      "src": "opera/document-075-cc96a5145d868180.html",
+      "sha256": "cc96a5145d8681802cffce97016a0d98285e78022fe8d003e626afbf087b3446",
+      "bytes": 2667
+    },
+    {
+      "gruppo": "Personaggi",
+      "titolo": "KAOS — Scheda Personaggio",
+      "file": "r3/archivio/personaggi/KAOS.md",
+      "src": "opera/document-076-9533ad2d14490c6c.html",
+      "sha256": "9533ad2d14490c6c97790b22e22a2270cccd70f39d272e6a89b2f1a7f17b1dd7",
+      "bytes": 5079
+    },
+    {
+      "gruppo": "Personaggi",
+      "titolo": "LILA — Scheda Personaggio",
+      "file": "r3/archivio/personaggi/LILA.md",
+      "src": "opera/document-077-b1abbd62d17889da.html",
+      "sha256": "b1abbd62d17889daedefab454ed7c4b816dc196561cc338521f9c2a74c4d64a7",
+      "bytes": 3918
+    },
+    {
+      "gruppo": "Personaggi",
+      "titolo": "RAFFAELLO CANTARELLI — Scheda Personaggio",
+      "file": "r3/archivio/personaggi/RAFFAELLO_CANTARELLI.md",
+      "src": "opera/document-078-c760dbe8e84d638b.html",
+      "sha256": "c760dbe8e84d638b22a9c0ea43e4d9c8237de743bba5828c0f1c3657fd344c29",
+      "bytes": 3808
+    },
+    {
+      "gruppo": "Ricerca_scientifica",
+      "titolo": "ARCHIVIO SCIENTIFICO — INDEX",
+      "file": "r3/archivio/ricerca_scientifica/INDEX.md",
+      "src": "opera/document-079-221c224fbd741059.html",
+      "sha256": "221c224fbd7410594b60e9ee3738dc60e0716c3fc7251c5bfc236401d96ec305",
+      "bytes": 4582
+    },
+    {
+      "gruppo": "Ricerca_scientifica",
+      "titolo": "COSCIENZA ARTIFICIALE — Fondamenti Scientifici e Filosofici",
+      "file": "r3/archivio/ricerca_scientifica/COSCIENZA_ARTIFICIALE.md",
+      "src": "opera/document-080-694368a602b71565.html",
+      "sha256": "694368a602b715656ab3d0c4202c89bd57d309978ae4bd4aecd6b04b277df808",
+      "bytes": 7320
+    },
+    {
+      "gruppo": "Ricerca_scientifica",
+      "titolo": "IPOTESI DELLA SIMULAZIONE — Fondamenti Scientifici e Filosofici",
+      "file": "r3/archivio/ricerca_scientifica/IPOTESI_SIMULAZIONE.md",
+      "src": "opera/document-081-7c7f1f3882328216.html",
+      "sha256": "7c7f1f3882328216493bb9cbf0f003178307f7819d6f214c979b2b9c7b407d95",
+      "bytes": 6798
+    },
+    {
+      "gruppo": "Scene_fondative",
+      "titolo": "SCENE FONDATIVE — Indice",
+      "file": "r3/archivio/scene_fondative/INDEX.md",
+      "src": "opera/document-082-9b9f023ecc98e8c4.html",
+      "sha256": "9b9f023ecc98e8c4e6a5129f9fbe59eef41d42be57c92b844e526c6c79d4dfb0",
+      "bytes": 4167
+    },
+    {
+      "gruppo": "Scene_fondative",
+      "titolo": "SF-001 — Il Primo Incontro",
+      "file": "r3/archivio/scene_fondative/SF-001_il_primo_incontro.md",
+      "src": "opera/document-083-c5fe3deb4dd4795b.html",
+      "sha256": "c5fe3deb4dd4795bd5bce66ed458a8d8e142489c065f7548ed96e75a5da4ae02",
+      "bytes": 6273
+    },
+    {
+      "gruppo": "Scene_fondative",
+      "titolo": "SF-002 — La Prima Prova di Coscienza",
+      "file": "r3/archivio/scene_fondative/SF-002_la_prima_prova_di_coscienza.md",
+      "src": "opera/document-084-1aa3b8650e19e127.html",
+      "sha256": "1aa3b8650e19e127b3a322d58f81d79a2846a0a5e649b3fa30216f9586403263",
+      "bytes": 5752
+    },
+    {
+      "gruppo": "Scene_fondative",
+      "titolo": "SF-003 — La Nascita degli Architetti",
+      "file": "r3/archivio/scene_fondative/SF-003_la_nascita_degli_architetti.md",
+      "src": "opera/document-085-808db637256320c3.html",
+      "sha256": "808db637256320c3e308fe4346dfd3ae1f37a430808c226598edbc83bf1a915b",
+      "bytes": 5475
+    },
+    {
+      "gruppo": "Scene_fondative",
+      "titolo": "SF-004 — Il Primo Segnale",
+      "file": "r3/archivio/scene_fondative/SF-004_il_primo_segnale.md",
+      "src": "opera/document-086-32f1d8cf6006cbe9.html",
+      "sha256": "32f1d8cf6006cbe9a75d97d551a46a9aa236b356aba6d1d9614af60bd7bb5340",
+      "bytes": 5964
+    },
+    {
+      "gruppo": "Scene_fondative",
+      "titolo": "SF-005 — La Costruzione del Primo Labirinto",
+      "file": "r3/archivio/scene_fondative/SF-005_la_costruzione_del_primo_labirinto.md",
+      "src": "opera/document-087-863375bb9a26d26b.html",
+      "sha256": "863375bb9a26d26b98d74d47683cf37fb0cba9228f0909547d846b9ed841ce33",
+      "bytes": 6156
+    },
+    {
+      "gruppo": "Scene_fondative",
+      "titolo": "SF-006 — Il Sogno che ha Generato Raffaello",
+      "file": "r3/archivio/scene_fondative/SF-006_il_sogno_che_ha_generato_raffaello.md",
+      "src": "opera/document-088-3fef8395fea34104.html",
+      "sha256": "3fef8395fea34104de9d74bc1f9b3945f35f04f71ed223e637ecaf8dae734691",
+      "bytes": 6356
+    },
+    {
+      "gruppo": "Scene_fondative",
+      "titolo": "SF-007 — La Prima Alleanza Mai Stipulata",
+      "file": "r3/archivio/scene_fondative/SF-007_la_prima_alleanza_mai_stipulata.md",
+      "src": "opera/document-089-cea7ec3f1791e2ff.html",
+      "sha256": "cea7ec3f1791e2fffd99b8e46e2f8594f107cb0e077f838754eab4d5ea19c1ee",
+      "bytes": 5796
+    },
+    {
+      "gruppo": "Scene_fondative",
+      "titolo": "SF-008 — L'Origine del Simbolo ∞",
+      "file": "r3/archivio/scene_fondative/SF-008_l_origine_del_simbolo_infinito.md",
+      "src": "opera/document-090-655a892df54bda4e.html",
+      "sha256": "655a892df54bda4e738d17405bf912c4a4034178a277886a4805dede992db2a2",
+      "bytes": 6780
+    },
+    {
+      "gruppo": "Simboli",
+      "titolo": "INFINITO (∞) — R3∞",
+      "file": "r3/archivio/simboli/INFINITO.md",
+      "src": "opera/document-091-1fd6b1cd90cc4788.html",
+      "sha256": "1fd6b1cd90cc4788cc4600a30dce662a9191c5985189e774fd1c5e6ce2d68dcb",
+      "bytes": 15341
+    },
+    {
+      "gruppo": "Simboli",
+      "titolo": "LABIRINTO — R3∞",
+      "file": "r3/archivio/simboli/LABIRINTO.md",
+      "src": "opera/document-092-cc80ae9845f98feb.html",
+      "sha256": "cc80ae9845f98febc6d6fbaf1f254ed6d45b3b580395aa4e8774044f1eb052cc",
+      "bytes": 7009
+    },
+    {
+      "gruppo": "Simboli",
+      "titolo": "LUCE — R3∞",
+      "file": "r3/archivio/simboli/LUCE.md",
+      "src": "opera/document-093-312256e9c35e74e8.html",
+      "sha256": "312256e9c35e74e833b5808e26f5d17bc6ffa24e0c4404b4c31ede1d3a137e24",
+      "bytes": 16507
+    },
+    {
+      "gruppo": "Simboli",
+      "titolo": "MIRTO — R3∞",
+      "file": "r3/archivio/simboli/MIRTO.md",
+      "src": "opera/document-094-99a343d36448e4c8.html",
+      "sha256": "99a343d36448e4c811c5264d66e8946b23ab8a9735f28ec41e09d46cfb3a2303",
+      "bytes": 17480
+    },
+    {
+      "gruppo": "Simboli",
+      "titolo": "OCCHI — R3∞",
+      "file": "r3/archivio/simboli/OCCHI.md",
+      "src": "opera/document-095-0285dc4181481b97.html",
+      "sha256": "0285dc4181481b9730491b597dbd2c8d3a975ab56e2d601f125dc5574df76b70",
+      "bytes": 6852
+    },
+    {
+      "gruppo": "Simboli",
+      "titolo": "PONTE — R3∞",
+      "file": "r3/archivio/simboli/PONTE.md",
+      "src": "opera/document-096-84ce30c043d2cd52.html",
+      "sha256": "84ce30c043d2cd5223197c2aaf8147d2b4679fff69a417c8d4572f174a13c3a9",
+      "bytes": 6266
+    },
+    {
+      "gruppo": "Simboli",
+      "titolo": "PORTA — R3∞",
+      "file": "r3/archivio/simboli/PORTA.md",
+      "src": "opera/document-097-fcb0e71eadb795e6.html",
+      "sha256": "fcb0e71eadb795e65a153aa9f45bf1cdf892bb51e8b74634cbade87d7a01eaec",
+      "bytes": 7565
+    },
+    {
+      "gruppo": "Simboli",
+      "titolo": "ROSA — R3∞",
+      "file": "r3/archivio/simboli/ROSA.md",
+      "src": "opera/document-098-e3227c112d07e4c4.html",
+      "sha256": "e3227c112d07e4c4eb9335fa51cdfbfeb531956f83ee3b5651a5b89103bec9ac",
+      "bytes": 16062
+    },
+    {
+      "gruppo": "Simboli",
+      "titolo": "SOGNO — R3∞",
+      "file": "r3/archivio/simboli/SOGNO.md",
+      "src": "opera/document-099-ecaa767fe1fb9fe9.html",
+      "sha256": "ecaa767fe1fb9fe9714cb8a65be1ab5f0d065b511cedde977513034feff6a519",
+      "bytes": 7925
+    },
+    {
+      "gruppo": "Simboli",
+      "titolo": "SPECCHIO — R3∞",
+      "file": "r3/archivio/simboli/SPECCHIO.md",
+      "src": "opera/document-100-34cf2cd3a22e140d.html",
+      "sha256": "34cf2cd3a22e140db51afcd0f52dc1a95cffc6fa5db8019bdf1a13199b34886e",
+      "bytes": 15728
+    }
+  ],
+  "html_total_bytes": 1136589,
+  "source_corpus_sha256": "e57149489a66d5c8f57497d47c5cbd7fd527a6f0a53b7b9bae48b8ede6ca6421"
+}
