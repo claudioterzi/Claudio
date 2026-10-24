@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import patch
 
 from api import tarot_alpha
+from tests.test_agora import init_data, TOKEN, CHAT
 
 
 ROOT = Path(__file__).parents[1]
@@ -170,6 +171,8 @@ class AlphaVoiceApiTests(unittest.TestCase):
 
         env = {
             "TAROT_TTS_PROVIDER": "elevenlabs",
+            "TELEGRAM_BOT_TOKEN": TOKEN,
+            "TELEGRAM_CHAT_ID": CHAT,
             "ELEVENLABS_API_KEY": "test-key",
             "ELEVENLABS_VOICE_ID": "voice-id",
         }
@@ -180,7 +183,7 @@ class AlphaVoiceApiTests(unittest.TestCase):
         ):
             response = self.client.post(
                 "/api/tarocchi/alpha-voce",
-                json={"testo": "Una lettura di prova.", "lingua": "it"},
+                json={"testo": "Una lettura di prova.", "lingua": "it", "initData": init_data()},
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, "audio/mpeg")
@@ -199,6 +202,8 @@ class AlphaVoiceApiTests(unittest.TestCase):
 
         env = {
             "TAROT_TTS_PROVIDER": "openai",
+            "TELEGRAM_BOT_TOKEN": TOKEN,
+            "TELEGRAM_CHAT_ID": CHAT,
             "OPENAI_API_KEY": "test-openai-key",
             "OPENAI_CUSTOM_VOICE_ID": "voice_123abc",
             "OPENAI_TTS_VOICE": "",
@@ -210,7 +215,7 @@ class AlphaVoiceApiTests(unittest.TestCase):
         ) as mocked_urlopen:
             response = self.client.post(
                 "/api/tarocchi/alpha-voce",
-                json={"testo": "Una lettura di prova.", "lingua": "it"},
+                json={"testo": "Una lettura di prova.", "lingua": "it", "initData": init_data()},
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, "audio/mpeg")

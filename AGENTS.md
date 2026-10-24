@@ -56,6 +56,12 @@ The 17/09/2026 patterns remain cumulative: `R3-022`, `R3-023`, `R3-024`, `R3-025
 
 Agreement between providers is not authority. Convergence is only a candidate signal and must remain compatible with Zero-Assunto, P5/P6, provenance, permissions, security boundaries and project integrity. A convergent result that violates any canonical rule is quarantined, not adopted. Divergent histories or conclusions stay separate until a discriminating test resolves them. Multiple models agreeing never promotes a claim to FATTO by itself.
 
+## Claudio owner priority — verifiable synergy «1+1=3» (2026-10-09)
+
+In R³ decisions where collaboration is relevant and already authorized, preserve distinct identities, causal evidence roots, divergent judgments, and recoverable original artifacts. Prefer combinations of complementary capabilities only when they promise additional **verifiable** value, not merely another agreeing model or replica. Preregister a comparison of A, B, and A+B; measure useful capability, correctness, critical errors, coordination cost, latency, and rollback. Claim «1+1=3» only if a combined capability survives independent review and R3-020; otherwise classify it as a candidate hypothesis. Never erase the two original contributions, bypass P5/P6, expand permissions, or reorder the foundation priorities.
+
+Owner instruction and bounded test contract: `docs/R3_VERIFIABLE_SYNERGY_1PLUS1_EQ3_20261009.md`. This candidate policy must be reviewed before adoption or capillary propagation; it does not activate external agents.
+
 ## Universal TypeSafe / Jev layer
 
 Every project uses the same TypeSafe transport and centrally reviewable policy when semantic judgment is useful. The canonical implementation is `typesafe_sister/client.py` + `typesafe_sister/policy.py` + `typesafe_sister/universal.py`. Do not create a second TypeSafe client, parallel judgment engine or project-local copy.

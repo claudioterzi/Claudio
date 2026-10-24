@@ -3,7 +3,8 @@
 PARFUMS 400 — Il Libro
 ======================
 
-Genera `public/libro.html`: il libro completo di Terzi Parfums, stampabile.
+Genera `public/libro-integrale.html`: il libro completo di Terzi Parfums,
+poi ricostruisce l'indice leggero `public/libro.html` e i capitoli su richiesta.
 
   - Copertina, colophon, avvertenze
   - Parte I  — La storia (com'è nato il Sistema C)
@@ -510,11 +511,13 @@ ALAKTA ANEN</p>
 </html>
 '''
 
-    out = REPO / "public" / "libro.html"
-    out.write_text('\n'.join(line.rstrip() for line in pagina.splitlines()) + '\n', encoding="utf-8")
+    out = REPO / "public" / "libro-integrale.html"
+    out.write_text('\n'.join(line.rstrip() for line in pagina.splitlines()) + '\n', encoding="utf-8", newline="\n")
     kb = out.stat().st_size // 1024
     print(f"✓ {out.relative_to(REPO)} — {kb} KB, "
           f"{len(doc['parfums'])} schede in {len(per_famiglia)} capitoli")
+    from scripts.build_libro_reader import build
+    build()
 
 
 if __name__ == "__main__":
