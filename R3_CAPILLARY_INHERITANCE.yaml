@@ -16,6 +16,10 @@ global_layers:
   - id: BASE_PRIORITIES
     source: R3_BASE_PRIORITIES.yaml
     inherit: REQUIRED
+  - id: CANONICAL_STACK
+    source: R3_CANONICAL_STACK.yaml
+    inherit: REQUIRED
+    rule: one_canonical_responsibility_per_major_subsystem
   - id: SISTER_ALIGNMENT
     source: public/r3-sister-alignment.json
     inherit: REQUIRED
