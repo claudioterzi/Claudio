@@ -1,0 +1,26 @@
+{
+  "schema": "r3-json-store-decode-guard-trial/1",
+  "origin": "NUOVA_SU_BASE_VERIFICATA",
+  "phase": "first_candidate",
+  "recorded_at_utc": "2026-10-11T13:21:02.119184+00:00",
+  "python": "3.12.6",
+  "source_sha256": "be64028dbfb2620c46e348bcb51c03e92d4ec093aa156a58179a8525dc7a1b59",
+  "original_tests_sha256": "b068d365de29a5053e81a9de76bc211d166d39461e3dbf7c828458d9a58f93dc",
+  "supplement_tests_sha256": "121a98c25187dc27e10f8b8ad832ded6f2595194d7867ac28473957f17995d39",
+  "prereg_sha256": "4c77f2b0deb0b164972cd4055f8334da78e25403e72d0151b2c4892bb9724a46",
+  "log_sha256": "930374e0f96e58f97e87ebb62f49fb93d6c0f686dd0b685312bc8f51a6775a8c",
+  "tests_run": 2,
+  "failure_entries": 4,
+  "error_entries": 0,
+  "skips": 0,
+  "successful": false,
+  "duration_seconds": 0.272524,
+  "failed_test_ids": [
+    "test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_integer_digit_limit_error_rejects_direct_and_factory_startup (route='direct')",
+    "test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_integer_digit_limit_error_rejects_direct_and_factory_startup (route='factory')",
+    "test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_recursion_limit_error_rejects_direct_and_factory_startup (route='direct')",
+    "test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_recursion_limit_error_rejects_direct_and_factory_startup (route='factory')"
+  ],
+  "network": "Redis disabled/mocked and socket connect/connect_ex denied",
+  "state_scope": "Synthetic TemporaryDirectory files only"
+}

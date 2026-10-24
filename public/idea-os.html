@@ -30,6 +30,7 @@
   <div class="stat"><div id="statActive" class="n">–</div><div class="l">active / pilot</div></div>
   <div class="stat"><div id="statSecure" class="n">–</div><div class="l">secure card</div></div>
 </section>
+<div class="idea-load-feedback"><p id="idea-load-status" role="status" aria-live="polite"></p><button id="idea-load-retry" type="button" hidden>Riprova a caricare</button></div>
 <section class="toolbar" aria-label="Filtri IDEA OS">
   <input id="search" type="search" placeholder="Cerca ID, titolo, problema, motore…" aria-label="Cerca idee">
   <select id="maturity" aria-label="Filtra per maturità"><option value="">Tutte le maturità</option><option>M0</option><option>M1</option><option>M2</option><option>M3</option></select>
@@ -44,6 +45,7 @@
   <p class="sig">Claudio Terzi · C.Terzi</p>
 </footer>
 </main>
+<script src="/idea-loader.js"></script>
 <script>
 (function(){
 'use strict';
@@ -81,7 +83,7 @@ function renderCard(i){
  </article>`
 }
 function boot(){
- const db=window.IDEA_OS_PORTFOLIO;if(!db||!Array.isArray(db.ideas)){setTimeout(boot,60);return}
+ const db=window.IDEA_OS_PORTFOLIO;
  const ideas=db.ideas.slice().sort((a,b)=>a.id.localeCompare(b.id));
  $('#masterLink').href=db.meta.sourceUrl;$('#snapshot').textContent='Snapshot Master · '+db.meta.snapshot;
  $('#statAll').textContent=ideas.length;$('#statM2').textContent=ideas.filter(i=>rankM(i.maturity)>=2).length;$('#statDocs').textContent=ideas.filter(i=>i.dossier).length;$('#statActive').textContent=ideas.filter(i=>/ACTIVE|PILOT/.test(i.status)).length;$('#statSecure').textContent=ideas.filter(i=>i.secure).length;
@@ -89,7 +91,8 @@ function boot(){
  function apply(){const q=search.value.trim().toLowerCase(),m=maturity.value,h=horizon.value,s=state.value;const filtered=ideas.filter(i=>(!q||textIdea(i).includes(q))&&(!m||String(i.maturity).includes(m))&&(!h||String(i.horizon).includes(h))&&(!s||(s==='SECURE'?i.secure:String(i.status).includes(s))));out.innerHTML=filtered.length?filtered.map(renderCard).join(''):'<div class="empty">Nessuna idea corrisponde ai filtri.</div>';count.textContent=filtered.length+' di '+ideas.length+' schede visibili';}
  [search,maturity,horizon,state].forEach(el=>el.addEventListener(el===search?'input':'change',apply));apply();
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+function load(){window.R3IdeaLoader.wait(boot,document.getElementById('idea-load-status'),document.getElementById('idea-load-retry'))}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load);else load();
 })();
 </script>
 </body>
