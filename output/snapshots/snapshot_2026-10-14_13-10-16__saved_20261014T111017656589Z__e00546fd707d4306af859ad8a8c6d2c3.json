@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "timestamp": 1791976216.7470236,
+    "data_ora": "2026-10-14 13:10:16",
+    "tz": "Europe/Brussels",
+    "versione": "1.1.0",
+    "snapshot_id": "e00546fd707d4306af859ad8a8c6d2c3",
+    "saved_at_utc": "2026-10-14T11:10:17.656589+00:00",
+    "snapshot_storage_version": 2
+  },
+  "git": {
+    "branch": "main",
+    "commit": "b80aedfed20737e15cbfbce382618d5e7a933990",
+    "commit_short": "b80aedf",
+    "messaggio": "Merge pull request #150 from claudioterzi/codex/agora-web-commands-20261014",
+    "autore": "Claudio",
+    "data_commit": "2026-10-14 12:34:55 +0200",
+    "dirty": true,
+    "file_modificati": [
+      "M output/scan_report.json"
+    ]
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "ecaa629d87858b9b",
+      "CLAUDE.md": "aa2702dd469a6f3c",
+      "sdq1/__main__.py": "70a8a409173ff5ca",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "998235ef3d9ec614",
+      "sdq1/snapshot.py": "cca54fb720b0e001",
+      "sdq1/sar/scacchiera_quantica.py": "a326c0669a90877e",
+      "sdq1/sar/agenti_autonomi.py": "ad03c13dab26d2e3",
+      "sdq1/llm/router.py": "9f1ad7d5ecf62ef3",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "5c74b990b18a0a68"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-10-14T11:10:17.050770",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.39,
+    "scacchiera_dir": "META"
+  },
+  "scanner": {
+    "agente": "CODE_SCANNER",
+    "score_sistema": 93,
+    "sicurezza_ok": true,
+    "sicurezza_livello": "VERDE",
+    "qualita_score": 83,
+    "debito_per_1k": 8.7,
+    "file_totali": 93,
+    "righe_totali": 17163,
+    "problemi_critici": 0,
+    "trovati_sicurezza": 0
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 6.3,
+      "n_chiavi": 4
+    }
+  }
+}
