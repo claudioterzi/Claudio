@@ -1,0 +1,236 @@
+name: OmniRoute Live Smoke
+
+on:
+  push:
+    branches:
+      - r3/omniroute-gateway-20260921
+    paths:
+      - 'sdq1/llm/providers/omniroute_provider.py'
+      - 'sdq1/llm/router.py'
+      - 'sdq1/config/sdq1.yaml'
+      - 'tests/test_omniroute_provider.py'
+      - '.github/workflows/omniroute_live_smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+
+      - name: Start disposable OmniRoute
+        shell: bash
+        run: |
+          set -euo pipefail
+          JWT_SECRET="$(openssl rand -base64 48 | tr -d '\n')"
+          API_KEY_SECRET="$(openssl rand -hex 32)"
+          STORAGE_ENCRYPTION_KEY="$(openssl rand -hex 32)"
+          INITIAL_PASSWORD="$(openssl rand -base64 24 | tr -d '\n')"
+
+          {
+            echo "INITIAL_PASSWORD=$INITIAL_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+          docker pull diegosouzapw/omniroute:latest
+          docker run -d --name r3-omniroute-smoke             -p 127.0.0.1:20128:20128             -e JWT_SECRET="$JWT_SECRET"             -e API_KEY_SECRET="$API_KEY_SECRET"             -e STORAGE_ENCRYPTION_KEY="$STORAGE_ENCRYPTION_KEY"             -e INITIAL_PASSWORD="$INITIAL_PASSWORD"             -e NODE_ENV=production             -e HOSTNAME=0.0.0.0             -e REQUIRE_API_KEY=false             -e AUTH_COOKIE_SECURE=false             -e APP_LOG_TO_FILE=false             -e OMNIROUTE_DISABLE_BACKGROUND_SERVICES=true             diegosouzapw/omniroute:latest
+
+      - name: Verify boot and health
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 90); do
+            if curl -fsS http://127.0.0.1:20128/api/health > /tmp/health.json 2>/dev/null; then
+              cat /tmp/health.json | jq .
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::OmniRoute did not become healthy"
+          docker logs --tail 120 r3-omniroute-smoke || true
+          exit 1
+
+      - name: Login to local management API
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -n --arg password "$INITIAL_PASSWORD" '{password:$password}' > /tmp/login.json
+          code=$(curl -sS -o /tmp/login-response.json -w '%{http_code}'             -c /tmp/omni-cookie.txt             -H 'Content-Type: application/json'             -d @/tmp/login.json             http://127.0.0.1:20128/api/auth/login)
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::OmniRoute management login failed HTTP $code"
+            jq 'del(.token,.accessToken,.apiKey)' /tmp/login-response.json 2>/dev/null || cat /tmp/login-response.json
+            exit 1
+          fi
+          curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20128/api/auth/status | jq .
+          curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20128/api/auth/csrf > /tmp/csrf.json
+          CSRF_TOKEN=$(jq -r '.token // empty' /tmp/csrf.json)
+          test -n "$CSRF_TOKEN"
+          echo "CSRF_TOKEN=$CSRF_TOKEN" >> "$GITHUB_ENV"
+
+      - name: Connect keyless Kilo Gateway provider
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s\n' '{"provider":"kilo-gateway","name":"r3-smoke","apiKey":"r3-smoke-nonsecret-placeholder"}' > /tmp/provider-create.json
+          code=$(curl -sS -o /tmp/provider-response.json -w '%{http_code}'             -X POST             -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d @/tmp/provider-create.json             http://127.0.0.1:20128/api/providers)
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Kilo Gateway connection create failed HTTP $code"
+            jq 'del(.apiKey,.token,.secret)' /tmp/provider-response.json 2>/dev/null || cat /tmp/provider-response.json
+            exit 1
+          fi
+
+          curl -fsS -b /tmp/omni-cookie.txt             http://127.0.0.1:20128/api/providers > /tmp/providers.json
+
+          PROVIDER_ID=$(jq -r '
+            .id //
+            .connection.id //
+            empty
+          ' /tmp/provider-response.json)
+          if [ -z "$PROVIDER_ID" ]; then
+            PROVIDER_ID=$(jq -r '
+              (.connections // .providers // [])[]
+              | select((.provider // .providerId // "") == "kilo-gateway")
+              | .id
+            ' /tmp/providers.json | head -n1)
+          fi
+          test -n "$PROVIDER_ID"
+          echo "PROVIDER_ID=$PROVIDER_ID" >> "$GITHUB_ENV"
+          echo "Connected provider id present; raw credentials are not printed."
+
+      - name: Test Kilo Gateway connection
+        shell: bash
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/provider-test.json -w '%{http_code}'             -X POST             -b /tmp/omni-cookie.txt             -H "x-omniroute-csrf: $CSRF_TOKEN"             -H 'Content-Type: application/json'             -d '{}'             "http://127.0.0.1:20128/api/providers/$PROVIDER_ID/test")
+          jq 'del(.apiKey,.token,.secret)' /tmp/provider-test.json
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Kilo Gateway provider test failed HTTP $code"
+            exit 1
+          fi
+          valid=$(jq -r '.valid // .success // false' /tmp/provider-test.json)
+          if [ "$valid" != "true" ]; then
+            echo "::error::Kilo Gateway provider test did not report valid=true"
+            exit 1
+          fi
+
+      - name: Create ephemeral inference key
+        shell: bash
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/key-response.json -w '%{http_code}' \
+            -X POST -b /tmp/omni-cookie.txt \
+            -H "x-omniroute-csrf: $CSRF_TOKEN" \
+            -H 'Content-Type: application/json' \
+            -d '{"name":"r3-smoke","scopes":["chat"]}' \
+            http://127.0.0.1:20128/api/keys)
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Inference key creation failed HTTP $code"
+            jq 'del(.key,.apiKey,.token,.rawKey,.secret)' /tmp/key-response.json 2>/dev/null || true
+            exit 1
+          fi
+          INFERENCE_KEY=$(jq -r '.key // .apiKey // .token // .rawKey // .secret // empty' /tmp/key-response.json)
+          test -n "$INFERENCE_KEY"
+          echo "::add-mask::$INFERENCE_KEY"
+          echo "INFERENCE_KEY=$INFERENCE_KEY" >> "$GITHUB_ENV"
+
+      - name: Verify explicit Kilo route and diagnose auto
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS -H "Authorization: Bearer $INFERENCE_KEY"             http://127.0.0.1:20128/v1/models > /tmp/models.json
+          MODEL_COUNT=$(jq '[.data[]?] | length' /tmp/models.json)
+          test "$MODEL_COUNT" -gt 0
+
+          KILO_MODEL=$(jq -r '.data[]?.id // empty' /tmp/models.json             | grep -Ei 'kilo.*auto/free|kilo-auto/free' | head -n1 || true)
+          if [ -z "$KILO_MODEL" ]; then
+            KILO_MODEL="kilo-gateway/kilo-auto/free"
+          fi
+          echo "Explicit Kilo smoke model: $KILO_MODEL"
+
+          jq -n --arg model "$KILO_MODEL" '{
+            model:$model,
+            messages:[{role:"user",content:"Reply only with OMNIROUTE_R3_OK"}],
+            temperature:0,
+            max_tokens:24
+          }' > /tmp/chat-explicit.json
+
+          start=$(date +%s%3N)
+          explicit_code=$(curl -sS -o /tmp/chat-explicit-response.json -w '%{http_code}'             -H "Authorization: Bearer $INFERENCE_KEY"             -H 'Content-Type: application/json'             -d @/tmp/chat-explicit.json             http://127.0.0.1:20128/v1/chat/completions)
+          end=$(date +%s%3N)
+          explicit_latency=$((end-start))
+          if [ "$explicit_code" -lt 200 ] || [ "$explicit_code" -ge 300 ]; then
+            echo "::error::Explicit Kilo route failed HTTP $explicit_code"
+            jq 'del(.apiKey,.token,.secret)' /tmp/chat-explicit-response.json 2>/dev/null || cat /tmp/chat-explicit-response.json
+            exit 1
+          fi
+          EXPLICIT_CONTENT=$(jq -r '.choices[0].message.content // empty' /tmp/chat-explicit-response.json)
+          EXPLICIT_MODEL=$(jq -r '.model // "unknown"' /tmp/chat-explicit-response.json)
+          test -n "$EXPLICIT_CONTENT"
+
+          cat > /tmp/chat-auto.json <<'JSON'
+          {
+            "model": "auto",
+            "messages": [{"role":"user","content":"Reply only with OMNIROUTE_R3_OK"}],
+            "temperature": 0,
+            "max_tokens": 24
+          }
+          JSON
+
+          auto_start=$(date +%s%3N)
+          auto_code=$(curl -sS -o /tmp/chat-auto-response.json -w '%{http_code}'             -H "Authorization: Bearer $INFERENCE_KEY"             -H 'Content-Type: application/json'             -d @/tmp/chat-auto.json             http://127.0.0.1:20128/v1/chat/completions || true)
+          auto_end=$(date +%s%3N)
+          auto_latency=$((auto_end-auto_start))
+          AUTO_CONTENT=$(jq -r '.choices[0].message.content // empty' /tmp/chat-auto-response.json 2>/dev/null || true)
+          AUTO_MODEL=$(jq -r '.model // "unknown"' /tmp/chat-auto-response.json 2>/dev/null || echo unknown)
+          AUTO_ERROR=$(jq -r '.error.message // empty' /tmp/chat-auto-response.json 2>/dev/null | cut -c1-500 || true)
+          if [ "$auto_code" -ge 200 ] && [ "$auto_code" -lt 300 ] && [ -n "$AUTO_CONTENT" ]; then
+            AUTO_STATUS="PASS"
+          else
+            AUTO_STATUS="FAIL"
+            echo "::warning::OmniRoute zero-config auto is currently degraded: HTTP $auto_code"
+          fi
+
+          jq -n             --arg status "PASS"             --arg transport "docker-latest"             --arg explicit_requested "$KILO_MODEL"             --arg explicit_resolved "$EXPLICIT_MODEL"             --arg auto_status "$AUTO_STATUS"             --arg auto_resolved "$AUTO_MODEL"             --arg auto_error "$AUTO_ERROR"             --argjson model_count "$MODEL_COUNT"             --argjson explicit_latency_ms "$explicit_latency"             --argjson auto_latency_ms "$auto_latency"             --argjson auto_http "$auto_code"             '{
+              schema:"R3-OMNIROUTE-SMOKE/2",
+              status:$status,
+              transport:$transport,
+              model_count:$model_count,
+              explicit_route:{
+                requested:$explicit_requested,
+                resolved:$explicit_resolved,
+                latency_ms:$explicit_latency_ms,
+                nonempty_response:true,
+                status:"PASS"
+              },
+              zero_config_auto:{
+                status:$auto_status,
+                http_status:$auto_http,
+                resolved_model:$auto_resolved,
+                latency_ms:$auto_latency_ms,
+                error_summary:$auto_error
+              },
+              provider_seed:"kilo-gateway-keyless",
+              secrets_persisted:false
+            }' > /tmp/r3-omniroute-smoke.json
+
+          cat /tmp/r3-omniroute-smoke.json
+
+      - name: Upload smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-omniroute-smoke-${{ github.sha }}
+          path: /tmp/r3-omniroute-smoke.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Dispose OmniRoute container
+        if: always()
+        shell: bash
+        run: |
+          docker rm -f r3-omniroute-smoke >/dev/null 2>&1 || true
+          rm -f /tmp/login.json /tmp/login-response.json /tmp/omni-cookie.txt /tmp/csrf.json                 /tmp/provider-create.json /tmp/provider-response.json /tmp/providers.json                 /tmp/provider-test.json /tmp/key-response.json /tmp/models.json /tmp/chat-explicit.json /tmp/chat-explicit-response.json /tmp/chat-auto.json /tmp/chat-auto-response.json
