@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Libro delle Idee">
+<title>Il Libro delle Idee • Cubo Quantico R³∞</title>
+<link rel="stylesheet" href="app.css">
+<style>[hidden]{display:none!important}.mobile-lock{min-height:95vh;min-height:95svh;background:radial-gradient(ellipse at 70% 5%,#2a234a,#090d1a 65%);color:#f1edf9;padding:12vh 24px 70px;display:flex;flex-direction:column;align-items:center;text-align:center;font-family:system-ui,sans-serif}.mobile-lock h1{font:normal clamp(36px,8vw,68px)/1.08 Georgia,serif;letter-spacing:-.035em;margin:20px 0;max-width:710px}.mobile-lock p{color:#b5bdd1;max-width:560px;line-height:1.7}.lock-symbol{display:grid;place-items:center;color:#e6c7fd;font:normal 32px Georgia,serif;background:#282349;width:90px;height:90px;border:1px solid #776d9f;border-radius:24px}.lock-eyebrow{color:#9bddcf!important;letter-spacing:.18em;font-weight:700;font-size:11px}.lock-status{padding:16px 25px;border:1px solid #534969;border-radius:12px;color:#e4d5ff!important}.lock-help{font-size:12px;opacity:.8}</style>
+</head>
+<body>
+<section class="mobile-lock" id="unlockView" role="main">
+<div class="lock-symbol" aria-hidden="true">R³∞</div>
+<p class="lock-eyebrow">IL LIBRO DELLE IDEE · ACCESSO PRIVATO</p>
+<h1>Il nostro universo,<br>anche su iPhone.</h1>
+<p>Sto aprendo la tua copia cifrata. Il NAS trasmette file statici; le idee vengono decifrate solo nel browser.</p>
+<p class="lock-status" id="unlockStatus" role="status">Verifica collegamento privato…</p>
+<p class="lock-help">Collegati al Wi‑Fi domestico del Synology. Conserva il link completo tra i Preferiti: contiene la chiave privata.</p>
+</section>
+<div class="shell" id="portalRoot" hidden>
+  <header class="topbar">
+    <a class="brand" href="#catalogo" aria-label="Libro delle Idee, torna al catalogo">
+      <span class="brand-symbol">R³<span>∞</span></span>
+      <span><strong>IL LIBRO DELLE IDEE</strong><small>Archivio vivo di Claudio Terzi</small></span>
+    </a>
+    <div class="top-right"><a class="button ghost" href="/privato">← La Soglia</a>
+      <span class="offline-note"><span class="pulse"></span> COPIA LOCALE · NAS</span>
+      <button id="listenBtn" class="button voice" title="Attiva il microfono una sola volta" type="button">◉ Parla</button>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="eyebrow">MEMORIA · RELAZIONI · FUTURO</div>
+    <h1 id="heroTitle">Ogni idea è un universo.<br><em>Qui le esploriamo insieme.</em></h1>
+    <p>Le idee, le opere e le loro connessioni: un solo spazio interrogabile, con provenienza e limiti espliciti. Nessun originale viene modificato.</p>
+    <div class="hero-actions">
+      <button id="goCube" class="button primary" type="button">◈ Entra nel Cubo Quantico <span aria-hidden="true">↗</span></button>
+      <button id="goGraph" class="button" type="button">↗ Esplora il Grafo</button>
+      <button id="exportBook" class="button ghost" type="button">⇩ Esporta il Libro</button>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="Statistiche archivio">
+    <div class="stat"><b id="statIdeas">—</b><span>Idee ufficiali</span></div>
+    <div class="stat"><b id="statModules">—</b><span>Moduli collegati</span></div>
+    <div class="stat"><b id="statWorks">—</b><span>Nodi del Cubo</span></div>
+    <div class="stat"><b id="statEdges">—</b><span>Relazioni registrate</span></div>
+    <div class="stat"><b id="statGraphify">—</b><span>Documenti Graphify <small>solo metadati</small></span></div>
+  </section>
+
+  <nav class="tabs" aria-label="Sezioni del portale">
+    <button type="button" class="tab active" data-view="catalogo" aria-pressed="true">▦ Catalogo</button>
+    <button type="button" class="tab" data-view="cubo" aria-pressed="false">◇ Cubo 3D</button>
+    <button type="button" class="tab" data-view="grafo" aria-pressed="false">✳ Grafo</button>
+    <button type="button" class="tab" data-view="cronologia" aria-pressed="false">◷ Cronologia</button>
+    <button type="button" class="tab" data-view="fonti" aria-pressed="false">☷ Fonti e prove</button>
+    <button type="button" class="tab" data-view="voce" aria-pressed="false">◉ Voce</button>
+  </nav>
+
+  <div class="workspace">
+    <main class="primary-panel">
+      <div class="toolbar">
+        <div class="search"><span>⌕</span><input type="search" id="searchInput" placeholder="Cerca SYNESIS, Smart Case, Santuario…" aria-label="Cerca nel Libro"></div>
+        <select id="typeFilter" aria-label="Tipo"><option value="">Tutti i tipi</option><option value="IDEA_OS_MASTER">Idee</option><option value="COLLEGAMENTI_E_MODULI">Moduli</option><option value="OPERA_CUBO">Opere del Cubo</option><option value="GRAPHIFY">Documenti Graphify</option></select>
+        <select id="domainFilter" aria-label="Dominio"><option value="">Tutti i domini</option></select>
+        <select id="statusFilter" aria-label="Stato"><option value="">Tutti gli stati</option></select>
+      </div>
+      <section data-panel="catalogo" class="view-panel active">
+        <div class="section-head"><div><div class="eyebrow">01 / ARCHIVIO</div><h2>Costellazioni di idee</h2><p id="catalogSummary" class="sub">Registro originale derivato da IDEA OS e R³ UNIVERSUM.</p></div></div>
+        <div id="catalogGrid" class="catalog-grid"></div>
+        <button type="button" id="showMore" class="button more" hidden>Mostra altre schede ↓</button>
+      </section>
+
+      <section data-panel="cubo" class="view-panel">
+        <div class="section-head"><div><div class="eyebrow">02 / SPAZIO</div><h2>Cubo Quantico <span class="fine">3D leggero</span></h2><p class="sub">Ruota trascinando, ingrandisci con la rotella, seleziona un nodo. X: tempo · Y: importanza · Z: relazioni.</p></div></div>
+        <div class="viz-tools">
+          <label><input id="cubeEdges" type="checkbox" checked> Mostra connessioni</label>
+          <button type="button" class="button small" id="cubeReset">↻ Centra il Cubo</button>
+          <span class="viz-hint" id="cubeHint">Rendering locale, senza librerie esterne</span>
+        </div>
+        <div class="canvas-box">
+          <canvas id="cubeCanvas" aria-label="Cubo Quantico tridimensionale interattivo" tabindex="0">Il browser non supporta Canvas. Puoi utilizzare il catalogo.</canvas>
+          <div class="canvas-legend"><span>X · TEMPO</span><span>Y · IMPORTANZA</span><span>Z · DENSITÀ</span></div>
+        </div>
+        <p class="sub micro">Un modello prospettico navigabile nel browser: non un'elaborazione scientifica quantistica. Le posizioni dei nodi sono organizzative e non misure oggettive.</p>
+      </section>
+
+      <section data-panel="grafo" class="view-panel">
+        <div class="section-head"><div><div class="eyebrow">03 / CONNESSIONI</div><h2>Grafo dell'Universo</h2><p class="sub">Esplora connessioni documentali e ipotesi senza confonderle: il grafo dei possibili è separato da quello osservato.</p></div></div>
+        <div class="viz-tools">
+          <label><input id="observedToggle" type="checkbox" checked> Relazioni documentate</label>
+          <label><input id="possibleToggle" type="checkbox"> Possibili / ipotesi</label>
+          <button type="button" class="button small" id="graphReset">↻ Centra il Grafo</button>
+        </div>
+        <div class="canvas-box graph-box">
+          <canvas id="graphCanvas" aria-label="Rete bidimensionale di nodi e relazioni navigabile" tabindex="0">La mappa non è disponibile; consulta le schede.</canvas>
+        </div>
+        <div class="graph-footer">
+          <button type="button" class="button" id="graphifyBtn">＋ Carica il layer Graphify (su richiesta)</button>
+          <span class="sub micro" id="graphifyStatus">Graphify cataloga documenti dai metadati: non prova la lettura dei testi.</span>
+        </div>
+      </section>
+
+      <section data-panel="cronologia" class="view-panel">
+        <div class="section-head"><div><div class="eyebrow">04 / TEMPO</div><h2>Cronologia dell'archivio</h2><p class="sub">Date provenienti dai metadati delle opere; la data di un file non certifica quando un'idea sia stata concepita.</p></div></div>
+        <div id="timeline" class="timeline"></div>
+      </section>
+
+      <section data-panel="fonti" class="view-panel">
+        <div class="section-head"><div><div class="eyebrow">05 / INTEGRITÀ</div><h2>Fonti, qualità e provenienza</h2><p class="sub">Ogni fatto visibile deve distinguere indice, testo effettivamente letto, progetto e implementazione verificata.</p></div></div>
+        <div id="sourcesPanel" class="sources-content"></div>
+      </section>
+
+      <section data-panel="voce" class="view-panel">
+        <div class="section-head"><div><div class="eyebrow">06 / DIALOGO</div><h2>Parla con l'archivio</h2><p class="sub">Comandi semplici e risposte fondate sui dati, senza IA esterna attiva. Il riconoscimento vocale dipende dal browser.</p></div></div>
+        <div class="talk-panel">
+          <div class="talk-orb" aria-hidden="true">◉</div>
+          <div class="talk-body">
+            <h3>Raffaello · Voce dell'archivio</h3>
+            <p>Prova a dire: «Cerca SYNESIS», «Apri il Cubo», «Quante idee ci sono?», «Leggimi la scheda» o «Mostra il grafo».</p>
+            <div class="talk-buttons"><button class="button primary" id="talkBtn" type="button">◉ Ascolta una richiesta</button><button class="button" type="button" id="readAnswerBtn">▷ Leggi la risposta</button><button class="button ghost" id="stopSpeechBtn" type="button">◼ Ferma la voce</button></div>
+            <p id="voiceStatus" class="micro muted" role="status">Il microfono è spento.</p>
+          </div>
+        </div>
+        <div class="ask"><label for="askInput">Oppure scrivi una domanda</label><div class="ask-row"><input id="askInput" placeholder="Quali idee riguardano i mondi VR?" autocomplete="off"><button type="button" class="button" id="askBtn">Chiedi ↗</button></div></div>
+        <div id="voiceReply" class="reply" aria-live="polite">Sono pronto a cercare nelle schede documentate. Le risposte non inventano contenuti mancanti.</div>
+        <div class="disclosure">Il microfono non resta in ascolto. Alcuni browser inviano l'audio al proprio servizio di riconoscimento; il portale non lo registra e non lo salva. La lettura ad alta voce dipende dalle voci installate sul dispositivo.</div>
+      </section>
+    </main>
+
+    <aside class="inspector">
+      <div class="inspector-top"><span class="eyebrow">SCHEDA SELEZIONATA</span><button class="mini-btn" type="button" id="readDetail" title="Leggi la scheda a voce">▷ Ascolta</button></div>
+      <div id="detailContent" class="detail-content">
+        <div class="detail-placeholder"><div class="placeholder-glyph">◇</div><h3>Ogni nodo ha una storia.</h3><p>Seleziona una scheda, oppure tocca un punto del Cubo o del Grafo, per esplorarne le origini.</p></div>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="footer">
+    <span>© Claudio Terzi · Libro delle Idee · R³∞</span>
+    <span>Snapshot documentale del 14 ottobre 2026, integrato con Cubo Quantico. Privato, locale, non sincronizzato automaticamente.</span>
+  </footer>
+</div>
+<script src="/access-guard.js"></script>
+<script src="nacl-fast.min.js"></script>
+<script src="mobile-loader.js"></script>
+</body>
+</html>

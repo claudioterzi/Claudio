@@ -12,6 +12,12 @@ var input=document.getElementById('access-code');
 var status=document.getElementById('access-status');
 var newCode=document.getElementById('new-code');
 var forget=document.getElementById('forget-code');
+var routes=globalThis.R3AccessRoutes;
+var returnTo=routes?routes.safeReturn(new URLSearchParams(location.search).get('return')||''):'';
+var privateDestination=Boolean(returnTo&&routes&&routes.isPrivate(new URL(returnTo,location.origin).pathname));
+if(privateDestination)newCode.hidden=true;
+var hint=document.getElementById('access-return-hint');
+if(hint&&returnTo)hint.textContent=privateDestination?'La pagina richiesta è privata. Inserisci il codice proprietario per tornare al percorso che stavi aprendo.':'Inserisci il tuo codice per tornare alla pagina che stavi aprendo.';
 function norm(v){return (v||'').trim().toLowerCase()}
 function hex(buf){return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('')}
 function hash(v){
@@ -20,26 +26,27 @@ function hash(v){
 }
 function setStatus(msg,kind){status.textContent=msg;status.className='status '+(kind||'')}
 function enterPublic(h){
+  if(privateDestination){setStatus('Questa pagina richiede il codice proprietario. Il codice pubblico non apre l’area privata.','bad');return}
   try{
     localStorage.setItem(PUBLIC_HASH_KEY,h);
     localStorage.setItem(PUBLIC_ID_KEY,'R-'+h.slice(0,10).toUpperCase());
     localStorage.setItem(MODE_KEY,'public');
     sessionStorage.removeItem(PRIVATE_SESSION_KEY);
-  }catch(e){}
-  location.replace('/raffaello.html');
+  }catch(e){setStatus('Il browser non riesce a conservare l’accesso locale. Abilita lo storage per questo sito e riprova.','bad');return}
+  location.replace(returnTo||'/raffaello.html');
 }
 function enterPrivate(){
   try{
     sessionStorage.setItem(PRIVATE_SESSION_KEY,'1');
     localStorage.setItem(MODE_KEY,'private');
-  }catch(e){}
-  location.replace('/privato.html');
+  }catch(e){setStatus('Il browser non riesce ad aprire la sessione locale. Abilita lo storage per questo sito e riprova.','bad');return}
+  location.replace(returnTo||'/privato.html');
 }
 form.addEventListener('submit',function(e){
   e.preventDefault();
   var code=norm(input.value);
   if(code.length<4){setStatus('Scegli un codice di almeno 4 caratteri.','bad');return}
-  if(!crypto||!crypto.subtle){setStatus('Questo browser non supporta la verifica sicura del codice.','bad');return}
+  if(!globalThis.crypto||!crypto.subtle){setStatus('Questo browser non supporta la verifica sicura del codice.','bad');return}
   setStatus('Verifico…','');
   hash(code).then(function(h){
     if(h===OWNER_HASH){enterPrivate();return}
