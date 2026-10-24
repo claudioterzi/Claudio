@@ -1,0 +1,21 @@
+{
+  "schema": "r3-json-store-decode-guard-trial/1",
+  "origin": "NUOVA_SU_BASE_VERIFICATA",
+  "phase": "final_candidate",
+  "recorded_at_utc": "2026-10-11T13:22:03.315846+00:00",
+  "python": "3.12.6",
+  "source_sha256": "c137bb91cf782a27f2220c44a11450a8e99c911cfa69a2b044b850d3ae1baa21",
+  "original_tests_sha256": "b068d365de29a5053e81a9de76bc211d166d39461e3dbf7c828458d9a58f93dc",
+  "supplement_tests_sha256": "121a98c25187dc27e10f8b8ad832ded6f2595194d7867ac28473957f17995d39",
+  "prereg_sha256": "4c77f2b0deb0b164972cd4055f8334da78e25403e72d0151b2c4892bb9724a46",
+  "log_sha256": "42fcb43ecf11fcb5ba5382efd493c87064d1dbd6a49e7c9f2df214adedeb976e",
+  "tests_run": 21,
+  "failure_entries": 0,
+  "error_entries": 0,
+  "skips": 0,
+  "successful": true,
+  "duration_seconds": 0.722186,
+  "failed_test_ids": [],
+  "network": "Redis disabled/mocked and socket connect/connect_ex denied",
+  "state_scope": "Synthetic TemporaryDirectory files only"
+}

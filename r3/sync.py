@@ -69,6 +69,8 @@ SYNC_CANARY       = os.getenv("R3_SYNC_CANARY", "").strip().lower() in {"1", "tr
 SYNC_CANARY_EVERY = max(1, int(os.getenv("R3_SYNC_CANARY_EVERY", "1")))
 _CYCLE = 0
 
+# A standalone sync process may start before the node creates its data volume.
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
@@ -364,8 +366,7 @@ def integrity_check() -> list[str]:
     """Verifica e prova a riparare; restituisce solo gli ID ancora non integri."""
     db_path = DATA_DIR / "r3.db"
     if not db_path.exists():
-        log.warning("DB non trovato: %s", db_path)
-        return []
+        raise FileNotFoundError(f"Integrity non verificata: DB non trovato: {db_path}")
 
     conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row

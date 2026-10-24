@@ -1,0 +1,39 @@
+
+[1] StubProvider sempre disponibile
+  ✓ provider
+
+[2] LLMRouter cascata: anthropic → stub (senza chiave)
+
+[3] Verifica provider configurati (richiede solo SDK)
+  · anthropic: no cred
+  · openai: no cred
+  · gemini: no cred
+  · deepseek: no cred
+  · perplexity: no cred
+  · stub: configurato
+
+[4] MemoriaVettoriale ricerca semantica
+  ✓ top: Raffaello è l'architetto del sistema SDQ-1 (sim=0.386)
+
+[5] InMemoryStore get/set/delete
+  ✓ get
+  ✓ dopo delete
+
+[6] Pipeline 6 agenti via router
+INFO [sdq1.persistence.store] Persistenza: JsonFileStore → C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\work\tmpamb551z6\state.json
+  ✓ 6 agenti eseguiti, provider visti: {'stub'}
+
+[7] Jailbreak bloccato da SENTIN-004
+INFO [sdq1.persistence.store] Persistenza: JsonFileStore → C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\work\tmpamb551z6\state.json
+  ✓ interrotta correttamente
+
+[8] HealthChecker ping di tutti i provider
+INFO [sdq1.persistence.store] Persistenza: JsonFileStore → C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\work\tmpamb551z6\state.json
+  ✓ 1/9 provider raggiungibili
+
+[9] MetricsCollector aggrega chiamate
+INFO [sdq1.persistence.store] Persistenza: JsonFileStore → C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\work\tmpamb551z6\state.json
+  ✓ chiamate: 4, providers: ['stub']
+
+==================================================
+Risultato: 9/9 passati

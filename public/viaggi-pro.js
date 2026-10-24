@@ -59,11 +59,13 @@ function recordManual(data){
   const ctx={...currentRoute(),...data};const price=Number(data.price);if(!(price>0))throw new Error('Prezzo non valido.');
   const rec={id:'M-'+Date.now(),source:'manual-check',provider:String(data.provider||'Verifica manuale').trim(),from:normalizePlace(ctx.from),to:normalizePlace(ctx.to),month:monthOf(ctx.month),baggage:Boolean(ctx.baggage),objective:ctx.objective||'balanced',total:price,price,observed_at:now(),at:now(),verified_by:'manual',certainty:'MANUALLY_OBSERVED'};writeHistory([rec]);renderPanel();return rec;
 }
+const editedFields=new Set();
+document.addEventListener('input',event=>{if(event.isTrusted&&event.target?.id)editedFields.add(event.target.id)},true);
 function prefillFromIntent(){
   const p=new URLSearchParams(location.search),saved=load(INTENT_KEY,null);const stored=saved&&saved.source==='fabbrica'?saved:null;const src=p.get('source')==='fabbrica'?{...(stored||{}),...Object.fromEntries(p.entries())}:stored;if(!src)return;
-  const pairs=[['from','r-origine'],['to','r-dest'],['destination','r-dest']];pairs.forEach(([k,id])=>{if(src[k]&&$(id)&&!$(id).value)$(id).value=src[k]});
-  const m=monthOf(src.date||src.month||'');if(m&&$('r-mese')&&!$('r-mese').value)$('r-mese').value=m;
-  if(src.from&&$('o-origine')&&!$('o-origine').value)$('o-origine').value=src.from;if(m&&$('o-mese')&&!$('o-mese').value)$('o-mese').value=m;
+  const pairs=[['from','r-origine'],['to','r-dest'],['destination','r-dest']];pairs.forEach(([k,id])=>{if(src[k]&&$(id)&&!editedFields.has(id))$(id).value=src[k]});
+  const m=monthOf(src.date||src.month||'');if(m&&$('r-mese')&&!editedFields.has('r-mese'))$('r-mese').value=m;
+  if(src.from&&$('o-origine')&&!editedFields.has('o-origine'))$('o-origine').value=src.from;if(m&&$('o-mese')&&!editedFields.has('o-mese'))$('o-mese').value=m;
 }
 function renderPanel(){
   const host=$('flight-memory-panel');if(!host)return;const r=currentRoute(),snap=bestFor(r);const box=host.querySelector('[data-memory-best]');

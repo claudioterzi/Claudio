@@ -1,5 +1,7 @@
 (function(root){
   'use strict';
+  if(root.AlphaVoice)return;
+  const pendingRequests=new Set();
   const DEFAULT_LANG={it:'it-IT',en:'en-US',fr:'fr-FR',es:'es-ES'};
   let activeAudio=null,activeUrl='',activeSource=null,audioContext=null,token=0;
   function notify(cb,state){if(typeof cb==='function')cb(state)}
@@ -22,15 +24,22 @@
   }
   function stop(){
     token++;
+    for(const controller of pendingRequests)controller.abort();
+    pendingRequests.clear();
     if(activeSource){try{activeSource.stop(0)}catch(e){}activeSource=null}
     if(activeAudio){try{activeAudio.pause();activeAudio.currentTime=0}catch(e){}activeAudio.onended=null;activeAudio.onerror=null;activeAudio=null}
     if(activeUrl){URL.revokeObjectURL(activeUrl);activeUrl=''}
     if('speechSynthesis' in root)root.speechSynthesis.cancel();
   }
   async function fetchAudio(text,language){
-    const response=await fetch('/api/tarocchi/alpha-voce',{method:'POST',headers:{'Content-Type':'application/json',Accept:'audio/mpeg'},cache:'no-store',body:JSON.stringify({testo:text,lingua:language||'it'})});
-    if(!response.ok)throw new Error('tts '+response.status);
-    return response.blob();
+    if(root.AlphaGuestMode)throw new Error('guest text only');
+    const controller=new AbortController();pendingRequests.add(controller);
+    const timer=setTimeout(()=>controller.abort(),30000);
+    try{
+      const response=await fetch('/api/tarocchi/alpha-voce',{method:'POST',headers:{'Content-Type':'application/json',Accept:'audio/mpeg'},cache:'no-store',signal:controller.signal,body:JSON.stringify({testo:text,lingua:language||'it',initData:root.Telegram?.WebApp?.initData||''})});
+      if(!response.ok)throw new Error('tts '+response.status);
+      return await response.blob();
+    }finally{clearTimeout(timer);pendingRequests.delete(controller)}
   }
   async function decode(blob,ctx){
     const bytes=await blob.arrayBuffer();
@@ -64,7 +73,7 @@
     const next=()=>{if(current!==token)return;if(i>=list.length){notify(options.onState,'ended');return}const text=list[i];if(typeof options.onSegment==='function')options.onSegment(i,text);const u=new SpeechSynthesisUtterance(text);u.lang=voice?.lang||DEFAULT_LANG[code]||DEFAULT_LANG.it;if(voice)u.voice=voice;u.rate=.96;u.pitch=.98;u.volume=1;u.onend=()=>{i++;next()};u.onerror=()=>{i++;next()};synth.speak(u)};next();return true
   }
   async function speak(value,options){
-    const text=String(value||'').replace(/\s+/g,' ').trim(),opts=options||{};if(!text)return false;
+    const text=String(value||'').replace(/\s+/g,' ').trim(),opts=options||{};if(root.AlphaGuestMode){notify(opts.onState,'unavailable');return false}if(!text)return false;
     stop();const current=token,ctx=unlockAudio();notify(opts.onState,'loading');
     try{
       const blob=await fetchAudio(text,opts.language||'it');if(current!==token)return false;
@@ -74,15 +83,16 @@
     if(current!==token)return false;return localSpeech(text,opts.language,opts.onState,current)
   }
   async function speakSequence(values,options){
-    const opts=options||{},list=(Array.isArray(values)?values:[]).map(v=>String(v||'').replace(/\s+/g,' ').trim()).filter(Boolean);if(!list.length)return false;
+    const opts=options||{};if(root.AlphaGuestMode){notify(opts.onState,'unavailable');return false}const list=(Array.isArray(values)?values:[]).map(v=>String(v||'').replace(/\s+/g,' ').trim()).filter(Boolean);if(!list.length)return false;
     stop();const current=token,ctx=unlockAudio();notify(opts.onState,'loading');
     if(!ctx)return localSequence(list,opts,current);
     try{
       if(ctx.state==='suspended')await ctx.resume();
-      let pending=fetchAudio(list[0],opts.language||'it');
+      const preload=text=>fetchAudio(text,opts.language||'it').then(blob=>({blob}),error=>({error}));
+      let pending=preload(list[0]);
       for(let i=0;i<list.length;i++){
-        const blob=await pending;if(current!==token)return false;
-        if(i+1<list.length)pending=fetchAudio(list[i+1],opts.language||'it');
+        const prepared=await pending;if(current!==token)return false;if(prepared.error)throw prepared.error;const blob=prepared.blob;
+        if(i+1<list.length)pending=preload(list[i+1]);
         const buffer=await decode(blob,ctx);if(current!==token)return false;
         if(typeof opts.onSegment==='function')opts.onSegment(i,list[i]);
         const ok=await playBuffer(buffer,current,ctx,opts.onState,i===0);if(!ok||current!==token)return false;

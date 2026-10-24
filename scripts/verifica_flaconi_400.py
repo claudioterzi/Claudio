@@ -13,7 +13,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from studia_libro_400 import audit
+from studia_libro_400 import audit, book_source_path
 
 
 def sha(data):
@@ -34,7 +34,7 @@ def verify():
     manifest = json.loads((ROOT / 'studio/parfums/flaconi_400.json').read_text())
     photo_file = ROOT / 'studio/parfums/foto_400.json'
     photographs = {p['numero']: p for p in json.loads(photo_file.read_text())['perfumes']} if photo_file.exists() else {}
-    soup = BeautifulSoup((ROOT / 'public/libro.html').read_text(), 'html.parser')
+    soup = BeautifulSoup(book_source_path().read_text(encoding='utf-8'), 'html.parser')
     sheets = {sheet['id']: sheet for sheet in soup.select('.scheda')}
     shapes, images, body_pixels = set(), set(), set()
     assert len(manifest['perfumes']) == len(perfumes) == 400
@@ -78,7 +78,8 @@ def verify():
     assert soup.select_one('#rubrica-olfattiva')
     return {
         'date': '2026-09-10', 'canonical_sha256': sha(source.read_bytes()),
-        'book_sha256': sha((ROOT / 'public/libro.html').read_bytes()),
+        'book_source_file': str(book_source_path().relative_to(ROOT)),
+        'book_sha256': sha(book_source_path().read_bytes()),
         'recipes_verified': 400, 'bottle_images': len(images),
         'distinct_geometries': len(shapes), 'distinct_pixels_excluding_labels': len(body_pixels),
         'recipe_codes_verified': legacy['recipes']['codes_checked'],
@@ -93,7 +94,7 @@ def verify():
 def print_sample(output):
     from weasyprint import HTML
     from pypdf import PdfReader
-    soup = BeautifulSoup((ROOT / 'public/libro.html').read_text(), 'html.parser')
+    soup = BeautifulSoup(book_source_path().read_text(encoding='utf-8'), 'html.parser')
     ids = [1, 51, 101, 151, 201, 251, 301, 400]
     sheets = ''.join(str(soup.select_one(f'#profumo-{n:03d}')) for n in ids)
     # Use the real book stylesheet and unmodified cards; allow natural pagination.
