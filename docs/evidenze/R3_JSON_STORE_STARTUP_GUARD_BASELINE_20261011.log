@@ -1,0 +1,327 @@
+test_delete_preserves_other_records_across_reopen (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_delete_preserves_other_records_across_reopen) ... ok
+test_expired_cleanup_preserves_live_records_and_reopens (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_expired_cleanup_preserves_live_records_and_reopens) ... ok
+test_factory_keeps_fallback_for_non_corruption_io_error (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_keeps_fallback_for_non_corruption_io_error) ... ok
+test_factory_prefers_healthy_redis (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_prefers_healthy_redis) ... ok
+test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) ... 
+  test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='truncated') ... FAIL
+  test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='invalid_utf8') ... FAIL
+  test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='non_object') ... FAIL
+  test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='non_object_record') ... FAIL
+  test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='missing_value') ... FAIL
+  test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='mixed') ... FAIL
+test_factory_propagates_corruption_without_redis_sdk (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_without_redis_sdk) ... FAIL
+test_factory_uses_healthy_json_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_uses_healthy_json_when_redis_is_unavailable) ... ok
+test_factory_uses_healthy_json_without_redis_sdk (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_uses_healthy_json_without_redis_sdk) ... ok
+test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) ... 
+  test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry='tomorrow') ... FAIL
+  test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry=[]) ... FAIL
+  test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry={}) ... FAIL
+  test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry=True) ... FAIL
+  test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry=nan) ... FAIL
+  test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry=inf) ... FAIL
+  test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry=-inf) ... FAIL
+test_invalid_utf8_is_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_utf8_is_preserved_and_rejected) ... FAIL
+test_json_values_prefix_and_reopen_roundtrip (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_json_values_prefix_and_reopen_roundtrip) ... ok
+test_legacy_record_without_expiry_is_supported (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_legacy_record_without_expiry_is_supported) ... ok
+test_missing_file_is_initializable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_missing_file_is_initializable) ... ok
+test_mixed_valid_invalid_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_mixed_valid_invalid_records_are_preserved_and_rejected) ... FAIL
+test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) ... 
+  test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) (value=[]) ... FAIL
+  test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) (value=None) ... FAIL
+  test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) (value='SYNTHETIC_PRIVATE_PAYLOAD') ... FAIL
+  test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) (value=7) ... FAIL
+  test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) (value=True) ... FAIL
+test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) ... 
+  test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) (value=[]) ... FAIL
+  test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) (value=None) ... FAIL
+  test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) (value='SYNTHETIC_PRIVATE_PAYLOAD') ... FAIL
+  test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) (value=7) ... FAIL
+  test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) (value=True) ... FAIL
+test_record_missing_value_is_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_record_missing_value_is_preserved_and_rejected) ... FAIL
+test_truncated_json_is_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_truncated_json_is_preserved_and_rejected) ... FAIL
+test_valid_numeric_and_null_expirations_are_supported (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_valid_numeric_and_null_expirations_are_supported) ... ok
+
+======================================================================
+FAIL: test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='truncated')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 83, in test_factory_propagates_corruption_when_redis_is_unavailable
+    self._assert_corruption_preserved(payload, lambda: store.crea_store({"host": "offline.invalid", "porta": 6379}))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": {"v":' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='invalid_utf8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 83, in test_factory_propagates_corruption_when_redis_is_unavailable
+    self._assert_corruption_preserved(payload, lambda: store.crea_store({"host": "offline.invalid", "porta": 6379}))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": {"v": "\xff"}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='non_object')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 83, in test_factory_propagates_corruption_when_redis_is_unavailable
+    self._assert_corruption_preserved(payload, lambda: store.crea_store({"host": "offline.invalid", "porta": 6379}))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'["SYNTHETIC_PRIVATE_PAYLOAD"]' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='non_object_record')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 83, in test_factory_propagates_corruption_when_redis_is_unavailable
+    self._assert_corruption_preserved(payload, lambda: store.crea_store({"host": "offline.invalid", "porta": 6379}))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": []}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='missing_value')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 83, in test_factory_propagates_corruption_when_redis_is_unavailable
+    self._assert_corruption_preserved(payload, lambda: store.crea_store({"host": "offline.invalid", "porta": 6379}))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": {"scade": null}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_factory_propagates_corruption_when_redis_is_unavailable (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_when_redis_is_unavailable) (name='mixed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 83, in test_factory_propagates_corruption_when_redis_is_unavailable
+    self._assert_corruption_preserved(payload, lambda: store.crea_store({"host": "offline.invalid", "porta": 6379}))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"live": {"v": 42}, "SYNTHETIC_PRIVATE_PAYLOAD": {}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_factory_propagates_corruption_without_redis_sdk (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_factory_propagates_corruption_without_redis_sdk)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 87, in test_factory_propagates_corruption_without_redis_sdk
+    self._assert_corruption_preserved(MALFORMED_FILES["truncated"], lambda: store.crea_store({}))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": {"v":' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry='tomorrow')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 77, in test_invalid_expirations_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"S[50 chars]orrow"}, "fresh": {"v": "synthetic new state", "scade": null}}' != b'{"S[50 chars]orrow"}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 77, in test_invalid_expirations_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"S[42 chars]e": []}, "fresh": {"v": "synthetic new state", "scade": null}}' != b'{"S[42 chars]e": []}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 77, in test_invalid_expirations_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"S[42 chars]e": {}}, "fresh": {"v": "synthetic new state", "scade": null}}' != b'{"S[42 chars]e": {}}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 77, in test_invalid_expirations_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"S[44 chars]: true}, "fresh": {"v": "synthetic new state", "scade": null}}' != b'{"S[44 chars]: true}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry=nan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 77, in test_invalid_expirations_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"S[43 chars]": NaN}, "fresh": {"v": "synthetic new state", "scade": null}}' != b'{"S[43 chars]": NaN}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry=inf)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 77, in test_invalid_expirations_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"S[48 chars]finity}, "fresh": {"v": "synthetic new state", "scade": null}}' != b'{"S[48 chars]finity}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_invalid_expirations_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_expirations_are_preserved_and_rejected) (expiry=-inf)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 77, in test_invalid_expirations_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"S[49 chars]finity}, "fresh": {"v": "synthetic new state", "scade": null}}' != b'{"S[49 chars]finity}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_invalid_utf8_is_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_invalid_utf8_is_preserved_and_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 54, in test_invalid_utf8_is_preserved_and_rejected
+    self._assert_corruption_preserved(MALFORMED_FILES["invalid_utf8"], lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": {"v": "\xff"}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_mixed_valid_invalid_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_mixed_valid_invalid_records_are_preserved_and_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 71, in test_mixed_valid_invalid_records_are_preserved_and_rejected
+    self._assert_corruption_preserved(MALFORMED_FILES["mixed"], lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"live": {"v": 42}, "SYNTHETIC_PRIVATE_PAYLOAD": {}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) (value=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 65, in test_non_object_records_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": []}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) (value=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 65, in test_non_object_records_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": null}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) (value='SYNTHETIC_PRIVATE_PAYLOAD')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 65, in test_non_object_records_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": "SYNTHETIC_PRIVATE_PAYLOAD"}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) (value=7)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 65, in test_non_object_records_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": 7}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_non_object_records_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_records_are_preserved_and_rejected) (value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 65, in test_non_object_records_are_preserved_and_rejected
+    self._assert_corruption_preserved(payload, lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": true}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) (value=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 59, in test_non_object_top_levels_are_preserved_and_rejected
+    self._assert_corruption_preserved(json.dumps(value).encode(), lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'[]' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) (value=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 59, in test_non_object_top_levels_are_preserved_and_rejected
+    self._assert_corruption_preserved(json.dumps(value).encode(), lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'null' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) (value='SYNTHETIC_PRIVATE_PAYLOAD')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 59, in test_non_object_top_levels_are_preserved_and_rejected
+    self._assert_corruption_preserved(json.dumps(value).encode(), lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'"SYNTHETIC_PRIVATE_PAYLOAD"' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) (value=7)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 59, in test_non_object_top_levels_are_preserved_and_rejected
+    self._assert_corruption_preserved(json.dumps(value).encode(), lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'7' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_non_object_top_levels_are_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_non_object_top_levels_are_preserved_and_rejected) (value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 59, in test_non_object_top_levels_are_preserved_and_rejected
+    self._assert_corruption_preserved(json.dumps(value).encode(), lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'true' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_record_missing_value_is_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_record_missing_value_is_preserved_and_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 68, in test_record_missing_value_is_preserved_and_rejected
+    self._assert_corruption_preserved(MALFORMED_FILES["missing_value"], lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": {"scade": null}}' : corrupt source was overwritten
+
+======================================================================
+FAIL: test_truncated_json_is_preserved_and_rejected (test_json_store_startup_guard.JsonStoreStartupGuardTests.test_truncated_json_is_preserved_and_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 51, in test_truncated_json_is_preserved_and_rejected
+    self._assert_corruption_preserved(MALFORMED_FILES["truncated"], lambda: store.JsonFileStore(path=self.path))
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_startup_guard.py", line 42, in _assert_corruption_preserved
+    self.assertEqual(self.path.read_bytes(), payload, "corrupt source was overwritten")
+AssertionError: b'{"fresh": {"v": "synthetic new state", "scade": null}}' != b'{"SYNTHETIC_PRIVATE_PAYLOAD": {"v":' : corrupt source was overwritten
+
+----------------------------------------------------------------------
+Ran 19 tests in 1.429s
+
+FAILED (failures=28)

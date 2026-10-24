@@ -135,8 +135,12 @@ def genera():
         d["gruppo"], d["titolo"]))
 
     dati = json.dumps(documenti, ensure_ascii=False, separators=(",", ":"))
-    pagina = PAGINA.replace("__DATI__", dati).replace("__TOT__", str(len(documenti)))
-    OUT.write_text(pagina, encoding="utf-8")
+    # Keep the current accessible reader and regenerate only its source/data.
+    # Writing the legacy PAGINA template would restore the monolithic reader.
+    corpus = REPO / "public" / "opera-corpus.json"
+    corpus.write_text(dati, encoding="utf-8", newline="\n")
+    from scripts.build_opera_reader import build
+    build()
     print(f"✓ {OUT.relative_to(REPO)} — {len(documenti)} documenti, "
           f"{OUT.stat().st_size // 1024} KB")
 

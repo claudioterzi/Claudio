@@ -89,14 +89,16 @@
   </header>
 
   <div class="controlli">
+    <label for="origine">Partenza</label>
     <input id="origine" placeholder="La tua città (es. Milano, Bruxelles)" autocomplete="off">
     <button class="btn oro" id="cerca">Trova</button>
     <button class="btn ghost" id="gps">📍 Posizione</button>
+    <button class="btn ghost" id="search-cancel" type="button" hidden>Annulla attesa</button>
   </div>
 
   <div class="da" id="da"></div>
   <div class="filtri" id="filtri"></div>
-  <div id="out"><div class="stato">Cerco i voli più economici…</div></div>
+  <div id="out" aria-live="polite"><div class="stato">Cerco i voli più economici…</div></div>
 
   <p class="nota">
     Prezzi <b>live</b> dalla rete Ryanair, sola andata, per una persona, nelle prossime
@@ -105,6 +107,7 @@
   </p>
 </div>
 
+<script src="/alpha-request.js"></script>
 <script>
 const GIORNI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
 const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio",
@@ -133,29 +136,20 @@ let ultimiVoli = [];      // dati caricati (per filtrare senza ricaricare)
 let etichettaDa = '';
 let filtro = null;        // categoria attiva, null = tutte
 
-async function carica(payload, etichetta) {
-  out.innerHTML = '<div class="stato">Cerco i voli più economici…</div>';
-  daBox.textContent = ''; filtriBox.innerHTML = '';
-  try {
-    const res = await fetch('/api/flight/occasioni', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload),
-    });
-    const d = await res.json();
-    if (!res.ok) throw new Error(d.errore || ('HTTP ' + res.status));
-    if (d.origine) {
-      localStorage.setItem('parti_origine', payload.origine || d.origine);
-      inp.value = payload.origine || d.origine;
-    }
-    ultimiVoli = d.voli || [];
-    etichettaDa = etichetta || d.origine;
-    filtro = null;
-    disegnaFiltri();
-    render();
-  } catch (err) {
-    out.innerHTML = `<div class="stato">Non riesco a cercare: ${esc(err.message)}<br>
-      <span style="font-size:0.85rem">Prova con un'altra città o riprova tra poco.</span></div>`;
-  }
+let searchVersion=0;
+const searchCancel=document.getElementById('search-cancel');
+searchCancel.addEventListener('click',()=>AlphaRequest.cancel('parti-search'));
+async function carica(payload,etichetta){
+ const version=++searchVersion;searchCancel.hidden=false;
+ out.innerHTML='<div class="stato">Cerco i voli più economici…</div>';
+ daBox.textContent='';filtriBox.innerHTML='';
+ try{
+  const d=await AlphaRequest.json('/api/flight/occasioni',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)},{key:'parti-search',timeoutMs:45000});
+  if(version!==searchVersion)return;
+  if(d.origine){try{localStorage.setItem('parti_origine',payload.origine||d.origine)}catch(_){}inp.value=payload.origine||d.origine}
+  ultimiVoli=d.voli||[];etichettaDa=etichetta||d.origine;filtro=null;disegnaFiltri();render();
+ }catch(error){if(version===searchVersion&&!AlphaRequest.isSuperseded(error))out.innerHTML=`<div class="stato">${esc(error.message)}<br><span style="font-size:0.85rem">Puoi riprovare mantenendo la città scelta.</span></div>`}
+ finally{if(version===searchVersion)searchCancel.hidden=true}
 }
 
 function disegnaFiltri() {
@@ -223,11 +217,23 @@ document.getElementById('gps').onclick = () => {
   );
 };
 
-// ── all'apertura: parte da solo con l'ultima città (o Milano) ──
-const iniziale = localStorage.getItem('parti_origine') || 'Milano';
+// Prefill only: provider searches start after an explicit action.
+let iniziale='Milano';
+try{iniziale=localStorage.getItem('parti_origine')||iniziale}catch(_){}
 inp.value = iniziale;
-carica({ origine: iniziale }, iniziale);
+daBox.textContent = 'Origine: ' + iniziale + '. Premi Trova per cercare le occasioni.';
 </script>
+
+<!-- Travelpayouts LinkSwitcher: riscrive i link di prenotazione come affiliati -->
+<script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1">
+(function () {
+    var script = document.createElement("script");
+    script.async = 1;
+    script.src = 'https://tp-em.com/NTU0MDU3.js?t=554057';
+    document.head.appendChild(script);
+})();
+</script>
+
 <script src="/nav.js"></script>
 
 </body>

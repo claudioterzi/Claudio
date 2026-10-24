@@ -1,0 +1,22 @@
+{
+  "schema": "r3-json-store-decode-guard-prereg/1",
+  "origin": "NUOVA_SU_BASE_VERIFICATA",
+  "registered_at_utc": "2026-10-11T13:20:59.172773+00:00",
+  "base_revision": "4b31a350a4508e789e1bde397bdc9a8f22fe0f66",
+  "trigger": "Independent pre-adoption reviewer confirmed ValueError (integer digit limit) and RecursionError (5000 nested arrays) bypass the first candidate's corruption-specific factory propagation.",
+  "reviewer_receipt_names": [
+    "startup-parser-falsification-20261011T131849119789Z.json",
+    "startup-parser-depth-falsification-20261011T131930269217Z.json"
+  ],
+  "first_candidate_source_sha256": "be64028dbfb2620c46e348bcb51c03e92d4ec093aa156a58179a8525dc7a1b59",
+  "original_tests_sha256": "b068d365de29a5053e81a9de76bc211d166d39461e3dbf7c828458d9a58f93dc",
+  "supplement_tests_sha256": "121a98c25187dc27e10f8b8ad832ded6f2595194d7867ac28473957f17995d39",
+  "supplement_methods": 2,
+  "cases": [
+    "integer digit limit 4300, input 4301 digits; direct + factory",
+    "recursion limit 1000, nesting 5000; direct + factory"
+  ],
+  "required_behavior": "Parser capacity rejection is a specific JsonFileCorruptionError; source bytes remain; the factory does not return operational memory state.",
+  "acceptance": "Same 2 frozen methods fail on first candidate and pass on final candidate; all 21 original+supplement methods pass with zero errors/skips; rerun offline smoke.",
+  "scope": "Startup decoding exception classification only. Ordinary OSError fallback, atomic writes and hot reload unchanged."
+}

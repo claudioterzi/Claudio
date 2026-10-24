@@ -100,7 +100,9 @@ class _Health(BaseHTTPRequestHandler):
             self._send(200, payload, "application/json; charset=utf-8")
             return
         if path == "/network/v1/nodes":
-            # Twin Supereroe: GET nodes is open (no secret). POST /event still gated.
+            if not net.verify_network_secret(self._header("X-Network-Secret")):
+                self._send(401, b"unauthorized", "text/plain; charset=utf-8")
+                return
             body = json.dumps(net.nodes_payload(), ensure_ascii=False).encode("utf-8")
             self._send(200, body, "application/json; charset=utf-8")
             return

@@ -4,7 +4,7 @@
 var API='/api/r3-sync';
 var TOKEN='r3.sync.device_token.v1';
 var DEVICE='r3.sync.device_meta.v1';
-var busy=false,queued=false,timer=null;
+var busy=false,queued=false,timer=null,revoking=false;
 
 function getToken(){try{return localStorage.getItem(TOKEN)||''}catch(e){return ''}}
 function setToken(value,device){try{localStorage.setItem(TOKEN,value);localStorage.setItem(DEVICE,JSON.stringify(device||{}))}catch(e){}}
@@ -21,14 +21,14 @@ function panel(){
     '<div class="toolbar"><button class="button" id="r3-sync-now" type="button">Sincronizza ora</button>'+
     '<button class="button secondary" id="r3-sync-enroll" type="button">Attiva questo dispositivo</button>'+
     '<button class="button secondary" id="r3-sync-revoke" type="button">Disconnetti dispositivo</button></div>'+
-    '<form id="r3-sync-auth" hidden style="margin-top:1rem"><div class="field"><label>Password proprietaria server</label>'+
+    '<form id="r3-sync-auth" hidden style="margin-top:1rem"><div class="field"><label for="r3-sync-password">Password proprietaria server</label>'+
     '<input id="r3-sync-password" type="password" autocomplete="current-password" maxlength="1024"></div>'+
     '<button class="button" type="submit">Autorizza e sincronizza</button></form>'+
-    '<div id="r3-sync-status" class="statusline">Controllo stato…</div>';
+    '<div id="r3-server-sync-status" class="statusline" role="status" aria-live="polite">Controllo stato…</div>';
   anchor.parentNode.insertBefore(box,anchor.nextSibling);
   return box;
 }
-function status(message){var el=document.getElementById('r3-sync-status');if(el)el.textContent=message}
+function status(message){var el=document.getElementById('r3-server-sync-status');if(el)el.textContent=message}
 function authHeaders(){var t=getToken();return t?{'Authorization':'Bearer '+t}:{}}
 async function call(path,options){
   options=options||{};
@@ -48,9 +48,17 @@ async function enroll(password){
   return syncOnce(true);
 }
 async function revoke(){
-  if(!getToken()){clearToken();renderAuth();return}
-  try{await call('/revoke',{method:'POST'})}catch(e){}
-  clearToken();renderAuth();status('Dispositivo disconnesso. Il ledger locale resta intatto.');
+  if(busy||revoking){status('Attendi la fine della sincronizzazione prima di disconnettere il dispositivo.');return {status:'busy'}}
+  if(!getToken()){clearToken();renderAuth();return {status:'not_enrolled'}}
+  revoking=true;clearTimeout(timer);var button=document.getElementById('r3-sync-revoke');if(button)button.disabled=true;
+  try{
+    var result=await call('/revoke',{method:'POST'});
+    if(result.response.status===401){clearToken();renderAuth();status('Il server non riconosce più questo dispositivo. Accesso locale rimosso.');return {status:'not_authorized'}}
+    if(!result.response.ok)throw new Error(result.data.error||('HTTP '+result.response.status));
+    if(result.data.ok!==true||typeof result.data.revoked!=='string'||!result.data.revoked)throw new Error('Conferma del server non valida');
+    clearToken();renderAuth();status('Revoca confermata dal server. Il ledger locale resta intatto.');return {status:'revoked'};
+  }catch(e){status('Revoca non confermata: '+e.message+'. Il dispositivo resta collegato; riprova a disconnetterlo.');return {status:'error'}}
+  finally{revoking=false;if(button)button.disabled=false}
 }
 function renderAuth(){
   var enabled=!!getToken();
@@ -66,6 +74,7 @@ function renderAuth(){
 }
 function sameHead(events,head){return (events.length?events[events.length-1].hash:null)===head}
 async function syncOnce(force){
+  if(revoking)return {status:'revoking'};
   if(!getToken()){renderAuth();return {status:'not_enrolled'}}
   if(!window.R3Memory){status('Motore memoria non ancora pronto.');return {status:'not_ready'}}
   if(busy){queued=true;return {status:'queued'}}

@@ -11,10 +11,15 @@ Endpoint:
 """
 from __future__ import annotations
 
+import hashlib
+import hmac
 import json
 from functools import lru_cache
 import os
 import sys
+import time
+import urllib.error
+import urllib.parse
 import urllib.request
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -43,6 +48,8 @@ from perfume_studio import studio, render_result, read_record, save_record, seri
 app.register_blueprint(studio)
 from fabbrica import fabbrica
 app.register_blueprint(fabbrica)
+from agora_web import agora
+app.register_blueprint(agora)
 
 # CUSTODE (sistema per host Airbnb) montato su /custode — non deve mai
 # impedire ai Tarocchi di andare online.
@@ -103,7 +110,7 @@ def _itinerario_web(it) -> dict:
 
 @app.after_request
 def _cors(response):
-    if request.path.startswith(('/atelier/', '/api/profumo/', '/api/fabbrica/')) or request.path == '/profumo':
+    if request.path.startswith(('/atelier/', '/api/profumo/', '/api/fabbrica/', '/api/agora')) or request.path == '/profumo':
         for header in ('Access-Control-Allow-Origin', 'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'):
             response.headers.pop(header, None)
         response.headers['Cache-Control'] = 'no-store'
@@ -546,7 +553,7 @@ Tu, temo, dirai soltanto &laquo;e allora?&raquo;.</p>
 <div class=firma>Raffaello
 <small>Naso &middot; Terzi Parfums</small></div>
 </div>
-<p class=piede>Terzi Parfums &middot; l'accesso &egrave; impedito agli impediti.</p>
+<p class=piede>Terzi Parfums &middot; l'accesso &egrave; impedito agli impediti.</p><p><a href="/" style="display:inline-flex;align-items:center;min-height:44px;color:#e0c77e">Torna al sito</a></p>
 </div></body></html>""", 200, {"Content-Type": "text/html; charset=utf-8"})
 
 
@@ -844,9 +851,19 @@ def _comando_oracolo_telegram(args: str) -> None:
     _invia(_messaggio_oracolo_telegram(r))
 
 
+def _da_claudio(msg: dict) -> bool:
+    """Il bot esegue solo i messaggi che arrivano dalla chat di Claudio."""
+    atteso = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+    return bool(atteso) and str((msg.get("chat") or {}).get("id", "")) == atteso
+
+
 def _gestisci_update(upd: dict) -> None:
-    msg   = upd.get("message", {})
-    testo = msg.get("text", "").strip()
+    msg = upd.get("message", {})
+    if not _da_claudio(msg):
+        return
+    # La Mini App Agorà, aperta da un pulsante della tastiera, invia con sendData:
+    # il comando arriva in web_app_data, non in text.
+    testo = (msg.get("text") or (msg.get("web_app_data") or {}).get("data") or "").strip()
     if not testo:
         return
 
@@ -897,8 +914,149 @@ def telegram_debug():
     return response
 
 
+def _segreto_webhook() -> str:
+    """Segreto che Telegram rimanda in ogni chiamata al webhook. Derivato dal token
+    del bot se TELEGRAM_WEBHOOK_SECRET non è impostato: nessun valore da copiare."""
+    from telegram_owner_auth import bot_token_usable
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    if not bot_token_usable(token):
+        return ""
+    esplicito = os.environ.get("TELEGRAM_WEBHOOK_SECRET", "").strip()
+    if esplicito:
+        return esplicito
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    if not token:
+        return ""
+    return hmac.new(token.encode(), b"r3-telegram-webhook-v1", hashlib.sha256).hexdigest()[:48]
+
+
+def _telegram_api(metodo: str, dati: dict) -> dict:
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    req = urllib.request.Request(
+        f"https://api.telegram.org/bot{token}/{metodo}",
+        data=json.dumps(dati).encode(),
+        headers={"Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        try:
+            return json.loads(e.read())
+        except ValueError:
+            return {"ok": False, "description": f"HTTP {e.code}"}
+    except Exception as e:  # noqa: BLE001
+        return {"ok": False, "description": str(e)}
+
+
+@app.route("/api/telegram/attiva")
+def telegram_attiva():
+    """Collega il bot al sito: webhook e pulsante Agorà passano dal login Vercel con il
+    segreto di "Protection Bypass for Automation", che Vercel espone al sito da solo.
+    Idempotente: riaprirla rifà lo stesso collegamento."""
+    base = os.environ.get("R3_SITE_URL", "https://claudio-ebon.vercel.app").rstrip("/")
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    chat = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+    bypass = os.environ.get("VERCEL_AUTOMATION_BYPASS_SECRET", "").strip()
+    righe = []
+    if not token or not chat:
+        righe.append(("✗", "TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID mancano su Vercel."))
+    elif not bypass:
+        righe.append(("✗", "Manca il segreto Vercel: Settings → Deployment Protection → "
+                           "Protection Bypass for Automation → Add, poi ripubblica e riapri questa pagina."))
+    else:
+        me = _telegram_api("getMe", {}).get("result") or {}
+        # I bot in polling (es. @ProtocolloRossoBot su Render) smettono di ricevere se gli si
+        # imposta un webhook: mai due ricevitori sullo stesso token.
+        polling = {x.strip() for x in os.environ.get("R3_BOT_POLLING_IDS", "8900249704").split(",") if x.strip()}
+        righe.append(("·", f"Bot del sito: @{me.get('username', '?')} (id {me.get('id', '?')})"))
+    if token and chat and bypass and str(me.get("id", "")) in polling:
+        righe.append(("✗", "Questo bot riceve già in polling su Render: non imposto un webhook, "
+                           "lo toglierei a Render. Il sito deve usare un bot diverso."))
+    elif token and chat and bypass and not me.get("id"):
+        righe.append(("✗", "Telegram non riconosce il token del bot configurato su Vercel."))
+    elif token and chat and bypass:
+        passa = urllib.parse.urlencode({"x-vercel-protection-bypass": bypass})
+        # Da zero: con parametri uguali Telegram risponde "already set" e non garantisce
+        # di aver preso il secret_token. I messaggi in coda non si perdono.
+        _telegram_api("deleteWebhook", {"drop_pending_updates": False})
+        w = _telegram_api("setWebhook", {
+            "url": f"{base}/api/telegram?{passa}",
+            "secret_token": _segreto_webhook(),
+            "allowed_updates": ["message"],
+        })
+        righe.append(("✓" if w.get("ok") else "✗", "Webhook: " + str(w.get("description", w.get("ok")))))
+        cookie = urllib.parse.urlencode({"x-vercel-protection-bypass": bypass, "x-vercel-set-bypass-cookie": "true"})
+        m = _telegram_api("setChatMenuButton", {
+            "chat_id": chat,
+            "menu_button": {"type": "web_app", "text": "Agorà", "web_app": {"url": f"{base}/home?{cookie}"}},
+        })
+        righe.append(("✓" if m.get("ok") else "✗", "Pulsante Agorà: " + str(m.get("description", m.get("ok")))))
+        c = _telegram_api("setMyCommands", {
+            "commands": [{"command": k, "description": v} for k, v in BOT_COMANDI],
+            "scope": {"type": "chat", "chat_id": chat},
+        })
+        righe.append(("✓" if c.get("ok") else "✗", f"Menu comandi ({len(BOT_COMANDI)}): "
+                      + str(c.get("description", c.get("ok")))))
+        d1 = _telegram_api("setMyShortDescription", {"short_description": BOT_DESCRIZIONE_BREVE})
+        d2 = _telegram_api("setMyDescription", {"description": BOT_DESCRIZIONE})
+        righe.append(("✓" if d1.get("ok") and d2.get("ok") else "✗", "Descrizione del bot: "
+                      + str(d2.get("description", d2.get("ok")))))
+        info = _telegram_api("getWebhookInfo", {}).get("result", {})
+        if info.get("last_error_message"):
+            righe.append(("!", f"Ultimo errore visto da Telegram: {info['last_error_message']}"))
+        righe.append(("·", f"Messaggi in attesa: {info.get('pending_update_count', '?')}"))
+    corpo = "".join(f"<p>{segno} {testo}</p>" for segno, testo in righe)
+    risposta = app.response_class(
+        f"<!doctype html><meta charset=utf-8><meta name=viewport content='width=device-width'>"
+        f"<title>Collega Telegram</title><body style='font-family:Georgia,serif;background:#0c0c0e;"
+        f"color:#e8e4d8;max-width:560px;margin:2rem auto;padding:0 1rem'><h1 style='color:#c9a84c;"
+        f"font-weight:normal'>Collega Telegram</h1>{corpo}</body>",
+        mimetype="text/html",
+    )
+    risposta.headers["Cache-Control"] = "no-store"
+    return risposta
+
+
+@app.route("/api/telegram/prova", methods=["POST"])
+def telegram_prova():
+    """Prova completa sul server: il Consiglio delibera davvero e la delibera arriva nella
+    chat di Claudio, segnata come prova. Riporta quale modello ha risposto per ogni membro
+    e cosa vede Telegram del webhook (senza segreti)."""
+    from agora_web import _owner
+    if not _owner(request.get_json(silent=True) or {}):
+        return jsonify(errore='Accesso privato richiesto.'), 403
+    from sdq1.consiglio import ConsiglioAgenti, invia_delibera_telegram
+
+    delibera = ConsiglioAgenti(salva_output=False).delibera(
+        "[PROVA DI COLLEGAMENTO] Il Consiglio risponde dal sito: qual è il primo passo di oggi?"
+    )
+    inviata = invia_delibera_telegram(delibera)
+    info = _telegram_api("getWebhookInfo", {}).get("result", {})
+    url = str(info.get("url", ""))
+    return jsonify({
+        "consiglio": [
+            {"membro": v.membro, "modello": v.modello or None,
+             "ok": bool(v.modello), "raccomandazione": v.raccomandazione[:120]}
+            for v in delibera.voti
+        ],
+        "inviata_in_chat": inviata,
+        "webhook": {
+            "verso_il_sito": url.split("?")[0],
+            "con_passaggio_vercel": "x-vercel-protection-bypass=" in url,
+            "in_attesa": info.get("pending_update_count"),
+            "ultimo_errore": info.get("last_error_message"),
+            "ultimo_errore_alle": info.get("last_error_date"),
+        },
+    })
+
+
 @app.route("/api/telegram", methods=["POST"])
 def telegram_webhook():
+    segreto = _segreto_webhook()
+    ricevuto = request.headers.get("X-Telegram-Bot-Api-Secret-Token", "")
+    if not segreto or not hmac.compare_digest(ricevuto, segreto):
+        return "forbidden", 403
     upd = request.get_json(force=True, silent=True) or {}
     if upd:
         try:
@@ -906,6 +1064,37 @@ def telegram_webhook():
         except Exception as e:
             print(f"[WEBHOOK] {e}")
     return "ok", 200
+
+
+# Menu dei comandi mostrato da Telegram nella chat di Claudio (ciò che il bot sa fare).
+BOT_COMANDI = (
+    ("consiglio", "5 agenti deliberano su una questione"),
+    ("agenda", "Priorità e pronto rota"),
+    ("tarocchi", "Lettura quantica R³∞ (con una domanda)"),
+    ("profumo", "Raffaello compone una fragranza dall'Organo Terzi 300"),
+    ("oracolo", "L'Oracolo del viaggio"),
+    ("voli", "Ricerca voli (es. /voli BRU GRU)"),
+    ("briefing", "Analisi multi-AI della giornata"),
+    ("riflessione", "Riflessione del sistema"),
+    ("desideri", "Registro dei desideri"),
+    ("skyrights", "Stato ASBL SkyRights"),
+    ("status", "Stato del sistema"),
+    ("snapshot", "Crea uno snapshot"),
+    ("scan", "Scansione del codice"),
+    ("agenti", "Ciclo dei 7 agenti autonomi"),
+    ("help", "Tutti i comandi"),
+)
+BOT_DESCRIZIONE_BREVE = "Raffaello — l'assistente SDQ-1 di Claudio Terzi."
+BOT_DESCRIZIONE = (
+    "Raffaello è l'assistente privato di Claudio Terzi: Agorà e Consiglio dei 5 agenti, "
+    "tarocchi R³∞, profumi dell'Organo Terzi, voli e agenda. Risponde soltanto a Claudio."
+)
+
+# Comandi che la pagina Agorà può inviare.
+AGORA_COMANDI = frozenset({"consiglio", "briefing", "snapshot", "tarocchi", "agenda", "riflessione"})
+
+
+from telegram_owner_auth import utente_da_init_data as _utente_da_init_data
 
 
 # ══════════════════════════════════════════════════════════════════════
