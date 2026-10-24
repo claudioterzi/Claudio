@@ -7,13 +7,15 @@
 <title>Alpha 74 · TEST PRIVATO</title>
 <style>
 html,body{margin:0;width:100%;height:100%;background:#0b0b0e;color:#eee9dc;font-family:Georgia,'Times New Roman',serif}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 #gate{min-height:100%;display:grid;place-items:center;padding:2rem;text-align:center;color:#d0b15b}
 iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#0b0b0e;display:none}
 </style>
 </head>
 <body>
+<h1 class="sr-only">Alpha 74 · Test privato</h1>
 <div id="gate">Verifica invito…</div>
-<iframe id="alpha" title="Alpha 74 TEST" allow="autoplay"></iframe>
+<iframe id="alpha" title="Alpha 74 TEST" referrerpolicy="no-referrer"></iframe>
 <script>
 (async()=>{
  const invites={
@@ -31,9 +33,9 @@ iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#0b0b0e
  const frame=document.getElementById('alpha');
  const key='alpha74.test.readings.'+guest.friend;
  const max=3;
- let pending=false,counted=false;
- function used(){try{return Math.max(0,Math.min(max,Number(localStorage.getItem(key))||0))}catch(_){return 0}}
- function save(n){try{localStorage.setItem(key,String(Math.max(0,Math.min(max,n))))}catch(_){}}
+ let pending=false,counted=false,sessionUsed=0;
+ function used(){try{sessionUsed=Math.max(sessionUsed,Math.max(0,Math.min(max,Number(localStorage.getItem(key))||0)))}catch(_){}return sessionUsed}
+ function save(n){sessionUsed=Math.max(0,Math.min(max,n));try{localStorage.setItem(key,String(sessionUsed))}catch(_){}}
  function decorate(){
   const w=frame.contentWindow,d=w.document;
   d.querySelectorAll('.nav-costellazione,#telegram-continuity').forEach(el=>el.remove());
@@ -44,8 +46,8 @@ iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#0b0b0e
   let banner=d.querySelector('.a74-test-banner');
   if(!banner){banner=d.createElement('div');banner.className='a74-test-banner';const wrap=d.querySelector('main.wrap');if(wrap)wrap.prepend(banner)}
   const left=Math.max(0,max-used());
-  const txt=guest.language==='es'?`TEST PRIVADO · Invitación para ${guest.label} · ${left} lectura${left===1?'':'s'} disponible${left===1?'':'s'}`:`TEST PRIVATO · Invito per ${guest.label} · ${left} lettur${left===1?'a':'e'} disponibil${left===1?'e':'i'}`;
-  if(banner)banner.textContent=txt;
+  const txt=guest.language==='es'?`DEMO LOCAL · ${guest.label} · ${left}/3 lecturas en este dispositivo · texto determinista, sin IA ni voz externa. El contador no es una cuota del servidor.`:`DEMO LOCALE · ${guest.label} · ${left}/3 letture su questo dispositivo · testo deterministico, senza AI o voce esterna. Il contatore non è una quota server.`;
+  if(banner&&banner.textContent!==txt)banner.textContent=txt;
   const blocked=used()>=max;
   d.querySelectorAll('#deck .back').forEach(b=>{if(blocked)b.disabled=true});
   const read=d.getElementById('read');if(read&&blocked)read.disabled=true;
@@ -66,7 +68,7 @@ iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#0b0b0e
    if(pending&&!counted&&!result.classList.contains('hidden')){counted=true;pending=false;save(used()+1);decorate()}
   }).observe(result,{attributes:true,attributeFilter:['class']});
  },{once:true});
- frame.src='/tarocchi-manuale';
+ frame.src='/tarocchi-manuale?invito='+encodeURIComponent(token);
 })().catch(()=>{document.getElementById('gate').textContent='Invito non disponibile.'});
 </script>
 </body>
