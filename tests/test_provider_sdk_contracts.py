@@ -8,6 +8,8 @@ import anthropic
 import httpx
 import openai
 import pytest
+from google import genai
+from google.genai import types as google_types
 
 from rrremergen.api.router import LLMRouter, ProviderError
 from sdq1.llm.providers import anthropic_provider as ap
@@ -24,7 +26,7 @@ def no_network(monkeypatch):
     for target in ("socket.socket.connect", "socket.socket.connect_ex",
                    "socket.create_connection", "socket.getaddrinfo"):
         monkeypatch.setattr(target, forbidden)
-    for name in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "DEEPSEEK_API_KEY"):
+    for name in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GOOGLE_API_KEY", "DEEPSEEK_API_KEY"):
         monkeypatch.setenv(name, KEY)
     monkeypatch.delenv("ANTHROPIC_BASE_URL", raising=False)
     monkeypatch.delenv("OPENAI_BASE_URL", raising=False)
@@ -100,6 +102,73 @@ def assert_request(requests, model, *, site=False, kind="openai"):
     elif site:
         messages.insert(0, {"role": "system", "content": "synthetic system"})
     assert body["messages"] == messages
+
+
+@contextmanager
+def google_sdk_transport(*, status=200, empty=False):
+    real_client = genai.Client
+    requests, clients = [], []
+
+    def respond(request):
+        import json
+
+        assert request.method == "POST"
+        assert request.url.path == "/v1beta/models/gemini-2.5-pro:generateContent"
+        assert request.headers["x-goog-api-key"] == KEY
+        requests.append(json.loads(request.content))
+        payload = {
+            "candidates": [{"content": {"parts": [{"text": "" if empty else "mock answer"}],
+                                         "role": "model"},
+                            "finishReason": "STOP", "index": 0}],
+            "usageMetadata": {"promptTokenCount": 11, "candidatesTokenCount": 7,
+                              "totalTokenCount": 18},
+            "modelVersion": "gemini-2.5-pro", "responseId": "synthetic",
+        }
+        error = {"error": {"code": status, "message": "synthetic blocked response",
+                           "status": "PERMISSION_DENIED"}}
+        return httpx.Response(status, json=payload if status == 200 else error, request=request)
+
+    def constructor(*args, **kwargs):
+        assert kwargs["api_key"] == KEY
+        transport = httpx.MockTransport(respond)
+        options = google_types.HttpOptions(
+            base_url="https://example.invalid",
+            httpx_client=httpx.Client(transport=transport, trust_env=False),
+            httpx_async_client=httpx.AsyncClient(transport=transport, trust_env=False),
+        )
+        client = real_client(api_key=kwargs["api_key"], http_options=options)
+        clients.append(client)
+        return client
+
+    try:
+        with patch.object(genai, "Client", constructor):
+            yield requests
+    finally:
+        for client in clients:
+            client.close()
+
+
+def test_rrremergen_google_real_sdk_request_and_response():
+    with google_sdk_transport() as requests:
+        router = LLMRouter(mode="cloud")
+        result = asyncio.run(router.complete(
+            "synthetic user", "gemini-2.5-pro", temperature=0.25, max_tokens=64))
+        assert result == {"text": "mock answer", "model": "gemini-2.5-pro", "tokens_used": 7}
+        assert router.calls[-1]["output_tokens"] == 7
+        assert not router.calls[-1]["simulation"]
+        assert requests == [{
+            "contents": [{"parts": [{"text": "synthetic user"}], "role": "user"}],
+            "generationConfig": {"temperature": 0.25, "maxOutputTokens": 64},
+        }]
+
+
+@pytest.mark.parametrize("status,empty", [(403, False), (200, True)])
+def test_rrremergen_google_sdk_failure_is_terminal(status, empty):
+    with google_sdk_transport(status=status, empty=empty) as requests:
+        router = LLMRouter(mode="cloud")
+        with pytest.raises(ProviderError):
+            asyncio.run(router.complete("synthetic user", "gemini-2.5-pro"))
+        assert not router.calls and len(requests) == 1
 
 
 @pytest.mark.parametrize("cls,kind,model", [

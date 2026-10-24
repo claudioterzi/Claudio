@@ -14,12 +14,15 @@
     {"src":"public/**","use":"@vercel/static"}
   ],
   "routes": [
+    {"src":"/health","dest":"/rrremergen/api/main.py"},
+    {"src":"/models","dest":"/rrremergen/api/main.py"},
     {"src":"/api/rrremergen/(.*)","dest":"/rrremergen/api/main.py"},
     {"src":"/api/rrremergen","dest":"/rrremergen/api/main.py"},
     {"src":"/rrremergen/(.+\\.(html|js|css|svg|png|json))","dest":"/public/rrremergen/$1"},
     {"src":"/rrremergen/?","dest":"/public/rrremergen/index.html"},
     {"src":"/indra/?","dest":"/public/indra.html"},
     {"src":"/canali/?","dest":"/public/canali.html"},
+    {"src":"/libro-idee/?","dest":"/public/libro-idee/index.html"},
     {"src":"/soglia/","dest":"/public/soglia.html"},
     {"src":"/soglia","dest":"/public/soglia.html"},
     {"src":"/","dest":"/public/r3-status.html"},

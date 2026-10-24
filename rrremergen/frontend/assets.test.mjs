@@ -45,6 +45,12 @@ test('Vercel routes both entry URLs and their assets to the checked-in build', (
   }
 });
 
+test('Vercel routes RRREMERGEN observability and API paths to the Python app', () => {
+  for (const path of ['/health', '/models', '/api/rrremergen/compose']) {
+    assert.equal(routedPath(path), '/rrremergen/api/main.py');
+  }
+});
+
 test('asset validation rejects root-relative and parent-directory regressions', () => {
   assert.throws(() => artifactPath('/assets/index.js'), /escapes/);
   assert.throws(() => artifactPath('/favicon.svg'), /escapes/);
