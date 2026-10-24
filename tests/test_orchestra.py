@@ -11,9 +11,20 @@ class OrchestraEndpointTests(unittest.TestCase):
         self.secret = "r3-test-secret-" * 3
 
     def test_health_get_is_safe_and_public(self):
-        response = self.client.get("/api/orchestra")
+        with patch.dict(os.environ, {"RAFFAELLO_BRIDGE_SECRET": self.secret}, clear=False):
+            response = self.client.get("/api/orchestra")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.get_json(), {"servizio": "Raffaello Orchestra", "pronto": True})
+        body = response.get_json()
+        self.assertEqual(set(body), {"servizio", "pronto", "bootstrap"})
+        self.assertEqual(body["servizio"], "Raffaello Orchestra")
+        self.assertIs(body["pronto"], True)
+        self.assertEqual(set(body["bootstrap"]), {
+            "schema", "protocol_id", "version", "state", "authority", "persistent",
+        })
+        self.assertEqual(body["bootstrap"]["schema"], "R3_AI_BOOTSTRAP_V1")
+        self.assertEqual(body["bootstrap"]["state"], "ACTIVE_REQUEST")
+        self.assertIs(body["bootstrap"]["persistent"], False)
+        self.assertNotIn(self.secret, response.get_data(as_text=True))
 
     def test_post_requires_shared_secret(self):
         with patch.dict(os.environ, {"RAFFAELLO_BRIDGE_SECRET": self.secret}, clear=False):

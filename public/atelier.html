@@ -605,8 +605,8 @@ for (const f of Object.keys(D.famiglie)) {
   selFam.appendChild(o);
 }
 
-// Link già pronto: ?q=... (o ?intenzione=...) pre-riempie e compone da solo.
-// Così basta incollare un link — nessun bottone da premere.
+// Un collegamento precompila il desiderio. La composizione parte soltanto
+// quando la persona preme Chiedi a Raffaello.
 (function () {
   const par = new URLSearchParams(location.search);
   const q = par.get("q") || par.get("intenzione");
@@ -614,8 +614,7 @@ for (const f of Object.keys(D.famiglie)) {
   document.getElementById("intenzione").value = q;
   const f = par.get("famiglia");
   if (f) document.getElementById("famiglia").value = f;
-  // parte da sola appena la pagina è pronta (anche dietro La Soglia)
-  setTimeout(() => chiediARaffaello(false), 400);
+  document.getElementById("voce").textContent="Intenzione pronta. Rileggila, poi premi Chiedi a Raffaello per comporre.";
 })();
 </script>
 </body>

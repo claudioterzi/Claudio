@@ -89,6 +89,14 @@ class GrokProvider(_OpenAIBase):
     base_url = "https://api.x.ai/v1"
 
 
+class MistralProvider(_OpenAIBase):
+    """Mistral AI via API OpenAI-compatibile (chat/completions)."""
+
+    nome = "mistral"
+    env_var = "MISTRAL_API_KEY"
+    base_url = "https://api.mistral.ai/v1"
+
+
 class MiniMaxProvider(_OpenAIBase):
     """MiniMax (M-series) — API OpenAI-compatibile, quasi-frontiera a basso costo.
 
