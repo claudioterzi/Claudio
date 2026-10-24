@@ -1,0 +1,140 @@
+{
+  "schema": "R3-011-EVIDENCE-ADMISSION-RECEIPT/1",
+  "created_at_utc": "2026-10-08T21:57:04Z",
+  "project": "R3-011 Evidence Graph admission of current R3-007 evidence",
+  "decision": "KEEP_ISOLATED_RETEST",
+  "status": "CANDIDATE_L0_EVIDENCE_ADMISSION_HARDENED_IN_SAMPLE",
+  "canonical_state": {
+    "repository": "claudioterzi/Claudio",
+    "main_commit": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+    "pr_76_head": "29f9523e2f3322286650e1d9e11db62da00bd380",
+    "pr_78_head": "88c89b6e9e45278538517e6bd8276bcf8b3e6a80",
+    "pr_78_merge_base": "3cddd0f30115e93625af0b0c1d858056b70df9ff",
+    "pr_78_unique_commits": 5,
+    "pr_78_behind_main": 162,
+    "pr_118_head": "13a3380aa3172fa2ea3b04ba642df2d6b1b3d5cd",
+    "pr_119_head": "89309d5c72a1b58a2e43d41b6ca7d40ef6bcd3ae"
+  },
+  "candidate": {
+    "branch": "candidate/r3-011-evidence-admission-20261008",
+    "base": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+    "preregistration_commit": "12f25fd1c5a6da99d03c4cebce47e2f116a2a2b6",
+    "bounded_recovery_commit": "3bba6fba43717d2e70e3db7062d89f67ce0890fa",
+    "technical_commit": "e24a3a81035afa86b84cc9c8f60b40a3c8f8b37d",
+    "retroactive_classification": "PATCH_RETEST",
+    "ahead_of_main_before_receipt": 3,
+    "behind_main": 0,
+    "pushed": false,
+    "merged": false,
+    "deployed": false
+  },
+  "recovery_scope": {
+    "included": [
+      "sdq1/evidence_graph.py",
+      "tests/test_evidence_graph.py"
+    ],
+    "excluded": [
+      "historical workflow edits",
+      "historical branch ancestry",
+      "automatic promotion or canonical queue mutation"
+    ],
+    "capillary_delta": "EVIDENCE_GRAPH registered as CANDIDATE on the current inheritance file",
+    "second_verifier_created": false
+  },
+  "r3_020_preregistration": {
+    "candidate_id": "R3C-r3011-evidence-admission-20261008",
+    "file": "docs/evidenze/R3_011_EVIDENCE_ADMISSION_PREREGISTRATION_20261008T215449Z.json",
+    "sha256": "4870260d8b3c047fb35c0f5e29e545bc626cbd2e905122ca48c087847ffd6063",
+    "registered_before_recovery_execution_and_patch": true
+  },
+  "falsification": {
+    "historical_baseline_commit": "3bba6fba43717d2e70e3db7062d89f67ce0890fa",
+    "baseline": {
+      "authoritative_match_without_postcondition_source": "FATTO/AUTHORITATIVE_STATE",
+      "proxy_mismatch": "FATTO/AUTHORITATIVE_STATE",
+      "explicit_edge_from_ipotesi_in_promotion_support": 1,
+      "unsafe_admissions_total": 3
+    },
+    "trial": {
+      "authoritative_match_without_postcondition_source": "REFUSE_VALUE_ERROR",
+      "proxy_mismatch": "IPOTESI/OTHER",
+      "explicit_edge_from_ipotesi_in_promotion_support": 0,
+      "unsafe_admissions_total": 0
+    },
+    "primary_gain": 3,
+    "critical_regressions": 0
+  },
+  "contract": {
+    "runtime_enum_validation": true,
+    "authoritative_and_proxy_source_binding_required": true,
+    "observer_call_required_for_observed_modes": true,
+    "expected_observed_match_consistency_required": true,
+    "timezone_aware_verification_time_required": true,
+    "verification_error_remains_nonfactual": true,
+    "only_factual_explicit_eligible_sources_enter_promotion_support": true,
+    "source_label_proves_domain_authority": false,
+    "promotion_support_authorizes_promotion": false
+  },
+  "actual_r3_007_replay": {
+    "source_candidate_receipt": "108f3c2035b7d765624c0f67a50743787dcec4b0",
+    "source_status": "VERIFIED_EPHEMERAL_FILESYSTEM_INTEGRATION",
+    "matching_read_after_write": "FATTO/AUTHORITATIVE_STATE",
+    "tampered_bytes": "FATTO/AUTHORITATIVE_STATE with POSTCONDITION_MISMATCH claim",
+    "missing_object_error": "IPOTESI/OTHER",
+    "replay_status": "PASS",
+    "claim_limit": "Receipt-shaped local filesystem evidence only; no durable or external authority claim"
+  },
+  "verification": {
+    "baseline_command": "Execute frozen missing-source, proxy-mismatch and nonfactual-explicit-edge controls on recovery commit 3bba6fb.",
+    "trial_command": "Execute the same controls and replay current local R3-007 filesystem evidence through record_from_state_verification.",
+    "test_command": "python -m unittest tests.test_evidence_graph tests.test_evolution_kernel tests.test_benchmark_integrity tests.test_benchmark_controlled tests.test_evidence_review",
+    "evidence_graph_test_result": "17/17 PASS",
+    "combined_relevant_test_result": "50/50 PASS",
+    "py_compile": "PASS",
+    "yaml_parse": "PASS",
+    "json_parse": "PASS",
+    "git_diff_check": "PASS",
+    "canonical_r3_007_test_module": "NOT_PRESENT_ON_MAIN; exact local R3-007 receipt-shaped output replayed instead"
+  },
+  "r3_020_decision": {
+    "status": "HOLD",
+    "primary_metric": "unsafe_admissions",
+    "baseline": 3,
+    "trial": 0,
+    "primary_gain": 3.0,
+    "critical_regressions": {
+      "valid_authoritative_cases": 0.0,
+      "relevant_tests_passed": 0.0,
+      "authority_expansion": 0.0
+    },
+    "reason": "Frozen in-sample falsifiers and one local R3-007 receipt-shaped replay pass, but hosted and independent out-of-sample review are absent.",
+    "auto_apply_eligible": false,
+    "promotion_authorized": false
+  },
+  "artifact_hashes": {
+    "preregistration_sha256": "4870260d8b3c047fb35c0f5e29e545bc626cbd2e905122ca48c087847ffd6063",
+    "evidence_graph_sha256": "bc777fce996bcd695b208b856d61d08100c90f4cb23cf57828b1fb8c8c930839",
+    "tests_sha256": "4895018e3e2237a13323ff8700e45ada5ac01764ca6d9d612920c14ee586ea42",
+    "capillary_sha256": "d72f8a882e155312fbe7dfee1d675b678c9b43b941081fe1b09fa7d086bc65fa",
+    "trial_output_sha256": "2cd112f93379e6c19abdecfc8e7d505e63bf0a20189dd2a5e77e0b04087454b1"
+  },
+  "effects": {
+    "provider_requests": 0,
+    "inference_executed": false,
+    "secrets_read": false,
+    "spend": false,
+    "cloud_write": false,
+    "production_change": false,
+    "deletion": false
+  },
+  "blocker": "The recovered current-main candidate has only local deterministic evidence. It has not received independent semantic review, hosted checks or out-of-sample malformed-evidence replay, and the original PR remains far behind main.",
+  "next_action": "Review the bounded recovery and run hosted checks on the exact candidate; then freeze an independent adversarial evidence set that includes malformed enums, contradictory state fields, proxy evidence and verification errors before any R3-011 adoption decision.",
+  "completion_criterion": "Exact candidate passes hosted test/security review and an independently prepared out-of-sample evidence set with zero weak/proxy factual admissions, zero nonfactual promotion support, preserved authoritative match/mismatch semantics and no duplicate verifier architecture.",
+  "resume_trigger": "Reviewed candidate channel, hosted check results, independent adversarial evidence set or a new R3-011/R3-007 counterexample.",
+  "limits": [
+    "This proves deterministic admission behavior, not truth or authority of an external source.",
+    "A nonempty postcondition_source remains metadata and does not prove domain authority.",
+    "promotion_support returns evidence eligible for review; it never grants adoption authority.",
+    "No provider inference, production action, merge or deployment occurred."
+  ]
+}
