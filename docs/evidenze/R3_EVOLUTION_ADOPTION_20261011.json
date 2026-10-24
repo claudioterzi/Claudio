@@ -1,0 +1,41 @@
+{
+  "verified_at_utc": "2026-10-11T13:15:21Z",
+  "scope": "CANONICAL_REPOSITORY_ADOPTION_DETERMINISTIC_KERNEL",
+  "authorization": "Claudio requested sequential closure and explicitly authorized coordination and adoption in this chat",
+  "pr118": {
+    "url": "https://github.com/claudioterzi/Claudio/pull/118",
+    "original_head": "13a3380aa3172fa2ea3b04ba642df2d6b1b3d5cd",
+    "base": "4b31a350a4508e789e1bde397bdc9a8f22fe0f66",
+    "tested_head": "444be794ce2ad6c7041642e75ea32479607bb210",
+    "tree": "3612b3fd9fb47885e9a00d3ef4464dfe7445a838",
+    "merge_commit": "0ddb9212abfb3043d0d66b4ab57d0a99a4a02ad5",
+    "merged": true,
+    "local_tests": {"run": 37, "failures": 0, "errors": 0, "skips": 0},
+    "hosted_success_runs": [38142063346, 38142063337, 38142063335],
+    "exact_head_receipt_sha256": "52ca8c8f12e75112875b911b4fba5069dd64ac7bf37509df8606caebea1ab7af"
+  },
+  "pr124": {
+    "url": "https://github.com/claudioterzi/Claudio/pull/124",
+    "original_head": "c7a889afc7997357a4de84a3f14f77d141d19a52",
+    "base": "0ddb9212abfb3043d0d66b4ab57d0a99a4a02ad5",
+    "tested_head": "f296497ec268ef489cced01211370ae5a66fbb58",
+    "tree": "173d33d3c66220abfd5b0a2d71df88fe2ce81266",
+    "merge_commit": "7a77e930dc0d01889911bb393feea7a0777a054e",
+    "merged": true,
+    "local_tests": {"run": 47, "failures": 0, "errors": 0, "skips": 0},
+    "hosted_success_runs": [38142330851, 38142330865, 38142330831],
+    "independent_review": "No introduced blocking finding; unchanged ledger and promotion permission boundary"
+  },
+  "frozen_suite": {
+    "sha256": "0bbd4d955f596b788e85889c827ef30f6a53312a92d26a726302f9e8b11f2243",
+    "baseline_main": "4b31a350a4508e789e1bde397bdc9a8f22fe0f66",
+    "baseline": {"conformant": 17, "total": 56, "invalid_admitted": 23, "exceptions": 11, "controls_preserved": 10},
+    "adopted_tree": {"conformant": 56, "total": 56, "invalid_admitted": 0, "exceptions": 0, "controls_preserved": 10}
+  },
+  "remaining_limits": [
+    "Malformed outer baseline/trial containers outside the declared Mapping contract still raise AttributeError",
+    "Repository adoption does not prove an installed local runtime has loaded this source",
+    "These deterministic checks do not verify model quality, actual truth of caller-supplied flags, authenticated Jev inference or Letta memory continuity",
+    "The unavailable cloud commit 1a45f91e8fdd5910551b447a88da8d374ca31540 has not been recovered and is not represented as either published PR"
+  ]
+}

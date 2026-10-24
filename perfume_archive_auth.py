@@ -4,6 +4,7 @@ import hmac
 import os
 import secrets
 import time
+from contextlib import contextmanager
 
 from flask import request
 from itsdangerous import BadSignature, URLSafeTimedSerializer
@@ -41,11 +42,12 @@ def _digest(value):
     return hmac.new(os.environ['PERFUME_ARCHIVE_SECRET'].encode(), value.encode(), hashlib.sha256).hexdigest()
 
 
+@contextmanager
 def _session_db():
     from perfume_studio import _db
-    db = _db()
-    db.execute('CREATE TABLE IF NOT EXISTS archive_sessions (sid TEXT PRIMARY KEY, expires INTEGER NOT NULL)')
-    return db
+    with _db() as db:
+        db.execute('CREATE TABLE IF NOT EXISTS archive_sessions (sid TEXT PRIMARY KEY, expires INTEGER NOT NULL)')
+        yield db
 
 
 def new_session():

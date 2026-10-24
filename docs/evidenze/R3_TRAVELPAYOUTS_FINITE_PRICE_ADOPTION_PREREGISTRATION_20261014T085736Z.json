@@ -1,0 +1,61 @@
+{
+  "schema": "R3_CANDIDATE_PREREGISTRATION/1.0",
+  "timestamp_utc": "2026-10-14T08:57:36Z",
+  "task": "R3_TRAVELPAYOUTS_FINITE_PRICE_ADOPTION",
+  "classification": "PATCH_RETEST_RECONSTRUCTED_FROM_VERIFIED_RECEIPT",
+  "source": {
+    "branch": "main",
+    "commit": "b32f77ed9549a018c6883fb4d2d289b138658555",
+    "tree": "4ef224757710674105aa48137e34f10dfd374301"
+  },
+  "prior_candidate": {
+    "technical_commit": "f0bb3bbc162896f48fbd4295136d2015550a1c7d",
+    "receipt_commit": "b8e995c04e9af31d202340272f2ae8487a479b81",
+    "availability": "DATA_ONLY checkpoint; objects absent from this workspace and all fetched refs",
+    "reuse_rule": "Reconstruct only the documented finite-number guard and independently reproduce baseline and tests on current main."
+  },
+  "scope": {
+    "product_path": "flight_hunter/fonti.py",
+    "test_path": "tests/test_travelpayouts_finite_price.py",
+    "methods": [
+      "FonteTravelpayouts.offerte",
+      "FonteTravelpayouts.calendario"
+    ]
+  },
+  "frozen_hypothesis": "float accepts IEEE-754 NaN and infinities; the existing price < 0 gate rejects negative infinity but admits NaN and positive infinity into Travelpayouts offers and calendar results.",
+  "baseline": {
+    "non_finite_cases": 6,
+    "admitted": 4,
+    "rejected": 2,
+    "admitted_values": [
+      "NaN in offerte",
+      "+Infinity in offerte",
+      "NaN in calendario",
+      "+Infinity in calendario"
+    ],
+    "provider_calls": 0,
+    "application_egress": 0
+  },
+  "expected_candidate": {
+    "non_finite_admitted": 0,
+    "non_finite_rejected": 6,
+    "zero_and_positive_finite_preserved": true,
+    "negative_and_non_numeric_rejected": true,
+    "provider_calls": 0,
+    "application_egress": 0
+  },
+  "constraints": [
+    "Use only synthetic provider payloads and a mocked _get method.",
+    "Do not change endpoints, tokens, dates, currencies, provider ordering, booking, affiliation, or other price adapters.",
+    "Do not merge, deploy, restart, spend, call Travelpayouts, or mutate production."
+  ],
+  "promotion": {
+    "auto_apply": false,
+    "required": [
+      "exact-current-main replay",
+      "hosted tests and security",
+      "independent adapter review",
+      "live-schema compatibility without secrets"
+    ]
+  }
+}

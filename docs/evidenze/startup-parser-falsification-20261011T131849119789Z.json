@@ -1,0 +1,38 @@
+{
+  "schema": "r3-local-independent-falsification-v1",
+  "timestamp_utc": "2026-10-11T13:18:48.990926+00:00",
+  "reviewer": "audit_evolution_adoption",
+  "origin": "LOCAL_DISTINCT_EXPERIMENT_SYNTHETIC_TEMPORARY_FILES",
+  "source_path": "C:\\Users\\DELL\\Documents\\Codex\\2026-10-11\\prendi-controllo-del-computer-e-con\\work\\jsonstore-repair\\sdq1\\persistence\\store.py",
+  "source_sha256": "be64028dbfb2620c46e348bcb51c03e92d4ec093aa156a58179a8525dc7a1b59",
+  "python_version": "3.12.6",
+  "int_max_str_digits": 4300,
+  "recursion_limit": 1000,
+  "production_state_touched": false,
+  "network_requests": 0,
+  "redis_sdk_disabled_for_factory": true,
+  "cases": [
+    {
+      "case": "integer_digit_limit",
+      "input_bytes": 4321,
+      "input_sha256": "376610bc4e81afd90468a933b6ef57a4f06961921bb1c05c3b51371c77d6117c",
+      "parser_error_class": "ValueError",
+      "direct_error_class": "ValueError",
+      "direct_is_corruption_error": false,
+      "factory_returned_class": "InMemoryStore",
+      "factory_available": true,
+      "factory_new_memory_state_usable": true,
+      "file_preserved": true
+    },
+    {
+      "case": "nesting_recursion_limit",
+      "input_bytes": 2121,
+      "input_sha256": "3c57a36f28d497a5634d4c3c5a14dbe83afb0518ec753ba3886adec3aad22424",
+      "direct_returned_class": "JsonFileStore",
+      "factory_returned_class": "JsonFileStore",
+      "factory_available": true,
+      "factory_new_memory_state_usable": true,
+      "file_preserved": false
+    }
+  ]
+}

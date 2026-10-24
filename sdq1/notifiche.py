@@ -44,6 +44,9 @@ _OFFSET_FILE = Path("output/telegram_offset.json")
 
 def _token() -> str:
     t = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    from telegram_owner_auth import bot_token_usable
+    if t and not bot_token_usable(t):
+        raise RuntimeError('Credenziale Telegram esposta: rigenerare il token in BotFather.')
     if not t:
         raise RuntimeError("TELEGRAM_BOT_TOKEN non configurato nel .env")
     return t
@@ -64,10 +67,17 @@ def _emoji_livello(livello: str) -> str:
     return {"VERDE": "🟢", "GIALLO": "🟡", "ARANCIONE": "🟠", "ROSSO": "🔴"}.get(livello, "⚪")
 
 
-def invia(testo: str, *, parse_mode: str = "HTML") -> bool:
+def invia(testo: str, *, parse_mode: str = "HTML", bot_token: str | None = None) -> bool:
     """Invia un messaggio Telegram a Claudio. Restituisce True se ok."""
+    from agora_runtime import cattura
+    if cattura(testo):
+        return True
     try:
-        url = _API.format(token=_token(), method="sendMessage")
+        from telegram_owner_auth import bot_token_usable
+        token = bot_token or _token()
+        if not bot_token_usable(token):
+            return False
+        url = _API.format(token=token, method="sendMessage")
         payload = json.dumps({
             "chat_id":    _chat_id(),
             "text":       testo,
@@ -358,6 +368,12 @@ def _esegui_singolo_comando(nome: str) -> None:
         try:
             from sdq1.snapshot import crea_snapshot
             snap = crea_snapshot()
+            if sul_sito():
+                snap['meta']['perimetro'] = 'Funzione del sito: i file non inclusi nel deploy e i servizi esterni non sono verificati da questo snapshot.'
+                if not snap['git'].get('commit') and os.getenv('VERCEL'):
+                    commit = os.getenv('VERCEL_GIT_COMMIT_SHA', '')
+                    snap['git'].update(commit=commit, commit_short=commit[:8], dirty=None,
+                                       fonte='Variabili del deployment Vercel' if commit else 'Git non disponibile nel runtime')
             g = snap["git"]
             c = snap["codice"]
             a = snap["agenti"]
@@ -399,9 +415,9 @@ def _esegui_singolo_comando(nome: str) -> None:
             dest = salva_snapshot(snap)
             ok = push_snapshot(dest)
             sc = snap.get("scanner", {})
-            notifica_completato("Push completato" if ok else "Push fallito", [
+            notifica_completato("Push verificato" if ok else "Push non verificato", [
                 f"Snapshot: {dest.name}",
-                f"GitHub: {'✅ OK' if ok else '❌ FALLITO'}",
+                f"GitHub: {'✅ VERIFICATO' if ok else '⚠ NON VERIFICATO'}",
                 f"Scanner: {sc.get('score_sistema', '?')}/100",
             ])
         except Exception as e:
@@ -415,8 +431,14 @@ def _esegui_singolo_comando(nome: str) -> None:
         notifica_progresso(f"Consiglio in delibera su: {questione[:40]}...", emoji="⚖️")
         try:
             from sdq1.consiglio import ConsiglioAgenti, invia_delibera_telegram
-            c = ConsiglioAgenti()
+            from agora_runtime import sul_sito
+            c = ConsiglioAgenti(salva_output=not sul_sito())
             delibera = c.delibera(questione)
+            from agora_runtime import dato, esito
+            dato('consiglio', delibera.to_dict())
+            available = sum(bool(v.modello) for v in delibera.voti)
+            if available < len(delibera.voti):
+                esito('parziale' if available else 'errore', f'{available}/{len(delibera.voti)} membri hanno ricevuto una risposta da un modello.')
             invia_delibera_telegram(delibera)
         except Exception as e:
             invia(f"❌ Consiglio fallito: {e}")
@@ -425,17 +447,20 @@ def _esegui_singolo_comando(nome: str) -> None:
         notifica_progresso("Snapshot in corso...", emoji="📸")
         try:
             from sdq1.snapshot import crea_snapshot, salva_snapshot
+            from agora_runtime import dato, sul_sito
             snap = crea_snapshot()
-            dest = salva_snapshot(snap)
+            dato('snapshot', snap)
+            dest = Path('snapshot.json') if sul_sito() else salva_snapshot(snap)
             g = snap["git"]
             c = snap["codice"]
             sc = snap.get("scanner", {})
             invia(
-                f"📸 <b>Snapshot salvato</b>\n"
+                f"📸 <b>Snapshot {'creato' if sul_sito() else 'salvato'}</b>\n"
                 f"  File: <code>{dest.name}</code>\n"
-                f"  Commit: <code>{g['commit_short']}</code> | Git: {'✓ pulito' if not g['dirty'] else '⚠ sporco'}\n"
+                f"  Commit: <code>{g['commit_short'] or 'non disponibile'}</code> | Git: {'non verificabile' if g['dirty'] is None else '✓ pulito' if not g['dirty'] else '⚠ sporco'}\n"
                 f"  Codice: {c['file_presenti']}/{len(c['file'])} file integri\n"
-                f"  Scanner: {sc.get('score_sistema', '?')}/100"
+                f"  Scanner: {sc.get('score_sistema', '?')}/100\n"
+                + (snap.get('meta', {}).get('perimetro', '') if sul_sito() else '')
             )
         except Exception as e:
             invia(f"❌ Snapshot fallito: {e}")
@@ -443,15 +468,39 @@ def _esegui_singolo_comando(nome: str) -> None:
     elif nome == "agenda" or nome.startswith("agenda "):
         filtro = nome[len("agenda"):].strip().lower()
         try:
+            if filtro in ('asbl', 'skyrights'):
+                from agora_runtime import dato
+                path = Path(__file__).resolve().parent.parent / 'output' / 'skyrights_2026-10-14.json'
+                dossier = json.loads(path.read_text(encoding='utf-8'))
+                dato('skyrights', dossier)
+                righe = ['🏛️ <b>SkyRights — fascicolo preparatorio</b>',
+                         'Aggiornato: ' + dossier['aggiornato'], 'Scelta dichiarata: fondatore unico.',
+                         'Forma giuridica da validare: ' + dossier['forma_giuridica']['ipotesi'], '']
+                righe.extend(p['stato'] + ' · ' + p['voce'] + '\n' + p['dettaglio'] for p in dossier['passi'])
+                invia('\n\n'.join(righe))
+                return
             from sdq1.agenda import carica as carica_agenda, prossimi_viaggi
             agenda = carica_agenda()
+            from agora_runtime import dato, esito
+            dato('agenda', agenda)
+            if not agenda.get('ok'):
+                esito('errore', 'Agenda non presente o non leggibile. Nessuna sincronizzazione Calendar/Drive è provata.')
+                invia('❌ Agenda non disponibile sul server.')
+                return
+            try:
+                sync = datetime.fromisoformat(agenda.get('ultima_sync', ''))
+                if sync.tzinfo is None or (datetime.now(timezone.utc) - sync).total_seconds() > 86400:
+                    esito('parziale', 'Agenda archiviata da oltre 24 ore: gli impegni e le priorità attuali non sono verificati.')
+            except (ValueError, TypeError):
+                esito('parziale', 'Data di sincronizzazione dell’agenda non documentata.')
             oggi = datetime.now(_TZ).date().isoformat()
             rota = [r for r in agenda.get("pronto_rota", []) if not r.get("fatto")]
             airbnb = agenda.get("prenotazioni_airbnb", [])
             viaggi = prossimi_viaggi(giorni=3)
             checkout_prox = [b for b in airbnb if b.get("checkout", "") >= oggi][:2]
 
-            righe = [f"📋 <b>Agenda SDQ-1</b>  <i>{oggi}</i>\n"]
+            righe = [f"📋 <b>Agenda SDQ-1</b>  <i>{oggi}</i>\n",
+                     f"Fonte: agenda archiviata. Ultima sincronizzazione: {agenda.get('ultima_sync', 'non documentata')}.\n"]
             righe.append("<b>🎯 Pronto Rota:</b>")
             for i, r in enumerate(rota[:5]):
                 p = f"P{i}" if i < 3 else "P?"
@@ -488,6 +537,10 @@ def _esegui_singolo_comando(nome: str) -> None:
             estratte = random.sample(MAZZO, n_carte)
             orientamenti = [random.choice(list(OrientamentoCarta)) for _ in range(n_carte)]
             nomi_pos = ["Passato", "Presente", "Futuro"]
+            from agora_runtime import dato, esito
+            dato('tarocchi', {'domanda': domanda, 'natura': 'lettura simbolica', 'carte': [
+                {'posizione': pos, 'nome': carta.nome, 'orientamento': ori.name, 'parole_chiave': carta.parole_chiave}
+                for pos, carta, ori in zip(nomi_pos, estratte, orientamenti)]})
 
             righe = [f"🃏 <b>Tarocchi Quantici R³∞</b>"]
             if domanda:
@@ -509,6 +562,8 @@ def _esegui_singolo_comando(nome: str) -> None:
                 )
                 if risposta:
                     righe += ["", f"💬 {risposta[:400]}"]
+                else:
+                    esito('parziale', 'Carte estratte; interpretazione AI non disponibile.')
 
             invia("\n".join(righe))
         except Exception as e:
@@ -525,12 +580,16 @@ def _esegui_singolo_comando(nome: str) -> None:
                 "Tono: poetico, diretto, concreto. Lingua: italiano. "
                 "Includi un'osservazione sul sistema e una per Claudio."
             )
-            prov = GeminiProvider(modello="gemini-2.5-flash", api_key=None, timeout=20)
+            prov = GeminiProvider(modello="gemini-2.5-flash", api_key=None, timeout=20, max_token=600)
             if prov.disponibile:
                 r = prov.completa(sistema, f"Data e ora: {ora}. Genera la riflessione.")
-                testo = r.testo.strip() if r.testo else "Il sistema osserva. Il sistema respira."
+                if r.errore or not r.via_api or not r.testo.strip():
+                    raise RuntimeError('Il modello non ha restituito una riflessione.')
+                testo = r.testo.strip()
+                from agora_runtime import dato
+                dato('riflessione', {'testo': testo, 'modello': r.modello, 'provider': r.provider})
             else:
-                testo = "Il sistema è presente. Il momento è questo. Vai avanti."
+                raise RuntimeError('Modello per la riflessione non disponibile.')
             invia(f"🌊 <b>Riflessione SDQ-1</b>  <i>{ora}</i>\n\n{testo}")
         except Exception as e:
             invia(f"❌ Riflessione fallita: {e}")
@@ -614,11 +673,11 @@ def esegui_comandi() -> int:
 def _consulta_ai(provider_cls, modello: str, sistema: str, domanda: str) -> str:
     """Chiede a un provider. Restituisce risposta o stringa vuota."""
     try:
-        prov = provider_cls(modello=modello, api_key=None, timeout=25)
+        prov = provider_cls(modello=modello, api_key=None, timeout=25, timeout_secondi=25, max_retries=0, max_token=400)
         if not prov.disponibile:
             return ""
         r = prov.completa(sistema, domanda)
-        return r.testo.strip() if r.testo else ""
+        return r.testo.strip() if r.via_api and not r.errore and r.testo else ""
     except Exception:
         return ""
 
@@ -672,7 +731,8 @@ def briefing_operativo() -> bool:
         fut_deepseek = ex.submit(_consulta_ai, DeepSeekProvider,  "deepseek-chat",             SISTEMA_COSTRUTTO, contesto)
         fut_mistral  = ex.submit(_consulta_ai, MistralProvider,   "mistral-small-latest",      SISTEMA_COSTRUTTO, contesto)
 
-    intento            = fut_gemini.result()   or "L'azione è cristallizzata. Il sistema avanza."
+    risposta_gemini     = fut_gemini.result()
+    intento            = risposta_gemini or "Gemini non ha restituito una risposta."
     costrutto_claude   = fut_claude.result()
     costrutto_deepseek = fut_deepseek.result()
     costrutto_mistral  = fut_mistral.result()
@@ -682,7 +742,14 @@ def briefing_operativo() -> bool:
     if costrutto_claude:   voci.append(f"[Claude] {costrutto_claude}")
     if costrutto_deepseek: voci.append(f"[DeepSeek] {costrutto_deepseek}")
     if costrutto_mistral:  voci.append(f"[Mistral] {costrutto_mistral}")
-    costrutto = "\n".join(voci) if voci else "Sistema SDQ-1 operativo."
+    costrutto = "\n".join(voci) if voci else "Nessun modello ha restituito l'analisi sistemica."
+    from agora_runtime import dato, esito
+    responses = {'Gemini': risposta_gemini, 'Claude': costrutto_claude, 'DeepSeek': costrutto_deepseek, 'Mistral': costrutto_mistral}
+    dato('briefing', {'risposte': responses, 'agenda_ultima_sync': agenda.get('ultima_sync'),
+                     'stime': 'Valori unitari storici del riepilogo, non dati contabili verificati.'})
+    if not all(responses.values()):
+        esito('parziale' if any(responses.values()) else 'errore',
+              f'{sum(bool(v) for v in responses.values())}/4 modelli hanno risposto. Gli altri risultano non disponibili.')
 
     # Blocco 2 — Bersaglio Fisico
     riga_azione = f"{p0.get('icona', '⚡')} {p0.get('titolo', '—')}\n→ {p0.get('prossimo_passo', '—')}"
@@ -710,7 +777,7 @@ def briefing_operativo() -> bool:
         "<b>② BERSAGLIO FISICO</b>",
         riga_azione,
         "",
-        "<b>③ MATEMATICA DELLA REALTÀ</b>",
+        "<b>③ STIME SU VALORI UNITARI STORICI</b>",
         f"  Prenotazioni Airbnb: <b>{n}</b> × 120€ = {valore_lordo}€",
         f"  Costo operativo fluido: {costo_op:.2f}€",
         f"  Valore Vitale Proiettato: <b>{valore_netto:.0f}€</b>" + karch_line,
@@ -718,7 +785,7 @@ def briefing_operativo() -> bool:
         "<b>④ COSTRUTTO SISTEMICO</b>",
         costrutto,
         "",
-        "<i>[Gemini · Claude · DeepSeek · Mistral — analisi parallela]</i>",
+        "<i>Fonti: agenda archiviata e modelli che hanno effettivamente risposto. Le stime non sono contabilità verificata.</i>",
     ]
 
     return invia("\n".join(righe))
