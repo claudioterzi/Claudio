@@ -7,6 +7,7 @@ import os
 import time
 import unittest
 import urllib.parse
+import fakeredis
 from unittest.mock import patch
 
 import tarocchi_web
@@ -34,6 +35,9 @@ class TestAgora(unittest.TestCase):
         self.env = patch.dict(os.environ, {"TELEGRAM_BOT_TOKEN": TOKEN, "TELEGRAM_CHAT_ID": CHAT}, clear=False)
         self.env.start()
         self.addCleanup(self.env.stop)
+        storage = patch('agora_web._redis', return_value=fakeredis.FakeRedis())
+        storage.start()
+        self.addCleanup(storage.stop)
         self.eseguiti = []
         p = patch("sdq1.notifiche._esegui_singolo_comando", side_effect=self.eseguiti.append)
         p.start()
@@ -105,6 +109,9 @@ class TestAgora(unittest.TestCase):
             r = self.client.get("/api/telegram/attiva")
         self.assertEqual(r.status_code, 200)
         metodi = dict(chiamate)
+        ordine = [m for m, _ in chiamate]
+        self.assertLess(ordine.index("deleteWebhook"), ordine.index("setWebhook"))
+        self.assertFalse(metodi["deleteWebhook"]["drop_pending_updates"])
         self.assertEqual(metodi["setWebhook"]["url"],
                          "https://claudio-ebon.vercel.app/api/telegram?x-vercel-protection-bypass=bypass123")
         self.assertEqual(metodi["setWebhook"]["secret_token"], tarocchi_web._segreto_webhook())
@@ -134,6 +141,27 @@ class TestAgora(unittest.TestCase):
             r = self.client.get("/api/telegram/attiva")
         self.assertEqual(chiamate, ["getMe"])
         self.assertIn("polling su Render", r.get_data(as_text=True))
+
+
+    def test_prova_completa_riporta_modelli_e_webhook(self):
+        from sdq1.consiglio import Delibera, Voto
+
+        voti = [Voto("STRATEGA", "s", "procedi", "", 0.8, modello="gemini/gemini-2.5-flash"),
+                Voto("TECNICO", "t", "Nessun modello ha risposto.", "", 0.0)]
+        finta = Delibera(questione="q", timestamp="t", voti=voti, sintesi_agenti="",
+                         voto_presidente=None, decisione_finale="", regola_applicata="")
+        info = {"ok": True, "result": {
+            "url": "https://claudio-ebon.vercel.app/api/telegram?x-vercel-protection-bypass=SEGRETO",
+            "pending_update_count": 0}}
+        with patch("sdq1.consiglio.ConsiglioAgenti.delibera", return_value=finta), \
+                patch("sdq1.consiglio.invia_delibera_telegram", return_value=True), \
+                patch.object(tarocchi_web, "_telegram_api", return_value=info):
+            r = self.client.post("/api/telegram/prova", json={'initData': init_data()})
+        d = r.get_json()
+        self.assertEqual([v["ok"] for v in d["consiglio"]], [True, False])
+        self.assertTrue(d["inviata_in_chat"])
+        self.assertTrue(d["webhook"]["con_passaggio_vercel"])
+        self.assertNotIn("SEGRETO", r.get_data(as_text=True), "il segreto non esce mai")
 
 
 if __name__ == "__main__":

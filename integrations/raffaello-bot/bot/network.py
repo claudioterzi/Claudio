@@ -42,7 +42,7 @@ def get_network_secret() -> str:
 
 
 def verify_network_secret(header: str | None) -> bool:
-    """Missing configuration stays closed; configured secrets use constant-time comparison."""
+    """Fail closed unless a nonempty configured secret matches in constant time."""
     secret = get_network_secret()
     if not secret:
         return False

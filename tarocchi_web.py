@@ -48,6 +48,8 @@ from perfume_studio import studio, render_result, read_record, save_record, seri
 app.register_blueprint(studio)
 from fabbrica import fabbrica
 app.register_blueprint(fabbrica)
+from agora_web import agora
+app.register_blueprint(agora)
 
 # CUSTODE (sistema per host Airbnb) montato su /custode — non deve mai
 # impedire ai Tarocchi di andare online.
@@ -108,7 +110,7 @@ def _itinerario_web(it) -> dict:
 
 @app.after_request
 def _cors(response):
-    if request.path.startswith(('/atelier/', '/api/profumo/', '/api/fabbrica/')) or request.path == '/profumo':
+    if request.path.startswith(('/atelier/', '/api/profumo/', '/api/fabbrica/', '/api/agora')) or request.path == '/profumo':
         for header in ('Access-Control-Allow-Origin', 'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'):
             response.headers.pop(header, None)
         response.headers['Cache-Control'] = 'no-store'
@@ -551,7 +553,7 @@ Tu, temo, dirai soltanto &laquo;e allora?&raquo;.</p>
 <div class=firma>Raffaello
 <small>Naso &middot; Terzi Parfums</small></div>
 </div>
-<p class=piede>Terzi Parfums &middot; l'accesso &egrave; impedito agli impediti.</p>
+<p class=piede>Terzi Parfums &middot; l'accesso &egrave; impedito agli impediti.</p><p><a href="/" style="display:inline-flex;align-items:center;min-height:44px;color:#e0c77e">Torna al sito</a></p>
 </div></body></html>""", 200, {"Content-Type": "text/html; charset=utf-8"})
 
 
@@ -915,6 +917,10 @@ def telegram_debug():
 def _segreto_webhook() -> str:
     """Segreto che Telegram rimanda in ogni chiamata al webhook. Derivato dal token
     del bot se TELEGRAM_WEBHOOK_SECRET non è impostato: nessun valore da copiare."""
+    from telegram_owner_auth import bot_token_usable
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    if not bot_token_usable(token):
+        return ""
     esplicito = os.environ.get("TELEGRAM_WEBHOOK_SECRET", "").strip()
     if esplicito:
         return esplicito
@@ -971,6 +977,9 @@ def telegram_attiva():
         righe.append(("✗", "Telegram non riconosce il token del bot configurato su Vercel."))
     elif token and chat and bypass:
         passa = urllib.parse.urlencode({"x-vercel-protection-bypass": bypass})
+        # Da zero: con parametri uguali Telegram risponde "already set" e non garantisce
+        # di aver preso il secret_token. I messaggi in coda non si perdono.
+        _telegram_api("deleteWebhook", {"drop_pending_updates": False})
         w = _telegram_api("setWebhook", {
             "url": f"{base}/api/telegram?{passa}",
             "secret_token": _segreto_webhook(),
@@ -1009,11 +1018,44 @@ def telegram_attiva():
     return risposta
 
 
+@app.route("/api/telegram/prova", methods=["POST"])
+def telegram_prova():
+    """Prova completa sul server: il Consiglio delibera davvero e la delibera arriva nella
+    chat di Claudio, segnata come prova. Riporta quale modello ha risposto per ogni membro
+    e cosa vede Telegram del webhook (senza segreti)."""
+    from agora_web import _owner
+    if not _owner(request.get_json(silent=True) or {}):
+        return jsonify(errore='Accesso privato richiesto.'), 403
+    from sdq1.consiglio import ConsiglioAgenti, invia_delibera_telegram
+
+    delibera = ConsiglioAgenti(salva_output=False).delibera(
+        "[PROVA DI COLLEGAMENTO] Il Consiglio risponde dal sito: qual è il primo passo di oggi?"
+    )
+    inviata = invia_delibera_telegram(delibera)
+    info = _telegram_api("getWebhookInfo", {}).get("result", {})
+    url = str(info.get("url", ""))
+    return jsonify({
+        "consiglio": [
+            {"membro": v.membro, "modello": v.modello or None,
+             "ok": bool(v.modello), "raccomandazione": v.raccomandazione[:120]}
+            for v in delibera.voti
+        ],
+        "inviata_in_chat": inviata,
+        "webhook": {
+            "verso_il_sito": url.split("?")[0],
+            "con_passaggio_vercel": "x-vercel-protection-bypass=" in url,
+            "in_attesa": info.get("pending_update_count"),
+            "ultimo_errore": info.get("last_error_message"),
+            "ultimo_errore_alle": info.get("last_error_date"),
+        },
+    })
+
+
 @app.route("/api/telegram", methods=["POST"])
 def telegram_webhook():
     segreto = _segreto_webhook()
     ricevuto = request.headers.get("X-Telegram-Bot-Api-Secret-Token", "")
-    if segreto and not hmac.compare_digest(ricevuto, segreto):
+    if not segreto or not hmac.compare_digest(ricevuto, segreto):
         return "forbidden", 403
     upd = request.get_json(force=True, silent=True) or {}
     if upd:
@@ -1052,46 +1094,7 @@ BOT_DESCRIZIONE = (
 AGORA_COMANDI = frozenset({"consiglio", "briefing", "snapshot", "tarocchi", "agenda", "riflessione"})
 
 
-def _utente_da_init_data(init_data: str, token: str, max_eta_s: int = 86_400) -> dict | None:
-    """Verifica la firma di Telegram sull'initData della Mini App e restituisce l'utente.
-
-    https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app
-    """
-    if not init_data or not token or len(init_data) > 8192:
-        return None
-    campi = dict(urllib.parse.parse_qsl(init_data, keep_blank_values=True))
-    firma = campi.pop("hash", "")
-    if not firma:
-        return None
-    da_controllare = "\n".join(f"{k}={v}" for k, v in sorted(campi.items()))
-    chiave = hmac.new(b"WebAppData", token.encode(), hashlib.sha256).digest()
-    attesa = hmac.new(chiave, da_controllare.encode(), hashlib.sha256).hexdigest()
-    if not hmac.compare_digest(attesa, firma):
-        return None
-    try:
-        if time.time() - int(campi.get("auth_date", "0")) > max_eta_s:
-            return None
-        return json.loads(campi.get("user", "{}"))
-    except (ValueError, TypeError):
-        return None
-
-
-@app.route("/api/agora", methods=["POST"])
-def agora_comando():
-    """La pagina Agorà invia qui i comandi (funziona anche aperta dal pulsante menu,
-    dove sendData non è disponibile). Solo Claudio, con la firma di Telegram."""
-    dati = request.get_json(silent=True) or {}
-    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
-    chat = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
-    utente = _utente_da_init_data(str(dati.get("initData", "")), token)
-    if not utente or not chat or str(utente.get("id", "")) != chat:
-        return jsonify({"errore": "non autorizzato"}), 403
-    comando = str(dati.get("comando", "")).strip()
-    nome = comando.split(maxsplit=1)[0].lstrip("/").lower() if comando.startswith("/") else ""
-    if nome not in AGORA_COMANDI or len(comando) > 1000:
-        return jsonify({"errore": "comando non previsto"}), 400
-    _gestisci_update({"message": {"chat": {"id": chat}, "text": comando}})
-    return jsonify({"ok": True})
+from telegram_owner_auth import utente_da_init_data as _utente_da_init_data
 
 
 # ══════════════════════════════════════════════════════════════════════

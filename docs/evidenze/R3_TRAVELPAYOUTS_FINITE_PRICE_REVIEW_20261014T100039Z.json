@@ -1,0 +1,124 @@
+{
+  "schema": "R3_CANDIDATE_REVIEW_RECEIPT/1.0",
+  "timestamp_utc": "2026-10-14T10:00:39Z",
+  "task": "R3_TRAVELPAYOUTS_FINITE_PRICE_INDEPENDENT_REVIEW",
+  "decision": "PATCH_CI_AND_RETEST_CURRENT_MAIN",
+  "status": "CANDIDATE_L0_REVIEWED_CURRENT_MAIN_LOCAL_PASS_HOSTED_PENDING",
+  "source": {
+    "repository": "https://github.com/claudioterzi/Claudio",
+    "original_pr": 146,
+    "original_head": "7629b886ed0d04660dd528ec376e03d1a440c8ad",
+    "original_base": "45458961280c39c295fb66f45466353d9297414c",
+    "current_main": "01f40860648114473eb293ef0ed99a6f0639ad6c",
+    "current_main_tree": "2e201432e20a66f1b634ba2b660ca77331df08db",
+    "main_ahead_of_original_base": 8,
+    "candidate_path_overlap": false
+  },
+  "review": {
+    "mode": "independent_read_only_agent",
+    "code_verdict": "PASS",
+    "adoption_verdict_before_patch": "HOLD",
+    "functional_findings": 0,
+    "findings": [
+      {
+        "severity": "MEDIUM",
+        "id": "HOSTED_TARGET_TEST_NOT_EXECUTED",
+        "fact": "Test Runner run 38539493791 completed successfully but its workflow did not execute tests.test_travelpayouts_finite_price or general discovery.",
+        "correction": "Add an exact named Test Runner step for tests.test_travelpayouts_finite_price and tests.test_viaggi_validation."
+      },
+      {
+        "severity": "MEDIUM",
+        "id": "CANDIDATE_BEHIND_CURRENT_MAIN",
+        "fact": "PR 146 was one commit ahead and eight commits behind current main.",
+        "correction": "Reconstruct the same bounded tree delta on current main and repeat the local and hosted gates."
+      },
+      {
+        "severity": "MINOR",
+        "id": "PREPUBLICATION_RECEIPT_SCOPE",
+        "fact": "The original receipt correctly recorded hosted evidence as missing and predates publication.",
+        "correction": "Preserve it unchanged and append this review receipt; attribute hosted results only from later exact-head reads."
+      }
+    ],
+    "limits_noted": [
+      "Synthetic payloads only; live provider schema and external consumers remain unverified.",
+      "No consumer-backed maximum exists for very large finite prices.",
+      "Boolean and other float-convertible values preserve pre-existing behavior.",
+      "Non-Mapping provider items remain outside this bounded candidate."
+    ]
+  },
+  "candidate": {
+    "branch": "candidate/r3-travelpayouts-finite-price-review-20261014",
+    "replayed_change_commit": "a15fb78168415e283f3ad3a6583acf7cc2b0c69f",
+    "replayed_change_tree": "f8e2a52a0d75d3b2aa46e279ec46f87502ccaac1",
+    "ci_patch_commit": "2faca99fa947e8270a4e72075769399098bc6fb4",
+    "ci_patch_tree": "2590779b823cb21e0c1431bbbbe090211c95bd13",
+    "ahead": 2,
+    "behind": 0
+  },
+  "changes": {
+    "product": "No additional product-code change after the reviewed math.isfinite guard.",
+    "workflow": "Add a named Test Runner step that executes the two pertinent Travelpayouts/Viaggi unittest modules.",
+    "workflow_path": ".github/workflows/test_runner.yml",
+    "workflow_blob": "6cb52bb486a21b79e26f9fc50324d091f85506ff",
+    "workflow_sha256": "8c8bb8eedd03e7397cbfcb9a8e1f5c0ae1bc907f6fe7f4d69900fde87a04705f"
+  },
+  "verification": {
+    "python_matrix": {
+      "command": "python -m unittest -q tests.test_travelpayouts_finite_price tests.test_viaggi_validation",
+      "passes": 6,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "repetitions": 5,
+      "aggregate_method_passes": 30
+    },
+    "frontend_travel_matrix": {
+      "command": "node tests/test_alpha_travel_ergonomics.cjs",
+      "passes": 14,
+      "failures": 0
+    },
+    "archive_replay": {
+      "commit": "2faca99fa947e8270a4e72075769399098bc6fb4",
+      "archive_sha256": "8e49ed6833401d585687afb0664ae27beaf994e5d21257cb2d69b6dcd5ef3d74",
+      "python_passes": 6,
+      "frontend_passes": 14,
+      "bootstrap": "PASS",
+      "py_compile": "PASS"
+    },
+    "workflow_yaml_parse": "PASS",
+    "diff_check": "PASS",
+    "provider_calls": 0,
+    "application_egress": 0,
+    "hosted_exact_updated_head": "PENDING"
+  },
+  "integrity": {
+    "product_blob": "304c7e93ca54704624b9126556c264cb491ce2e9",
+    "product_sha256": "399ff66e32cac15a578a68dafc3c3e4736eb38cd8f75e64156b405f1184b048b",
+    "test_blob": "185e0d06f4997ce9458f74f3ae61f06a2b7ba3ed",
+    "test_sha256": "404de559530b937eb2040577c775bab70955c4e0e7add6cc9fb84d903a69a003",
+    "original_receipt_blob": "ad587da13760db80c290a103e3f3b9273ce6676f",
+    "original_receipt_sha256": "a400fb7c258002e1e8da9fc0f95759a3a7c41db8d2c44e1d5ae2ce5b024cbb52"
+  },
+  "r3_020": {
+    "reviewed_code_regressions": 0,
+    "missing_targeted_hosted_tests_before": 1,
+    "workflow_targeted_steps_after": 1,
+    "current_main_local_regressions": 0,
+    "auto_apply": false
+  },
+  "blocker": "Hosted Test Runner and Security Scan must pass on the updated exact head; live-schema and external-consumer evidence remain separate adoption limits.",
+  "next_action": "Publish the updated current-main tree to the existing PR 146 branch with force-with-lease, then read back the exact head, blobs, PR state, and hosted results without merging or deploying.",
+  "completion_criterion": {
+    "review_patch_local": "Independent review findings corrected; current-main replay, pertinent Python tests, frontend travel regressions, archive replay and workflow parse pass.",
+    "review_patch_local_satisfied": true,
+    "remote_review": "PENDING exact-head readback and hosted targeted/security success",
+    "adoption": "MISSING live-schema and external-consumer evidence"
+  },
+  "resume_trigger": [
+    "updated PR 146 exact-head hosted result",
+    "live-schema evidence",
+    "external-consumer evidence",
+    "main overlap",
+    "new price-integrity counterexample"
+  ]
+}

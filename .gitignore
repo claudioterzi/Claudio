@@ -104,3 +104,9 @@ R3_PRIVATE_*
 
 # Generated public Mini App preview, built by export_studio_preview.mjs
 /output/raffaello-studio-preview/
+# Versioned indexes and original corpus required by the lazy readers.
+!public/libro/indice.json
+!public/libro/provenienza.json
+!public/opera/manifest.json
+!public/opera-corpus.json
+r3/logs/
