@@ -199,7 +199,7 @@
   <header>
     <h1>Viaggi Low Cost</h1>
     <p>Budget, giorni, periodo — e il pianificatore propone dove andare.</p>
-    <p><a href="/">← Tarocchi Quantici R³∞</a> &nbsp;·&nbsp; <a href="/flight">☠ Flight Hunter (prezzi live) →</a></p>
+    <p><a href="/tarocchi">← Tarocchi Quantici R³∞</a> &nbsp;·&nbsp; <a href="/flight">☠ Flight Hunter (prezzi live) →</a></p>
   </header>
 
   <p class="intro">
@@ -237,13 +237,14 @@
       <div class="chips" id="chips"></div>
     </div>
     <div class="azioni">
-      <button type="submit" class="primario">Trova viaggi</button>
+      <button id="search-submit" type="submit" class="primario">Trova viaggi</button>
+      <button id="search-cancel" type="button" class="primario" hidden>Annulla attesa</button>
       <label class="solo-budget"><input type="checkbox" id="solo-budget"> solo mete dentro il budget</label>
     </div>
   </form>
 
   <div class="section-title">Proposte</div>
-  <div id="risultati"><div class="vuoto">Imposta i parametri e premi «Trova viaggi».</div></div>
+  <div id="risultati" aria-live="polite"><div class="vuoto">Imposta i parametri e premi «Trova viaggi».</div></div>
 
   <p class="nota">
     Con la città di partenza, il volo è un <b>prezzo reale</b> dalla tua zona
@@ -254,6 +255,7 @@
   </p>
 </div>
 
+<script src="/alpha-request.js"></script>
 <script>
 const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno",
               "luglio","agosto","settembre","ottobre","novembre","dicembre"];
@@ -311,7 +313,7 @@ function applicaIdea(idea) {
     if (attivo) tipiScelti.add(b.textContent);
   });
   document.getElementById('form').requestSubmit();
-  document.getElementById('risultati').scrollIntoView({ behavior:'smooth', block:'start' });
+  document.getElementById('risultati').scrollIntoView({ behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth', block:'start' });
 }
 
 const ideeBox = document.getElementById('idee');
@@ -326,32 +328,19 @@ IDEE.forEach(idea => {
 });
 
 // ── Ricerca ───────────────────────────────────────────────────────────────────
+let searchVersion=0;
+document.getElementById('search-cancel').addEventListener('click',()=>AlphaRequest.cancel('viaggi-search'));
 document.getElementById('form').addEventListener('submit', async e => {
   e.preventDefault();
-  const out = document.getElementById('risultati');
-  out.innerHTML = '<div class="caricamento">Cerco le mete giuste…</div>';
-
-  const body = {
-    origine: document.getElementById('origine').value,
-    budget: Number(document.getElementById('budget').value),
-    giorni: Number(document.getElementById('giorni').value),
-    mese:   selMese.value ? Number(selMese.value) : null,
-    tipo:   [...tipiScelti],
-    solo_nel_budget: document.getElementById('solo-budget').checked,
-  };
-
-  try {
-    const res = await fetch('/api/viaggi/pianifica', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    const dati = await res.json();
-    if (!res.ok) throw new Error(dati.errore || 'errore server');
-    mostra(dati);
-  } catch (err) {
-    out.innerHTML = `<div class="vuoto">Errore: ${esc(err.message)}</div>`;
-  }
+  const version=++searchVersion,button=document.getElementById('search-submit'),cancel=document.getElementById('search-cancel');
+  const out=document.getElementById('risultati');button.disabled=true;cancel.hidden=false;
+  out.innerHTML='<div class="caricamento">Cerco le mete giuste…</div>';
+  const body={origine:document.getElementById('origine').value,budget:Number(document.getElementById('budget').value),giorni:Number(document.getElementById('giorni').value),mese:selMese.value?Number(selMese.value):null,tipo:[...tipiScelti],solo_nel_budget:document.getElementById('solo-budget').checked};
+  try{
+    const dati=await AlphaRequest.json('/api/viaggi/pianifica',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},{key:'viaggi-search',timeoutMs:45000});
+    if(version===searchVersion)mostra(dati);
+  }catch(error){if(version===searchVersion&&!AlphaRequest.isSuperseded(error))out.innerHTML=`<div class="vuoto">${esc(error.message)}</div>`}
+  finally{if(version===searchVersion){button.disabled=false;cancel.hidden=true}}
 });
 
 function mostra(dati) {
@@ -405,6 +394,17 @@ function mostra(dati) {
   }).join('');
 }
 </script>
+
+<!-- Travelpayouts LinkSwitcher: riscrive i link di prenotazione come affiliati -->
+<script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1">
+(function () {
+    var script = document.createElement("script");
+    script.async = 1;
+    script.src = 'https://tp-em.com/NTU0MDU3.js?t=554057';
+    document.head.appendChild(script);
+})();
+</script>
+
 <script src="/nav.js"></script>
 
 </body>

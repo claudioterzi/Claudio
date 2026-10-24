@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Grande Opera — Archivio Cosmico R³∞</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c0c0e; --surface: #141418; --border: #2a2a32;
+    --gold: #c9a84c; --gold-dim: #b49851;
+    --text: #e8e4d8; --text-dim: #aaa395;
+    --radius: 8px; --font: 'Georgia', 'Times New Roman', serif;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font);
+         min-height: 100vh; padding: 2rem 1rem 4rem; }
+  .container { max-width: 1080px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 2rem; }
+  header h1 { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: normal;
+              letter-spacing: 0.1em; color: var(--gold); }
+  header p { margin-top: 0.5rem; color: var(--text-dim); font-size: 0.9rem; }
+
+  .lettore { display: flex; gap: 1.2rem; align-items: flex-start; }
+  .lettore > section { flex:1; min-width:0; width:100%; max-width:100%; }
+  .indice { flex: 0 0 300px; background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1rem; position: sticky; top: 1rem;
+            max-height: calc(100vh - 2rem); overflow-y: auto; }
+  [hidden] { display: none !important; }
+  .indice label { display:block; margin-bottom:.4rem; color:var(--text); font-size:.9rem; }
+  #search-count, #doc-status { margin:.6rem 0; font-size:.85rem; line-height:1.5; }
+  #doc-link { color:var(--gold); display:inline-block; margin-bottom:.6rem; }
+  #clear-search, #doc-status button { padding:.5rem; min-height:44px; cursor:pointer; }
+  :focus-visible { outline:2px solid var(--gold); outline-offset:3px; }
+  .indice input { width: 100%; background: var(--bg); border: 1px solid var(--border);
+            color: var(--text); border-radius: var(--radius); padding: 0.45rem 0.8rem;
+            font-family: var(--font); font-size: 0.85rem; margin-bottom: 0.8rem; }
+  .indice input:focus { outline: 2px solid var(--gold); outline-offset: 2px; border-color: var(--gold-dim); }
+  .gruppo { font-size: 0.64rem; letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--gold-dim); margin: 0.9rem 0 0.3rem; }
+  .voce { display: block; width: 100%; text-align: left; background: none; border: none;
+          color: var(--text-dim); font-family: var(--font); font-size: 0.82rem;
+          padding: 0.45rem 0.4rem; min-height:44px; cursor: pointer; border-radius: 4px; line-height: 1.35; }
+  .voce:hover { color: var(--gold); }
+  .voce.attiva { color: var(--gold); background: rgba(201,168,76,0.08); }
+
+  .pagina { flex: 1; min-width: 0; background: var(--surface);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 1.8rem 2rem 2.5rem; overflow-wrap:anywhere; }
+  .pagina .fonte { font-size: 0.68rem; letter-spacing: 0.12em; color: var(--gold-dim);
+                   text-transform: uppercase; margin-bottom: 1rem; }
+  .pagina h2 { color: var(--gold); font-weight: normal; font-size: 1.5rem;
+               margin: 0 0 0.8rem; }
+  .pagina h3 { color: var(--gold); font-weight: normal; font-size: 1.15rem;
+               margin: 1.6rem 0 0.5rem; }
+  .pagina h4 { color: var(--gold-dim); font-weight: normal; margin: 1.2rem 0 0.4rem; }
+  .pagina p { font-size: 0.94rem; line-height: 1.7; margin-bottom: 0.8rem; }
+  .pagina ul { margin: 0.4rem 0 0.9rem 1.3rem; }
+  .pagina li { font-size: 0.92rem; line-height: 1.65; margin-bottom: 0.2rem; }
+  .pagina blockquote { border-left: 2px solid var(--gold-dim); padding: 0.4rem 1rem;
+               color: var(--text-dim); font-style: italic; margin: 0.8rem 0; }
+  .pagina hr { border: none; border-top: 1px solid var(--border); margin: 1.4rem 0; }
+  .pagina code { color: var(--gold); font-size: 0.9em; }
+  .pagina pre { background: var(--bg); border: 1px solid var(--border);
+                border-radius: 6px; padding: 0.8rem 1rem; overflow-x: auto;
+                font-size: 0.82rem; margin: 0.8rem 0; }
+  .pagina table { border-collapse: collapse; margin: 0.8rem 0; width: 100%;
+                  display: block; overflow-x: auto; font-size: 0.84rem; }
+  .pagina td { border: 1px solid var(--border); padding: 0.35rem 0.6rem; }
+  .navdoc { display: flex; justify-content: space-between; margin-top: 2rem;
+            font-size: 0.8rem; }
+  .navdoc button { background: none; border: 1px solid var(--gold-dim);
+            color: var(--gold-dim); border-radius: 999px; padding: 0.35rem 1.1rem;
+            font-family: var(--font); cursor: pointer; }
+  .navdoc button:hover { color: var(--gold); border-color: var(--gold); }
+
+  @media (max-width: 760px) {
+    .lettore { flex-direction: column; }
+    .indice { position: static; max-height: 40vh; flex: none; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<script src="soglia.js"></script>
+<script src="nav.js"></script>
+<main class="container">
+  <header>
+    <h1>La Grande Opera</h1>
+    <p>Archivio Cosmico R³∞ · __OPERA_COUNT__ documenti · le 100 fasi della Civiltà Narrativa</p>
+  </header>
+  <div class="lettore">
+    <div class="indice" id="indice">
+      <label for="cerca">Cerca un documento</label>
+      <input id="cerca" type="search" placeholder="Titolo del documento…">
+      <p id="search-count" role="status" aria-live="polite"></p>
+      <button id="clear-search" type="button" hidden>Cancella ricerca</button>
+      <div id="voci"></div>
+    </div>
+    <section style="flex:1;min-width:0" aria-label="Documento aperto">
+      <a id="doc-link" href="#">Link a questo documento</a>
+      <p id="doc-status" role="status" aria-live="polite"></p>
+      <div class="pagina" id="pagina" aria-busy="false"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+const DOCS = __OPERA_DOCS_JSON__;
+const FIRST_DOC = __OPERA_FIRST_DOC_JSON__;
+
+let corrente = 0, loadVersion = 0, documentLoads = new Map();
+const docCache = new Map([[FIRST_DOC.file, FIRST_DOC]]);
+const indexEntries = [], indexGroups = [];
+const cerca = document.getElementById('cerca');
+const pagina = document.getElementById('pagina');
+const docStatus = document.getElementById('doc-status');
+
+function preparaIndice() {
+  let group = null;
+  DOCS.forEach((d, i) => {
+    if (!group || group.name !== d.gruppo) {
+      const section = document.createElement('div');
+      const heading = document.createElement('div');
+      heading.className = 'gruppo'; heading.textContent = d.gruppo;
+      section.appendChild(heading); document.getElementById('voci').appendChild(section);
+      group = {name:d.gruppo, section, entries:[]}; indexGroups.push(group);
+    }
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'voce'; b.textContent = d.titolo;
+    b.onclick = () => apri(i, {focus:true, history:'push'});
+    group.section.appendChild(b);
+    const entry = {i, button:b, doc:d}; group.entries.push(entry); indexEntries.push(entry);
+  });
+}
+function costruisciIndice(filtro = '') {
+  let count = 0;
+  indexEntries.forEach(entry => {
+    entry.button.hidden = !entry.doc.titolo.toLowerCase().includes(filtro);
+    if (!entry.button.hidden) count++;
+    entry.button.classList.toggle('attiva', entry.i === corrente);
+    if (entry.i === corrente) entry.button.setAttribute('aria-current', 'page');
+    else entry.button.removeAttribute('aria-current');
+  });
+  indexGroups.forEach(group => { group.section.hidden = group.entries.every(e => e.button.hidden); });
+  document.getElementById('search-count').textContent = count ? `${count} di ${DOCS.length} documenti` : 'Nessun documento corrisponde. Prova un altro titolo o cancella la ricerca.';
+  document.getElementById('clear-search').hidden = !filtro;
+}
+function routeFor(i) {
+  const url = new URL(location.href), params = new URLSearchParams();
+  params.set('doc', DOCS[i].file);
+  const query = cerca.value.trim(); if (query) params.set('q', query);
+  url.hash = params.toString(); return url;
+}
+function aggiornaURL(i, push = false) {
+  const url = routeFor(i);
+  if (url.href !== location.href) window.history[push ? 'pushState' : 'replaceState'](null, '', url);
+  document.getElementById('doc-link').href = url.href;
+}
+async function datiDocumento(i) {
+  const doc = DOCS[i];
+  if (docCache.has(doc.file)) return docCache.get(doc.file);
+  if (!documentLoads.has(doc.file)) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);
+    const pending = fetch(doc.src, {credentials:'omit', cache:'force-cache', signal:controller.signal})
+      .then(r => { if (!r.ok) throw new Error('Documento non disponibile'); return r.text(); })
+      .then(html => { const value = {...doc, html}; docCache.set(doc.file, value); return value; })
+      .catch(error => { documentLoads.delete(doc.file); throw error; })
+      .finally(() => clearTimeout(timer));
+    documentLoads.set(doc.file, pending);
+  }
+  return documentLoads.get(doc.file);
+}
+
+async function apri(i, options = {}) {
+  if (!Number.isInteger(i) || i < 0 || i >= DOCS.length) return;
+  const version = ++loadVersion;
+  pagina.setAttribute('aria-busy', 'true'); docStatus.textContent = 'Caricamento del documento…';
+  try {
+    const d = await datiDocumento(i); if (version !== loadVersion) return;
+    corrente = i; pagina.innerHTML = '';
+    const source = document.createElement('div'); source.className = 'fonte'; source.textContent = d.gruppo + ' · ' + d.file;
+    const article = document.createElement('article'); article.innerHTML = d.html;
+    const pager = document.createElement('div'); pager.className = 'navdoc';
+    [-1,1].forEach(step => {
+      const next = i + step;
+      if (next < 0 || next >= DOCS.length) { pager.appendChild(document.createElement('span')); return; }
+      const b = document.createElement('button'); b.type = 'button';
+      b.textContent = step < 0 ? '← ' + DOCS[next].titolo.slice(0,28) : DOCS[next].titolo.slice(0,28) + ' →';
+      b.setAttribute('aria-label', (step < 0 ? 'Documento precedente: ' : 'Documento successivo: ') + DOCS[next].titolo);
+      b.onclick = () => apri(next, {focus:true, history:'push'}); pager.appendChild(b);
+    });
+    pagina.append(source, article, pager); docStatus.textContent = '';
+    costruisciIndice(cerca.value.toLowerCase().trim()); aggiornaURL(i, options.history === 'push');
+    if (options.focus) {
+      const heading = article.querySelector('h2, h1') || article; heading.tabIndex = -1;
+      heading.focus({preventScroll:true});
+      const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      pagina.scrollIntoView({behavior:reduced ? 'auto' : 'smooth', block:'start'});
+    }
+  } catch (error) {
+    if (version !== loadVersion) return;
+    docStatus.textContent = 'Il documento non è stato caricato. Il contenuto già aperto resta disponibile. ';
+    const retry = document.createElement('button'); retry.type = 'button'; retry.textContent = 'Riprova';
+    retry.onclick = () => apri(i, options); docStatus.appendChild(retry);
+  } finally { if (version === loadVersion) pagina.setAttribute('aria-busy', 'false'); }
+}
+function ripristinaURL(event) {
+  const params = new URLSearchParams(location.hash.slice(1));
+  const found = DOCS.findIndex(d => d.file === params.get('doc'));
+  cerca.value = params.get('q') || ''; costruisciIndice(cerca.value.toLowerCase().trim());
+  return apri(found < 0 ? 0 : found, {focus:!!event});
+}
+cerca.addEventListener('input', () => { costruisciIndice(cerca.value.toLowerCase().trim()); aggiornaURL(corrente); });
+document.getElementById('clear-search').onclick = () => { cerca.value = ''; costruisciIndice(); aggiornaURL(corrente); cerca.focus(); };
+window.addEventListener('hashchange', ripristinaURL);
+preparaIndice(); ripristinaURL();
+</script>
+</body>
+</html>

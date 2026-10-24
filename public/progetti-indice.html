@@ -61,10 +61,11 @@ a{color:var(--blue);text-decoration:none;font-weight:800}a:hover{color:var(--blu
   </div>
 </section>
 
+<div class="idea-load-feedback"><p id="idea-load-status" role="status" aria-live="polite"></p><button id="idea-load-retry" type="button" hidden>Riprova a caricare</button></div>
 <section class="toolbar">
-  <input id="search" type="search" placeholder="Cerca titolo, ID, problema, motore…">
-  <select id="scope"><option value="all" selected>Tutte le idee</option><option value="projects">Solo progetti</option></select>
-  <select id="state"><option value="">Tutti gli stati</option><option value="ACTIVE">ACTIVE / PILOT</option><option value="PROJECT">PROJECT CREATED</option><option value="PORTAFOGLIO">PORTAFOGLIO</option><option value="SECURE">SECURE</option></select>
+  <input id="search" aria-label="Cerca idee e progetti" type="search" placeholder="Cerca titolo, ID, problema, motore…">
+  <select id="scope" aria-label="Seleziona idee o progetti"><option value="all" selected>Tutte le idee</option><option value="projects">Solo progetti</option></select>
+  <select id="state" aria-label="Filtra per stato"><option value="">Tutti gli stati</option><option value="ACTIVE">ACTIVE / PILOT</option><option value="PROJECT">PROJECT CREATED</option><option value="PORTAFOGLIO">PORTAFOGLIO</option><option value="SECURE">SECURE</option></select>
 </section>
 <section class="section">
   <div class="section-head"><div><div class="kicker">P-001 → P-005</div><h2>Progetti indicizzati</h2></div><p id="projectsLabel"></p></div>
@@ -98,6 +99,7 @@ a{color:var(--blue);text-decoration:none;font-weight:800}a:hover{color:var(--blu
 </section>
 <footer class="footer"><p>Indice operativo. Le classificazioni D0–D4 indicano quanto l’artefatto è realmente completo e verificato.</p><p class="sig">Claudio Terzi · C.Terzi</p></footer>
 </main>
+<script src="/idea-loader.js"></script>
 <script>
 (function(){
 'use strict';
@@ -109,7 +111,7 @@ const registry=[
  {p:'P-004',id:'IDEA-013',quality:'D2+ · D3 CANDIDATE',qualityNote:'Esiste un HTML branded sostanziale con navigazione, visual, KPI/tabelle, audio/presentazione e stampa. È candidato LEROY LEVEL; resta da completare il quality gate Q0–Q8 prima del badge D3.',dossier:'https://docs.google.com/document/d/1Pgp8Z1X7xoguj4ZwOHhDzfRUI2sc8QcjKn60nwjgp9I/edit',dossierLabel:'Client Test Drive',artifact:'https://drive.google.com/file/d/1lKFkwpP3HKvhYkqn1eLlsKStqj7MqADy/view',artifactLabel:'HTML branded + audio'},
  {p:'P-005',id:'IDEA-011',quality:'D0/D1 · INTERNAL',qualityNote:'Pilot interno reale, ma non ha ancora un dossier progetto dedicato al livello degli altri. Il documento operativo equivalente non va scambiato per un dossier D3.',dossier:'https://docs.google.com/document/d/1UN5JCK96U-1JEJHpNkLskML3ajGGewy6pFhgqeRZJNI/edit',dossierLabel:'Documento operativo equivalente'}
 ];
-function wait(){const db=window.IDEA_OS_PORTFOLIO;if(!db||!Array.isArray(db.ideas)){setTimeout(wait,60);return}boot(db)}
+function wait(){window.R3IdeaLoader.wait(boot,document.getElementById('idea-load-status'),document.getElementById('idea-load-retry'))}
 function text(i){return [i.id,i.title,i.status,i.engine,i.problem,i.thesis,i.buyer,i.evidence,i.relations,(i.updates||[]).join(' ')].join(' ').toLowerCase()}
 function badge(t,cls=''){return '<span class="badge '+cls+'">'+esc(t||'')+'</span>'}
 function projectCard(i,r){
