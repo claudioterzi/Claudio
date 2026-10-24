@@ -1,0 +1,123 @@
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c0c0e; --surface: #141418; --border: #2a2a32;
+    --gold: #c9a84c; --gold-dim: #8a6f2e;
+    --text: #e8e4d8; --text-dim: #7a7468; --red: #8b1c1c;
+    --font: 'Georgia', 'Times New Roman', serif;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font);
+         line-height: 1.6; padding: 2rem 1rem 4rem; }
+  .libro { max-width: 740px; margin: 0 auto; }
+
+  .copertina { text-align: center; padding: 5rem 1rem 4rem;
+               border: 1px solid var(--gold-dim); border-radius: 8px;
+               margin-bottom: 3rem; }
+  .copertina .casa { font-size: 0.75rem; letter-spacing: 0.35em;
+                     text-transform: uppercase; color: var(--gold-dim); }
+  .copertina h1 { font-size: clamp(2.2rem, 8vw, 3.6rem); font-weight: normal;
+                  letter-spacing: 0.08em; color: var(--gold); margin: 1.2rem 0 0.4rem; }
+  .copertina .sotto { font-style: italic; color: var(--text-dim); }
+  .copertina .autori { margin-top: 3.5rem; font-size: 0.95rem; }
+  .copertina .motto { margin-top: 2.5rem; font-style: italic;
+                      color: var(--gold-dim); font-size: 0.9rem; }
+
+  h1.capitolo, h1.parte { font-weight: normal; color: var(--gold);
+      letter-spacing: 0.08em; margin: 3.5rem 0 0.3rem; font-size: 1.6rem; }
+  h1.parte { text-align: center; margin-top: 4.5rem; }
+  .parte-sotto { text-align: center; color: var(--text-dim); font-style: italic;
+                 margin-bottom: 2rem; }
+  .capitolo-sotto { color: var(--gold-dim); font-size: 0.78rem;
+      letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .capitolo-descr { font-style: italic; color: var(--text-dim); margin-bottom: 1.5rem; }
+  h2 { font-weight: normal; color: var(--gold); margin: 2rem 0 0.6rem; font-size: 1.2rem; }
+  h4 { font-weight: normal; color: var(--gold-dim); margin: 1rem 0 0.3rem; }
+  p { margin-bottom: 0.8rem; font-size: 0.95rem; }
+  .prosa em { color: var(--gold-dim); }
+
+  .scheda { display: flex; gap: 1.4rem; background: var(--surface);
+            border: 1px solid var(--border); border-radius: 8px;
+            padding: 1.3rem 1.5rem; margin-bottom: 1.1rem; }
+  .colonna-flacone { flex: 0 0 120px; text-align: center; }
+  .flacone { width: 110px; height: 158px; }
+  .colonna-flacone .meta { font-size: 0.68rem; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.7; }
+  .fatt { border: 1px solid var(--gold-dim); color: var(--gold-dim);
+          border-radius: 4px; padding: 0 0.4em; font-size: 0.9em; }
+  .colonna-testo { flex: 1; min-width: 0; }
+  .numero-scheda { font-size: 0.68rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--gold-dim); }
+  .scheda h3 { font-weight: normal; color: var(--gold); font-size: 1.15rem;
+               margin: 0.1rem 0 0.5rem; }
+  .concept { font-style: italic; font-size: 0.85rem; color: var(--text);
+             line-height: 1.55; }
+  .etichetta-sezione { font-size: 0.64rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--gold-dim); margin: 0.7rem 0 0.25rem; }
+  table.ricetta { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  table.ricetta td { padding: 0.14rem 0.3rem; border-bottom: 1px solid var(--border); }
+  td.lv { color: var(--text-dim); width: 1.6em; }
+  td.parti { text-align: right; color: var(--gold); white-space: nowrap; }
+  .micro { color: #c96a5a; font-size: 0.82em; }
+  .pack { font-size: 0.78rem; color: var(--text-dim); margin: 0; }
+
+  table.semplice { border-collapse: collapse; font-size: 0.85rem; margin: 0.5rem 0 1rem; }
+  table.semplice td { padding: 0.25rem 0.7rem 0.25rem 0; border-bottom: 1px solid var(--border); }
+  .accordo { display: inline-block; vertical-align: top; width: 100%;
+             max-width: 330px; margin: 0 1.2rem 0.8rem 0; }
+
+  .avvertenza-box { border: 1px solid var(--red); border-radius: 8px;
+      padding: 1.2rem 1.5rem; margin: 2rem 0; font-size: 0.88rem; }
+  .avvertenza-box h2 { color: #c96a5a; margin-top: 0; }
+
+  .colophon { text-align: center; color: var(--text-dim); font-size: 0.85rem;
+              margin: 3rem 0; line-height: 2; }
+  .fine { text-align: center; font-style: italic; color: var(--gold-dim);
+          margin: 4rem 0 2rem; }
+
+  @media print {
+    body { background: #fff; color: #1c1810; padding: 0; }
+    :root { --surface: #fff; --border: #ccc; --text: #1c1810;
+            --text-dim: #666; --gold: #6b5312; --gold-dim: #8a6f2e; }
+    .scheda { page-break-inside: avoid; padding:4mm; gap:5mm; }
+    .scheda .colonna-flacone { flex-basis:30mm; }
+    .scheda .concept { font-size:9pt; line-height:1.35; margin-bottom:2mm; }
+    .scheda .colonna-testo>p { margin-bottom:2mm; }
+    .scheda .etichetta-sezione { margin-top:2mm; }
+    .scheda table.ricetta { font-size:8.5pt; }
+    .scheda table.ricetta td { padding:0.5mm 1mm; }
+    .scheda .olf-sample { margin-top:2mm; padding-top:2mm; }
+    .scheda .olf-sample p { line-height:1.25; margin:1mm 0; }
+    .scheda .olf-qr { margin:2mm 0 0; }
+    h1.capitolo, h1.parte, .copertina { page-break-before: always; }
+    .copertina { page-break-before: avoid; border-color: #8a6f2e; }
+    @page { size: A4; margin: 16mm; }
+  }
+
+  .colonna-flacone { flex-basis: 180px; }
+  .flacone-fotonico { margin: 0 0 12px; position: relative; overflow: hidden; border-radius: 8px; background: #f6f2e9; }
+  .flacone-fotonico img { display: block; width: 100%; height: auto; }
+  .flacone-fotonico figcaption { padding: 10px 8px 14px; color: #ebcc86; background: #080909; }
+  .flacone-fotonico span { display: block; font-size: 12px; letter-spacing: .1em; }
+  .flacone-fotonico strong { display: block; font-size: 16px; line-height: 1.3; font-weight: normal; overflow-wrap: anywhere; }
+  .flacone-fotonico small { display:block; margin-top:6px; font-size:11px; color:#c4b995; }
+  .flacone-archivio { margin-top:10px; font-size:12px; line-height:1.5; text-align:left; }
+  .flacone-archivio summary { cursor:pointer; min-height:32px; }
+  .flacone-archivio ul { padding-left:16px; }
+  .flacone-archivio a { color:#ebcc86; display:inline-block; padding:5px 0; }
+  .studio-flaconi { border:1px solid var(--border); border-radius:8px; padding:1.5rem; margin:2rem 0; }
+  .studio-flaconi figure { max-width:300px; margin:1rem auto; }
+  .studio-flaconi img { width:100%; height:auto; border-radius:6px; }
+  .studio-flaconi figcaption { font-size:.8rem; color:var(--text-dim); text-align:center; }
+  .studio-flaconi a { color:var(--gold); }
+  .studio-flaconi nav { display:flex; flex-wrap:wrap; gap:.5rem 1rem; font-size:.85rem; }
+  @media screen and (max-width: 600px) { .scheda { flex-direction: column; padding: 16px; } .colonna-flacone { flex: auto; width: min(240px,100%); margin: auto; } }
+  @media print {
+    .scheda .colonna-flacone { flex:0 0 38mm; }
+    .flacone-fotonico figcaption { background:#fff; color:#332c1c; padding:2mm 1mm; }
+    .flacone-fotonico span,.flacone-fotonico small { color:#62583f; font-size:7pt; }
+    .flacone-fotonico strong { font-size:10pt; }
+    .flacone-archivio { display:none; }
+    .studio-flaconi { break-inside:avoid; }
+    .studio-flaconi figure { max-width:55mm; }
+    .studio-flaconi nav { display:none; }
+  }

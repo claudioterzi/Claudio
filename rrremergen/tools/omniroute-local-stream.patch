@@ -1,0 +1,78 @@
+--- a/omniroute_local.py
++++ b/omniroute_local.py
+@@ -41,14 +41,50 @@
+         return response.status, json.load(response)
+ 
+ 
++def request_stream(body, timeout):
++    """Collect the local SSE response without waiting for a buffered upstream body."""
++    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
++    headers = {"Authorization": "Bearer " + gateway_key(), "Content-Type": "application/json"}
++    req = urllib.request.Request(BASE_URL + "/v1/chat/completions",
++                                 data=json.dumps(body).encode("utf-8"), headers=headers)
++    answer, model, usage, finished = [], MODEL, {}, False
++    with opener.open(req, timeout=timeout) as response:
++        status = response.status
++        for raw in response:
++            line = raw.decode("utf-8").strip()
++            if not line.startswith("data:"):
++                continue
++            payload = line[5:].strip()
++            if payload == "[DONE]":
++                finished = True
++                break
++            chunk = json.loads(payload)
++            if chunk.get("error"):
++                raise RuntimeError("Local streaming provider returned an error")
++            model = chunk.get("model") or model
++            usage = chunk.get("usage") or usage
++            for choice in chunk.get("choices", []):
++                content = choice.get("delta", {}).get("content")
++                if content:
++                    answer.append(content)
++                if choice.get("finish_reason") == "length":
++                    raise RuntimeError("Local generation reached its output limit")
++        if not finished:
++            raise RuntimeError("Local stream ended without completion")
++    return status, {"model": model, "choices": [{"message": {"content": "".join(answer)}}], "usage": usage}
++
++
+ def main():
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument("--health", action="store_true")
+     parser.add_argument("--responses", action="store_true")
++    parser.add_argument("--stream", action="store_true", help="Collect local chat SSE; no cloud fallback")
+     parser.add_argument("--max-tokens", type=int, default=400)
+     parser.add_argument("--timeout", type=int, default=150)
+     parser.add_argument("--file", type=Path, help="UTF-8 prompt file; otherwise read stdin")
+     args = parser.parse_args()
++    if args.stream and args.responses:
++        parser.error("--stream uses chat completions, not --responses")
+     if args.health:
+         status, result = request("/api/health/ping", timeout=8)
+         print(json.dumps({"http": status, "gateway": BASE_URL, "health": result}))
+@@ -67,7 +103,12 @@
+         body = {"model": MODEL, "messages": [{"role": "user", "content": prompt}],
+                 "max_tokens": args.max_tokens, "temperature": 0, "stream": False}
+     started = time.monotonic()
+-    status, result = request(path, body, args.timeout)
++    if args.stream:
++        body["stream"] = True
++        body["stream_options"] = {"include_usage": True}
++        status, result = request_stream(body, args.timeout)
++    else:
++        status, result = request(path, body, args.timeout)
+     if args.responses:
+         answer = "".join(part.get("text", "") for item in result.get("output", [])
+                          for part in item.get("content", []) if part.get("type") == "output_text")
+@@ -85,7 +126,10 @@
+         main()
+     except (OSError, ValueError, sqlite3.Error, RuntimeError, urllib.error.URLError) as exc:
+         # Do not print request headers, credentials, or upstream error bodies.
++        known_reasons = {"Local generation reached its output limit", "Local stream ended without completion",
++                         "Local streaming provider returned an error"}
+         print(json.dumps({"ok": False, "error": type(exc).__name__,
++                          "reason": str(exc) if str(exc) in known_reasons else None,
+                           "http": getattr(exc, "code", None), "cloud_fallback": False}),
+               file=sys.stderr)
+         sys.exit(1)
