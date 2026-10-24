@@ -1,0 +1,109 @@
+{
+  "source_file": "public/libro-integrale.html",
+  "source_commit": "17cac359250b8af1850ac22cf21944fa0448da78",
+  "source_state": "PRESERVED_BASELINE",
+  "source_sha256": "78b8d9bc6bba3a224aa92bdb41284f158f9e66360767ffb8c15e15a844923bec",
+  "source_bytes": 1942529,
+  "git_blob_sha256": "3060e9576b1cbc6e4c84732d8f1c2c79d6b5865cf833fbe6ff4ef95177188b85",
+  "git_blob_digest_note": "SHA256 of Git content after CRLF-to-LF normalization, not a Git object ID; source_sha256 is the exact checkout-byte digest. For a future generated candidate, source_commit remains null until its provenance is reviewed.",
+  "source_offsets": "Characters after CRLF-to-LF normalization, not byte offsets",
+  "perfumes": 400,
+  "chapters": [
+    {
+      "file": "public/libro/introduzione.html",
+      "source_start_character": 10207,
+      "source_end_character": 11810,
+      "raw_fragment_sha256": "b38471abf5c6a94447ab88a023c12d381d054db11ccace8461935e97749fbe1b",
+      "derived_fragment_sha256": "8facfdcbabdcaabeff12bb245f53336c979df21df6de445ffdeae58f2a189b2e",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/parte-0.html",
+      "source_start_character": 11810,
+      "source_end_character": 13853,
+      "raw_fragment_sha256": "ba825812fa9408e33c591674be894bd3adc669c2efa156a3022d2cd0dbb56dd8",
+      "derived_fragment_sha256": "f60b468e5b0ad230b8c757d4f620b11cf03a5d23dacad88472f2a27792062588",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/parte-1.html",
+      "source_start_character": 13853,
+      "source_end_character": 16545,
+      "raw_fragment_sha256": "00c5566bd3185becc69f597587313281733dc6593223ac6cd6e3ca7f310957f9",
+      "derived_fragment_sha256": "fab06e4352d72e1d3abccb8c30c5862f6b237d63141b50ab765fce77b6e48d61",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/parte-2.html",
+      "source_start_character": 16545,
+      "source_end_character": 28958,
+      "raw_fragment_sha256": "8dead56ef34e21eaf14f2ba2a8fe6998b9e30ce54751dd6e0070b2ed46d79ea7",
+      "derived_fragment_sha256": "c3c4adcf1efce6d7ddd0cacca51f8b664152176e068349e30bba4a4c7c4d2623",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/capitolo-1.html",
+      "source_start_character": 28958,
+      "source_end_character": 267193,
+      "raw_fragment_sha256": "e2e36d6d2c875fed8582e669c1121c5ac1f026a6dbda76527cff599ef5f4082e",
+      "derived_fragment_sha256": "1d6056a5158e9b4273d14e19e905a47f43de1074ad11e778074f011c2f6612f5",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/capitolo-2.html",
+      "source_start_character": 267193,
+      "source_end_character": 500817,
+      "raw_fragment_sha256": "2b902ac1c06347d0224548dddd044eccafc097643f43904afbb88c4be7412cf0",
+      "derived_fragment_sha256": "6924cf1ff764141c66e455a0c642362c4d4bac45ae3cd0909c5f2fbf1f9b9c9a",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/capitolo-3.html",
+      "source_start_character": 500817,
+      "source_end_character": 737865,
+      "raw_fragment_sha256": "b3ef4aebb5902bd73a05e0810eefd6b3d1c630b408d4e7092c69358b01c5e88f",
+      "derived_fragment_sha256": "72e0e5eca98f2376076e9a26042c0954e60e50a86b69655104c56d1d08f7151a",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/capitolo-4.html",
+      "source_start_character": 737865,
+      "source_end_character": 975141,
+      "raw_fragment_sha256": "5a5c7a8852c62255d2b06fcf94ab85bb2bb34ca1ea8d26738f04ae6e468e8000",
+      "derived_fragment_sha256": "f76f5e7c8cdd265fa0fda93c21870e2e9a158cfc2d7c9490240b7082a90d6a07",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/capitolo-5.html",
+      "source_start_character": 975141,
+      "source_end_character": 1209234,
+      "raw_fragment_sha256": "d5c5e0d14504592f5715e8a5bfdfd73a2ab1127af94fbb923c23387e6c32555b",
+      "derived_fragment_sha256": "16dbd8a2036c0595222994d445766cb1e1bb74db39143292ef766d594d6c94d7",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/capitolo-6.html",
+      "source_start_character": 1209234,
+      "source_end_character": 1443896,
+      "raw_fragment_sha256": "fc72980b984a8c44e91ab842f86cc5040171a1e62a4c511677d4f94de33c5e7c",
+      "derived_fragment_sha256": "2f6b6b3a42c2b96f2023ecba800817107c95e5bcc4a58408d4e4d22922e0fae1",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/capitolo-7.html",
+      "source_start_character": 1443896,
+      "source_end_character": 1680318,
+      "raw_fragment_sha256": "e1a5cd3015b025eedc658173f207cf7297c7ff7bfac164d954931c8e300a2d4e",
+      "derived_fragment_sha256": "109829dbb88839b7f207e7806b92da09079969fa6e7d80216748e2178cacad83",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    },
+    {
+      "file": "public/libro/capitolo-8.html",
+      "source_start_character": 1680318,
+      "source_end_character": 1915416,
+      "raw_fragment_sha256": "d9d5eadf57ebec14e536392a8faa4de7005d1321805e281fdc15f7966764fe0c",
+      "derived_fragment_sha256": "fb87ad8a52e012de6c3ed464ee5dbda126fef1ce6b07d5a9c52ff6737beede22",
+      "heading_adjustment": "h1 to h2, h2 to h3 for chapter view; integral edition unchanged"
+    }
+  ]
+}

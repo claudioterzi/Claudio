@@ -1,0 +1,10 @@
+# Keep the audited original byte-identical, including its Windows line endings.
+public/libro-integrale.html -text
+# Derived reader assets have hashes shared by Windows checkout and Linux CI.
+public/libro/** text eol=lf
+public/opera/** text eol=lf
+# Formula revision hashes are calculated from exact canonical UTF-8 bytes.
+studio/parfums/*.json text eol=lf
+public/formule/*.json text eol=lf
+tarocchi_quantici_alpha.json text eol=lf
+public/images/flaconi-400/*.svg text eol=lf

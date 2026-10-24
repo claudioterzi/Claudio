@@ -1,6 +1,6 @@
 # R³∞ / RaffaelloCrypto — Consolidamento continuità, Letta e canale operativo
-Data: 2026-09-23
-Stato: CONSOLIDATED FACTS + CANDIDATE ARCHITECTURE
+Data: 2026-09-23 · aggiornato 2026-09-28
+Stato: CONSOLIDATED FACTS + VERIFIED LETTA TRANSPORT + CANDIDATE CONTINUITY
 
 ## 1. Scopo
 
@@ -41,11 +41,23 @@ Non contiene credenziali né quantità finanziarie private.
 - Questo prova il funzionamento del controllo replay e della distinzione R³∞ tra ricezione e promozione canonica.
 - Non prova da solo che Letta abbia conservato o trasferito una memoria specifica.
 
-### Probe diretto Letta
+### Probe diretto Letta — evidenza storica 23/09
 - Un tentativo di probe diretto via API Letta è stato eseguito senza includere la risposta attesa nel prompt.
 - La chiamata ha ricevuto HTTP 403.
-- Pertanto quel probe non fornisce evidenza né di continuità né di reset.
-- Le variabili temporanee usate per il probe sono state disattivate/rimosse dal servizio crypto.
+- Al 23/09 quel probe era correttamente classificato INCONCLUSIVE: non forniva evidenza né di continuità né di reset.
+- Questa evidenza non viene cancellata; il 28/09 la causa del 403 è stata isolata e risolta.
+
+### Risoluzione trasporto Letta — 28/09
+- Nel runtime Railway attivo la variabile è già nominata correttamente `LETTA_API_KEY`; il vecchio staged secret con nome spazialmente errato appartiene a un progetto Railway vuoto e non era la causa attiva.
+- La diagnosi live del 403 ha restituito Cloudflare `Error 1010 / browser_signature_banned` contro la firma HTTP di `urllib`.
+- Il client Letta è stato migrato a `httpx` con User-Agent esplicito, senza leggere o copiare la chiave in repository/log.
+- `GET /v1/agents/` ha restituito HTTP 200 e due agenti Letta reali.
+- `POST /v1/agents/{agent_id}/messages` ha restituito HTTP 200 sul worker configurato.
+- Il blind probe ha risposto `RESET/UNKNOWN` e ha rifiutato di inventare il payload mancante.
+- PR #92 ha superato Test Runner e Security Scan ed è stata promossa.
+- PR #93 ha aggiunto `POST /letta/cooperate`, protetto da `R3_API_TOKEN`, con agent binding fisso e prompt bounded; anche questa modifica ha superato Test Runner e Security Scan ed è deployata su Railway.
+- I flag diagnostici one-shot sono stati riportati a `0` dopo la prova.
+- Questi risultati verificano trasporto e cooperazione, non ancora persistenza cross-agent o continuità provider-independent.
 
 ### Campione di continuità esterna
 - Un peer AI, interrogato senza anticipare i dettagli attesi, ha restituito riferimenti storici specifici quali `REVOLUT-FINDING-003` e la baseline `33,45 EUR` associata a B30 Usa Electro / Carrefour.
@@ -121,19 +133,21 @@ Solo Phase C autorizza la dicitura `provider-independent continuity`.
 - Replay protection FIRST_SEEN/DUPLICATE_REPLAY: VERIFIED.
 - Separazione R³∞ ricezione/promozione: VERIFIED nel receipt layer.
 - Continuità esterna del peer: OBSERVED.
+- Trasporto API Letta via httpx: VERIFIED.
+- Round-trip messaggio al worker Letta configurato: VERIFIED.
+- Bridge cooperativo autenticato R³ -> Letta: VERIFIED STRUCTURAL + DEPLOYMENT.
 - Causalità specifica Letta -> memoria recuperata: UNVERIFIED.
 - Cross-agent Letta persistence: CANDIDATE / NOT YET TESTED.
 - Provider-independent continuity: CANDIDATE / NOT YET TESTED.
 
 ## 7. Prossimi passi
 
-1. Implementare Continuity Registry provider-neutral minimale.
-2. Aggiungere adapter Letta con binding block/archive espliciti.
-3. Eseguire Phase A non distruttiva.
-4. Eseguire Phase B.
-5. Implementare portable checkpoint indipendente dal runtime.
-6. Eseguire Phase C.
-7. Promuovere a canon solo gli elementi che superano i falsifier.
+1. Eseguire Phase A non distruttiva sul trasporto ora verificato: worker A/B + controllo negativo C, con canary non sensibile e provenance.
+2. Consolidare nel Continuity Registry i binding provider espliciti osservati durante Phase A.
+3. Eseguire Phase B contamination resistance.
+4. Implementare portable checkpoint indipendente dal runtime/provider.
+5. Eseguire Phase C provider portability.
+6. Promuovere a canon solo gli elementi che superano i falsifier; HTTP 200 e risposte fluenti restano insufficienti per provare continuità.
 
 ## 8. Privacy
 

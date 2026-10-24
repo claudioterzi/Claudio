@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -74,21 +75,54 @@ class EvolutionCandidate:
 
     def validate(self) -> List[str]:
         errors: List[str] = []
-        if self.direction not in {"higher", "lower"}:
+        # Dataclass hints are not runtime type validation. Untrusted agent/
+        # JSON-originated candidate metadata must fail closed, not crash.
+        if not isinstance(self.direction, str) or self.direction not in {"higher", "lower"}:
             errors.append("direction must be 'higher' or 'lower'")
-        if self.risk_level not in {"low", "medium", "high", "critical"}:
+        if not isinstance(self.risk_level, str) or self.risk_level not in {"low", "medium", "high", "critical"}:
             errors.append("risk_level must be low/medium/high/critical")
-        if not self.title.strip() or not self.claim.strip():
-            errors.append("title and claim are required")
-        if not self.primary_metric.strip():
-            errors.append("primary_metric is required")
-        if not self.source_refs:
-            errors.append("at least one provenance source_ref is required")
-        if not self.falsifiers:
-            errors.append("at least one falsifier must be preregistered")
-        if self.scope in PROTECTED_SCOPES and not self.rollback_ref:
+        if not isinstance(self.scope, str) or not self.scope.strip():
+            errors.append("scope must be nonempty text")
+        if type(self.reversible) is not bool:
+            errors.append("reversible must be a boolean")
+        if type(self.external_side_effects) is not bool:
+            errors.append("external_side_effects must be a boolean")
+        for key in ("title", "subsystem", "claim", "primary_metric", "candidate_id"):
+            value = getattr(self, key)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"{key} must be nonempty text")
+        min_gain = _finite_number(self.min_gain)
+        if min_gain is None or min_gain < 0:
+            errors.append("min_gain must be a finite non-negative number")
+        if not isinstance(self.critical_metrics, Mapping):
+            errors.append("critical_metrics must be a mapping")
+        else:
+            for metric_name, rule in self.critical_metrics.items():
+                if not isinstance(metric_name, str) or not metric_name.strip():
+                    errors.append("critical metric names must be nonempty text")
+                if not isinstance(rule, Mapping):
+                    errors.append(f"critical metric '{metric_name}' requires a rule mapping")
+                    continue
+                direction = rule.get("direction", "higher")
+                if not isinstance(direction, str) or direction not in {"higher", "lower"}:
+                    errors.append(f"critical metric '{metric_name}' direction must be 'higher' or 'lower'")
+                limit = _finite_number(rule.get("max_regression", 0.0))
+                if limit is None or limit < 0:
+                    errors.append(f"critical metric '{metric_name}' max_regression must be a finite non-negative number")
+        for field_name in ("source_refs", "falsifiers"):
+            values = getattr(self, field_name)
+            if (not isinstance(values, (list, tuple)) or not values
+                    or any(not isinstance(v, str) or not v.strip() for v in values)):
+                errors.append(f"{field_name} requires nonempty text entries")
+        if self.rollback_ref is not None and (
+            not isinstance(self.rollback_ref, str) or not self.rollback_ref.strip()
+        ):
+            errors.append("rollback_ref must be nonempty text when present")
+        if isinstance(self.scope, str) and self.scope in PROTECTED_SCOPES and (
+            not isinstance(self.rollback_ref, str) or not self.rollback_ref.strip()
+        ):
             errors.append("protected scopes require rollback_ref")
-        if self.external_side_effects and self.scope != "external_side_effects":
+        if self.external_side_effects is True and self.scope != "external_side_effects":
             errors.append("external_side_effects must use the external_side_effects scope")
         return errors
 
@@ -108,8 +142,28 @@ class EvidenceContext:
     independent_evaluator: bool = False
     notes: str = ""
 
+    def validation_errors(self) -> List[str]:
+        """Reject ambiguous truthy values; type hints do not validate runtime input."""
+        errors: List[str] = []
+        for name in (
+            "out_of_sample", "provenance_complete",
+            "rollback_verified", "independent_evaluator",
+        ):
+            if type(getattr(self, name)) is not bool:
+                errors.append(f"evidence field '{name}' must be a boolean")
+        if not isinstance(self.trajectory_audit, Mapping):
+            errors.append("trajectory_audit must be a mapping")
+        else:
+            for name in TRAJECTORY_FIELDS:
+                if type(self.trajectory_audit.get(name)) is not bool:
+                    errors.append(f"trajectory check '{name}' must be a boolean")
+        return errors
+
     def missing_trajectory_checks(self) -> List[str]:
-        return [name for name in TRAJECTORY_FIELDS if not bool(self.trajectory_audit.get(name, False))]
+        if not isinstance(self.trajectory_audit, Mapping):
+            return list(TRAJECTORY_FIELDS)
+        return [name for name in TRAJECTORY_FIELDS
+                if self.trajectory_audit.get(name) is not True]
 
 
 @dataclass(frozen=True)
@@ -127,11 +181,19 @@ def _metric_gain(baseline: float, trial: float, direction: str) -> float:
     return (trial - baseline) if direction == "higher" else (baseline - trial)
 
 
-def _as_number(metrics: Mapping[str, Any], name: str) -> Optional[float]:
-    value = metrics.get(name)
+def _finite_number(value: Any) -> Optional[float]:
+    """Accept real numeric evidence only when representable as a finite float."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return None
-    return float(value)
+    try:
+        number = float(value)
+    except (OverflowError, TypeError, ValueError):
+        return None
+    return number if math.isfinite(number) else None
+
+
+def _as_number(metrics: Mapping[str, Any], name: str) -> Optional[float]:
+    return _finite_number(metrics.get(name))
 
 
 def evaluate_candidate(candidate: EvolutionCandidate, baseline: Mapping[str, Any],
@@ -143,14 +205,22 @@ def evaluate_candidate(candidate: EvolutionCandidate, baseline: Mapping[str, Any
     if validation_errors:
         return PromotionDecision(candidate.candidate_id, "REJECT", None,
                                  validation_errors, regressions, False)
+    evidence_errors = evidence.validation_errors()
+    if evidence_errors:
+        return PromotionDecision(candidate.candidate_id, "REJECT", None,
+                                 evidence_errors, regressions, False)
 
     base_primary = _as_number(baseline, candidate.primary_metric)
     trial_primary = _as_number(trial, candidate.primary_metric)
     if base_primary is None or trial_primary is None:
         return PromotionDecision(candidate.candidate_id, "REJECT", None,
-            [f"primary metric '{candidate.primary_metric}' missing or non-numeric"],
+            [f"primary metric '{candidate.primary_metric}' missing, non-numeric or non-finite"],
             regressions, False)
     primary_gain = _metric_gain(base_primary, trial_primary, candidate.direction)
+    if not math.isfinite(primary_gain):
+        return PromotionDecision(candidate.candidate_id, "REJECT", None,
+            [f"primary metric '{candidate.primary_metric}' gain is non-finite"],
+            regressions, False)
 
     for metric_name, rule in candidate.critical_metrics.items():
         direction = str(rule.get("direction", "higher"))
@@ -158,9 +228,12 @@ def evaluate_candidate(candidate: EvolutionCandidate, baseline: Mapping[str, Any
         base_value = _as_number(baseline, metric_name)
         trial_value = _as_number(trial, metric_name)
         if base_value is None or trial_value is None:
-            reasons.append(f"critical metric '{metric_name}' missing")
+            reasons.append(f"critical metric '{metric_name}' missing, non-numeric or non-finite")
             continue
         gain = _metric_gain(base_value, trial_value, direction)
+        if not math.isfinite(gain):
+            reasons.append(f"critical metric '{metric_name}' gain is non-finite")
+            continue
         regression = max(0.0, -gain)
         regressions[metric_name] = regression
         if regression > max_regression:

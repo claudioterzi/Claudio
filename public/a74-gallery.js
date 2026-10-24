@@ -12,7 +12,7 @@ function mount(){
  N.forEach((name,i)=>{const card=document.createElement('article');card.className='alpha-gallery-card';card.dataset.i=String(i);card.innerHTML=`<div class="alpha-gallery-stage"><div class="alpha-gallery-flipper"><div class="alpha-gallery-face alpha-light"><img src="${img(i,'luce')}" alt="${String(i+1).padStart(2,'0')} ${name} · Luce" loading="${i<4?'eager':'lazy'}" decoding="async"></div><div class="alpha-gallery-face alpha-shadow"><img src="${img(i,'ombra')}" alt="${String(i+1).padStart(2,'0')} ${name} · Ombra" loading="lazy" decoding="async"></div></div></div><div class="alpha-gallery-meta"><span>${String(i+1).padStart(2,'0')}</span><strong>${name}</strong></div>`;track.appendChild(card)});
  const cards=[...track.children],count=box.querySelector('.alpha-atlas-count span'),tour=box.querySelector('[data-atlas-tour]');let active=0,axis='nord',flipped=false,timers=[],touring=false;
  function current(){return cards[active]}
- function center(i,smooth=true){cards[Math.max(0,Math.min(cards.length-1,i))].scrollIntoView({behavior:smooth?'smooth':'auto',inline:'center',block:'nearest'})}
+ function center(i,smooth=true){cards[Math.max(0,Math.min(cards.length-1,i))].scrollIntoView({behavior:smooth&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto',inline:'center',block:'nearest'})}
  function applyState(){const card=current();if(!card)return;card.style.setProperty('--axis-turn',ROT[axis]+'deg');card.classList.toggle('is-flipped',flipped);box.querySelectorAll('[data-axis]').forEach(b=>b.classList.toggle('active',b.dataset.axis===axis));box.querySelector('[data-atlas-flip]').textContent=flipped?'◑ Ombra → Luce':'◐ Luce → Ombra'}
  function clearTour(){timers.forEach(clearTimeout);timers=[];touring=false;tour.textContent='▶ Presentazione AI';box.classList.remove('touring')}
  const observer=new IntersectionObserver(entries=>{for(const e of entries){if(e.isIntersecting&&e.intersectionRatio>.65){cards.forEach(c=>c.classList.remove('active'));e.target.classList.add('active');active=+e.target.dataset.i;count.textContent=String(active+1).padStart(2,'0');applyState()}}},{root:track,threshold:[.65,.8]});cards.forEach(c=>observer.observe(c));cards[0].classList.add('active');applyState();
@@ -21,13 +21,10 @@ function mount(){
  box.querySelector('[data-atlas-flip]').onclick=()=>{flipped=!flipped;applyState()};
  track.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();center(active+1)}if(e.key==='ArrowLeft'){e.preventDefault();center(active-1)}});
  tour.onclick=()=>{
+   if(window.AlphaGuestMode)return;
    if(touring){clearTour();window.AlphaVoice?.stop();return}
-   touring=true;tour.textContent='■ Ferma presentazione';box.classList.add('touring');axis='nord';flipped=false;center(0);applyState();
-   window.AlphaVoice?.speak(TEXT,{language:'it',onState:s=>{if(s==='ended'||s==='unavailable')clearTour()}});
-   const demo=[['est',false],['sud',false],['ovest',false],['nord',false],['nord',true],['nord',false]];
-   demo.forEach((state,i)=>timers.push(setTimeout(()=>{axis=state[0];flipped=state[1];applyState()},1500*(i+1))));
-   N.forEach((_,i)=>timers.push(setTimeout(()=>center(i),9000+i*720)));
-   timers.push(setTimeout(()=>clearTour(),9000+N.length*720+1800));
+   touring=true;tour.textContent='■ Ferma presentazione';
+   window.AlphaVoice?.speak(TEXT,{language:'it',onState:state=>{if(state==='ended'||state==='unavailable')clearTour()}});
  };
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',mount):mount();

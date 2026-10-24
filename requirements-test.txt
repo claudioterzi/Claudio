@@ -1,0 +1,6 @@
+# Reproducible test tooling; production dependencies stay in each component.
+pytest==9.1.1
+pytest-timeout==2.4.0
+coverage==7.16.2
+fakeredis[lua]==2.40.0
+beautifulsoup4==4.15.0

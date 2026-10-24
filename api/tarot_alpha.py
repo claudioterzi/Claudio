@@ -9,6 +9,7 @@ Claudio Terzi · C.Terzi
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -676,7 +677,31 @@ OUTPUT SOLO JSON valido:
     return None, None
 
 
-def _follow_up(body):
+
+# These are the existing invitation digests used by alpha74-test.html.
+# A guest claim always selects a deterministic path, regardless of modalita.
+GUEST_INVITE_HASHES = frozenset({
+    "7b74020f934f448b2e08eeb8407fed6c482ba6b13febff6018801afde23f1041",
+    "0b3b2326893a86795aaa0ae480cbc74badfa57b9fee111fecf2dafabd5be0c4c",
+    "132e5f43c7d4724c19a530d5f4456e1c5328d7f6e49abbdd517668349d136286",
+    "858b21910e7f8fd3edd680dc7bfd69c9737ff2ed0490dc7dd5e2413c6dab553c",
+})
+
+
+def _guest_mode(body):
+    claimed = any(key in body for key in ("guest_invite", "guest_mode", "invito"))
+    if not claimed:
+        return False, None
+    invitation = body.get("guest_invite") or body.get("invito")
+    if not isinstance(invitation, str) or not 1 <= len(invitation) <= 512:
+        return False, ("Invito ospite non valido.", 403)
+    digest = hashlib.sha256(invitation.encode("utf-8")).hexdigest()
+    if digest not in GUEST_INVITE_HASHES:
+        return False, ("Invito ospite non valido.", 403)
+    return True, None
+
+
+def _follow_up(body, *, guest=False, provider_authorized=True):
     question = _clean(body.get("domanda_utente"), 1600)
     language = _language(body.get("lingua") or body.get("language"))
     if not question:
@@ -690,7 +715,7 @@ def _follow_up(body):
     previous = _previous_reading(body.get("lettura_precedente"))
     history = _follow_up_history(body.get("cronologia"))
     evidence = _evidence_map(cards)
-    answer, engine = _ai_follow_up(cards, question, original_question, context, previous, history, language=language)
+    answer, engine = (None, None) if guest or not provider_authorized else _ai_follow_up(cards, question, original_question, context, previous, history, language=language)
     if answer is None:
         answer = _follow_up_fallback(cards, question, language, evidence)
         engine = {
@@ -698,6 +723,8 @@ def _follow_up(body):
             "via_api": False,
             "tipo": "riserva_canonica",
         }
+    if guest:
+        engine["ospite_deterministico"] = True
     answer_is_ai = answer.get("livello", "AI_ALPHA_FOLLOW_UP") == "AI_ALPHA_FOLLOW_UP"
     engine = _verified_engine(engine, evidence, kind="ai" if answer_is_ai else "deterministico")
     return {
@@ -864,6 +891,11 @@ def _alpha_voice():
     body = request.get_json(silent=True)
     if not isinstance(body, dict):
         return jsonify({"errore": "Serve un oggetto JSON."}), 400
+    if any(key in body for key in ("guest_invite", "guest_mode", "invito")):
+        return jsonify({"errore": "Il percorso ospite offre solo letture testuali deterministiche."}), 403
+    from telegram_owner_auth import telegram_owner
+    if not telegram_owner(body):
+        return jsonify({"errore": "La voce esterna richiede l’accesso firmato del proprietario da Telegram.", "fallback": "browser-speech-synthesis"}), 403
     raw_text = body.get("testo") or body.get("text")
     if not isinstance(raw_text, str) or not raw_text.strip():
         return jsonify({"errore": "Serve il testo da leggere."}), 400
@@ -896,8 +928,13 @@ def _response():
     body = request.get_json(silent=True)
     if not isinstance(body, dict):
         return jsonify({"errore": "Serve un oggetto JSON."}), 400
+    from telegram_owner_auth import telegram_owner
+    provider_authorized = telegram_owner(body)
+    guest, guest_error = _guest_mode(body)
+    if guest_error:
+        return jsonify({"errore": guest_error[0]}), guest_error[1]
     if _clean(body.get("modalita"), 40).lower() == "approfondimento":
-        result, error = _follow_up(body)
+        result, error = _follow_up(body, guest=guest, provider_authorized=provider_authorized)
         if error:
             return jsonify({"errore": error[0]}), error[1]
         resp = jsonify(result)
@@ -912,7 +949,7 @@ def _response():
     context = _clean(body.get("contesto"), 3200)
     language = _language(body.get("lingua") or body.get("language"))
     evidence = _evidence_map(cards)
-    reading, engine = _ai(cards, question, context, language)
+    reading, engine = (None, None) if guest or not provider_authorized else _ai(cards, question, context, language)
     if reading is None:
         reading = _fallback(cards, question, language, evidence)
         engine = {
@@ -920,6 +957,8 @@ def _response():
             "via_api": False,
             "tipo": "riserva_canonica",
         }
+    if guest:
+        engine["ospite_deterministico"] = True
     reading["traccia"] = evidence
     reading["spazio_interpretativo"] = evidence["spazio_interpretativo"]
     reading["registri_epistemici"] = evidence["registri_epistemici"]

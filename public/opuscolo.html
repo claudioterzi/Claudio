@@ -33,6 +33,8 @@
     }
 
     nav button {
+      min-height: 44px;
+      min-width: 44px;
       background: white;
       border: 1px solid var(--border);
       color: var(--dim);
@@ -52,6 +54,7 @@
     /* ── Foglio A6 ───────────────────────────────────── */
     .a6 {
       width: 105mm;
+      max-width: 100%;
       min-height: 148mm;
       background: var(--paper);
       margin: 0 auto;
@@ -299,26 +302,36 @@
     .cover .versione { color: rgba(250,248,243,0.4); }
 
     /* ── Stampa ──────────────────────────────────────── */
+    @page { size: A6 portrait; margin: 0; }
     @media print {
       body { background: white; padding: 0; }
-      nav { display: none; }
+      nav, .controls, #page-status { display: none !important; }
       .a6 {
         display: block !important;
+        width: 105mm;
+        max-width: none;
         box-shadow: none;
         page-break-after: always;
         margin: 0 auto;
       }
+      #p8 { page-break-after: auto; }
+      .carte-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .carta-item { font-size: 5.5pt; line-height: 1.2; gap: .6mm; }
+      .carta-nome, .carta-simbolo { font-size: 6.5pt; }
+      .carta-simbolo { width: 2.5mm; }
     }
 
     /* ── Bottoni nav ─────────────────────────────────── */
     .controls {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       gap: 1rem;
       margin-top: 1.5rem;
     }
 
     .controls button {
+      min-height: 44px;
       background: var(--ink);
       color: var(--paper);
       border: none;
@@ -331,6 +344,9 @@
     }
 
     .controls button:hover { opacity: 0.8; }
+    button:disabled { opacity: .45; cursor: default; }
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    #page-status { text-align: center; margin-top: 1rem; color: var(--dim); }
     .controls .print-btn { background: var(--gold); color: white; }
   </style>
 </head>
@@ -338,7 +354,7 @@
 <script src="soglia.js"></script>
 <script src="nav.js"></script>
 
-<nav id="nav"></nav>
+<nav id="nav" aria-label="Pagine dell’opuscolo"></nav>
 
 <!-- ── Pagina 1: Copertina ─────────────────────────────────────────── -->
 <div class="a6 cover visible" id="p1">
@@ -546,10 +562,11 @@
   </div>
 </div>
 
+<p id="page-status" role="status" aria-live="polite"></p>
 <div class="controls">
-  <button onclick="prevPage()">← Indietro</button>
+  <button id="prev-page" onclick="prevPage()">← Indietro</button>
   <button class="print-btn" onclick="window.print()">Stampa opuscolo</button>
-  <button onclick="nextPage()">Avanti →</button>
+  <button id="next-page" onclick="nextPage()">Avanti →</button>
 </div>
 
 <script>
@@ -594,20 +611,29 @@ for (let i = 1; i <= total; i++) {
   const btn = document.createElement('button');
   btn.textContent = i === 1 ? 'Copertina' : i === 8 ? 'Retro' : `Pag. ${i}`;
   btn.id = `nav${i}`;
-  btn.onclick = () => goTo(i);
+  btn.setAttribute('aria-controls', `p${i}`);
+  btn.onclick = () => goTo(i, true);
   nav.appendChild(btn);
 }
 
-function goTo(n) {
+function goTo(n, focus = false) {
+  if (!Number.isInteger(n) || n < 1 || n > total) return;
   document.querySelectorAll('.a6').forEach(el => el.classList.remove('visible'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById(`p${n}`).classList.add('visible');
+  nav.querySelectorAll('button').forEach(b => { b.classList.remove('active'); b.removeAttribute('aria-current'); });
+  const page = document.getElementById(`p${n}`);
+  page.classList.add('visible');
   document.getElementById(`nav${n}`).classList.add('active');
+  document.getElementById(`nav${n}`).setAttribute('aria-current', 'page');
+  document.getElementById('prev-page').disabled = n === 1;
+  document.getElementById('next-page').disabled = n === total;
+  const heading = page.querySelector('h1, h2');
+  document.getElementById('page-status').textContent = `Pagina ${n} di ${total}${heading ? ' · ' + heading.textContent : ''}`;
+  if (focus) { const target = heading || page; target.tabIndex = -1; target.focus({preventScroll:true}); }
   current = n;
 }
 
-function prevPage() { if (current > 1) goTo(current - 1); }
-function nextPage() { if (current < total) goTo(current + 1); }
+function prevPage() { if (current > 1) goTo(current - 1, true); }
+function nextPage() { if (current < total) goTo(current + 1, true); }
 
 goTo(1);
 </script>

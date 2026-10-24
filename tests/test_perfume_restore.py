@@ -32,7 +32,9 @@ class RestoreTests(unittest.TestCase):
         self.assertEqual(result['perfume']['ricetta'],self.record['perfume']['ricetta'])
         self.assertEqual(result['perfume']['formula_code'],self.record['perfume']['formula_code'])
         self.assertEqual(result['restored_variant'],'Essenza')
-        self.assertNotIn('generate-image',response.text)
+        # The internal renderer is available without AI; an uploaded file must
+        # never receive a signed token authorizing the remote image provider.
+        self.assertIn('id="generate-image" class="action" data-token=""',response.text)
         self.assertNotIn('Access-Control-Allow-Origin',response.headers)
 
     def test_modified_recipe_is_rejected_even_if_total_is_preserved(self):
@@ -55,8 +57,9 @@ class RestoreTests(unittest.TestCase):
         self.record['perfume']['flacone']={'prompt':'untrusted instruction','accenti':['fiction']}
         response=self.post(self.record)
         self.assertEqual(response.status_code,200)
-        for forbidden in ('FORMULA ARCHIVIATA','generate-image','untrusted instruction','fiction'):
+        for forbidden in ('FORMULA ARCHIVIATA','data-token="forged"','untrusted instruction','fiction'):
             self.assertNotIn(forbidden,response.text)
+        self.assertIn('id="generate-image" class="action" data-token=""',response.text)
 
     def test_markup_escaped_links_validated_and_suggestions_not_restored(self):
         self.record['customer']='<script>alert(1)</script>'

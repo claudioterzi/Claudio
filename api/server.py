@@ -6,7 +6,7 @@ Avvio:
 Endpoint:
     POST /ask          — chiama l'orchestratore SDQ-1
     GET  /health       — stato provider + metriche
-    GET  /monitor      — stato live JSON senza auth
+    GET  /monitor      — stato live JSON (auth quando SDQ1_API_KEYS è configurato)
     GET  /futures      — lista scenari disponibili
     POST /futures/run  — esegui scenari in parallelo
     GET  /nas          — schema hardware DS223
@@ -67,7 +67,8 @@ def _auth():
 
 @app.route("/monitor", methods=["GET"])
 def monitor_data():
-    """Restituisce lo stato live del sistema SDQ-1 in JSON — senza auth, senza LLM."""
+    """Stato SDQ-1: richiede auth se SDQ1_API_KEYS è configurato, senza LLM."""
+    _auth()
     ROOT = Path(__file__).resolve().parent.parent
     out = {}
 
@@ -132,10 +133,13 @@ def health():
 @app.route("/ask", methods=["POST"])
 def ask():
     _auth()
-    body = request.get_json(force=True, silent=True) or {}
-    testo = body.get("testo", "").strip()
-    if not testo:
+    body = request.get_json(force=True, silent=True)
+    if not isinstance(body, dict):
+        abort(400, "Body JSON deve essere un oggetto")
+    testo = body.get("testo")
+    if not isinstance(testo, str) or not testo.strip():
         abort(400, "Campo 'testo' obbligatorio")
+    testo = testo.strip()
 
     orch, router, memoria, stato, metrics, health_checker, vss = _get_sistema()
     t0 = time.monotonic()
@@ -172,10 +176,19 @@ def futures_list():
 @app.route("/futures/run", methods=["POST"])
 def futures_run():
     _auth()
-    body = request.get_json(force=True, silent=True) or {}
-    ids = body.get("scenari")
+    body = request.get_json(force=True, silent=True)
+    if not isinstance(body, dict):
+        abort(400, "Body JSON deve essere un oggetto")
 
     from sdq1.futures import SimulatoreScenari, SCENARI_DEFAULT
+    ids = body.get("scenari")
+    if "scenari" in body:
+        if not isinstance(ids, list) or not ids or any(not isinstance(x, str) for x in ids):
+            abort(400, "Campo 'scenari' deve essere una lista non vuota di ID")
+        valid_ids = {s.id for s in SCENARI_DEFAULT}
+        if any(x not in valid_ids for x in ids):
+            abort(400, "ID scenario sconosciuto")
+
     orch, router, *_ = _get_sistema()
 
     def _llm_fn(sistema, utente):

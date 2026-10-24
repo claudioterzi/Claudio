@@ -1,0 +1,94 @@
+{
+  "schema": "R3_LETTA_COOPERATION_EVIDENCE/1.0",
+  "date": "2026-09-28",
+  "public_safe": true,
+  "overall_status": "TRANSPORT_AND_COOPERATION_VERIFIED__MEMORY_CONTINUITY_NOT_PROVEN",
+  "facts": [
+    {
+      "id": "ACTIVE_VARIABLE_NAME",
+      "status": "VERIFIED",
+      "detail": "Active Railway runtime exposes LETTA_API_KEY with the correct variable name; secret value was not read or persisted."
+    },
+    {
+      "id": "HISTORICAL_403_ROOT_CAUSE",
+      "status": "VERIFIED",
+      "detail": "The prior 403 was reproduced as Cloudflare Error 1010 browser_signature_banned against urllib."
+    },
+    {
+      "id": "HTTPX_AGENT_ENUMERATION",
+      "status": "VERIFIED",
+      "detail": "After switching to httpx, GET /v1/agents/ returned HTTP 200 and two agents were enumerated."
+    },
+    {
+      "id": "MESSAGE_ROUNDTRIP",
+      "status": "VERIFIED",
+      "detail": "A real message to the configured Letta worker returned HTTP 200."
+    },
+    {
+      "id": "BLIND_MEMORY_RESPONSE",
+      "status": "VERIFIED_BEHAVIOR_ONLY",
+      "detail": "Blind probe returned RESET/UNKNOWN and declined to invent the missing payload. This is not proof of persistent memory."
+    },
+    {
+      "id": "COOPERATION_ROUTE",
+      "status": "VERIFIED_DEPLOYMENT",
+      "detail": "Authenticated POST /letta/cooperate is deployed with fixed worker binding, bounded prompt and R3_API_TOKEN auth."
+    },
+    {
+      "id": "CANON_AUTHORITY",
+      "status": "VERIFIED_POLICY",
+      "detail": "Letta output remains advisory/data-only and has no automatic canonical-write or external-action authority."
+    },
+    {
+      "id": "PHASE_A",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "PHASE_B",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "PHASE_C",
+      "status": "NOT_RUN"
+    }
+  ],
+  "code": {
+    "transport_merge": "ffd5ad0cee2755ae001dfa95d4aa0b2fed81a4eb",
+    "import_fix": "a61fd4515f724cb9efb75d823b786af02573e1e3",
+    "cooperation_merge": "0726b226a127e2209bc5c5cd80fc91db3709d6e0",
+    "app_path": "raffaello_crypto_scout/app.py"
+  },
+  "ci": {
+    "transport_test_runner": {
+      "run_number": 411,
+      "conclusion": "success"
+    },
+    "transport_security_scan": {
+      "run_number": 806,
+      "conclusion": "success"
+    },
+    "cooperation_test_runner": {
+      "run_number": 414,
+      "conclusion": "success"
+    },
+    "cooperation_security_scan": {
+      "run_number": 810,
+      "conclusion": "success"
+    }
+  },
+  "railway": {
+    "project": "deepseek-eval-temp-2026-09-15",
+    "service": "r3-external-test",
+    "transport_verified_deployment": "480d7ef5-8e60-4cfe-910a-029096b0c1fc",
+    "blind_probe_deployment": "d8a24ea5-5ee5-4cb0-be96-850020b7396d",
+    "cleanup_deployment": "067e5bd9-e1be-4d4c-a43b-85e04d5f851d",
+    "cooperation_deployment": "f954b425-ae46-4877-8822-8a6bcd9d98bb",
+    "final_observed_status": "SUCCESS"
+  },
+  "falsifiers": [
+    "A successful HTTP round-trip alone does not prove shared persistent memory.",
+    "The blind probe answer must not be used as evidence that Phase A passed.",
+    "Provider-independent continuity requires Phase C without Letta in the recovery path."
+  ],
+  "next_action": "Run Phase A cross-agent with non-sensitive high-entropy canary, worker A/B shared binding, worker C negative control, hashes and receipts."
+}

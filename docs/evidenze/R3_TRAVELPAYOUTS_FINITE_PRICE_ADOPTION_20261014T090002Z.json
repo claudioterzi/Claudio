@@ -1,0 +1,121 @@
+{
+  "schema": "R3_CANDIDATE_RECEIPT/1.0",
+  "timestamp_utc": "2026-10-14T09:00:02Z",
+  "task": "R3_TRAVELPAYOUTS_FINITE_PRICE_ADOPTION",
+  "decision": "READY_FOR_BOUNDED_REMOTE_REVIEW",
+  "status": "CANDIDATE_L0_TRAVELPAYOUTS_FINITE_PRICE_CURRENT_MAIN_VERIFIED_NOT_ADOPTED",
+  "source": {
+    "repository": "https://github.com/claudioterzi/Claudio",
+    "preregistered_commit": "b32f77ed9549a018c6883fb4d2d289b138658555",
+    "preregistered_tree": "4ef224757710674105aa48137e34f10dfd374301",
+    "current_main_commit": "45458961280c39c295fb66f45466353d9297414c",
+    "current_main_tree": "b2af67947805013034291437449d6159c440849d",
+    "main_advance": "PR #145 INDRA/Fabbrica only; no overlap with candidate paths",
+    "rebased_and_retested": true
+  },
+  "lineage": {
+    "classification": "PATCH_RETEST_RECONSTRUCTED_FROM_VERIFIED_RECEIPT",
+    "prior_technical_commit": "f0bb3bbc162896f48fbd4295136d2015550a1c7d",
+    "prior_receipt_commit": "b8e995c04e9af31d202340272f2ae8487a479b81",
+    "prior_objects_available": false,
+    "rule": "Only the documented math.isfinite price guard was reconstructed; baseline and tests were independently repeated on current main."
+  },
+  "candidate": {
+    "branch": "candidate/r3-travelpayouts-finite-price-adopt-20261014",
+    "preregistration_commit_after_rebase": "8069662",
+    "technical_commit": "0dc57de095fab63dbd3fc43829eb629497f233f2",
+    "technical_tree": "e59015a47138d99cd95360a33b9314b8d16afa4f",
+    "ahead": 2,
+    "behind": 0,
+    "merged": false,
+    "deployed": false
+  },
+  "scope": {
+    "product_path": "flight_hunter/fonti.py",
+    "test_path": "tests/test_travelpayouts_finite_price.py",
+    "methods": [
+      "FonteTravelpayouts.offerte",
+      "FonteTravelpayouts.calendario"
+    ],
+    "product_change": "Require math.isfinite after float conversion and before accepting a non-negative Travelpayouts price."
+  },
+  "baseline": {
+    "source": "exact main b32f77ed, unchanged candidate paths on current main 45458961",
+    "non_finite_cases": 6,
+    "admitted_count": 4,
+    "rejected": 2,
+    "admitted_values": [
+      "NaN in offerte",
+      "+Infinity in offerte",
+      "NaN in calendario",
+      "+Infinity in calendario"
+    ],
+    "provider_calls": 0,
+    "application_egress": 0
+  },
+  "candidate_result": {
+    "same_non_finite_cases": 6,
+    "admitted": 0,
+    "rejected": 6,
+    "zero_and_positive_finite_preserved": true,
+    "negative_and_non_numeric_rejected": true,
+    "provider_calls": 0,
+    "application_egress": 0
+  },
+  "verification": {
+    "matrix": {
+      "command": "python -m unittest -q tests.test_travelpayouts_finite_price tests.test_viaggi_validation",
+      "passes": 6,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "repetitions": 5,
+      "aggregate_method_passes": 30
+    },
+    "archive_replay": {
+      "commit": "0dc57de095fab63dbd3fc43829eb629497f233f2",
+      "sha256": "368f40d166089e2dbc92114baadf0a6114c09941c6baf46f8eb6bb96df0de42c",
+      "passes": 6,
+      "bootstrap": "PASS",
+      "py_compile": "PASS"
+    },
+    "diff_check": "PASS",
+    "bootstrap": "PASS"
+  },
+  "integrity": {
+    "preregistration_sha256": "85f5aab0e87479d69ef693a1ed2f68c1230eae678c17be0d8b054629f8a7a38e",
+    "preregistration_blob": "0de66ae0e89ab946b44db346e8dcf0556ac6c016",
+    "product_sha256": "399ff66e32cac15a578a68dafc3c3e4736eb38cd8f75e64156b405f1184b048b",
+    "product_blob": "304c7e93ca54704624b9126556c264cb491ce2e9",
+    "test_sha256": "404de559530b937eb2040577c775bab70955c4e0e7add6cc9fb84d903a69a003",
+    "test_blob": "185e0d06f4997ce9458f74f3ae61f06a2b7ba3ed"
+  },
+  "r3_020": {
+    "non_finite_admissions_before": 4,
+    "non_finite_admissions_after": 0,
+    "valid_control_regressions": 0,
+    "auto_apply": false
+  },
+  "limits": [
+    "Only synthetic provider payloads were used; no token, endpoint, live fare, booking, or network call was made.",
+    "The guard proves IEEE-754 finiteness, not economic correctness, freshness, currency correctness, or bookability.",
+    "Very large but finite values remain accepted because no consumer-backed maximum exists.",
+    "Ryanair and Kiwi numeric handling remain outside scope.",
+    "Hosted CI/security, independent adapter review, live-schema compatibility, and external consumers are not yet verified."
+  ],
+  "blocker": "Hosted test/security of the exact remote head, independent adapter review, live-schema compatibility without secrets, and external-consumer review are missing.",
+  "next_action": "Publish this bounded current-main candidate for review if the authorized connector accepts it; do not merge or deploy in this automation cycle.",
+  "completion_criterion": {
+    "local_candidate": "NaN and both infinities are rejected in offerte and calendario; zero and positive finite controls remain accepted; negative and non-numeric controls remain rejected; exact-current-main archive replay passes.",
+    "local_candidate_satisfied": true,
+    "adoption": "MISSING hosted, independent, live-schema, and external-consumer review"
+  },
+  "resume_trigger": [
+    "exact remote-head hosted result",
+    "independent adapter review",
+    "authorized live-schema evidence",
+    "external-consumer evidence",
+    "main overlap",
+    "new price-integrity counterexample"
+  ]
+}
