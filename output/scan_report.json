@@ -1,5 +1,5 @@
 {
-  "ts": "2026-10-05T13:35:28.549628",
+  "ts": "2026-10-24T10:16:54.787015",
   "score_sistema": 93,
   "sicurezza": {
     "agente": "CODE_SCANNER",
@@ -12,19 +12,19 @@
       {
         "tipo": "subprocess_shell_true",
         "file": "sdq1/snapshot.py",
-        "riga": 52
+        "riga": 56
       }
     ],
     "pattern_scansionati": 14,
     "ok": true,
-    "tempo_s": 0.089
+    "tempo_s": 0.173
   },
   "qualita": {
     "agente": "CODE_SCANNER",
     "modulo": "qualità",
-    "score_salute": 82,
+    "score_salute": 83,
     "score_debito": 123,
-    "debito_per_1k_righe": 9.1,
+    "debito_per_1k_righe": 8.6,
     "problemi_critici": [],
     "moduli_peggiori": [
       {
@@ -32,11 +32,11 @@
         "debito": 15
       },
       {
-        "file": "sdq1/guardian.py",
+        "file": "sdq1/nas.py",
         "debito": 13
       },
       {
-        "file": "sdq1/nas.py",
+        "file": "sdq1/guardian.py",
         "debito": 13
       },
       {
@@ -49,27 +49,23 @@
       }
     ],
     "pattern_analizzati": 11,
-    "file_py_analizzati": 91,
-    "tempo_s": 0.067
+    "file_py_analizzati": 94,
+    "tempo_s": 0.082
   },
   "dipendenze": {
     "agente": "CODE_SCANNER",
     "modulo": "dipendenze",
-    "n_moduli": 33,
+    "n_moduli": 34,
     "import_interni": {
+      "telegram.__init__": [
+        "from .botmanager import BotManager, BotRole, TelegramMessage"
+      ],
       "llm.__init__": [
         "from .client import ClaudeClient",
         "from .router import LLMRouter, RegolaRouter, crea_router_da_"
       ],
       "llm.client": [
         "from .router import LLMRouter"
-      ],
-      "memory.__init__": [
-        "from .store import MemoriaVettoriale, Ricordo, RisultatoRice",
-        "from .vss import VectorStateStore"
-      ],
-      "memory.vss": [
-        "from .store import MemoriaVettoriale, RisultatoRicerca"
       ],
       "llm.providers.__init__": [
         "from .anthropic_provider import AnthropicProvider",
@@ -85,11 +81,6 @@
       "llm.providers.anthropic_provider": [
         "from .base import ProviderBase"
       ],
-      "voli.__init__": [
-        "from .agenti import CronistaVoli, EsitoScout, ScoutVoli, Val",
-        "from .caccia import Cacciatore, RisultatoCaccia",
-        "from .rotte import ROTTE, Rotta, rotte_per_tag"
-      ],
       "llm.providers.ollama_provider": [
         "from .base import ProviderBase"
       ],
@@ -99,27 +90,14 @@
       "llm.providers.gemini_provider": [
         "from .base import ProviderBase"
       ],
-      "voli.agenti": [
-        "from .. import notifiche",
-        "from .ambiente import telegram_pronto",
-        "from .rotte import Rotta"
-      ],
       "llm.router": [
         "from .providers import (",
         "from .specializzazioni import classifica, nodo_per_problema"
       ],
-      "voli.caccia": [
-        "from . import lowcost, radar",
-        "from .agenti import CronistaVoli, ScoutVoli, ValutatoreVoli,",
-        "from .ambiente import telegram_pronto",
-        "from .rotte import ROTTE, Rotta, rotte_per_tag"
-      ],
-      "agents.__init__": [
-        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
-        "from .registry import costruisci_agenti, registra"
-      ],
-      "voli.__main__": [
-        "from .caccia import main"
+      "orchestrator.gerarchico": [
+        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
+        "from ..config.loader import SDQ1Config",
+        "from ..persistence.store import StatoStore"
       ],
       "monitoring.__init__": [
         "from .health import HealthChecker, StatoSalute",
@@ -128,20 +106,15 @@
       "monitoring.metrics": [
         "from ..persistence.store import StatoStore"
       ],
-      "agents.implementazioni": [
-        "from ..config.loader import AgenteConfig",
-        "from ..llm.client import ClaudeClient",
-        "from ..memory.store import MemoriaVettoriale",
-        "from ..memory.vss import VectorStateStore",
-        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
-        "from .registry import registra"
-      ],
       "monitoring.health": [
         "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
       ],
-      "agents.registry": [
-        "from ..config.loader import AgenteConfig, SDQ1Config",
-        "from .base import AgenteBase"
+      "memory.__init__": [
+        "from .store import MemoriaVettoriale, Ricordo, RisultatoRice",
+        "from .vss import VectorStateStore"
+      ],
+      "memory.vss": [
+        "from .store import MemoriaVettoriale, RisultatoRicerca"
       ],
       "futures.simulatore": [
         "from .scenari import Scenario"
@@ -150,13 +123,14 @@
         "from .scenari import SCENARI_DEFAULT",
         "from .simulatore import SimulatoreScenari, RisultatoScenario"
       ],
-      "config.__init__": [
-        "from .loader import SDQ1Config, AgenteConfig, carica_config"
+      "agents.__init__": [
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import costruisci_agenti, registra"
       ],
-      "orchestrator.gerarchico": [
-        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
-        "from ..config.loader import SDQ1Config",
-        "from ..persistence.store import StatoStore"
+      "voli.__init__": [
+        "from .agenti import CronistaVoli, EsitoScout, ScoutVoli, Val",
+        "from .caccia import Cacciatore, RisultatoCaccia",
+        "from .rotte import ROTTE, Rotta, rotte_per_tag"
       ],
       "sar.__init__": [
         "from .archivio_vivente import ArchivioVivente",
@@ -173,14 +147,27 @@
         "from .sognatore import SognatoreSDQ, VisioneSognatrice",
         "from .tensioni import MappaTeensioni, Tensione, Polo, Osserv"
       ],
-      "persistence.__init__": [
-        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
+      "voli.agenti": [
+        "from .. import notifiche",
+        "from .ambiente import telegram_pronto",
+        "from .rotte import Rotta"
       ],
       "sar.ciclo": [
         "from .tensioni import Tensione"
       ],
-      "sar.memoria_evolutiva": [
-        "from ..memory.vss import VectorStateStore"
+      "voli.caccia": [
+        "from . import lowcost, radar",
+        "from .agenti import CronistaVoli, ScoutVoli, ValutatoreVoli,",
+        "from .ambiente import telegram_pronto",
+        "from .rotte import ROTTE, Rotta, rotte_per_tag"
+      ],
+      "agents.implementazioni": [
+        "from ..config.loader import AgenteConfig",
+        "from ..llm.client import ClaudeClient",
+        "from ..memory.store import MemoriaVettoriale",
+        "from ..memory.vss import VectorStateStore",
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import registra"
       ],
       "sar.sar": [
         "from ..memory.vss import VectorStateStore",
@@ -190,13 +177,29 @@
         "from .persistence import PersistenzaSAR",
         "from .tensioni import MappaTeensioni, Polo, Tensione"
       ],
+      "agents.registry": [
+        "from ..config.loader import AgenteConfig, SDQ1Config",
+        "from .base import AgenteBase"
+      ],
+      "voli.__main__": [
+        "from .caccia import main"
+      ],
+      "persistence.__init__": [
+        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
+      ],
+      "sar.agenti_autonomi": [
+        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
+      ],
+      "config.__init__": [
+        "from .loader import SDQ1Config, AgenteConfig, carica_config"
+      ],
       "sar.persistence": [
         "from .coerenza import IndiceCoerenza, CoppiaCoerenza",
         "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
         "from .tensioni import MappaTeensioni, Polo, Tensione, Osserv"
       ],
-      "sar.agenti_autonomi": [
-        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
+      "sar.memoria_evolutiva": [
+        "from ..memory.vss import VectorStateStore"
       ],
       "__main__": [
         "from .agents import costruisci_agenti, implementazioni",
@@ -228,35 +231,35 @@
       "xml"
     ],
     "circolari_sospette": [],
-    "tempo_s": 0.019
+    "tempo_s": 0.027
   },
   "metriche": {
     "agente": "CODE_SCANNER",
     "modulo": "metriche",
-    "file_analizzati": 91,
-    "totale_righe": 16582,
-    "totale_funzioni": 625,
-    "totale_classi": 136,
+    "file_analizzati": 94,
+    "totale_righe": 17369,
+    "totale_funzioni": 651,
+    "totale_classi": 143,
     "top5_per_dimensione": [
       {
         "file": "sdq1/__main__.py",
-        "righe_totali": 804,
-        "righe_codice": 723,
+        "righe_totali": 806,
+        "righe_codice": 725,
         "commenti": 6,
         "vuote": 75,
         "funzioni": 10,
         "classi": 0,
-        "complessita": 14.3
+        "complessita": 14.4
       },
       {
         "file": "sdq1/notifiche.py",
-        "righe_totali": 735,
-        "righe_codice": 609,
+        "righe_totali": 802,
+        "righe_codice": 676,
         "commenti": 25,
         "vuote": 101,
         "funzioni": 18,
         "classi": 0,
-        "complessita": 7.4
+        "complessita": 8.6
       },
       {
         "file": "sdq1/benchmark.py",
@@ -279,14 +282,14 @@
         "complessita": 2.2
       },
       {
-        "file": "sdq1/sar/code_scanner.py",
-        "righe_totali": 524,
-        "righe_codice": 415,
-        "commenti": 35,
-        "vuote": 74,
-        "funzioni": 11,
-        "classi": 1,
-        "complessita": 6.9
+        "file": "sdq1/llm/router.py",
+        "righe_totali": 522,
+        "righe_codice": 418,
+        "commenti": 41,
+        "vuote": 63,
+        "funzioni": 24,
+        "classi": 3,
+        "complessita": 4.2
       }
     ],
     "per_file": {
@@ -300,13 +303,13 @@
         "complessita": 1.0
       },
       "sdq1/__main__.py": {
-        "righe_totali": 804,
-        "righe_codice": 723,
+        "righe_totali": 806,
+        "righe_codice": 725,
         "commenti": 6,
         "vuote": 75,
         "funzioni": 10,
         "classi": 0,
-        "complessita": 14.3
+        "complessita": 14.4
       },
       "sdq1/agenda.py": {
         "righe_totali": 199,
@@ -435,13 +438,13 @@
         "complessita": 4.5
       },
       "sdq1/consiglio.py": {
-        "righe_totali": 424,
-        "righe_codice": 351,
-        "commenti": 20,
-        "vuote": 53,
+        "righe_totali": 455,
+        "righe_codice": 379,
+        "commenti": 21,
+        "vuote": 55,
         "funzioni": 10,
         "classi": 3,
-        "complessita": 4.4
+        "complessita": 5.6
       },
       "sdq1/contatti.py": {
         "righe_totali": 169,
@@ -498,13 +501,13 @@
         "complessita": 7.8
       },
       "sdq1/evolution_kernel.py": {
-        "righe_totali": 377,
-        "righe_codice": 326,
-        "commenti": 0,
-        "vuote": 51,
-        "funzioni": 18,
+        "righe_totali": 450,
+        "righe_codice": 394,
+        "commenti": 2,
+        "vuote": 54,
+        "funzioni": 20,
         "classi": 3,
-        "complessita": 4.8
+        "complessita": 5.8
       },
       "sdq1/futures/__init__.py": {
         "righe_totali": 6,
@@ -570,8 +573,8 @@
         "complessita": 1.2
       },
       "sdq1/llm/providers/__init__.py": {
-        "righe_totali": 20,
-        "righe_codice": 19,
+        "righe_totali": 21,
+        "righe_codice": 20,
         "commenti": 0,
         "vuote": 1,
         "funzioni": 0,
@@ -615,12 +618,12 @@
         "complessita": 4.0
       },
       "sdq1/llm/providers/openai_provider.py": {
-        "righe_totali": 102,
-        "righe_codice": 80,
+        "righe_totali": 110,
+        "righe_codice": 85,
         "commenti": 0,
-        "vuote": 22,
+        "vuote": 25,
         "funzioni": 3,
-        "classi": 6,
+        "classi": 7,
         "complessita": 4.0
       },
       "sdq1/llm/providers/stub_provider.py": {
@@ -633,13 +636,13 @@
         "complessita": 2.7
       },
       "sdq1/llm/router.py": {
-        "righe_totali": 411,
-        "righe_codice": 322,
-        "commenti": 35,
-        "vuote": 54,
-        "funzioni": 17,
+        "righe_totali": 522,
+        "righe_codice": 418,
+        "commenti": 41,
+        "vuote": 63,
+        "funzioni": 24,
         "classi": 3,
-        "complessita": 4.3
+        "complessita": 4.2
       },
       "sdq1/llm/specializzazioni.py": {
         "righe_totali": 216,
@@ -723,12 +726,21 @@
         "complessita": 2.8
       },
       "sdq1/notifiche.py": {
-        "righe_totali": 735,
-        "righe_codice": 609,
+        "righe_totali": 802,
+        "righe_codice": 676,
         "commenti": 25,
         "vuote": 101,
         "funzioni": 18,
         "classi": 0,
+        "complessita": 8.6
+      },
+      "sdq1/onda_protocol.py": {
+        "righe_totali": 199,
+        "righe_codice": 178,
+        "commenti": 0,
+        "vuote": 21,
+        "funzioni": 8,
+        "classi": 2,
         "complessita": 7.4
       },
       "sdq1/orchestrator/__init__.py": {
@@ -777,13 +789,13 @@
         "complessita": 1.0
       },
       "sdq1/persistence/store.py": {
-        "righe_totali": 174,
-        "righe_codice": 138,
+        "righe_totali": 198,
+        "righe_codice": 159,
         "commenti": 0,
-        "vuote": 36,
-        "funzioni": 25,
-        "classi": 4,
-        "complessita": 1.8
+        "vuote": 39,
+        "funzioni": 26,
+        "classi": 5,
+        "complessita": 2.0
       },
       "sdq1/persisti.py": {
         "righe_totali": 193,
@@ -993,13 +1005,31 @@
         "complessita": 3.0
       },
       "sdq1/snapshot.py": {
-        "righe_totali": 199,
-        "righe_codice": 167,
-        "commenti": 0,
-        "vuote": 32,
-        "funzioni": 10,
+        "righe_totali": 297,
+        "righe_codice": 254,
+        "commenti": 5,
+        "vuote": 38,
+        "funzioni": 12,
         "classi": 0,
-        "complessita": 2.6
+        "complessita": 4.5
+      },
+      "sdq1/telegram/__init__.py": {
+        "righe_totali": 17,
+        "righe_codice": 14,
+        "commenti": 0,
+        "vuote": 3,
+        "funzioni": 0,
+        "classi": 0,
+        "complessita": 2.0
+      },
+      "sdq1/telegram/botmanager.py": {
+        "righe_totali": 156,
+        "righe_codice": 122,
+        "commenti": 7,
+        "vuote": 27,
+        "funzioni": 6,
+        "classi": 3,
+        "complessita": 3.8
       },
       "sdq1/tests/__init__.py": {
         "righe_totali": 0,
@@ -1110,7 +1140,7 @@
         "complessita": 3.2
       }
     },
-    "tempo_s": 0.025
+    "tempo_s": 0.048
   },
-  "tempo_totale_s": 0.2
+  "tempo_totale_s": 0.33
 }

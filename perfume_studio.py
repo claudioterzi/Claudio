@@ -2,6 +2,7 @@
 Concept: Claudio Terzi. No customer names are sent to the image provider.
 """
 from datetime import datetime, timezone
+from contextlib import contextmanager
 from pathlib import Path
 import base64
 import hashlib
@@ -30,14 +31,19 @@ def _redis():
     return redis.from_url(url, socket_connect_timeout=3, socket_timeout=5)
 
 
+@contextmanager
 def _db():
     if os.getenv('VERCEL'):
         raise ArchiveUnavailable('Archivio permanente non configurato')
     path = Path(os.getenv('PERFUME_DB_PATH', ROOT / 'output' / 'perfume_registry.sqlite3'))
     path.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(path)
-    db.execute('CREATE TABLE IF NOT EXISTS perfumes (serial TEXT PRIMARY KEY, body TEXT NOT NULL)')
-    return db
+    try:
+        with db:
+            db.execute('CREATE TABLE IF NOT EXISTS perfumes (serial TEXT PRIMARY KEY, body TEXT NOT NULL)')
+            yield db
+    finally:
+        db.close()
 
 
 def serial_for(creation_id):

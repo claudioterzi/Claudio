@@ -1,6 +1,6 @@
 version: 10
 name: R3_INFINITY_WORK_QUEUE
-updated: 2026-10-06
+updated: 2026-10-11
 status: ACTIVE
 
 principles:
@@ -142,6 +142,26 @@ queue:
     priority: security
     objective: Govern candidate self-modifications using preregistration, sandbox, benchmark, trajectory audit and rollback.
     evidence: sdq1/evolution_kernel.py; tests/test_evolution_kernel.py; docs/R3_AUTONOMOUS_EVOLUTION_KERNEL_2026-09-15.md; merge 1a5a3f66676392edee62dd586e728187f08f53ab
+    numerical_hardening_2026_10_07:
+      candidate_id: R3C-FINITE-METRICS-20261007
+      status: STAGED_NOT_PRODUCTION
+      classification: PATCH
+      decision: Reject non-finite evidence and thresholds plus derived overflow in the existing kernel; no parallel engine.
+      evidence: docs/evidenze/R3_EVOLUTION_FINITE_20261007.json
+      result: "Frozen same-case comparison 17/56 to 56/56 conformant; 23 invalid admissions to zero; 11 exceptions to zero; 10/10 eligible/HOLD controls preserved; 37 unit-test methods pass."
+      next_action: Review bounded core-code draft and hosted gates; execute saved advisory request when an existing authenticated Jev executor is available.
+      blocker: Jev call blocked before HTTP because no caller credential is bound to this executor.
+      completion_criterion: Separate explicit core-code adoption receipt after review and hosted gates; actual Jev opinion recorded separately if executed.
+      resume_trigger: Candidate review or existing authenticated Jev execution channel.
+    hardening_adoption_2026_10_11:
+      status: ADOPTED_CANONICAL_REPOSITORY
+      numerical_pr: 118
+      numerical_merge: 0ddb9212abfb3043d0d66b4ab57d0a99a4a02ad5
+      strict_evidence_and_metadata_pr: 124
+      strict_merge: 7a77e930dc0d01889911bb393feea7a0777a054e
+      evidence: docs/evidenze/R3_EVOLUTION_ADOPTION_20261011.json
+      result: "Sequential exact-head adoption after independent review, refreshed hosted gates and preserved frozen controls."
+      limits: "Repository numerical/evidence handling only; not proof of live autonomous execution, model quality, truthful caller flags or installed-runtime loading. Outer non-Mapping metric containers remain a separate robustness gap."
   - id: R3-021
     title: Causal exploration / curriculum-actor-verifier
     state: IDEA

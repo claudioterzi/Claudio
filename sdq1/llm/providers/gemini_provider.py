@@ -66,7 +66,7 @@ class GeminiProvider(ProviderBase):
             raise RuntimeError(f"Gemini: nessun candidato nella risposta: {resp}")
 
         testo = candidates[0]["content"]["parts"][0].get("text", "")
-        meta: dict[str, Any] = {}
+        meta: dict[str, Any] = {"finish_reason": candidates[0].get("finishReason")}
         usage = resp.get("usageMetadata", {})
         if usage:
             meta["input_tokens"] = usage.get("promptTokenCount", 0)

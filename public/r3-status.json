@@ -1,12 +1,12 @@
 {
   "schema": "r3-public-status-v1",
-  "generated_at": "2026-10-05T13:35:35.048759+00:00",
+  "generated_at": "2026-10-24T10:17:01.139981+00:00",
   "source": "repository-derived",
-  "commit": "0100630e1a6b9e080bd291b8635bc0e53a7b8756",
+  "commit": "eb8bec6e2877df5a1a825ae8fefee025317c58a0",
   "heartbeat": {
-    "last_daily": "2026-10-05",
+    "last_daily": "2026-10-24",
     "gap_days": 0,
-    "source_file": "output/daily_2026-10-05.txt"
+    "source_file": "output/daily_2026-10-24.txt"
   },
   "hypotheses": {
     "total": 6,
