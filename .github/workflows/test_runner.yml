@@ -119,6 +119,8 @@ jobs:
           print('Test mazzo: OK')
           "
 
+      - name: Test R3-022 continuity replay
+        run: python -m unittest tests.test_r3_022_continuity_replay
       - name: "R3 memory integrity: snapshot and delayed-lock regression"
         run: |
           node --check public/r3-memory.js
