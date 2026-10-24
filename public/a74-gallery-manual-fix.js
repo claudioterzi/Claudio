@@ -1,1 +1,26 @@
-(()=>{function m(){let b=document.querySelector('.alpha-atlas');if(!b)return setTimeout(m,150);let o=b.querySelector('[data-atlas-tour]');if(!o||o.dataset.manual)return;let t=o.cloneNode(true);t.dataset.manual='1';o.replaceWith(t);let x=b.querySelector('.alpha-atlas-narration p')?.textContent||'',q=[],run=false,ready=false,failed=false,url='';let a=new Audio();a.preload='auto';a.playsInline=true;function preload(){if(!x||ready||failed)return;fetch('/api/tarocchi/alpha-voce',{method:'POST',headers:{'Content-Type':'application/json',Accept:'audio/mpeg'},body:JSON.stringify({testo:x,lingua:'it'})}).then(r=>{if(!r.ok)throw new Error('voice');return r.blob()}).then(blob=>{url=URL.createObjectURL(blob);a.src=url;a.load();ready=true;t.textContent='▶ Presentazione AI'}).catch(()=>{failed=true;t.textContent='Voce non disponibile'})}function stop(){q.forEach(clearTimeout);q=[];run=false;a.pause();try{a.currentTime=0}catch(e){}t.textContent=ready?'▶ Presentazione AI':'Voce in preparazione…';b.classList.remove('touring')}a.onended=stop;t.textContent='Voce in preparazione…';preload();t.onclick=()=>{if(run)return stop();if(!ready){preload();t.textContent=failed?'Voce non disponibile':'Voce in preparazione…';return}run=true;t.textContent='■ Ferma presentazione';b.classList.add('touring');let p=a.play();if(p&&p.catch)p.catch(()=>{run=false;t.textContent='▶ Tocca per ascoltare';b.classList.remove('touring')});['nord','est','sud','ovest'].forEach((v,i)=>q.push(setTimeout(()=>b.querySelector('[data-axis="'+v+'"]').click(),4000*(i+1))));q.push(setTimeout(()=>b.querySelector('[data-atlas-flip]').click(),19000));q.push(setTimeout(()=>b.querySelector('[data-atlas-flip]').click(),24000))};let p=b.querySelector('.alpha-atlas-head p');if(p)p.textContent='Scorri tu con il dito. Nessuna carta avanza da sola: resta al centro finché vuoi, puoi ruotarla nei quattro lati e girarla Luce/Ombra.';addEventListener('beforeunload',()=>{if(url)URL.revokeObjectURL(url)},{once:true})}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',m):m()})();
+/* Text-only initialization; no TTS until an explicit click. */
+(function(){
+  let attempts=0;
+  function mount(){
+    const box=document.querySelector('.alpha-atlas');
+    if(!box){if(attempts++<100)setTimeout(mount,150);return}
+    const button=box.querySelector('[data-atlas-tour]');
+    if(!button||button.dataset.manual)return;
+    button.dataset.manual='1';
+    const intro=box.querySelector('.alpha-atlas-head p');
+    if(intro)intro.textContent="Scorri tu con il dito. Nessuna carta avanza da sola: ruota la carta nei quattro lati e girala Luce/Ombra.";
+    let playing=false;
+    button.onclick=()=>{
+      if(window.AlphaGuestMode)return;
+      if(playing){window.AlphaVoice?.stop();playing=false;button.textContent='▶ Presentazione AI';return}
+      const text=box.querySelector('.alpha-atlas-narration p')?.textContent||'';
+      if(!text||!window.AlphaVoice)return;
+      playing=true;button.textContent='■ Ferma presentazione';
+      window.AlphaVoice.speak(text,{language:document.getElementById('language')?.value||'it',onState:state=>{
+        if(state==='ended'||state==='unavailable'){playing=false;button.textContent='▶ Presentazione AI'}
+      }});
+    };
+    if(window.AlphaGuestMode){button.disabled=true;button.textContent='Presentazione testuale'}
+  }
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',mount):mount();
+})();

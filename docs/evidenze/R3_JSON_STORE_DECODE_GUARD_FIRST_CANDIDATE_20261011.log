@@ -1,0 +1,43 @@
+test_integer_digit_limit_error_rejects_direct_and_factory_startup (test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_integer_digit_limit_error_rejects_direct_and_factory_startup) ... 
+  test_integer_digit_limit_error_rejects_direct_and_factory_startup (test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_integer_digit_limit_error_rejects_direct_and_factory_startup) (route='direct') ... FAIL
+  test_integer_digit_limit_error_rejects_direct_and_factory_startup (test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_integer_digit_limit_error_rejects_direct_and_factory_startup) (route='factory') ... FAIL
+test_recursion_limit_error_rejects_direct_and_factory_startup (test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_recursion_limit_error_rejects_direct_and_factory_startup) ... 
+  test_recursion_limit_error_rejects_direct_and_factory_startup (test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_recursion_limit_error_rejects_direct_and_factory_startup) (route='direct') ... FAIL
+  test_recursion_limit_error_rejects_direct_and_factory_startup (test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_recursion_limit_error_rejects_direct_and_factory_startup) (route='factory') ... FAIL
+
+======================================================================
+FAIL: test_integer_digit_limit_error_rejects_direct_and_factory_startup (test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_integer_digit_limit_error_rejects_direct_and_factory_startup) (route='direct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_decode_guard.py", line 33, in _assert_direct_and_factory_reject
+    self.assertIsInstance(caught, store.JsonFileCorruptionError, "parser rejection must not become a usable memory fallback")
+AssertionError: ValueError('Exceeds the limit (4300 digits) for integer string conversion: value has 4301 digits; use sys.set_int_max_str_digits() to increase the limit') is not an instance of <class 'sdq1.persistence.store.JsonFileCorruptionError'> : parser rejection must not become a usable memory fallback
+
+======================================================================
+FAIL: test_integer_digit_limit_error_rejects_direct_and_factory_startup (test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_integer_digit_limit_error_rejects_direct_and_factory_startup) (route='factory')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_decode_guard.py", line 33, in _assert_direct_and_factory_reject
+    self.assertIsInstance(caught, store.JsonFileCorruptionError, "parser rejection must not become a usable memory fallback")
+AssertionError: None is not an instance of <class 'sdq1.persistence.store.JsonFileCorruptionError'> : parser rejection must not become a usable memory fallback
+
+======================================================================
+FAIL: test_recursion_limit_error_rejects_direct_and_factory_startup (test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_recursion_limit_error_rejects_direct_and_factory_startup) (route='direct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_decode_guard.py", line 33, in _assert_direct_and_factory_reject
+    self.assertIsInstance(caught, store.JsonFileCorruptionError, "parser rejection must not become a usable memory fallback")
+AssertionError: RecursionError('maximum recursion depth exceeded while decoding a JSON array from a unicode string') is not an instance of <class 'sdq1.persistence.store.JsonFileCorruptionError'> : parser rejection must not become a usable memory fallback
+
+======================================================================
+FAIL: test_recursion_limit_error_rejects_direct_and_factory_startup (test_json_store_decode_guard.JsonStoreDecodeGuardTests.test_recursion_limit_error_rejects_direct_and_factory_startup) (route='factory')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\Codex\2026-10-11\prendi-controllo-del-computer-e-con\work\jsonstore-repair\tests\test_json_store_decode_guard.py", line 33, in _assert_direct_and_factory_reject
+    self.assertIsInstance(caught, store.JsonFileCorruptionError, "parser rejection must not become a usable memory fallback")
+AssertionError: None is not an instance of <class 'sdq1.persistence.store.JsonFileCorruptionError'> : parser rejection must not become a usable memory fallback
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.201s
+
+FAILED (failures=4)

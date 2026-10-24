@@ -52,6 +52,8 @@
   footer { text-align: center; margin-top: 2rem; color: var(--text-dim);
            font-size: 0.8rem; line-height: 1.8; }
   footer a { color: var(--gold-dim); }
+
+  .filter-field{display:grid;gap:.35rem;min-width:0}.filter-field label{font-size:.875rem;color:var(--text)}.filtri input,.filtri select{min-height:44px;font-size:1rem}th button{min-height:44px;padding:.4rem;background:transparent;border:0;color:inherit;font:inherit;letter-spacing:inherit;cursor:pointer}th button:focus-visible,.tavola:focus-visible{outline:3px solid var(--gold);outline-offset:-3px}
 </style>
 </head>
 <body>
@@ -66,25 +68,25 @@
   <section id="organo-evoluzione" aria-label="Evoluzione dell’organo"></section>
 
   <div class="filtri">
-    <input id="cerca" type="search" placeholder="Cerca materia o nota d'uso…">
-    <select id="f-fam"><option value="">Tutte le famiglie</option></select>
-    <select id="f-nota"><option value="">Ogni nota</option>
+    <div class="filter-field"><label for="cerca">Cerca una materia</label><input id="cerca" type="search" placeholder="Cerca materia o nota d'uso…"></div>
+    <div class="filter-field"><label for="f-fam">Famiglia</label><select id="f-fam"><option value="">Tutte le famiglie</option></select></div>
+    <div class="filter-field"><label for="f-nota">Nota</label><select id="f-nota"><option value="">Ogni nota</option>
       <option value="T">Testa</option><option value="C">Cuore</option>
-      <option value="F">Fondo</option></select>
-    <select id="f-liv"><option value="">Ogni ondata</option>
+      <option value="F">Fondo</option></select></div>
+    <div class="filter-field"><label for="f-liv">Ondata di acquisto</label><select id="f-liv"><option value="">Ogni ondata</option>
       <option value="CORE">CORE</option><option value="ESP">ESP</option>
-      <option value="MASTER">MASTER</option></select>
-    <select id="f-tipo"><option value="">Ogni tipo</option>
+      <option value="MASTER">MASTER</option></select></div>
+    <div class="filter-field"><label for="f-tipo">Tipo di materia</label><select id="f-tipo"><option value="">Ogni tipo</option>
       <option value="NAT">Naturale</option><option value="SIN">Sintetico</option>
-      <option value="BASE">Base</option><option value="SOL">Solvente</option></select>
+      <option value="BASE">Base</option><option value="SOL">Solvente</option></select></div>
   </div>
-  <div id="conta"></div>
+  <div id="conta" role="status" aria-live="polite"></div>
 
-  <div class="tavola">
+  <div class="tavola" tabindex="0" role="region" aria-label="Materie prime: tabella scorrevole">
     <table>
       <thead><tr>
-        <th data-k="n">N°</th><th data-k="nome">Materia</th><th data-k="fam">Famiglia</th>
-        <th data-k="nota">Nota</th><th data-k="forza">Forza</th><th data-k="liv">Ondata</th>
+        <th scope="col" data-k="n" aria-sort="none"><button type="button">N°</button></th><th scope="col" data-k="nome" aria-sort="none"><button type="button">Materia</button></th><th scope="col" data-k="fam" aria-sort="none"><button type="button">Famiglia</button></th>
+        <th scope="col" data-k="nota" aria-sort="none"><button type="button">Nota</button></th><th scope="col" data-k="forza" aria-sort="none"><button type="button">Forza</button></th><th scope="col" data-k="liv" aria-sort="none"><button type="button">Ondata</button></th>
         <th>Dil.</th><th>Forn.</th><th>€</th><th>Note d'uso</th>
       </tr></thead>
       <tbody id="corpo"></tbody>
@@ -115,6 +117,7 @@ for (const f of FAMIGLIE) {
 function pallini(f) { return "\u25cf".repeat(f) + "\u25cb".repeat(Math.max(0, 5 - f)); }
 
 function render() {
+  document.querySelectorAll("th[data-k]").forEach(th=>th.setAttribute("aria-sort",th.dataset.k===ordina?(verso===1?"ascending":"descending"):"none"));
   const q = document.getElementById("cerca").value.toLowerCase().trim();
   const fam = selFam.value, nota = document.getElementById("f-nota").value,
         liv = document.getElementById("f-liv").value,
@@ -149,7 +152,7 @@ function render() {
 for (const id of ["cerca", "f-fam", "f-nota", "f-liv", "f-tipo"])
   document.getElementById(id).addEventListener("input", render);
 document.querySelectorAll("th[data-k]").forEach(th =>
-  th.addEventListener("click", () => {
+  th.querySelector("button").addEventListener("click", () => {
     const k = th.dataset.k;
     verso = (ordina === k) ? -verso : 1;
     ordina = k; render();

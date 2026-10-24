@@ -1,0 +1,61 @@
+{
+  "schema": "r3-json-store-startup-guard-prereg/1",
+  "origin": "NUOVA_SU_BASE_VERIFICATA",
+  "not_recovered_cloud_candidate": "a85a72ef",
+  "base_revision": "4b31a350a4508e789e1bde397bdc9a8f22fe0f66",
+  "registered_at_utc": "2026-10-11T13:15:46.388255+00:00",
+  "retroactive_classification": "PATCH",
+  "test_path": "tests/test_json_store_startup_guard.py",
+  "tests_sha256": "b068d365de29a5053e81a9de76bc211d166d39461e3dbf7c828458d9a58f93dc",
+  "baseline_source_sha256": "791b6aaf62dd6dc17e8ff933ad826f11c2b54a1926ddb478977b356d30186826",
+  "baseline_git_blob_sha256": "6af1e4af8c49bdf0dafa5445a6eb80b67dc2ffb6e33656ee6036ddb7f72a974e",
+  "source_hash_note": "Working bytes include checkout line endings; git diff confirms the pinned source is unchanged.",
+  "expected_test_methods": 19,
+  "hypothesis": "Malformed state at startup must raise a specific ValueError, preserve source bytes and propagate through crea_store instead of becoming empty usable state.",
+  "negative_controls": [
+    "truncated JSON",
+    "invalid UTF-8",
+    "non-object top-level",
+    "non-object records",
+    "record missing v",
+    "mixed valid/invalid records",
+    "invalid nonnumeric/bool/nonfinite scade",
+    "factory after Redis unavailable",
+    "factory without Redis SDK"
+  ],
+  "positive_controls": [
+    "missing file initializable",
+    "JSON values/prefix/reopen",
+    "legacy record without scade",
+    "null/int/float/large-int timestamps",
+    "expired cleanup preserves live record",
+    "healthy JSON with and without Redis SDK",
+    "healthy Redis priority",
+    "ordinary IO error in-memory fallback",
+    "delete preserves other record"
+  ],
+  "acceptance": {
+    "candidate_tests_run": 19,
+    "candidate_failures": 0,
+    "candidate_errors": 0,
+    "candidate_skips": 0,
+    "baseline_must_fail_corruption_guards": true,
+    "frozen_tests_unchanged": true
+  },
+  "allowed_scope": [
+    "sdq1/persistence/store.py startup decoding/shape validation/corruption-specific factory handling",
+    "new regression tests",
+    "one fatal step in existing Test Runner",
+    "public-safe provenance and receipts"
+  ],
+  "excluded_scope": [
+    "atomic writes",
+    "restore",
+    "runtime hot reload",
+    "real default state",
+    "production state",
+    "automation policy",
+    "remote actions"
+  ],
+  "existing_smoke": "Run sdq1.tests.smoke with scrubbed environment, temporary cwd/state path and denied socket connects; record limitations honestly."
+}
