@@ -1,0 +1,18 @@
+{
+  "schema": "r3-json-store-startup-guard-smoke/1",
+  "origin": "NUOVA_SU_BASE_VERIFICATA",
+  "recorded_at_utc": "2026-10-11T13:22:09.476833+00:00",
+  "base_revision": "4b31a350a4508e789e1bde397bdc9a8f22fe0f66",
+  "python": "3.12.6",
+  "pyyaml": "6.0.3",
+  "source_sha256": "c137bb91cf782a27f2220c44a11450a8e99c911cfa69a2b044b850d3ae1baa21",
+  "smoke_source_sha256": "d14bb424ce17b0458c980f5a5912a87c5522a0dec7f2c8d23cce5110e82543ee",
+  "log_sha256": "30ad9916bf20e58280da959cd7f947c1794fea8ed1711db0ee3158cab8095d97",
+  "exit_code": 0,
+  "passed": 9,
+  "total": 9,
+  "duration_seconds": 7.107571,
+  "blocked_socket_connect_attempts": 0,
+  "isolation": "credential-free environment; no dotenv; temporary cwd/user paths/default JSON; Redis SDK disabled; socket connects denied",
+  "limits": "Existing smoke with optional provider SDKs absent; stub/offline integration only, no live provider/deployment or real persisted state."
+}

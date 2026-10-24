@@ -2,6 +2,9 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
 import './App.css'
 
+// Import RRREMERGEN component
+import RRRemeRgen from '../../../rrremergen/frontend/RRRemeRgen'
+
 // ─── COSTANTI ────────────────────────────────────────────────────────────────
 
 const PURPLE = '#7c3aed'
@@ -15,6 +18,7 @@ const NAV_LINKS = [
   { href: '#come-funziona', label: 'Come funziona' },
   { href: '#chi-siamo', label: 'Chi siamo' },
   { href: '#contatto', label: 'Contatto' },
+  { href: '#rrremergen', label: '🎨 RRREMERGEN', special: true },
 ]
 
 const SERVIZI = [
@@ -125,12 +129,40 @@ function Nav() {
           <span style={{ color: 'rgba(241,245,249,0.4)', marginLeft: 6, fontWeight: 400 }}>Creative Studio</span>
         </span>
         <nav style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
-          {NAV_LINKS.map(l => (
-            <a key={l.href} href={l.href} style={{ color: 'rgba(241,245,249,0.55)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500, transition: 'color 0.2s' }}
-              onMouseEnter={e => e.target.style.color = '#f1f5f9'}
-              onMouseLeave={e => e.target.style.color = 'rgba(241,245,249,0.55)'}
-            >{l.label}</a>
-          ))}
+          {NAV_LINKS.map(l => {
+            if (l.special) {
+              return (
+                <motion.a key={l.href} href={l.href}
+                  whileHover={{ scale: 1.08 }}
+                  style={{
+                    background: `linear-gradient(135deg, ${CYAN}, ${PURPLE})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    textDecoration: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.02em',
+                    textShadow: `0 0 20px ${CYAN}44`,
+                    filter: 'drop-shadow(0 0 8px rgba(6, 182, 212, 0.3))',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseEnter={e => {
+                    e.target.style.filter = `drop-shadow(0 0 16px rgba(6, 182, 212, 0.6))`
+                  }}
+                  onMouseLeave={e => {
+                    e.target.style.filter = `drop-shadow(0 0 8px rgba(6, 182, 212, 0.3))`
+                  }}
+                >{l.label}</motion.a>
+              )
+            }
+            return (
+              <a key={l.href} href={l.href} style={{ color: 'rgba(241,245,249,0.55)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500, transition: 'color 0.2s' }}
+                onMouseEnter={e => e.target.style.color = '#f1f5f9'}
+                onMouseLeave={e => e.target.style.color = 'rgba(241,245,249,0.55)'}
+              >{l.label}</a>
+            )
+          })}
         </nav>
       </div>
     </motion.nav>
@@ -497,6 +529,23 @@ function Footer() {
 // ─── APP ───────────────────────────────────────────────────────────────────────
 
 export default function App() {
+  const [route, setRoute] = useState(window.location.hash.slice(1) || 'home')
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setRoute(window.location.hash.slice(1) || 'home')
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  // RRREMERGEN page
+  if (route === 'rrremergen') {
+    return <RRRemeRgen />
+  }
+
+  // Default: La Soglia landing page
   return (
     <>
       <Nav />

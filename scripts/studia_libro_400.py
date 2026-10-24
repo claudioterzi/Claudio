@@ -14,8 +14,14 @@ from studio.parfums.formula_code import decode
 from studio.parfums.codice_olfattivo import RACCONTI
 
 
+def book_source_path():
+    integral = ROOT / 'public/libro-integrale.html'
+    return integral if integral.is_file() else ROOT / 'public/libro.html'
+
+
 def audit():
-    raw = (ROOT / 'public/libro.html').read_bytes()
+    source = book_source_path()
+    raw = source.read_bytes()
     book = BeautifulSoup(raw, 'html.parser')
     canon = json.loads((ROOT / 'studio/parfums/parfums_400.json').read_text())
     perfumes = canon['parfums']
@@ -77,7 +83,7 @@ def audit():
     report = {
         'date': '2026-09-10', 'book_sha256': hashlib.sha256(raw).hexdigest(),
         'source_revision': '662923cd0381e99ff295c9e3f35981dc5e20b2fe',
-        'book': {'bytes': len(raw), 'sheets': len(sheets), 'recipe_rows': public_rows,
+        'book': {'source_file': str(source.relative_to(ROOT)), 'sha256': hashlib.sha256(raw).hexdigest(), 'bytes': len(raw), 'sheets': len(sheets), 'recipe_rows': public_rows,
                  'parts': [e.get_text(' ', strip=True) for e in book.select('h1.parte')],
                  'chapters': [e.get_text(' ', strip=True) for e in book.select('h1.capitolo')],
                  'recipe_links': len(book.select('.codice-ricetta a')),
