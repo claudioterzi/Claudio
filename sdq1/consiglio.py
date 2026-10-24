@@ -39,6 +39,7 @@ class Voto:
     raccomandazione: str
     motivazione: str
     score_confidenza: float  # 0.0–1.0
+    modello: str = ""        # provider/modello che ha risposto davvero
 
 
 @dataclass
@@ -94,6 +95,7 @@ class Delibera:
                     "raccomandazione": v.raccomandazione,
                     "motivazione": v.motivazione,
                     "score_confidenza": v.score_confidenza,
+                    "modello": v.modello,
                 }
                 for v in self.voti
             ],
@@ -201,48 +203,70 @@ class ConsiglioAgenti:
         "La delibera degli agenti è la decisione."
     )
 
-    def __init__(self, salva_output: bool = True):
+    def __init__(self, salva_output: bool = True, budget_secondi: int = 90):
         self.salva_output = salva_output
         self._output_dir = Path("output/consiglio")
+        self.budget_secondi = max(10, min(budget_secondi, 90))
+        self._deadline = None
+
+    # Nome del membro → chiave in PROVIDER_REGISTRY del router.
+    _PROVIDER_ROUTER = {"gemini": "gemini", "claude": "anthropic", "deepseek": "deepseek", "mistral": "mistral"}
 
     def _chiama_membro(self, membro: dict, questione: str) -> Voto:
-        try:
-            from sdq1.llm.providers import (
-                GeminiProvider, AnthropicProvider, DeepSeekProvider, MistralProvider
-            )
-            _MAP = {
-                "gemini":   (GeminiProvider,    membro["modello"]),
-                "claude":   (AnthropicProvider, membro["modello"]),
-                "deepseek": (DeepSeekProvider,  membro["modello"]),
-                "mistral":  (MistralProvider,   membro["modello"]),
-            }
-            cls, modello = _MAP[membro["provider"]]
-            prov = cls(modello=modello, api_key=None, timeout=30)
-            if not prov.disponibile:
-                return Voto(
-                    membro=membro["id"],
-                    ruolo=membro["ruolo"],
-                    raccomandazione="Provider non disponibile.",
-                    motivazione="",
-                    score_confidenza=0.0,
-                )
-            r = prov.completa(membro["sistema"], questione)
+        """Prova il modello del membro; se manca la chiave, ha finito i token o fallisce,
+        passa a un modello alternativo. Il ruolo (prompt di sistema) resta quello del membro."""
+        from sdq1.llm.router import PROVIDER_REGISTRY
+
+        preferito = self._PROVIDER_ROUTER.get(membro["provider"], membro["provider"])
+        candidati = [(preferito, membro["modello"])] + [
+            (nome, modello) for nome, (_, modello) in PROVIDER_REGISTRY.items()
+            if nome not in (preferito, "stub", "ollama")
+        ]
+        ultimo_errore = "Nessun modello disponibile."
+        for nome, modello in candidati:
+            import time
+            remaining = self._deadline - time.monotonic() if self._deadline else 20
+            if remaining < 2:
+                ultimo_errore = 'Tempo disponibile per il Consiglio esaurito.'
+                break
+            if nome not in PROVIDER_REGISTRY:
+                continue
+            try:
+                cls, _ = PROVIDER_REGISTRY[nome]
+                timeout = min(20, remaining)
+                prov = cls(modello=modello, api_key=None, timeout=timeout, timeout_secondi=timeout,
+                           max_retries=0, max_token=900)
+                if not prov.disponibile:
+                    continue
+                r = prov.completa(membro["sistema"], questione)
+            except Exception as e:  # noqa: BLE001
+                ultimo_errore = str(e)
+                continue
             testo = r.testo.strip() if r.testo else ""
-            return _parse_voto(membro["id"], membro["ruolo"], testo)
-        except Exception as e:
-            return Voto(
-                membro=membro["id"],
-                ruolo=membro["ruolo"],
-                raccomandazione=f"Errore: {e}",
-                motivazione="",
-                score_confidenza=0.0,
-            )
+            if r.via_api and testo:
+                voto = _parse_voto(membro["id"], membro["ruolo"], testo)
+                voto.modello = f"{nome}/{modello}"
+                return voto
+            ultimo_errore = r.errore or "risposta vuota"
+        return Voto(
+            membro=membro["id"],
+            ruolo=membro["ruolo"],
+            raccomandazione="Nessun modello ha risposto.",
+            motivazione=ultimo_errore[:200],
+            score_confidenza=0.0,
+        )
 
     def _sintetizza(self, voti: list[Voto], questione: str) -> str:
         """Sintesi automatica dei voti — usata solo se Claudio non vota."""
         try:
             from sdq1.llm.providers import AnthropicProvider
-            prov = AnthropicProvider(modello="claude-haiku-4-5-20251001", api_key=None, timeout=25)
+            import time
+            remaining = self._deadline - time.monotonic() if self._deadline else 20
+            if remaining < 2:
+                return self._sintesi_manuale(voti)
+            prov = AnthropicProvider(modello="claude-haiku-4-5-20251001", api_key=None,
+                                     timeout=min(20, remaining), timeout_secondi=min(20, remaining),
+                                     max_retries=0, max_token=500)
             if not prov.disponibile:
                 return self._sintesi_manuale(voti)
             riepilogo = "\n".join(
@@ -275,6 +299,8 @@ class ConsiglioAgenti:
                               Se None, la decisione è la sintesi degli agenti.
         """
         ora = datetime.now(_TZ).strftime("%Y-%m-%d %H:%M")
+        import time
+        self._deadline = time.monotonic() + self.budget_secondi
 
         # Query parallele ai 5 membri
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
@@ -312,15 +338,20 @@ class ConsiglioAgenti:
 
         return delibera
 
-    def _salva(self, delibera: Delibera) -> Path:
-        self._output_dir.mkdir(parents=True, exist_ok=True)
+    def _salva(self, delibera: Delibera) -> Path | None:
+        """Salva la delibera; su un disco in sola lettura (Vercel) prova /tmp. Il
+        salvataggio non deve mai impedire che la delibera arrivi a Claudio."""
         ts = datetime.now(_TZ).strftime("%Y%m%d_%H%M%S")
-        nome = self._output_dir / f"delibera_{ts}.json"
-        nome.write_text(
-            json.dumps(delibera.to_dict(), indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
-        return nome
+        testo = json.dumps(delibera.to_dict(), indent=2, ensure_ascii=False)
+        for cartella in (self._output_dir, Path("/tmp/consiglio")):
+            try:
+                cartella.mkdir(parents=True, exist_ok=True)
+                nome = cartella / f"delibera_{ts}.json"
+                nome.write_text(testo, encoding="utf-8")
+                return nome
+            except OSError:
+                continue
+        return None
 
 
 # ══════════════════════════════════════════════════════════════

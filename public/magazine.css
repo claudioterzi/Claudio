@@ -38,3 +38,6 @@
   .mag-fields{padding:2mm 0;margin:2mm 0}.mag-writing{margin:2mm 0}.mag-page .olf-qr{margin:2mm 0}.mag-page .olf-qr img{width:25mm;height:25mm}
   .mag-coordinates .mag-selected{background:#eee;color:#111;border:2px solid #111}
 }
+
+/* Screen reading keeps wide tables inside their own scroll region. */
+.mag-page,.mag-page>*{min-width:0;max-width:100%}.mag-page{overflow-wrap:anywhere}.mag-page .olf-qr{flex-wrap:wrap;max-width:100%}.mag-page .olf-qr>div{min-width:0}.mag-page .olf-qr img{max-width:100%;height:auto}.mag-table-scroll{max-width:100%;overflow-x:auto}.mag-table-scroll:focus-visible{outline:3px solid #6e541f;outline-offset:3px}@media(max-width:600px){.mag-running,.mag-footer{flex-wrap:wrap}.mag-table-scroll .mag-table{min-width:410px}.mag-page .olf-qr img{width:140px}}@media print{.mag-table-scroll{overflow:visible;max-width:none}.mag-page,.mag-page>*{max-width:none}.mag-page .olf-qr{flex-wrap:nowrap}}

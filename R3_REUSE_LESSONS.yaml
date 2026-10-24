@@ -1,6 +1,6 @@
 version: 1
 name: R3_REUSE_LESSONS
-updated: 2026-09-29
+updated: 2026-10-07
 status: ACTIVE
 purpose: >
   Persist operational lessons from repeated use of existing functions, tools,
@@ -598,3 +598,36 @@ lessons:
     provenance:
       - "PR #113 e068cfd"
       - "docs/evidenze/R3_RESILIENCE_COMPLETION_20261005.json"
+
+  - id: RL-2026-10-07-FINITE-EVOLUTION-EVIDENCE-001
+    capability: evolution_numeric_integrity
+    status: VERIFIED
+    observed_at: 2026-10-07
+    trigger: Reuse R3-020 numeric promotion comparisons or request Jev review of a bounded candidate
+    verified_facts:
+      - "NaN comparisons and Infinity can bypass ordinary threshold checks."
+      - "Finite operands can produce non-finite derived gains; bool is an int subclass."
+      - "Frozen 56-case suite: 17 to 56 conformant, invalid admissions 23 to zero, exceptions 11 to zero; all ten eligible/HOLD controls preserved."
+      - "37 unittest methods pass; candidate remains STAGED protected core_code, not adopted."
+      - "Actual Jev attempt was blocked in configuration before HTTP; no model opinion obtained."
+    failure_modes:
+      - "Only rejecting NaN at JSON ingress leaves direct callers and arithmetic overflow uncovered."
+      - "Conflating online source review by Codex with Jev browsing or inference."
+      - "Treating a redacted connector or a token in a chat as an executor credential binding."
+    canonical_short_path:
+      - "Reuse sdq1/evolution_kernel.py with finite numeric input, threshold and gain validation candidate."
+      - "Freeze negative controls and legitimate finite cases before comparison."
+      - "Reuse the existing shared System One client and universal policy; resume saved Jev request only on a configured authenticated executor."
+    preconditions:
+      - "Selected source blobs pinned to current canonical main; isolated candidate scope."
+      - "Explicit review before adopting this protected core-code change."
+    verification:
+      - "Same frozen cases and expected labels on pinned baseline and candidate."
+      - "Recompute raw aggregate results; confirm no invalid admissions or exceptions."
+      - "Verify original record hashes and separate Jev execution evidence."
+    cleanup:
+      - "Remove disposable rollback copies; retain baseline and negative evidence."
+      - "No production deploy, paid runtime or parallel engine."
+    provenance:
+      - "docs/R3_EVOLUTION_FINITE_METRICS_20261007.md"
+      - "docs/evidenze/R3_EVOLUTION_FINITE_20261007.json"

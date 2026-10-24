@@ -266,6 +266,14 @@
     history.replaceState(null, '', '#copione'); render();
   }
   const occasions = {
+    indra: {
+      intensity:2,
+      dream:'Missione INDRA 001: aiutare dieci volontari a trasformare informazioni sparse in istruzioni affidabili e verificare se sanno trasmettere il metodo. Organizza un pilota di 14 giorni: facilitatore e adesioni, sessione, prima prova, prova su un testo nuovo senza suggerimenti, insegnamento ad altre persone e rapporto dei risultati. Ogni prova richiede un avviso di massimo 80 parole che conservi sei informazioni del testo senza aggiungere dati inventati. Soglie proposte: 8 persone su 10 superano la nuova prova e 3 insegnano il metodo a una nuova persona che la supera. Registra anche esiti mancanti, errori, tempo e costi. Distingui obiettivi da risultati osservati. Prevedi zero nuovi abbonamenti; chiedi conferma prima di qualsiasi altra spesa.',
+      city:'Luogo o incontro online da concordare',
+      budget:'Da definire',
+      timing:'14 giorni da una data di avvio da concordare',
+      delegation:'Partecipazione volontaria. Proponi responsabili, dipendenze, tempi e una prova per ogni risultato. Le assegnazioni restano proposte finché accettate. Prepara solo il piano: nessun invito, pubblicazione, acquisto o prenotazione automatici.'
+    },
     gruppo: {intensity:4, dream:'Siamo otto persone e vorremmo fare un viaggio memorabile insieme, partendo da città diverse. Aiutaci a coordinare gli spostamenti, scegliere quante camere servono e costruire le attività con un budget totale condiviso. Prima chiedici partenze, date, preferenze di condivisione e limiti.'},
     matrimonio: {intensity:4, dream:'Vorremmo organizzare il nostro matrimonio, con una giornata che ci somigli. Aiutaci a scegliere le priorità, coordinare invitati e fornitori e distribuire le decisioni nel tempo, rispettando il budget.'},
     festa: {intensity:3, dream:'Vorrei organizzare un addio al celibato o al nubilato per una persona cara. Cerco un’esperienza condivisa, divertente e adatta ai suoi gusti, con sorprese gradite e senza metterla in imbarazzo.'},
@@ -302,12 +310,20 @@
     link.href = url; link.download = 'Fabbrica-Copione-' + record.id + '.json';
     document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
+  const requestedPlan = location.hash.match(/^#copione\/([a-f0-9]{32})$/)?.[1];
+  const indraMission = new URLSearchParams(location.search).get('missione') === 'indra-001' && !requestedPlan;
+  if (indraMission) {
+    fillBrief(occasions.indra);
+    message('form-status', 'Missione INDRA 001 caricata. Modifica il brief, poi scegli «Crea il mio copione» per generare il piano.');
+  }
   initPromise = (async () => {
     try {
       const status = await api('status'); serviceReady = status.ai_available;
       $('service-mode').textContent = serviceReady ? 'Progettazione disponibile' : 'Esplora l’esempio';
-      const requested = location.hash.match(/^#copione\/([a-f0-9]{32})$/)?.[1];
-      const id = requested || status.latest_id;
+      const requested = requestedPlan;
+      // An explicit mission starts a new draft without reopening or mutating
+      // the previous private plan. A direct saved-plan link keeps precedence.
+      const id = requested || (indraMission ? null : status.latest_id);
       if (id) {
         try {
           const saved = await api('plans/' + id);
