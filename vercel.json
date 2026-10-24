@@ -1,6 +1,7 @@
 {
   "version": 2,
   "builds": [
+    {"src":"middleware.js","use":"@vercel/node@22.0.0","config":{"middleware":true}},
     {"src":"rrremergen/api/main.py","use":"@vercel/python","config":{"maxDuration":180,"includeFiles":"rrremergen/**"}},
     {"src":"api/flight_best.py","use":"@vercel/python","config":{"maxDuration":60}},
     {"src":"api/tarot_alpha.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"telegram_owner_auth.py"}},
@@ -10,10 +11,12 @@
     {"src":"api/orchestra.py","use":"@vercel/python","config":{"maxDuration":120,"includeFiles":"{sdq1/llm/**,sdq1/config/**,typesafe_sister/**,public/r3-ai-bootstrap.json}"}},
     {"src":"api/deepseek_eval.py","use":"@vercel/python","config":{"maxDuration":60,"includeFiles":"{sdq1/llm/**}"}},
     {"src":"api/r3_sync.py","use":"@vercel/python","config":{"maxDuration":30}},
+    {"src":"api/porta_consiglio.py","use":"@vercel/python","config":{"maxDuration":30,"includeFiles":"{porta/**,sdq1/llm/**,sdq1/config/**}"}},
     {"src":"tarocchi_web.py","use":"@vercel/python","config":{"maxDuration":180,"includeFiles":"{studio/parfums/**,public/formule/organo-*.json,tarocchi_quantici_alpha.json,fabbrica.py,fabbrica_typesafe.py,fabbrica_dialogue.py,typesafe_sister/**,telegram_owner_auth.py,agora*.py,sdq1/**,output/agenda.json,output/skyrights_2026-10-14.json,public/r3-status.json}"}},
     {"src":"public/**","use":"@vercel/static"}
   ],
   "routes": [
+    {"src":"/.*","middlewarePath":"middleware.js","continue":true},
     {"src":"/health","dest":"/rrremergen/api/main.py"},
     {"src":"/models","dest":"/rrremergen/api/main.py"},
     {"src":"/api/rrremergen/(.*)","dest":"/rrremergen/api/main.py"},
@@ -29,6 +32,7 @@
     {"src":"/stato/?","dest":"/public/r3-status.html"},
     {"src":"/accesso/?","dest":"/public/accesso.html"},
     {"src":"/privato/?","dest":"/public/privato.html"},
+    {"src":"/porta/?","dest":"/public/porta.html"},
     {"src":"/idee/?","dest":"/public/idea-os.html"},
     {"src":"/idee/(IDEA-[0-9]+)/?","dest":"/public/idea-document.html?id=$1"},
     {"src":"/idea-os/?","dest":"/public/idea-os.html"},
@@ -65,6 +69,7 @@
     {"src":"/api/flight/migliore","dest":"/api/flight_best.py"},
     {"src":"/api/tarocchi/raffaello","dest":"/api/tarot_alpha.py"},
     {"src":"/api/orchestra","dest":"/api/orchestra.py"},
+    {"src":"/api/porta-consiglio","dest":"/api/porta_consiglio.py"},
     {"src":"/api/deepseek-eval","dest":"/api/deepseek_eval.py"},
     {"src":"/api/raffaello/(.*)","dest":"/api/raffaello.py"},
     {"src":"/api/tarocchi/alpha-leggi","dest":"/api/tarot_alpha_fullspace.py"},
