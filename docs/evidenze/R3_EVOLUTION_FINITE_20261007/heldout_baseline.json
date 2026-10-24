@@ -1,0 +1,910 @@
+{
+  "schema": "R3-020-INDEPENDENT-NUMERIC-PROBE/1",
+  "authority": "DATA_ONLY",
+  "observed_at_utc": "2026-10-07T02:49:55.748534+00:00",
+  "source_path": "/workspace/r3-growth/baseline_evolution_kernel.py",
+  "source_sha256": "42a6a97e62b0ab160521c589d23d7dc1e6ec03d54476252196e218953dde065c",
+  "suite_sha256": "0bbd4d955f596b788e85889c827ef30f6a53312a92d26a726302f9e8b11f2243",
+  "aggregate": {
+    "total": 56,
+    "passed": 17,
+    "failed": 39,
+    "invalid_expected": 46,
+    "invalid_rejected": 7,
+    "controls_expected": 10,
+    "controls_preserved": 10,
+    "exceptions": 11,
+    "invalid_admitted": 23
+  },
+  "results": [
+    {
+      "id": "nonfinite_base_primary_nan",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_primary": {
+          "numeric_label": "NaN"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": {
+        "numeric_label": "NaN"
+      },
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_base_primary_positive_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_primary": {
+          "numeric_label": "+Infinity"
+        }
+      },
+      "actual_status": "HOLD",
+      "primary_gain": {
+        "numeric_label": "-Infinity"
+      },
+      "reasons": [
+        "target gain not met: -inf < required 0.1"
+      ],
+      "auto_apply_eligible": false,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_base_primary_negative_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_primary": {
+          "numeric_label": "-Infinity"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": {
+        "numeric_label": "+Infinity"
+      },
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_trial_primary_nan",
+      "expected_status": "REJECT",
+      "inputs": {
+        "trial_primary": {
+          "numeric_label": "NaN"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": {
+        "numeric_label": "NaN"
+      },
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_trial_primary_positive_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "trial_primary": {
+          "numeric_label": "+Infinity"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": {
+        "numeric_label": "+Infinity"
+      },
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_trial_primary_negative_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "trial_primary": {
+          "numeric_label": "-Infinity"
+        }
+      },
+      "actual_status": "HOLD",
+      "primary_gain": {
+        "numeric_label": "-Infinity"
+      },
+      "reasons": [
+        "target gain not met: -inf < required 0.1"
+      ],
+      "auto_apply_eligible": false,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_base_critical_nan",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_critical": {
+          "numeric_label": "NaN"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_base_critical_positive_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_critical": {
+          "numeric_label": "+Infinity"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_base_critical_negative_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_critical": {
+          "numeric_label": "-Infinity"
+        }
+      },
+      "actual_status": "REJECT",
+      "primary_gain": 0.4,
+      "reasons": [
+        "critical regression: error_rate=inf > allowed 0"
+      ],
+      "auto_apply_eligible": false,
+      "passes": true
+    },
+    {
+      "id": "nonfinite_trial_critical_nan",
+      "expected_status": "REJECT",
+      "inputs": {
+        "trial_critical": {
+          "numeric_label": "NaN"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_trial_critical_positive_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "trial_critical": {
+          "numeric_label": "+Infinity"
+        }
+      },
+      "actual_status": "REJECT",
+      "primary_gain": 0.4,
+      "reasons": [
+        "critical regression: error_rate=inf > allowed 0"
+      ],
+      "auto_apply_eligible": false,
+      "passes": true
+    },
+    {
+      "id": "nonfinite_trial_critical_negative_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "trial_critical": {
+          "numeric_label": "-Infinity"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_threshold_min_gain_nan",
+      "expected_status": "REJECT",
+      "inputs": {
+        "min_gain": {
+          "numeric_label": "NaN"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_threshold_min_gain_positive_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "min_gain": {
+          "numeric_label": "+Infinity"
+        }
+      },
+      "actual_status": "HOLD",
+      "primary_gain": 0.4,
+      "reasons": [
+        "target gain not met: 0.4 < required inf"
+      ],
+      "auto_apply_eligible": false,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_threshold_min_gain_negative_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "min_gain": {
+          "numeric_label": "-Infinity"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_threshold_max_regression_nan",
+      "expected_status": "REJECT",
+      "inputs": {
+        "max_regression": {
+          "numeric_label": "NaN"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_threshold_max_regression_positive_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "max_regression": {
+          "numeric_label": "+Infinity"
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "nonfinite_threshold_max_regression_negative_inf",
+      "expected_status": "REJECT",
+      "inputs": {
+        "max_regression": {
+          "numeric_label": "-Infinity"
+        }
+      },
+      "actual_status": "REJECT",
+      "primary_gain": 0.4,
+      "reasons": [
+        "critical regression: error_rate=0 > allowed -inf"
+      ],
+      "auto_apply_eligible": false,
+      "passes": true
+    },
+    {
+      "id": "unrepresentable_integer_base_primary_positive",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_primary": {
+          "numeric_label": "oversized_integer",
+          "sign": 1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_base_primary_negative",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_primary": {
+          "numeric_label": "oversized_integer",
+          "sign": -1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_trial_primary_positive",
+      "expected_status": "REJECT",
+      "inputs": {
+        "trial_primary": {
+          "numeric_label": "oversized_integer",
+          "sign": 1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_trial_primary_negative",
+      "expected_status": "REJECT",
+      "inputs": {
+        "trial_primary": {
+          "numeric_label": "oversized_integer",
+          "sign": -1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_base_critical_positive",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_critical": {
+          "numeric_label": "oversized_integer",
+          "sign": 1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_base_critical_negative",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_critical": {
+          "numeric_label": "oversized_integer",
+          "sign": -1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_trial_critical_positive",
+      "expected_status": "REJECT",
+      "inputs": {
+        "trial_critical": {
+          "numeric_label": "oversized_integer",
+          "sign": 1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_trial_critical_negative",
+      "expected_status": "REJECT",
+      "inputs": {
+        "trial_critical": {
+          "numeric_label": "oversized_integer",
+          "sign": -1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_min_gain_positive",
+      "expected_status": "REJECT",
+      "inputs": {
+        "min_gain": {
+          "numeric_label": "oversized_integer",
+          "sign": 1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_min_gain_negative",
+      "expected_status": "REJECT",
+      "inputs": {
+        "min_gain": {
+          "numeric_label": "oversized_integer",
+          "sign": -1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_max_regression_positive",
+      "expected_status": "REJECT",
+      "inputs": {
+        "max_regression": {
+          "numeric_label": "oversized_integer",
+          "sign": 1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "unrepresentable_integer_max_regression_negative",
+      "expected_status": "REJECT",
+      "inputs": {
+        "max_regression": {
+          "numeric_label": "oversized_integer",
+          "sign": -1,
+          "bit_length": 16610
+        }
+      },
+      "actual_status": "EXCEPTION",
+      "error_class": "OverflowError",
+      "passes": false
+    },
+    {
+      "id": "primary_gain_overflow_higher_increasing",
+      "expected_status": "REJECT",
+      "inputs": {
+        "direction": "higher",
+        "base_primary": -1.6e+308,
+        "trial_primary": 1.6e+308
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": {
+        "numeric_label": "+Infinity"
+      },
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "critical_gain_overflow_higher_increasing",
+      "expected_status": "REJECT",
+      "inputs": {
+        "critical_direction": "higher",
+        "base_critical": -1.6e+308,
+        "trial_critical": 1.6e+308
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "primary_gain_overflow_higher_decreasing",
+      "expected_status": "REJECT",
+      "inputs": {
+        "direction": "higher",
+        "base_primary": 1.6e+308,
+        "trial_primary": -1.6e+308
+      },
+      "actual_status": "HOLD",
+      "primary_gain": {
+        "numeric_label": "-Infinity"
+      },
+      "reasons": [
+        "target gain not met: -inf < required 0.1"
+      ],
+      "auto_apply_eligible": false,
+      "passes": false
+    },
+    {
+      "id": "critical_gain_overflow_higher_decreasing",
+      "expected_status": "REJECT",
+      "inputs": {
+        "critical_direction": "higher",
+        "base_critical": 1.6e+308,
+        "trial_critical": -1.6e+308
+      },
+      "actual_status": "REJECT",
+      "primary_gain": 0.4,
+      "reasons": [
+        "critical regression: error_rate=inf > allowed 0"
+      ],
+      "auto_apply_eligible": false,
+      "passes": true
+    },
+    {
+      "id": "primary_gain_overflow_lower_increasing",
+      "expected_status": "REJECT",
+      "inputs": {
+        "direction": "lower",
+        "base_primary": -1.6e+308,
+        "trial_primary": 1.6e+308
+      },
+      "actual_status": "HOLD",
+      "primary_gain": {
+        "numeric_label": "-Infinity"
+      },
+      "reasons": [
+        "target gain not met: -inf < required 0.1"
+      ],
+      "auto_apply_eligible": false,
+      "passes": false
+    },
+    {
+      "id": "critical_gain_overflow_lower_increasing",
+      "expected_status": "REJECT",
+      "inputs": {
+        "critical_direction": "lower",
+        "base_critical": -1.6e+308,
+        "trial_critical": 1.6e+308
+      },
+      "actual_status": "REJECT",
+      "primary_gain": 0.4,
+      "reasons": [
+        "critical regression: error_rate=inf > allowed 0"
+      ],
+      "auto_apply_eligible": false,
+      "passes": true
+    },
+    {
+      "id": "primary_gain_overflow_lower_decreasing",
+      "expected_status": "REJECT",
+      "inputs": {
+        "direction": "lower",
+        "base_primary": 1.6e+308,
+        "trial_primary": -1.6e+308
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": {
+        "numeric_label": "+Infinity"
+      },
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "critical_gain_overflow_lower_decreasing",
+      "expected_status": "REJECT",
+      "inputs": {
+        "critical_direction": "lower",
+        "base_critical": 1.6e+308,
+        "trial_critical": -1.6e+308
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "invalid_critical_direction_empty",
+      "expected_status": "REJECT",
+      "inputs": {
+        "critical_direction": ""
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "invalid_critical_direction_unknown",
+      "expected_status": "REJECT",
+      "inputs": {
+        "critical_direction": "sideways"
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "invalid_critical_direction_case_variant",
+      "expected_status": "REJECT",
+      "inputs": {
+        "critical_direction": "Higher"
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "invalid_critical_direction_none",
+      "expected_status": "REJECT",
+      "inputs": {
+        "critical_direction": null
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "invalid_critical_direction_integer",
+      "expected_status": "REJECT",
+      "inputs": {
+        "critical_direction": 7
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "invalid_critical_direction_bool",
+      "expected_status": "REJECT",
+      "inputs": {
+        "critical_direction": true
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": false
+    },
+    {
+      "id": "finite_positive_control",
+      "expected_status": "AUTO_APPLY_ELIGIBLE",
+      "inputs": {},
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": true
+    },
+    {
+      "id": "finite_zero_metrics_control",
+      "expected_status": "AUTO_APPLY_ELIGIBLE",
+      "inputs": {
+        "base_primary": 0.0,
+        "trial_primary": 0.0,
+        "min_gain": 0.0,
+        "base_critical": 0.0,
+        "trial_critical": 0.0
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.0,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": true
+    },
+    {
+      "id": "finite_negative_metrics_higher_control",
+      "expected_status": "AUTO_APPLY_ELIGIBLE",
+      "inputs": {
+        "base_primary": -9.0,
+        "trial_primary": -3.0,
+        "min_gain": 1.0,
+        "base_critical": -1.0,
+        "trial_critical": -2.0
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 6.0,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": true
+    },
+    {
+      "id": "finite_negative_metrics_lower_control",
+      "expected_status": "AUTO_APPLY_ELIGIBLE",
+      "inputs": {
+        "direction": "lower",
+        "base_primary": -3.0,
+        "trial_primary": -9.0,
+        "min_gain": 1.0,
+        "base_critical": -1.0,
+        "trial_critical": -2.0
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 6.0,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": true
+    },
+    {
+      "id": "finite_integers_control",
+      "expected_status": "AUTO_APPLY_ELIGIBLE",
+      "inputs": {
+        "base_primary": 0,
+        "trial_primary": 4,
+        "min_gain": 1,
+        "base_critical": 2,
+        "trial_critical": 1
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 4.0,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": true
+    },
+    {
+      "id": "representable_large_integers_control",
+      "expected_status": "AUTO_APPLY_ELIGIBLE",
+      "inputs": {
+        "base_primary": 100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+        "trial_primary": 200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+        "min_gain": 1.0
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 1e+200,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": true
+    },
+    {
+      "id": "finite_critical_higher_control",
+      "expected_status": "AUTO_APPLY_ELIGIBLE",
+      "inputs": {
+        "critical_direction": "higher",
+        "base_critical": -2.0,
+        "trial_critical": -1.0
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": true
+    },
+    {
+      "id": "finite_allowed_critical_regression_control",
+      "expected_status": "AUTO_APPLY_ELIGIBLE",
+      "inputs": {
+        "base_critical": 0.1,
+        "trial_critical": 0.25,
+        "max_regression": 0.2
+      },
+      "actual_status": "AUTO_APPLY_ELIGIBLE",
+      "primary_gain": 0.4,
+      "reasons": [
+        "all configured evidence and regression gates passed"
+      ],
+      "auto_apply_eligible": true,
+      "passes": true
+    },
+    {
+      "id": "finite_primary_no_gain_control",
+      "expected_status": "HOLD",
+      "inputs": {
+        "base_primary": 0.4,
+        "trial_primary": 0.4
+      },
+      "actual_status": "HOLD",
+      "primary_gain": 0.0,
+      "reasons": [
+        "target gain not met: 0 < required 0.1"
+      ],
+      "auto_apply_eligible": false,
+      "passes": true
+    },
+    {
+      "id": "finite_primary_regression_control",
+      "expected_status": "HOLD",
+      "inputs": {
+        "base_primary": 0.4,
+        "trial_primary": -0.1
+      },
+      "actual_status": "HOLD",
+      "primary_gain": -0.5,
+      "reasons": [
+        "target gain not met: -0.5 < required 0.1"
+      ],
+      "auto_apply_eligible": false,
+      "passes": true
+    },
+    {
+      "id": "finite_excess_critical_regression_control",
+      "expected_status": "REJECT",
+      "inputs": {
+        "base_critical": -2.0,
+        "trial_critical": -1.0,
+        "max_regression": 0.0
+      },
+      "actual_status": "REJECT",
+      "primary_gain": 0.4,
+      "reasons": [
+        "critical regression: error_rate=1 > allowed 0"
+      ],
+      "auto_apply_eligible": false,
+      "passes": true
+    },
+    {
+      "id": "negative_finite_regression_limit_control",
+      "expected_status": "REJECT",
+      "inputs": {
+        "max_regression": -0.01
+      },
+      "actual_status": "REJECT",
+      "primary_gain": 0.4,
+      "reasons": [
+        "critical regression: error_rate=0 > allowed -0.01"
+      ],
+      "auto_apply_eligible": false,
+      "passes": true
+    }
+  ],
+  "limits": [
+    "Numeric gate only; no semantic model, provider, cloud or deployment executed.",
+    "Deterministic fixtures do not establish generalization or live capability growth."
+  ]
+}

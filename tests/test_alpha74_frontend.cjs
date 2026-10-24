@@ -4,7 +4,19 @@ const assert=require('node:assert/strict');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const canonical=JSON.parse(fs.readFileSync(root+'/tarocchi_quantici_alpha.json')).carte;
-const art=require(root+'/public/alpha74-art.js');
+
+// alpha74-art.js is browser code: execute it in a minimal DOM-like VM instead
+// of require(), then read the exported global. This keeps the harness faithful
+// to the runtime contract while remaining dependency-free in CI.
+const artBoot=vm.createContext({
+ document:{createElement:()=>({}),head:{append(){}}},
+ addEventListener(){},
+ console
+});
+vm.runInContext(fs.readFileSync(root+'/public/alpha74-art.js','utf8'),artBoot);
+const art=artBoot.Alpha74Art;
+assert.ok(art && typeof art.resolve==='function');
+
 let checks=0;
 for(const c of canonical)for(const pol of ['luce','ombra'])for(const axis of ['nord','est','sud','ovest']){
  const view=art.resolve({id:c.id,polarita:pol,asse:axis});
@@ -16,15 +28,21 @@ for(const c of canonical)for(const pol of ['luce','ombra'])for(const axis of ['n
 assert.equal(art.resolve({id:99,polarita:'luce',asse:'nord'}),null);
 assert.equal(art.resolve({id:1,polarita:'wrong',asse:'nord'}),null);
 class Element{
- constructor(){this.value='';this.textContent='';this.innerHTML='';this.disabled=false;this.children=[];this.handlers={};this.attrs={};this.classes=new Set();this.classList={add:x=>this.classes.add(x),remove:x=>this.classes.delete(x)};this.style={setProperty:(k,v)=>this.attrs[k]=v};}
+ constructor(){this.value='';this.textContent='';this.innerHTML='';this.disabled=false;this.children=[];this.handlers={};this.attrs={};this.classes=new Set();this.dataset={};this.classList={add:x=>this.classes.add(x),remove:x=>this.classes.delete(x)};this.style={setProperty:(k,v)=>this.attrs[k]=v};}
  addEventListener(k,fn){this.handlers[k]=fn;}setAttribute(k,v){this.attrs[k]=v;}removeAttribute(k){delete this.attrs[k];}
  appendChild(n){this.children.push(n);}append(...n){this.children.push(...n);}replaceChildren(){this.children=[];}
  scrollIntoView(){}focus(){}querySelectorAll(){return [];}showModal(){this.open=true;}close(){this.open=false;}
 }
 const els=new Map();const $=id=>{if(!els.has(id))els.set(id,new Element());return els.get(id);};
 const requests=[];let resolveReading;let spoken=0;
+const speechSynthesis={cancel(){},getVoices(){return[];},speak(){spoken++;}};
+const AlphaVoice={
+ stop(){},
+ speak(text,options={}){spoken++;if(typeof options.onState==='function')options.onState('fallback');return true;}
+};
+const window={addEventListener(){},speechSynthesis,AlphaVoice};
 const context=vm.createContext({document:{getElementById:$,createElement:()=>new Element()},
- window:{addEventListener(){},speechSynthesis:{cancel(){},getVoices(){return[];},speak(){spoken++;}}},
+ window,speechSynthesis,AlphaVoice,URLSearchParams,AbortController,setTimeout,clearTimeout,location:{search:''},matchMedia:()=>({matches:false}),
  SpeechSynthesisUtterance:class{constructor(text){this.text=text;}},
  crypto:{getRandomValues(a){a[0]=0;}},Uint32Array,Alpha74Art:art,console,alert:e=>{throw Error(e);},
  fetch:async(url,options)=>{
@@ -35,6 +53,8 @@ const context=vm.createContext({document:{getElementById:$,createElement:()=>new
  }});
 const html=fs.readFileSync(root+'/public/tarocchi-manuale-alpha.html','utf8');
 const js=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
+vm.runInContext(fs.readFileSync(root+'/public/alpha-request.js','utf8'),context);
+context.AlphaRequest=window.AlphaRequest;
 vm.runInContext(js,context);
 (async()=>{
  await new Promise(r=>setImmediate(r));

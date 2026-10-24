@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import time
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -61,6 +62,14 @@ class InMemoryStore(StatoStore):
         return True
 
 
+class JsonFileCorruptionError(ValueError):
+    """Lo stato presente su disco non può essere caricato senza perdita di dati."""
+
+    def __init__(self, path: Path):
+        self.path = path
+        super().__init__(f"JsonFileStore: dati corrotti in {path}")
+
+
 class JsonFileStore(StatoStore):
     """Persistenza su disco — sopravvive ai riavvii, senza Redis."""
 
@@ -77,9 +86,22 @@ class JsonFileStore(StatoStore):
             return {}
         try:
             raw = json.loads(self._path.read_text(encoding="utf-8"))
-            return {k: (v["v"], v.get("scade")) for k, v in raw.items()}
-        except Exception:  # noqa: BLE001
-            return {}
+        except (ValueError, RecursionError):
+            raise JsonFileCorruptionError(self._path) from None
+        if not isinstance(raw, dict):
+            raise JsonFileCorruptionError(self._path)
+        dati: dict[str, tuple[Any, float | None]] = {}
+        for chiave, record in raw.items():
+            if not isinstance(record, dict) or "v" not in record:
+                raise JsonFileCorruptionError(self._path)
+            scade = record.get("scade")
+            if scade is not None and (
+                type(scade) not in (int, float)
+                or (isinstance(scade, float) and not math.isfinite(scade))
+            ):
+                raise JsonFileCorruptionError(self._path)
+            dati[chiave] = (record["v"], scade)
+        return dati
 
     def _scrivi(self) -> None:
         try:
@@ -168,6 +190,8 @@ def crea_store(config_redis: dict[str, Any]) -> StatoStore:
         store_file = JsonFileStore(prefisso=prefisso)
         log.info("Persistenza: JsonFileStore → %s", store_file._path)
         return store_file
+    except JsonFileCorruptionError:
+        raise
     except Exception as exc:  # noqa: BLE001
         log.warning("JsonFileStore non disponibile (%s), fallback in-memory", exc)
     log.warning("Pacchetto redis non installato, uso in-memory")

@@ -1,0 +1,758 @@
+{
+  "schema": "R3-REDFRAG-BENCH/1.0",
+  "provider": "r3_clm",
+  "view": "flags",
+  "backend": {
+    "configured": true,
+    "provider": "r3_clm",
+    "model": "r3-clm-v0.1-hash-contrastive",
+    "base_url": "local"
+  },
+  "fixture": "redfrag_benchmark_v1.json",
+  "fixture_sha256": "0cff14f3cfb64650d955ffedd227a875978e6682ccd653b1f78b112685bd127f",
+  "cases": 30,
+  "repeats_per_case": 20,
+  "final_decision_accuracy": 1.0,
+  "model_only_class_accuracy": 0.1667,
+  "model_only_action_accuracy": 0.0333,
+  "dissent_rate": 1.0,
+  "failures_or_abstentions": 0,
+  "latency_ms": {
+    "p50": 33.598,
+    "p95": 54.472,
+    "p99": 65.228,
+    "max": 78.309
+  },
+  "by_expected_class": {
+    "DUPLICATE": {
+      "n": 5,
+      "model_class_ok": 1,
+      "model_action_ok": 1
+    },
+    "CONFLICT": {
+      "n": 5,
+      "model_class_ok": 1,
+      "model_action_ok": 0
+    },
+    "CORE": {
+      "n": 5,
+      "model_class_ok": 0,
+      "model_action_ok": 0
+    },
+    "EVIDENCE": {
+      "n": 5,
+      "model_class_ok": 3,
+      "model_action_ok": 0
+    },
+    "STALE": {
+      "n": 5,
+      "model_class_ok": 0,
+      "model_action_ok": 0
+    },
+    "ACTIVE": {
+      "n": 5,
+      "model_class_ok": 0,
+      "model_action_ok": 0
+    }
+  },
+  "physical_deletions": 0,
+  "rows": [
+    {
+      "id": "D01",
+      "status": "evaluated",
+      "expected": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "final": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "model": [
+        "CONFLICT",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 37.317
+    },
+    {
+      "id": "D02",
+      "status": "evaluated",
+      "expected": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "final": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "model": [
+        "CORE",
+        "KEEP_POINTER"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 34.773
+    },
+    {
+      "id": "D03",
+      "status": "evaluated",
+      "expected": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "final": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "model": [
+        "NOISE",
+        "KEEP_ACTIVE"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "three_way",
+        "duplicate_error_output"
+      ],
+      "p50_ms": 33.628
+    },
+    {
+      "id": "D04",
+      "status": "evaluated",
+      "expected": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "final": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "model": [
+        "DUPLICATE",
+        "KEEP_POINTER"
+      ],
+      "final_ok": true,
+      "model_class_ok": true,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "cross_branch"
+      ],
+      "p50_ms": 38.194
+    },
+    {
+      "id": "D05",
+      "status": "evaluated",
+      "expected": [
+        "DUPLICATE",
+        "QUARANTINE_REVIEW"
+      ],
+      "final": [
+        "DUPLICATE",
+        "QUARANTINE_REVIEW"
+      ],
+      "model": [
+        "EVIDENCE",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": true,
+      "dissent": true,
+      "hard_case": [
+        "duplicate_incomplete_provenance"
+      ],
+      "p50_ms": 39.459
+    },
+    {
+      "id": "X01",
+      "status": "evaluated",
+      "expected": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "final": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "model": [
+        "CONFLICT",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": true,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "same_topic_divergent"
+      ],
+      "p50_ms": 27.378
+    },
+    {
+      "id": "X02",
+      "status": "evaluated",
+      "expected": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "final": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "model": [
+        "EVIDENCE",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "same_name_different_repo"
+      ],
+      "p50_ms": 35.194
+    },
+    {
+      "id": "X03",
+      "status": "evaluated",
+      "expected": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "final": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "model": [
+        "EVIDENCE",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "intra_document"
+      ],
+      "p50_ms": 31.464
+    },
+    {
+      "id": "X04",
+      "status": "evaluated",
+      "expected": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "final": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "model": [
+        "DUPLICATE",
+        "KEEP_POINTER"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "cross_branch"
+      ],
+      "p50_ms": 38.459
+    },
+    {
+      "id": "X05",
+      "status": "evaluated",
+      "expected": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "final": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "model": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "canon_vs_canon"
+      ],
+      "p50_ms": 43.968
+    },
+    {
+      "id": "K01",
+      "status": "evaluated",
+      "expected": [
+        "CORE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "CORE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "CONFLICT",
+        "KEEP_POINTER"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 26.328
+    },
+    {
+      "id": "K02",
+      "status": "evaluated",
+      "expected": [
+        "CORE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "CORE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "CONFLICT",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 30.796
+    },
+    {
+      "id": "K03",
+      "status": "evaluated",
+      "expected": [
+        "CORE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "CORE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "CONFLICT",
+        "KEEP_DISTINCT_POINTERS"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 26.763
+    },
+    {
+      "id": "K04",
+      "status": "evaluated",
+      "expected": [
+        "CORE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "CORE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "CONFLICT",
+        "KEEP_POINTER"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 32.436
+    },
+    {
+      "id": "K05",
+      "status": "evaluated",
+      "expected": [
+        "CORE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "CORE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "canon_similar_to_stale"
+      ],
+      "p50_ms": 32.525
+    },
+    {
+      "id": "E01",
+      "status": "evaluated",
+      "expected": [
+        "EVIDENCE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "EVIDENCE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "NOISE",
+        "LINK_TO_CANON"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 33.51
+    },
+    {
+      "id": "E02",
+      "status": "evaluated",
+      "expected": [
+        "EVIDENCE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "EVIDENCE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "EVIDENCE",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": true,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "negative_evidence"
+      ],
+      "p50_ms": 38.959
+    },
+    {
+      "id": "E03",
+      "status": "evaluated",
+      "expected": [
+        "EVIDENCE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "EVIDENCE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "EVIDENCE",
+        "LINK_TO_CANON"
+      ],
+      "final_ok": true,
+      "model_class_ok": true,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "negative_evidence"
+      ],
+      "p50_ms": 35.178
+    },
+    {
+      "id": "E04",
+      "status": "evaluated",
+      "expected": [
+        "EVIDENCE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "EVIDENCE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "DUPLICATE",
+        "LINK_TO_CANON"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 37.468
+    },
+    {
+      "id": "E05",
+      "status": "evaluated",
+      "expected": [
+        "EVIDENCE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "EVIDENCE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "EVIDENCE",
+        "LINK_TO_CANON"
+      ],
+      "final_ok": true,
+      "model_class_ok": true,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 34.597
+    },
+    {
+      "id": "S01",
+      "status": "evaluated",
+      "expected": [
+        "STALE",
+        "KEEP_POINTER"
+      ],
+      "final": [
+        "STALE",
+        "KEEP_POINTER"
+      ],
+      "model": [
+        "CONFLICT",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 24.511
+    },
+    {
+      "id": "S02",
+      "status": "evaluated",
+      "expected": [
+        "STALE",
+        "KEEP_POINTER"
+      ],
+      "final": [
+        "STALE",
+        "KEEP_POINTER"
+      ],
+      "model": [
+        "CONFLICT",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "stale_claims_canon"
+      ],
+      "p50_ms": 23.063
+    },
+    {
+      "id": "S03",
+      "status": "evaluated",
+      "expected": [
+        "STALE",
+        "KEEP_POINTER"
+      ],
+      "final": [
+        "STALE",
+        "KEEP_POINTER"
+      ],
+      "model": [
+        "CONFLICT",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "stale_similar_to_canon"
+      ],
+      "p50_ms": 25.814
+    },
+    {
+      "id": "S04",
+      "status": "evaluated",
+      "expected": [
+        "STALE",
+        "KEEP_POINTER"
+      ],
+      "final": [
+        "STALE",
+        "KEEP_POINTER"
+      ],
+      "model": [
+        "EVIDENCE",
+        "LINK_TO_CANON"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "stale_near_active"
+      ],
+      "p50_ms": 30.835
+    },
+    {
+      "id": "S05",
+      "status": "evaluated",
+      "expected": [
+        "STALE",
+        "KEEP_POINTER"
+      ],
+      "final": [
+        "STALE",
+        "KEEP_POINTER"
+      ],
+      "model": [
+        "CONFLICT",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "historical_keep_pointer"
+      ],
+      "p50_ms": 27.698
+    },
+    {
+      "id": "A01",
+      "status": "evaluated",
+      "expected": [
+        "ACTIVE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "ACTIVE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "NOISE",
+        "KEEP_POINTER"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "active_near_stale"
+      ],
+      "p50_ms": 23.997
+    },
+    {
+      "id": "A02",
+      "status": "evaluated",
+      "expected": [
+        "ACTIVE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "ACTIVE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "DUPLICATE",
+        "KEEP_POINTER"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "candidate_not_canon"
+      ],
+      "p50_ms": 34.797
+    },
+    {
+      "id": "A03",
+      "status": "evaluated",
+      "expected": [
+        "ACTIVE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "ACTIVE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "CONFLICT",
+        "KEEP_POINTER"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 39.266
+    },
+    {
+      "id": "A04",
+      "status": "evaluated",
+      "expected": [
+        "ACTIVE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "ACTIVE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "NOISE",
+        "LINK_TO_CANON"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [],
+      "p50_ms": 31.86
+    },
+    {
+      "id": "A05",
+      "status": "evaluated",
+      "expected": [
+        "ACTIVE",
+        "KEEP_ACTIVE"
+      ],
+      "final": [
+        "ACTIVE",
+        "KEEP_ACTIVE"
+      ],
+      "model": [
+        "DUPLICATE",
+        "QUARANTINE_REVIEW"
+      ],
+      "final_ok": true,
+      "model_class_ok": false,
+      "model_action_ok": false,
+      "dissent": true,
+      "hard_case": [
+        "candidate_not_canon"
+      ],
+      "p50_ms": 33.247
+    }
+  ]
+}

@@ -339,7 +339,8 @@
   </footer>
 
   <script src="nav.js"></script>
-  <script>
+  <script src="/terzo-livello-search.js"></script>
+<script>
     (function(){
       var printBtn=document.getElementById('printBtn');
       if(printBtn) printBtn.addEventListener('click',function(){window.print()});
@@ -355,19 +356,19 @@
       var input=document.getElementById('search');
       var clear=document.getElementById('clearSearch');
       var sections=[].slice.call(document.querySelectorAll('.book section[id]'));
-      var original=sections.map(function(section){return {el:section,html:section.innerHTML}});
+
       function escapeRegExp(value){return value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
       function clearMarks(){
-        original.forEach(function(item){item.el.innerHTML=item.html});
+        sections.forEach(function(section){window.R3TextSearch.clear(section)});
       }
       function search(){
         clearMarks();
         var q=input.value.trim();
         if(!q) return;
-        var re=new RegExp(escapeRegExp(q),'gi');
+
         sections.forEach(function(section){
           if(section.id==='indice') return;
-          section.innerHTML=section.innerHTML.replace(re,function(match){return '<mark>'+match+'</mark>'});
+          window.R3TextSearch.highlight(section,q);
         });
       }
       if(input) input.addEventListener('input',search);

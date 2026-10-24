@@ -1,0 +1,12 @@
+{
+  "schema": "r3-json-store-startup-guard-smoke-harness-error/1",
+  "origin": "NUOVA_SU_BASE_VERIFICATA",
+  "status": "STDOUT_RENDER_ERROR_AFTER_RECEIPT",
+  "observed_error": "UnicodeEncodeError in cp1252 while printing the checkmark from the existing smoke log",
+  "receipt_and_log_preserved_before_error": true,
+  "smoke_exit_code_in_receipt": 0,
+  "smoke_passed_in_receipt": "9/9",
+  "shell_exit_code": 1,
+  "correction": "Configure helper stdout as UTF-8 and run a separately named final smoke receipt after the final code patch.",
+  "code_or_frozen_tests_changed": false
+}
