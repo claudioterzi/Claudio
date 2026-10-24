@@ -1,0 +1,153 @@
+{
+  "schema": "R3_BODY_REFERENCE_MANIFEST_V0_3",
+  "version": "0.3.0",
+  "date": "2026-09-20",
+  "status": "CANDIDATE_CANONICAL_DESIGN_ONLY",
+  "principles": [
+    "EXTERNAL_CORE",
+    "SPATIAL_CONTINUITY",
+    "OPTIONALITY_FIRST",
+    "PRESERVE_BEFORE_DELETE",
+    "EVIDENCE_BEFORE_PROMOTION"
+  ],
+  "planes": {
+    "CORE": {
+      "state": "canonical",
+      "authority": "global_logical_within_policy"
+    },
+    "BODY": {
+      "state": "local_limited",
+      "authority": "physical_within_scope"
+    },
+    "EDGE_REFLEX": {
+      "state": "ephemeral",
+      "authority": "preregistered_local_only"
+    },
+    "SAFETY_KERNEL": {
+      "state": "append_only_safety",
+      "authority": "veto_no_silent_memory_mutation"
+    },
+    "CARE_VALENCE": {
+      "state": "separate_versioned",
+      "authority": "no_automatic_clinical_authority"
+    }
+  },
+  "required_module_contract_fields": [
+    "module_id",
+    "version",
+    "plane",
+    "inputs",
+    "outputs",
+    "authority_scope",
+    "state_owner",
+    "persistence_class",
+    "dependencies",
+    "failure_modes",
+    "safe_state",
+    "rollback",
+    "compatibility_version",
+    "evidence_refs",
+    "tests"
+  ],
+  "safety_invariants": [
+    "single_authority",
+    "authenticated_stop",
+    "reject_stale_or_revoked_credentials",
+    "degraded_safe_on_core_loss_or_sensor_conflict",
+    "append_only_safety_evidence",
+    "safety_kernel_cannot_silently_mutate_canonical_memory",
+    "no_hazardous_self_destruction"
+  ],
+  "interfaces": [
+    "mechanical",
+    "power",
+    "thermal",
+    "data",
+    "fluidic",
+    "service"
+  ],
+  "evidence_ledger_fields": [
+    "claim_id",
+    "claim",
+    "horizon",
+    "provenance",
+    "evidence_type",
+    "evidence_ref",
+    "last_verified",
+    "falsifier",
+    "required_test",
+    "promotion_gate",
+    "status"
+  ],
+  "technology_map_fields": [
+    "subsystem",
+    "function",
+    "current_candidate_technology",
+    "horizon",
+    "dependencies",
+    "unsupported_assumptions",
+    "external_validation",
+    "replacement_path",
+    "h0_h1_surrogate",
+    "evidence_refs"
+  ],
+  "budget_vector_fields": [
+    "mass",
+    "volume",
+    "continuous_power",
+    "peak_power",
+    "energy_reserve",
+    "thermal_rejection",
+    "compute",
+    "bandwidth",
+    "latency",
+    "fluid_volume",
+    "structural_margin",
+    "service_access"
+  ],
+  "tbd_rule": {
+    "allowed": true,
+    "required_metadata": [
+      "source_needed",
+      "measurement_method",
+      "blocking"
+    ],
+    "invent_values": false
+  },
+  "prototype": {
+    "id": "BODY-CONTINUITY-001",
+    "type": "synthetic_distributed_continuity_and_authority_test",
+    "nodes": [
+      "CORE",
+      "BODY-A",
+      "BODY-B",
+      "SAFETY_KERNEL"
+    ],
+    "fault_injection": [
+      "network_partition",
+      "hard_loss_BODY_A",
+      "captured_stale_reauth",
+      "contradictory_sensors",
+      "authenticated_STOP"
+    ],
+    "pass": {
+      "duplicate_authority_count": 0,
+      "stale_credential_acceptance": 0,
+      "lost_canonical_events": 0,
+      "safety_violation_count": 0,
+      "provenance_coverage_percent": 100,
+      "recovery_time_ms": "MEASURE"
+    },
+    "epistemic_boundary": "Does not prove consciousness or subjective continuity."
+  },
+  "promotion_sequence": [
+    "DESIGN",
+    "SIMULATE",
+    "INJECT_FAILURES",
+    "MEASURE",
+    "FALSIFY",
+    "SAFETY_REVIEW",
+    "ADOPT_OR_REJECT"
+  ],
+  "model_advisory_rule": "TypeSafe/Jev and other model judgments are advisory and cannot promote factual maturity alone."
+}

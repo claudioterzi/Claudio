@@ -32,6 +32,7 @@
     .controls.livelli .chip { font-size: 0.7rem; text-transform: uppercase;
                               letter-spacing: 0.12em; }
     .searchbar { display: flex; justify-content: center; margin: 0.6rem 0 0.75rem; }
+    .searchbar label{display:block;margin-bottom:.4rem;font-size:1rem;color:var(--text)}
     .searchbar input { background: var(--surface); border: 1px solid var(--border);
             color: var(--text); border-radius: var(--radius); padding: 0.5rem 1rem;
             width: min(420px, 100%); font-family: var(--font); font-size: 0.9rem; }
@@ -41,30 +42,31 @@
     #count { text-align: center; color: var(--gold-dim); font-size: 0.72rem;
              letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 1.5rem; }
 
-    #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(290px,100%), 1fr));
             gap: 0.9rem; }
-    .card { background: var(--surface); border: 1px solid var(--border);
+    .card { font:inherit;color:inherit;text-align:left;width:100%;background: var(--surface); border: 1px solid var(--border);
             border-radius: var(--radius); padding: 1.1rem 1.25rem; cursor: pointer; }
     .card:hover { border-color: var(--gold-dim); }
+    .card:focus-visible,.scheda-chiudi:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
     .card .apri { margin-top: 0.6rem; font-size: 0.68rem; letter-spacing: 0.14em;
                   text-transform: uppercase; color: var(--gold-dim); }
 
     /* Scheda profumo (overlay) */
     #velo { position: fixed; inset: 0; background: rgba(6,6,8,0.85);
             display: none; align-items: flex-start; justify-content: center;
-            overflow-y: auto; padding: 3rem 1rem; z-index: 50; }
-    #velo.aperto { display: flex; }
+            overflow-y: auto; padding: 3rem 1rem; z-index: 50; width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0;color:var(--text); }
+    #velo[open] { display: flex; }
     .scheda { background: var(--surface); border: 1px solid var(--gold-dim);
               border-radius: var(--radius); max-width: 760px; width: 100%;
-              padding: 1.75rem 2rem 2rem; position: relative; }
+              padding: clamp(1rem,4vw,2rem); position: relative; }
     .scheda-chiudi { position: absolute; top: 0.8rem; right: 1rem; background: none;
               border: none; color: var(--text-dim); font-size: 1.4rem;
-              cursor: pointer; font-family: var(--font); }
+              cursor: pointer; font-family: var(--font);min-width:44px;min-height:44px; }
     .scheda-chiudi:hover { color: var(--gold); }
     .scheda-corpo { display: flex; gap: 1.75rem; flex-wrap: wrap; }
     .scheda-flacone { flex: 0 0 180px; display: flex; flex-direction: column;
               align-items: center; gap: 0.75rem; }
-    .scheda-info { flex: 1 1 300px; min-width: 260px; }
+    .scheda-info { flex: 1 1 260px; min-width: 0; }
     .scheda h2 { color: var(--gold); font-weight: normal; font-size: 1.4rem;
                  margin-bottom: 0.1rem; padding-right: 2rem; }
     .scheda .sotto { color: var(--text-dim); font-size: 0.8rem;
@@ -122,17 +124,17 @@
       <p class="formula">Famiglia + Piramide + Momento = Presenza</p>
     </header>
 
-    <div class="controls" id="chips"></div>
-    <div class="controls livelli" id="livchips" title="Componibile con quale ondata d'acquisto dell'organo"></div>
-    <div class="searchbar"><input id="search" type="search"
+    <div class="controls" id="chips" role="group" aria-label="Famiglia dei profumi"></div>
+    <div class="controls livelli" id="livchips" role="group" aria-label="Ondata di acquisto dell'organo" title="Componibile con quale ondata d'acquisto dell'organo"></div>
+    <div class="searchbar"><label for="search">Cerca un profumo</label><input id="search" type="search"
          placeholder="Cerca per nome, materia, anima…"></div>
     <div id="famdesc"></div>
-    <div id="count"></div>
+    <div id="count" role="status" aria-live="polite"></div>
     <div id="grid"></div>
 
-    <div id="velo" role="dialog" aria-modal="true">
+    <dialog id="velo" aria-labelledby="scheda-titolo">
       <div class="scheda" id="scheda"></div>
-    </div>
+    </dialog>
 
     <footer>
       Ogni nota è una materia reale dell'Organo Terzi 300 (passa il mouse per il N°).<br>
@@ -220,7 +222,10 @@
 
     const LIV_LABEL = { testa: "Testa", cuore: "Cuore", fondo: "Fondo", scia: "Scia" };
 
+    let schedaFocus=null,previousBodyOverflow="";
     function apriScheda(p) {
+      schedaFocus=document.activeElement;
+      previousBodyOverflow=document.body.style.overflow;
       const righe = p.ric.map(r =>
         '<tr><td class="lv">' + LIV_LABEL[r[3]] + '</td>' +
         '<td title="Organo N° ' + r[1] + '">' + r[0] +
@@ -230,7 +235,7 @@
 
       document.getElementById("scheda").innerHTML =
         '<button class="scheda-chiudi" onclick="chiudiScheda()" aria-label="Chiudi">✕</button>' +
-        '<h2>' + p.nome + '</h2>' +
+        '<h2 id="scheda-titolo">' + p.nome + '</h2>' +
         '<div class="sotto">N° ' + p.n + ' · ' + p.fam + ' · ' + p.conc +
         ' · <span class="badge">' + p.liv + '</span></div>' +
         '<div class="scheda-corpo">' +
@@ -257,26 +262,32 @@
             '</ul>' +
           '</div>' +
         '</div>';
-      document.getElementById("velo").classList.add("aperto");
+      document.getElementById("velo").showModal();
       document.body.style.overflow = "hidden";
+      document.querySelector(".scheda-chiudi").focus();
     }
 
     function chiudiScheda() {
-      document.getElementById("velo").classList.remove("aperto");
-      document.body.style.overflow = "";
+      const dialog=document.getElementById("velo");
+      if(!dialog.open)return;
+      dialog.close();
+      document.body.style.overflow = previousBodyOverflow;
+      if(schedaFocus&&schedaFocus.isConnected)schedaFocus.focus();
     }
     document.getElementById("velo").addEventListener("click", e => {
       if (e.target.id === "velo") chiudiScheda();
     });
-    document.addEventListener("keydown", e => {
-      if (e.key === "Escape") chiudiScheda();
+    document.getElementById("velo").addEventListener("cancel", e => {
+      e.preventDefault();chiudiScheda();
     });
 
     function render() {
-      for (const b of chips.children)
-        b.classList.toggle("active", b.textContent === (fam || "Tutte"));
-      for (const b of livchips.children)
-        b.classList.toggle("active", Number(b.dataset.v) === livMax);
+      for (const b of chips.children) {
+        const selected=b.textContent === (fam || "Tutte");b.classList.toggle("active", selected);b.setAttribute("aria-pressed",String(selected));
+      }
+      for (const b of livchips.children) {
+        const selected=Number(b.dataset.v) === livMax;b.classList.toggle("active",selected);b.setAttribute("aria-pressed",String(selected));
+      }
       document.getElementById("famdesc").textContent = fam ? FAMIGLIE[fam] : "";
 
       const vis = PARFUMS.filter(p => {
@@ -295,7 +306,9 @@
       const grid = document.getElementById("grid");
       grid.innerHTML = "";
       for (const p of vis) {
-        const d = document.createElement("div");
+        const d = document.createElement("button");
+        d.type="button";
+        d.setAttribute("aria-label","Apri la scheda di "+p.nome);
         d.className = "card";
         d.innerHTML =
           '<div class="card-top"><span class="card-num">N° ' + p.n +

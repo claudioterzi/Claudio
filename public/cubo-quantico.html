@@ -46,6 +46,7 @@
     <section class="cube-layout">
       <div class="cube-frame">
         <div id="graph" aria-label="Cubo tridimensionale interattivo delle opere"></div>
+        <div id="graph-start" class="graph-start"><p>Il catalogo è già consultabile. Apri la mappa per esplorare anche le relazioni nello spazio.</p><button id="load-graph" type="button">Apri la mappa 3D</button><p id="graph-load-status" role="status" aria-live="polite"></p></div>
         <div class="orientation" aria-hidden="true">
           <span class="x">← passato · X · futuro →</span>
           <span class="y">Y · importanza ↑</span>
@@ -74,13 +75,12 @@
     </section>
 
     <footer>
-      <p>C.Terzi · R³∞ · archivio vivo</p>
+      <p>© Claudio Terzi · firma d’archivio C.Terzi · R³∞ · archivio vivo</p>
       <p>La posizione di ogni titolo deriva da tempo, importanza e densità relazionale. Le relazioni possono evolvere senza perdere le versioni precedenti.</p>
+      <p>Le schede distinguono autore, curatela, collaborazione e provenienza da verificare. La presenza nel Cubo documenta l’archiviazione e l’attribuzione dichiarata, non sostituisce una registrazione legale del diritto d’autore.</p>
     </footer>
   </main>
 
-  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-  <script src="https://unpkg.com/3d-force-graph@1.73.3/dist/3d-force-graph.min.js"></script>
   <script src="cubo-quantico-data.js"></script>
   <script src="cubo-identita-data.js"></script>
   <script src="cubo-genesi-data.js"></script>
@@ -91,6 +91,7 @@
       if(n)n.url='https://docs.google.com/document/d/1NZmqWSx5qrBtJF7vH5udcL5WpxJDTejvA7yxMPMNkwQ/edit';
     })();
   </script>
+  <script src="cubo-graph-layer.js"></script>
   <script src="cubo-quantico.js"></script>
 </body>
 </html>
