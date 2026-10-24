@@ -46,20 +46,35 @@
   </form>
 
   <div class="section-title" id="titolo-risultati">Risultati</div>
-  <div id="out"><div class="stato">Imposta i parametri e avvia la ricerca.</div></div>
+  <button id="search-cancel" type="button" class="primario" hidden>Annulla attesa</button>
+  <div id="out" aria-live="polite"><div class="stato">Imposta i parametri e avvia la ricerca.</div></div>
 
   <p class="nota">Il costo reale include gli extra stimabili dal motore: tariffa, posizionamento via terra, bagagli, eventuali notti e margine di rischio sui self-transfer. Prezzi e disponibilità cambiano: prima del pagamento verifica sempre il totale finale sul vettore.</p>
 </div>
 
+<script src="/alpha-request.js"></script>
 <script>
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const oggi=new Date();const next=new Date(oggi.getFullYear(),oggi.getMonth()+1,1);const meseDefault=`${next.getFullYear()}-${String(next.getMonth()+1).padStart(2,'0')}`;
 document.getElementById('o-mese').value=meseDefault;document.getElementById('r-mese').value=meseDefault;
 const out=document.getElementById('out'),titolo=document.getElementById('titolo-risultati');
 
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('attivo'));t.classList.add('attivo');const modo=t.dataset.modo;document.getElementById('form-ovunque').style.display=modo==='ovunque'?'':'none';document.getElementById('form-rotta').style.display=modo==='rotta'?'':'none';out.innerHTML='<div class="stato">Imposta i parametri e avvia la ricerca.</div>'});
+let searchVersion=0;
+const searchCancel=document.getElementById('search-cancel');
+searchCancel.addEventListener('click',()=>AlphaRequest.cancel('flight-search'));
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{searchVersion++;AlphaRequest.cancel('flight-search');searchCancel.hidden=true;document.querySelectorAll('form.search button[type=submit]').forEach(button=>button.disabled=false);document.querySelectorAll('.tab').forEach(x=>x.classList.remove('attivo'));t.classList.add('attivo');const modo=t.dataset.modo;document.getElementById('form-ovunque').style.display=modo==='ovunque'?'':'none';document.getElementById('form-rotta').style.display=modo==='rotta'?'':'none';out.innerHTML='<div class="stato">Imposta i parametri e avvia la ricerca.</div>'});
 
-async function chiama(url,body,bottone){bottone.disabled=true;out.innerHTML='<div class="stato">Raffaello sta interrogando le fonti e ampliando la ricerca senza forza bruta…</div>';try{const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const dati=await res.json();if(!res.ok)throw new Error(dati.errore||('HTTP '+res.status));return dati}catch(err){out.innerHTML=`<div class="stato">Errore: ${esc(err.message)}<br><span class="sub">Una fonte può essere temporaneamente indisponibile. Nessun risultato viene inventato.</span></div>`;return null}finally{bottone.disabled=false}}
+async function chiama(url,body,bottone){
+ const version=++searchVersion,buttons=document.querySelectorAll('form.search button[type=submit]');
+ buttons.forEach(button=>button.disabled=true);searchCancel.hidden=false;
+ out.innerHTML='<div class="stato">Raffaello sta interrogando le fonti e ampliando la ricerca…</div>';
+ try{
+  const dati=await AlphaRequest.json(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},{key:'flight-search',timeoutMs:45000});
+  return version===searchVersion?dati:null;
+ }catch(error){if(version===searchVersion&&!AlphaRequest.isSuperseded(error))out.innerHTML=`<div class="stato">${esc(error.message)}<br><span class="sub">Una fonte può essere temporaneamente indisponibile. Puoi riprovare con gli stessi parametri.</span></div>`;return null}
+ finally{if(version===searchVersion){buttons.forEach(button=>button.disabled=false);searchCancel.hidden=true}}
+}
+
 function enrich(payload,context){if(window.RaffaelloFlightEnrichment)window.RaffaelloFlightEnrichment.ingest(payload,context);else window.dispatchEvent(new CustomEvent('raffaello:flight:result',{detail:{payload,context}}))}
 function bookingLink(v){if(!v)return '#';if(/ryanair/i.test(v.vettore||'')&&v.giorno)return `https://www.ryanair.com/it/it/trip/flights/select?adults=1&teens=0&children=0&infants=0&dateOut=${encodeURIComponent(v.giorno)}&isReturn=false&originIata=${encodeURIComponent(v.da)}&destinationIata=${encodeURIComponent(v.a)}`;return 'https://www.google.com/travel/flights?q='+encodeURIComponent(`voli ${v.da} ${v.a} ${v.giorno||''}`)}
 function scopeHtml(d){const s=d.scope||{};const providers=(s.providers_successful||[]).join(', ')||'nessuna fonte confermata';const stages=(s.stages||[]).map(x=>x.name+(x.profondo?' + grafo profondo':'')).join(' → ')||'standard';return `<div class="search-scope"><strong>Perimetro verificato:</strong> ${esc(d.mese||'')} · fonti: ${esc(providers)} · ricerca: ${esc(stages)} · ${Number(s.candidates||0)} candidati. <strong>Stato:</strong> ${esc(d.certainty||'—')}.<br>${esc(d.assumptions||'')}</div>`}
@@ -69,6 +84,10 @@ document.getElementById('form-ovunque').addEventListener('submit',async e=>{e.pr
 
 document.getElementById('form-rotta').addEventListener('submit',async e=>{e.preventDefault();const context={from:document.getElementById('r-origine').value,to:document.getElementById('r-dest').value,month:document.getElementById('r-mese').value,baggage:document.getElementById('r-bagaglio').checked,objective:document.getElementById('r-objective').value};const dati=await chiama('/api/flight/migliore',{origine:context.from,destinazione:context.to,mese:context.month,raggio:Number(document.getElementById('r-raggio').value),bagaglio:context.baggage,obiettivo:context.objective},e.submitter);if(!dati)return;enrich(dati,context);titolo.textContent='Raffaello · miglior risultato trovato';if(!dati.best){out.innerHTML=scopeHtml(dati)+'<div class="stato">Nessun itinerario verificabile trovato nel perimetro cercato.</div>';return}const all=[dati.best,...(dati.alternatives||[])];out.innerHTML=scopeHtml(dati)+`<div class="card best"><span class="badge">PERCHÉ QUESTO</span><p>${esc(dati.why_best||'')}</p></div>`+all.map((it,i)=>itineraryHtml(it,i,i===0)).join('')});
 </script>
+
+<!-- Travelpayouts LinkSwitcher -->
+<script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1">(function(){var s=document.createElement("script");s.async=1;s.src='https://tp-em.com/NTU0MDU3.js?t=554057';document.head.appendChild(s)})();</script>
+
 <script src="/nav.js"></script>
 </body>
 </html>

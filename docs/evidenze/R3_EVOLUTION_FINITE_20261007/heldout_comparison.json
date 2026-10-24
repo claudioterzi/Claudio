@@ -1,0 +1,29 @@
+{
+  "suite_sha256": "0bbd4d955f596b788e85889c827ef30f6a53312a92d26a726302f9e8b11f2243",
+  "suite_unchanged": true,
+  "same_case_ids_and_expected_labels": true,
+  "baseline": {
+    "total": 56,
+    "passed": 17,
+    "failed": 39,
+    "invalid_expected": 46,
+    "invalid_rejected": 7,
+    "controls_expected": 10,
+    "controls_preserved": 10,
+    "exceptions": 11,
+    "invalid_admitted": 23
+  },
+  "trial": {
+    "total": 56,
+    "passed": 56,
+    "failed": 0,
+    "invalid_expected": 46,
+    "invalid_rejected": 46,
+    "controls_expected": 10,
+    "controls_preserved": 10,
+    "exceptions": 0,
+    "invalid_admitted": 0
+  },
+  "scope": "local numeric integrity only; no Jev or live inference",
+  "failures": []
+}

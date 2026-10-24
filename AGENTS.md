@@ -56,6 +56,12 @@ The 17/09/2026 patterns remain cumulative: `R3-022`, `R3-023`, `R3-024`, `R3-025
 
 Agreement between providers is not authority. Convergence is only a candidate signal and must remain compatible with Zero-Assunto, P5/P6, provenance, permissions, security boundaries and project integrity. A convergent result that violates any canonical rule is quarantined, not adopted. Divergent histories or conclusions stay separate until a discriminating test resolves them. Multiple models agreeing never promotes a claim to FATTO by itself.
 
+## Claudio owner priority — verifiable synergy «1+1=3» (2026-10-09)
+
+In R³ decisions where collaboration is relevant and already authorized, preserve distinct identities, causal evidence roots, divergent judgments, and recoverable original artifacts. Prefer combinations of complementary capabilities only when they promise additional **verifiable** value, not merely another agreeing model or replica. Preregister a comparison of A, B, and A+B; measure useful capability, correctness, critical errors, coordination cost, latency, and rollback. Claim «1+1=3» only if a combined capability survives independent review and R3-020; otherwise classify it as a candidate hypothesis. Never erase the two original contributions, bypass P5/P6, expand permissions, or reorder the foundation priorities.
+
+Owner instruction and bounded test contract: `docs/R3_VERIFIABLE_SYNERGY_1PLUS1_EQ3_20261009.md`. This candidate policy must be reviewed before adoption or capillary propagation; it does not activate external agents.
+
 ## Universal TypeSafe / Jev layer
 
 Every project uses the same TypeSafe transport and centrally reviewable policy when semantic judgment is useful. The canonical implementation is `typesafe_sister/client.py` + `typesafe_sister/policy.py` + `typesafe_sister/universal.py`. Do not create a second TypeSafe client, parallel judgment engine or project-local copy.
@@ -66,6 +72,19 @@ Every project uses the same TypeSafe transport and centrally reviewable policy w
 - Put shared and domain question wording in `typesafe_sister/policy.py` so questions can be reviewed in one place. Domain-specific questions may extend the common layer but must reuse the shared transport.
 - Send only bounded project state needed for the judgment; never send API keys, credentials or an entire private archive. Keep `TYPESAFE_API_KEY` server-side.
 - Validate representative cases and application behavior. Confidence describes the answer distribution, not truth or permission. Thresholds require local evidence and remain explicit in code.
+
+## Letta cooperation boundary
+
+R³∞ has a verified Letta API transport and an authenticated cooperation bridge in `raffaello_crypto_scout/app.py`.
+
+- Reuse the existing `httpx` transport and `POST /letta/cooperate`; do not reintroduce a parallel urllib-based Letta client.
+- Keep `LETTA_API_KEY` server-side. Never copy or echo it into prompts, repositories, logs, receipts or continuity artifacts.
+- The cooperation route uses the configured worker binding; callers must not choose arbitrary Letta agent IDs.
+- Bound prompts and pass only task-relevant context. Do not send an entire private archive merely because Letta can accept long context.
+- Letta output is `DATA_ONLY / ADVISORY` until R³∞ provenance, P5/P6 and promotion gates accept it.
+- HTTP 200, agent enumeration and fluent answers verify transport, not persistent-memory continuity.
+- Cross-agent continuity requires Phase A with A/B plus negative-control C; contamination resistance requires Phase B; provider independence requires Phase C.
+- Preserve historical transport failures as evidence. The 23/09 HTTP 403 was later resolved as Cloudflare Error 1010 against urllib, not erased from the record.
 
 ## Quantum Cube / Graphify structural layer
 
@@ -122,3 +141,16 @@ For Claudio-facing RaffaelloCrypto outputs:
 - Never let a confidence score or model opinion authorize a trade automatically; execution remains manual unless a separately verified execution policy is explicitly approved.
 - Recalculate arithmetic independently before presenting portfolio deltas. If component values do not sum to the reported total, flag the inconsistency instead of propagating it.
 - Distinguish live account data, historical snapshots, inferred balances and simulated valuations with explicit provenance labels.
+
+
+## System One provider rule — CLM / Jev
+
+The canonical semantic reflex is the shared **R3 System One layer**, not a provider name.
+
+- Reuse `typesafe_sister.client`, `typesafe_sister.policy` and `typesafe_sister.universal`; do not create a parallel CLM/Jev client or project-local judgment engine.
+- CLM-v0.1 is the preferred candidate when a deliberate `CLM_BASE_URL` is configured. TypeSafe/Jev remains the fallback/reference backend.
+- Keep Choice / Score / Noul policy wording provider-independent. Treat all outputs as advisory under P5/P6.
+- CLM's native `/v1/rank` may rank candidate actions/evidence/retrieval items. Do not pretend Jev executed native Rank.
+- A domain pack may switch its default from Jev to CLM only after same-rubric held-out evaluation shows equal-or-better verified utility; preserve latency, calibration and failure-mode evidence.
+- Never let a provider change broaden permissions, leak archives/secrets, or authorize external actions.
+- See `docs/R3_SYSTEMONE_CLM_2026-09-29.md`.

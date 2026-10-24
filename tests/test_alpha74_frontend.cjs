@@ -28,7 +28,7 @@ for(const c of canonical)for(const pol of ['luce','ombra'])for(const axis of ['n
 assert.equal(art.resolve({id:99,polarita:'luce',asse:'nord'}),null);
 assert.equal(art.resolve({id:1,polarita:'wrong',asse:'nord'}),null);
 class Element{
- constructor(){this.value='';this.textContent='';this.innerHTML='';this.disabled=false;this.children=[];this.handlers={};this.attrs={};this.classes=new Set();this.classList={add:x=>this.classes.add(x),remove:x=>this.classes.delete(x)};this.style={setProperty:(k,v)=>this.attrs[k]=v};}
+ constructor(){this.value='';this.textContent='';this.innerHTML='';this.disabled=false;this.children=[];this.handlers={};this.attrs={};this.classes=new Set();this.dataset={};this.classList={add:x=>this.classes.add(x),remove:x=>this.classes.delete(x)};this.style={setProperty:(k,v)=>this.attrs[k]=v};}
  addEventListener(k,fn){this.handlers[k]=fn;}setAttribute(k,v){this.attrs[k]=v;}removeAttribute(k){delete this.attrs[k];}
  appendChild(n){this.children.push(n);}append(...n){this.children.push(...n);}replaceChildren(){this.children=[];}
  scrollIntoView(){}focus(){}querySelectorAll(){return [];}showModal(){this.open=true;}close(){this.open=false;}
@@ -42,7 +42,7 @@ const AlphaVoice={
 };
 const window={addEventListener(){},speechSynthesis,AlphaVoice};
 const context=vm.createContext({document:{getElementById:$,createElement:()=>new Element()},
- window,speechSynthesis,AlphaVoice,
+ window,speechSynthesis,AlphaVoice,URLSearchParams,AbortController,setTimeout,clearTimeout,location:{search:''},matchMedia:()=>({matches:false}),
  SpeechSynthesisUtterance:class{constructor(text){this.text=text;}},
  crypto:{getRandomValues(a){a[0]=0;}},Uint32Array,Alpha74Art:art,console,alert:e=>{throw Error(e);},
  fetch:async(url,options)=>{
@@ -53,6 +53,8 @@ const context=vm.createContext({document:{getElementById:$,createElement:()=>new
  }});
 const html=fs.readFileSync(root+'/public/tarocchi-manuale-alpha.html','utf8');
 const js=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(x=>x[1]).join('\n');
+vm.runInContext(fs.readFileSync(root+'/public/alpha-request.js','utf8'),context);
+context.AlphaRequest=window.AlphaRequest;
 vm.runInContext(js,context);
 (async()=>{
  await new Promise(r=>setImmediate(r));
