@@ -14,6 +14,8 @@
     {"src":"public/**","use":"@vercel/static"}
   ],
   "routes": [
+    {"src":"/health","dest":"/rrremergen/api/main.py"},
+    {"src":"/models","dest":"/rrremergen/api/main.py"},
     {"src":"/api/rrremergen/(.*)","dest":"/rrremergen/api/main.py"},
     {"src":"/api/rrremergen","dest":"/rrremergen/api/main.py"},
     {"src":"/rrremergen/(.+\\.(html|js|css|svg|png|json))","dest":"/public/rrremergen/$1"},

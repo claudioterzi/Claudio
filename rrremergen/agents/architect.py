@@ -36,6 +36,33 @@ class Architect:
     def __init__(self, router):
         self.router = router
 
+    @staticmethod
+    def _blueprint_from_text(text: str, app_id: str) -> AppBlueprint:
+        """Validate generated JSON without inventing missing blueprint content."""
+        analysis = json_object(text)
+        for key in ('title', 'description'):
+            if not isinstance(analysis.get(key), str) or not analysis[key].strip():
+                raise ValueError(f'Blueprint privo di {key}')
+        for key in ('requirements', 'ui_components', 'integrations', 'constraints'):
+            if not isinstance(analysis.get(key, []), list) or any(not isinstance(x, str) for x in analysis.get(key, [])):
+                raise ValueError(f'Blueprint: {key} deve essere una lista di stringhe')
+        if not analysis.get('ui_components'):
+            raise ValueError('Blueprint privo di componenti UI')
+        for key in ('api_routes', 'data_models'):
+            if not isinstance(analysis.get(key, []), list) or any(not isinstance(x, dict) for x in analysis.get(key, [])):
+                raise ValueError(f'Blueprint: {key} deve essere una lista di oggetti')
+        return AppBlueprint(
+            id=app_id,
+            title=analysis['title'],
+            description=analysis['description'],
+            requirements=analysis.get('requirements', []),
+            data_models=analysis.get('data_models', []),
+            api_routes=analysis.get('api_routes', []),
+            ui_components=analysis.get('ui_components', []),
+            integrations=analysis.get('integrations', []),
+            constraints=analysis.get('constraints', []),
+        )
+
     async def analyze(self, user_prompt: str, app_id: str) -> AppBlueprint:
         """
         Analyze user requirements and create technical blueprint.
@@ -74,46 +101,39 @@ Create a detailed blueprint including:
 Return valid JSON only, no markdown or explanations.
 """
 
-        # Call LLM to analyze
+        # Call LLM to analyze. Local structured output gets one bounded retry on
+        # validation failure; the retry stays on the same local runner and never
+        # substitutes defaults or falls back to a cloud provider.
         token_limit = 2000
+        attempts = 1
         if self.router.mode == 'local':
             analysis_prompt = ('Architect agent. Return ONLY compact JSON with lowercase keys: '
                 'title, description (strings), requirements, ui_components, integrations, constraints (string lists), '
                 'data_models, api_routes (object lists). Routes use path and method. '
+                'Each data_models item MUST be an object like {"model":"Task","fields":{"id":"integer"}}; '
+                'each api_routes item MUST be an object like {"path":"/api/tasks","method":"GET"}. '
                 'Use at most 3 requirements, 1 component, 1 model, 2 routes. No markdown. App request:\n' + user_prompt)
             token_limit = 350
-        response = await self.router.complete(
-            prompt=analysis_prompt,
-            model=self.router.select_model('analysis'),
-            temperature=0.7,
-            max_tokens=token_limit
-        )
-
-        # Parse response
-        analysis = json_object(response['text'])
-        for key in ('title', 'description'):
-            if not isinstance(analysis.get(key), str) or not analysis[key].strip():
-                raise ValueError(f'Blueprint privo di {key}')
-        for key in ('requirements', 'ui_components', 'integrations', 'constraints'):
-            if not isinstance(analysis.get(key, []), list) or any(not isinstance(x, str) for x in analysis.get(key, [])):
-                raise ValueError(f'Blueprint: {key} deve essere una lista di stringhe')
-        if not analysis.get('ui_components'):
-            raise ValueError('Blueprint privo di componenti UI')
-        for key in ('api_routes', 'data_models'):
-            if not isinstance(analysis.get(key, []), list) or any(not isinstance(x, dict) for x in analysis.get(key, [])):
-                raise ValueError(f'Blueprint: {key} deve essere una lista di oggetti')
-
-        # Build blueprint
-        blueprint = AppBlueprint(
-            id=app_id,
-            title=analysis.get('title', 'Untitled App'),
-            description=analysis.get('description', ''),
-            requirements=analysis.get('requirements', []),
-            data_models=analysis.get('data_models', []),
-            api_routes=analysis.get('api_routes', []),
-            ui_components=analysis.get('ui_components', []),
-            integrations=analysis.get('integrations', []),
-            constraints=analysis.get('constraints', []),
-        )
-
-        return blueprint
+            attempts = 2
+        for attempt in range(attempts):
+            prompt = analysis_prompt
+            if attempt:
+                prompt = ('Architect agent retry. The previous response failed strict schema validation. '
+                    'Return ONLY one compact JSON object with exactly this shape: '
+                    '{"title":"name","description":"summary","requirements":["item"],'
+                    '"ui_components":["TaskList"],"integrations":[],"constraints":[],'
+                    '"data_models":[{"model":"Task","fields":{"id":"integer"}}],'
+                    '"api_routes":[{"path":"/api/tasks","method":"GET"}]}. '
+                    'Every list item must have the shown JSON type. No markdown. App request:\n' + user_prompt)
+            response = await self.router.complete(
+                prompt=prompt,
+                model=self.router.select_model('analysis'),
+                temperature=0.7,
+                max_tokens=token_limit
+            )
+            try:
+                return self._blueprint_from_text(response['text'], app_id)
+            except (TypeError, ValueError):
+                if attempt + 1 == attempts:
+                    raise
+        raise AssertionError('unreachable')

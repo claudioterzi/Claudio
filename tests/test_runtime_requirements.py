@@ -68,7 +68,8 @@ def test_canonical_runtime_has_only_unique_direct_requirements():
     requirements = direct_requirements(CANONICAL.read_text())
     # Protect both application families, rather than solving pruning by dropping one.
     assert {"flask", "pillow", "pyyaml", "redis", "google-genai"} <= requirements.keys()
-    assert {"fastapi", "mistralai", "google-generativeai", "sqlalchemy", "pymongo"} <= requirements.keys()
+    assert {"fastapi", "mistralai", "sqlalchemy", "pymongo"} <= requirements.keys()
+    assert "google-generativeai" not in requirements
 
 
 @pytest.mark.parametrize("directive", ["-r other.txt", "--requirement other.txt", "-c constraints.txt"])
