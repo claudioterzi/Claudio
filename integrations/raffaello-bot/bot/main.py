@@ -38,6 +38,8 @@ from bot.scacchiera_flow import (
 )
 from bot import sdq1
 from bot import raffaello, raffaello_http, raffaello_store
+from bot import music_backup, music_bot, music_http, music_service, music_store
+from bot.music_auth import MusicError
 from bot.terzo import build_terzo_conversations
 
 log_handler = logging.StreamHandler(sys.stdout)
@@ -51,6 +53,8 @@ logger = logging.getLogger("protocollo")
 
 COMMANDS = [
     BotCommand("start", "Dialoga con Raffaello"),
+    BotCommand("studio", "Apri Raffaello Studio"),
+    BotCommand("canzone", "Racconta la canzone che desideri"),
     BotCommand("letture", "Riprendi una lettura Alpha 74"),
     BotCommand("progetti", "Apri tutti i progetti"),
     BotCommand("collega", "Collega il sito a questa chat"),
@@ -78,6 +82,9 @@ class _Health(BaseHTTPRequestHandler):
         self.send_header("Content-Type", ctype)
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "no-referrer")
+        if ctype.startswith("text/html"):
+            self.send_header("Content-Security-Policy", "default-src 'none'; script-src 'self' https://telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; media-src 'self' https:; base-uri 'none'; form-action 'none'; frame-ancestors https://web.telegram.org https://*.telegram.org")
         self.end_headers()
         self.wfile.write(body)
 
@@ -86,6 +93,19 @@ class _Health(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         path = (self.path or "/").split("?", 1)[0]
+        if path == "/studio/config":
+            self._send(200, json.dumps(music_service.config()).encode(), "application/json; charset=utf-8")
+            return
+        if path == "/studio" or path.startswith("/studio/"):
+            try:
+                body, ctype = music_http.static_asset(path)
+                self._send(200, body, ctype)
+            except MusicError as exc:
+                self._send(exc.status, str(exc).encode(), "text/plain; charset=utf-8")
+            return
+        if path.startswith("/music/v1/"):
+            self._music("GET", path)
+            return
         if path.startswith("/raffaello/v1/"):
             self._raffaello("GET", path)
             return
@@ -138,11 +158,26 @@ class _Health(BaseHTTPRequestHandler):
             logger.error("Errore bridge: %s", type(exc).__name__)
             self._send(500, b'{"errore":"Errore temporaneo del collegamento."}', "application/json")
 
+    def _music(self, method, path):
+        try:
+            viewer = music_http.authenticate(self.headers)
+            data = self._body() if method == "POST" else {}
+            out = music_http.dispatch(method, path.removeprefix("/music/v1"), self.headers, data, viewer=viewer)
+            self._send(200, json.dumps(out, ensure_ascii=False).encode(), "application/json; charset=utf-8")
+        except (MusicError, raffaello_store.Problem) as exc:
+            self._send(exc.status, json.dumps({"error": getattr(exc, "code", "invalid_request"), "message": str(exc)}, ensure_ascii=False).encode(), "application/json; charset=utf-8")
+        except Exception as exc:
+            logger.error("Errore Studio: %s", type(exc).__name__)
+            self._send(500, b'{"error":"temporary_error","message":"Errore temporaneo dello Studio."}', "application/json")
+
     def do_DELETE(self):
         self._raffaello("DELETE", (self.path or "/").split("?", 1)[0])
 
     def do_POST(self) -> None:
         path = (self.path or "/").split("?", 1)[0]
+        if path.startswith("/music/v1/"):
+            self._music("POST", path)
+            return
         if path.startswith("/raffaello/v1/"):
             self._raffaello("POST", path)
             return
@@ -221,6 +256,9 @@ async def post_init(application: Application) -> None:
     webhook = await application.bot.get_webhook_info()
     if webhook.url:
         raise RuntimeError("Webhook già attivo. Completare il passaggio al polling prima di avviare questo processo.")
+    music_store.init()
+    await music_backup.startup(application.bot)
+    await asyncio.to_thread(music_backup.mutate, music_store.recover_after_restart)
     await application.bot.set_my_commands(COMMANDS)
     await application.bot.set_my_description(
         "Raffaello · Rosso Rosso Rosso. Domande libere, letture Alpha 74 e progetti. "
@@ -228,6 +266,7 @@ async def post_init(application: Application) -> None:
     )
     await application.bot.set_my_short_description("Raffaello · Rosso Rosso Rosso · Claudio Terzi")
     me = await application.bot.get_me()
+    await music_bot.attach(application, me.username)
     logger.info("Collegato come @%s. Polling.", me.username)
 
 
@@ -250,6 +289,8 @@ def build_application() -> Application:
         if isinstance(handler, ConversationHandler):
             handler.fallbacks.insert(0, CommandHandler("nuovo", raffaello.new))
         app.add_handler(handler)
+    for h in music_bot.handlers():
+        app.add_handler(h)
     for h in raffaello.handlers():
         app.add_handler(h)
     for h in build_command_handlers():
