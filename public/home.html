@@ -448,6 +448,16 @@
         <div class="cmd-name">SkyRights · fascicolo</div>
         <div class="cmd-desc">Scelte e documenti da preparare</div>
       </button>
+      <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/onda attiva')">
+        <div class="cmd-icon">🌊</div>
+        <div class="cmd-name">Attiva ONDA</div>
+        <div class="cmd-desc">Avvio e verifica sul PC connesso</div>
+      </button>
+      <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/onda stato')">
+        <div class="cmd-icon">◉</div>
+        <div class="cmd-name">Stato ONDA</div>
+        <div class="cmd-desc">Richiedi un controllo dal PC</div>
+      </button>
       <button class="cmd-btn" type="button" data-agora-command onclick="sendCmd('/riflessione')">
         <div class="cmd-icon">🌊</div>
         <div class="cmd-name">Riflessione</div>
@@ -461,6 +471,7 @@
     <p id="command-status" class="feed-status request-feedback" role="status" aria-live="polite" aria-atomic="true" data-state="idle"></p>
     <p id="result-meta" class="feed-status"></p>
     <pre id="result-text" class="result-text"></pre>
+    <button id="onda-execute" class="refresh-btn" data-agora-command type="button" hidden>Attiva ONDA sul PC</button>
     <button id="result-download" class="refresh-btn" type="button" hidden>Scarica il risultato JSON</button>
     <button id="request-recover" class="refresh-btn" type="button" hidden>Recupera l’ultima richiesta</button>
   </section>
