@@ -133,6 +133,9 @@ jobs:
       - name: Test R3-006 node reality manifest
         run: python -m unittest tests.test_node_reality_manifest
 
+      - name: Test R3-007 state-grounded verification
+        run: python -m unittest tests.test_verification_harness
+
       - name: Test JsonFileStore startup corruption guard
         run: |
           python - <<'PY'
