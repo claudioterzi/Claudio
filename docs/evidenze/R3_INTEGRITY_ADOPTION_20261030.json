@@ -1,0 +1,123 @@
+{
+  "schema": "R3-INTEGRITY-REPAIR/1",
+  "timestamp_utc": "2026-10-30T12:39:20.232327+00:00",
+  "actor": "Codex",
+  "classification": "PATCH_RETEST",
+  "state_at_receipt": "LOCAL_PASS_HOSTED_PENDING",
+  "base_commit": "3c5650cdd19ed64d16c9dff617fec87ffb7c201b",
+  "source_candidate": {
+    "pr": 121,
+    "head": "1141fd08dbfb0a57c19d8a964aa331302b9b3bcf",
+    "scope": "three modules plus their tests only; extended with evaluator, SAR format and empty claimed digest falsifiers"
+  },
+  "source_versions": {
+    "sdq1/benchmark_controlled.py": {
+      "base_blob": "8638a86b7ff514b841de2fe81b02d6c86be951f7",
+      "candidate_blob": "cda44024f03d77af9eddad1d410080f894192876",
+      "sha256": "0c9a0da17f74e8e6605509f782d7f22409ba6b59341b47c02cb9300ad42554a9"
+    },
+    "sdq1/backup.py": {
+      "base_blob": "8821c69eb33b5a91ce4a868982b0b54c8bfd7d86",
+      "candidate_blob": "20e4b660eee27d7422ab6c056f529ed781910718",
+      "sha256": "197c6075113823becf20a5fdd7eac6f7a0a18c9dd4401b1cf36879c96ca58006"
+    },
+    "typesafe_sister/redfrag_pipeline.py": {
+      "base_blob": "fa55ff94af8be8363320a2e4d570954b0fc1f8ad",
+      "candidate_blob": "807d6418338ceb57392f711e8e4327e82d07a121",
+      "sha256": "ffc0cffd13672ca87869247b74584c90278ad58ad7fffffff6d11df291b4aec2"
+    },
+    "tests/test_benchmark_controlled.py": {
+      "base_blob": "b0d42f845c30e553bc4b2341ac2eef2e80cb10fe",
+      "candidate_blob": "c9c84c39aa17b3421b30993e7ada0a6c4aaa4991",
+      "sha256": "c1b2a3005bf7fce99b34cd506ad27f04efa4d3d73b9860225180728a57d72c3d"
+    },
+    "tests/test_backup_recoverability.py": {
+      "base_blob": "4093cd423c9dc2affb90d210f8760dfa2aa2f84d",
+      "candidate_blob": "46341071b611abee65f1f03874894635846826a1",
+      "sha256": "cbc0c202fd346a3c56412fd33bdcff0cea88b77010a6537204d632d2a20dfa61"
+    },
+    "tests/test_redfrag_pipeline.py": {
+      "base_blob": "f4bfba23e741799c117b83399a1311cb5b337292",
+      "candidate_blob": "0b3b4eddf2ed6f08002dee42d829005dd0fb14b5",
+      "sha256": "288901c4d4178064c6cf038c43ca9399b90acec9726c048d1547f6320fc9b11f"
+    }
+  },
+  "falsification": {
+    "base_against_recovered_tests": {
+      "failed": 10,
+      "passed": 15
+    },
+    "additional_falsifiers": "Empty/malformed scoring criteria, JSON array serialization, invalid SAR format, explicit empty/non-string supplied digest"
+  },
+  "tests": {
+    "targeted": {
+      "passed": 29,
+      "subtests_passed": 18
+    },
+    "related_regression": {
+      "passed": 105,
+      "skipped": 1,
+      "subtests_passed": 122
+    },
+    "full_core": {
+      "command": "NO_PROXY=127.0.0.1,localhost,::1 R3_REDFRAG_PROVIDER=r3_clm python -m pytest -q --ignore=rrremergen --ignore=integrations/raffaello-bot",
+      "passed": 557,
+      "skipped": 1,
+      "subtests_passed": 887,
+      "seconds": 32.37,
+      "python": "3.12.14",
+      "pytest": "9.1.1",
+      "pip_check": "No broken requirements found."
+    },
+    "initial_full_core_attempt": {
+      "failed": 7,
+      "passed": 550,
+      "skipped": 1,
+      "subtests_passed": 887,
+      "diagnosis": "Six localhost tests failed because environment SOCKS proxy dependency was absent; one pinned historical fixture commit was missing. Installed httpx SOCKS support, excluded loopback from proxy, fetched the fixture refs, reran full core without application changes."
+    }
+  },
+  "verified_outcomes": [
+    "Wrong/partially correct completed runs receive no verified-success or efficiency credit",
+    "Modern backup without integrity rejected; restore verifies same in-memory snapshot",
+    "Full restore refused before writes; SAR scope and snapshot counts explicit",
+    "JSON/JSONL round-trip preserved and unsupported formats preflight-rejected",
+    "Full content digest checked; tail differences preserved; truncated CORE quarantined",
+    "One fingerprint per source versus two on prior path"
+  ],
+  "logs": {
+    "R3_INTEGRITY_CORE_PASS_20261030.log": {
+      "sha256": "7895c876db019dfd1515a10b9893ec5450328da293d6602f17c42845a2c5f795",
+      "bytes": 750
+    },
+    "R3_INTEGRITY_BASELINE_20261030.log.gz": {
+      "sha256": "64cb9c0f51f770981ae9107f64f7197c0739e5a980e7530f2352cfb4578a1e65",
+      "bytes": 3276,
+      "uncompressed": {
+        "sha256": "01cb71aac929c40d28ebf079614233cc9a3f1574384ac3be4c82d2a9079d93f4",
+        "bytes": 209754
+      }
+    }
+  },
+  "graphify": {
+    "version": "0.9.97",
+    "mode": "code-only AST",
+    "code_files": 721,
+    "nodes": 11098,
+    "edges": 27815,
+    "slice": "R3_INTEGRITY_IMPACT_20261030.json"
+  },
+  "runtime_access": {
+    "Claudio_PC": "OFFLINE",
+    "runtime_read": false,
+    "runtime_changed": false
+  },
+  "limits": [
+    "SAR writes atomic per file, not a whole-state transaction",
+    "Memory/VSS/router/config restore remains unsupported",
+    "SHA256 consistency does not authenticate authority",
+    "No live provider benchmark or cross-host/cross-provider continuity proof",
+    "No change to r3 services, ONDA runtime, provider routing or deployment configuration"
+  ],
+  "rollback": "Revert the adoption commit after inspecting current head; no data migration performed."
+}
