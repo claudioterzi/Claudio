@@ -1,0 +1,126 @@
+{
+  "schema": "R3-011-SOURCE-PROVENANCE-RECEIPT/1",
+  "created_at_utc": "2026-10-08T22:54:20Z",
+  "project": "R3-011 preservation of R3-007 postcondition-source provenance",
+  "decision": "KEEP_ISOLATED_RETEST",
+  "status": "CANDIDATE_L0_AUTHORITATIVE_SOURCE_PRESERVED_IN_SAMPLE",
+  "canonical_state": {
+    "repository": "claudioterzi/Claudio",
+    "main_commit": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+    "pr_76_head": "29f9523e2f3322286650e1d9e11db62da00bd380",
+    "pr_78_head": "88c89b6e9e45278538517e6bd8276bcf8b3e6a80",
+    "pr_118_head": "13a3380aa3172fa2ea3b04ba642df2d6b1b3d5cd",
+    "pr_119_head": "89309d5c72a1b58a2e43d41b6ca7d40ef6bcd3ae"
+  },
+  "candidate": {
+    "branch": "candidate/r3-011-source-provenance-20261009",
+    "base_receipt_commit": "f50b9d2faa6fdbfa8064f3c96d4ecfe7405dd9d1",
+    "preregistration_commit": "9eafa646b2a2f909278934860f57b5ea5f8ed705",
+    "technical_commit": "ed716a8aa9ebee368ce555fae7eb21ad5a98f4fe",
+    "retroactive_classification": "PATCH_RETEST",
+    "ahead_of_main_before_receipt": 6,
+    "behind_main": 0,
+    "pushed": false,
+    "merged": false,
+    "deployed": false
+  },
+  "r3_020_preregistration": {
+    "candidate_id": "R3C-r3011-source-provenance-20261009",
+    "file": "docs/evidenze/R3_011_SOURCE_PROVENANCE_PREREGISTRATION_20261008T225254Z.json",
+    "sha256": "b02f7cfbb93782ac284332920e3a4e241d935e274f6ba38157742a14d2edb8a6",
+    "registered_before_baseline_execution_and_patch": true
+  },
+  "falsification": {
+    "base_commit": "f50b9d2faa6fdbfa8064f3c96d4ecfe7405dd9d1",
+    "baseline": {
+      "valid_authoritative_records": 2,
+      "distinct_postcondition_sources": 2,
+      "exported_postcondition_sources": 0,
+      "generic_record_sources": [
+        "R3-007",
+        "R3-007"
+      ],
+      "payload_hashes_distinct": true,
+      "direct_sourceless_authoritative_state_accepted": true,
+      "failure": "The payload hashes differed, but the exact authoritative source could not be recovered from the EvidenceRecord export without the unavailable original payload."
+    },
+    "trial": {
+      "valid_authoritative_records": 2,
+      "exported_postcondition_sources": 2,
+      "exported_sources": [
+        "filesystem:store-a/state.bin#read_bytes",
+        "filesystem:store-b/state.bin#read_bytes"
+      ],
+      "direct_sourceless_authoritative_state_refused": true,
+      "proxy_state": "IPOTESI",
+      "proxy_postcondition_source": null,
+      "previous_missing_source_refused": true,
+      "previous_nonfactual_promotion_support": 0
+    },
+    "primary_gain": 2,
+    "critical_regressions": 0
+  },
+  "contract": {
+    "field": "EvidenceRecord.postcondition_source",
+    "immutable_with_record": true,
+    "required_for": "AUTHORITATIVE_STATE",
+    "forbidden_for_non_authoritative_record_types": true,
+    "populated_from": "validated R3-007 AUTHORITATIVE evidence only",
+    "source_string_proves_domain_authority": false,
+    "payload_hash_replaced": false,
+    "evidence_ref_replaced": false,
+    "second_verifier_created": false
+  },
+  "verification": {
+    "baseline_command": "Create two valid authoritative R3-007 records with distinct postcondition_source values on base f50b9d2 and inspect dataclass/export fields.",
+    "trial_command": "Replay the same two records plus source-less direct AUTHORITATIVE_STATE, proxy mismatch and previous weak-admission controls.",
+    "test_command": "python -m unittest tests.test_evidence_graph tests.test_evolution_kernel tests.test_benchmark_integrity tests.test_benchmark_controlled tests.test_evidence_review",
+    "evidence_graph_test_result": "20/20 PASS",
+    "combined_relevant_test_result": "53/53 PASS",
+    "py_compile": "PASS",
+    "yaml_parse": "PASS",
+    "json_parse": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "r3_020_decision": {
+    "status": "HOLD",
+    "primary_metric": "exported_authoritative_postcondition_sources",
+    "baseline": 0,
+    "trial": 2,
+    "primary_gain": 2.0,
+    "critical_regressions": {
+      "valid_authoritative_decisions": 0.0,
+      "previous_unsafe_admissions": 0.0,
+      "authority_expansion": 0.0
+    },
+    "reason": "The frozen local source-preservation falsifier passes, but independent out-of-sample and hosted review remain absent.",
+    "auto_apply_eligible": false,
+    "promotion_authorized": false
+  },
+  "artifact_hashes": {
+    "preregistration_sha256": "b02f7cfbb93782ac284332920e3a4e241d935e274f6ba38157742a14d2edb8a6",
+    "evidence_graph_sha256": "e7c29078d6ea8686425f972459a7b3fbb0cc2f7a424809b2867162a4729de60b",
+    "tests_sha256": "61b3536bbfec6fa2343a8d3340e0f60a5772e235d0a3abf9a6a0707c2c25738d",
+    "trial_output_sha256": "12b26209bce8b8af3b7a1b8bd20f6a9d797814a983b6b9e17d049bc3d6a5636d",
+    "trial_graph_sha256": "13cca61214c2fdd5e904cb38c2e8a8d5b84e937ab18430b60282a912db28e0fd"
+  },
+  "effects": {
+    "provider_requests": 0,
+    "inference_executed": false,
+    "secrets_read": false,
+    "spend": false,
+    "cloud_write": false,
+    "production_change": false,
+    "deletion": false
+  },
+  "blocker": "The exact source identifier now survives local export, but neither the source's real domain authority nor backward compatibility with external Evidence Graph consumers has received independent or hosted review.",
+  "next_action": "Review the additive record field and run hosted compatibility checks against serialized R3-EVIDENCE-GRAPH/1 consumers; then exercise an independently prepared source-provenance fixture without changing the contract after results.",
+  "completion_criterion": "Exact candidate passes hosted and compatibility review; every AUTHORITATIVE_STATE preserves a public-safe exact source, source-less authoritative records fail closed, proxy evidence remains non-authoritative, previous admission falsifiers stay at zero and external consumers accept the additive schema or receive an explicit version migration.",
+  "resume_trigger": "Hosted compatibility result, reviewed consumer inventory, independent provenance fixture or new R3-011 source-loss counterexample.",
+  "limits": [
+    "A preserved source string is provenance metadata, not proof that the source is authoritative.",
+    "The additive field changes exported graph hashes and requires compatibility review before adoption.",
+    "No private path, payload, credential or secret was introduced; test sources are synthetic public-safe identifiers.",
+    "No provider inference, production action, merge or deployment occurred."
+  ]
+}

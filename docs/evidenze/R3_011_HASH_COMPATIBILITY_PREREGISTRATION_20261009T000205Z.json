@@ -1,0 +1,58 @@
+{
+  "schema": "R3-020-PREREGISTRATION/1",
+  "candidate_id": "R3C-r3011-hash-compatibility-20261009",
+  "created_at_utc": "2026-10-09T00:02:05Z",
+  "task": "R3-011 serialized consumer inventory and backward-compatible graph hashing",
+  "retroactive_classification": "PATCH_RETEST",
+  "base_commit": "974b99edf1881820468326abfb1f12a6e7bf7334",
+  "canonical_main_observed": "e01b98a0d9a3a1d135b172088949dd1a5bd79dff",
+  "prediction": "A non-authoritative R3-EVIDENCE-GRAPH/1 fixture that had a stable export on f50b9d2 changes graph_sha256 on 974b99e solely because postcondition_source:null is serialized; omitting only that absent optional key will restore the legacy hash while retaining exact source binding and source-sensitive hashes for AUTHORITATIVE_STATE.",
+  "prediction_sha256": "cb8b4422c9cde7ffadb924a70b39f22f56a8d9867d0b54c32370c3e2a71183a7",
+  "frozen_fixture": {
+    "records": [
+      {
+        "record_id": "A",
+        "version": "1",
+        "claim": "alpha"
+      },
+      {
+        "record_id": "B",
+        "version": "1",
+        "claim": "beta"
+      }
+    ],
+    "edge": {
+      "edge_id": "related",
+      "relation": "RELATED",
+      "basis": "INFERRED",
+      "rationale": "structural sensor"
+    },
+    "timestamp": "2026-09-21T00:00:00+00:00"
+  },
+  "primary_metric": {
+    "name": "legacy_non_authoritative_hash_matches",
+    "baseline_expected": 0,
+    "candidate_minimum": 1,
+    "maximum": 1
+  },
+  "critical_regression_checks": [
+    "authoritative source remains exported exactly",
+    "distinct authoritative sources produce distinct graph_sha256 values",
+    "source-less AUTHORITATIVE_STATE remains fail-closed",
+    "proxy evidence remains non-authoritative",
+    "previous admission falsifiers remain closed",
+    "all relevant deterministic tests pass"
+  ],
+  "consumer_inventory_scope": [
+    "repository Python, JavaScript, TypeScript and JSON consumers",
+    "schema literals, EvidenceGraph imports and graph_sha256 readers"
+  ],
+  "adoption_rule": "HOLD unless the compatibility falsifier passes without weakening source binding and hosted or independent review is available; promotion_authorized is always false in this run.",
+  "rollback": "Drop the isolated branch; no canonical, provider, cloud or production state is changed.",
+  "authority": {
+    "promotion_authorized": false,
+    "merge_authorized": false,
+    "deploy_authorized": false,
+    "provider_execution_authorized": false
+  }
+}
