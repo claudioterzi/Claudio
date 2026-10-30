@@ -28,6 +28,11 @@ global_layers:
   - id: TYPESAFE_JEV
     source: typesafe_sister/
     inherit: SHARED_SERVICE
+  - id: OMNIROUTE_GATEWAY
+    source: sdq1/llm/providers/omniroute_provider.py
+    registry: sdq1/llm/router.py
+    inherit: SHARED_SERVICE
+    rule: optional_transport_router_only_never_authority
   - id: ZERO_ASSUNTO_P5_P6
     source: AGENTS.md
     inherit: REQUIRED

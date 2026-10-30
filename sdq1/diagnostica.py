@@ -90,6 +90,7 @@ def esegui_diagnostica(
         "deepseek":   "DEEPSEEK_API_KEY",
         "grok":       "XAI_API_KEY",
         "perplexity": "PERPLEXITY_API_KEY",
+        "omniroute":  "OMNIROUTE_API_KEY oppure OMNIROUTE_LOCAL_NO_AUTH=1 su loopback",
     }
     mancanti_con_env = [
         f"{k} [{_CHIAVI_ENV.get(k, k.upper()+'_API_KEY')}]"

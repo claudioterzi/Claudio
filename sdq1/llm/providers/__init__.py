@@ -4,6 +4,7 @@ from .anthropic_provider import AnthropicProvider
 from .openai_provider import OpenAIProvider, DeepSeekProvider, PerplexityProvider, GrokProvider, MiniMaxProvider, MistralProvider
 from .gemini_provider import GeminiProvider
 from .ollama_provider import OllamaProvider
+from .omniroute_provider import OmniRouteProvider
 
 __all__ = [
     "ProviderBase",
@@ -17,5 +18,6 @@ __all__ = [
     "OllamaProvider",
     "GrokProvider",
     "MiniMaxProvider",
+    "OmniRouteProvider",
     "MistralProvider",
 ]
