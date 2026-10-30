@@ -91,6 +91,73 @@ class BackupRecoverabilityTests(unittest.TestCase):
             },
         )
 
+    def test_snapshot_counts_are_not_restored_memory_counts(self):
+        result = backup.ripristina_backup(self._full_backup())
+        self.assertEqual(result["restore_scope"], "SAR_ONLY")
+        self.assertFalse(result["restore_complete"])
+        self.assertEqual(result["memoria_entries"], 0)
+        self.assertEqual(result["vss_entries"], 0)
+        self.assertEqual(result["snapshot_memoria_entries"], 1)
+        self.assertEqual(result["snapshot_vss_entries"], 1)
+
+    def test_json_arrays_and_jsonl_records_keep_their_formats_after_restore(self):
+        records = [{"value": 1}, {"value": 2}]
+        array_file = self.sar / "array.json"
+        log_file = self.sar / "events.jsonl"
+        array_file.write_text(json.dumps(records), encoding="utf-8")
+        log_file.write_text("\n".join(json.dumps(r) for r in records), encoding="utf-8")
+        path = self._full_backup()
+        array_file.unlink()
+        log_file.unlink()
+        backup.ripristina_backup(path)
+        self.assertEqual(json.loads(array_file.read_text(encoding="utf-8")), records)
+        self.assertEqual([json.loads(line) for line in log_file.read_text(encoding="utf-8").splitlines()], records)
+
+    def test_invalid_sar_format_is_rejected_before_any_file_is_restored(self):
+        for invalid_name, invalid_content in (("bad.jsonl", {}), ("bad.txt", [])):
+            with self.subTest(name=invalid_name):
+                path = self._full_backup()
+                data = json.loads(path.read_text(encoding="utf-8"))
+                data["sar"][invalid_name] = invalid_content
+                data["integrity"]["payload_sha256"] = backup._snapshot_sha256(data)
+                path.write_text(json.dumps(data), encoding="utf-8")
+                (self.sar / "state.json").write_text('{"value": 2}', encoding="utf-8")
+                before = (self.sar / "state.json").read_bytes()
+                with self.assertRaises(backup.BackupIntegrityError):
+                    backup.ripristina_backup(path)
+                self.assertEqual((self.sar / "state.json").read_bytes(), before)
+
+
+    def test_complete_restore_request_is_refused_before_writes(self):
+        path = self._full_backup()
+        (self.sar / "state.json").write_text('{"value": 2}', encoding="utf-8")
+        before = (self.sar / "state.json").read_bytes()
+        with self.assertRaises(backup.BackupIntegrityError):
+            backup.ripristina_backup(path, require_complete=True)
+        self.assertEqual((self.sar / "state.json").read_bytes(), before)
+
+    def test_removing_integrity_cannot_downgrade_new_backup_to_legacy(self):
+        path = self._full_backup()
+        data = json.loads(path.read_text(encoding="utf-8"))
+        del data["integrity"]
+        path.write_text(json.dumps(data), encoding="utf-8")
+        before = (self.sar / "state.json").read_bytes()
+        with self.assertRaises(backup.BackupIntegrityError):
+            backup.ripristina_backup(path)
+        self.assertEqual((self.sar / "state.json").read_bytes(), before)
+
+    def test_restore_checks_the_same_snapshot_it_writes(self):
+        path = self._full_backup()
+        valid = path.read_text(encoding="utf-8")
+        tampered = json.loads(valid)
+        tampered["sar"]["state.json"]["value"] = 999
+        before = (self.sar / "state.json").read_bytes()
+        # A second read must not validate different bytes from those restored.
+        with patch.object(Path, "read_text", side_effect=[json.dumps(tampered), valid]):
+            with self.assertRaises(backup.BackupIntegrityError):
+                backup.ripristina_backup(path)
+        self.assertEqual((self.sar / "state.json").read_bytes(), before)
+
     def test_partial_backup_is_preserved_but_never_claimed_complete(self):
         path = backup.crea_backup(
             memoria=BrokenMemory(),
