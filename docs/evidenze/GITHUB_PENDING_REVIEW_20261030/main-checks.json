@@ -171,8 +171,8 @@
     {
       "id": 124253143265,
       "name": "CI + Security",
-      "status": "in_progress",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "success",
       "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253143265"
     },
     {
@@ -189,5 +189,6 @@
       "conclusion": "success",
       "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253142837"
     }
-  ]
+  ],
+  "final_assessment": "All 14 completed relevant checks succeeded on code main c61ebada59cc16a1e18c667950c81bf63e25bc4d. Ten unrelated conditional checks skipped; independent scheduled caccia workflow still running. Documentation-only audit commits do not change tested code."
 }
