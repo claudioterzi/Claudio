@@ -1,0 +1,20 @@
+{
+  "scope": "real authenticated SSH/SFTP on loopback only",
+  "ionos_host_tested": false,
+  "host_key_verification": "RejectPolicy with pinned temporary host key",
+  "paramiko": "5.1.0",
+  "results": [
+    {
+      "case": "normal",
+      "passed": true
+    },
+    {
+      "case": "publish",
+      "passed": true
+    },
+    {
+      "case": "both",
+      "passed": true
+    }
+  ]
+}
