@@ -102,6 +102,8 @@ output/perfume_registry.sqlite3*
 output/private_r3/
 R3_PRIVATE_*
 
+# Generated public Mini App preview, built by export_studio_preview.mjs
+/output/raffaello-studio-preview/
 # Versioned indexes and original corpus required by the lazy readers.
 !public/libro/indice.json
 !public/libro/provenienza.json
