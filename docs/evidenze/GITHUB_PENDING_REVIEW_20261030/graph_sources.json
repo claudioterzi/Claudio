@@ -1,0 +1,411 @@
+[
+  {
+    "pr": 88,
+    "initial_head": "9e56088777e5afd5f14bb78f302eed9eb8c76cf5",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/test_runner.yml",
+      "docs/TERZI_FLOW_PROTOCOL.md",
+      "terzi_flow/__init__.py",
+      "terzi_flow/backends.py",
+      "terzi_flow/core.py",
+      "tests/test_terzi_flow.py"
+    ]
+  },
+  {
+    "pr": 164,
+    "initial_head": "78ccd36510e3228de0903aea83835a065682ee96",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/ci_security.yml",
+      "rrremergen/integrations/ionos/deploy.py",
+      "tests/test_ionos_deploy_security.py",
+      "tests/test_ionos_release.py"
+    ]
+  },
+  {
+    "pr": 49,
+    "initial_head": "a392149d382bc730b23c0796b3140655430a21a7",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      "docs/R3_RESONANCE_CAUSAL_INDEPENDENCE_CANDIDATE_0_2.md"
+    ]
+  },
+  {
+    "pr": 50,
+    "initial_head": "3903b2b9d7f80209e0e1f8fb79499b5f0d69146e",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      "docs/CUBO_VIVO_2D_SPEC.md",
+      "docs/PROGETTI_VIVI_SPEC.md",
+      "docs/candidates/CLAUDE_MEM_CANDIDATE.md",
+      "docs/candidates/HERDR_CANDIDATE.md",
+      "docs/candidates/OMNIROUTE_CANDIDATE.md",
+      "public/cubo-vivo-2d-data.js",
+      "public/cubo-vivo-2d.css",
+      "public/cubo-vivo-2d.html",
+      "public/cubo-vivo-2d.js",
+      "public/progetti-registry.js",
+      "public/progetti-vivi.css",
+      "public/progetti-vivi.html",
+      "public/progetti-vivi.js",
+      "public/progetto-vivo.css",
+      "public/progetto-vivo.html",
+      "public/progetto-vivo.js",
+      "studio/__init__.py",
+      "studio/capabilities/__init__.py",
+      "studio/capabilities/openmontage.py",
+      "vercel.json"
+    ]
+  },
+  {
+    "pr": 52,
+    "initial_head": "259c4e3e9d9f9c87e55097e90710673ac937e48d",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      "r3/railway.json"
+    ]
+  },
+  {
+    "pr": 63,
+    "initial_head": "90195e11ac154b0a99b5a657ac49433d65b90fca",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      "tests/test_fabbrica_typesafe.py",
+      "typesafe_sister/app.py"
+    ]
+  },
+  {
+    "pr": 91,
+    "initial_head": "b68e31ff9cf09fc5d0abecbc08292dd9a83f18a0",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      "docs/R3_CONTEXT_POINTER_MANIFEST_2026-09-28.md",
+      "public/r3-context-pointer-manifest.json",
+      "scripts/r3_context_pointer_manifest.py",
+      "tests/test_r3_context_pointer_manifest.py"
+    ]
+  },
+  {
+    "pr": 96,
+    "initial_head": "5afbc3364075a81df3a32e3014073217faec6620",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      "docs/R3_CLM_REDFRAG_CANDIDATE_2026-09-28.md",
+      "docs/evidenze/R3_CLM_REDFRAG_BENCH_2026-09-28.json",
+      "tests/test_r3_clm.py",
+      "typesafe_sister/client.py"
+    ]
+  },
+  {
+    "pr": 113,
+    "initial_head": "62200961b164471f1a1594ad05e96e157c3e2830",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/r3_rrr_control.yml",
+      "R3_REUSE_LESSONS.yaml",
+      "docs/R3_SERVICE_RESILIENCE_20261005.md",
+      "docs/R3_SERVICE_RESILIENCE_CANDIDATE_20261005.json",
+      "docs/R3_SYNC_PROGRESS_CANDIDATE_20261005.md",
+      "docs/evidenze/R3_SUPERVISOR_CI_CANDIDATE_20261007.jsonl",
+      "r3/supervise_node.py",
+      "r3/sync.py",
+      "r3/sync_progress.py",
+      "tests/test_r3_failure_cooldown.py",
+      "tests/test_r3_supervise_node.py",
+      "tests/test_r3_supervise_node_review.py",
+      "tests/test_r3_supervisor_adoption_resume.py",
+      "tests/test_r3_supervisor_escaped_descendants.py",
+      "tests/test_r3_sync_progress.py"
+    ]
+  },
+  {
+    "pr": 120,
+    "initial_head": "24678d5c80533eb0402d7f48e3037eb51b2006db",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      "R3_CAPILLARY_INHERITANCE.yaml",
+      "docs/R3_011_HOSTED_REVIEW_2026-10-09.md",
+      "docs/evidenze/R3_011_EVIDENCE_ADMISSION_20261008T215704Z.json",
+      "docs/evidenze/R3_011_EVIDENCE_ADMISSION_PREREGISTRATION_20261008T215449Z.json",
+      "docs/evidenze/R3_011_HASH_COMPATIBILITY_20261009T000326Z.json",
+      "docs/evidenze/R3_011_HASH_COMPATIBILITY_PREREGISTRATION_20261009T000205Z.json",
+      "docs/evidenze/R3_011_PUBLICATION_READY_20261009T020017Z.json",
+      "docs/evidenze/R3_011_R3_007_REPLAY_20261009T005355Z.json",
+      "docs/evidenze/R3_011_R3_007_REPLAY_PREREGISTRATION_20261009T005211Z.json",
+      "docs/evidenze/R3_011_SOURCE_PROVENANCE_20261008T225420Z.json",
+      "docs/evidenze/R3_011_SOURCE_PROVENANCE_PREREGISTRATION_20261008T225254Z.json",
+      "sdq1/evidence_graph.py",
+      "tests/test_evidence_graph.py"
+    ]
+  },
+  {
+    "pr": 43,
+    "initial_head": "a6751f1d30d46c96e4dca0ec3f962a478d31c483",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      "TEST_RETRY_2026-09-14.txt",
+      "api/tarot_feedback.py",
+      "public/a74-feedback.js",
+      "public/a74-guest.js",
+      "public/a74-invite-loader.js",
+      "public/a74-invite-personalize.js",
+      "public/alpha74-art.js",
+      "public/invito-fabrizio.html",
+      "public/invito-jorge.html",
+      "public/invito-mamma.html",
+      "test-alpha74-marker.txt",
+      "vercel.json"
+    ]
+  },
+  {
+    "pr": 134,
+    "initial_head": "56e466d80a44348682232343590ddb83db961df2",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/test_runner.yml",
+      "api/porta_consiglio.py",
+      "docs/evidenze/R3_PORTA_VERCEL_ESM_20261013.json",
+      "docs/evidenze/R3_PORTA_VERCEL_PREREG_20261013.json",
+      "docs/evidenze/R3_PORTA_VERCEL_PREVIEW_CORRECTION_20261013.json",
+      "middleware.js",
+      "porta/README.md",
+      "porta/aree.json",
+      "porta/consiglio.py",
+      "porta/core.mjs",
+      "porta/dati.mjs",
+      "porta/genera_mappa.py",
+      "porta/mappa.json",
+      "porta/porta.mjs",
+      "porta/sentinella.mjs",
+      "public/porta.html",
+      "tests/check_porta_vercel_build.cjs",
+      "tests/test_porta.mjs",
+      "tests/test_porta_consiglio.py",
+      "tests/test_porta_vercel.mjs",
+      "vercel.json"
+    ]
+  },
+  {
+    "pr": 119,
+    "initial_head": "38067659bbdfcb284a2e7014b26c0eb3eba824d5",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      "MEMORIA_PROGETTO.md",
+      "R3_CONTINUITY_LEDGER.json",
+      "R3_REUSE_LESSONS.yaml",
+      "R3_UNIVERSAL_BACKUP.yaml",
+      "R3_WORK_QUEUE.yaml",
+      "docs/R3_JEV_ACCESS_AND_SKILLS_20261007.md",
+      "docs/R3_SKILL_DISCOVERY_20261007.md",
+      "docs/evidenze/R3_BACKUP_DRIVE_ROUNDTRIP_20261007.json",
+      "docs/evidenze/R3_BACKUP_LOCAL_RESTORE_20261007.json",
+      "docs/evidenze/R3_JEV_ACCESS_CANDIDATE_20261007.json",
+      "docs/evidenze/R3_JEV_ACCESS_INSPECTION_20261007.json",
+      "docs/evidenze/R3_JEV_COORDINATION_REQUEST_20261009.json",
+      "docs/evidenze/R3_JEV_COORDINATION_REQUEST_20261009_V2.json",
+      "docs/evidenze/R3_JEV_SKILL_ATTEMPT_20261007.json",
+      "docs/evidenze/R3_JEV_SKILL_ATTEMPT_20261007_V2.json",
+      "docs/evidenze/R3_JEV_SKILL_REQUEST_20261007.json",
+      "docs/evidenze/R3_JEV_SKILL_REQUEST_20261007_V2.json",
+      "tests/test_typesafe_gateway_caller.py",
+      "tests/test_typesafe_skill_suggestion.py",
+      "typesafe_sister/policy.py",
+      "typesafe_sister/smoke.py"
+    ]
+  },
+  {
+    "pr": 117,
+    "initial_head": "e9f0192f6d2693780818e8eecec5c3ff7f35c672",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      "MEMORIA_PROGETTO.md",
+      "R3_CONTINUITY_LEDGER.json",
+      "R3_WORK_QUEUE.yaml",
+      "docs/evidenze/R3_CONTINUITY_RESUME_20261006.json"
+    ]
+  },
+  {
+    "pr": 79,
+    "initial_head": "8232d2cfc3e5f5e22c22c6c378c70a0a716da9d5",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".env.example",
+      ".github/workflows/omniroute_candidate_a_3851.yml",
+      ".github/workflows/omniroute_f0_npm_package.yml",
+      ".github/workflows/omniroute_f0_runtime_inventory.yml",
+      ".github/workflows/omniroute_live_smoke.yml",
+      ".github/workflows/omniroute_npm_smoke.yml",
+      ".github/workflows/test_runner.yml",
+      "R3_CAPILLARY_INHERITANCE.yaml",
+      "docs/R3_GPT_NODE_OMNIROUTE_2026-09-21.md",
+      "docs/R3_OMNIROUTE_GATEWAY_2026-09-21.md",
+      "r3/gpt_omniroute_node.py",
+      "scripts/omniroute_candidate_a_3851.sh",
+      "sdq1/config/sdq1.yaml",
+      "sdq1/diagnostica.py",
+      "sdq1/llm/providers/__init__.py",
+      "sdq1/llm/providers/omniroute_provider.py",
+      "sdq1/llm/router.py",
+      "tests/test_omniroute_provider.py",
+      "tests/test_r3_gpt_omniroute_node.py"
+    ]
+  },
+  {
+    "pr": 97,
+    "initial_head": "6619e7d0222368f932c0797144ec2aa8de3d5b5e",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/r3_clm_live_probe.yml",
+      ".github/workflows/test_runner.yml",
+      "benchmarks/r3_clm_redflag_cases.json",
+      "docs/R3_CLM_REDFLAG_CANDIDATE_2026-09-28.md",
+      "scripts/r3_clm_eval_tuned_head.py",
+      "scripts/r3_clm_hard_negative_builder.py",
+      "scripts/r3_clm_live_probe.py",
+      "scripts/r3_clm_prepare_choice_dataset.py",
+      "scripts/r3_clm_specialize_bootstrap.py",
+      "tests/test_r3_clm_live_probe.py",
+      "tests/test_systemone_clm.py",
+      "tests/test_typesafe_redflag.py",
+      "typesafe_sister/client.py",
+      "typesafe_sister/policy.py",
+      "typesafe_sister/redflag.py"
+    ]
+  },
+  {
+    "pr": 81,
+    "initial_head": "6436923e98b31f170fbbc793af4d4e05b170819b",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/test_runner.yml",
+      "AGENTS.md",
+      "R3_CANONICAL_STACK.yaml",
+      "R3_CAPILLARY_INHERITANCE.yaml",
+      "docs/R3_FOUNDATION_MAP_2026-09-22.md",
+      "tests/test_r3_canonical_stack.py"
+    ]
+  },
+  {
+    "pr": 80,
+    "initial_head": "2dbb5557edf6617eb5b0673984585bea844e3037",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/test_runner.yml",
+      "docs/R3_BODY_ARCHITECTURE_V0_3.md",
+      "docs/R3_BODY_MCK_LOOP_2026-09-22.md",
+      "sdq1/body_continuity_sim.py",
+      "sdq1/body_mck_loop.py",
+      "sdq1/verification_harness.py",
+      "skills/state-grounded-verification/SKILL.md",
+      "tests/test_body_mck_loop.py",
+      "tests/test_verification_harness.py"
+    ]
+  },
+  {
+    "pr": 78,
+    "initial_head": "1955cf80a8c730bf137611cef426d4470bcdedb7",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/test_runner.yml",
+      "R3_CAPILLARY_INHERITANCE.yaml",
+      "sdq1/evidence_graph.py",
+      "tests/test_evidence_graph.py"
+    ]
+  },
+  {
+    "pr": 77,
+    "initial_head": "f71b615644c0089bb68a0deddfb205fa41a05a25",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/test_runner.yml",
+      "R3_NODE_REALITY.json",
+      "tests/test_node_reality_manifest.py"
+    ]
+  },
+  {
+    "pr": 76,
+    "initial_head": "a2a39baa0b957e937ac493a9c7ba5119f3a26acf",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/test_runner.yml",
+      "R3_CAPILLARY_INHERITANCE.yaml",
+      "sdq1/verification_harness.py",
+      "skills/state-grounded-verification/SKILL.md",
+      "tests/test_verification_harness.py"
+    ]
+  },
+  {
+    "pr": 74,
+    "initial_head": "d659cfb2059acdfa02f6c27ac0fcbb20150e0838",
+    "initial_base": "450a38f9292fb95d2fec65c293c00052d3d265f1",
+    "paths": [
+      ".github/workflows/r3_022_live_replay.yml",
+      ".github/workflows/test_runner.yml",
+      "api/r3_022_replay.py",
+      "docs/R3_022_REPLAY_V2.md",
+      "scripts/r3_022_live_replay.py",
+      "sdq1/continuity_replay.py",
+      "sdq1/sar/archivio_vivente.py",
+      "tests/test_r3_022_continuity_replay.py",
+      "vercel.json"
+    ]
+  },
+  {
+    "pr": 121,
+    "initial_head": "1141fd08dbfb0a57c19d8a964aa331302b9b3bcf",
+    "initial_base": "a4a06d0aef51708c61f4fc5d0f863b1eba832165",
+    "paths": [
+      ".github/workflows/ci_security.yml",
+      ".github/workflows/sdq1_daily.yml",
+      ".github/workflows/test_runner.yml",
+      "R3_CAPILLARY_INHERITANCE.yaml",
+      "R3_REUSE_LESSONS.yaml",
+      "R3_WORK_QUEUE.yaml",
+      "docs/R3_INTEGRITY_CI_20261009.md",
+      "docs/evidenze/R3_INTEGRITY_CI_20261009.json",
+      "docs/evidenze/R3_MEMORY_SYNC_SNAPSHOT_RECONSTRUCTION_PREREG_20261009.json",
+      "docs/evidenze/R3_SNAPSHOT_INSTALL_BASELINE_CORRECTION_20261010.json",
+      "docs/evidenze/R3_SNAPSHOT_INSTALL_CONSUMER_DELTA_20261010.json",
+      "docs/evidenze/R3_SNAPSHOT_INSTALL_PREREG_20261010.json",
+      "integrations/raffaello-bot/bot/main.py",
+      "integrations/raffaello-bot/bot/network.py",
+      "integrations/raffaello-bot/tests/test_network.py",
+      "output/daily_2026-10-09.txt",
+      "output/daily_2026-10-10.txt",
+      "output/scan_report.json",
+      "output/snapshots/snapshot_2026-10-09_14-34-03.json",
+      "output/snapshots/snapshot_2026-10-10_13-54-36.json",
+      "public/r3-memory.js",
+      "public/r3-status.json",
+      "r3/sync.py",
+      "sdq1/__main__.py",
+      "sdq1/backup.py",
+      "sdq1/benchmark_controlled.py",
+      "sdq1/notifiche.py",
+      "sdq1/snapshot.py",
+      "tests/r3-memory-integrity.cjs",
+      "tests/test_backup_recoverability.py",
+      "tests/test_benchmark_controlled.py",
+      "tests/test_ci_failure_propagation.py",
+      "tests/test_orchestra.py",
+      "tests/test_perfume_restore.py",
+      "tests/test_r3_sync_startup.py",
+      "tests/test_redfrag_pipeline.py",
+      "tests/test_snapshot_consumers.py",
+      "tests/test_snapshot_solution.py",
+      "typesafe_sister/redfrag_pipeline.py"
+    ]
+  },
+  {
+    "pr": 115,
+    "initial_head": "256e32cff1f923f2662ba8e0f71af56228f9e86e",
+    "initial_base": "533ab7f2618e5436c0a295ea57850a013f4b3f96",
+    "paths": [
+      "docs/R3_EXECUTION_CHECKPOINT_20261005.md",
+      "r3_judge/benchmark.py",
+      "tests/test_r3_judge.py",
+      "tests/test_r3_judge_wire_identity.py"
+    ]
+  }
+]

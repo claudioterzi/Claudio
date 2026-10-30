@@ -1,0 +1,995 @@
+{
+  "date": "2026-10-30",
+  "initial_pr_count": 24,
+  "reviewed_initial_main": "46feb62f90a12f1a4dc63e48c55c0b44b63f997f",
+  "merges": [
+    {
+      "pr": 49,
+      "head": "bc159e72024757fd12efb07f1817685eb6dd096a",
+      "merge": "3183acf996de2dfeb7ca4c90d6c11d1db4115dbe",
+      "target": "main",
+      "merged_at": "2026-10-30T18:48:25Z"
+    },
+    {
+      "pr": 77,
+      "head": "69a63e614a9dedfdc244ac905742d8704378d539",
+      "merge": "db9144eda00b5608afaa8dcc38b5963c9149a05d",
+      "target": "main",
+      "merged_at": "2026-10-30T18:48:29Z"
+    },
+    {
+      "pr": 76,
+      "head": "7c8035844429fe5a12154ec2dc799e428eda2bad",
+      "merge": "c61ebada59cc16a1e18c667950c81bf63e25bc4d",
+      "target": "main",
+      "merged_at": "2026-10-30T18:55:34Z"
+    },
+    {
+      "pr": 120,
+      "head": "2b4b51658b8673e2df71f974298224dca02b2b31",
+      "merge": "d9f5eb2c0af5590b1b35ff92cb61945090bc9e47",
+      "target": "main",
+      "merged_at": "2026-10-30T18:54:30Z"
+    },
+    {
+      "pr": 115,
+      "head": "256e32cff1f923f2662ba8e0f71af56228f9e86e",
+      "merge": "6a618fb515bdf4e33fd65ef9f286535465e51cca",
+      "target": "r3-judge-v0.1",
+      "merged_at": "2026-10-30T18:40:40Z"
+    }
+  ],
+  "closed_superseded": [
+    78
+  ],
+  "remaining": [
+    {
+      "number": 164,
+      "title": "fix(ionos): pubblica solo build verificate, mai sorgenti come index.html/index.php",
+      "head": "78ccd36510e3228de0903aea83835a065682ee96",
+      "draft": false
+    },
+    {
+      "number": 134,
+      "title": "fix(porta): activate the existing middleware in Vercel legacy builds",
+      "head": "56e466d80a44348682232343590ddb83db961df2",
+      "draft": false
+    },
+    {
+      "number": 121,
+      "title": "R3: fix evidence integrity, masked CI failures and network admission",
+      "head": "1141fd08dbfb0a57c19d8a964aa331302b9b3bcf",
+      "draft": false
+    },
+    {
+      "number": 119,
+      "title": "Prepare bounded Jev skill requests and verify private offsite backup recovery",
+      "head": "38067659bbdfcb284a2e7014b26c0eb3eba824d5",
+      "draft": true
+    },
+    {
+      "number": 117,
+      "title": "Preserve R3 continuity checkpoint and authenticated access blocker",
+      "head": "e9f0192f6d2693780818e8eecec5c3ff7f35c672",
+      "draft": true
+    },
+    {
+      "number": 113,
+      "title": "Supervise node/sync progress, orphan cleanup and shutdown",
+      "head": "62200961b164471f1a1594ad05e96e157c3e2830",
+      "draft": false
+    },
+    {
+      "number": 97,
+      "title": "R\u00b3 CLM Red Flag v0.1 \u2014 provider-neutral System One shadow test",
+      "head": "6619e7d0222368f932c0797144ec2aa8de3d5b5e",
+      "draft": true
+    },
+    {
+      "number": 96,
+      "title": "R3-CLM: internal contrastive System-One + RedFrag candidate",
+      "head": "5afbc3364075a81df3a32e3014073217faec6620",
+      "draft": true
+    },
+    {
+      "number": 91,
+      "title": "R3: pointer-first bounded context loading",
+      "head": "3f43e1edf10e0f5e6a156a0007aae440d980daa2",
+      "draft": true
+    },
+    {
+      "number": 88,
+      "title": "TERZI/0.1 \u2014 token-efficient relevance and zero-loss inference",
+      "head": "9e56088777e5afd5f14bb78f302eed9eb8c76cf5",
+      "draft": false
+    },
+    {
+      "number": 81,
+      "title": "R3: consolidate the whole project into one canonical responsibility map",
+      "head": "6436923e98b31f170fbbc793af4d4e05b170819b",
+      "draft": true
+    },
+    {
+      "number": 80,
+      "title": "R3 BODY: first operational MCK perception-action-learning loop",
+      "head": "2dbb5557edf6617eb5b0673984585bea844e3037",
+      "draft": true
+    },
+    {
+      "number": 79,
+      "title": "R3: add optional OmniRoute multi-provider gateway",
+      "head": "8232d2cfc3e5f5e22c22c6c378c70a0a716da9d5",
+      "draft": true
+    },
+    {
+      "number": 74,
+      "title": "R3-022: continuity boundary + 100-handoff replay harness",
+      "head": "d659cfb2059acdfa02f6c27ac0fcbb20150e0838",
+      "draft": false
+    },
+    {
+      "number": 63,
+      "title": "RRR Jev",
+      "head": "90195e11ac154b0a99b5a657ac49433d65b90fca",
+      "draft": true
+    },
+    {
+      "number": 52,
+      "title": "Fix r3 Dockerfile path resolution for build validation",
+      "head": "259c4e3e9d9f9c87e55097e90710673ac937e48d",
+      "draft": false
+    },
+    {
+      "number": 50,
+      "title": "Cubo Vivo + Progetti Vivi \u2014 2D, pagine progetto e capability lab",
+      "head": "3903b2b9d7f80209e0e1f8fb79499b5f0d69146e",
+      "draft": true
+    },
+    {
+      "number": 43,
+      "title": "Alpha74 private test preview",
+      "head": "a6751f1d30d46c96e4dca0ec3f962a478d31c483",
+      "draft": true
+    }
+  ],
+  "checks": [
+    {
+      "pr": 49,
+      "head": "bc159e72024757fd12efb07f1817685eb6dd096a",
+      "checks": [
+        {
+          "id": 124245955792,
+          "name": "Python tests (core, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947344/job/124245955792"
+        },
+        {
+          "id": 124245955701,
+          "name": "RRREMERGEN frontend contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947344/job/124245955701"
+        },
+        {
+          "id": 124245955644,
+          "name": "Python tests (rrremergen, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947344/job/124245955644"
+        },
+        {
+          "id": 124245955583,
+          "name": "Python tests (core, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947344/job/124245955583"
+        },
+        {
+          "id": 124245955578,
+          "name": "Python tests (bot, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947344/job/124245955578"
+        },
+        {
+          "id": 124245955571,
+          "name": "Python tests (bot, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947344/job/124245955571"
+        },
+        {
+          "id": 124245955569,
+          "name": "CI + Security",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947344/job/124245955569"
+        },
+        {
+          "id": 124245955543,
+          "name": "test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947349/job/124245955543"
+        },
+        {
+          "id": 124245955541,
+          "name": "Python tests (rrremergen, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947344/job/124245955541"
+        },
+        {
+          "id": 124245955526,
+          "name": "Snapshot safety - exact head",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947349/job/124245955526"
+        },
+        {
+          "id": 124245955310,
+          "name": "Vercel Python packaging contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947344/job/124245955310"
+        },
+        {
+          "id": 124245955244,
+          "name": "Ergonomia, accessi e integrita dei contenuti",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947349/job/124245955244"
+        },
+        {
+          "id": 124245955066,
+          "name": "security-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108947339/job/124245955066"
+        },
+        {
+          "id": 124245935551,
+          "name": "Python tests (core, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108939388/job/124245935551"
+        },
+        {
+          "id": 124245935529,
+          "name": "CI + Security",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108939388/job/124245935529"
+        },
+        {
+          "id": 124245935520,
+          "name": "Python tests (bot, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108939388/job/124245935520"
+        },
+        {
+          "id": 124245935469,
+          "name": "Python tests (core, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108939388/job/124245935469"
+        },
+        {
+          "id": 124245935460,
+          "name": "Python tests (rrremergen, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108939388/job/124245935460"
+        },
+        {
+          "id": 124245935442,
+          "name": "Python tests (bot, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108939388/job/124245935442"
+        },
+        {
+          "id": 124245935418,
+          "name": "Python tests (rrremergen, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108939388/job/124245935418"
+        },
+        {
+          "id": 124245935297,
+          "name": "RRREMERGEN frontend contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108939388/job/124245935297"
+        },
+        {
+          "id": 124245935098,
+          "name": "Vercel Python packaging contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41108939388/job/124245935098"
+        }
+      ]
+    },
+    {
+      "pr": 77,
+      "head": "69a63e614a9dedfdc244ac905742d8704378d539",
+      "checks": [
+        {
+          "id": 124246449160,
+          "name": "RRREMERGEN frontend contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086597/job/124246449160"
+        },
+        {
+          "id": 124246448595,
+          "name": "test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086715/job/124246448595"
+        },
+        {
+          "id": 124246448493,
+          "name": "Python tests (rrremergen, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086597/job/124246448493"
+        },
+        {
+          "id": 124246448492,
+          "name": "Python tests (core, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086597/job/124246448492"
+        },
+        {
+          "id": 124246448440,
+          "name": "Ergonomia, accessi e integrita dei contenuti",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086715/job/124246448440"
+        },
+        {
+          "id": 124246448399,
+          "name": "Python tests (rrremergen, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086597/job/124246448399"
+        },
+        {
+          "id": 124246448373,
+          "name": "Python tests (bot, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086597/job/124246448373"
+        },
+        {
+          "id": 124246448329,
+          "name": "Python tests (core, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086597/job/124246448329"
+        },
+        {
+          "id": 124246448309,
+          "name": "Python tests (bot, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086597/job/124246448309"
+        },
+        {
+          "id": 124246448110,
+          "name": "Vercel Python packaging contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086597/job/124246448110"
+        },
+        {
+          "id": 124246447910,
+          "name": "Snapshot safety - exact head",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086715/job/124246447910"
+        },
+        {
+          "id": 124246447822,
+          "name": "security-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086600/job/124246447822"
+        },
+        {
+          "id": 124246447789,
+          "name": "CI + Security",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109086597/job/124246447789"
+        },
+        {
+          "id": 124246413649,
+          "name": "Python tests (core, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109077443/job/124246413649"
+        },
+        {
+          "id": 124246413549,
+          "name": "Python tests (bot, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109077443/job/124246413549"
+        },
+        {
+          "id": 124246413268,
+          "name": "Python tests (bot, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109077443/job/124246413268"
+        },
+        {
+          "id": 124246413175,
+          "name": "Python tests (rrremergen, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109077443/job/124246413175"
+        },
+        {
+          "id": 124246413151,
+          "name": "CI + Security",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109077443/job/124246413151"
+        },
+        {
+          "id": 124246413124,
+          "name": "Python tests (core, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109077443/job/124246413124"
+        },
+        {
+          "id": 124246413023,
+          "name": "Python tests (rrremergen, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109077443/job/124246413023"
+        },
+        {
+          "id": 124246412884,
+          "name": "RRREMERGEN frontend contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109077443/job/124246412884"
+        },
+        {
+          "id": 124246412670,
+          "name": "Vercel Python packaging contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109077443/job/124246412670"
+        }
+      ]
+    },
+    {
+      "pr": 76,
+      "head": "7c8035844429fe5a12154ec2dc799e428eda2bad",
+      "checks": [
+        {
+          "id": 124250666774,
+          "name": "Python tests (bot, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297105/job/124250666774"
+        },
+        {
+          "id": 124250666759,
+          "name": "Python tests (core, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297105/job/124250666759"
+        },
+        {
+          "id": 124250666698,
+          "name": "Snapshot safety - exact head",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297071/job/124250666698"
+        },
+        {
+          "id": 124250666599,
+          "name": "Python tests (core, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297105/job/124250666599"
+        },
+        {
+          "id": 124250666595,
+          "name": "Ergonomia, accessi e integrita dei contenuti",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297071/job/124250666595"
+        },
+        {
+          "id": 124250666593,
+          "name": "RRREMERGEN frontend contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297105/job/124250666593"
+        },
+        {
+          "id": 124250666575,
+          "name": "Python tests (rrremergen, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297105/job/124250666575"
+        },
+        {
+          "id": 124250666561,
+          "name": "Vercel Python packaging contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297105/job/124250666561"
+        },
+        {
+          "id": 124250666560,
+          "name": "Python tests (rrremergen, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297105/job/124250666560"
+        },
+        {
+          "id": 124250666379,
+          "name": "Python tests (bot, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297105/job/124250666379"
+        },
+        {
+          "id": 124250666257,
+          "name": "CI + Security",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297105/job/124250666257"
+        },
+        {
+          "id": 124250665960,
+          "name": "test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110297071/job/124250665960"
+        },
+        {
+          "id": 124250665136,
+          "name": "security-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110296891/job/124250665136"
+        },
+        {
+          "id": 124250641083,
+          "name": "Python tests (rrremergen, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110289130/job/124250641083"
+        },
+        {
+          "id": 124250641061,
+          "name": "Python tests (bot, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110289130/job/124250641061"
+        },
+        {
+          "id": 124250641053,
+          "name": "Python tests (bot, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110289130/job/124250641053"
+        },
+        {
+          "id": 124250640990,
+          "name": "Python tests (core, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110289130/job/124250640990"
+        },
+        {
+          "id": 124250640938,
+          "name": "Vercel Python packaging contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110289130/job/124250640938"
+        },
+        {
+          "id": 124250640933,
+          "name": "Python tests (core, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110289130/job/124250640933"
+        },
+        {
+          "id": 124250640771,
+          "name": "RRREMERGEN frontend contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110289130/job/124250640771"
+        },
+        {
+          "id": 124250640678,
+          "name": "Python tests (rrremergen, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110289130/job/124250640678"
+        },
+        {
+          "id": 124250640347,
+          "name": "CI + Security",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41110289130/job/124250640347"
+        }
+      ]
+    },
+    {
+      "pr": 120,
+      "head": "2b4b51658b8673e2df71f974298224dca02b2b31",
+      "checks": [
+        {
+          "id": 124249538975,
+          "name": "test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109967915/job/124249538975"
+        },
+        {
+          "id": 124249538638,
+          "name": "Ergonomia, accessi e integrita dei contenuti",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109967915/job/124249538638"
+        },
+        {
+          "id": 124249538276,
+          "name": "Snapshot safety - exact head",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109967915/job/124249538276"
+        },
+        {
+          "id": 124249530092,
+          "name": "Python tests (rrremergen, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109965240/job/124249530092"
+        },
+        {
+          "id": 124249529999,
+          "name": "Python tests (core, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109965240/job/124249529999"
+        },
+        {
+          "id": 124249529992,
+          "name": "Python tests (rrremergen, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109965240/job/124249529992"
+        },
+        {
+          "id": 124249529972,
+          "name": "Python tests (core, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109965240/job/124249529972"
+        },
+        {
+          "id": 124249529963,
+          "name": "Python tests (bot, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109965240/job/124249529963"
+        },
+        {
+          "id": 124249529953,
+          "name": "RRREMERGEN frontend contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109965240/job/124249529953"
+        },
+        {
+          "id": 124249529907,
+          "name": "Python tests (bot, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109965240/job/124249529907"
+        },
+        {
+          "id": 124249529848,
+          "name": "Vercel Python packaging contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109965240/job/124249529848"
+        },
+        {
+          "id": 124249529621,
+          "name": "CI + Security",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109965240/job/124249529621"
+        },
+        {
+          "id": 124249527716,
+          "name": "security-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109964750/job/124249527716"
+        },
+        {
+          "id": 124249503212,
+          "name": "Python tests (bot, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109957581/job/124249503212"
+        },
+        {
+          "id": 124249503171,
+          "name": "Python tests (rrremergen, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109957581/job/124249503171"
+        },
+        {
+          "id": 124249503110,
+          "name": "Vercel Python packaging contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109957581/job/124249503110"
+        },
+        {
+          "id": 124249503063,
+          "name": "Python tests (bot, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109957581/job/124249503063"
+        },
+        {
+          "id": 124249502992,
+          "name": "CI + Security",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109957581/job/124249502992"
+        },
+        {
+          "id": 124249502971,
+          "name": "Python tests (core, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109957581/job/124249502971"
+        },
+        {
+          "id": 124249502931,
+          "name": "Python tests (core, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109957581/job/124249502931"
+        },
+        {
+          "id": 124249502880,
+          "name": "Python tests (rrremergen, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109957581/job/124249502880"
+        },
+        {
+          "id": 124249502505,
+          "name": "RRREMERGEN frontend contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109957581/job/124249502505"
+        }
+      ]
+    },
+    {
+      "pr": 91,
+      "head": "3f43e1edf10e0f5e6a156a0007aae440d980daa2",
+      "checks": [
+        {
+          "id": 124249501261,
+          "name": "monitor",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955883/job/124249501261"
+        },
+        {
+          "id": 124249499533,
+          "name": "controlli",
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955883/job/124249499533"
+        },
+        {
+          "id": 124249498331,
+          "name": "Snapshot safety - exact head",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955848/job/124249498331"
+        },
+        {
+          "id": 124249497996,
+          "name": "Python tests (bot, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955946/job/124249497996"
+        },
+        {
+          "id": 124249497978,
+          "name": "Python tests (bot, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955946/job/124249497978"
+        },
+        {
+          "id": 124249497970,
+          "name": "Python tests (rrremergen, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955946/job/124249497970"
+        },
+        {
+          "id": 124249497961,
+          "name": "Python tests (core, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955946/job/124249497961"
+        },
+        {
+          "id": 124249497954,
+          "name": "Python tests (core, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955946/job/124249497954"
+        },
+        {
+          "id": 124249497842,
+          "name": "Python tests (rrremergen, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955946/job/124249497842"
+        },
+        {
+          "id": 124249497836,
+          "name": "RRREMERGEN frontend contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955946/job/124249497836"
+        },
+        {
+          "id": 124249497722,
+          "name": "CI + Security",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955946/job/124249497722"
+        },
+        {
+          "id": 124249497676,
+          "name": "Vercel Python packaging contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955946/job/124249497676"
+        },
+        {
+          "id": 124249497525,
+          "name": "Ergonomia, accessi e integrita dei contenuti",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955848/job/124249497525"
+        },
+        {
+          "id": 124249497335,
+          "name": "test",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955848/job/124249497335"
+        },
+        {
+          "id": 124249496864,
+          "name": "security-scan",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109955864/job/124249496864"
+        },
+        {
+          "id": 124249476732,
+          "name": "Python tests (core, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109949601/job/124249476732"
+        },
+        {
+          "id": 124249476403,
+          "name": "Vercel Python packaging contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109949601/job/124249476403"
+        },
+        {
+          "id": 124249476388,
+          "name": "Python tests (bot, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109949601/job/124249476388"
+        },
+        {
+          "id": 124249476309,
+          "name": "Python tests (core, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109949601/job/124249476309"
+        },
+        {
+          "id": 124249476275,
+          "name": "Python tests (rrremergen, 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109949601/job/124249476275"
+        },
+        {
+          "id": 124249476208,
+          "name": "RRREMERGEN frontend contract",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109949601/job/124249476208"
+        },
+        {
+          "id": 124249476193,
+          "name": "Python tests (rrremergen, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109949601/job/124249476193"
+        },
+        {
+          "id": 124249476178,
+          "name": "Python tests (bot, 3.12)",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109949601/job/124249476178"
+        },
+        {
+          "id": 124249475845,
+          "name": "CI + Security",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/claudioterzi/Claudio/actions/runs/41109949601/job/124249475845"
+        }
+      ]
+    }
+  ],
+  "combined_local": {
+    "tree": "a2535958a015bc01a85e73ebd4c18c7f8991a8ed",
+    "passed": 653,
+    "skipped": 1,
+    "subtests_passed": 940,
+    "includes_unmerged_pr91": true,
+    "seconds": 28.11
+  },
+  "graphify": {
+    "version": "0.9.97",
+    "method": "deterministic Git PR-to-file metadata adapter; graphify export, cluster-only, explain; no model calls",
+    "nodes": 234,
+    "edges": 243,
+    "communities": 16,
+    "shared_files": 16,
+    "scope": "initial 24-PR inventory; exact source/base SHAs in graph_sources.json; not a semantic completeness or runtime proof"
+  },
+  "limitations": [
+    "No independent human review is claimed; connected account is the PR author.",
+    "Source labels do not authenticate authority. Evidence Graph is in-memory.",
+    "No external provider inference or direct IONOS/Railway deploy/recovery was executed in this review. GitHub merge hooks may run automatically.",
+    "PR91 corrected but held for existing A/B gate. Initial 24 PRs all inventoried; deeper code and test review covered the selected candidates and identified blockers, not every remaining feature.",
+    "Earlier merge messages for PR49 and PR77 incorrectly say 23 checks; the archived returned lists contain 22 successful check-runs each. This is the corrected count."
+  ]
+}
