@@ -1,0 +1,1126 @@
+{
+  "schema": "R3-STRUCTURAL-IMPACT/1",
+  "tool": "graphifyy 0.9.97",
+  "extraction": "local AST code-only; one-hop slice; no semantic LLM",
+  "base_commit": "3c5650cdd19ed64d16c9dff617fec87ffb7c201b",
+  "source_versions": {
+    "sdq1/benchmark_controlled.py": {
+      "base_blob": "8638a86b7ff514b841de2fe81b02d6c86be951f7",
+      "candidate_blob": "cda44024f03d77af9eddad1d410080f894192876",
+      "sha256": "0c9a0da17f74e8e6605509f782d7f22409ba6b59341b47c02cb9300ad42554a9"
+    },
+    "sdq1/backup.py": {
+      "base_blob": "8821c69eb33b5a91ce4a868982b0b54c8bfd7d86",
+      "candidate_blob": "20e4b660eee27d7422ab6c056f529ed781910718",
+      "sha256": "197c6075113823becf20a5fdd7eac6f7a0a18c9dd4401b1cf36879c96ca58006"
+    },
+    "typesafe_sister/redfrag_pipeline.py": {
+      "base_blob": "fa55ff94af8be8363320a2e4d570954b0fc1f8ad",
+      "candidate_blob": "807d6418338ceb57392f711e8e4327e82d07a121",
+      "sha256": "ffc0cffd13672ca87869247b74584c90278ad58ad7fffffff6d11df291b4aec2"
+    },
+    "tests/test_benchmark_controlled.py": {
+      "base_blob": "b0d42f845c30e553bc4b2341ac2eef2e80cb10fe",
+      "candidate_blob": "c9c84c39aa17b3421b30993e7ada0a6c4aaa4991",
+      "sha256": "c1b2a3005bf7fce99b34cd506ad27f04efa4d3d73b9860225180728a57d72c3d"
+    },
+    "tests/test_backup_recoverability.py": {
+      "base_blob": "4093cd423c9dc2affb90d210f8760dfa2aa2f84d",
+      "candidate_blob": "46341071b611abee65f1f03874894635846826a1",
+      "sha256": "cbc0c202fd346a3c56412fd33bdcff0cea88b77010a6537204d632d2a20dfa61"
+    },
+    "tests/test_redfrag_pipeline.py": {
+      "base_blob": "f4bfba23e741799c117b83399a1311cb5b337292",
+      "candidate_blob": "0b3b4eddf2ed6f08002dee42d829005dd0fb14b5",
+      "sha256": "288901c4d4178064c6cf038c43ca9399b90acec9726c048d1547f6320fc9b11f"
+    },
+    "sdq1/__main__.py": {
+      "candidate_blob": "e6459250a1ab0fbe4f4d2dc283553b840049b3cb",
+      "sha256": "70a8a409173ff5caf545fe17d7209cca37ce5cc7a0b0f59757a72e8b756a4109"
+    },
+    "sdq1/benchmark_integrity.py": {
+      "candidate_blob": "b047e9b231daf0ab86b346b4c5350720fa0eb22d",
+      "sha256": "26235981b68a7d0b5df652ea263e5f20ccb12d28c57eb613740da0261e349cae"
+    },
+    "typesafe_sister/redfrag.py": {
+      "candidate_blob": "c5c5deb16f49d090f47407cc5643fae4b2eb2d01",
+      "sha256": "8e06204058ae2c3d4ae9d9cc1a734258ec2ade551cf0a7a2e255e1572ec240c7"
+    }
+  },
+  "full_graph_counts": {
+    "nodes": 11098,
+    "edges": 27815
+  },
+  "nodes": [
+    {
+      "id": "sdq1_main",
+      "label": "sdq1/__main__.py",
+      "file_type": "code",
+      "source_file": "sdq1/__main__.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_main_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "sdq1/__main__.py",
+      "source_location": "L125",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_backup",
+      "label": "backup.py",
+      "file_type": "code",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_backup_backupintegrityerror",
+      "label": "BackupIntegrityError",
+      "file_type": "code",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L31",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_backup_atomic_write_text",
+      "label": "_atomic_write_text()",
+      "file_type": "code",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L35",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_backup_py_path",
+      "label": "Path",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_backup_py_any",
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_backup_verifica_snapshot",
+      "label": "_verifica_snapshot()",
+      "file_type": "code",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L225",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_backup_serialize_sar_file",
+      "label": "_serialize_sar_file()",
+      "file_type": "code",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L277",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_backup_ripristina_backup",
+      "label": "ripristina_backup()",
+      "file_type": "code",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L288",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_backup_rationale_289",
+      "label": "Restore SAR only; refuse a requested full restore before any write. Writes are…",
+      "file_type": "rationale",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L289",
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_benchmark_controlled",
+      "label": "benchmark_controlled.py",
+      "file_type": "code",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_benchmark_controlled_load_dataset",
+      "label": "load_dataset()",
+      "file_type": "code",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L45",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_benchmark_controlled_py_path",
+      "label": "Path",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_benchmark_controlled_py_any",
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_benchmark_controlled_dataset_sha256",
+      "label": "dataset_sha256()",
+      "file_type": "code",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L72",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_benchmark_controlled_evaluate",
+      "label": "_evaluate()",
+      "file_type": "code",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L76",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_benchmark_controlled_model_prompt",
+      "label": "_model_prompt()",
+      "file_type": "code",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L91",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_benchmark_controlled_run_controlled",
+      "label": "run_controlled()",
+      "file_type": "code",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L126",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "llmfactory",
+      "label": "LLMFactory",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "sdq1_benchmark_integrity_generate_run_id",
+      "label": "generate_run_id()",
+      "file_type": "code",
+      "source_file": "sdq1/benchmark_integrity.py",
+      "source_location": "L41",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_backup_recoverability_backuprecoverabilitytests_test_snapshot_counts_are_not_restored_memory_counts",
+      "label": ".test_snapshot_counts_are_not_restored_memory_counts()",
+      "file_type": "code",
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L94",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_backup_recoverability_backuprecoverabilitytests_test_json_arrays_and_jsonl_records_keep_their_formats_after_restore",
+      "label": ".test_json_arrays_and_jsonl_records_keep_their_formats_after_restore()",
+      "file_type": "code",
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L103",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_backup_recoverability_backuprecoverabilitytests_test_invalid_sar_format_is_rejected_before_any_file_is_restored",
+      "label": ".test_invalid_sar_format_is_rejected_before_any_file_is_restored()",
+      "file_type": "code",
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L116",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_backup_recoverability_backuprecoverabilitytests_test_complete_restore_request_is_refused_before_writes",
+      "label": ".test_complete_restore_request_is_refused_before_writes()",
+      "file_type": "code",
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L131",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_backup_recoverability_backuprecoverabilitytests_test_removing_integrity_cannot_downgrade_new_backup_to_legacy",
+      "label": ".test_removing_integrity_cannot_downgrade_new_backup_to_legacy()",
+      "file_type": "code",
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L139",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_backup_recoverability_backuprecoverabilitytests_test_restore_checks_the_same_snapshot_it_writes",
+      "label": ".test_restore_checks_the_same_snapshot_it_writes()",
+      "file_type": "code",
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L149",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_backup_recoverability_backuprecoverabilitytests_test_tampered_new_backup_is_refused_before_restore",
+      "label": ".test_tampered_new_backup_is_refused_before_restore()",
+      "file_type": "code",
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L176",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_benchmark_controlled",
+      "label": "test_benchmark_controlled.py",
+      "file_type": "code",
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_benchmark_controlled_controlledbenchmarktests_test_verified_success_requires_every_task_to_pass",
+      "label": ".test_verified_success_requires_every_task_to_pass()",
+      "file_type": "code",
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L39",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_benchmark_controlled_controlledbenchmarktests_test_completed_wrong_answers_never_count_as_verified_success",
+      "label": ".test_completed_wrong_answers_never_count_as_verified_success()",
+      "file_type": "code",
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L56",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_benchmark_controlled_controlledbenchmarktests_test_gold_fields_never_reach_model_prompt",
+      "label": ".test_gold_fields_never_reach_model_prompt()",
+      "file_type": "code",
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L89",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_benchmark_controlled_controlledbenchmarktests_test_failed_calls_are_not_efficiency_success",
+      "label": ".test_failed_calls_are_not_efficiency_success()",
+      "file_type": "code",
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L111",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_benchmark_controlled_controlledbenchmarktests_test_repeat_variance_and_human_friction_are_recorded",
+      "label": ".test_repeat_variance_and_human_friction_are_recorded()",
+      "file_type": "code",
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L130",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_benchmark_controlled_controlledbenchmarktests_test_run_persistence_is_non_overwriting",
+      "label": ".test_run_persistence_is_non_overwriting()",
+      "file_type": "code",
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L153",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_redfrag_pipeline",
+      "label": "test_redfrag_pipeline.py",
+      "file_type": "code",
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_redfrag_pipeline_testredfragpipeline_test_context_planning_fingerprints_each_source_once",
+      "label": ".test_context_planning_fingerprints_each_source_once()",
+      "file_type": "code",
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L10",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_redfrag_pipeline_testredfragpipeline_test_supplied_hash_must_match_source",
+      "label": ".test_supplied_hash_must_match_source()",
+      "file_type": "code",
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L17",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_redfrag_pipeline_testredfragpipeline_test_explicit_empty_or_non_string_hash_cannot_bypass_validation",
+      "label": ".test_explicit_empty_or_non_string_hash_cannot_bypass_validation()",
+      "file_type": "code",
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L24",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_redfrag_pipeline_testredfragpipeline_test_distinct_tails_cannot_be_exact_duplicates",
+      "label": ".test_distinct_tails_cannot_be_exact_duplicates()",
+      "file_type": "code",
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L32",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_redfrag_pipeline_testredfragpipeline_test_full_hash_preserved_and_truncated_core_is_not_activated",
+      "label": ".test_full_hash_preserved_and_truncated_core_is_not_activated()",
+      "file_type": "code",
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L43",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_redfrag_pipeline_testredfragpipeline_test_exact_duplicate_becomes_pointer_only_without_source_mutation",
+      "label": ".test_exact_duplicate_becomes_pointer_only_without_source_mutation()",
+      "file_type": "code",
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L53",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_redfrag_pipeline_testredfragpipeline_test_explicit_divergence_keeps_distinct_pointers",
+      "label": ".test_explicit_divergence_keeps_distinct_pointers()",
+      "file_type": "code",
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L66",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "tests_test_redfrag_pipeline_testredfragpipeline_test_canonical_invariant_stays_in_active_payload",
+      "label": ".test_canonical_invariant_stays_in_active_payload()",
+      "file_type": "code",
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L76",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "typesafe_sister_redfrag_assess_redfrag_cluster",
+      "label": "assess_redfrag_cluster()",
+      "file_type": "code",
+      "source_file": "typesafe_sister/redfrag.py",
+      "source_location": "L102",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "typesafe_sister_redfrag_pipeline",
+      "label": "redfrag_pipeline.py",
+      "file_type": "code",
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "typesafe_sister_redfrag_pipeline_record",
+      "label": "_record()",
+      "file_type": "code",
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L22",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "typesafe_sister_redfrag_pipeline_py_any",
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "typesafe_sister_redfrag_pipeline_clusters_from_records",
+      "label": "_clusters_from_records()",
+      "file_type": "code",
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L52",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "typesafe_sister_redfrag_pipeline_plan_context",
+      "label": "plan_context()",
+      "file_type": "code",
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L83",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "json",
+      "label": "json",
+      "file_type": "concept",
+      "type": "external",
+      "external": true,
+      "source_file": ""
+    },
+    {
+      "id": "hashlib",
+      "label": "hashlib",
+      "file_type": "concept",
+      "type": "external",
+      "external": true,
+      "source_file": ""
+    },
+    {
+      "id": "time",
+      "label": "time",
+      "file_type": "concept",
+      "type": "external",
+      "external": true,
+      "source_file": ""
+    },
+    {
+      "id": "statistics",
+      "label": "statistics",
+      "file_type": "concept",
+      "type": "external",
+      "external": true,
+      "source_file": ""
+    }
+  ],
+  "edges": [
+    {
+      "source": "sdq1_backup",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L288",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_backup_ripristina_backup",
+      "target": "sdq1_backup_py_path",
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L288",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_backup_ripristina_backup",
+      "target": "sdq1_backup_py_any",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L288",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_backup_ripristina_backup",
+      "target": "sdq1_backup_backupintegrityerror",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L300",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_backup_ripristina_backup",
+      "target": "sdq1_backup_verifica_snapshot",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L304",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_backup_ripristina_backup",
+      "target": "sdq1_backup_serialize_sar_file",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_backup_ripristina_backup",
+      "target": "sdq1_backup_atomic_write_text",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L323",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_backup_rationale_289",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/backup.py",
+      "source_location": "L289",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled",
+      "target": "sdq1_benchmark_controlled_run_controlled",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled_run_controlled",
+      "target": "sdq1_benchmark_controlled_py_any",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled_run_controlled",
+      "target": "sdq1_benchmark_controlled_py_path",
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled_run_controlled",
+      "target": "llmfactory",
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled_run_controlled",
+      "target": "sdq1_benchmark_controlled_load_dataset",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled_run_controlled",
+      "target": "sdq1_benchmark_controlled_dataset_sha256",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L133",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled_run_controlled",
+      "target": "sdq1_benchmark_controlled_model_prompt",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled_run_controlled",
+      "target": "sdq1_benchmark_controlled_evaluate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L147",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "typesafe_sister_redfrag_pipeline",
+      "target": "typesafe_sister_redfrag_pipeline_plan_context",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "typesafe_sister_redfrag_pipeline_plan_context",
+      "target": "typesafe_sister_redfrag_pipeline_py_any",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "typesafe_sister_redfrag_pipeline_plan_context",
+      "target": "typesafe_sister_redfrag_pipeline_record",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "typesafe_sister_redfrag_pipeline_plan_context",
+      "target": "typesafe_sister_redfrag_pipeline_clusters_from_records",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_main",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/__main__.py",
+      "source_location": "L281",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_benchmark_controlled",
+      "target": "sdq1_benchmark_controlled_run_controlled",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_redfrag_pipeline",
+      "target": "typesafe_sister_redfrag_pipeline_plan_context",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_main_main",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/__main__.py",
+      "source_location": "L282",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled_run_controlled",
+      "target": "sdq1_benchmark_integrity_generate_run_id",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L203",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "typesafe_sister_redfrag_pipeline_plan_context",
+      "target": "typesafe_sister_redfrag_assess_redfrag_cluster",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L86",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_benchmark_controlled_controlledbenchmarktests_test_verified_success_requires_every_task_to_pass",
+      "target": "sdq1_benchmark_controlled_run_controlled",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_benchmark_controlled_controlledbenchmarktests_test_completed_wrong_answers_never_count_as_verified_success",
+      "target": "sdq1_benchmark_controlled_run_controlled",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_benchmark_controlled_controlledbenchmarktests_test_gold_fields_never_reach_model_prompt",
+      "target": "sdq1_benchmark_controlled_run_controlled",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_benchmark_controlled_controlledbenchmarktests_test_failed_calls_are_not_efficiency_success",
+      "target": "sdq1_benchmark_controlled_run_controlled",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L124",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_benchmark_controlled_controlledbenchmarktests_test_repeat_variance_and_human_friction_are_recorded",
+      "target": "sdq1_benchmark_controlled_run_controlled",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L147",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_benchmark_controlled_controlledbenchmarktests_test_run_persistence_is_non_overwriting",
+      "target": "sdq1_benchmark_controlled_run_controlled",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_benchmark_controlled.py",
+      "source_location": "L164",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_redfrag_pipeline_testredfragpipeline_test_context_planning_fingerprints_each_source_once",
+      "target": "typesafe_sister_redfrag_pipeline_plan_context",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_redfrag_pipeline_testredfragpipeline_test_supplied_hash_must_match_source",
+      "target": "typesafe_sister_redfrag_pipeline_plan_context",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_redfrag_pipeline_testredfragpipeline_test_explicit_empty_or_non_string_hash_cannot_bypass_validation",
+      "target": "typesafe_sister_redfrag_pipeline_plan_context",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_redfrag_pipeline_testredfragpipeline_test_distinct_tails_cannot_be_exact_duplicates",
+      "target": "typesafe_sister_redfrag_pipeline_plan_context",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_redfrag_pipeline_testredfragpipeline_test_full_hash_preserved_and_truncated_core_is_not_activated",
+      "target": "typesafe_sister_redfrag_pipeline_plan_context",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_redfrag_pipeline_testredfragpipeline_test_exact_duplicate_becomes_pointer_only_without_source_mutation",
+      "target": "typesafe_sister_redfrag_pipeline_plan_context",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_redfrag_pipeline_testredfragpipeline_test_explicit_divergence_keeps_distinct_pointers",
+      "target": "typesafe_sister_redfrag_pipeline_plan_context",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_redfrag_pipeline_testredfragpipeline_test_canonical_invariant_stays_in_active_payload",
+      "target": "typesafe_sister_redfrag_pipeline_plan_context",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_redfrag_pipeline.py",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_backup_ripristina_backup",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sdq1/backup.py",
+      "source_location": "L298",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled_run_controlled",
+      "target": "time",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L143",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "sdq1_benchmark_controlled_run_controlled",
+      "target": "statistics",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sdq1/benchmark_controlled.py",
+      "source_location": "L189",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_backup_recoverability_backuprecoverabilitytests_test_snapshot_counts_are_not_restored_memory_counts",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L95",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_backup_recoverability_backuprecoverabilitytests_test_json_arrays_and_jsonl_records_keep_their_formats_after_restore",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L112",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_backup_recoverability_backuprecoverabilitytests_test_invalid_sar_format_is_rejected_before_any_file_is_restored",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_backup_recoverability_backuprecoverabilitytests_test_complete_restore_request_is_refused_before_writes",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L136",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_backup_recoverability_backuprecoverabilitytests_test_removing_integrity_cannot_downgrade_new_backup_to_legacy",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L146",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_backup_recoverability_backuprecoverabilitytests_test_restore_checks_the_same_snapshot_it_writes",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L158",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "tests_test_backup_recoverability_backuprecoverabilitytests_test_tampered_new_backup_is_refused_before_restore",
+      "target": "sdq1_backup_ripristina_backup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_backup_recoverability.py",
+      "source_location": "L184",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "typesafe_sister_redfrag_pipeline_plan_context",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L120",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "typesafe_sister_redfrag_pipeline_plan_context",
+      "target": "hashlib",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "typesafe_sister/redfrag_pipeline.py",
+      "source_location": "L121",
+      "weight": 1.0,
+      "_origin": "ast"
+    }
+  ],
+  "limits": [
+    "Static graph cannot prove absence of dynamic callers",
+    "Not a runtime or authority proof"
+  ]
+}

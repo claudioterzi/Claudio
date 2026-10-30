@@ -53,6 +53,8 @@ jobs:
       - name: Accesso ai provider e archivio
         run: |
           python -m pytest tests/test_agora.py tests/test_alpha_guest_safety.py tests/test_guest_voice_ergonomia.py tests/test_provider_owner_authorization.py tests/test_perfume_restore.py tests/test_perfume_studio.py tests/test_reader_generators.py -q
+      - name: Asset del frontend RRREMERGEN serviti dalle rotte
+        run: python -m pytest tests/test_rrremergen_static_assets.py -q
       - name: Identita delle 400 formule e immagini
         run: python scripts/verifica_flaconi_400.py --report /tmp/formule-ergonomia.json
 
@@ -127,6 +129,12 @@ jobs:
 
       - name: Test R3-019 controlled baseline
         run: python -m unittest tests.test_benchmark_controlled
+
+      - name: Test R3-006 node reality manifest
+        run: python -m unittest tests.test_node_reality_manifest
+
+      - name: Test R3-007 state-grounded verification
+        run: python -m unittest tests.test_verification_harness
 
       - name: Test JsonFileStore startup corruption guard
         run: |

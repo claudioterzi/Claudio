@@ -1,0 +1,194 @@
+{
+  "source_sha": "c61ebada59cc16a1e18c667950c81bf63e25bc4d",
+  "checked_on": "2026-10-30",
+  "core_logs": {
+    "3.11": {
+      "job": 124253143273,
+      "passed": 644,
+      "subtests_passed": 936
+    },
+    "3.12": {
+      "job": 124253143230,
+      "passed": 644,
+      "subtests_passed": 936
+    }
+  },
+  "check_runs": [
+    {
+      "id": 124253735167,
+      "name": "controlli",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111134048/job/124253735167"
+    },
+    {
+      "id": 124253732873,
+      "name": "monitor",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111134048/job/124253732873"
+    },
+    {
+      "id": 124253612064,
+      "name": "caccia",
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111157760/job/124253612064"
+    },
+    {
+      "id": 124253296942,
+      "name": "monitor",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111038307/job/124253296942"
+    },
+    {
+      "id": 124253281042,
+      "name": "controlli",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111038307/job/124253281042"
+    },
+    {
+      "id": 124253275709,
+      "name": "monitor",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111039129/job/124253275709"
+    },
+    {
+      "id": 124253240728,
+      "name": "controlli",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111029713/job/124253240728"
+    },
+    {
+      "id": 124253230853,
+      "name": "controlli",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111039129/job/124253230853"
+    },
+    {
+      "id": 124253222373,
+      "name": "monitor",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111036512/job/124253222373"
+    },
+    {
+      "id": 124253221609,
+      "name": "controlli",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111036512/job/124253221609"
+    },
+    {
+      "id": 124253196744,
+      "name": "monitor",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111029713/job/124253196744"
+    },
+    {
+      "id": 124253144108,
+      "name": "Snapshot safety - exact head",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015632/job/124253144108"
+    },
+    {
+      "id": 124253143999,
+      "name": "test",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015632/job/124253143999"
+    },
+    {
+      "id": 124253143716,
+      "name": "Ergonomia, accessi e integrita dei contenuti",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015632/job/124253143716"
+    },
+    {
+      "id": 124253143435,
+      "name": "Python tests (rrremergen, 3.12)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253143435"
+    },
+    {
+      "id": 124253143393,
+      "name": "Python tests (bot, 3.11)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253143393"
+    },
+    {
+      "id": 124253143360,
+      "name": "Python tests (bot, 3.12)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253143360"
+    },
+    {
+      "id": 124253143355,
+      "name": "RRREMERGEN frontend contract",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253143355"
+    },
+    {
+      "id": 124253143353,
+      "name": "Python tests (rrremergen, 3.11)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253143353"
+    },
+    {
+      "id": 124253143340,
+      "name": "security-scan",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015601/job/124253143340"
+    },
+    {
+      "id": 124253143273,
+      "name": "Python tests (core, 3.11)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253143273"
+    },
+    {
+      "id": 124253143266,
+      "name": "deploy",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015497/job/124253143266"
+    },
+    {
+      "id": 124253143265,
+      "name": "CI + Security",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253143265"
+    },
+    {
+      "id": 124253143230,
+      "name": "Python tests (core, 3.12)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253143230"
+    },
+    {
+      "id": 124253142837,
+      "name": "Vercel Python packaging contract",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/claudioterzi/Claudio/actions/runs/41111015510/job/124253142837"
+    }
+  ],
+  "final_assessment": "All 14 completed relevant checks succeeded on code main c61ebada59cc16a1e18c667950c81bf63e25bc4d. Ten unrelated conditional checks skipped; independent scheduled caccia workflow still running. Documentation-only audit commits do not change tested code."
+}

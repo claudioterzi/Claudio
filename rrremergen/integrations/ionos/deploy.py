@@ -27,6 +27,7 @@ import time
 import shlex
 import ssl
 import asyncio
+import uuid
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any, Tuple
 from pathlib import Path, PurePosixPath
@@ -310,11 +311,13 @@ def prepare_project(
 
 
 def _release_stamp() -> str:
-    return time.strftime('%Y%m%d-%H%M%S', time.gmtime())
+    return time.strftime('%Y%m%d-%H%M%S', time.gmtime()) + '-' + uuid.uuid4().hex
 
 
 def _check_remote_dir(path: str) -> str:
-    if not _SAFE_REMOTE_DIR.fullmatch(path or '') or '/../' in path + '/' or path.rstrip('/') == '':
+    if (not _SAFE_REMOTE_DIR.fullmatch(path or '')
+            or any(part in {'.', '..'} for part in path.split('/'))
+            or path.rstrip('/') == ''):
         raise ReleaseError(f"Unsafe or root target path: {path!r} (use the folder the domain points to)")
     return path.rstrip('/')
 
@@ -349,6 +352,8 @@ class _StaticSwapDeployer:
 
         stamp = _release_stamp()
         staging = f"{target}.staging-{stamp}"
+        previous = None
+        swap_attempted = False
         try:
             conn = self._connect()
         except Exception as e:
@@ -367,10 +372,11 @@ class _StaticSwapDeployer:
                 return {'success': False, 'method': self.method, 'staging': staging,
                         'error': f"Upload failed, live site unchanged: {', '.join(failed)}"}
 
-            previous = None
             if self._exists(conn, target):
                 previous = f"{target}.previous-{stamp}"
+                swap_attempted = True
                 self._rename(conn, target, previous)
+            swap_attempted = True
             self._rename(conn, staging, target)
             return {
                 'success': True,
@@ -380,7 +386,13 @@ class _StaticSwapDeployer:
                 'files': len(files),
             }
         except Exception as e:
-            return {'success': False, 'method': self.method, 'error': str(e)}
+            recovery = None
+            if swap_attempted:
+                recovery = self._rollback_connected(conn, target, previous)
+            return {'success': False, 'method': self.method, 'error': str(e),
+                    'path': target, 'previous': previous, 'staging': staging,
+                    'rollback': recovery,
+                    'manual_recovery_required': recovery is not None and not recovery['success']}
         finally:
             self._close(conn)
 
@@ -392,14 +404,49 @@ class _StaticSwapDeployer:
         except Exception as e:
             return {'success': False, 'error': str(e)}
         try:
-            self._rename(conn, target, f"{target}.failed-{_release_stamp()}")
-            if previous:
-                self._rename(conn, previous, target)
-            return {'success': True, 'restored': previous}
-        except Exception as e:
-            return {'success': False, 'error': str(e)}
+            return self._rollback_connected(conn, target, previous)
         finally:
             self._close(conn)
+
+    def _rollback_connected(self, conn, target, previous) -> Dict[str, Any]:
+        """Recover the directory namespace, preserving every available version.
+
+        This verifies directory readback, not application health. Callers must
+        serialize deployments and rollback for the same target.
+        """
+        parked = None
+        try:
+            target = _check_remote_dir(target)
+            if previous:
+                previous = _check_remote_dir(previous)
+                if not previous.startswith(target + '.previous-'):
+                    raise ReleaseError('Previous release does not belong to target')
+                if not self._exists(conn, previous):
+                    raise ReleaseError('Previous release is missing; active target left untouched')
+            if self._exists(conn, target):
+                parked = f"{target}.failed-{_release_stamp()}"
+                self._rename(conn, target, parked)
+            if previous:
+                self._rename(conn, previous, target)
+                if not self._exists(conn, target):
+                    raise ReleaseError('Restored target missing on readback')
+            elif self._exists(conn, target):
+                raise ReleaseError('First release remains active on readback')
+            return {'success': True, 'restored': previous, 'parked': parked,
+                    'outcome': 'PREVIOUS_RESTORED' if previous else 'FIRST_RELEASE_REMOVED',
+                    'verification': 'directory_readback'}
+        except Exception as exc:
+            fallback = None
+            if parked:
+                try:
+                    if not self._exists(conn, target) and self._exists(conn, parked):
+                        self._rename(conn, parked, target)
+                        fallback = self._exists(conn, target)
+                except Exception:
+                    fallback = False
+            return {'success': False, 'restored': None, 'error': str(exc),
+                    'path': target, 'previous': previous, 'parked': parked,
+                    'active_release_reinstated': fallback, 'manual_recovery_required': True}
 
     def _makedirs(self, conn, path: str) -> None:
         current = ''
@@ -550,12 +597,19 @@ class IONOSServiceDeployer:
 
         rel_dir = f"{base}/releases/{_release_stamp()}"
         q = shlex.quote
+        previous = None
+        switch_attempted = False
         try:
             ssh = self._connect()
         except Exception as e:
             return {'success': False, 'method': 'SSH service', 'error': str(e)}
         try:
-            code, out = self._exec(ssh, f"mkdir -p {q(rel_dir)} && readlink {q(base + '/current')} || true")
+            current = q(base + '/current')
+            code, out = self._exec(ssh, (
+                f"mkdir -p {q(base + '/releases')} && mkdir {q(rel_dir)} && "
+                f"if test -L {current}; then readlink {current}; "
+                f"elif test -e {current}; then exit 1; fi"
+            ))
             if code != 0:
                 return {'success': False, 'method': 'SSH service', 'error': out}
             previous = out.strip() or None
@@ -567,7 +621,10 @@ class IONOSServiceDeployer:
                     remote = f"{rel_dir}/{relative.as_posix()}"
                     parent = str(PurePosixPath(remote).parent)
                     if parent not in made:
-                        self._exec(ssh, f"mkdir -p {q(parent)}")
+                        code, out = self._exec(ssh, f"mkdir -p {q(parent)}")
+                        if code != 0:
+                            return {'success': False, 'method': 'SSH service', 'error': out,
+                                    'release': rel_dir}
                         made.add(parent)
                     sftp.put(str(release.root.joinpath(*relative.parts)), remote)
             finally:
@@ -581,20 +638,25 @@ class IONOSServiceDeployer:
                 return {'success': False, 'method': 'SSH service', 'release': rel_dir,
                         'error': f"Dependency install failed, live service unchanged: {out[-2000:]}"}
 
-            switch = (f"ln -sfn {q(rel_dir)} {q(base + '/current.new')} && "
-                      f"mv -Tf {q(base + '/current.new')} {q(base + '/current')}")
+            switch_link = rel_dir + '.link'
+            switch = (f"ln -s {q(rel_dir)} {q(switch_link)} && "
+                      f"mv -Tf {q(switch_link)} {q(base + '/current')}")
+            switch_attempted = True
             code, out = self._exec(ssh, f"{switch} && {restart_command}")
             if code != 0:
-                if previous:
-                    self._exec(ssh, f"ln -sfn {q(previous)} {q(base + '/current.new')} && "
-                                    f"mv -Tf {q(base + '/current.new')} {q(base + '/current')} && {restart_command}")
-                return {'success': False, 'method': 'SSH service', 'error': f"Restart failed, previous restored: {out[-2000:]}"}
+                recovery = self._restore_service(ssh, previous, base, restart_command)
+                return {'success': False, 'method': 'SSH service', 'error': f"Switch/restart failed: {out[-2000:]}",
+                        'path': base, 'previous': previous, 'release': rel_dir,
+                        'rollback': recovery, 'manual_recovery_required': not recovery['success']}
 
             return {'success': True, 'method': 'SSH service', 'path': base, 'release': rel_dir,
                     'previous': previous, 'restart_command': restart_command,
                     'start_command': release.start_command}
         except Exception as e:
-            return {'success': False, 'method': 'SSH service', 'error': str(e)}
+            recovery = self._restore_service(ssh, previous, base, restart_command) if switch_attempted else None
+            return {'success': False, 'method': 'SSH service', 'error': str(e),
+                    'path': base, 'previous': previous, 'release': rel_dir, 'rollback': recovery,
+                    'manual_recovery_required': recovery is not None and not recovery['success']}
         finally:
             ssh.close()
 
@@ -602,19 +664,37 @@ class IONOSServiceDeployer:
         previous, base = deployed.get('previous'), deployed.get('path')
         if not previous:
             return {'success': False, 'error': 'No previous release to restore'}
-        q = shlex.quote
         try:
             ssh = self._connect()
         except Exception as e:
             return {'success': False, 'error': str(e)}
         try:
-            code, out = self._exec(ssh, (
-                f"ln -sfn {q(previous)} {q(base + '/current.new')} && "
-                f"mv -Tf {q(base + '/current.new')} {q(base + '/current')} && {deployed['restart_command']}"
-            ))
-            return {'success': code == 0, 'restored': previous, 'output': out[-2000:]}
+            return self._restore_service(ssh, previous, base, deployed['restart_command'])
         finally:
             ssh.close()
+
+    def _restore_service(self, ssh, previous, base, restart_command) -> Dict[str, Any]:
+        if not previous:
+            return {'success': False, 'restored': None, 'error': 'No previous release to restore'}
+        q = shlex.quote
+        try:
+            base = _check_remote_dir(base)
+            link = base + '/restore-' + _release_stamp()
+            code, out = self._exec(ssh, (
+                f"ln -s {q(previous)} {q(link)} && "
+                f"mv -Tf {q(link)} {q(base + '/current')} && {restart_command}"
+            ))
+            if code != 0:
+                return {'success': False, 'restored': None, 'exit_status': code, 'output': out[-2000:]}
+            code, actual = self._exec(ssh, (
+                f"test -d {q(base + '/current')} && readlink {q(base + '/current')}"
+            ))
+            verified = code == 0 and actual.strip() == previous
+            return {'success': verified, 'restored': previous if verified else None,
+                    'exit_status': code, 'output': actual[-2000:],
+                    'verification': 'symlink_readback_and_restart_exit_status'}
+        except Exception as exc:
+            return {'success': False, 'restored': None, 'error': str(exc)}
 
 
 class IONOSGitDeployer:

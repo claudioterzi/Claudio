@@ -127,7 +127,7 @@ class PrepareProjectTests(unittest.TestCase):
 class SwapAndRollbackTests(unittest.TestCase):
     def _ftps(self, existing=True):
         ftp = mock.MagicMock()
-        import ftplib
+        import ftplib  # nosec B402 -- exception class for an FTPS mock; no connection
         if not existing:
             ftp.cwd.side_effect = ftplib.error_perm('550')
         return ftp
@@ -144,7 +144,7 @@ class SwapAndRollbackTests(unittest.TestCase):
             result = asyncio.run(deployer.upload_app(self._release(), '/app'))
         self.assertTrue(result['success'], result)
         stored = ftp.storbinary.call_args.args[0]
-        self.assertRegex(stored, r'^STOR /app\.staging-\d{8}-\d{6}/index\.html$')
+        self.assertRegex(stored, r'^STOR /app\.staging-\d{8}-\d{6}-[0-9a-f]{32}/index\.html$')
         renames = [c.args for c in ftp.rename.call_args_list]
         self.assertEqual(renames[0][0], '/app')
         self.assertTrue(renames[0][1].startswith('/app.previous-'))

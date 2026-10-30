@@ -1,0 +1,22 @@
+{
+  "head": "78ccd36510e3228de0903aea83835a065682ee96",
+  "method": "source module with mocked connection/filesystem; injected failure on second rename, no network/deployment",
+  "result": {
+    "success": false,
+    "method": "FTPS",
+    "error": "injected second rename failure"
+  },
+  "active_target_exists": false,
+  "preserved_old_copy_exists": true,
+  "rename_calls": [
+    [
+      "/app",
+      "/app.previous-20261030-185046"
+    ],
+    [
+      "/app.staging-20261030-185046",
+      "/app"
+    ]
+  ],
+  "limit": "local fault simulation, not IONOS runtime"
+}

@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-30",
+  "classification": "PATCH",
+  "scope": "R3-007 admission hardening before integration",
+  "falsifiers_before": [
+    "trajectory_success='false' incorrectly verified",
+    "missing postcondition_source incorrectly verified",
+    "comparator returning 'false' incorrectly verified"
+  ],
+  "validation": {
+    "tests": 13,
+    "subtests": 18,
+    "result": "PASS"
+  },
+  "limits": [
+    "Named source is not cryptographic proof of authority",
+    "Custom comparators remain explicit caller contracts"
+  ],
+  "rollback": "Revert this bounded review delta; preserve original candidate history"
+}

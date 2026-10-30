@@ -1,0 +1,34 @@
+[
+  {
+    "case": "match",
+    "verified_success": true,
+    "state": "FATTO",
+    "type": "AUTHORITATIVE_STATE",
+    "claim": "expected state exists",
+    "promotion_support": 0
+  },
+  {
+    "case": "mismatch",
+    "verified_success": false,
+    "state": "FATTO",
+    "type": "AUTHORITATIVE_STATE",
+    "claim": "POSTCONDITION_MISMATCH: expected state exists",
+    "promotion_support": 0
+  },
+  {
+    "case": "proxy",
+    "verified_success": false,
+    "state": "IPOTESI",
+    "type": "OTHER",
+    "claim": "expected state exists",
+    "promotion_support": 0
+  },
+  {
+    "case": "missing",
+    "verified_success": false,
+    "state": "IPOTESI",
+    "type": "OTHER",
+    "claim": "expected state exists",
+    "promotion_support": 0
+  }
+]

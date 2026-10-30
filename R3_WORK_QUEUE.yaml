@@ -136,6 +136,14 @@ queue:
     experiment_status: Phase-0 integrity layer consolidated. Controlled A/B/C/D baseline infrastructure was then consolidated to main on 2026-09-21 as merge 204de4fa171e6c7264a18faa734f039d8eb59c8f. The controlled path freezes dataset/hash/configuration, separates scoring-side gold from model prompts, uses CORE|NOVEL|ADVERSARIAL sets, supports repeated runs/variance, preserves raw outputs, records user-visible turns/human interventions and refuses efficiency credit for failed runs. CI, Test Runner and Security Scan passed before merge.
     current_blocker: No live controlled A/B/C/D capability baseline has been executed through the new path yet. Provider execution with frozen configuration, repetitions, provenance and subsequent regression/safety review remains required; the infrastructure merge itself is L0 measurement progress, not a capability improvement.
     metric_delta_2026_09_18: Gate efficiency comparisons on verified success and track user-visible turns/human interventions separately from tool calls. Partial-quality/utility early stopping is an experiment candidate only after success preservation is demonstrated.
+    integrity_patch_2026_10_30:
+      classification: PATCH_RETEST
+      state: IMPLEMENTED_IN_THIS_REVISION
+      origin: PR121@1141fd08dbfb0a57c19d8a964aa331302b9b3bcf
+      evidence: docs/evidenze/R3_INTEGRITY_ADOPTION_20261030.json
+      result: Completion and verified success are separate; all task repetitions must pass before efficiency credit. Empty or malformed evaluator criteria are rejected before execution.
+      correction_to_prior_status: Earlier infrastructure described success gating but credited completed wrong responses. The Oct30 negative controls reproduce and repair that defect; prior results are not retroactively promoted.
+      limits: Deterministic measurement integrity only. Live A/B/C/D capability gains remain unverified; R3-019 stays DEVELOPMENT.
   - id: R3-020
     title: Self-improvement safety gate
     state: VERIFIED

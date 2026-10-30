@@ -25,6 +25,10 @@ global_layers:
   - id: REUSE_LEARNING
     source: R3_REUSE_LESSONS.yaml
     inherit: REQUIRED
+  - id: EVIDENCE_GRAPH
+    source: sdq1/evidence_graph.py
+    inherit: CANDIDATE
+    rule: claims_require_validated_provenance_versions_falsifiers_and_factual_explicit_promotion_support
   - id: TYPESAFE_JEV
     source: typesafe_sister/
     inherit: SHARED_SERVICE
@@ -34,6 +38,10 @@ global_layers:
   - id: ACCELERATION
     source: AGENTS.md#Acceleration-mode
     inherit: REQUIRED
+  - id: STATE_GROUNDED_VERIFICATION
+    source: sdq1/verification_harness.py
+    inherit: REQUIRED
+    rule: trajectory_success_is_not_postcondition_proof
   - id: REDUNDANCY_BACKUP
     source: R3_UNIVERSAL_BACKUP.yaml
     inherit: REQUIRED

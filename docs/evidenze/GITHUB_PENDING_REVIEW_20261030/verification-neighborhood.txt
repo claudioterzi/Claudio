@@ -1,0 +1,10 @@
+Node: sdq1/verification_harness.py
+  ID:        file:sdq1/verification_harness.py
+  Source:    sdq1/verification_harness.py
+  Type:      concept
+  Community: Community 6
+  Degree:    2
+
+Connections (2):
+  <-- PR #80: R3 BODY: first operational MCK perception-action-learning loop [CHANGES_FILE] [EXTRACTED]
+  <-- PR #76: R3-007: state-grounded postcondition verification [CHANGES_FILE] [EXTRACTED]
