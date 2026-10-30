@@ -1,10 +1,13 @@
-"""Backup Universale — snapshot verificabile e restore dello stato SDQ-1.
+"""Backup SDQ-1 — snapshot verificabile e restore parziale dei soli file SAR.
 
 Il backup privilegia recuperabilità e semplicità:
 - scrittura atomica;
 - hash SHA-256 del payload;
 - stato esplicito dei componenti, senza promuovere backup parziali a completi;
 - restore compatibile con backup legacy, ma rifiuto dei backup nuovi manomessi.
+
+L'integrità SHA-256 non autentica la provenienza. Memoria, VSS, router e config
+possono essere acquisiti nello snapshot ma non sono ripristinati da questo modulo.
 """
 
 from __future__ import annotations
@@ -216,8 +219,15 @@ def verifica_backup(path: str | Path) -> dict[str, Any]:
         raise FileNotFoundError(f"Backup non trovato: {path}")
 
     data = json.loads(p.read_text(encoding="utf-8"))
+    return _verifica_snapshot(data)
+
+
+def _verifica_snapshot(data: dict[str, Any]) -> dict[str, Any]:
+    """Verify the exact in-memory snapshot consumed by the caller."""
     integrity = data.get("integrity")
     if not isinstance(integrity, dict) or not integrity.get("payload_sha256"):
+        if data.get("meta", {}).get("schema") or "component_status" in data:
+            raise BackupIntegrityError("Structured backup is missing its integrity record")
         return {
             "verified": False,
             "legacy_unverified": True,
@@ -264,20 +274,34 @@ def lista_backup() -> list[dict[str, Any]]:
     return result
 
 
-def _serialize_sar_file(contenuto: Any) -> str:
-    if isinstance(contenuto, list):
-        return "\n".join(json.dumps(r, ensure_ascii=False) for r in contenuto)
-    return json.dumps(contenuto, indent=2, ensure_ascii=False)
+def _serialize_sar_file(nome_file: str, contenuto: Any) -> str:
+    # Arrays are valid JSON documents; only .jsonl files contain separate records.
+    if nome_file.endswith(".jsonl"):
+        if not isinstance(contenuto, list):
+            raise BackupIntegrityError(f"SAR JSONL requires a list of records: {nome_file!r}")
+        return "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in contenuto)
+    if nome_file.endswith(".json"):
+        return json.dumps(contenuto, indent=2, ensure_ascii=False)
+    raise BackupIntegrityError(f"Unsupported SAR file format: {nome_file!r}")
 
 
-def ripristina_backup(path: str | Path) -> dict[str, Any]:
-    """Ripristina SAR solo dopo verifica; i backup legacy restano compatibili."""
+def ripristina_backup(path: str | Path, *, require_complete: bool = False) -> dict[str, Any]:
+    """Restore SAR only; refuse a requested full restore before any write.
+
+    Writes are atomic per file, not a transaction across all SAR files. Legacy
+    snapshots remain compatible and explicitly unverified.
+    """
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"Backup non trovato: {path}")
 
     data = json.loads(p.read_text(encoding="utf-8"))
-    verifica = verifica_backup(p)
+    if require_complete:
+        raise BackupIntegrityError(
+            "Complete restore is unsupported: only SAR files can be restored; "
+            "memory, VSS, router and configuration require verified restore adapters"
+        )
+    verifica = _verifica_snapshot(data)
     if not verifica["legacy_unverified"] and not verifica["verified"]:
         raise BackupIntegrityError(
             f"Backup alterato: expected={verifica['expected_sha256']} "
@@ -291,7 +315,7 @@ def ripristina_backup(path: str | Path) -> dict[str, Any]:
         for nome_file, contenuto in sar.items():
             if "/" in nome_file or "\\" in nome_file or nome_file in {".", ".."}:
                 raise BackupIntegrityError(f"Nome SAR non sicuro: {nome_file!r}")
-            rendered[nome_file] = _serialize_sar_file(contenuto)
+            rendered[nome_file] = _serialize_sar_file(nome_file, contenuto)
 
     if rendered:
         _SAR_DIR.mkdir(parents=True, exist_ok=True)
@@ -305,6 +329,11 @@ def ripristina_backup(path: str | Path) -> dict[str, Any]:
         "legacy_unverified": verifica["legacy_unverified"],
         "backup_complete": data.get("meta", {}).get("complete"),
         "file_sar_ripristinati": list(rendered.keys()),
-        "memoria_entries": len(data.get("memoria", [])),
-        "vss_entries": len(data.get("vss", [])),
+        "restore_scope": "SAR_ONLY",
+        "restore_complete": False,
+        "memoria_entries": 0,
+        "vss_entries": 0,
+        "snapshot_memoria_entries": len(data.get("memoria", [])),
+        "snapshot_vss_entries": len(data.get("vss", [])),
+        "unsupported_restore_components": ["memoria", "vss", "router", "config"],
     }

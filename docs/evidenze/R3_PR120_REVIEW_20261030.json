@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-30",
+  "classification": "RETEST",
+  "scope": "Preserve Evidence Graph candidate contract and source provenance",
+  "validation": {
+    "tests": 23,
+    "subtests": 6,
+    "result": "PASS"
+  },
+  "limits": [
+    "Source labels do not authenticate authority",
+    "No production recovery or capability promotion claim"
+  ],
+  "rollback": "Revert candidate module/metadata merge; preserve evidence receipts"
+}

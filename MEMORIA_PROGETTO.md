@@ -1,5 +1,27 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 30/10/2026 — Integrità benchmark, restore e RedFrag
+
+Intervento Codex richiesto da Claudio («Risolvi»), sulla base
+`3c5650cdd19ed64d16c9dff617fec87ffb7c201b`. Recupero selettivo dei tre moduli
+e relativi test dalla PR #121, head `1141fd08dbfb0a57c19d8a964aa331302b9b3bcf`;
+il resto della PR resta distinto. Storico e bridge Giardino–ONDA preservati.
+
+- Benchmark: completamento separato da successo verificato; nessun credito
+  d'efficienza a risposte errate/parziali; evaluator vuoti o malformati respinti.
+- Restore: verifica dello stesso snapshot, rifiuto della rimozione dell'integrità,
+  dichiarazione esplicita `SAR_ONLY`; richiesta di restore completo respinta prima
+  delle scritture. Preservati i formati JSON e JSONL. Memoria/VSS non ripristinati.
+- RedFrag: hash del contenuto integrale verificato, nessuna deduplicazione di code
+  diverse o attivazione silenziosa di contenuto troncato; un fingerprint per fonte.
+
+Prove, limiti e rollback: `docs/R3_INTEGRITY_ADOPTION_20261030.md` e relativa
+ricevuta JSON. Questa voce descrive il codice della revisione che la contiene:
+non prova caricamento nel runtime. Il PC Claudio risultava offline; ONDA locale
+v1.1.1 resta distinta da ONDA/1.0 e dal bridge GitHub fino a verifica di sorgenti,
+hash e postcondizioni. R3-019 resta DEVELOPMENT; continuità distribuita e restore
+completo indipendente restano NON VERIFICATI.
+
 ## 14/10/2026 — RRREMERGEN: MERGED A MAIN (016d557)
 
 Candidata verificata con Codex e Claude, PR #153 (`codex/rrremergen-working-pipeline`, base `7b4335a`) **mergiata a main** con commit `016d557`. 
