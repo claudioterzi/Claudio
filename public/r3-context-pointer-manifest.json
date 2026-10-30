@@ -1,0 +1,92 @@
+{
+  "schema": "R3_CONTEXT_POINTER_MANIFEST_V1",
+  "protocol_id": "rosso-rosso-rosso/r3-infinity",
+  "version": "2026-09-28.1",
+  "strategy": "pointer_first_bounded_expansion",
+  "content_policy": "retrieve_source_on_demand",
+  "invariants": [
+    "Do not duplicate pointed document bodies inside the pointer manifest.",
+    "Root pointers provide the minimum orientation packet.",
+    "On-demand pointers are expanded only when task tags require them.",
+    "Pointers never replace source authority, provenance, or verification."
+  ],
+  "entries": [
+    {
+      "id": "bootstrap",
+      "path": "public/r3-ai-bootstrap.json",
+      "role": "provider-neutral activation contract",
+      "load_mode": "root",
+      "tags": ["startup", "policy", "activation"]
+    },
+    {
+      "id": "base_priorities",
+      "path": "R3_BASE_PRIORITIES.yaml",
+      "role": "project priority envelope",
+      "load_mode": "root",
+      "tags": ["startup", "priority", "decision"]
+    },
+    {
+      "id": "operating_objective",
+      "path": "R3_OPERATING_OBJECTIVE.md",
+      "role": "current optimization objective",
+      "load_mode": "root",
+      "tags": ["startup", "objective", "decision"]
+    },
+    {
+      "id": "work_queue",
+      "path": "R3_WORK_QUEUE.yaml",
+      "role": "current work priorities",
+      "load_mode": "root",
+      "tags": ["startup", "queue", "planning"]
+    },
+    {
+      "id": "capillary_inheritance",
+      "path": "R3_CAPILLARY_INHERITANCE.yaml",
+      "role": "cross-project shared-layer inheritance",
+      "load_mode": "on_demand",
+      "tags": ["inheritance", "cross-project", "architecture"]
+    },
+    {
+      "id": "project_memory",
+      "path": "MEMORIA_PROGETTO.md",
+      "role": "project continuity record",
+      "load_mode": "on_demand",
+      "tags": ["memory", "continuity", "history"]
+    },
+    {
+      "id": "auto_cycle",
+      "path": "R3_AUTO_CYCLE.md",
+      "role": "autonomous improvement gate",
+      "load_mode": "on_demand",
+      "tags": ["autonomy", "self-improvement", "evolution"]
+    },
+    {
+      "id": "reuse_lessons",
+      "path": "R3_REUSE_LESSONS.yaml",
+      "role": "verified reusable operational lessons",
+      "load_mode": "on_demand",
+      "tags": ["reuse", "operations", "efficiency", "autonomy"]
+    },
+    {
+      "id": "retroactive_canon_overlay",
+      "path": "docs/R3_RETROACTIVE_CANON_OVERLAY.md",
+      "role": "historical reuse and canon overlay rules",
+      "load_mode": "on_demand",
+      "tags": ["history", "canon", "retroactive"]
+    },
+    {
+      "id": "learning_watch",
+      "path": "docs/R3_LEARNING_WATCH_2026-09-18.md",
+      "role": "latest cumulative learning-watch reference",
+      "load_mode": "on_demand",
+      "tags": ["learning", "research", "memory", "routing", "evaluation"]
+    },
+    {
+      "id": "quantum_cube_graph",
+      "path": "docs/R3_QUANTUM_CUBE_GRAPH_LAYER.md",
+      "role": "cross-project graph and Cubo Quantico structural layer",
+      "load_mode": "on_demand",
+      "tags": ["graph", "cubo", "architecture", "cross-project"]
+    }
+  ]
+}
