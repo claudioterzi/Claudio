@@ -34,10 +34,14 @@ class VerificationEvidence:
     @property
     def verified_success(self) -> bool:
         return (
-            self.trajectory_success
+            self.trajectory_success is True
             and self.verification_mode == "AUTHORITATIVE"
             and self.state_match is True
             and self.error is None
+            and isinstance(self.postcondition_source, str)
+            and bool(self.postcondition_source.strip())
+            and type(self.observer_calls) is int
+            and self.observer_calls > 0
         )
 
 
@@ -57,6 +61,16 @@ def verify_state_change(
     When no authoritative observer is available, callers must explicitly use
     PROXY/UNAVAILABLE rather than silently treating the trajectory as proof.
     """
+    if type(trajectory_success) is not bool:
+        raise ValueError("trajectory_success must be a boolean")
+    if mode not in {"AUTHORITATIVE", "PROXY", "UNAVAILABLE"}:
+        raise ValueError("unsupported verification mode")
+    if observer is not None:
+        if mode == "UNAVAILABLE":
+            raise ValueError("UNAVAILABLE mode cannot use an observer")
+        if not isinstance(postcondition_source, str) or not postcondition_source.strip():
+            raise ValueError("an observation requires a nonempty postcondition_source")
+
     started = time.perf_counter()
     when = datetime.now(timezone.utc).isoformat()
 
@@ -79,7 +93,9 @@ def verify_state_change(
     compare = comparator or (lambda expected, observed: expected == observed)
     try:
         observed = observer()
-        matched = bool(compare(expected_state, observed))
+        matched = compare(expected_state, observed)
+        if type(matched) is not bool:
+            raise TypeError("comparator must return a boolean")
         error = None
     except Exception as exc:
         observed = None

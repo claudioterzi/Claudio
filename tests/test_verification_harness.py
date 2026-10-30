@@ -1,4 +1,5 @@
 import unittest
+from dataclasses import replace
 
 from sdq1.verification_harness import (
     controlled_mismatch_experiment,
@@ -8,6 +9,44 @@ from sdq1.verification_harness import (
 
 
 class VerificationHarnessTests(unittest.TestCase):
+    def _valid_evidence(self, **overrides):
+        values = dict(action="write", trajectory_success=True, trajectory_signal="ok",
+                      expected_state=1, observer=lambda: 1, postcondition_source="fixture:read")
+        values.update(overrides)
+        return verify_state_change(**values)
+
+    def test_truthy_trajectory_values_cannot_be_verified(self):
+        for value in ("false", "true", 1, [], None):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                self._valid_evidence(trajectory_success=value)
+
+    def test_observation_without_named_source_is_rejected(self):
+        for value in (None, "", "  ", 123):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                self._valid_evidence(postcondition_source=value)
+
+    def test_truthy_comparator_is_a_verification_error(self):
+        for value in ("false", 1, [True], None):
+            with self.subTest(value=value):
+                evidence = self._valid_evidence(comparator=lambda a, b, value=value: value)
+                self.assertFalse(evidence.verified_success)
+                self.assertEqual(promotion_decision(evidence), "VERIFICATION_ERROR")
+                self.assertIsNone(evidence.observed_state)
+                self.assertIsNone(evidence.state_match)
+
+    def test_unavailable_mode_does_not_execute_observer(self):
+        calls = []
+        with self.assertRaises(ValueError):
+            self._valid_evidence(mode="UNAVAILABLE", observer=lambda: calls.append(1))
+        self.assertEqual(calls, [])
+
+    def test_constructed_evidence_cannot_bypass_success_gate(self):
+        good = self._valid_evidence()
+        for changes in ({"trajectory_success": "false"}, {"postcondition_source": None},
+                        {"postcondition_source": " "}, {"observer_calls": 0}, {"observer_calls": True}):
+            with self.subTest(changes=changes):
+                self.assertFalse(replace(good, **changes).verified_success)
+
     def test_success_signal_is_not_proof_without_postcondition(self):
         evidence = verify_state_change(
             action="write",

@@ -1,0 +1,33 @@
+# Standalone candidate: creates only Studio, never redeploys the legacy polling bot.
+# Confirm the token's exact env key in the source service before applying.
+services:
+  - type: web
+    name: raffaello-studio
+    runtime: python
+    region: frankfurt
+    plan: free
+    branch: codex/raffaello-telegram-miniapp
+    buildCommand: pip install -r integrations/raffaello-bot/requirements.txt
+    startCommand: cd integrations/raffaello-bot && exec python -m bot.music_main
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        fromService:
+          type: web
+          name: protocollo-rosso-bot
+          envVarKey: TELEGRAM_BOT_TOKEN
+      - key: MUSIC_OWNER_IDS
+        sync: false
+      - key: MUSIC_BOT_USERNAME
+        value: ProtocolloRossoBot
+      - key: MUSIC_BACKUP_KEY
+        generateValue: true
+      - key: MUSIC_BACKUP_REQUIRED
+        value: "1"
+      - key: MUSIC_BACKUP_BOOTSTRAP_EMPTY
+        value: "0"
+      - key: PYTHONUTF8
+        value: "1"
+      - key: PYTHON_VERSION
+        value: "3.12.15"
