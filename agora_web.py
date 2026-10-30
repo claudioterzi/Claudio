@@ -14,9 +14,10 @@ from itsdangerous import BadSignature
 from perfume_archive_auth import allow_login, password_config, password_matches, signer
 from perfume_studio import ArchiveUnavailable, _redis
 from telegram_owner_auth import telegram_owner, bot_token_usable
+from agora_onda import enqueue as enqueue_onda, expire_if_needed, parse_command as parse_onda
 
 agora = Blueprint('agora_web', __name__)
-COMMANDS = frozenset({'consiglio', 'briefing', 'snapshot', 'tarocchi', 'agenda', 'riflessione'})
+COMMANDS = frozenset({'consiglio', 'briefing', 'snapshot', 'tarocchi', 'agenda', 'riflessione', 'onda'})
 COOKIE = '__Host-agora' if os.getenv('VERCEL') else 'agora_owner'
 RETENTION = 30 * 86400
 PREFIX = 'agora:v1:'
@@ -142,6 +143,9 @@ def history(rid=None):
             record = _record(client, rid)
             if not record:
                 return jsonify(ok=False, errore='Risposta non presente in archivio.'), 404
+            record = expire_if_needed(client, record)
+            if record.get('stato') == 'in_attesa_pc' and record.get('onda'):
+                record = enqueue_onda(client, record)
             if record['stato'] == 'in_corso' and time.time() - record['iniziata_epoch'] > 240:
                 record['stato'] = 'interrotto'
                 record['errore'] = 'Il server non ha registrato un risultato. La domanda è conservata; puoi inviarla di nuovo.'
@@ -174,13 +178,28 @@ def command():
     if not isinstance(rid, str) or not RID.fullmatch(rid):
         return jsonify(ok=False, errore='Identificativo non valido.'), 400
     telegram = body.get('telegram') is True
+    reference = body.get('riferimento') if name == 'onda' else None
+    if name == 'onda':
+        if parse_onda(command) is None:
+            return jsonify(ok=False, errore='Usa /onda attiva oppure /onda stato.'), 400
+        if telegram:
+            return jsonify(ok=False, errore='Le ricevute ONDA si consultano qui. Disattiva la copia Telegram per questa azione.'), 400
+        if reference is not None and (not isinstance(reference, str) or not RID.fullmatch(reference)):
+            return jsonify(ok=False, errore='Riferimento alla delibera non valido.'), 400
     try:
         client = _client()
+        if reference:
+            parent = _record(client, reference)
+            if not parent or not parent.get('comando', '').lower().startswith('/consiglio '):
+                return jsonify(ok=False, errore='Delibera di riferimento non presente in archivio.'), 400
         old = _record(client, rid)
         if old:
-            if old['comando'] != command or old['telegram_richiesto'] != telegram:
+            if old['comando'] != command or old['telegram_richiesto'] != telegram or old.get('riferimento') != reference:
                 return jsonify(ok=False, errore='Identificativo già usato per un’altra richiesta.'), 409
-            return jsonify(ok=True, richiesta=old), (202 if old['stato'] == 'in_corso' else 200)
+            if name == 'onda':
+                old = expire_if_needed(client, old)
+                old = enqueue_onda(client, old)
+            return jsonify(ok=True, richiesta=old), (202 if old['stato'] in ('in_corso', 'in_attesa_pc', 'in_esecuzione') else 200)
         if not client.set(PREFIX + 'active', rid, nx=True, ex=240):
             return jsonify(ok=False, errore='Un comando è già in corso. Attendi il risultato.'), 409
         record = {'id': rid, 'comando': command, 'telegram_richiesto': telegram, 'telegram_inviato': False,
@@ -189,9 +208,18 @@ def command():
             # A concurrent identical request may have completed after the first read.
             old = _record(client, rid)
             if old:
-                if old['comando'] != command or old['telegram_richiesto'] != telegram:
+                if old['comando'] != command or old['telegram_richiesto'] != telegram or old.get('riferimento') != reference:
                     return jsonify(ok=False, errore='Identificativo già usato per un’altra richiesta.'), 409
-                return jsonify(ok=True, richiesta=old), (202 if old['stato'] == 'in_corso' else 200)
+                if name == 'onda':
+                    old = expire_if_needed(client, old)
+                    old = enqueue_onda(client, old)
+                return jsonify(ok=True, richiesta=old), (202 if old['stato'] in ('in_corso', 'in_attesa_pc', 'in_esecuzione') else 200)
+            if name == 'onda':
+                record['onda_owner_authorized'] = True
+                if reference:
+                    record['riferimento'] = reference
+                queued = enqueue_onda(client, record)
+                return jsonify(ok=True, richiesta=queued), (202 if queued['stato'] in ('in_attesa_pc', 'in_esecuzione') else 200)
             _save(client, rid, record)
             client.lpush(PREFIX + 'history', rid)
             client.ltrim(PREFIX + 'history', 0, 49)
@@ -213,6 +241,10 @@ def command():
             raise
         except Exception as exc:
             print('[AGORA] command error:', type(exc).__name__)
+            if name == 'onda':
+                # Registration may already have reached Redis or the PC. Only
+                # the leased ONDA adapter may update that authoritative receipt.
+                raise ArchiveUnavailable('Registrazione ONDA non confermata. Recupera la richiesta prima di ripetere.') from None
             record.update(stato='errore', errore='Il comando non è riuscito. La domanda è conservata in cronologia.')
             _save(client, rid, record)
             return jsonify(ok=True, richiesta=record)

@@ -51,12 +51,17 @@ def esegui(comando):
         # Full votes remain readable; Telegram keeps its compact message format.
         council = value['dati'].get('consiglio')
         if council:
+            # Only the owner's exact input offers an action; model prose never executes.
+            if ' '.join(comando.strip().lower().split()) == '/consiglio attiva onda':
+                value['dati']['azione_proposta'] = {'comando': '/onda attiva', 'titolo': 'Attiva ONDA sul PC'}
             lines = ['Consiglio SDQ-1', council['questione'], '']
             for vote in council['voti']:
                 lines.extend([vote['membro'] + ' · ' + (vote.get('modello') or 'nessun modello'),
                               vote['raccomandazione'], vote['motivazione'], ''])
             lines.extend(['Sintesi: ' + council['sintesi_agenti'],
                           'Decisione: ' + council['decisione_finale']])
+            if value['dati'].get('azione_proposta'):
+                lines.extend(['', 'Per avviare e verificare il servizio sul PC, premi Attiva ONDA sul PC.'])
             value['testo'] = '\n'.join(lines)
         else:
             value['testo'] = '\n\n'.join(value['messaggi'])
