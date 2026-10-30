@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any, Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,7 +39,7 @@ def _safe_relative_path(value: Any) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ContextPointerError("pointer path must be a non-empty string")
     path = Path(value.strip())
-    if path.is_absolute() or ".." in path.parts:
+    if path.is_absolute() or ".." in path.parts or PureWindowsPath(value.strip()).drive or "\\" in value:
         raise ContextPointerError("pointer path must stay inside repository root")
     return path.as_posix()
 
@@ -87,8 +87,13 @@ def validate_pointer_manifest(
             raise ContextPointerError(f"duplicate pointer path: {path}")
         seen_paths.add(path)
 
-        if verify_paths and not (root / path).is_file():
-            raise ContextPointerError(f"pointer target missing: {path}")
+        if verify_paths:
+            resolved_root = root.resolve()
+            target = (resolved_root / path).resolve()
+            if not target.is_relative_to(resolved_root):
+                raise ContextPointerError(f"pointer target escapes repository root: {path}")
+            if not target.is_file():
+                raise ContextPointerError(f"pointer target missing: {path}")
 
         role = entry.get("role")
         if not isinstance(role, str) or not role.strip():

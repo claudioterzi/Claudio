@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-30",
+  "classification": "PATCH",
+  "scope": "Bound context pointers to resolved repository root",
+  "validation": {
+    "tests": 10,
+    "subtests": 4,
+    "result": "PASS"
+  },
+  "changes": [
+    "Reject symlink escapes",
+    "Reject Windows absolute/drive-relative/backslash paths consistently across platforms"
+  ],
+  "limits": [
+    "No live model efficiency/capability claim",
+    "Pointer selection remains optional"
+  ],
+  "rollback": "Revert bounded path validation delta"
+}

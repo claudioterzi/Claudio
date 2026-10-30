@@ -71,6 +71,34 @@ class ContextPointerManifestTests(unittest.TestCase):
         with self.assertRaises(pointers.ContextPointerError):
             pointers.validate_pointer_manifest(broken, verify_paths=False)
 
+    def test_windows_paths_are_rejected_on_every_platform(self):
+        for path in ("C:/outside.txt", "C:outside.txt", "..\\outside.txt", "\\\\server\\share"):
+            broken = json.loads(json.dumps(self.manifest))
+            broken["entries"][0]["path"] = path
+            with self.subTest(path=path), self.assertRaises(pointers.ContextPointerError):
+                pointers.validate_pointer_manifest(broken, verify_paths=False)
+
+    def test_symlink_cannot_escape_the_repository(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "repository"
+            root.mkdir()
+            outside = Path(tmp) / "outside.txt"
+            outside.write_text("private content", encoding="utf-8")
+            (root / "linked.txt").symlink_to(outside)
+            broken = json.loads(json.dumps(self.manifest))
+            broken["entries"] = [dict(broken["entries"][0], path="linked.txt", load_mode="root")]
+            with self.assertRaises(pointers.ContextPointerError):
+                pointers.validate_pointer_manifest(broken, root=root)
+
+    def test_regular_nested_target_is_accepted(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "docs").mkdir()
+            (root / "docs" / "source.md").write_text("source", encoding="utf-8")
+            manifest = json.loads(json.dumps(self.manifest))
+            manifest["entries"] = [dict(manifest["entries"][0], path="docs/source.md", load_mode="root")]
+            pointers.validate_pointer_manifest(manifest, root=root)
+
 
 if __name__ == "__main__":
     unittest.main()
