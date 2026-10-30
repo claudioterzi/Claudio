@@ -23,6 +23,15 @@ deploy = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(deploy)
 
 
+def _static_release(files=None):
+    """A prepared static release in a temporary folder (what prepare_project returns for a built site)."""
+    root = Path(tempfile.mkdtemp())
+    for name, content in (files or {'index.html': '<!doctype html><html></html>'}).items():
+        (root / name).parent.mkdir(parents=True, exist_ok=True)
+        (root / name).write_text(content)
+    return deploy.PreparedRelease(deploy.STATIC, root)
+
+
 class _FakeSSHClient:
     def __init__(self):
         self.policy = None
@@ -96,7 +105,7 @@ class SSHHostKeyTests(unittest.TestCase):
             'sftp_password': 'p',
             'known_hosts': '/tmp/known_hosts',
         })
-        result = asyncio.run(deployer.upload_app({'frontend': '<html></html>'}, '/site'))
+        result = asyncio.run(deployer.upload_app(_static_release(), '/site'))
         self.assertTrue(result['success'], result)
         client = self.paramiko.created[0]
         self._assert_rejects_unknown_hosts(client, '/tmp/known_hosts')
@@ -295,7 +304,7 @@ class FTPSTests(unittest.TestCase):
         with mock.patch('ftplib.FTP_TLS', return_value=ftp) as ftp_tls, \
                 mock.patch('ftplib.FTP') as plain_ftp:
             deployer = deploy.IONOSFTPDeployer({'ftp_username': 'u', 'ftp_password': 'p'})
-            result = asyncio.run(deployer.upload_app({'frontend': '<html></html>'}))
+            result = asyncio.run(deployer.upload_app(_static_release()))
         self.assertTrue(result['success'], result)
         self.assertEqual(result['method'], 'FTPS')
         plain_ftp.assert_not_called()
@@ -313,10 +322,13 @@ class FTPSUploadFailureTests(unittest.TestCase):
         ftp.storbinary.side_effect = OSError('550 permission denied')
         with mock.patch('ftplib.FTP_TLS', return_value=ftp):
             deployer = deploy.IONOSFTPDeployer({'ftp_username': 'u', 'ftp_password': 'p'})
-            result = asyncio.run(deployer.upload_app({'frontend': 'x', 'backend': 'y'}))
+            result = asyncio.run(deployer.upload_app(
+                _static_release({'index.html': '<html></html>', 'assets/app.js': 'x'})))
         self.assertFalse(result['success'])
-        self.assertIn('frontend', result['error'])
-        self.assertIn('backend', result['error'])
+        self.assertIn('index.html', result['error'])
+        self.assertIn('assets/app.js', result['error'])
+        self.assertIn('live site unchanged', result['error'])
+        ftp.rename.assert_not_called()
 
 
 @unittest.skipUnless(shutil.which('openssl'), 'openssl CLI not available')
