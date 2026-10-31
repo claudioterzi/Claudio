@@ -1,0 +1,15 @@
+{
+  "schema": "R3_PORTA_VERCEL_PREVIEW_CORRECTION_V1",
+  "observed_at": "2026-10-13T10:16:00Z",
+  "owner": "Claudio Terzi / interactive Vercel activation request",
+  "head_tested": "f9eac18f3ed3a708b4f1393eb17280dfcde6c1b9",
+  "deployment": "dpl_6C2ecHQrw8KjHqryKPTMWJeSjzeB",
+  "result": "BUILD_READY_BUT_APPLICATION_GATE_NOT_ACTIVE",
+  "observations": {"/porta/entra": 404, "/public/libro.html": 200, "/api/porta-consiglio": 405},
+  "scope": "Authenticated protected-preview fetches without a Porta session. No private response content, credentials or temporary access links retained here. Production unchanged and Vercel SSO retained.",
+  "cause": "Vercel CLI 62.7.0 mergeRoutes puts user routes before project middleware routes. The existing terminal catch-all consumes the request first.",
+  "correction": "Add an explicit catch-all middlewarePath route as the first user route, retaining the Node middleware builder and all existing content routes.",
+  "lesson": "Builder output and green unit tests do not prove deployed middleware execution or route precedence. Require login, direct-file and API checks on the exact deployment before release.",
+  "next_gates": ["27 Node and 7 Python tests", "configuration validation and merged routing order", "fresh exact-head protected preview behavior", "protected production postconditions"],
+  "not_proven": ["real owner login", "real guest creation and revocation", "permission to remove Vercel SSO"]
+}
