@@ -20,6 +20,7 @@ class TestSystemOneCLM(unittest.TestCase):
     def test_auto_prefers_deliberately_configured_clm(self):
         env = {
             "CLM_BASE_URL": "http://clm.internal:8700",
+            "CLM_API_KEY": "TEST_ONLY",
             "TYPESAFE_API_KEY": "LEGACY_JEV_KEY",
         }
         with patch.dict(os.environ, env, clear=True):
@@ -34,6 +35,7 @@ class TestSystemOneCLM(unittest.TestCase):
             "R3_SYSTEMONE_PROVIDER": "typesafe",
             "TYPESAFE_API_KEY": "TEST_ONLY",
             "CLM_BASE_URL": "http://clm.internal:8700",
+            "CLM_API_KEY": "TEST_ONLY",
         }
         with patch.dict(os.environ, env, clear=True):
             info = backend_info()
@@ -45,23 +47,23 @@ class TestSystemOneCLM(unittest.TestCase):
             "model": "clm-latest",
             "answers": {"x": {"type": "noul", "noul": 0.8}},
         }
-        env = {"CLM_BASE_URL": "http://clm.internal:8700"}
+        env = {"CLM_BASE_URL": "http://127.0.0.1:8700"}
         with patch.dict(os.environ, env, clear=True), patch("httpx.Client") as client:
             response = httpx.Response(
                 200,
                 json=answer,
-                request=httpx.Request("POST", "http://clm.internal:8700/v1/systemone"),
+                request=httpx.Request("POST", "http://127.0.0.1:8700/v1/systemone"),
             )
             client.return_value.__enter__.return_value.post.return_value = response
             result = system_one("state", {"x": {"type": "noul", "instructions": "Relevant?"}})
         sent = client.return_value.__enter__.return_value.post.call_args
-        self.assertEqual(sent.args[0], "http://clm.internal:8700/v1/systemone")
+        self.assertEqual(sent.args[0], "http://127.0.0.1:8700/v1/systemone")
         self.assertEqual(sent.kwargs["headers"], {})
         self.assertEqual(sent.kwargs["json"]["model"], "clm-latest")
         self.assertEqual(result["_r3_provider"], "clm")
 
     def test_clm_native_rank_is_exposed_without_emulating_it_on_jev(self):
-        env = {"CLM_BASE_URL": "http://clm.internal:8700"}
+        env = {"CLM_BASE_URL": "http://127.0.0.1:8700"}
         payload = {
             "model": "clm-latest",
             "ranked": [

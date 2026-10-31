@@ -8,6 +8,7 @@ and never gain action authority from a model score.
 from __future__ import annotations
 
 import os
+from urllib.parse import urlparse
 
 import httpx
 
@@ -28,9 +29,17 @@ def _clean(value):
     return str(value or "").strip()
 
 
+def _is_loopback(url):
+    try:
+        parsed = urlparse(url)
+        return parsed.scheme in {"http", "https"} and parsed.hostname in {"127.0.0.1", "localhost", "::1"}
+    except ValueError:
+        return False
+
+
 def _resolve_backend(*, provider=None, api_key=None, model=None, base_url=None):
-    requested = _clean(provider or os.getenv("R3_SYSTEMONE_PROVIDER", "auto")).lower()
-    requested = {"r3-clm": "r3_clm", "internal": "r3_clm"}.get(requested, requested)
+    requested = _clean(provider or os.getenv("R3_SYSTEMONE_PROVIDER") or os.getenv("R3_SYSTEM_ONE_PROVIDER", "auto")).lower()
+    requested = {"r3-clm": "r3_clm", "internal": "r3_clm", "jev": "typesafe"}.get(requested, requested)
     if requested not in {"auto", "clm", "typesafe", "r3_clm"}:
         raise ValueError("Unsupported System One provider")
     if requested == "r3_clm":
@@ -75,11 +84,13 @@ def _resolve_backend(*, provider=None, api_key=None, model=None, base_url=None):
                 endpoint = "http://127.0.0.1:8700"
             else:
                 raise SystemOneNotConfigured("CLM endpoint is not configured")
+        if not (generic_key or clm_key) and not _is_loopback(endpoint):
+            raise SystemOneNotConfigured("Remote CLM requires CLM_API_KEY")
         return {
             "provider": "clm",
             "base_url": endpoint.rstrip("/"),
             "model": generic_model or clm_model,
-            # CLM supports an optional API key. Local/self-hosted deployments may omit it.
+            # Only loopback CLM may omit authentication.
             "api_key": generic_key or clm_key,
         }
 
@@ -113,8 +124,12 @@ def backend_info(*, provider=None, model=None, base_url=None):
     }
 
 
-def configured():
-    return backend_info()["configured"]
+def configured(provider=None, *, base_url=None, api_key=None):
+    try:
+        _resolve_backend(provider=provider, base_url=base_url, api_key=api_key)
+    except SystemOneNotConfigured:
+        return False
+    return True
 
 
 def _post_json(path, payload, *, provider=None, api_key=None, model=None, base_url=None, timeout=8):
@@ -131,6 +146,13 @@ def _post_json(path, payload, *, provider=None, api_key=None, model=None, base_u
         if len(response.content) > 131072:
             raise ValueError("System One response too large")
         result = response.json()
+        if isinstance(result, dict) and cfg["provider"] == "clm":
+            latency = response.headers.get("X-CLM-Latency-Ms")
+            if latency is not None:
+                try:
+                    result["latency_ms"] = float(latency)
+                except (TypeError, ValueError):
+                    pass
 
     if not isinstance(result, dict):
         raise ValueError("Invalid System One response")
