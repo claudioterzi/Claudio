@@ -74,6 +74,31 @@ Coperti:
 - RISPOSTA correlata e non esecutiva;
 - impossibilità per MEMO/Giardino di auto-promuoversi a COMANDO.
 
+## Candidati pubblicati nel Giardino
+
+### GIARDINO-GRAPHIFY-R3-20261031-01
+
+Data: 2026-10-31  
+Stage: `VALIDATED`  
+Classificazione: `PRIVATE`  
+Autorità: `DATA_ONLY_ADVISORY`  
+Azione richiesta: `REVIEW_ONLY`
+
+Il run remoto Graphify 0.9.97 sul repository corrente ha completato con successo
+su GitHub Actions, senza chiamate LLM: **11.466 nodi** e **27.469 archi**.
+Il candidato registra come osservazione strutturale che continuità, memoria,
+Evidence Graph, verifica e orchestrazione hanno già un sottografo tecnico denso,
+mentre BODY resta principalmente nella draft PR #80 e Casa Viva / Digital Twin /
+Reality Compiler / sciami non formano ancora un sottosistema tecnico nel main.
+
+La scheda completa e i limiti epistemici sono conservati in:
+`docs/evidenze/GIARDINO_GRAPHIFY_R3_20261031.json`.
+
+Prossimo test reversibile proposto:
+Graphify della PR #80 contro main, seguito da un overlay `POSSIBLE` nel Cubo per
+`CASA_VIVA → HOUSE_DIGITAL_TWIN → REALITY_COMPILER → FABRICATION_CELL → SWARM_COMPILER`,
+senza merge o deploy automatico.
+
 ## Limiti
 
 - Nessun adapter Redis/live bus viene introdotto.
@@ -81,3 +106,5 @@ Coperti:
 - Nessun deploy produzione.
 - La pagina locale del Giardino e il suo protocollo locale restano sorgenti separate
   finché il runtime autorizzato non viene letto e verificato.
+- La registrazione del candidato nel repository canonico non equivale, da sola,
+  a ricevuta ONDA della chat privata live.
