@@ -1,0 +1,50 @@
+{
+  "schema": "R3-GIARDINO-CANDIDATE/1",
+  "garden_source": "GIARDINO-RRR-01",
+  "published_at": "2026-10-31",
+  "candidate_id": "GIARDINO-GRAPHIFY-R3-20261031-01",
+  "project": "R3∞ / Raffaello / Casa Viva",
+  "hypothesis": "Il grafo strutturale corrente mostra un tronco tecnico già denso per continuità, memoria, evidenza, verifica e orchestrazione, mentre BODY è ancora principalmente su una candidata non integrata (#80) e Casa Viva / Digital Twin / Reality Compiler / sciami sono rami POSSIBLE ancora scarsamente ancorati al codice corrente.",
+  "metric": "Graphifyy 0.9.97, code-only AST, nessuna chiamata LLM. GitHub Actions run 41237842469 SUCCESS. Nuovo grafo: 11466 nodi, 27469 archi. Run precedente 2026-10-30: 11098 nodi, 27815 archi. Delta: +368 nodi, -346 archi.",
+  "next_reversible_test": "Confrontare con Graphify PR #80 BODY contro main; poi creare nel Cubo un overlay POSSIBLE per CASA_VIVA → HOUSE_DIGITAL_TWIN → REALITY_COMPILER → FABRICATION_CELL → SWARM_COMPILER, collegando solo nodi EXTRACTED/DECLARED già esistenti. Nessun merge o deploy automatico.",
+  "stage": "VALIDATED",
+  "classification": "PRIVATE",
+  "authority": "DATA_ONLY_ADVISORY",
+  "requested_action": "REVIEW_ONLY",
+  "auto_execute": false,
+  "consequential": false,
+  "evidence_refs": [
+    "github-actions:claudioterzi/Claudio/run/41237842469",
+    "github-artifact:13055458078",
+    "sha256:46faf0e0d7abe679ac424ac5db42e1aba133ff0bf69fff548c757a167872dd88",
+    "github-pr:claudioterzi/Claudio#167",
+    "github-pr:claudioterzi/Claudio#80",
+    "docs/R3_QUANTUM_CUBE_GRAPH_LAYER.md",
+    "docs/R3_BODY_ARCHITECTURE_V0_3.md",
+    "sdq1/evidence_graph.py"
+  ],
+  "observations": [
+    {
+      "state": "EXTRACTED",
+      "claim": "Continuità, memoria, Evidence Graph e verifica hanno già un sottografo tecnico consistente."
+    },
+    {
+      "state": "EXTRACTED",
+      "claim": "PR #80 BODY MCK è ancora draft e non merged nel main corrente."
+    },
+    {
+      "state": "INFERRED",
+      "claim": "La crescita +368 nodi con -346 archi suggerisce nuovi oggetti strutturali meno densamente collegati rispetto al run precedente."
+    },
+    {
+      "state": "POSSIBLE",
+      "claim": "Casa Viva può essere coltivata come ramo POSSIBLE collegato al tronco reale senza creare un motore parallelo."
+    }
+  ],
+  "limits": [
+    "Graphify è un sensore strutturale, non un'autorità.",
+    "L'assenza di un sottografo Casa Viva nel code-only non falsifica la visione.",
+    "INFERRED e POSSIBLE non diventano FATTO senza verifica.",
+    "Il runner remoto è nella draft PR #167 esclusivamente come superficie di audit e non va unito automaticamente."
+  ]
+}
