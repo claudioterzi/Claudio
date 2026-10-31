@@ -1,0 +1,135 @@
+name: R3 Graphify Remote Audit
+
+on:
+  push:
+    branches:
+      - candidate/r3-graphify-remote-audit-20261031
+    paths:
+      - .github/workflows/r3_graphify_remote_audit.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/r3_graphify_remote_audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  graphify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned Graphify
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "graphifyy==0.9.97"
+          graphify --version
+
+      - name: Build fresh code-only graph
+        env:
+          GRAPHIFY_BACKEND: none
+          GRAPHIFY_QUERY_LOG_DISABLE: "1"
+        run: |
+          rm -rf graphify-out
+          graphify extract . --code-only --force
+
+      - name: Graphify structural queries
+        env:
+          GRAPHIFY_QUERY_LOG_DISABLE: "1"
+        run: |
+          mkdir -p graphify-out/audit
+          graphify god-nodes --top 50 --json > graphify-out/audit/god-nodes.json || true
+          graphify query "continuity memory evidence verification" --budget 5000 > graphify-out/audit/query-continuity.txt || true
+          graphify query "body safety kernel embodiment" --budget 5000 > graphify-out/audit/query-body.txt || true
+          graphify query "onda orchestration heartbeat command" --budget 5000 > graphify-out/audit/query-onda.txt || true
+          graphify query "casa viva digital twin swarm fabrication" --budget 5000 > graphify-out/audit/query-casa-viva.txt || true
+          graphify explain "EvidenceGraph" --all > graphify-out/audit/explain-evidence-graph.txt || true
+          graphify explain "HeartbeatMonitor" --all > graphify-out/audit/explain-heartbeat.txt || true
+          graphify explain "ripristina_backup" --all > graphify-out/audit/explain-backup.txt || true
+
+      - name: Build deterministic comparison summary
+        run: |
+          python - <<'PY'
+          import json, pathlib, collections, subprocess
+          p = pathlib.Path("graphify-out/graph.json")
+          g = json.loads(p.read_text(encoding="utf-8"))
+          nodes = g.get("nodes", [])
+          edges = g.get("links", g.get("edges", []))
+          deg = collections.Counter()
+          for e in edges:
+              s=e.get("source"); t=e.get("target")
+              if isinstance(s, dict): s=s.get("id")
+              if isinstance(t, dict): t=t.get("id")
+              if s is not None: deg[str(s)] += 1
+              if t is not None: deg[str(t)] += 1
+          byid={str(n.get("id")):n for n in nodes}
+          top=[]
+          for nid,d in deg.most_common(100):
+              n=byid.get(nid,{})
+              top.append({
+                  "id":nid,
+                  "label":n.get("label"),
+                  "degree":d,
+                  "source_file":n.get("source_file"),
+                  "community":n.get("community"),
+                  "file_type":n.get("file_type")
+              })
+          rel=collections.Counter(e.get("relation","UNKNOWN") for e in edges)
+          conf=collections.Counter(e.get("confidence","UNSPECIFIED") for e in edges)
+          communities=collections.Counter(str(n.get("community","UNSPECIFIED")) for n in nodes)
+          files=collections.Counter(n.get("source_file","") for n in nodes if n.get("source_file"))
+          summary={
+              "schema":"R3-GRAPHIFY-REMOTE-AUDIT/1",
+              "graphify_version":g.get("graph",{}).get("graphify_version"),
+              "git_head":subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip(),
+              "nodes":len(nodes),
+              "edges":len(edges),
+              "relation_counts":dict(rel),
+              "confidence_counts":dict(conf),
+              "community_count":len(communities),
+              "largest_communities":communities.most_common(30),
+              "top_degree_nodes":top,
+              "top_source_files":files.most_common(50),
+              "comparison_previous":{
+                  "date":"2026-10-30",
+                  "version":"0.9.97",
+                  "nodes":11098,
+                  "edges":27815,
+                  "code_files":721
+              }
+          }
+          pathlib.Path("graphify-out/audit/summary.json").write_text(
+              json.dumps(summary,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps({
+              "head":summary["git_head"],
+              "nodes":summary["nodes"],
+              "edges":summary["edges"],
+              "communities":summary["community_count"],
+              "top3":summary["top_degree_nodes"][:3]
+          },ensure_ascii=False))
+          PY
+
+      - name: Export browsable graph
+        run: |
+          graphify export html --node-limit 5000 || true
+          graphify tree || true
+
+      - name: Upload Graphify audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: r3-graphify-remote-audit-20261031
+          path: graphify-out/
+          if-no-files-found: error
+          retention-days: 14
