@@ -6,6 +6,11 @@ on:
       - candidate/r3-graphify-remote-audit-20261031
     paths:
       - .github/workflows/r3_graphify_remote_audit.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/r3_graphify_remote_audit.yml
   workflow_dispatch:
 
 permissions:
