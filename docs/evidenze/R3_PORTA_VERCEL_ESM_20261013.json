@@ -1,0 +1,32 @@
+{
+  "schema": "R3_PORTA_VERCEL_ESM_V1",
+  "observed_at": "2026-10-13T10:43:22Z",
+  "authority": "Claudio direct request: attiva su vercell",
+  "parent": "a09bfc618974b7c17b536a16d4cf0b20639e138c",
+  "classification": "PATCH / LOCAL_VERIFIED / PREVIEW_REQUIRED",
+  "baseline": {
+    "deployment": "dpl_6KoSEcvAfXV9dCruqa5ZZtWxTmmY",
+    "observed_at": "2026-10-13T10:23:36Z..10:23:44Z",
+    "http": "Four paths HTTP500 MIDDLEWARE_INVOCATION_FAILED",
+    "cause": "Hosted Node loader refuses require() of porta/porta.mjs from CommonJS middleware.js with ERR_REQUIRE_ESM",
+    "preserved": "Earlier route-shadowing correction and production Deployment Protection retained"
+  },
+  "patch": "Native dynamic import() loads existing ESM engine and catalog; one cached initialization promise. No duplicate engine, root package-type change or auth-rule change.",
+  "tests": {
+    "node": {"passed": 28, "failed": 0, "skipped": 0},
+    "python": {"passed": 7, "failed": 0, "skipped": 0},
+    "actual_builder": "@vercel/node22.0.0 emits nodejs24.x/useWebApi middleware; CommonJS wrapper preserves native imports",
+    "baseline_falsifier": "Actual builder on unchanged parent entrypoint plus hosted-style require(ESM) denial reproduces ERR_REQUIRE_ESM",
+    "compiled_candidate": "Six compiled-entrypoint checks PASS under same require(ESM)-denying loader: login200, four unauthenticated paths401, browser redirect303",
+    "bootstrap": "PASS",
+    "map": "476 files, check PASS",
+    "limits": "Temporary fixtures with env{}; no real owner credentials, Redis writes, guest changes, Telegram or model calls"
+  },
+  "harness_corrections": [
+    "FileBlob with meta.isDev=true lacked fsPath; use materialized FileFsRef fixtures",
+    "Dev builder returns nodejs, not production nodejs24.x; corrected harness to real production-build mode"
+  ],
+  "release_gate": "Exact-head hosted checks plus protected Vercel preview must verify login and anonymous denial before adoption. Retain Vercel SSO through production verification.",
+  "remaining": "Real owner login and real guest create/isolation/revoke remain separate; no SSO removal or new credential assignment.",
+  "rollback": "Restore previous protected production deployment dpl_BZ3chErGgzB1iuDytDmMSd1tVmMV or revert bounded PR134; no Railway mutation."
+}

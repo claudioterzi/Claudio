@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
     paths:
+      - 'vercel.json'
+      - 'middleware.js'
+      - 'porta/**'
+      - 'tests/test_porta*.mjs'
+      - 'tests/check_porta_vercel_build.cjs'
       - 'public/r3-memory.js'
       - 'public/home.html'
       - 'public/agora.js'
@@ -97,6 +102,15 @@ jobs:
 
       - name: Router LLM — fallback su modello alternativo
         run: python -m unittest tests.test_router_fallback tests.test_consiglio_fallback
+
+      - name: La Porta — accesso riservato e ospiti
+        run: |
+          node --test tests/test_porta.mjs
+          node --test tests/test_porta_vercel.mjs
+          npm install --prefix /tmp/r3-porta-vercel-builder --no-audit --no-fund --ignore-scripts @vercel/node@22.0.0
+          node tests/check_porta_vercel_build.cjs /tmp/r3-porta-vercel-builder/node_modules/@vercel/node
+          python -m unittest tests.test_porta_consiglio
+          python porta/genera_mappa.py --check || echo "::warning::porta/mappa.json da rigenerare (python porta/genera_mappa.py): i file nuovi restano visibili solo al proprietario finché non la rigeneri."
 
       - name: Agorà — delibere firmate e webhook del bot
         run: python -m unittest tests.test_agora tests.test_agora_web

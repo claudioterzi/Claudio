@@ -1,0 +1,23 @@
+{
+  "schema": "R3_PORTA_VERCEL_PREREG_V1",
+  "base": "8fc33431aa77f8dcd47b4f1325adcb5b8e71f850",
+  "owner": "Claudio Terzi / interactive Vercel activation request",
+  "classification": "PATCH",
+  "scope": "Connect existing middleware to the existing Vercel legacy build, without replacing the Porta engine or changing credentials, SSO, Railway or guest records.",
+  "baseline": "Authenticated Vercel fetch: /porta/entra returned 404; /public/libro.html returned the underlying page. Application gate not active; Vercel SSO retained.",
+  "hypothesis": "An explicit @vercel/node middleware build preserves legacy Python/static routes while installing the existing application gate before content routes.",
+  "gates": [
+    "Existing 24 Node and 7 Python tests pass; synthetic fixtures only",
+    "Build output contains a Node middleware function and catch-all route before content routes",
+    "Exact candidate preview: login page available, anonymous direct file and API refused",
+    "No credential values or temporary access links in evidence",
+    "Protected production deployment verified after publication"
+  ],
+  "falsifiers": [
+    "Middleware missing, after content route, or Edge runtime incompatible with node:crypto",
+    "Direct static/API path returns private content without application session",
+    "Existing authorized owner/guest synthetic flow regresses"
+  ],
+  "rollback": "Revert the bounded commit or promote the previous protected production deployment; never disable Vercel SSO during this change.",
+  "remaining_gate": "Real owner login and real guest create/revoke proof are separate from deployment wiring; no SSO removal without those proofs."
+}
