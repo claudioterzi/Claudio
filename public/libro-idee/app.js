@@ -159,7 +159,7 @@
     var bottom = node('div',null,'card-bottom');
     append(bottom,node('span',short(rec.state.replaceAll('_',' '),25),'state'),node('span',rec.year || 'Archivio','cat'));
     append(card,top,mid,bottom);
-    card.addEventListener('click',function(){ select(rec.key); });
+    card.addEventListener('click',function(){ select(rec.key); deepen(rec.key); });
     return card;
   }
   function renderCatalog() {
@@ -178,6 +178,12 @@
     if (content instanceof Node) block.appendChild(content);
     else block.appendChild(node('p',content || 'Non verificato'));
     return block;
+  }
+  // Open the node's full story as its own screen; links inside rebuild it in place.
+  function deepen(key) {
+    var rec = byKey.get(key), A = window.Approfondimento;
+    if (!rec || !A || A.isOpen()) return;
+    A.openElement($('detailContent'), {titolo: rec.title, sopratitolo: 'Libro delle idee · ' + rec.id});
   }
   function select(key, silent) {
     var rec = byKey.get(key);
@@ -380,7 +386,7 @@
         var pts=view==='cubo'?cubePoints:graphPoints;
         var hit=null,min=Infinity;
         pts.forEach(function(p){var d=Math.hypot(x-p.x,y-p.y);if(d<p.radius&&d<min){hit=p;min=d;}});
-        if(hit)select(hit.key,true);
+        if(hit){select(hit.key,true);deepen(hit.key);}
       }
       start=null;
     });

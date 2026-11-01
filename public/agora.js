@@ -50,6 +50,29 @@
     }
     else showToast(record.stato === 'completato' ? 'Risultato ricevuto dal server e archiviato. È leggibile qui.' : record.stato === 'parziale' ? 'Risultato parziale archiviato. Leggi quali risposte sono disponibili.' : 'Il comando non è riuscito. Leggi il dettaglio e conserva la domanda.', record.stato === 'completato' ? 'received' : 'error');
   }
+  function deepenRecord(record) {
+    if (!window.Approfondimento || !record) return;
+    const result = record.risultato || {};
+    const onda = result.dati?.onda || null;
+    const proof = onda?.proof || null;
+    const proofLines = proof ? [
+      proof.pid ? 'Processo verificato: ' + proof.pid : '',
+      Array.isArray(proof.agenti_operativi) ? 'Agenti operativi: ' + proof.agenti_operativi.join(', ') : '',
+      proof.verificato_alle_utc ? 'Verificato: ' + dateLabel(proof.verificato_alle_utc) : '',
+      proof.rapporto?.compiti ? 'Compiti: ' + Object.entries(proof.rapporto.compiti).map(([k, v]) => k.toLowerCase().replace('_', ' ') + ' ' + v).join(', ') : '',
+      proof.rapporto?.attivo_da_ore != null ? 'Attiva da ' + proof.rapporto.attivo_da_ore + ' ore' : '',
+    ] : [];
+    window.Approfondimento.open({
+      titolo: record.comando, sopratitolo: dateLabel(record.data) + ' · ' + record.stato,
+      sezioni: [
+        {titolo: 'Risultato', testo: result.testo || record.errore || (pending(record) ? 'In attesa: la ricevuta si aggiorna da sola.' : '')},
+        {titolo: 'Note', elenco: result.note || []},
+        {titolo: 'Prova dal PC (ONDA)', elenco: proofLines},
+        {titolo: 'Esito ONDA', testo: onda ? [onda.codice, onda.verificato ? 'verificato' : 'non verificato'].filter(Boolean).join(' · ') : ''},
+        {titolo: 'Telegram', testo: record.telegram_richiesto ? (record.telegram_inviato ? 'Copia consegnata su Telegram.' : 'Copia Telegram non confermata.') : ''},
+        {titolo: 'Identificativo', testo: record.id},
+      ]});
+  }
   async function recover(id = localId()) {
     if (!id || !owner) return;
     const version = ++selectionVersion;
@@ -75,7 +98,7 @@
       $('command-history').replaceChildren(...data.richieste.map(item => {
         const button = document.createElement('button'); button.type = 'button'; button.className = 'history-button';
         button.textContent = dateLabel(item.data) + ' · ' + item.comando + ' · ' + item.stato;
-        button.addEventListener('click', () => recover(item.id)); return button;
+        button.addEventListener('click', async () => { await recover(item.id); if (currentRecord?.id === item.id) deepenRecord(currentRecord); }); return button;
       }));
       $('history-status').textContent = data.richieste.length + ' richieste recenti. Risultati conservati per ' + data.conservazione_giorni + ' giorni nell’archivio privato del sito.' + (historyPending ? ' Aggiornamento automatico finché ci sono richieste in attesa.' : '');
     } catch (error) { $('history-status').textContent = 'Cronologia non disponibile: ' + error.message; }
@@ -236,6 +259,7 @@
     if (canActivateOnda(currentRecord)) sendCmd('/onda attiva', currentRecord.id);
   });
   $('request-recover').addEventListener('click', () => recover());
+  $('result-text').addEventListener('click', () => { if (currentRecord) deepenRecord(currentRecord); });
   $('history-refresh').addEventListener('click', refreshHistory); initializeOwner();
   $('consilioInput').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); inviaConsiglio(); } });
   $('activity-refresh').addEventListener('click', () => { refreshActivity(); refreshPortfolio(); }); renderPortfolio(); refreshActivity();

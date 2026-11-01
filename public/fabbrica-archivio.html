@@ -6,6 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <title>Archivio dei copioni · Fabbrica dei Desideri</title>
   <link rel="stylesheet" href="/fabbrica.css">
+  <script src="/approfondimento.js"></script>
   <style>
     .archive{width:min(1080px,calc(100% - 32px));margin:0 auto;padding:40px 0 80px}
     .archive h1{font-size:clamp(2.2rem,5vw,3.6rem);margin:.4rem 0 1rem}
@@ -23,7 +24,9 @@
     .dream{color:var(--muted);overflow-wrap:anywhere}
     .plan h2{font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:.8rem}
     .scene{border-left:3px solid var(--blue);padding:4px 0 4px 14px;margin:16px 0}
-    .action{background:var(--soft);border-radius:12px;padding:12px;margin:8px 0;overflow-wrap:anywhere}
+    .action{background:var(--soft);border-radius:12px;padding:12px;margin:8px 0;overflow-wrap:anywhere;cursor:pointer;border:1px solid transparent}
+    .action:hover,.action:focus-visible{border-color:var(--blue);outline:none}
+    .approf{--approf-bg:#fff;--approf-ink:#151921;--approf-accent:#173ee8;--approf-line:#dce1eb}
     .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
     input[type=search]{min-height:46px;border:1px solid var(--line);border-radius:12px;padding:0 14px;width:100%}
   </style>
@@ -102,7 +105,16 @@
       if(current.brief?.dream){box.append(el('h4','Il desiderio'),el('p',current.brief.dream))}
       if(p.summary)box.append(el('h4','Sintesi'),el('p',p.summary));
       if((p.conditions||[]).length){box.append(el('h4','Condizioni'));const ul=el('ul');p.conditions.forEach(c=>{const li=el('li');li.append(el('strong',c.text),document.createTextNode(' — '+c.detail));ul.append(li)});box.append(ul)}
-      (p.scenes||[]).forEach(s=>{const d=el('div',null,'scene');d.append(el('h3',s.title),el('p',s.goal));(s.actions||[]).forEach(a=>{const x=el('div',null,'action');x.append(el('strong',a.id+' · '+a.title),el('div',[a.role,a.when].filter(Boolean).join(' · '),'meta'));if(a.draft)x.append(el('p',a.draft));d.append(x)});box.append(d)});
+      const allActions=(p.scenes||[]).flatMap(s=>(s.actions||[]).map(a=>({a,scene:s})));
+      const deepenAction=id=>{const it=allActions.find(o=>o.a.id===id);if(!it||!window.Approfondimento)return;const a=it.a;
+        const after=allActions.filter(o=>(o.a.depends_on||[]).includes(a.id));
+        window.Approfondimento.open({titolo:a.title,sopratitolo:a.id+' · '+it.scene.title,sezioni:[
+          {titolo:'Obiettivo della scena',testo:it.scene.goal},{titolo:'Chi',testo:a.role},{titolo:'Quando',testo:a.when},
+          {titolo:'Stato',testo:a.status==='proposed'?'Proposta: non ancora eseguita.':a.status},
+          {titolo:'Prima serve',collegamenti:(a.depends_on||[]).map(d=>({etichetta:d+' · '+(allActions.find(o=>o.a.id===d)?.a.title||''),apri:()=>deepenAction(d)}))},
+          {titolo:'Sblocca',collegamenti:after.map(o=>({etichetta:o.a.id+' · '+o.a.title,apri:()=>deepenAction(o.a.id)}))},
+          {titolo:'Ricerca da avviare',testo:a.search_query},{titolo:'Bozza pronta',testo:a.draft}]})};
+      (p.scenes||[]).forEach(s=>{const d=el('div',null,'scene');d.append(el('h3',s.title),el('p',s.goal));(s.actions||[]).forEach(a=>{const x=el('div',null,'action');x.tabIndex=0;x.setAttribute('role','button');x.setAttribute('aria-label','Approfondisci '+a.id+': '+a.title);x.append(el('strong',a.id+' · '+a.title),el('div',[a.role,a.when].filter(Boolean).join(' · '),'meta'));if(a.draft)x.append(el('p',a.draft));x.addEventListener('click',()=>deepenAction(a.id));x.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();deepenAction(a.id)}});d.append(x)});box.append(d)});
       if((p.questions||[]).length){box.append(el('h4','Domande aperte'));const ul=el('ul');p.questions.forEach(q=>ul.append(el('li',q)));box.append(ul)}
       if(p.alternative)box.append(el('h4','Alternativa'),el('p',p.alternative));
       $('archive-panel').hidden=true;$('plan-panel').hidden=false;$('status').textContent='';window.scrollTo(0,0);
