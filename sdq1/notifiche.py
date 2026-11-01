@@ -556,14 +556,24 @@ def _esegui_singolo_comando(nome: str) -> None:
                     righe.append(f"  <i>{kw}</i>")
 
             if domanda:
-                risposta = _consulta_ai(
-                    __import__("sdq1.llm.providers", fromlist=["AnthropicProvider"]).AnthropicProvider,
-                    "claude-haiku-4-5-20251001",
-                    con_identita("Sei Raffaello, lettore di tarocchi quantici. Interpreta brevemente (3-4 frasi) le 3 carte estratte in risposta alla domanda. Tono diretto e poetico. Rispondi SEMPRE in italiano."),
-                    f"Domanda: {domanda}\nCarte: {', '.join(c.nome for c in estratte)}"
-                )
+                from sdq1.llm.providers import GeminiProvider, AnthropicProvider
+                sistema_tarocchi = con_identita(
+                    "Sei Raffaello, lettore dei Tarocchi Quantici R³∞. Interpreta la stesa di tre carte "
+                    "in risposta alla domanda: per ogni carta tieni conto della posizione, del verso "
+                    "(dritta o rovesciata) e delle parole chiave fornite, poi collega le tre carte in "
+                    "un'unica lettura e chiudi con una direzione concreta. 6-9 frasi, tono diretto e "
+                    "poetico, in italiano. Usa solo le carte fornite; è un'interpretazione simbolica, "
+                    "non una previsione certa.")
+                stesa = "\n".join(
+                    f"{pos}: {carta.nome} — {'dritta' if ori.name == 'DRITTA' else 'rovesciata'}"
+                    + (f" (parole chiave: {', '.join(carta.parole_chiave[:5])})" if carta.parole_chiave else "")
+                    for pos, carta, ori in zip(nomi_pos, estratte, orientamenti))
+                richiesta = f"Domanda: {domanda}\nStesa:\n{stesa}"
+                # Gemini is configured on the site; Claude is used when its key is present.
+                risposta = (_consulta_ai(GeminiProvider, "gemini-2.5-flash", sistema_tarocchi, richiesta, max_token=900)
+                            or _consulta_ai(AnthropicProvider, "claude-haiku-4-5-20251001", sistema_tarocchi, richiesta, max_token=900))
                 if risposta:
-                    righe += ["", f"💬 {risposta[:400]}"]
+                    righe += ["", f"💬 {risposta[:1800]}"]
                 else:
                     esito('parziale', 'Carte estratte; interpretazione AI non disponibile.')
 
@@ -673,10 +683,10 @@ def esegui_comandi() -> int:
     return esegui_comandi_e_chat()
 
 
-def _consulta_ai(provider_cls, modello: str, sistema: str, domanda: str) -> str:
+def _consulta_ai(provider_cls, modello: str, sistema: str, domanda: str, max_token: int = 400) -> str:
     """Chiede a un provider. Restituisce risposta o stringa vuota."""
     try:
-        prov = provider_cls(modello=modello, api_key=None, timeout=25, timeout_secondi=25, max_retries=0, max_token=400)
+        prov = provider_cls(modello=modello, api_key=None, timeout=25, timeout_secondi=25, max_retries=0, max_token=max_token)
         if not prov.disponibile:
             return ""
         r = prov.completa(sistema, domanda)

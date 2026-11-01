@@ -55,6 +55,7 @@
     {"src":"/oracolo","dest":"/public/oracolo.html"},
     {"src":"/parti","dest":"/public/parti.html"},
     {"src":"/fabbrica/?","dest":"/public/fabbrica.html"},
+    {"src":"/archivio-copioni/?","dest":"/public/fabbrica-archivio.html"},
     {"src":"/fabbrica-dei-desideri/?","dest":"/public/fabbrica.html"},
     {"src":"/pro-pre-manuale/?","dest":"/public/pro-pre-manuale.html"},
     {"src":"/manuale-pro-pre/?","dest":"/public/pro-pre-manuale.html"},
