@@ -8,6 +8,7 @@ Le domande successive restano vincolate alle carte della stesa già conclusa.
 Claudio Terzi · C.Terzi
 """
 from __future__ import annotations
+from raffaello_identita import con_identita
 
 import hashlib
 import json
@@ -492,6 +493,7 @@ OUTPUT SOLO JSON valido:
 "carte":[{{"posizione":"...","carta":"...","lettura":"spiegazione chiara del significato canonico nel contesto"}}],
 "livello":"AI_ALPHA_CONTEXTUAL"
 }}"""
+    system = con_identita(system)
     user = json.dumps({"domanda": question or None, "contesto": context or None, "lingua": language, "carte": cards, "evidenze_bloccate": evidence}, ensure_ascii=False)
     try:
         from sdq1.llm.providers import GeminiProvider, AnthropicProvider
@@ -636,6 +638,7 @@ OUTPUT SOLO JSON valido:
  "carte_richiamate":["solo nomi di carte realmente presenti nella stesa"],
  "livello":"AI_ALPHA_FOLLOW_UP"
 }}"""
+    system = con_identita(system)
     user = json.dumps({
         "domanda_attuale": question,
         "domanda_originale": original_question or None,

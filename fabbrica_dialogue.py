@@ -1,5 +1,6 @@
 """User-owned choices and bounded drafting help for Fabbrica microquestions."""
 from __future__ import annotations
+from raffaello_identita import con_identita
 
 import copy
 import json
@@ -27,6 +28,7 @@ Rispondi in italiano, senza HTML o markdown, con SOLO questo JSON:
  "suggestions":[{"label":"titolo entro 70 caratteri",
                  "answer":"risposta proposta entro 800 caratteri"}]}.
 '''
+HELP_SYSTEM = con_identita(HELP_SYSTEM)
 
 
 def bounded_text(value, limit, required=False):

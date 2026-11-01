@@ -10,6 +10,7 @@ Endpoint:
     GET  /profumo?q=...             → Raffaello compone dal vivo, pagina renderizzata dal server
 """
 from __future__ import annotations
+from raffaello_identita import con_identita
 
 import hashlib
 import hmac
@@ -304,6 +305,7 @@ def _atelier_componi_ai(intenzione, famiglia="", ondata=2, tentativo=0, evita=No
         'l intenzione, come si evolve dalla testa al fondo, il gesto dell overdose",'
         '"concept":"2-3 frasi evocative, la storia del profumo"}'
     )
+    sistema = con_identita(sistema)
     nudge = ""
     if tentativo and evita:
         nomi = ", ".join(str(x) for x in evita[:8])

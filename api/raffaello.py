@@ -1,5 +1,6 @@
 """Private Telegram continuity and shared Raffaello engine. Claudio Terzi · C.Terzi."""
 from __future__ import annotations
+from raffaello_identita import con_identita
 
 import json
 import os
@@ -105,6 +106,7 @@ Puoi aiutare a sviluppare un'idea per un profumo o un progetto, distinguendo la 
 dal risultato realizzato. Atelier e Fabbrica sono sul sito; non fingere di averli eseguiti.
 Restituisci solo testo naturale, senza JSON. Non chiudere ogni risposta con una domanda.
 """
+    system = con_identita(system)
     from sdq1.llm.providers import GeminiProvider, AnthropicProvider
     user = json.dumps({"domanda": question, "cronologia": history}, ensure_ascii=False)
     providers = [(GeminiProvider, "gemini-2.5-flash", {"temperatura": 0.5, "max_token": 2200, "timeout": 24}),

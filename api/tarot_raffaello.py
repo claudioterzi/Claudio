@@ -10,6 +10,7 @@ privati non osservati né previsioni certe.
 Claudio Terzi · C.Terzi
 """
 from __future__ import annotations
+from raffaello_identita import con_identita
 
 import json
 import re
@@ -185,6 +186,7 @@ OUTPUT SOLO JSON valido:
  "domanda_finale":"una sola domanda molto mirata",
  "livello":"AI_CONTEXTUAL"
 }}"""
+    system = con_identita(system)
     user=json.dumps({"domanda":question or None,"contesto_aggiuntivo":context or None,"focus":focus or None,"emozione_dichiarata":emotion or None,"lingua":language,"carte":cards,"strutturale":{"sinossi":structural.sinossi,"tensioni":structural.tensioni,"risorse":structural.risorse,"relazioni":structural.relazioni,"distribuzione_stati":structural.distribuzione_stati,"distribuzione_elementi":structural.distribuzione_elementi},"ponte_base":personal.ponte,"collasso_base":personal.punto_di_collasso,"domande_base":personal.domande_di_riflessione,"integrazione_base":personal.integrazione},ensure_ascii=False)
     try:from sdq1.llm.providers import AnthropicProvider,GeminiProvider
     except Exception:return None,None

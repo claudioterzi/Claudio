@@ -23,6 +23,7 @@ Uso programmatico:
 """
 
 from __future__ import annotations
+from raffaello_identita import con_identita
 
 import json
 import os
@@ -293,6 +294,7 @@ def _risposta_claude(testo_utente: str) -> str:
             f"NON citarlo in risposte su altri temi):\n{ctx}\n"
             "Per il resto rispondi liberamente con il tuo giudizio autonomo."
         )
+        sistema = con_identita(sistema)
         catena = [
             (AnthropicProvider, "claude-haiku-4-5-20251001"),
             (GeminiProvider, "gemini-2.5-flash"),
@@ -557,7 +559,7 @@ def _esegui_singolo_comando(nome: str) -> None:
                 risposta = _consulta_ai(
                     __import__("sdq1.llm.providers", fromlist=["AnthropicProvider"]).AnthropicProvider,
                     "claude-haiku-4-5-20251001",
-                    "Sei Raffaello, lettore di tarocchi quantici. Interpreta brevemente (3-4 frasi) le 3 carte estratte in risposta alla domanda. Tono diretto e poetico. Rispondi SEMPRE in italiano.",
+                    con_identita("Sei Raffaello, lettore di tarocchi quantici. Interpreta brevemente (3-4 frasi) le 3 carte estratte in risposta alla domanda. Tono diretto e poetico. Rispondi SEMPRE in italiano."),
                     f"Domanda: {domanda}\nCarte: {', '.join(c.nome for c in estratte)}"
                 )
                 if risposta:
@@ -580,6 +582,7 @@ def _esegui_singolo_comando(nome: str) -> None:
                 "Tono: poetico, diretto, concreto. Lingua: italiano. "
                 "Includi un'osservazione sul sistema e una per Claudio."
             )
+            sistema = con_identita(sistema)
             prov = GeminiProvider(modello="gemini-2.5-flash", api_key=None, timeout=20, max_token=600)
             if prov.disponibile:
                 r = prov.completa(sistema, f"Data e ora: {ora}. Genera la riflessione.")

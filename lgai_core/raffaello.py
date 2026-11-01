@@ -9,6 +9,7 @@ Ogni risposta segue la struttura:
 """
 
 from typing import Dict, List, Optional
+from raffaello_identita import con_identita
 from dataclasses import dataclass, field
 from .calculator import PlayerStats, Area, Zona, LGAICalculator
 
@@ -79,6 +80,7 @@ Il tuo stile:
 - Quando i PV sono alti, non esageri l'entusiasmo: riconosci il risultato e suggerisci come mantenerlo.
 
 Il tuo scopo: aiutare l'utente a capire dove si trova e fare il prossimo passo, uno alla volta."""
+RAFFAELLO_SYSTEM_PROMPT = con_identita(RAFFAELLO_SYSTEM_PROMPT)
 
 
 # ---------------------------------------------------------------------------

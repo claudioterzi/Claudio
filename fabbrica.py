@@ -4,6 +4,7 @@ Concept: Claudio Terzi / C.Terzi. No outbound messages, calls or purchases.
 Provider output can propose work; only explicit user reports can advance it.
 """
 from __future__ import annotations
+from raffaello_identita import con_identita
 
 from datetime import date, datetime, timezone
 import copy
@@ -114,6 +115,7 @@ Da 3 a 6 condizioni. Tutti i campi sono testo salvo le liste. Niente markdown o 
 Una revisione deve incorporare i chiarimenti ma genera un NUOVO copione: nessuna
 conferma del vecchio copione diventa automaticamente valida per il nuovo.
 '''
+SYSTEM = con_identita(SYSTEM)
 
 
 def now():
