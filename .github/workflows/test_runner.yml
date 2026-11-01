@@ -52,7 +52,7 @@ jobs:
           node tests/test_perfume_lab.cjs
       - name: Accesso ai provider e archivio
         run: |
-          python -m pytest tests/test_agora.py tests/test_alpha_guest_safety.py tests/test_guest_voice_ergonomia.py tests/test_provider_owner_authorization.py tests/test_perfume_restore.py tests/test_perfume_studio.py tests/test_reader_generators.py -q
+          python -m pytest tests/test_agora.py tests/test_alpha_guest_safety.py tests/test_guest_voice_ergonomia.py tests/test_provider_owner_authorization.py tests/test_perfume_restore.py tests/test_perfume_studio.py tests/test_reader_generators.py tests/test_handoff.py -q
       - name: Asset del frontend RRREMERGEN serviti dalle rotte
         run: python -m pytest tests/test_rrremergen_static_assets.py -q
       - name: Identita delle 400 formule e immagini
