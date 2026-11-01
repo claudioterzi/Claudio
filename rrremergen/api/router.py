@@ -41,7 +41,7 @@ class LLMRouter:
         self.mode = mode
         self.providers = {
             'anthropic': {
-                'models': ['claude-3.5-sonnet', 'claude-3-opus', 'claude-3-haiku'],
+                'models': ['claude-sonnet-5-5', 'claude-opus-5-5', 'claude-haiku-5-5'],
                 'api_key_env': 'ANTHROPIC_API_KEY',
                 'priority': 1,  # Highest priority
             },
@@ -137,7 +137,7 @@ class LLMRouter:
         return {
             'analysis': {
                 'provider': 'anthropic',
-                'model': 'claude-3.5-sonnet',
+                'model': 'claude-sonnet-5-5',
                 'reasoning': 'Claude excels at analysis with strong reasoning'
             },
             'design': {
@@ -152,17 +152,17 @@ class LLMRouter:
             },
             'integration': {
                 'provider': 'anthropic',
-                'model': 'claude-3.5-sonnet',
+                'model': 'claude-sonnet-5-5',
                 'reasoning': 'Claude for structured, reliable outputs'
             },
             'validation': {
                 'provider': 'anthropic',
-                'model': 'claude-3.5-sonnet',
+                'model': 'claude-sonnet-5-5',
                 'reasoning': 'Claude for critical thinking and debugging'
             },
             'general': {
                 'provider': 'anthropic',
-                'model': 'claude-3.5-sonnet',
+                'model': 'claude-sonnet-5-5',
                 'reasoning': 'Balanced capability across tasks'
             },
         }
