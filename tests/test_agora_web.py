@@ -194,3 +194,17 @@ class WebCommands(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class OndaLongAnswers(unittest.TestCase):
+    setUp, start, login, command = WebCommands.setUp, WebCommands.start, WebCommands.login, WebCommands.command
+    """chiedi/scrivi take 100-150 s on ONDA: the Agorà points to the Casa channel instead of queuing."""
+
+    def test_long_actions_are_not_queued(self):
+        self.login()
+        for command in ('/onda chiedi Come stai?', '/onda scrivi una riga'):
+            with self.subTest(command=command):
+                response = self.command(command=command)
+                self.assertEqual(response.status_code, 400)
+                self.assertIn('casa-raffaello-privata', response.get_json()['errore'])
+        self.assertEqual(self.redis.zcard('agora:v1:onda:pending'), 0)

@@ -15,7 +15,7 @@ from perfume_archive_auth import allow_login, password_config, password_matches,
 from perfume_studio import ArchiveUnavailable, _redis
 from telegram_owner_auth import telegram_owner, bot_token_usable
 from site_owner_auth import COOKIE, browser_owner, same_origin, credential as _credential
-from agora_onda import enqueue as enqueue_onda, expire_if_needed, parse_command as parse_onda
+from agora_onda import enqueue as enqueue_onda, expire_if_needed, parse_command as parse_onda, TEXT_ACTIONS as ONDA_LONG_ACTIONS
 
 agora = Blueprint('agora_web', __name__)
 COMMANDS = frozenset({'consiglio', 'briefing', 'snapshot', 'tarocchi', 'agenda', 'riflessione', 'onda'})
@@ -158,8 +158,14 @@ def command():
     telegram = body.get('telegram') is True
     reference = body.get('riferimento') if name == 'onda' else None
     if name == 'onda':
-        if parse_onda(command) is None:
-            return jsonify(ok=False, errore='Usa /onda attiva, stato, riavvia, rapporto, oppure /onda chiedi <domanda> e /onda scrivi <richiesta> (massimo 900 caratteri).'), 400
+        action = parse_onda(command)
+        if action in ONDA_LONG_ACTIONS:
+            # Raffaello on ONDA answers in 100-150 s; the guardian pass is capped at 120 s.
+            # Until an asynchronous receipt exists, long answers use the Casa channel.
+            return jsonify(ok=False, errore='Per domande e testi a Raffaello usa «Parla con Raffaello» nella Casa: '
+                           'https://casa-raffaello-privata.vercel.app/messaggi.html (la risposta richiede 2-3 minuti).'), 400
+        if action is None:
+            return jsonify(ok=False, errore='Usa /onda attiva, /onda stato, /onda riavvia oppure /onda rapporto.'), 400
         if telegram:
             return jsonify(ok=False, errore='Le ricevute ONDA si consultano qui. Disattiva la copia Telegram per questa azione.'), 400
         if reference is not None and (not isinstance(reference, str) or not RID.fullmatch(reference)):

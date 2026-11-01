@@ -51,3 +51,14 @@ Autoalimentazione: già presente. `avvia-onda.ps1` riavvia il servizio fino a tr
 demanda allo Scheduler; il guardiano lo ricontrolla ogni cinque minuti. `ferma` non è stato
 aggiunto: il guardiano lo riaccenderebbe entro cinque minuti, e una pausa vera richiede una
 modifica concordata del guardiano.
+
+### Correzione dello stesso giorno: chiedi/scrivi non entrano nella coda dell'Agorà
+
+Misure sul Dell: Raffaello (agente Letta su ONDA) risponde in 100-150 secondi; il guardiano
+termina l'adapter dopo 120 secondi (task limitato a 3 minuti). Una risposta sincrona dentro un
+passaggio del guardiano quindi fallirebbe quasi sempre. L'Agorà rifiuta `/onda chiedi` e
+`/onda scrivi` e indica il canale «Parla con Raffaello» della Casa
+(`casa-raffaello-privata.vercel.app/messaggi.html`), già asincrono: coda di 24 ore, controllo
+ogni 30 secondi. Il parser e l'adapter conservano le due azioni per una futura ricevuta
+asincrona (invio e successiva lettura del registro durevole di ONDA). Restano attivi
+`attiva`, `stato`, `riavvia`, `rapporto`, che stanno nei tempi del guardiano.
