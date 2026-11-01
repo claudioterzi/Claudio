@@ -9,7 +9,7 @@
   },
   "overrides": {
     "js-yaml": "4.3.2",
-    "minimatch": "10.2.3",
+    "minimatch": "11.0.3",
     "smol-toml": "1.9.0",
     "zod": "4.6.6"
   }
