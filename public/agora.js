@@ -4,7 +4,7 @@
   const $ = id => document.getElementById(id);
   const tg = window.Telegram?.WebApp;
   let busy = false, feedBusy = false, portfolioBusy = false, toastTimer, snapshotRevision;
-  let owner = false, cookieOwner = false, currentRecord, recoveryTimer, selectionVersion = 0, recoveryAttempts = 0;
+  let owner = false, cookieOwner = false, currentRecord, recoveryTimer, selectionVersion = 0, recoveryAttempts = 0, historyPending = false;
   const pending = record => ['in_corso', 'in_attesa_pc', 'in_esecuzione'].includes(record?.stato);
   const canActivateOnda = record => Boolean(record?.risultato && typeof record.comando === 'string' && record.comando.trim().toLowerCase().replace(/\s+/g, ' ') === '/consiglio attiva onda');
   const requestKey = 'agora.last.request.v1';
@@ -34,7 +34,9 @@
     $('owner-status').textContent = value ? 'Accesso privato attivo. Le risposte si aprono qui; Telegram è una copia facoltativa.' : 'Accedi con la password dell’archivio privato per eseguire i comandi dal browser.';
   }
   function renderResult(record) {
+    const wasPending = currentRecord?.id === record.id && pending(currentRecord);
     currentRecord = record;
+    if (wasPending && !pending(record)) refreshHistory();
     clearTimeout(recoveryTimer);
     const result = record.risultato;
     $('result-text').textContent = result?.testo || record.errore || 'Esecuzione in corso. Il risultato non è ancora disponibile.';
@@ -69,12 +71,13 @@
     if (!owner) { $('history-status').textContent = 'Accedi per consultare la cronologia privata.'; return; }
     try {
       const data = await api('/api/agora/history', {});
+      historyPending = data.richieste.some(pending);
       $('command-history').replaceChildren(...data.richieste.map(item => {
         const button = document.createElement('button'); button.type = 'button'; button.className = 'history-button';
         button.textContent = dateLabel(item.data) + ' · ' + item.comando + ' · ' + item.stato;
         button.addEventListener('click', () => recover(item.id)); return button;
       }));
-      $('history-status').textContent = data.richieste.length + ' richieste recenti. Risultati conservati per ' + data.conservazione_giorni + ' giorni nell’archivio privato del sito.';
+      $('history-status').textContent = data.richieste.length + ' richieste recenti. Risultati conservati per ' + data.conservazione_giorni + ' giorni nell’archivio privato del sito.' + (historyPending ? ' Aggiornamento automatico finché ci sono richieste in attesa.' : '');
     } catch (error) { $('history-status').textContent = 'Cronologia non disponibile: ' + error.message; }
   }
   async function initializeOwner() {
@@ -236,6 +239,8 @@
   $('history-refresh').addEventListener('click', refreshHistory); initializeOwner();
   $('consilioInput').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); inviaConsiglio(); } });
   $('activity-refresh').addEventListener('click', () => { refreshActivity(); refreshPortfolio(); }); renderPortfolio(); refreshActivity();
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { refreshActivity(); if (owner && currentRecord?.onda && pending(currentRecord)) recover(currentRecord.id); } });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { refreshActivity(); if (owner) refreshHistory(); if (owner && currentRecord?.onda && pending(currentRecord)) recover(currentRecord.id); } });
   setInterval(() => { if (document.visibilityState !== 'hidden') refreshActivity(); }, 60000);
+  // The archive follows pending receipts on its own: the PC answers within five minutes.
+  setInterval(() => { if (owner && historyPending && document.visibilityState !== 'hidden') refreshHistory(); }, 20000);
 })();
