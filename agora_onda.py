@@ -3,8 +3,10 @@
 The authenticated owner endpoint constructs records and sets
 ``onda_owner_authorized=True``; callers' JSON and model output must never supply
 that authority marker. Redis is the existing trusted Agorà archive, not a new
-authorization service. Only two literal commands are admitted. The supplied
-executor must implement idempotent ensure-active/read-state operations.
+authorization service. Only a closed set of commands is admitted: attiva,
+stato, riavvia, rapporto, and chiedi/scrivi with bounded text that reaches only
+ONDA's own signed "rifletti"/"scrivi" handlers as data. No remote string is ever
+run as a shell command or chosen as an action.
 
 A durable dispatch fence prevents automatic re-execution after an uncertain
 outcome. This provides at-most-once dispatch per retained request, not a claim
@@ -34,7 +36,14 @@ LEASE_SECONDS = 90
 MAX_BATCH = 3
 PROOF_MAX_AGE_SECONDS = 90
 RID = re.compile(r"^[a-f0-9]{32}$")
-_COMMAND = re.compile(r"/onda[ \t]+(attiva|stato)", re.IGNORECASE | re.ASCII)
+_COMMAND = re.compile(r"/onda[ \t]+(attiva|stato|riavvia|rapporto|chiedi|scrivi)(?:[ \t]+(\S.*))?",
+                      re.IGNORECASE | re.DOTALL)
+# Actions that carry text for ONDA's own "rifletti"/"scrivi" handlers. The text is
+# data for Raffaello, never a shell command or an action name.
+TEXT_ACTIONS = frozenset({"chiedi", "scrivi"})
+MAX_TEXT = 900
+MAX_ANSWER = 6000
+_REPORT_COUNTS = ("IN_CORSO", "COMPLETATO", "ERRORE", "SCADUTO")
 _TERMINAL = frozenset({"completato", "errore", "interrotto", "scaduto"})
 _AGENTS = frozenset({"NARR-003", "NARR-013"})
 _SOURCE = "agora_owner_endpoint"
@@ -93,12 +102,28 @@ def _finite(value):
     return type(value) in (int, float) and math.isfinite(value)
 
 
-def parse_command(command):
-    """Return the allowlisted action; never extract an action from prose."""
+def _parse(command):
     if not isinstance(command, str):
         return None
     match = _COMMAND.fullmatch(command.strip())
-    return match.group(1).lower() if match else None
+    if not match:
+        return None
+    action, text = match.group(1).lower(), (match.group(2) or "").strip()
+    if (action in TEXT_ACTIONS) != bool(text) or len(text) > MAX_TEXT:
+        return None
+    return action, text
+
+
+def parse_command(command):
+    """Return the allowlisted action; never extract an action from prose."""
+    parsed = _parse(command)
+    return parsed[0] if parsed else None
+
+
+def command_text(command):
+    """The bounded text for chiedi/scrivi, or an empty string."""
+    parsed = _parse(command)
+    return parsed[1] if parsed else ""
 
 
 def _reject_constant(value):
@@ -312,6 +337,54 @@ def _proof(result):
     return clean
 
 
+def _extra(action, result):
+    """Bounded action output: an answer string or a fixed-shape report; nothing else."""
+    if action in TEXT_ACTIONS:
+        answer = result.get("risposta")
+        if not isinstance(answer, str) or not answer.strip():
+            return None
+        return {"risposta": answer.strip()[:MAX_ANSWER]}
+    if action == "rapporto":
+        report = result.get("rapporto")
+        if not isinstance(report, dict):
+            return None
+        counts = report.get("compiti")
+        if not isinstance(counts, dict):
+            return None
+        clean = {"compiti": {k: counts[k] for k in _REPORT_COUNTS
+                             if type(counts.get(k)) is int and counts[k] >= 0}}
+        for key in ("avviato", "aggiornato", "raffaello"):
+            if isinstance(report.get(key), str):
+                clean[key] = report[key][:60]
+        uptime = report.get("attivo_da_ore")
+        if _finite(uptime) and uptime >= 0:
+            clean["attivo_da_ore"] = round(float(uptime), 1)
+        return {"rapporto": clean}
+    if action == "riavvia":
+        return {"riavviato": result.get("riavviato") is True}
+    return {}
+
+
+def _success_text(action, proof):
+    base = f"processo {proof['pid']}, agenti NARR-003 e NARR-013 operativi"
+    if action in TEXT_ACTIONS:
+        return proof["risposta"]
+    if action == "rapporto":
+        report = proof["rapporto"]
+        counts = report["compiti"]
+        lines = [f"Rapporto ONDA: {base}."]
+        if "avviato" in report:
+            lines.append(f"Attiva dal {report['avviato']}" + (f" ({report['attivo_da_ore']} ore)." if "attivo_da_ore" in report else "."))
+        if "raffaello" in report:
+            lines.append(f"Raffaello: {report['raffaello']}.")
+        lines.append("Compiti: " + ", ".join(f"{k.lower().replace('_', ' ')} {v}" for k, v in counts.items()) + ".")
+        return " ".join(lines)
+    if action == "riavvia":
+        return (f"ONDA riavviata e verificata sul PC: {base}." if proof.get("riavviato")
+                else f"ONDA non è stata riavviata, ma risulta operativa: {base}.")
+    return f"ONDA operativa verificata sul PC: {base}."
+
+
 def expire_if_needed(client, record):
     """Expire an offline-PC request without racing a worker holding its lease."""
     if (not isinstance(record, dict) or record.get("stato") != "in_attesa_pc"
@@ -343,8 +416,9 @@ def expire_if_needed(client, record):
 def process_pending(client, execute, worker_id):
     """Process at most three RIDs; return only newly confirmed terminal records.
 
-    ``execute(action)`` returns ``{ok: bool, proof: {...}}``. It receives no
-    arbitrary prompt, shell command, target or model recommendation. Exceptions
+    ``execute(action)`` (or ``execute(action, text)`` for chiedi/scrivi) returns
+    ``{ok: bool, proof: {...}}`` plus a bounded answer or report. It never
+    receives a shell command, target or model recommendation. Exceptions
     and incomplete proof are failures. Storage errors propagate, preserving the
     pending item and dispatch fence for inspection/reconciliation.
     """
@@ -387,7 +461,8 @@ def process_pending(client, execute, worker_id):
             if not _owns(client, rid, token):
                 continue
             try:
-                result = execute(action)
+                text = command_text(record.get("comando"))
+                result = execute(action, text) if action in TEXT_ACTIONS else execute(action)
             except Exception:
                 result = {"ok": False}
             if _now() >= record["onda"]["deadline_epoch"]:
@@ -396,14 +471,17 @@ def process_pending(client, execute, worker_id):
                          "Esito non convalidato; nessuna riesecuzione automatica."))
                 continue
             proof = _proof(result)
-            if proof is None:
-                terminal = _terminal(client, record, token, code="ESITO_NON_VERIFICATO",
-                    text="Il PC non ha confermato un servizio ONDA recente, con processo e agenti operativi. "
-                         "Esito non verificato; nessuna riesecuzione automatica.")
+            extra = _extra(action, result) if proof is not None else None
+            if proof is None or (action in TEXT_ACTIONS | {"rapporto"} and extra is None):
+                code = "ESITO_NON_VERIFICATO" if proof is None else "NESSUNA_RISPOSTA"
+                text = ("Il PC non ha confermato un servizio ONDA recente, con processo e agenti operativi. "
+                        "Esito non verificato; nessuna riesecuzione automatica." if proof is None else
+                        "ONDA è operativa ma non ha consegnato una risposta valida in tempo. "
+                        "La richiesta non viene ripetuta automaticamente.")
+                terminal = _terminal(client, record, token, code=code, text=text)
             else:
-                terminal = _terminal(client, record, token, proof=proof,
-                    text=f"ONDA operativa verificata sul PC: processo {proof['pid']}, "
-                         "agenti NARR-003 e NARR-013 operativi.")
+                proof.update(extra or {})
+                terminal = _terminal(client, record, token, proof=proof, text=_success_text(action, proof))
             completed.append(terminal)
         except OndaLeaseLost:
             # A newer lease owner alone may commit; the dispatch fence survives.

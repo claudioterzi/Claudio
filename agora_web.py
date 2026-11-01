@@ -159,7 +159,7 @@ def command():
     reference = body.get('riferimento') if name == 'onda' else None
     if name == 'onda':
         if parse_onda(command) is None:
-            return jsonify(ok=False, errore='Usa /onda attiva oppure /onda stato.'), 400
+            return jsonify(ok=False, errore='Usa /onda attiva, stato, riavvia, rapporto, oppure /onda chiedi <domanda> e /onda scrivi <richiesta> (massimo 900 caratteri).'), 400
         if telegram:
             return jsonify(ok=False, errore='Le ricevute ONDA si consultano qui. Disattiva la copia Telegram per questa azione.'), 400
         if reference is not None and (not isinstance(reference, str) or not RID.fullmatch(reference)):

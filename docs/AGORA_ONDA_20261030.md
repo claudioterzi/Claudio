@@ -30,3 +30,24 @@ Il 30 ottobre sono stati osservati direttamente il servizio esistente e due hear
 ## Ripristino circoscritto
 
 Rimuovere soltanto il blocco delimitato `AGORA_ONDA_ADAPTER_V1` dal guardiano Windows, usando la copia e le impronte conservate nella cartella di stato `R3-diario/agora-onda`. Il resto del guardiano e il task ONDA restano operativi. Il codice del sito è ripristinabile con il revert del commit di questa modifica, senza eliminare registri, richieste storiche o credenziali. Preservare le modifiche concorrenti e verificare gli hash prima del ripristino.
+
+## Nuovi poteri — 1 novembre 2026
+
+Su richiesta di Claudio, l'insieme chiuso dei comandi si estende:
+
+| Comando | Effetto sul PC | Ricevuta |
+|---|---|---|
+| `/onda riavvia` | ferma solo il PID verificato di `onda.servizio`, poi avvia il task esistente `R3_ONDA_servizio` | completata solo con servizio, processo e agenti di nuovo verificati |
+| `/onda rapporto` | legge `servizio.json` di ONDA | campi fissi: compiti per stato, Raffaello, avvio, ore di attività |
+| `/onda chiedi <domanda>` | passa la domanda all'azione `rifletti` di ONDA tramite `onda.chiedi` | la risposta di Raffaello, massimo 6000 caratteri |
+| `/onda scrivi <richiesta>` | passa la richiesta all'azione `scrivi` di ONDA | il testo prodotto |
+
+Il testo (massimo 900 caratteri) è un unico argomento dopo `--`, mai una riga di shell, e
+raggiunge solo i gestori firmati di ONDA. La risposta deve arrivare entro 70 secondi, dentro
+la lease di 90; altrimenti la ricevuta è `NESSUNA_RISPOSTA` e non viene ripetuta.
+Il guardiano controlla ogni cinque minuti: la risposta arriva in Agorà entro quel tempo.
+
+Autoalimentazione: già presente. `avvia-onda.ps1` riavvia il servizio fino a tre volte e poi
+demanda allo Scheduler; il guardiano lo ricontrolla ogni cinque minuti. `ferma` non è stato
+aggiunto: il guardiano lo riaccenderebbe entro cinque minuti, e una pausa vera richiede una
+modifica concordata del guardiano.
