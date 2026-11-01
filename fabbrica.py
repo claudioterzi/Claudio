@@ -36,6 +36,19 @@ def record_failure(event, error):
                               'method': request.method, 'error_class': type(error).__name__}))
 
 
+def record_provider_skip(response, error=None):
+    """Say why a provider produced no plan: HTTP code, finish reason, sizes; never text."""
+    status = re.search(r'HTTP (\d{3})', str(getattr(response, 'errore', None) or ''))
+    meta = getattr(response, 'metadata', None)
+    LOGGER.warning(json.dumps({
+        'event': 'provider_invalid_output' if error else 'provider_unavailable',
+        'provider': getattr(response, 'provider', None), 'model': getattr(response, 'modello', None),
+        'latency_ms': getattr(response, 'latenza_ms', None), 'http_status': status.group(1) if status else None,
+        'finish_reason': meta.get('finish_reason') if isinstance(meta, dict) else None,
+        'output_chars': len(getattr(response, 'testo', None) or ''),
+        'error_class': type(error).__name__ if error else None}))
+
+
 @fabbrica.after_request
 def observe_failure(response):
     if response.status_code >= 500:
@@ -374,6 +387,7 @@ def generate():
                 continue
             response = provider.completa(SYSTEM, json.dumps(payload, ensure_ascii=False))
             if not response.via_api or not response.testo:
+                record_provider_skip(response)
                 continue
             record.update(raw_output=response.testo[:24000], provider=response.provider,
                           model=response.modello, usage=response.metadata)
@@ -385,7 +399,8 @@ def generate():
                 record['plan'] = validate_plan(response.testo)
                 record['status'] = 'complete'
                 break
-            except (ValueError, TypeError, AttributeError):
+            except (ValueError, TypeError, AttributeError) as exc:
+                record_provider_skip(response, exc)
                 continue
         if record['status'] != 'complete':
             record['status'] = 'failed'
