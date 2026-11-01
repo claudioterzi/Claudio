@@ -365,7 +365,7 @@ def generate():
             for i=1,#KEYS do redis.call('INCR',KEYS[i]); redis.call('EXPIRE',KEYS[i],90000) end
             return 1
         ''', 3, PREFIX+'quota:ip:'+bucket+':'+str(period), PREFIX+'quota:sid:'+sid+':'+str(period),
-             PREFIX+'quota:day:'+str(int(time.time()//86400)), 5, 5, 100)
+             PREFIX+'quota:day:'+str(int(time.time()//86400)), 60, 60, 1000)
         if not quota:
             return jsonify(error='Il limite temporaneo di progettazione è raggiunto. Riprova più tardi o esplora l’esempio.'), 429
         pid = uuid.uuid4().hex
@@ -478,7 +478,7 @@ def question_help(pid):
             for i=1,#KEYS do redis.call('INCR',KEYS[i]); redis.call('EXPIRE',KEYS[i],90000) end
             return 1
         ''', 3, PREFIX+'help-quota:ip:'+bucket+':'+period, PREFIX+'help-quota:sid:'+sid+':'+period,
-             PREFIX+'help-quota:day:'+str(int(time.time()//86400)), 20, 20, 150)
+             PREFIX+'help-quota:day:'+str(int(time.time()//86400)), 200, 200, 2000)
         if not quota:
             return jsonify(error='Hai raggiunto il limite temporaneo di aiuti IA. Puoi continuare a rispondere e affinare il copione.'), 429
         acquired = bool(db.set(cachekey, json.dumps({'status': 'pending'}), ex=120, nx=True))
