@@ -29,7 +29,8 @@
   }
   function accessState(value) {
     if (!value) { clearTimeout(recoveryTimer); selectionVersion++; }
-    owner = value; $('owner-form').hidden = value; $('owner-logout').hidden = !value || !cookieOwner;
+    owner = value; if (value) { try { sessionStorage.setItem('raffaello.private.session.v1', '1'); } catch (_) {} }
+    $('owner-form').hidden = value; $('owner-logout').hidden = !value || !cookieOwner;
     $('owner-status').textContent = value ? 'Accesso privato attivo. Le risposte si aprono qui; Telegram è una copia facoltativa.' : 'Accedi con la password dell’archivio privato per eseguire i comandi dal browser.';
   }
   function renderResult(record) {
@@ -220,7 +221,7 @@
     finally { $('owner-login').disabled = false; }
   });
   $('owner-logout').addEventListener('click', async () => {
-    try { await api('/api/agora/session', {}, 'DELETE'); cookieOwner = false; accessState(false); clearTimeout(recoveryTimer); currentRecord = null; $('onda-execute').hidden = true; $('result-text').textContent = ''; $('result-meta').textContent = ''; $('command-history').replaceChildren(); $('result-download').hidden = true; }
+    try { await api('/api/agora/session', {}, 'DELETE'); try { sessionStorage.removeItem('raffaello.private.session.v1'); } catch (_) {} cookieOwner = false; accessState(false); clearTimeout(recoveryTimer); currentRecord = null; $('onda-execute').hidden = true; $('result-text').textContent = ''; $('result-meta').textContent = ''; $('command-history').replaceChildren(); $('result-download').hidden = true; }
     catch (error) { $('owner-status').textContent = error.message; }
   });
   $('result-download').addEventListener('click', () => {

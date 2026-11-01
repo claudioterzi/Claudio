@@ -15,6 +15,8 @@ from telegram_owner_auth import telegram_owner
 
 COOKIE = '__Host-agora' if os.getenv('VERCEL') else 'agora_owner'
 PREFIX = 'agora:v1:'
+# One login for the whole site: a revocable Redis session, HttpOnly Secure SameSite=Strict cookie.
+SESSION_SECONDS = 7 * 86400
 
 
 def credential():
@@ -33,7 +35,7 @@ def browser_owner(client=None):
     from perfume_archive_auth import signer
     from perfume_studio import ArchiveUnavailable, _redis
     try:
-        value = signer('agora-owner-v1').loads(request.cookies.get(COOKIE, ''), max_age=3600)
+        value = signer('agora-owner-v1').loads(request.cookies.get(COOKIE, ''), max_age=SESSION_SECONDS)
         if not isinstance(value, dict) or value.get('credential') != credential():
             return False
         sid = value.get('sid', '')

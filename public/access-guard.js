@@ -34,6 +34,16 @@ if((requiresPrivate&&!privateOK)||(!requiresPrivate&&!privateOK&&!publicOK)){
     if(bookMatch){try{sessionStorage.setItem('r3.book.pending.key.v1',bookMatch[1])}catch(_){}}
   }
   var destination=safeReturn(location.pathname+(location.search||'')+(location.hash||''))||'/';
-  location.replace('/accesso?reason='+(requiresPrivate?'private':'public')+'&return='+encodeURIComponent(destination));
+  var toAccess=function(){location.replace('/accesso?reason='+(requiresPrivate?'private':'public')+'&return='+encodeURIComponent(destination))};
+  // One login: a server-verified owner session (opened in Agorà or /accesso) also opens these pages.
+  if(typeof fetch!=='function'){toAccess();return}
+  var root=document.documentElement;root.style.visibility='hidden';
+  fetch('/api/agora/session',{credentials:'same-origin',cache:'no-store'}).then(function(r){return r.ok?r.json():{}}).then(function(data){
+    if(data&&data.autorizzato===true){
+      var stored=false;try{sessionStorage.setItem(PRIVATE_SESSION_KEY,'1');stored=sessionStorage.getItem(PRIVATE_SESSION_KEY)==='1'}catch(_){}
+      // Reload once so every page script starts in private mode; without storage, just show the page.
+      if(stored)location.reload();else root.style.visibility='';
+    }else toAccess();
+  }).catch(toAccess);
 }
 })();

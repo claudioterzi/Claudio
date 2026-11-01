@@ -14,7 +14,7 @@ from itsdangerous import BadSignature
 from perfume_archive_auth import allow_login, password_config, password_matches, signer
 from perfume_studio import ArchiveUnavailable, _redis
 from telegram_owner_auth import telegram_owner, bot_token_usable
-from site_owner_auth import COOKIE, browser_owner, same_origin, credential as _credential
+from site_owner_auth import COOKIE, SESSION_SECONDS, browser_owner, same_origin, credential as _credential
 from agora_onda import enqueue as enqueue_onda, expire_if_needed, parse_command as parse_onda, TEXT_ACTIONS as ONDA_LONG_ACTIONS
 
 agora = Blueprint('agora_web', __name__)
@@ -83,7 +83,7 @@ def session():
             return jsonify(ok=False, errore='Riapri la pagina e riprova.'), 403
         if request.method == 'DELETE':
             if browser_owner():
-                value = signer('agora-owner-v1').loads(request.cookies.get(COOKIE, ''), max_age=3600)
+                value = signer('agora-owner-v1').loads(request.cookies.get(COOKIE, ''), max_age=SESSION_SECONDS)
                 _client().delete(PREFIX + 'session:' + value['sid'])
             response = jsonify(ok=True)
             response.delete_cookie(COOKIE, path='/', secure=bool(os.getenv('VERCEL')), httponly=True, samesite='Strict')
@@ -96,10 +96,10 @@ def session():
         if not isinstance(body, dict) or not password_matches(body.get('password')):
             return jsonify(ok=False, errore='Password privata non riconosciuta.'), 403
         sid = secrets.token_urlsafe(32)
-        _client().set(PREFIX + 'session:' + sid, '1', ex=3600)
+        _client().set(PREFIX + 'session:' + sid, '1', ex=SESSION_SECONDS)
         response = jsonify(ok=True, autorizzato=True)
         response.set_cookie(COOKIE, signer('agora-owner-v1').dumps({'sid': sid, 'credential': _credential()}),
-                            max_age=3600, httponly=True, secure=bool(os.getenv('VERCEL')), samesite='Strict', path='/')
+                            max_age=SESSION_SECONDS, httponly=True, secure=bool(os.getenv('VERCEL')), samesite='Strict', path='/')
         return response
     except ArchiveUnavailable:
         raise

@@ -35,6 +35,17 @@ function enterPublic(h){
   }catch(e){setStatus('Il browser non riesce a conservare l’accesso locale. Abilita lo storage per questo sito e riprova.','bad');return}
   location.replace(returnTo||'/raffaello.html');
 }
+function openServerSession(code){
+  // Same secret on the server: one login for Agorà, tarocchi, voce, archivio. Best effort, bounded wait:
+  // the owner code keeps opening the private pages even if the server session cannot be confirmed.
+  if(typeof fetch!=='function')return Promise.resolve();
+  try{
+  var ctrl=typeof AbortController==='function'?new AbortController():null;
+  var timer=setTimeout(function(){if(ctrl)ctrl.abort()},5000);
+  return fetch('/api/agora/session',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-Agora':'1'},body:JSON.stringify({password:code}),signal:ctrl?ctrl.signal:undefined})
+    .catch(function(){}).then(function(){clearTimeout(timer)});
+  }catch(_){return Promise.resolve()}
+}
 function enterPrivate(){
   try{
     sessionStorage.setItem(PRIVATE_SESSION_KEY,'1');
@@ -49,7 +60,7 @@ form.addEventListener('submit',function(e){
   if(!globalThis.crypto||!crypto.subtle){setStatus('Questo browser non supporta la verifica sicura del codice.','bad');return}
   setStatus('Verifico…','');
   hash(code).then(function(h){
-    if(h===OWNER_HASH){enterPrivate();return}
+    if(h===OWNER_HASH){openServerSession(input.value.trim()).then(enterPrivate);return}
     var saved='';
     try{saved=localStorage.getItem(PUBLIC_HASH_KEY)||''}catch(e){}
     if(saved&&saved!==h){
