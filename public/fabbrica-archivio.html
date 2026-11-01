@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Archivio dei copioni · Fabbrica dei Desideri</title>
+  <link rel="stylesheet" href="/fabbrica.css">
+  <style>
+    .archive{width:min(1080px,calc(100% - 32px));margin:0 auto;padding:40px 0 80px}
+    .archive h1{font-size:clamp(2.2rem,5vw,3.6rem);margin:.4rem 0 1rem}
+    .lead{color:var(--muted);max-width:720px}
+    .panel{border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:18px 0;background:var(--white)}
+    .login{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .login input{flex:1 1 220px;min-height:46px;border:1px solid var(--line);border-radius:12px;padding:0 14px}
+    .btn{min-height:46px;border:0;border-radius:999px;padding:0 20px;background:var(--blue);color:#fff;font-weight:700}
+    .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+    .status{color:var(--muted);min-height:1.4em}
+    .list{display:grid;gap:12px;padding:0;list-style:none}
+    .item{border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:6px}
+    .item button{justify-self:start}
+    .meta{color:var(--muted);font-size:.88rem}
+    .dream{color:var(--muted);overflow-wrap:anywhere}
+    .plan h2{font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:.8rem}
+    .scene{border-left:3px solid var(--blue);padding:4px 0 4px 14px;margin:16px 0}
+    .action{background:var(--soft);border-radius:12px;padding:12px;margin:8px 0;overflow-wrap:anywhere}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+    input[type=search]{min-height:46px;border:1px solid var(--line);border-radius:12px;padding:0 14px;width:100%}
+  </style>
+</head>
+<body>
+<main class="archive">
+  <a href="/fabbrica">← Torna alla Fabbrica</a>
+  <h1>Archivio dei copioni</h1>
+  <p class="lead">Qui restano tutti i copioni completati da Raffaello, senza scadenza. L’archivio è visibile solo a te: il server controlla il tuo accesso privato.</p>
+
+  <section id="login-panel" class="panel" hidden>
+    <form id="login" class="login">
+      <label for="password" class="meta" style="flex-basis:100%">Password privata del sito</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button class="btn" type="submit">Entra</button>
+    </form>
+  </section>
+
+  <p id="status" class="status" role="status" aria-live="polite">Controllo l’accesso…</p>
+
+  <section id="archive-panel" hidden>
+    <div class="toolbar">
+      <input id="filter" type="search" placeholder="Cerca per titolo o desiderio…" aria-label="Cerca nei copioni">
+    </div>
+    <ul id="list" class="list"></ul>
+  </section>
+
+  <section id="plan-panel" class="panel plan" hidden>
+    <div class="toolbar">
+      <button id="back" class="btn ghost" type="button">← Tutti i copioni</button>
+      <button id="download" class="btn ghost" type="button">Scarica</button>
+    </div>
+    <div id="plan"></div>
+  </section>
+</main>
+<script>
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  let items=[],current=null;
+  const when=v=>{try{return v?new Date(v).toLocaleString('it-IT',{dateStyle:'long',timeStyle:'short'}):''}catch(_){return v||''}};
+  function el(tag,text,cls){const n=document.createElement(tag);if(text!=null)n.textContent=text;if(cls)n.className=cls;return n}
+  async function api(path,opts={}){
+    const r=await fetch(path,{credentials:'same-origin',cache:'no-store',...opts,headers:{'X-Agora':'1',...(opts.headers||{})}});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok){const e=new Error(data.error||data.errore||('Errore '+r.status));e.status=r.status;throw e}
+    return data;
+  }
+  function renderList(){
+    const q=$('filter').value.trim().toLowerCase();
+    const shown=items.filter(i=>!q||(i.title+' '+i.dream+' '+i.summary).toLowerCase().includes(q));
+    $('list').replaceChildren(...shown.map(i=>{
+      const li=el('li',null,'item');
+      li.append(el('h3',i.title),el('div',when(i.created_at)+(i.parent_id?' · revisione':''),'meta'));
+      if(i.dream)li.append(el('div','«'+i.dream+(i.dream.length>=240?'…':'')+'»','dream'));
+      const b=el('button','Apri il copione','btn ghost');b.type='button';b.addEventListener('click',()=>open(i.id));li.append(b);
+      return li;
+    }));
+    $('status').textContent=items.length?`${shown.length} di ${items.length} copioni`:'Nessun copione salvato finora. Ogni copione completato da adesso in poi comparirà qui.';
+  }
+  async function load(){
+    try{
+      const data=await api('/api/fabbrica/archivio');
+      items=data.items||[];$('login-panel').hidden=true;$('archive-panel').hidden=false;renderList();
+    }catch(e){
+      if(e.status===403){$('login-panel').hidden=false;$('archive-panel').hidden=true;$('status').textContent='Entra con la password privata per vedere i tuoi copioni.'}
+      else $('status').textContent=e.message;
+    }
+  }
+  async function open(id){
+    $('status').textContent='Apro il copione…';
+    try{
+      current=await api('/api/fabbrica/archivio/'+id);
+      const p=current.plan||{},box=$('plan');box.replaceChildren();
+      box.append(el('h2',p.title||'Copione'),el('div',when(current.created_at),'meta'));
+      if(current.brief?.dream){box.append(el('h4','Il desiderio'),el('p',current.brief.dream))}
+      if(p.summary)box.append(el('h4','Sintesi'),el('p',p.summary));
+      if((p.conditions||[]).length){box.append(el('h4','Condizioni'));const ul=el('ul');p.conditions.forEach(c=>{const li=el('li');li.append(el('strong',c.text),document.createTextNode(' — '+c.detail));ul.append(li)});box.append(ul)}
+      (p.scenes||[]).forEach(s=>{const d=el('div',null,'scene');d.append(el('h3',s.title),el('p',s.goal));(s.actions||[]).forEach(a=>{const x=el('div',null,'action');x.append(el('strong',a.id+' · '+a.title),el('div',[a.role,a.when].filter(Boolean).join(' · '),'meta'));if(a.draft)x.append(el('p',a.draft));d.append(x)});box.append(d)});
+      if((p.questions||[]).length){box.append(el('h4','Domande aperte'));const ul=el('ul');p.questions.forEach(q=>ul.append(el('li',q)));box.append(ul)}
+      if(p.alternative)box.append(el('h4','Alternativa'),el('p',p.alternative));
+      $('archive-panel').hidden=true;$('plan-panel').hidden=false;$('status').textContent='';window.scrollTo(0,0);
+    }catch(e){$('status').textContent=e.message}
+  }
+  $('back').addEventListener('click',()=>{$('plan-panel').hidden=true;$('archive-panel').hidden=false;renderList()});
+  $('download').addEventListener('click',()=>{if(!current)return;const url=URL.createObjectURL(new Blob([JSON.stringify(current,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='copione-'+current.id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+  $('filter').addEventListener('input',renderList);
+  $('login').addEventListener('submit',async ev=>{
+    ev.preventDefault();$('status').textContent='Verifico…';
+    try{await api('/api/agora/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:$('password').value})});$('password').value='';await load()}
+    catch(e){$('status').textContent=e.message}
+  });
+  load();
+})();
+</script>
+</body>
+</html>

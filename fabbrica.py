@@ -297,6 +297,71 @@ def status():
     return response
 
 
+ARCHIVE = PREFIX + 'archive'
+
+
+def archive_plan(db, pid):
+    """Keep every completed script without expiry and index it for the owner's archive."""
+    try:
+        db.persist(PREFIX + 'plan:' + pid)
+        db.zadd(ARCHIVE, {pid: time.time()})
+    except Exception as exc:  # the script is already saved; archiving must not lose it
+        record_failure('archive_add_failed', exc)
+
+
+def archive_owner():
+    from site_owner_auth import site_owner
+    return site_owner({})
+
+
+@fabbrica.route('/archivio-copioni')
+@fabbrica.route('/archivio-copioni/')
+def archive_page():
+    return send_from_directory(os.path.join(os.path.dirname(__file__), 'public'), 'fabbrica-archivio.html')
+
+
+@fabbrica.get('/api/fabbrica/archivio')
+def archive_list():
+    if not archive_owner():
+        return jsonify(error='L’archivio dei copioni è riservato a Claudio. Accedi con la password del sito.'), 403
+    try:
+        db = client()
+        items = []
+        for raw_pid, score in db.zrevrange(ARCHIVE, 0, 499, withscores=True):
+            pid = raw_pid.decode() if isinstance(raw_pid, bytes) else raw_pid
+            raw = db.get(PREFIX + 'plan:' + pid)
+            if not raw:
+                db.zrem(ARCHIVE, pid)
+                continue
+            record = json.loads(raw)
+            plan = record.get('plan') or {}
+            items.append(dict(id=pid, title=plan.get('title') or 'Copione senza titolo',
+                              summary=plan.get('summary', ''), dream=record.get('brief', {}).get('dream', '')[:240],
+                              created_at=record.get('created_at'), updated_at=record.get('updated_at'),
+                              parent_id=record.get('parent_id')))
+        return jsonify(items=items, total=len(items))
+    except Exception as exc:
+        record_failure('archive_list_failed', exc)
+        return jsonify(error='Archivio non disponibile adesso. Riprova tra poco.'), 503
+
+
+@fabbrica.get('/api/fabbrica/archivio/<pid>')
+def archive_item(pid):
+    if not archive_owner():
+        return jsonify(error='L’archivio dei copioni è riservato a Claudio. Accedi con la password del sito.'), 403
+    if not ID.fullmatch(pid):
+        return jsonify(error='Copione non valido.'), 400
+    try:
+        raw = client().get(PREFIX + 'plan:' + pid)
+        record = json.loads(raw) if raw else None
+        if not record or record.get('status') != 'complete':
+            return jsonify(error='Copione non trovato nell’archivio.'), 404
+        return jsonify(public_record(record))
+    except Exception as exc:
+        record_failure('archive_item_failed', exc)
+        return jsonify(error='Archivio non disponibile adesso. Riprova tra poco.'), 503
+
+
 def read_owned(db, pid):
     if not ID.fullmatch(pid):
         return None
@@ -408,6 +473,7 @@ def generate():
         db.set(PREFIX+'plan:'+pid, json.dumps(record, ensure_ascii=False), ex=TTL)
         if record['status'] == 'complete':
             db.set(cachekey, pid, ex=TTL)
+            archive_plan(db, pid)
             return jsonify(public_record(record))
         db.delete(cachekey)
         return jsonify(error='La regia non ha prodotto un copione valido. Riprova tra poco.', id=pid), 503
@@ -534,6 +600,10 @@ def plan_resource(pid):
                 for _,k in ipairs(redis.call('SMEMBERS',KEYS[2])) do redis.call('DEL',k) end
                 redis.call('DEL',KEYS[1],KEYS[2]); return 1
             ''', 2, key, PREFIX+'help-index:'+pid)
+            try:
+                db.zrem(ARCHIVE, pid)
+            except Exception as exc:
+                record_failure('archive_remove_failed', exc)
             latest = db.get(PREFIX+'latest:'+session_id())
             if latest in (pid, pid.encode()):
                 db.delete(PREFIX+'latest:'+session_id())
