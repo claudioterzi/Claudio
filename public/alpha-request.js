@@ -8,6 +8,8 @@
     if(typeof url==='string'&&url==='/api/tarocchi/alpha-leggi'&&init.method==='POST'&&typeof init.body==='string'&&root.Telegram?.WebApp?.initData){
       const body=JSON.parse(init.body);if(body&&!('guest_invite' in body)&&!('guest_mode' in body)&&!('invito' in body))init={...init,body:JSON.stringify({...body,initData:root.Telegram.WebApp.initData})};
     }
+    // Same-origin marker: lets the server recognise the owner's private browser session.
+    if(typeof url==='string'&&url.startsWith('/api/tarocchi/'))init={...init,credentials:'same-origin',headers:{...(init.headers||{}),'X-Agora':'1'}};
     const key=options.key||url;cancel(key,'superseded');
     const item={controller:new AbortController(),reason:''};pending.set(key,item);
     const timer=setTimeout(()=>{item.reason='timeout';item.controller.abort()},Math.max(1000,Math.min(120000,Number(options.timeoutMs)||45000)));

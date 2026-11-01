@@ -893,9 +893,9 @@ def _alpha_voice():
         return jsonify({"errore": "Serve un oggetto JSON."}), 400
     if any(key in body for key in ("guest_invite", "guest_mode", "invito")):
         return jsonify({"errore": "Il percorso ospite offre solo letture testuali deterministiche."}), 403
-    from telegram_owner_auth import telegram_owner
-    if not telegram_owner(body):
-        return jsonify({"errore": "La voce esterna richiede l’accesso firmato del proprietario da Telegram.", "fallback": "browser-speech-synthesis"}), 403
+    from site_owner_auth import site_owner
+    if not site_owner(body):
+        return jsonify({"errore": "La voce di Raffaello richiede il tuo accesso privato: Telegram oppure la password del sito.", "fallback": "browser-speech-synthesis"}), 403
     raw_text = body.get("testo") or body.get("text")
     if not isinstance(raw_text, str) or not raw_text.strip():
         return jsonify({"errore": "Serve il testo da leggere."}), 400
@@ -928,8 +928,8 @@ def _response():
     body = request.get_json(silent=True)
     if not isinstance(body, dict):
         return jsonify({"errore": "Serve un oggetto JSON."}), 400
-    from telegram_owner_auth import telegram_owner
-    provider_authorized = telegram_owner(body)
+    from site_owner_auth import site_owner
+    provider_authorized = site_owner(body)
     guest, guest_error = _guest_mode(body)
     if guest_error:
         return jsonify({"errore": guest_error[0]}), guest_error[1]

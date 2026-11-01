@@ -130,7 +130,7 @@ async function leggiManuale(){
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Raffaello sta leggendo la stesa…';
   const reading=document.getElementById('reading');if(reading){reading.classList.remove('visible');reading.style.display='none'}
   try{
-    const res=await fetch('/api/tarocchi/raffaello',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await res.json();if(!res.ok)throw new Error(data.errore||('HTTP '+res.status));renderMessage(data)
+    const res=await fetch('/api/tarocchi/raffaello',{method:'POST',headers:{'Content-Type':'application/json','X-Agora':'1'},credentials:'same-origin',body:JSON.stringify(body)});const data=await res.json();if(!res.ok)throw new Error(data.errore||('HTTP '+res.status));renderMessage(data)
   }catch(err){alert('La lettura non è riuscita: '+err.message)}finally{btn.disabled=false;btn.textContent='Leggi la stesa con Raffaello'}
 }
 function mount(){

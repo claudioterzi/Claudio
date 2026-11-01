@@ -36,7 +36,7 @@
     const controller=new AbortController();pendingRequests.add(controller);
     const timer=setTimeout(()=>controller.abort(),30000);
     try{
-      const response=await fetch('/api/tarocchi/alpha-voce',{method:'POST',headers:{'Content-Type':'application/json',Accept:'audio/mpeg'},cache:'no-store',signal:controller.signal,body:JSON.stringify({testo:text,lingua:language||'it',initData:root.Telegram?.WebApp?.initData||''})});
+      const response=await fetch('/api/tarocchi/alpha-voce',{method:'POST',headers:{'Content-Type':'application/json',Accept:'audio/mpeg','X-Agora':'1'},credentials:'same-origin',cache:'no-store',signal:controller.signal,body:JSON.stringify({testo:text,lingua:language||'it',initData:root.Telegram?.WebApp?.initData||''})});
       if(!response.ok)throw new Error('tts '+response.status);
       return await response.blob();
     }finally{clearTimeout(timer);pendingRequests.delete(controller)}

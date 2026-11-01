@@ -14,11 +14,11 @@ from itsdangerous import BadSignature
 from perfume_archive_auth import allow_login, password_config, password_matches, signer
 from perfume_studio import ArchiveUnavailable, _redis
 from telegram_owner_auth import telegram_owner, bot_token_usable
+from site_owner_auth import COOKIE, browser_owner, same_origin, credential as _credential
 from agora_onda import enqueue as enqueue_onda, expire_if_needed, parse_command as parse_onda
 
 agora = Blueprint('agora_web', __name__)
 COMMANDS = frozenset({'consiglio', 'briefing', 'snapshot', 'tarocchi', 'agenda', 'riflessione', 'onda'})
-COOKIE = '__Host-agora' if os.getenv('VERCEL') else 'agora_owner'
 RETENTION = 30 * 86400
 PREFIX = 'agora:v1:'
 RID = re.compile(r'^[a-f0-9]{32}$')
@@ -35,28 +35,6 @@ def _client():
     if client is None:
         raise ArchiveUnavailable('Archivio del sito non disponibile. Riprova più tardi.')
     return client
-
-
-def _credential():
-    return hmac.new(os.environ['PERFUME_ARCHIVE_SECRET'].encode(), password_config().encode(), hashlib.sha256).hexdigest()
-
-
-def same_origin():
-    origin = request.headers.get('Origin')
-    return (request.headers.get('X-Agora') == '1'
-            and request.headers.get('Sec-Fetch-Site') != 'cross-site'
-            and (not origin or origin.rstrip('/') == request.host_url.rstrip('/')))
-
-
-def browser_owner():
-    try:
-        value = signer('agora-owner-v1').loads(request.cookies.get(COOKIE, ''), max_age=3600)
-        if not isinstance(value, dict) or value.get('credential') != _credential():
-            return False
-        sid = value.get('sid', '')
-        return isinstance(sid, str) and len(sid) == 43 and bool(_client().get(PREFIX + 'session:' + sid))
-    except BadSignature:
-        return False
 
 
 def _owner(body):
