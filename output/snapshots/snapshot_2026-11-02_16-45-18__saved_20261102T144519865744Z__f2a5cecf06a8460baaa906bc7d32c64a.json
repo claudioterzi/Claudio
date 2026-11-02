@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "timestamp": 1793630718.837267,
+    "data_ora": "2026-11-02 16:45:18",
+    "tz": "Europe/Brussels",
+    "versione": "1.1.0",
+    "snapshot_id": "f2a5cecf06a8460baaa906bc7d32c64a",
+    "saved_at_utc": "2026-11-02T14:45:19.865744+00:00",
+    "snapshot_storage_version": 2
+  },
+  "git": {
+    "branch": "main",
+    "commit": "c42c12ac86bf1eb75572b375bf4145090ec14387",
+    "commit_short": "c42c12a",
+    "messaggio": "Approfondimento: ogni cosa che tocchi si apre in una schermata",
+    "autore": "Claude",
+    "data_commit": "2026-11-01 18:34:54 +0000",
+    "dirty": true,
+    "file_modificati": [
+      "M output/scan_report.json"
+    ]
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "5215e6ef55ff7650",
+      "CLAUDE.md": "65a4529ec9c4cdf6",
+      "sdq1/__main__.py": "70a8a409173ff5ca",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "197c6075113823be",
+      "sdq1/snapshot.py": "cca54fb720b0e001",
+      "sdq1/sar/scacchiera_quantica.py": "a326c0669a90877e",
+      "sdq1/sar/agenti_autonomi.py": "ad03c13dab26d2e3",
+      "sdq1/llm/router.py": "9f1ad7d5ecf62ef3",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "0d1711ac049770ea"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-11-02T14:45:19.218586",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.3,
+    "scacchiera_dir": "SINTETICO"
+  },
+  "scanner": {
+    "agente": "CODE_SCANNER",
+    "score_sistema": 94,
+    "sicurezza_ok": true,
+    "sicurezza_livello": "VERDE",
+    "qualita_score": 84,
+    "debito_per_1k": 8.2,
+    "file_totali": 97,
+    "righe_totali": 18111,
+    "problemi_critici": 0,
+    "trovati_sicurezza": 0
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 6.4,
+      "n_chiavi": 4
+    }
+  }
+}
