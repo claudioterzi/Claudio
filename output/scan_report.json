@@ -1,5 +1,5 @@
 {
-  "ts": "2026-11-03T13:37:35.494948",
+  "ts": "2026-11-04T13:46:00.731879",
   "score_sistema": 94,
   "sicurezza": {
     "agente": "CODE_SCANNER",
@@ -17,7 +17,7 @@
     ],
     "pattern_scansionati": 14,
     "ok": true,
-    "tempo_s": 0.08
+    "tempo_s": 0.114
   },
   "qualita": {
     "agente": "CODE_SCANNER",
@@ -50,7 +50,7 @@
     ],
     "pattern_analizzati": 11,
     "file_py_analizzati": 97,
-    "tempo_s": 0.059
+    "tempo_s": 0.074
   },
   "dipendenze": {
     "agente": "CODE_SCANNER",
@@ -75,9 +75,6 @@
       "sar.ciclo": [
         "from .tensioni import Tensione"
       ],
-      "sar.memoria_evolutiva": [
-        "from ..memory.vss import VectorStateStore"
-      ],
       "sar.sar": [
         "from ..memory.vss import VectorStateStore",
         "from .ciclo import CicloAutoriflessione, EsitoCiclo",
@@ -91,41 +88,71 @@
         "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
         "from .tensioni import MappaTeensioni, Polo, Tensione, Osserv"
       ],
-      "orchestrator.gerarchico": [
-        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
-        "from ..config.loader import SDQ1Config",
-        "from ..persistence.store import StatoStore"
+      "sar.agenti_autonomi": [
+        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
+      ],
+      "sar.memoria_evolutiva": [
+        "from ..memory.vss import VectorStateStore"
       ],
       "memory.__init__": [
         "from .store import MemoriaVettoriale, Ricordo, RisultatoRice",
         "from .vss import VectorStateStore"
       ],
-      "config.__init__": [
-        "from .loader import SDQ1Config, AgenteConfig, carica_config"
-      ],
       "memory.vss": [
         "from .store import MemoriaVettoriale, RisultatoRicerca"
-      ],
-      "sar.agenti_autonomi": [
-        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
-      ],
-      "telegram.__init__": [
-        "from .botmanager import BotManager, BotRole, TelegramMessage"
       ],
       "persistence.__init__": [
         "from .store import StatoStore, InMemoryStore, RedisStore, cr"
       ],
+      "futures.__init__": [
+        "from .scenari import SCENARI_DEFAULT",
+        "from .simulatore import SimulatoreScenari, RisultatoScenario"
+      ],
+      "onda_garden_bridge": [
+        "from .onda_protocol import new_envelope, validate_envelope"
+      ],
+      "futures.simulatore": [
+        "from .scenari import Scenario"
+      ],
+      "config.__init__": [
+        "from .loader import SDQ1Config, AgenteConfig, carica_config"
+      ],
       "monitoring.__init__": [
         "from .health import HealthChecker, StatoSalute",
         "from .metrics import MetricsCollector, MetricaChiamata"
+      ],
+      "llm.client": [
+        "from .router import LLMRouter"
+      ],
+      "monitoring.health": [
+        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
+      ],
+      "monitoring.metrics": [
+        "from ..persistence.store import StatoStore"
+      ],
+      "telegram.__init__": [
+        "from .botmanager import BotManager, BotRole, TelegramMessage"
+      ],
+      "llm.__init__": [
+        "from .client import ClaudeClient",
+        "from .router import LLMRouter, RegolaRouter, crea_router_da_"
+      ],
+      "llm.router": [
+        "from .providers import (",
+        "from .specializzazioni import classifica, nodo_per_problema"
+      ],
+      "agents.__init__": [
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import costruisci_agenti, registra"
       ],
       "voli.__init__": [
         "from .agenti import CronistaVoli, EsitoScout, ScoutVoli, Val",
         "from .caccia import Cacciatore, RisultatoCaccia",
         "from .rotte import ROTTE, Rotta, rotte_per_tag"
       ],
-      "monitoring.health": [
-        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
+      "agents.registry": [
+        "from ..config.loader import AgenteConfig, SDQ1Config",
+        "from .base import AgenteBase"
       ],
       "voli.caccia": [
         "from . import lowcost, radar",
@@ -133,65 +160,10 @@
         "from .ambiente import telegram_pronto",
         "from .rotte import ROTTE, Rotta, rotte_per_tag"
       ],
-      "monitoring.metrics": [
+      "orchestrator.gerarchico": [
+        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
+        "from ..config.loader import SDQ1Config",
         "from ..persistence.store import StatoStore"
-      ],
-      "voli.__main__": [
-        "from .caccia import main"
-      ],
-      "futures.__init__": [
-        "from .scenari import SCENARI_DEFAULT",
-        "from .simulatore import SimulatoreScenari, RisultatoScenario"
-      ],
-      "voli.agenti": [
-        "from .. import notifiche",
-        "from .ambiente import telegram_pronto",
-        "from .rotte import Rotta"
-      ],
-      "futures.simulatore": [
-        "from .scenari import Scenario"
-      ],
-      "llm.client": [
-        "from .router import LLMRouter"
-      ],
-      "llm.__init__": [
-        "from .client import ClaudeClient",
-        "from .router import LLMRouter, RegolaRouter, crea_router_da_"
-      ],
-      "onda_garden_bridge": [
-        "from .onda_protocol import new_envelope, validate_envelope"
-      ],
-      "agents.__init__": [
-        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
-        "from .registry import costruisci_agenti, registra"
-      ],
-      "llm.router": [
-        "from .providers import (",
-        "from .specializzazioni import classifica, nodo_per_problema"
-      ],
-      "llm.providers.__init__": [
-        "from .anthropic_provider import AnthropicProvider",
-        "from .base import ProviderBase, RispostaProvider",
-        "from .gemini_provider import GeminiProvider",
-        "from .ollama_provider import OllamaProvider",
-        "from .openai_provider import OpenAIProvider, DeepSeekProvide",
-        "from .stub_provider import StubProvider"
-      ],
-      "llm.providers.ollama_provider": [
-        "from .base import ProviderBase"
-      ],
-      "agents.registry": [
-        "from ..config.loader import AgenteConfig, SDQ1Config",
-        "from .base import AgenteBase"
-      ],
-      "llm.providers.gemini_provider": [
-        "from .base import ProviderBase"
-      ],
-      "llm.providers.stub_provider": [
-        "from .base import ProviderBase"
-      ],
-      "llm.providers.anthropic_provider": [
-        "from .base import ProviderBase"
       ],
       "agents.implementazioni": [
         "from ..config.loader import AgenteConfig",
@@ -204,6 +176,28 @@
       "llm.providers.openai_provider": [
         "from .base import ProviderBase"
       ],
+      "llm.providers.__init__": [
+        "from .anthropic_provider import AnthropicProvider",
+        "from .base import ProviderBase, RispostaProvider",
+        "from .gemini_provider import GeminiProvider",
+        "from .ollama_provider import OllamaProvider",
+        "from .openai_provider import OpenAIProvider, DeepSeekProvide",
+        "from .stub_provider import StubProvider"
+      ],
+      "voli.__main__": [
+        "from .caccia import main"
+      ],
+      "llm.providers.ollama_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.gemini_provider": [
+        "from .base import ProviderBase"
+      ],
+      "voli.agenti": [
+        "from .. import notifiche",
+        "from .ambiente import telegram_pronto",
+        "from .rotte import Rotta"
+      ],
       "__main__": [
         "from .agents import costruisci_agenti, implementazioni",
         "from .config import carica_config",
@@ -214,14 +208,17 @@
         "from .monitoring import HealthChecker, MetricsCollector",
         "from .orchestrator.gerarchico import OrchestratoreGerarchico",
         "from .persistence.store import crea_store"
+      ],
+      "llm.providers.anthropic_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.stub_provider": [
+        "from .base import ProviderBase"
       ]
     },
     "dipendenze_esterne": {
       "drive_rapid_analyzer": [
         "typesafe_sister"
-      ],
-      "notifiche": [
-        "raffaello_identita"
       ],
       "voli.radar": [
         "email",
@@ -229,6 +226,9 @@
       ],
       "github_rapid_analyzer": [
         "typesafe_sister"
+      ],
+      "notifiche": [
+        "raffaello_identita"
       ]
     },
     "pacchetti_esterni": [
@@ -238,7 +238,7 @@
       "xml"
     ],
     "circolari_sospette": [],
-    "tempo_s": 0.017
+    "tempo_s": 0.026
   },
   "metriche": {
     "agente": "CODE_SCANNER",
@@ -1174,7 +1174,7 @@
         "complessita": 3.2
       }
     },
-    "tempo_s": 0.026
+    "tempo_s": 0.048
   },
-  "tempo_totale_s": 0.182
+  "tempo_totale_s": 0.262
 }
