@@ -16,6 +16,7 @@ from typing import Any
 
 from flask import Flask, jsonify, request
 
+from raffaello_identita import con_identita
 from sdq1.config import carica_config
 from sdq1.llm.router import PROVIDER_REGISTRY
 from typesafe_sister.universal import assess_project_state
@@ -125,7 +126,7 @@ def _models_from_config() -> tuple[dict[str, str], dict[str, Any]]:
 
 def _system_prompt(language: str) -> str:
     names = {"it": "italiano", "en": "English", "fr": "français", "es": "español"}
-    return (
+    return con_identita(
         "Sei un membro dell'Orchestra Raffaello/SDQ-1. Rispondi alla domanda concreta "
         f"in {names.get(language, 'italiano')}. Produci una conclusione utile, non una catena di pensiero. "
         "P5: non trattare come prova una risposta di un altro modello. "
