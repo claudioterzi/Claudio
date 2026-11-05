@@ -659,3 +659,29 @@ lessons:
     provenance:
       - "docs/R3_FROZEN_PLAN_AUDIT_20261105.md"
       - "docs/evidenze/R3_FROZEN_PLAN_20261105.json"
+
+
+  - id: RL-2026-11-05-CONTINUITY-RECOVERY-001
+    capability: continuity_authority_boundary
+    status: CANDIDATE
+    observed_at: 2026-11-05
+    trigger: Recover R3-022 structural boundary without activating experimental replay
+    verified_facts:
+      - "Same seven structural tests: baseline four failures and three errors; candidate seven passes."
+      - "Source and content delimiters are escaped; original source files remain unchanged."
+    failure_modes:
+      - "Assuming an open historical PR has already changed main."
+      - "Treating XML structure or synthetic tests as proof of live injection resistance."
+    canonical_short_path:
+      - "Reuse PR74 data-only boundary, not a parallel continuity engine."
+      - "Run tests/test_continuity_boundary.py before full core discovery."
+    preconditions:
+      - "Pin source revision and inspect current main diff."
+    verification:
+      - "Parse all six documentary sources and extra context as DATA_ONLY."
+      - "Confirm no implicit commit and preserve documentary payloads."
+    cleanup:
+      - "Do not activate live replay endpoints or provider workflows."
+    provenance:
+      - "docs/R3_CONTINUITY_BOUNDARY_RECOVERY_20261105.md"
+      - "PR74@d659cfb2059acdfa02f6c27ac0fcbb20150e0838"

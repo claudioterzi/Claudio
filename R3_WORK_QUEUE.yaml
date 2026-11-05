@@ -189,6 +189,13 @@ queue:
     objective: Prevent summaries, handoffs and peer artifacts from silently escalating instruction authority or creating unapproved egress paths.
     evidence: "docs/R3_LEARNING_WATCH_2026-09-17.md; docs/R3_LEARNING_WATCH_2026-09-18.md; draft PR #74 branch r3/r3-022-replay-20260921; sdq1/continuity_replay.py; tests/test_r3_022_continuity_replay.py; R3_REUSE_LESSONS.yaml"
     experiment_status: "HARNESS_READY / LIVE_BLOCKED. PR #74 rebases the DATA_ONLY boundary on current main and adds the canonical deterministic 100-handoff replay with exactly 20 contaminated cases plus falsifiers for unsafe escalation/egress and excessive false rejection. CI, Test Runner and Security Scan passed on the candidate. The first live GitHub Actions attempt was an infrastructure failure before model execution; the dedicated Actions runtime had no configured provider secret. Railway continuity nodes were verified not to be an LLM-provider path. A preview-only Vercel failover endpoint was prepared, but no current preview deployment carrying it is available due Vercel build-rate limiting. Synthetic success does not verify R3-022. Old PR #57 was closed as superseded by #74 while preserving provenance."
+    bounded_recovery_2026_11_05:
+      classification: PATCH_RETEST
+      state: CANDIDATE_NOT_ADOPTED
+      origin: PR74@d659cfb2059acdfa02f6c27ac0fcbb20150e0838
+      evidence: docs/R3_CONTINUITY_BOUNDARY_RECOVERY_20261105.md
+      result: Recover only escaped DATA_ONLY wrapping and five structural tests; two additional preservation and no-implicit-commit controls pass. Same seven tests fail on main and pass on candidate.
+      limits: No live replay, endpoint or provider calls. Structural evidence only; broader independent behavioral evaluation remains required.
   - id: R3-023
     title: Retrieval-driven reconsolidation layer
     state: IDEA
