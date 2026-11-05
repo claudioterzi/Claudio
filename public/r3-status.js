@@ -15,7 +15,16 @@
     var age = (now || new Date()).getTime() - Date.parse(generated || '');
     return Number.isFinite(age) && age >= -300000 && age <= 86400000;
   }
-  if (typeof module !== 'undefined' && module.exports) module.exports = { calendarGap: calendarGap, snapshotCurrent: snapshotCurrent };
+  function validSnapshot(s) {
+    if (!s || s.schema !== 'r3-public-status-v1' || !Number.isFinite(Date.parse(s.generated_at || ''))) return false;
+    var sections = ['heartbeat', 'hypotheses', 'r3', 'contacts', 'h2', 'benchmarks'];
+    if (!sections.every(function (key) { return s[key] && typeof s[key] === 'object' && !Array.isArray(s[key]); })) return false;
+    var counts = [s.hypotheses.total, s.hypotheses.open, s.hypotheses.confirmed, s.hypotheses.falsified,
+      s.r3.verified_external_nodes, s.contacts.records, s.contacts.verified_human, s.benchmarks.files];
+    return counts.every(function (value) { return Number.isSafeInteger(value) && value >= 0; }) &&
+      typeof s.h2.status === 'string' && typeof s.h2.risk === 'string';
+  }
+  if (typeof module !== 'undefined' && module.exports) module.exports = { calendarGap: calendarGap, snapshotCurrent: snapshotCurrent, validSnapshot: validSnapshot };
   if (typeof document === 'undefined') return;
   var $ = function (id) { return document.getElementById(id); };
   var dateTime = function (d) { var value = Date.parse(d || ''); return Number.isFinite(value) ? new Intl.DateTimeFormat('it-IT', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Paris' }).format(new Date(value)) : 'data non disponibile'; };
@@ -29,13 +38,14 @@
   async function refresh() {
     if (pending) return;
     pending = true; $('refresh-status').disabled = true;
+    $('refresh-status').setAttribute('aria-busy', 'true');
     $('status-read').textContent = 'Leggo lo snapshot del repository…';
     var controller = new AbortController(); var timeout = setTimeout(function () { controller.abort(); }, 15000);
     try {
       var response = await fetch('/r3-status.json', { cache: 'no-store', signal: controller.signal });
       if (!response.ok) throw new Error('HTTP ' + response.status);
       var s = await response.json();
-      if (!s || s.schema !== 'r3-public-status-v1' || !s.heartbeat || !s.hypotheses || !s.r3 || !s.contacts || !s.h2 || !s.benchmarks) throw new Error('Snapshot non valido');
+      if (!validSnapshot(s)) throw new Error('Snapshot non valido');
       var now = new Date(); var gap = calendarGap(s.heartbeat.last_daily, now);
       var current = snapshotCurrent(s.generated_at, now);
       $('last-daily').textContent = s.heartbeat.last_daily ? dateDay(s.heartbeat.last_daily) : 'nessuno';
@@ -56,9 +66,13 @@
       $('status-read').textContent = 'Letto ' + dateTime(now.toISOString()) + '. ' + (current ? 'Snapshot entro 24 ore; lo stato runtime non è misurato da questa pagina.' : 'Snapshot storico: serve una nuova generazione del dato per attestare uno stato più recente.');
     } catch (error) {
       badge('daily-badge', 'bad', 'LETTURA NON RIUSCITA');
+      badge('node-badge', 'warn', 'LETTURA NON AGGIORNATA');
       $('status-read').textContent = 'Lettura non riuscita' + (error.name === 'AbortError' ? ' entro 15 secondi' : ': ' + error.message) + '. Gli eventuali dati già visibili appartengono alla lettura precedente. Puoi riprovare con Aggiorna dati.';
       $('daily-sub').textContent = 'Non è stato possibile verificare lo snapshot.';
-    } finally { clearTimeout(timeout); pending = false; $('refresh-status').disabled = false; }
+    } finally {
+      clearTimeout(timeout); pending = false; $('refresh-status').disabled = false;
+      $('refresh-status').setAttribute('aria-busy', 'false');
+    }
   }
   $('refresh-status').addEventListener('click', refresh);
   refresh();
