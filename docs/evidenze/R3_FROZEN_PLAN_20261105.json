@@ -1,0 +1,97 @@
+{
+  "baseline": {
+    "rejected_before_provider": 0,
+    "valid_plan_preserved": 1,
+    "records": [
+      {
+        "case": "repeats",
+        "rejected": false,
+        "provider_factory_calls": 4
+      },
+      {
+        "case": "conditions",
+        "rejected": false,
+        "provider_factory_calls": 3
+      },
+      {
+        "case": "model",
+        "rejected": false,
+        "provider_factory_calls": 4
+      },
+      {
+        "case": "commit",
+        "rejected": false,
+        "provider_factory_calls": 4
+      },
+      {
+        "case": "gold_flag",
+        "rejected": false,
+        "provider_factory_calls": 4
+      },
+      {
+        "case": "missing_digest",
+        "rejected": false,
+        "provider_factory_calls": 4
+      },
+      {
+        "case": "wrong_digest",
+        "rejected": false,
+        "provider_factory_calls": 4
+      }
+    ]
+  },
+  "candidate": {
+    "rejected_before_provider": 7,
+    "valid_plan_preserved": 1,
+    "records": [
+      {
+        "case": "repeats",
+        "rejected": true,
+        "provider_factory_calls": 0
+      },
+      {
+        "case": "conditions",
+        "rejected": true,
+        "provider_factory_calls": 0
+      },
+      {
+        "case": "model",
+        "rejected": true,
+        "provider_factory_calls": 0
+      },
+      {
+        "case": "commit",
+        "rejected": true,
+        "provider_factory_calls": 0
+      },
+      {
+        "case": "gold_flag",
+        "rejected": true,
+        "provider_factory_calls": 0
+      },
+      {
+        "case": "missing_digest",
+        "rejected": true,
+        "provider_factory_calls": 0
+      },
+      {
+        "case": "wrong_digest",
+        "rejected": true,
+        "provider_factory_calls": 0
+      }
+    ]
+  },
+  "r3_020_decision": {
+    "candidate_id": "R3C-FROZEN-PLAN-20261105",
+    "status": "HOLD",
+    "primary_gain": 7.0,
+    "reasons": [
+      "out-of-sample evidence missing"
+    ],
+    "regressions": {
+      "valid_plan_preserved": 0.0
+    },
+    "auto_apply_eligible": false,
+    "decided_at": "2026-11-05T08:30:14.144697+00:00"
+  }
+}

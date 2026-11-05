@@ -7,6 +7,7 @@ cost/token metrics.
 """
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import statistics
@@ -14,7 +15,7 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Callable, Any
+from typing import Any, Callable
 
 from sdq1.benchmark_integrity import generate_run_id
 
@@ -42,8 +43,10 @@ def conditions(compare_model: str, candidate_model: str) -> list[Condition]:
     ]
 
 
-def load_dataset(path: Path) -> dict[str, Any]:
-    value = json.loads(path.read_text(encoding="utf-8"))
+def _load_dataset_snapshot(path: Path) -> tuple[dict[str, Any], str]:
+    # Score and fingerprint the same bytes, never a second read of a mutable file.
+    payload = path.read_bytes()
+    value = json.loads(payload)
     if value.get("schema") != "R3-019-DATASET/1":
         raise ValueError("invalid dataset schema")
     tasks = value.get("tasks")
@@ -66,7 +69,11 @@ def load_dataset(path: Path) -> dict[str, Any]:
         if (not isinstance(values, list) or not values
                 or any(not isinstance(value, str) or not value.strip() for value in values)):
             raise ValueError("evaluator requires non-empty string criteria")
-    return value
+    return value, hashlib.sha256(payload).hexdigest()
+
+
+def load_dataset(path: Path) -> dict[str, Any]:
+    return _load_dataset_snapshot(path)[0]
 
 
 def dataset_sha256(path: Path) -> str:
@@ -102,13 +109,13 @@ def freeze_plan(
     repeats: int = 3,
     commit: str,
 ) -> dict[str, Any]:
-    if repeats < 2:
+    if type(repeats) is not int or repeats < 2:
         raise ValueError("repeats must be >= 2")
-    dataset = load_dataset(dataset_path)
+    dataset, digest = _load_dataset_snapshot(dataset_path)
     plan = {
         "schema": "R3-019-PLAN/1",
         "dataset_version": dataset["dataset_version"],
-        "dataset_sha256": dataset_sha256(dataset_path),
+        "dataset_sha256": digest,
         "compare_model": compare_model,
         "candidate_model": candidate_model,
         "repeats": repeats,
@@ -118,9 +125,41 @@ def freeze_plan(
         "success_gated_efficiency": True,
         "gold_sent_to_model": False,
     }
-    canonical = json.dumps(plan, sort_keys=True, separators=(",", ":"))
-    plan["plan_sha256"] = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    plan["plan_sha256"] = _plan_digest(plan)
+    _validate_plan(plan, dataset, digest)
     return plan
+
+
+def _plan_digest(plan: dict[str, Any]) -> str:
+    payload = {key: value for key, value in plan.items() if key != "plan_sha256"}
+    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _validate_plan(plan: dict[str, Any], dataset: dict[str, Any], digest: str) -> None:
+    """Check consistency, not authorship or authority to execute a provider."""
+    if plan.get("plan_sha256") != _plan_digest(plan):
+        raise ValueError("plan changed after freeze or missing plan_sha256")
+    if plan.get("schema") != "R3-019-PLAN/1":
+        raise ValueError("invalid plan schema")
+    repeats = plan.get("repeats")
+    if type(repeats) is not int or repeats < 2:
+        raise ValueError("repeats must be an integer >= 2")
+    for key in ("compare_model", "candidate_model", "commit"):
+        if not isinstance(plan.get(key), str) or not plan[key].strip():
+            raise ValueError(f"{key} must be nonempty text")
+    expected_conditions = [asdict(item) for item in conditions(
+        plan["compare_model"], plan["candidate_model"]
+    )]
+    if plan.get("conditions") != expected_conditions:
+        raise ValueError("plan requires the frozen A/B/C/D model and method conditions")
+    if (plan.get("success_gated_efficiency") is not True
+            or plan.get("gold_sent_to_model") is not False
+            or plan.get("sets") != ["CORE", "NOVEL", "ADVERSARIAL"]):
+        raise ValueError("plan violates controlled benchmark invariants")
+    if (plan.get("dataset_sha256") != digest
+            or plan.get("dataset_version") != dataset["dataset_version"]):
+        raise ValueError("dataset changed after plan freeze")
 
 
 def run_controlled(
@@ -129,9 +168,11 @@ def run_controlled(
     dataset_path: Path,
     llm_factory: LLMFactory,
 ) -> dict[str, Any]:
-    dataset = load_dataset(dataset_path)
-    if dataset_sha256(dataset_path) != plan["dataset_sha256"]:
-        raise ValueError("dataset changed after plan freeze")
+    # Provider callbacks and callers must not mutate the validated experiment
+    # or retroactively change the plan attached to its evidence.
+    plan = copy.deepcopy(plan)
+    dataset, digest = _load_dataset_snapshot(dataset_path)
+    _validate_plan(plan, dataset, digest)
 
     started = datetime.now(timezone.utc)
     records: list[dict[str, Any]] = []

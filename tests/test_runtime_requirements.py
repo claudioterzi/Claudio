@@ -101,16 +101,20 @@ def test_manifest_discovery_rejects_alternative_nearer_formats(tmp_path, monkeyp
         nearest_requirements(source)
 
 
-def test_packaging_workflow_is_blocking_and_propagates_failure(tmp_path):
+@pytest.mark.parametrize("step_name, executable", [
+    ("Audit pinned builder tooling (blocking)", "npm"),
+    ("Build every Python function and verify retained files (blocking)", "node"),
+])
+def test_packaging_workflow_is_blocking_and_propagates_failure(tmp_path, step_name, executable):
     workflow = yaml.safe_load((ROOT / ".github/workflows/ci_security.yml").read_text())
     job = workflow["jobs"]["vercel_python_packaging"]
     assert not job.get("continue-on-error", False)
     assert job["timeout-minutes"] <= 20
-    step = next(s for s in job["steps"] if s.get("name", "").endswith("(blocking)"))
+    step = next(s for s in job["steps"] if s.get("name") == step_name)
     assert not step.get("continue-on-error", False)
-    node = tmp_path / "node"
-    node.write_text("#!/bin/sh\nexit 7\n")
-    node.chmod(0o755)
+    stub = tmp_path / executable
+    stub.write_text("#!/bin/sh\necho blocking-step-falsifier >&2\nexit 7\n")
+    stub.chmod(0o755)
     env = os.environ.copy()
     env.update(PATH=str(tmp_path) + os.pathsep + env["PATH"],
                RUNNER_TEMP=str(tmp_path), GITHUB_WORKSPACE=str(ROOT))
@@ -119,3 +123,4 @@ def test_packaging_workflow_is_blocking_and_propagates_failure(tmp_path):
         cwd=ROOT, env=env, capture_output=True, text=True, timeout=10, check=False,
     )
     assert result.returncode == 7, result.stderr
+    assert "blocking-step-falsifier" in result.stderr

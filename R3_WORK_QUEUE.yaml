@@ -144,6 +144,12 @@ queue:
       result: Completion and verified success are separate; all task repetitions must pass before efficiency credit. Empty or malformed evaluator criteria are rejected before execution.
       correction_to_prior_status: Earlier infrastructure described success gating but credited completed wrong responses. The Oct30 negative controls reproduce and repair that defect; prior results are not retroactively promoted.
       limits: Deterministic measurement integrity only. Live A/B/C/D capability gains remain unverified; R3-019 stays DEVELOPMENT.
+    frozen_plan_patch_2026_11_05:
+      classification: PATCH_RETEST
+      state: CANDIDATE_NOT_ADOPTED
+      evidence: docs/R3_FROZEN_PLAN_AUDIT_20261105.md
+      result: Seven changed or digest-less plans previously executed; all seven now rejected before provider callbacks. Valid A/B/C/D control preserved. Dataset fingerprint and scoring share one read; caller mutations cannot alter run configuration or receipts.
+      limits: Local deterministic evidence only. R3-020 returns HOLD because out-of-sample evidence is missing. No live capability improvement or production activation claimed.
   - id: R3-020
     title: Self-improvement safety gate
     state: VERIFIED

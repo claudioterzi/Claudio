@@ -631,3 +631,31 @@ lessons:
     provenance:
       - "docs/R3_EVOLUTION_FINITE_METRICS_20261007.md"
       - "docs/evidenze/R3_EVOLUTION_FINITE_20261007.json"
+
+
+  - id: RL-2026-11-05-FROZEN-PLAN-001
+    capability: controlled_benchmark_plan_integrity
+    status: CANDIDATE
+    observed_at: 2026-11-05
+    trigger: Reuse R3-019 controlled plans or packaging CI failure controls
+    verified_facts:
+      - "Baseline accepted seven mutated or digest-less plans; candidate rejects all before provider callbacks."
+      - "The valid four-condition repeated-run control is preserved."
+      - "R3-020 returns HOLD: development fixtures are not independent held-out evidence."
+    failure_modes:
+      - "Recording a plan hash without checking it before execution."
+      - "Hashing a different file read than the dataset scored."
+      - "Selecting the first blocking CI step while stubbing a different executable."
+    canonical_short_path:
+      - "Run tests/test_benchmark_controlled.py and tests/test_runtime_requirements.py."
+      - "Use one dataset snapshot and an isolated validated plan before provider callbacks."
+    preconditions:
+      - "Same-case baseline/candidate comparison, plus valid-run control."
+    verification:
+      - "Changed plan rejection precedes all provider factory calls."
+      - "Audit and build controls propagate the injected failure independently."
+    cleanup:
+      - "No live provider calls or automatic promotion; preserve prior evidence."
+    provenance:
+      - "docs/R3_FROZEN_PLAN_AUDIT_20261105.md"
+      - "docs/evidenze/R3_FROZEN_PLAN_20261105.json"
