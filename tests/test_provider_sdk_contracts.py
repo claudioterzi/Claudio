@@ -113,7 +113,13 @@ def google_sdk_transport(*, status=200, empty=False):
         import json
 
         assert request.method == "POST"
-        assert request.url.path == "/v1beta/models/gemini-2.5-pro:generateContent"
+        assert request.url.host == "example.invalid"
+        # google-genai 3 defaults to v1; earlier supported SDKs use v1beta.
+        # Keep the real SDK default, but require the exact model/action endpoint.
+        assert request.url.path in {
+            "/v1/models/gemini-2.5-pro:generateContent",
+            "/v1beta/models/gemini-2.5-pro:generateContent",
+        }
         assert request.headers["x-goog-api-key"] == KEY
         requests.append(json.loads(request.content))
         payload = {
