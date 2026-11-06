@@ -104,9 +104,9 @@ senza merge o deploy automatico.
 6 novembre 2026 · R³∞ / Raffaello / Casa Viva  
 Stage `IDEA` · Classificazione `PUBLIC` · `DATA_ONLY_ADVISORY` · `auto_execute=false` · `REVIEW_ONLY`
 
-Il [protocollo di test di opacità sociale per Raffaello](PROTOCOLLO_OPACITA_SOCIALE_RAFFAELLO_2026-11-06.md) raccoglie il testo originale e quattro scenari di verifica proposti per il Santuario, i treni veloci, Casa Viva e gli sciami. L’ipotesi è che, dai segnali concessi all’osservatore, resti possibile almeno una traccia alternativa per ciascuna traccia protetta. La metrica formale conta le tracce protette prive di alternativa osservativamente equivalente. Anche una sola falsifica la proprietà nel modello.
+Il [protocollo di test di opacità sociale per Raffaello](PROTOCOLLO_OPACITA_SOCIALE_RAFFAELLO_2026-11-06.md) raccoglie il testo originale e gli scenari di verifica divulgabili. L’ipotesi è che, dai segnali concessi all’osservatore, resti possibile almeno una traccia alternativa per ciascuna traccia protetta. La metrica formale conta le tracce protette prive di alternativa osservativamente equivalente. Anche una sola falsifica la proprietà nel modello.
 
-Prima prova reversibile proposta: confrontare in simulazione l’ingresso al Santuario e il proseguimento nel giardino, a parità di segnali esterni. Esecuzione delle prove e ricevute dei nodi ancora da verificare.
+Prima prova reversibile proposta: confrontare in simulazione due percorsi a parità di segnali esterni. Esecuzione delle prove e ricevute dei nodi ancora da verificare.
 
 ## Limiti
 
