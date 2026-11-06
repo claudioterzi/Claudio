@@ -116,6 +116,162 @@
     });
   });
 
+  // R3_CUBO_BOOK_JOURNEY_V1: one record, two views; no source writes or inferred identity.
+  var journeyReady = false, journeyRestoring = false, journeyDepth = 0;
+  var journeyNotice = '';
+  var journeyViews = ['catalogo','cubo','grafo','cronologia','fonti','voce'];
+  var journeyFilterIds = ['searchInput','typeFilter','domainFilter','statusFilter'];
+  function journeySnapshot() {
+    var values = {};
+    journeyFilterIds.forEach(function(id){ values[id] = $(id).value; });
+    return {schema:'R3_CUBO_BOOK_JOURNEY_V1',view:active,key:selectedKey,depth:journeyDepth,
+      filters:values,pageSize:pageSize,cubeCamera:Object.assign({},cubeCamera),
+      graphCamera:Object.assign({},graphCamera),scrollY:window.scrollY || 0};
+  }
+  function journeyURL() {
+    var fragment = location.hash.slice(1);
+    var params = new URLSearchParams(journeyViews.includes(fragment) ? '' : fragment);
+    params.set('view',active);
+    if(selectedKey) params.set('node',selectedKey); else params.delete('node');
+    // Preserve any existing unlock fragment in place; never copy it into history state or links.
+    return location.pathname + location.search + '#' + params.toString();
+  }
+  function journeyStore(push) {
+    if(!journeyReady || journeyRestoring) return;
+    if(push) journeyDepth++;
+    var state = Object.assign({},history.state || {});
+    state.r3BookJourney = journeySnapshot();
+    try { history[push ? 'pushState' : 'replaceState'](state,'',journeyURL()); }
+    catch(_) { if(push) journeyDepth--; journeyNotice='Cronologia del browser non disponibile; la selezione resta locale.'; }
+    renderJourney();
+  }
+  function journeyRemember() { journeyStore(false); }
+  function renderJourney() {
+    if(!$('r3Journey')) return;
+    $('journeyBack').disabled = journeyDepth <= 0;
+    $('journeyToBook').disabled = !selectedRec;
+    $('journeyToCube').disabled = !selectedRec;
+    $('journeyToBook').setAttribute('aria-pressed',String(active==='catalogo'));
+    $('journeyToCube').setAttribute('aria-pressed',String(active==='cubo'));
+    $('journeySelection').textContent = selectedRec ? selectedRec.id+' · '+selectedRec.title : 'Seleziona una scheda nel Libro o un nodo nel Cubo.';
+    $('journeyStatus').textContent = journeyNotice || (selectedRec ? 'Stessa scheda, stesso testo, stesse fonti. Nessun originale modificato.' : 'Libro ↔ Cubo · percorso nei due sensi');
+    $('r3Journey').setAttribute('data-selected-key',selectedKey);
+    $('r3Journey').setAttribute('data-active-view',active);
+    var previous=$('r3Journey').querySelector('[data-cubo-book-link]');if(previous)previous.remove();
+    var cross=journeyExternalLink(selectedKey);if(cross)$('r3Journey').appendChild(cross);
+  }
+  function revealJourneyRecord(rec) {
+    if(!currentMatches(rec)) {
+      journeyFilterIds.forEach(function(id){ $(id).value=''; });
+      journeyNotice='Filtri sospesi per mostrare la scheda; «Passo precedente» ripristina il contesto.';
+    }
+    var index=results().findIndex(function(item){return item.key===rec.key;});
+    if(index>=pageSize) pageSize=Math.ceil((index+1)/60)*60;
+  }
+  function journeyCloseDetail(next) {
+    var A=window.Approfondimento, dialog=document.querySelector('dialog.approf[open]');
+    if(!A || !A.isOpen())return false;
+    if(dialog && typeof dialog.close==='function'){
+      dialog.addEventListener('close',next,{once:true});A.close();return true;
+    }
+    A.close();return false;
+  }
+  function journeyExternalLink(key) {
+    if(!/^\/libro-idee(?:\/|$)/.test(location.pathname) || typeof key!=='string' || !key.startsWith('CUBO:'))return null;
+    var a=node('a','↗ Cubo completo','button small');
+    a.href='/cubo-quantico#'+encodeURIComponent(key.slice(5));a.rel='noreferrer';a.referrerPolicy='no-referrer';
+    a.setAttribute('data-cubo-book-link','to-cube');return a;
+  }
+  function journeyNavigate(key,view) {
+    if(journeyCloseDetail(function(){journeyNavigate(key,view);}))return true;
+    var rec=byKey.get(key);
+    if(!rec || !journeyViews.includes(view)) {
+      journeyNotice='Nodo non presente nello snapshot caricato: nessuna associazione inventata.';
+      renderJourney();return false;
+    }
+    var changed=key!==selectedKey || view!==active;
+    journeyRemember();journeyRestoring=true;journeyNotice='';
+    try {
+      select(key,true);showView(view);revealJourneyRecord(rec);
+      if(view==='cubo') cubeCamera.focus={x:rec.x,y:rec.y,z:rec.z};
+      renderCatalog();scheduleDrawing();
+    } finally { journeyRestoring=false; }
+    journeyStore(changed);
+    var focusTarget=view==='cubo'?cubeCanvas:$('detailContent');
+    if(focusTarget!==cubeCanvas)focusTarget.setAttribute('tabindex','-1');
+    focusTarget.focus({preventScroll:true});
+    return true;
+  }
+  function journeyRestore(snapshot) {
+    if(journeyCloseDetail(function(){journeyRestore(snapshot);journeyStore(false);}))return true;
+    if(!snapshot || snapshot.schema!=='R3_CUBO_BOOK_JOURNEY_V1' || !journeyViews.includes(snapshot.view)) return false;
+    journeyRestoring=true;journeyNotice='';
+    try {
+      journeyDepth=Number.isInteger(snapshot.depth)&&snapshot.depth>=0?snapshot.depth:0;
+      journeyFilterIds.forEach(function(id){
+        var value=snapshot.filters && snapshot.filters[id];
+        $(id).value=typeof value==='string'?value.slice(0,500):'';
+      });
+      pageSize=Number.isFinite(snapshot.pageSize)?Math.max(60,Math.min(records.length,snapshot.pageSize)):60;
+      if(snapshot.cubeCamera) {
+        var cam=snapshot.cubeCamera;
+        if(['yaw','pitch','zoom'].every(function(k){return Number.isFinite(cam[k]);})) {
+          cubeCamera={yaw:cam.yaw,pitch:Math.max(-1.1,Math.min(1.1,cam.pitch)),zoom:Math.max(.32,Math.min(3.4,cam.zoom))};
+          if(cam.focus && ['x','y','z'].every(function(k){return Number.isFinite(cam.focus[k]);})) cubeCamera.focus={x:cam.focus.x,y:cam.focus.y,z:cam.focus.z};
+        }
+      }
+      if(snapshot.graphCamera && ['zoom','dx','dy'].every(function(k){return Number.isFinite(snapshot.graphCamera[k]);})) graphCamera=Object.assign({},snapshot.graphCamera);
+      if(snapshot.key && byKey.has(snapshot.key)) select(snapshot.key,true);
+      else {
+        if('speechSynthesis' in window)window.speechSynthesis.cancel();
+        selectedKey='';selectedRec=null;$('detailContent').removeAttribute('data-record-key');
+        $('detailContent').replaceChildren(node('p','Seleziona una scheda per aprirne testo e fonti.'));
+        if(snapshot.key) journeyNotice='Nodo non presente nello snapshot caricato: nessuna associazione inventata.';
+      }
+      showView(snapshot.view);
+      if(snapshot.view==='cubo' && !snapshot.cubeCamera && selectedRec)cubeCamera.focus={x:selectedRec.x,y:selectedRec.y,z:selectedRec.z};
+      renderCatalog();scheduleDrawing();
+      var scroll=Number.isFinite(snapshot.scrollY)?Math.max(0,Math.min(10000000,snapshot.scrollY)):0;
+      requestAnimationFrame(function(){window.scrollTo({top:scroll,behavior:'auto'});});
+    } finally { journeyRestoring=false; }
+    renderJourney();return true;
+  }
+  function journeyReadRoute() {
+    var raw=location.hash.slice(1),params=new URLSearchParams(raw);
+    var view=journeyViews.includes(raw)?raw:params.get('view');
+    var key=params.get('node') || '';
+    return {view:journeyViews.includes(view)?view:'catalogo',key:key};
+  }
+  function initJourney() {
+    var style=node('style');
+    style.textContent='.r3-journey{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:16px;margin:0 0 22px;border:1px solid #675982;border-radius:16px;background:#151527}.r3-journey .button{min-height:44px}.r3-journey .button:disabled{opacity:.45;cursor:default}.r3-journey-info{flex:1 1 230px;min-width:0}.r3-journey-info strong{display:block;overflow-wrap:anywhere}.r3-journey-info p{margin:6px 0 0;font-size:12px;line-height:1.5;color:#bdc3d5}.r3-journey .button[aria-pressed=true]{border-color:#bda4fb}.journey-detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.journey-detail-actions button{min-height:44px}@media(max-width:600px){.r3-journey-info{flex-basis:100%}.r3-journey .button{flex:1 1 120px}}';
+    document.head.appendChild(style);
+    var bar=node('nav',null,'r3-journey');bar.id='r3Journey';bar.setAttribute('aria-label','Percorso Cubo e Libro delle Idee');
+    var info=node('div',null,'r3-journey-info'),label=node('strong'),status=node('p');
+    label.id='journeySelection';status.id='journeyStatus';status.setAttribute('role','status');status.setAttribute('aria-live','polite');append(info,label,status);
+    var back=node('button','← Passo precedente','button ghost');back.id='journeyBack';back.type='button';
+    var book=node('button','▦ Apri nel Libro','button');book.id='journeyToBook';book.type='button';
+    var spatial=node('button','◇ Mostra nel Cubo','button');spatial.id='journeyToCube';spatial.type='button';
+    append(bar,info,back,book,spatial);document.querySelector('.toolbar').insertAdjacentElement('afterend',bar);
+    back.addEventListener('click',function(){if(journeyDepth>0)history.back();});
+    book.addEventListener('click',function(){journeyNavigate(selectedKey,'catalogo');});
+    spatial.addEventListener('click',function(){journeyNavigate(selectedKey,'cubo');});
+    window.addEventListener('popstate',function(event){
+      var snap=event.state && event.state.r3BookJourney;
+      if(!journeyRestore(snap)){var route=journeyReadRoute();journeyRestore({schema:'R3_CUBO_BOOK_JOURNEY_V1',view:route.view,key:route.key,depth:0});journeyStore(false);}
+    });
+    window.addEventListener('hashchange',function(){
+      var route=journeyReadRoute();
+      if(route.view===active && route.key===selectedKey)return;
+      journeyRestore({schema:'R3_CUBO_BOOK_JOURNEY_V1',view:route.view,key:route.key,depth:0});journeyStore(false);
+    });
+    var route=journeyReadRoute(),stored=history.state && history.state.r3BookJourney;
+    journeyReady=true;
+    if(stored && stored.view===route.view && stored.key===route.key)journeyRestore(stored);
+    else journeyRestore({schema:'R3_CUBO_BOOK_JOURNEY_V1',view:route.view,key:route.key,depth:0});
+    journeyStore(false);
+  }
+
   function currentMatches(rec) {
     var q = clean($('searchInput').value.trim());
     var type = $('typeFilter').value, domain = $('domainFilter').value, status = $('statusFilter').value;
@@ -150,6 +306,7 @@
   function recordCard(rec) {
     var card = node('button',null,'idea-card');
     card.type = 'button';
+    card.setAttribute('data-record-key',rec.key);
     if (rec.key === selectedKey) card.classList.add('selected');
     card.setAttribute('aria-label', 'Apri ' + rec.title);
     var top = node('div',null,'card-top');
@@ -188,6 +345,8 @@
   function select(key, silent) {
     var rec = byKey.get(key);
     if (!rec) return;
+    var journeyChanged=selectedKey!==key;
+    if(journeyChanged){journeyRemember();if('speechSynthesis' in window)window.speechSynthesis.cancel();}
     selectedKey = key; selectedRec = rec;
     var area = $('detailContent'); area.replaceChildren();
     append(area,node('span',rec.id,'detail-id'),node('h3',rec.title,'detail-title'));
@@ -195,6 +354,15 @@
     append(pills,node('span',rec.domain,'detail-pill'),node('span',rec.state.replaceAll('_',' '),'detail-pill'));
     if (rec.year) pills.appendChild(node('span',String(rec.year),'detail-pill'));
     area.appendChild(pills);
+    area.setAttribute('data-record-key',key);
+    var journeyActions=node('div',null,'journey-detail-actions');
+    var detailBook=node('button','▦ Apri nel Libro','button small');detailBook.id='detailToBook';detailBook.type='button';
+    var detailCube=node('button','◇ Mostra nel Cubo','button small');detailCube.id='detailToCube';detailCube.type='button';
+    detailBook.setAttribute('aria-label','Apri nel Libro: '+rec.id);
+    detailCube.setAttribute('aria-label','Mostra nel Cubo: '+rec.id);
+    detailBook.addEventListener('click',function(){journeyNavigate(key,'catalogo');});
+    detailCube.addEventListener('click',function(){journeyNavigate(key,'cubo');});
+    append(journeyActions,detailBook,detailCube,journeyExternalLink(key));area.appendChild(journeyActions);
     area.appendChild(detailSection('Cosa sappiamo', rec.summary || 'Questo titolo è censito, ma il contenuto integrale non è presente in questa copia dell’archivio.'));
     area.appendChild(detailSection('Origine', rec.source));
     area.appendChild(detailSection('Qualità della prova', rec.evidence + (rec.type === 'GRAPHIFY' ? ' · classificazione dai metadati, da verificare sul testo' : '')));
@@ -219,7 +387,7 @@
         if (!other) return;
         var li = node('li');
         var b = node('button',short(other.title,74)); b.type = 'button'; b.className = 'mini-btn';
-        b.addEventListener('click',function(){select(other.key);});
+        b.addEventListener('click',function(){journeyNavigate(other.key,active);});
         append(li,b,node('span',' · ' + e.label + ' [' + e.evidence + ']'));
         rel.appendChild(li);
       });
@@ -228,9 +396,13 @@
     area.appendChild(detailSection('Integrità', 'Scheda derivata e consultiva. Testo integrale non importato. Nessuna modifica automatica alla fonte; la data dello snapshot non è la data di nascita dell’idea.'));
     if (!silent && active === 'catalogo') renderCatalog();
     scheduleDrawing();
+    journeyStore(journeyChanged);
+    renderJourney();
   }
   function showView(view) {
     if (!['catalogo','cubo','grafo','cronologia','fonti','voce'].includes(view)) return;
+    var journeyViewChanged=active!==view;
+    if(journeyViewChanged)journeyRemember();
     active = view;
     qs('[data-panel]').forEach(function (p) { p.classList.toggle('active',p.dataset.panel===view); });
     qs('[data-view]').forEach(function (b) {
@@ -239,7 +411,8 @@
     if (view === 'cronologia') renderTimeline();
     if (view === 'fonti') renderSources();
     if (view === 'cubo' || view === 'grafo') scheduleDrawing();
-    if (window.__r3SecureMobile) { var params=new URLSearchParams(location.hash.slice(1)); params.set('view',view);history.replaceState(null,'','#'+params.toString()); } else if (location.hash !== '#' + view) history.replaceState(null,'','#'+view);
+    journeyStore(journeyViewChanged);
+    renderJourney();
   }
   function filteredVisual(view) {
     var candidates=results();
@@ -267,10 +440,12 @@
   // Cubo 3D: proiezione matematica leggera sul Canvas 2D, senza WebGL, Three.js o loop continui.
   function project(n,w,h) {
     var y=cubeCamera.yaw, p=cubeCamera.pitch;
-    var xx=n.x*Math.cos(y)-n.z*Math.sin(y);
-    var zz=n.x*Math.sin(y)+n.z*Math.cos(y);
-    var yy=n.y*Math.cos(p)-zz*Math.sin(p);
-    var depth=n.y*Math.sin(p)+zz*Math.cos(p);
+    var origin=cubeCamera.focus || {x:0,y:0,z:0};
+    var nx=n.x-origin.x,ny=n.y-origin.y,nz=n.z-origin.z;
+    var xx=nx*Math.cos(y)-nz*Math.sin(y);
+    var zz=nx*Math.sin(y)+nz*Math.cos(y);
+    var yy=ny*Math.cos(p)-zz*Math.sin(p);
+    var depth=ny*Math.sin(p)+zz*Math.cos(p);
     var f=510/(560+depth)*cubeCamera.zoom;
     return {x:w/2+xx*f,y:h/2-yy*f,scale:f,depth:depth};
   }
@@ -560,13 +735,13 @@
     }catch(_){recognition=null;$('voiceStatus').textContent='Non posso attivare il microfono in questo contesto. Usa la casella di testo.';}
   }
 
-  function onSearchChanged(){pageSize=60;renderCatalog();scheduleDrawing();}
+  function onSearchChanged(){pageSize=60;renderCatalog();scheduleDrawing();journeyStore(false);}
   ['searchInput','typeFilter','domainFilter','statusFilter'].forEach(function(id){
     $(id).addEventListener(id==='searchInput'?'input':'change',onSearchChanged);
   });
   $('showMore').addEventListener('click',function(){pageSize+=60;renderCatalog();});
   qs('[data-view]').forEach(function(b){b.addEventListener('click',function(){showView(b.dataset.view);});});
-  $('goCube').addEventListener('click',function(){showView('cubo');});
+  $('goCube').addEventListener('click',function(){if(selectedRec)journeyNavigate(selectedKey,'cubo');else showView('cubo');});
   $('goGraph').addEventListener('click',function(){showView('grafo');});
   $('exportBook').addEventListener('click',exportBook);
   $('cubeReset').addEventListener('click',function(){cubeCamera={yaw:-.47,pitch:.3,zoom:1};scheduleDrawing();});
@@ -586,6 +761,6 @@
   if (!registryReady || !cubeReady) {
     $('catalogSummary').textContent='Attenzione: un dataset locale non è stato caricato. Verifica i file accanto a index.html.';
   }
-  document.querySelector('.brand').addEventListener('click',function(ev){if(window.__r3SecureMobile){ev.preventDefault();showView('catalogo');}});
-  var initial=window.__r3SecureMobile ? (new URLSearchParams(location.hash.slice(1)).get('view')||'catalogo') : location.hash.slice(1);showView(['catalogo','cubo','grafo','cronologia','fonti','voce'].includes(initial)?initial:'catalogo');
+  document.querySelector('.brand').addEventListener('click',function(ev){ev.preventDefault();if(selectedRec)journeyNavigate(selectedKey,'catalogo');else showView('catalogo');});
+  initJourney();
 })();

@@ -58,6 +58,11 @@
 
   function relatedNodes(node){const rows=[];allLinks.forEach(l=>{const[s,t]=linkEnds(l),meta={type:l.type,evidence:linkEvidence(l),sourceSystem:l.sourceSystem||'',sourceFile:l.sourceFile||l.source_file||'',confidenceScore:l.confidenceScore??l.confidence_score};if(s===node.id&&nodeById.has(t))rows.push(Object.assign({node:nodeById.get(t)},meta));else if(t===node.id&&nodeById.has(s))rows.push(Object.assign({node:nodeById.get(s)},meta))});return rows.filter(r=>r.node.id!=='corpus-claudio-terzi').sort((a,b)=>b.node.importance-a.node.importance)}
 
+  function bookLink(node){
+    const a=document.createElement('a');a.className='open-doc';a.textContent='▦ Apri questa scheda nel Libro delle Idee';
+    const params=new URLSearchParams({view:'catalogo',node:'CUBO:'+node.id});
+    a.href='/libro-idee/#'+params.toString();a.rel='noreferrer';a.referrerPolicy='no-referrer';a.dataset.cuboBookLink='to-book';return a;
+  }
   function renderDetail(node){
     const related=relatedNodes(node);
     const generic=node.kind==='work'?'Questo titolo occupa una posizione determinata dal suo momento nella genealogia, dalla centralità nel corpus e dalla quantità di relazioni con gli altri testi.':'Nodo di orientamento: raccoglie una costellazione del corpus e permette di leggerne la struttura.';
@@ -65,7 +70,8 @@
     const dateLine=node.date?`<p class="detail-kicker">${escapeHtml(node.date)}</p>`:'';
     const attribution=node.kind==='work'?`<div class="detail-attribution"><strong>Attribuzione:</strong> ${escapeHtml(node.credit||'Claudio Terzi · C.Terzi')}<br><strong>Diritti:</strong> ${escapeHtml(node.rightsNotice||'© Claudio Terzi · archivio e contributi dichiarati')}<br><span>${escapeHtml(node.attributionStatus||'Corpus Claudio Terzi')}</span></div>`:'';
     detailEl.innerHTML=`<p class="detail-kicker">${escapeHtml(node.kind==='work'?node.category:'Nodo di orientamento')}</p><h2>${escapeHtml(node.title)}</h2>${dateLine}${attribution}<p>${escapeHtml(description)}</p><div class="meta"><div class="chip"><strong>${escapeHtml(node.year)}</strong><span>tempo</span></div><div class="chip"><strong>${escapeHtml(node.importance)}/10</strong><span>importanza</span></div><div class="chip"><strong>${escapeHtml(node.density)}/10</strong><span>densità</span></div></div>${node.kind==='work'?`<a class="open-doc" href="${escapeHtml(node.url)}" target="_blank" rel="noopener">Apri lo scritto ↗</a>`:''}<div class="related"><h3>Connessioni · ${related.length}</h3>${related.slice(0,18).map(r=>`<a href="#${escapeHtml(r.node.id)}" data-focus="${escapeHtml(r.node.id)}"><span>${escapeHtml(r.node.title)}</span> · <small>${escapeHtml(relationLabel(r.type))} · ${escapeHtml(evidenceLabel(r.evidence))}${r.confidenceScore!=null?' '+escapeHtml(Number(r.confidenceScore).toFixed(2)):''}</small></a>`).join('')}</div>`;
-    detailEl.querySelectorAll('[data-focus]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const n=nodeById.get(a.dataset.focus);if(n)focusNode(n,true)}))
+    detailEl.querySelectorAll('[data-focus]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const n=nodeById.get(a.dataset.focus);if(n)focusNode(n,true)}));
+    detailEl.setAttribute('data-selected-node',node.id);detailEl.appendChild(bookLink(node));
   }
 
   function focusNode(node,moveCamera=true){
@@ -88,7 +94,15 @@
 
   [searchEl,categoryEl,yearEl].forEach(el=>el.addEventListener(el===searchEl?'input':'change',applyFilter));connectionsEl.addEventListener('change',applyFilter);resetEl.addEventListener('click',()=>{selectedId=null;searchEl.value='';categoryEl.value='';yearEl.value='';connectionsEl.checked=true;history.replaceState(null,'',location.pathname);applyFilter();if(graph)graph.cameraPosition({x:430,y:275,z:430},{x:0,y:15,z:0},matchMedia('(prefers-reduced-motion: reduce)').matches?0:900);detailEl.innerHTML=`<p class="detail-kicker">Vista generale</p><h2>Cubo Quantico delle Opere</h2><p>Ogni punto è un titolo. X attraversa il tempo, Y misura la centralità dell’opera, Z la sua densità di relazioni. Le linee mostrano famiglie, genealogie, versioni, echi e soglie fondative.</p><div class="metrics"><div><strong>${workNodes.length}</strong><span>titoli</span></div><div><strong>${categories.length}</strong><span>costellazioni</span></div><div><strong>${allLinks.length}</strong><span>relazioni</span></div></div>`});
 
-  let initialHash='';try{initialHash=decodeURIComponent(location.hash.replace(/^#/,''))}catch(_){}if(initialHash&&nodeById.has(initialHash))setTimeout(()=>focusNode(nodeById.get(initialHash),true),700);
+  function restoreCubeRoute(){
+    let id='';try{id=decodeURIComponent(location.hash.replace(/^#/,''))}catch(_){}
+    if(id&&nodeById.has(id)){if(selectedId!==id){searchEl.value='';categoryEl.value='';yearEl.value='';applyFilter();focusNode(nodeById.get(id),true);}return;}
+    if(id&&id!=='catalogo'){
+      selectedId=null;detailEl.removeAttribute('data-selected-node');detailEl.replaceChildren();
+      const p=document.createElement('p');p.textContent='Nodo non presente in questa versione del Cubo. Nessuna associazione inventata.';p.setAttribute('role','status');detailEl.appendChild(p);
+    }
+  }
+  restoreCubeRoute();window.addEventListener('hashchange',restoreCubeRoute);
   const loadButton=document.getElementById('load-graph');
   const loadStatus=document.getElementById('graph-load-status');
   const scriptLoads=new Map();

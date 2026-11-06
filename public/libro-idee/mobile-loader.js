@@ -56,7 +56,7 @@
       lock.hidden=true;
       root.hidden=false;
       const script=document.createElement('script');
-      script.src='app.js';
+      script.src='app.js?v=journey-20261106';
       script.onerror=()=>{root.hidden=true;lock.hidden=false;fail('Impossibile avviare l’interfaccia. Controlla i file della cartella web.');};
       script.onload=()=>{
         const count=document.getElementById('statIdeas')?.textContent;
