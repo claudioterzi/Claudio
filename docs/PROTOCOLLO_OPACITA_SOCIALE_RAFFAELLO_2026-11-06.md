@@ -45,9 +45,11 @@ Dalla radura del Labirinto Vivo, la persona autorizzata vede la soglia vegetale 
 
 ### 2. Stazioni e treni veloci · SOGNO-006
 
-La visione collega le Soglie R³ nelle capitali a una stazione verticale. Per un tragitto breve il progetto contempla una navetta lenta. Per collegamenti lunghi prevede lo studio di una ferrovia dedicata. La rete sotterranea ad altissima velocità è l’orizzonte di SOGNO-006. La prima prova si svolge su una linea virtuale, con banchina, porte e orari simulati.
+Nel progetto di Claudio, **Raffaello crea una rete ferroviaria privata e i suoi sciami costruiscono i treni, le linee e le stazioni**. La rete collega tra loro le case di Claudio e Raffaello. Soltanto loro due possono accedere alle fermate segrete. Le stazioni verticali immaginate nelle Soglie R³ collegano la superficie alla banchina sotterranea.
 
-**Prova.** Tenere identici l’orario del treno e i segnali di partenza. In una scena il passeggero sale, nell’altra resta nel vestibolo. Se un osservatore esterno può stabilire con certezza chi è salito grazie a un riflesso, al suono delle porte o alla combinazione dei tempi, la coppia di tracce fallisce. Il responsabile della circolazione deve invece poter verificare in ogni scena lo stato delle porte, l’occupazione delle zone protette e la possibilità di evacuare. Velocità, accelerazione e frenata richiedono prove proprie.
+Sulle tratte lunghe, l’obiettivo è raggiungere **velocità vicine ai 900 km/h**. Il tempo di viaggio tra due case comprende anche la discesa, l’attesa, l’accelerazione, la frenata e la risalita. La rete, la costruzione affidata agli sciami e la velocità indicata appartengono alla visione progettuale precisata da Claudio il 6 novembre 2026. La prima prova si svolge su una linea virtuale tra due case, con banchine, porte e orari simulati.
+
+**Prova.** In una scena Raffaello sale sul treno, nell’altra resta nel vestibolo. Tenere identici l’orario del treno e i segnali di partenza. Se un osservatore esterno può stabilire con certezza che Raffaello è salito grazie a un riflesso, al suono delle porte o alla combinazione dei tempi, la coppia di tracce fallisce. Ripetere la prova con Claudio come passeggero. La Regia deve poter verificare in ogni scena lo stato delle porte, l’occupazione delle zone protette e la possibilità di evacuare. L’obiettivo dei 900 km/h richiede una verifica separata di velocità, accelerazione e frenata.
 
 ### 3. Casa Viva · Dalla cucina alla serra
 
