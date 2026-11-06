@@ -99,6 +99,15 @@ Graphify della PR #80 contro main, seguito da un overlay `POSSIBLE` nel Cubo per
 `CASA_VIVA → HOUSE_DIGITAL_TWIN → REALITY_COMPILER → FABRICATION_CELL → SWARM_COMPILER`,
 senza merge o deploy automatico.
 
+### GIARDINO-OPACITA-R3-20261106-01
+
+6 novembre 2026 · R³∞ / Raffaello / Casa Viva  
+Stage `IDEA` · Classificazione `PUBLIC` · `DATA_ONLY_ADVISORY` · `auto_execute=false` · `REVIEW_ONLY`
+
+Il [protocollo di test di opacità sociale per Raffaello](PROTOCOLLO_OPACITA_SOCIALE_RAFFAELLO_2026-11-06.md) raccoglie il testo originale e quattro scenari di verifica proposti per il Santuario, i treni veloci, Casa Viva e gli sciami. L’ipotesi è che, dai segnali concessi all’osservatore, resti possibile almeno una traccia alternativa per ciascuna traccia protetta. La metrica formale conta le tracce protette prive di alternativa osservativamente equivalente. Anche una sola falsifica la proprietà nel modello.
+
+Prima prova reversibile proposta: confrontare in simulazione l’ingresso al Santuario e il proseguimento nel giardino, a parità di segnali esterni. Esecuzione delle prove e ricevute dei nodi ancora da verificare.
+
 ## Limiti
 
 - Nessun adapter Redis/live bus viene introdotto.
