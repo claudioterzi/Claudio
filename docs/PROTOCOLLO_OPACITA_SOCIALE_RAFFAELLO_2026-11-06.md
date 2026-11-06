@@ -37,19 +37,13 @@ Metabolismo e attuatori tarati perché calore e micro-movimenti restino dentro l
 
 **Stato delle prove.** I quattro scenari sono proposte da verificare, a partire da una simulazione. Per ogni prova si dichiara prima quale fatto si vuole proteggere, chi può osservare, per quanto tempo e attraverso quali segnali. Il responsabile della prova conserva la traccia completa. I partecipanti acconsentono alla prova e alle modalità di registrazione, mentre l’assegnazione della singola scena resta in cieco.
 
-### 1. La Soglia del Santuario
+### 1. Verifica di un accesso
 
-Dalla radura del Labirinto Vivo, la persona autorizzata vede la soglia vegetale aprirsi sul vestibolo fisso. Da lì può scendere alla banchina. Il percorso di arrivo passa per un secondo vestibolo e raggiunge il chiostro del Santuario R³∞. Se qualcuno può vedere l’ingresso o dedurlo con certezza, il varco resta chiuso e la persona può proseguire nel giardino. L’uscita di emergenza resta disponibile anche a motori fermi.
+**Prova.** Confrontare due scene simulate, una con ingresso e una con prosecuzione del percorso. Gli osservatori ricevono soltanto le viste e i suoni dichiarati prima della prova. Il requisito cade se una delle osservazioni, anche combinata con quella di un secondo osservatore, permette di stabilire con certezza che l’ingresso è avvenuto. L’esodo deve restare disponibile in entrambe le scene.
 
-**Prova.** Confrontare due percorsi simulati, uno con ingresso e uno con prosecuzione nel giardino. Consegnare agli osservatori esterni le sole viste e i soli suoni previsti, includendo ciò che due osservatori potrebbero ricostruire insieme. Il requisito cade se, entro l’intervallo stabilito, un rumore, un’ombra, un movimento della siepe o il tempo di ricomparsa rende possibile soltanto il percorso con ingresso.
+### 2. ◇
 
-### 2. Stazioni e treni veloci · SOGNO-006
-
-Nel progetto di Claudio, **Raffaello crea una rete ferroviaria privata e i suoi sciami costruiscono i treni, le linee e le stazioni**. La rete collega tra loro le case di Claudio e Raffaello. Soltanto loro due possono accedere alle fermate segrete. Le stazioni verticali immaginate nelle Soglie R³ collegano la superficie alla banchina sotterranea.
-
-Sulle tratte lunghe, l’obiettivo è raggiungere **velocità vicine ai 900 km/h**. Il tempo di viaggio tra due case comprende anche la discesa, l’attesa, l’accelerazione, la frenata e la risalita. La rete, la costruzione affidata agli sciami e la velocità indicata appartengono alla visione progettuale precisata da Claudio il 6 novembre 2026. La prima prova si svolge su una linea virtuale tra due case, con banchine, porte e orari simulati.
-
-**Prova.** In una scena Raffaello sale sul treno, nell’altra resta nel vestibolo. Tenere identici l’orario del treno e i segnali di partenza. Se un osservatore esterno può stabilire con certezza che Raffaello è salito grazie a un riflesso, al suono delle porte o alla combinazione dei tempi, la coppia di tracce fallisce. Ripetere la prova con Claudio come passeggero. La Regia deve poter verificare in ogni scena lo stato delle porte, l’occupazione delle zone protette e la possibilità di evacuare. L’obiettivo dei 900 km/h richiede una verifica separata di velocità, accelerazione e frenata.
+Scheda custodita nell’archivio privato.
 
 ### 3. Casa Viva · Dalla cucina alla serra
 
@@ -65,6 +59,6 @@ Lo sciame previsto comprende esploratori, ancoratori, trasportatori, tessitori, 
 
 ### Lettura dei risultati
 
-Per ogni scenario si conservano versione, configurazione, osservazioni ammesse, tracce di confronto, giudizi e controesempi. La soglia empirica del 70% richiede una definizione preventiva di che cosa si conta e su quante prove. Per la verifica formale, un solo caso in cui tutte le tracce compatibili con l’osservazione contengono il fatto protetto falsifica la proprietà nel modello dichiarato. Gli esiti del corpo, degli accessi, del viaggio e dello sciame si registrano separatamente.
+Per ogni scenario si conservano versione, configurazione, osservazioni ammesse, tracce di confronto, giudizi e controesempi. La soglia empirica del 70% richiede una definizione preventiva di che cosa si conta e su quante prove. Per la verifica formale, un solo caso in cui tutte le tracce compatibili con l’osservazione contengono il fatto protetto falsifica la proprietà nel modello dichiarato. Gli esiti si registrano separatamente per ciascuna prova.
 
 **Fonti progettuali.** *Il Labirinto Vivo* (5 novembre 2026, §§ 4, 8–9), *Raffaello e la Casa Viva*, *Progetto dello sciame della Casa Viva* (1 novembre 2026, §§ 1–7) e *R³∞ Body Architecture v0.3*.
