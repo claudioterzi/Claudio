@@ -84,6 +84,21 @@ class StudioGenerationTests(unittest.TestCase):
         self.assertTrue(save.call_args.args[0].endswith('documented brief'))
         self.assertEqual(save.call_args.args[1], STUDIO.get_tema())
 
+    def test_index_replaces_stale_rotation_and_preserves_old_links(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp) / 'output/morning_brief'
+            folder.mkdir(parents=True)
+            old_link = '- [Old brief](./2026-06-20.md)'
+            (folder / 'INDICE.md').write_text('# Index\n## Piano di Rotazione\n| Domenica | Wildcard Creativo |\n' + old_link + '\n')
+            with patch.object(STUDIO, '__file__', str(Path(tmp) / 'scripts/studio_notturno.py')):
+                STUDIO.salva('new brief', STUDIO.TEMI[1])
+            index = (folder / 'INDICE.md').read_text()
+            self.assertIn(old_link, index)
+            self.assertIn('Fino a tre temi già lavorati', index)
+            self.assertNotIn('Piano di Rotazione', index)
+            self.assertNotIn('Domenica', index)
+            self.assertNotIn('Wildcard Creativo', index)
+
     def test_repeated_run_links_the_day_once(self):
         with tempfile.TemporaryDirectory() as tmp:
             with patch.object(STUDIO, '__file__', str(Path(tmp) / 'scripts' / 'studio_notturno.py')):

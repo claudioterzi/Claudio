@@ -254,27 +254,26 @@ def salva(brief: str, tema: dict) -> Path:
     data_leg = datetime.date.today().strftime("%d %B %Y")
     riga = f"- [{data_leg} — {tema['nome']}](./{percorso.name}) *(Desiderio {tema['desiderio']})*\n"
 
+    # L'indice è un artefatto generato: preserva i collegamenti storici, non
+    # il vecchio calendario fisso (che includeva anche una wildcard).
+    precedenti = []
     if indice.exists():
-        contenuto = indice.read_text(encoding="utf-8")
-        linee = [
-            linea for linea in contenuto.splitlines()
-            if f"](./{percorso.name})" not in linea
-            and linea != "*(i brief appariranno qui ogni mattina)*"
+        precedenti = [
+            linea for linea in indice.read_text(encoding="utf-8").splitlines()
+            if linea.startswith("- [") and f"](./{percorso.name})" not in linea
         ]
-        for i, l in enumerate(linee):
-            if l.startswith("- ["):
-                linee.insert(i, riga.rstrip())
-                break
-        else:
-            linee.append(riga.rstrip())
-        indice.write_text("\n".join(linee) + "\n", encoding="utf-8")
-    else:
-        indice.write_text(
-            f"# Morning Brief — Indice\n"
-            f"*Studio Notturno Autonomo SDQ-1 — Claudio Terzi [CT-LGAI-001]*\n"
-            f"*Si attiva ogni notte alle 2:00 AM Brussels*\n\n---\n\n{riga}",
-            encoding="utf-8",
-        )
+    intestazione = (
+        "# Morning Brief — Indice\n"
+        "*Studio Notturno Autonomo SDQ-1 — Claudio Terzi [CT-LGAI-001]*\n"
+        "*Avvio programmato alle 02:00, ora di Bruxelles.*\n\n"
+        "## Scelta dei temi\n\n"
+        "Fino a tre temi già lavorati, scelti in base alla priorità documentata "
+        "e al tempo dall’ultimo rinnovo. Nessuna rotazione settimanale o wildcard.\n"
+        "Ogni brief espone i motivi della scelta e i dossier precedenti. "
+        "[Criteri e limiti](../../docs/STUDIO_TEMI_LAVORATI_2026-11-06.md).\n\n"
+        "## Brief generati\n\n"
+    )
+    indice.write_text(intestazione + riga + "\n".join(precedenti) + ("\n" if precedenti else ""), encoding="utf-8")
 
     return percorso
 
