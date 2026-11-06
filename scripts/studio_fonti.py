@@ -15,22 +15,16 @@ from urllib.request import Request, urlopen
 PISTE = (
     ("self sovereign digital identity", ("sovereign", "identit"),
      "Cerca quale componente conserva le credenziali e come funziona la revoca quando il dispositivo è offline."),
-    ("satellite task scheduling", ("satellite", "schedul", "task"),
+    ("satellite image acquisition scheduling", ("satellite", "imag", "schedul"),
      "Distingui il tempo di pianificazione dal tempo di acquisizione e annota quale latenza viene misurata."),
-    ("urban drone emergency response", ("urban", "drone", "emergency"),
-     "Individua lo scenario urbano studiato e verifica se il tempo di intervento è misurato sul campo o simulato."),
-    ("robot manipulation sim-to-real", ("robot", "sim to real"),
-     "Confronta il compito simulato con la prova sul robot fisico e annota la metrica usata per il trasferimento."),
-    ("humanitarian earth observation", ("humanitarian", "earth observation"),
-     "Verifica quali dati satellitari sono stati usati per l’intervento umanitario e se è indicata una licenza di riuso."),
+    ("EU AI Act", ("ai act",),
+     "Confronta le norme UE effettivamente citate con il dossier Minerva; non dedurre applicabilità ai droni o scadenze legali dal solo titolo."),
+    ("CNC toolpath generation", ("cnc", "toolpath"),
+     "Confronta la generazione dei percorsi CNC con gli esempi già studiati; non presumere compatibilità con CadQuery o Pocket NC senza prove."),
+    ("refugee digital identity", ("digital", "refugee", "identit"),
+     "Verifica quali bisogni di identità digitale dei rifugiati sono documentati; non dedurre accesso a finanziamenti o eleggibilità ASBL da un articolo."),
     ("digital legacy", ("digital", "legacy"),
      "Cerca chi può autorizzare l’accesso a un archivio dopo la morte e come questa scelta viene documentata."),
-    ("edge computing satellite", ("satellite", "edge comput"),
-     "Confronta quali elaborazioni possono avvenire a bordo e quali richiedono un collegamento a terra."),
-)
-CONNESSIONI = (
-    "satellite disaster response", ("satellite", "disaster", "response"),
-    "Per collegare osservazione satellitare e soccorso, cerca l’intervallo fra acquisizione e consegna di una mappa utilizzabile.",
 )
 
 
@@ -64,11 +58,12 @@ def _articoli(pista, inizio, oggi, usati):
         "filter": f"type:journal-article,from-pub-date:{inizio},until-pub-date:{oggi}",
     })
     righe = []
+    titoli_usati = set()
     for record in dati["message"]["items"]:
         doi = record.get("DOI", "").lower()
         titoli = record.get("title") or []
         titolo = _titolo(titoli[0], termini) if titoli else None
-        if not titolo or not re.fullmatch(r"10\.\d{4,9}/[^\s]+", doi) or doi in usati:
+        if not titolo or titolo.casefold() in titoli_usati or not re.fullmatch(r"10\.\d{4,9}/[^\s]+", doi) or doi in usati:
             continue
         parti = record.get("published", {}).get("date-parts", [[]])[0]
         try:
@@ -82,6 +77,7 @@ def _articoli(pista, inizio, oggi, usati):
         url = "https://doi.org/" + quote(doi, safe="/")
         righe.append(f"- {titolo} · {data_visibile} · [DOI]({url})")
         usati.add(doi)
+        titoli_usati.add(titolo.casefold())
         if len(righe) == 2:
             break
     if not righe:
@@ -91,14 +87,14 @@ def _articoli(pista, inizio, oggi, usati):
 
 def _progetti_ue(inizio, oggi):
     dati = _json("https://api.openaire.eu/graph/v3/projects", {
-        "title": "earth observation", "fundingShortName": "EC", "fromStartDate": inizio,
+        "title": "digital identity", "fundingShortName": "EC", "fromStartDate": inizio,
         "toStartDate": oggi, "sortBy": "startDate DESC", "pageSize": 10,
     })
     righe = []
     codici = set()
     for progetto in dati["results"]:
         codice = progetto.get("code") or ""
-        titolo = _titolo(progetto.get("title") or "", ("earth observation",))
+        titolo = _titolo(progetto.get("title") or "", ("digital identit",))
         avvio = progetto.get("startDate") or ""
         if not titolo or not re.fullmatch(r"[0-9]{6,9}", codice) or codice in codici:
             continue
@@ -121,29 +117,36 @@ def _progetti_ue(inizio, oggi):
     return righe
 
 
-def genera_brief_fonti(temi, oggi):
+def genera_brief_fonti(temi, oggi, indici=None):
     """Produce tre sezioni documentate o solleva un errore prima del salvataggio."""
-    giorno = oggi.weekday()
-    domani = (giorno + 1) % 7
+    if indici is None:
+        # Anche chi chiama direttamente il fallback rispetta il perimetro lavorato.
+        if __package__:
+            from .studio_priorita import seleziona_temi
+        else:
+            from studio_priorita import seleziona_temi
+        indici = [s["indice"] for s in seleziona_temi(temi, oggi)]
+    if not indici or len(indici) > 3 or len(set(indici)) != len(indici) or any(
+        type(i) is not int or i not in range(6) or i not in temi for i in indici
+    ):
+        raise ValueError("Sono richiesti da uno a tre temi già lavorati, senza wildcard")
     inizio = oggi - datetime.timedelta(days=730)
     righe = [
         f"# Morning Brief — {oggi:%Y-%m-%d}", "",
         f"Intervallo di ricerca dal {inizio} al {oggi}. Le schede riportano metadati bibliografici e date degli editori.",
-        "Le indicazioni di lettura sono proposte da verificare nei testi integrali.", "",
+        "Rinnovo bibliografico limitato ai temi già lavorati. Non è una revisione completa dei dossier.",
+        "Le indicazioni di lettura sono proposte da verificare nei testi integrali. "
+        "Norme, procedure, prezzi e disponibilità di servizi non sono verificati da questi metadati.", "",
     ]
-    sezioni = (
-        (f"Tema del giorno — {temi[giorno]['nome']}", PISTE[giorno], giorno),
-        (f"Domani — {temi[domani]['nome']}", PISTE[domani], domani),
-        ("Connessioni — Osservazione satellitare e risposta alle catastrofi", CONNESSIONI, None),
-    )
+    sezioni = tuple((f"Rinnovo — {temi[i]['nome']}", PISTE[i], i) for i in indici)
     usati = set()
     for nome, pista, indice in sezioni:
         righe.extend([f"## {nome}", "", "Articoli indicizzati da Crossref", ""])
         righe.extend(_articoli(pista, inizio, oggi, usati))
         righe.extend(["", f"**Indicazione di lettura.** {pista[2]}", ""])
         if indice == 4:
-            righe.extend(["### Progetti UE di osservazione terrestre", "",
-                          "OpenAIRE registra finanziamenti già assegnati. Lo stato dei bandi aperti resta da verificare.", ""])
+            righe.extend(["### Progetti UE di identità digitale", "",
+                          "OpenAIRE registra finanziamenti già assegnati. Bandi aperti, eleggibilità e procedura ASBL restano da verificare.", ""])
             righe.extend(_progetti_ue(inizio, oggi))
             righe.extend(["", "Apri una scheda CORDIS, identifica il coordinatore e risali al programma che ha finanziato il progetto.", ""])
     return "\n".join(righe)

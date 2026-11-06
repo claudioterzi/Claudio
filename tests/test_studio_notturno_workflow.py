@@ -72,6 +72,8 @@ class StudioWorkflowTests(unittest.TestCase):
             '.github/workflows/studio_notturno.yml',
             'scripts/studio_notturno.py',
             'scripts/studio_fonti.py',
+            'scripts/studio_priorita.py',
+            'studio/temi_lavorati.json',
         })
 
     def test_no_cache_for_no_cache_installation(self):

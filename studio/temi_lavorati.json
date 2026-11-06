@@ -1,0 +1,12 @@
+{
+  "modalita": "solo_temi_lavorati",
+  "fonte": "TASK_AUTONOMI.md e output/task_output/; richiesta di rinnovo limitata ai temi già lavorati, 2026-11-06",
+  "temi": [
+    {"indice": 0, "task_completati": ["SKYID-005", "SKYID-008"], "ambito": "Identità digitale: Privado ID/Polygon ID e confronto dei provider già studiati per rifugiati."},
+    {"indice": 1, "task_completati": ["MAXAR-002", "PLANET-003"], "ambito": "Accesso e API di immagini satellitari Maxar e Planet per il Protocollo Scudo."},
+    {"indice": 2, "task_completati": ["MINERVA-007"], "ambito": "Obblighi EU AI Act per sicurezza urbana e droni già analizzati nel dossier Minerva."},
+    {"indice": 3, "task_completati": ["GENESI-006"], "ambito": "CadQuery e lavorazione Pocket NC: verifica e aggiornamento degli esempi già studiati."},
+    {"indice": 4, "task_completati": ["ASBL-001", "EU-FUNDING-004"], "ambito": "SkyRights: procedura ASBL in Belgio e programmi di finanziamento UE già esaminati."},
+    {"indice": 5, "task_completati": ["AVATAR-009"], "ambito": "Soluzioni di digital legacy già confrontate nel dossier Avatar: disponibilità, condizioni, limiti."}
+  ]
+}

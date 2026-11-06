@@ -76,8 +76,13 @@ class StudioGenerationTests(unittest.TestCase):
              patch.dict(sys.modules, {'studio_fonti': SimpleNamespace(genera_brief_fonti=source)}), \
              patch.object(STUDIO, 'salva') as save:
             STUDIO.main()
-        source.assert_called_once_with(STUDIO.TEMI, STUDIO.datetime.date.today())
-        save.assert_called_once_with('documented brief', STUDIO.get_tema())
+        selezioni = STUDIO._priorita().seleziona_temi(STUDIO.TEMI)
+        source.assert_called_once_with(STUDIO.TEMI, STUDIO.datetime.date.today(),
+                                       indici=[s['indice'] for s in selezioni])
+        save.assert_called_once()
+        self.assertIn('Perché questi temi', save.call_args.args[0])
+        self.assertTrue(save.call_args.args[0].endswith('documented brief'))
+        self.assertEqual(save.call_args.args[1], STUDIO.get_tema())
 
     def test_repeated_run_links_the_day_once(self):
         with tempfile.TemporaryDirectory() as tmp:
