@@ -19,6 +19,11 @@ class StudioWorkflowTests(unittest.TestCase):
         cls.workflow = yaml.load(WORKFLOW.read_text(), Loader=yaml.BaseLoader)
         cls.steps = cls.workflow['jobs']['studia']['steps']
 
+    def test_schedule_uses_the_brussels_calendar(self):
+        schedule = self.workflow['on']['schedule']
+        self.assertEqual(schedule, [{'cron': '0 2 * * *', 'timezone': 'Europe/Brussels'}])
+        self.assertEqual(self.workflow['jobs']['studia']['env']['TZ'], 'Europe/Brussels')
+
     def step(self, name):
         return next(step for step in self.steps if step.get('name') == name)
 
@@ -31,6 +36,7 @@ class StudioWorkflowTests(unittest.TestCase):
                 'PATH': os.environ['PATH'],
                 'HOME': tmp,
                 'GITHUB_STEP_SUMMARY': str(summary),
+                'GITHUB_OUTPUT': str(calls),
                 'CALLS': str(calls),
                 'TARGET_BRANCH': 'test-studio',
                 'ANTHROPIC_API_KEY': '',
@@ -42,22 +48,31 @@ class StudioWorkflowTests(unittest.TestCase):
             )
             return result, summary.read_text() if summary.exists() else '', calls.read_text() if calls.exists() else ''
 
-    def test_missing_key_fails_explicitly(self):
-        result, summary, _ = self.run_step('Verifica configurazione Studio')
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn('studio NON eseguito', result.stdout)
-        self.assertIn('Nessuno studio eseguito', summary)
+    def test_missing_key_selects_public_apis(self):
+        result, summary, output = self.run_step('Seleziona motore Studio')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(output.strip(), 'provider=public_api')
+        self.assertIn('API documentali pubbliche', summary)
         self.assertNotIn('Morning Brief salvato', summary)
 
     def test_present_key_is_not_exposed(self):
         fake = 'test-only-not-a-real-credential'
-        result, summary, _ = self.run_step('Verifica configurazione Studio', env={'ANTHROPIC_API_KEY': fake})
+        result, summary, output = self.run_step('Seleziona motore Studio', env={'ANTHROPIC_API_KEY': fake})
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertNotIn(fake, result.stdout + result.stderr + summary)
+        self.assertEqual(output.strip(), 'provider=claude')
+        self.assertNotIn(fake, result.stdout + result.stderr + summary + output)
 
-    def test_preflight_precedes_installation_and_checkout(self):
-        self.assertEqual(self.steps[0]['name'], 'Verifica configurazione Studio')
-        self.assertNotIn('continue-on-error', self.steps[0])
+    def test_installation_only_runs_for_claude(self):
+        self.assertEqual(self.steps[0]['id'], 'motore')
+        self.assertEqual(self.step('Installa dipendenze')['if'], "steps.motore.outputs.provider == 'claude'")
+
+    def test_push_trigger_only_for_studio_sources_on_main(self):
+        self.assertEqual(self.workflow['on']['push']['branches'], ['main'])
+        self.assertEqual(set(self.workflow['on']['push']['paths']), {
+            '.github/workflows/studio_notturno.yml',
+            'scripts/studio_notturno.py',
+            'scripts/studio_fonti.py',
+        })
 
     def test_no_cache_for_no_cache_installation(self):
         setup = self.step('Setup Python')
@@ -74,11 +89,11 @@ class StudioWorkflowTests(unittest.TestCase):
         self.assertIn('assente o vuoto', result.stdout)
 
     def test_empty_output_is_rejected(self):
-        result, _, _ = self.run_step('Studio Notturno', prelude='python3() { mkdir -p output/morning_brief; touch "output/morning_brief/$(date -u +%Y-%m-%d).md"; }')
+        result, _, _ = self.run_step('Studio Notturno', prelude='python3() { mkdir -p output/morning_brief; touch "output/morning_brief/$(date +%Y-%m-%d).md"; }')
         self.assertNotEqual(result.returncode, 0)
 
     def test_nonempty_output_is_accepted(self):
-        result, _, _ = self.run_step('Studio Notturno', prelude='python3() { mkdir -p output/morning_brief; echo "Offline test fixture" > "output/morning_brief/$(date -u +%Y-%m-%d).md"; }')
+        result, _, _ = self.run_step('Studio Notturno', prelude='python3() { mkdir -p output/morning_brief; echo "Offline test fixture" > "output/morning_brief/$(date +%Y-%m-%d).md"; }')
         self.assertEqual(result.returncode, 0, result.stderr)
 
     def git_stub(self, *, changed=True, commit_status=0, push_status=0):

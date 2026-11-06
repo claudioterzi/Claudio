@@ -8,6 +8,8 @@ on:
       - 'tests/test_studio_notturno_workflow.py'
       - 'tests/test_studio_notturno_generation.py'
       - 'scripts/studio_notturno.py'
+      - 'scripts/studio_fonti.py'
+      - 'tests/test_studio_notturno_fonti.py'
   pull_request:
     paths:
       - '.github/workflows/studio_notturno.yml'
@@ -15,6 +17,8 @@ on:
       - 'tests/test_studio_notturno_workflow.py'
       - 'tests/test_studio_notturno_generation.py'
       - 'scripts/studio_notturno.py'
+      - 'scripts/studio_fonti.py'
+      - 'tests/test_studio_notturno_fonti.py'
   workflow_dispatch:
 
 permissions:

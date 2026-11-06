@@ -3,6 +3,7 @@
 import importlib.util
 from pathlib import Path
 import sys
+import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
@@ -68,6 +69,23 @@ class StudioGenerationTests(unittest.TestCase):
         with patch.object(STUDIO, 'genera_brief', side_effect=RuntimeError('empty section')):
             with self.assertRaisesRegex(RuntimeError, 'empty section'):
                 STUDIO.genera_brief_parallelo(None)
+
+    def test_no_key_uses_public_api_before_saving(self):
+        source = Mock(return_value='documented brief')
+        with patch.dict(STUDIO.os.environ, {'ANTHROPIC_API_KEY': ''}), \
+             patch.dict(sys.modules, {'studio_fonti': SimpleNamespace(genera_brief_fonti=source)}), \
+             patch.object(STUDIO, 'salva') as save:
+            STUDIO.main()
+        source.assert_called_once_with(STUDIO.TEMI, STUDIO.datetime.date.today())
+        save.assert_called_once_with('documented brief', STUDIO.get_tema())
+
+    def test_repeated_run_links_the_day_once(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.object(STUDIO, '__file__', str(Path(tmp) / 'scripts' / 'studio_notturno.py')):
+                STUDIO.salva('first', STUDIO.TEMI[0])
+                brief = STUDIO.salva('second', STUDIO.TEMI[0])
+            self.assertEqual(brief.read_text(), 'second')
+            self.assertEqual((brief.parent / 'INDICE.md').read_text().count(f'](./{brief.name})'), 1)
 
 
 if __name__ == '__main__':

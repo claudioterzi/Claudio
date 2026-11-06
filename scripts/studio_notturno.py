@@ -1,16 +1,20 @@
 """
 Studio Notturno Autonomo — SDQ-1
-Il workflow pianificato parte alle 00:00 UTC (01:00/02:00 a Bruxelles).
+Il workflow è pianificato per le 02:00 nel fuso Europe/Brussels.
 Studia i temi del progetto in profondità. Genera un Morning Brief denso e azionabile.
 Il workflow salva il risultato nella repo; nessuna consegna Drive e implementata qui.
 """
 
-import anthropic
+from __future__ import annotations
+
 import concurrent.futures
 import datetime
 import os
-import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import anthropic
 
 # ─── PIANO DI STUDIO — 7 temi in rotazione (11 desideri distribuiti) ─────────
 
@@ -230,7 +234,11 @@ def salva(brief: str, tema: dict) -> Path:
 
     if indice.exists():
         contenuto = indice.read_text(encoding="utf-8")
-        linee = contenuto.splitlines()
+        linee = [
+            linea for linea in contenuto.splitlines()
+            if f"](./{percorso.name})" not in linea
+            and linea != "*(i brief appariranno qui ogni mattina)*"
+        ]
         for i, l in enumerate(linee):
             if l.startswith("- ["):
                 linee.insert(i, riga.rstrip())
@@ -297,17 +305,22 @@ def genera_brief_parallelo(client: anthropic.Anthropic) -> str:
 
 def main():
     api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("[SDQ-1] ANTHROPIC_API_KEY non configurata", file=sys.stderr)
-        sys.exit(1)
-
-    client = anthropic.Anthropic(api_key=api_key)
     tema = get_tema()
-
     print(f"[SDQ-1 Studio Notturno] {datetime.date.today()} — {tema['nome']}")
-    print("[SDQ-1] Lancio 3 agenti in parallelo...")
 
-    brief = genera_brief_parallelo(client)
+    brief = None
+    if api_key:
+        import anthropic
+
+        try:
+            brief = genera_brief_parallelo(anthropic.Anthropic(api_key=api_key))
+        except anthropic.APIError as exc:
+            print(f"[SDQ-1] Claude indisponibile ({type(exc).__name__}).")
+    if brief is None:
+        from studio_fonti import genera_brief_fonti
+
+        print("[SDQ-1] Ricerca documentale tramite API pubbliche.")
+        brief = genera_brief_fonti(TEMI, datetime.date.today())
     percorso = salva(brief, tema)
 
     print(f"[SDQ-1] Brief salvato: {percorso}")

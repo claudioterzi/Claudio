@@ -2,8 +2,15 @@ name: SDQ-1 Studio Notturno
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # 00:00 UTC; Brussels: 01:00 winter, 02:00 summer
+    - cron: '0 2 * * *'
+      timezone: Europe/Brussels
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/studio_notturno.yml'
+      - 'scripts/studio_notturno.py'
+      - 'scripts/studio_fonti.py'
 
 concurrency:
   group: sdq1-studio-${{ github.ref }}
@@ -13,18 +20,23 @@ jobs:
   studia:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      TZ: Europe/Brussels
     permissions:
       contents: write
 
     steps:
-      - name: Verifica configurazione Studio
+      - name: Seleziona motore Studio
+        id: motore
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          if [ -z "$ANTHROPIC_API_KEY" ]; then
-            echo "::error::ANTHROPIC_API_KEY non configurata: studio NON eseguito, nessun nuovo Morning Brief."
-            printf '%s\n' '## Studio bloccato' 'ANTHROPIC_API_KEY non disponibile. Nessuno studio eseguito e nessun nuovo Morning Brief generato. Configurare il secret in Settings > Secrets and variables > Actions, poi avviare una nuova esecuzione.' >> "$GITHUB_STEP_SUMMARY"
-            exit 1
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo 'provider=claude' >> "$GITHUB_OUTPUT"
+            echo 'Motore selezionato per lo studio: Claude.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'provider=public_api' >> "$GITHUB_OUTPUT"
+            echo 'Motore selezionato per lo studio: API documentali pubbliche.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Checkout
@@ -40,23 +52,23 @@ jobs:
 
       - name: Configura git
         run: |
-          git config user.name "Claude"
-          git config user.email "noreply@anthropic.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Installa dipendenze
+        if: steps.motore.outputs.provider == 'claude'
         run: python3 -m pip install --quiet --no-cache-dir anthropic
 
       - name: Studio Notturno
         run: |
           python3 scripts/studio_notturno.py
-          brief="output/morning_brief/$(date -u +%Y-%m-%d).md"
+          brief="output/morning_brief/$(date +%Y-%m-%d).md"
           if [ ! -s "$brief" ]; then
             echo "::error::Morning Brief del giorno assente o vuoto: pubblicazione interrotta."
             exit 1
           fi
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          TZ: UTC
 
       - name: Salva Morning Brief nel repo
         env:
@@ -67,6 +79,6 @@ jobs:
             printf '%s\n' '## Nessuna modifica da salvare' 'Il contenuto generato coincide con quello gia presente. Nessun nuovo commit creato.' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          git commit -m "morning brief $(date -u +%Y-%m-%d) [skip ci]"
+          git commit -m "morning brief $(date +%Y-%m-%d) [skip ci]"
           git push origin "HEAD:refs/heads/$TARGET_BRANCH"
           printf '%s\n' '## Morning Brief salvato' "Commit: $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
