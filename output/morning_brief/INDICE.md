@@ -21,4 +21,4 @@
 
 ## Brief Generati
 
-*(i brief appariranno qui ogni mattina)*
+- [06 November 2026 — SkyRights ASBL + Funding EU](./2026-11-06.md) *(Desiderio #9 + #10)*
