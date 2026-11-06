@@ -1,7 +1,7 @@
 # Morning Brief — Indice
 *Studio Notturno Autonomo SDQ-1 — Claudio Terzi [CT-LGAI-001]*
-*Si attiva ogni notte alle 2:00 AM Brussels (UTC+2)*
-*Studia mentre dormi. Al mattino trovi il brief qui e su Drive.*
+*Avvio programmato alle 02:00, ora di Bruxelles.*
+*Ogni brief salvato compare nell’elenco qui sotto.*
 
 ---
 

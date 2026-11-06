@@ -1,16 +1,20 @@
 """
 Studio Notturno Autonomo — SDQ-1
-Si attiva ogni notte alle 2:00 AM Brussels mentre Claudio dorme.
+Il workflow è pianificato per le 02:00 nel fuso Europe/Brussels.
 Studia i temi del progetto in profondità. Genera un Morning Brief denso e azionabile.
-Claudio lo trova al risveglio su Drive e nella repo.
+Il workflow salva il risultato nella repo; nessuna consegna Drive e implementata qui.
 """
 
-import anthropic
+from __future__ import annotations
+
 import concurrent.futures
 import datetime
 import os
-import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import anthropic
 
 # ─── PIANO DI STUDIO — 7 temi in rotazione (11 desideri distribuiti) ─────────
 
@@ -108,16 +112,16 @@ def get_tema() -> dict:
 
 def genera_brief(tema: dict, client: anthropic.Anthropic) -> str:
     data = datetime.date.today().strftime("%d %B %Y")
-    ora = datetime.datetime.utcnow().strftime("%H:%M UTC")
+    ora = datetime.datetime.now(datetime.timezone.utc).strftime("%H:%M UTC")
     domani_tema = TEMI[(datetime.date.today().weekday() + 1) % 7]["nome"]
 
     system = (
         "Sei il sistema SDQ-1 in modalità Studio Notturno Autonomo. "
-        "Stai studiando mentre Claudio Terzi dorme a Bruxelles. "
+        "Stai eseguendo una sessione di studio per Claudio Terzi. "
         "Genera un Morning Brief iper-denso: specifico, tecnico, azionabile. "
         "Non essere generico. Porta dati reali, nomi di API, prezzi, link, ricerche. "
         "Connetti sempre le scoperte ai progetti concreti di Claudio. "
-        "Tono: partner che ha lavorato tutta la notte per te. "
+        "Tono: partner concreto. Non inventare durata del lavoro, fonti consultate o verifiche. "
         "Progetto SDQ-1: SkyRights Foundation (ASBL Bruxelles), SkyID (identità per 800M stateless), "
         "Protocollo Scudo (satellite personale), Sistema Minerva (sicurezza urbana AI), "
         "Progetto Genesi (fabbrica robotica CadQuery + AR4 + CNC), Avatar Eterno + Post Vitam (persistenza digitale)."
@@ -139,7 +143,7 @@ Poi genera il Morning Brief con questa struttura ESATTA:
 
 ---
 
-### Cosa Ho Trovato Stanotte
+### Risultati della Sessione
 [5-7 scoperte concrete con dati, numeri, nomi specifici — non generalità]
 
 ### Come Cambia il Progetto SDQ-1
@@ -154,14 +158,14 @@ Poi genera il Morning Brief con questa struttura ESATTA:
 [decisioni o informazioni che solo Claudio può fornire]
 
 ### Fonti
-[lista delle fonti consultate con URL dove possibile]
+[solo fonti effettivamente restituite dalla ricerca web, con URL; se non disponibili, scrivi esplicitamente che non sono state consultate fonti web]
 
 ---
 *SDQ-1 Studio Notturno — generato {ora}*
 *Domani: {domani_tema}*
 """
 
-    # Prova con web search
+    # La disponibilita del tool non prova che abbia restituito fonti.
     try:
         resp = client.messages.create(
             model="claude-haiku-4-5-20251001",
@@ -179,7 +183,7 @@ Poi genera il Morning Brief con questa struttura ESATTA:
             messages=[
                 {
                     "role": "user",
-                    "content": user + "\n\n(Web search non disponibile — usa la tua conoscenza più aggiornata.)",
+                    "content": user + "\n\n(Web search non disponibile: produci solo una sintesi da verificare. Non dichiarare ricerca aggiornata, prezzi correnti o fonti effettivamente consultate.)",
                 }
             ],
         )
@@ -188,7 +192,31 @@ Poi genera il Morning Brief con questa struttura ESATTA:
     for block in resp.content:
         if hasattr(block, "text"):
             testo += block.text
-    return testo
+    if not testo.strip():
+        raise RuntimeError("Risposta del provider vuota: nessun Morning Brief valido da salvare")
+
+    risultati_web = 0
+    for block in resp.content:
+        if getattr(block, "type", None) != "web_search_tool_result":
+            continue
+        contenuto = getattr(block, "content", None)
+        if isinstance(contenuto, list):
+            risultati_web += sum(
+                (item.get("type") if isinstance(item, dict) else getattr(item, "type", None))
+                == "web_search_result"
+                for item in contenuto
+            )
+    if risultati_web:
+        stato_fonti = (
+            f"**Stato fonti: {risultati_web} risultati restituiti dalla ricerca web. "
+            "Le affermazioni generate restano da verificare sulle fonti.**\n\n"
+        )
+    else:
+        stato_fonti = (
+            "**Stato fonti: nessun risultato web disponibile. Sintesi del modello da verificare; "
+            "non e una ricerca aggiornata verificata.**\n\n"
+        )
+    return stato_fonti + testo
 
 
 def salva(brief: str, tema: dict) -> Path:
@@ -206,7 +234,11 @@ def salva(brief: str, tema: dict) -> Path:
 
     if indice.exists():
         contenuto = indice.read_text(encoding="utf-8")
-        linee = contenuto.splitlines()
+        linee = [
+            linea for linea in contenuto.splitlines()
+            if f"](./{percorso.name})" not in linea
+            and linea != "*(i brief appariranno qui ogni mattina)*"
+        ]
         for i, l in enumerate(linee):
             if l.startswith("- ["):
                 linee.insert(i, riga.rstrip())
@@ -261,7 +293,7 @@ def genera_brief_parallelo(client: anthropic.Anthropic) -> str:
     data = datetime.date.today().strftime("%d %B %Y")
     intestazione = (
         f"# Morning Brief — {data}\n"
-        f"*3 agenti paralleli hanno lavorato stanotte*\n\n"
+        f"*3 sezioni generate in parallelo; stato delle fonti indicato per ciascuna.*\n\n"
         f"---\n\n"
         f"## AGENTE A — {tema_a['nome']}\n\n"
     )
@@ -273,17 +305,22 @@ def genera_brief_parallelo(client: anthropic.Anthropic) -> str:
 
 def main():
     api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("[SDQ-1] ANTHROPIC_API_KEY non configurata", file=sys.stderr)
-        sys.exit(1)
-
-    client = anthropic.Anthropic(api_key=api_key)
     tema = get_tema()
-
     print(f"[SDQ-1 Studio Notturno] {datetime.date.today()} — {tema['nome']}")
-    print("[SDQ-1] Lancio 3 agenti in parallelo...")
 
-    brief = genera_brief_parallelo(client)
+    brief = None
+    if api_key:
+        import anthropic
+
+        try:
+            brief = genera_brief_parallelo(anthropic.Anthropic(api_key=api_key))
+        except anthropic.APIError as exc:
+            print(f"[SDQ-1] Claude indisponibile ({type(exc).__name__}).")
+    if brief is None:
+        from studio_fonti import genera_brief_fonti
+
+        print("[SDQ-1] Ricerca documentale tramite API pubbliche.")
+        brief = genera_brief_fonti(TEMI, datetime.date.today())
     percorso = salva(brief, tema)
 
     print(f"[SDQ-1] Brief salvato: {percorso}")
@@ -291,3 +328,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -2,16 +2,43 @@ name: SDQ-1 Studio Notturno
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # 00:00 UTC = 02:00 AM Brussels (UTC+2 estate)
+    - cron: '0 2 * * *'
+      timezone: Europe/Brussels
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/studio_notturno.yml'
+      - 'scripts/studio_notturno.py'
+      - 'scripts/studio_fonti.py'
+
+concurrency:
+  group: sdq1-studio-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   studia:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TZ: Europe/Brussels
     permissions:
       contents: write
 
     steps:
+      - name: Seleziona motore Studio
+        id: motore
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo 'provider=claude' >> "$GITHUB_OUTPUT"
+            echo 'Motore selezionato per lo studio: Claude.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'provider=public_api' >> "$GITHUB_OUTPUT"
+            echo 'Motore selezionato per lo studio: API documentali pubbliche.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -21,28 +48,37 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
+          # No pip cache: installation deliberately uses --no-cache-dir.
 
       - name: Configura git
         run: |
-          git config user.name "Claude"
-          git config user.email "noreply@anthropic.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Installa dipendenze
+        if: steps.motore.outputs.provider == 'claude'
         run: python3 -m pip install --quiet --no-cache-dir anthropic
 
       - name: Studio Notturno
+        run: |
+          python3 scripts/studio_notturno.py
+          brief="output/morning_brief/$(date +%Y-%m-%d).md"
+          if [ ! -s "$brief" ]; then
+            echo "::error::Morning Brief del giorno assente o vuoto: pubblicazione interrotta."
+            exit 1
+          fi
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          if [ -z "$ANTHROPIC_API_KEY" ]; then
-            echo "::warning::ANTHROPIC_API_KEY non configurata — studio saltato. Aggiungerla in Settings → Secrets and variables → Actions per attivare lo Studio Notturno."
-            exit 0
-          fi
-          python3 scripts/studio_notturno.py
 
       - name: Salva Morning Brief nel repo
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
         run: |
           git add output/morning_brief/
-          git diff --staged --quiet || git commit -m "morning brief $(date +%Y-%m-%d) [skip ci]"
-          git push || true
+          if git diff --staged --quiet; then
+            printf '%s\n' '## Nessuna modifica da salvare' 'Il contenuto generato coincide con quello gia presente. Nessun nuovo commit creato.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git commit -m "morning brief $(date +%Y-%m-%d) [skip ci]"
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+          printf '%s\n' '## Morning Brief salvato' "Commit: $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
