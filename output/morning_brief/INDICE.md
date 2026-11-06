@@ -21,4 +21,4 @@
 
 ## Brief Generati
 
-- [06 November 2026 — SkyRights ASBL + Funding EU](./2026-11-06.md) *(Desiderio #9 + #10)*
+- [06 November 2026 — Protocollo Scudo — Tasking Satellite Personale](./2026-11-06.md) *(Desiderio #2)*
