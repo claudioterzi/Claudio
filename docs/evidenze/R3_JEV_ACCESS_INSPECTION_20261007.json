@@ -1,0 +1,106 @@
+{
+  "schema": "R3_JEV_ACCESS_INSPECTION/1.0",
+  "authority": "DATA_ONLY",
+  "observed_at_utc": "2026-10-07T03:02:19Z",
+  "repository": "claudioterzi/Claudio",
+  "inspection_commit": "597b97188a614d447f15b9784224c2f9e8d385c0",
+  "inspection_scope": "Read-only candidate sources, non-sensitive Railway resource/config metadata, exact deployed GitHub source blobs, official TypeSafe web docs and pinned MIT agent skill. No credential values, inference, install, runtime changes, endpoint creation, deploy or key creation.",
+  "railway": {
+    "project_id": "2d6bff0c-b127-465d-99c4-fb7f70dc593d",
+    "environment_id": "ae59a2c6-2c8c-453c-a7d4-a211040ceff3",
+    "service_id": "f512937c-c06c-4914-a611-69023af9eb40",
+    "domain": "r3-typesafe-sister-production.up.railway.app",
+    "deployment_id": "9d9da618-ab55-499b-8d96-264e373351c8",
+    "observed_status": "SLEEPING",
+    "source_branch": "feat/typesafe-sister-api-20260920",
+    "source_commit": "facab5dcec22dd9bf658f2627e4c6bee8a62cacf",
+    "no_staged_changes": true,
+    "required_variable_names_present": [
+      "R3_API_TOKEN",
+      "TYPESAFE_API_KEY"
+    ],
+    "values_read": false,
+    "runtime_pins": [
+      {
+        "path": "r3/typesafe_sister.py",
+        "blob": "2d8891a1d73862cb669c78b4f86a450862e22c8a"
+      },
+      {
+        "path": "r3/jev_gateway.py",
+        "blob": "1311d603a9eb6f394c596373012816f55454c1e9"
+      },
+      {
+        "path": "r3/start_one_runtime.sh",
+        "blob": "988190ac2d08bee098d170bcff05a6972ce6cfbd"
+      },
+      {
+        "path": "typesafe_sister/client.py",
+        "blob": "a9997b0782ec180d00ba7f576654211643c70ebc"
+      },
+      {
+        "path": "r3/typesafe_smoke.py",
+        "blob": "115240a5385f8fb93556b9ac075b1c63e16126dd"
+      },
+      {
+        "path": "Dockerfile.r3-typesafe-one-runtime",
+        "blob": "92927d4767814588b7725cf6f3c2e5ff96e9a977"
+      }
+    ],
+    "path": "POST https://r3-typesafe-sister-production.up.railway.app/jev/judge",
+    "auth": "Existing service R3_API_TOKEN in Bearer header. Existing server-side TYPESAFE_API_KEY remains inside Railway.",
+    "wire_request": {
+      "state": "bounded task/catalog data",
+      "questions": "Choice/Score/Noul map",
+      "model": "jev-latest"
+    },
+    "wire_response": "Envelope {provider,state_sha256,questions_sha256,result}; actual TypeSafe answers/model are inside result.",
+    "shortest_existing_probe": "Set R3_TYPESAFE_URL to https://r3-typesafe-sister-production.up.railway.app/jev and invoke existing typesafe_sister/smoke.py on a token-bearing authorized executor. Payload is fixed backup fixture, so this alone would not answer skill selection.",
+    "temporary_runner": "Latest deployed commit message says temporary isolated Jev benchmark runner removed. Do not set old one-shot flags or redeploy to resurrect it."
+  },
+  "shared_transport_reuse": {
+    "canonical_modules": [
+      "typesafe_sister/client.py",
+      "typesafe_sister/policy.py",
+      "typesafe_sister/universal.py"
+    ],
+    "direct_path": "Existing typesafe_sister.client.system_one(state,questions,provider='typesafe',model='jev-latest') on an executor where TYPESAFE_API_KEY is already securely bound.",
+    "gateway_caveat": "Changing only base_url to .../jev will not work: shared client appends /v1/systemone, gateway exposes /jev/judge and adds response envelope. Current client offers no path/envelope option.",
+    "existing_gateway_caller": "typesafe_sister/smoke.py; older runtime r3/typesafe_smoke.py. For generic skill payload, adapt that caller or add a bounded explicit path/envelope mode to canonical client instead of introducing another semantic engine.",
+    "current_candidate_blobs": {
+      "typesafe_sister/client.py": "46a2d7932987c319b2a8da284dfb35735ad9122c",
+      "typesafe_sister/smoke.py": "a437297d06006a8ae667af3085721094da235bb0",
+      "typesafe_sister/app.py": "89a503323862b385e13261d057df94b4610fb30e",
+      "api/orchestra.py": "6bb11f353fc6ce528e5dcb5f430ad25611c66856"
+    },
+    "workflow": "No existing live Jev dispatch/benchmark workflow with provider-secret binding was found in inspected candidate workflows; test_runner has local tests only.",
+    "vercel_alternative": "Existing POST /api/orchestra calls shared assess_project_state but also other LLM providers/synthesis; application auth is X-Raffaello-Secret against RAFFAELLO_BRIDGE_SECRET, plus any platform protection. It is longer than existing Railway judge/direct shared call and does not accept arbitrary typed skill questions."
+  },
+  "capability": {
+    "official_statement": "Jev does not generate text, chat, stream coding outputs or call tools. It judges provided state through typed answers. Function-calling cookbook maps fixed function names/arguments to typed questions and code invokes selected functions.",
+    "web_search": "No browse/search tool field exists in current official API contract or inspected shared/gateway code. No Jev web access/inference was executed in this inspection.",
+    "skill_selection": "Official skill-suggestion cookbook provides two-pass selection from supplied existing catalog: Choice probabilities shortlist, then fuller candidate descriptions/excerpts plus independent fit Nouls. Suggested skill remains advisory and may be rejected; loaded/available capabilities must be separately verified.",
+    "threshold_boundary": "Published examples use their own Jev1.12/Hermes data and cached results. Do not adopt thresholds or reported gains as R3 evidence.",
+    "rank_boundary": "Shared client rank is native CLM only; Jev skill ranking uses Choice probability distribution, not /rank.",
+    "sources": [
+      "https://docs.typesafe.ai/api",
+      "https://docs.typesafe.ai/primitives",
+      "https://docs.typesafe.ai/introduction/coding-agents",
+      "https://docs.typesafe.ai/cookbooks/skill_suggestion",
+      "https://docs.typesafe.ai/cookbooks/function_calling",
+      "https://docs.typesafe.ai/agent-skill"
+    ]
+  },
+  "official_skill": {
+    "repository": "typesafe-ai/skills",
+    "commit": "65a39f393687675ce170e6094757de20370365b9",
+    "release": "v0.5.7",
+    "path": "skills/typesafe-ai/SKILL.md",
+    "blob": "0109513f9656917dc93cbc5ecddfca465a53ce66",
+    "license": "MIT",
+    "source": "https://github.com/typesafe-ai/skills/blob/65a39f393687675ce170e6094757de20370365b9/skills/typesafe-ai/SKILL.md",
+    "observed_guidance": "Reuse code-owned workflow, retrieve candidate values/evidence, use typed judgments, live docs source of truth, no-match outcome, bundle independent questions, credentials server-side. No installation performed."
+  },
+  "minimum_prerequisite": "One securely bound existing credential on an executable host: TYPESAFE_API_KEY for canonical direct call, or the sister service R3_API_TOKEN for existing /jev/judge gateway. Read-only OAuth metadata access cannot substitute for this binding.",
+  "real_blocker": "No credential-bearing executor or secure secret injection was established by this inspection; source and Railway variable-name presence do not create it.",
+  "next_action": "Use the existing authorized credential channel selected by root to submit one bounded typed skill-catalog request through the canonical layer; record actual returned model, all requested answer keys, UTC time and payload/receipt hashes. Do not attribute Codex web research or catalog construction to Jev."
+}
