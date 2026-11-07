@@ -1,0 +1,32 @@
+name: R3 Peer Receipt Security Contract
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'r3/peer_receipts.py'
+      - 'tests/test_r3_peer_receipts.py'
+      - 'docs/R3_PEER_RECEIPTS_2026-11-07.md'
+      - '.github/workflows/r3-peer-receipts.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  adversarial-receipts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing R3 Ed25519 dependencies
+        run: python -m pip install 'PyNaCl>=1.5.0'
+      - name: Compile the candidate
+        run: python -m py_compile r3/peer_receipts.py tests/test_r3_peer_receipts.py
+      - name: Replay, signature, access and persistence falsifiers
+        run: python -W error::ResourceWarning -m unittest -v tests.test_r3_peer_receipts
