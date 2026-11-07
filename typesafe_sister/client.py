@@ -29,7 +29,9 @@ def _clean(value):
 
 
 def _resolve_backend(*, provider=None, api_key=None, model=None, base_url=None):
-    requested = _clean(provider or os.getenv("R3_SYSTEMONE_PROVIDER", "auto")).lower()
+    requested = _clean(provider or os.getenv("R3_SYSTEMONE_PROVIDER") or os.getenv("R3_SYSTEM_ONE_BACKEND", "auto")).lower()
+    if requested == "shadow":
+        requested = "typesafe"
     requested = {"r3-clm": "r3_clm", "internal": "r3_clm"}.get(requested, requested)
     if requested not in {"auto", "clm", "typesafe", "r3_clm"}:
         raise ValueError("Unsupported System One provider")
@@ -113,8 +115,8 @@ def backend_info(*, provider=None, model=None, base_url=None):
     }
 
 
-def configured():
-    return backend_info()["configured"]
+def configured(backend=None):
+    return backend_info(provider=backend)["configured"]
 
 
 def _post_json(path, payload, *, provider=None, api_key=None, model=None, base_url=None, timeout=8):
@@ -138,7 +140,7 @@ def _post_json(path, payload, *, provider=None, api_key=None, model=None, base_u
     return result
 
 
-def system_one(state, questions, *, api_key=None, model=None, base_url=None, provider=None, timeout=8):
+def _system_one_primary(state, questions, *, api_key=None, model=None, base_url=None, provider=None, timeout=8):
     cfg = _resolve_backend(provider=provider, api_key=api_key, model=model, base_url=base_url)
     if cfg["provider"] == "r3_clm":
         from typesafe_sister.r3_clm import system_one_local
@@ -181,4 +183,32 @@ def rank(context, question, answers, *, api_key=None, model=None, base_url=None,
     ranked = result.get("ranked")
     if not isinstance(ranked, list):
         raise ValueError("Invalid CLM rank response")
+    return result
+
+
+def system_one(state, questions, *, api_key=None, model=None, base_url=None, provider=None, timeout=8, backend=None):
+    """Canonical transport with legacy local/shadow compatibility."""
+    selected = provider or backend
+    if selected is None and (api_key is not None and base_url is None or
+                             base_url is not None and "typesafe.ai" in base_url.lower()):
+        selected = "typesafe"
+    if selected is None:
+        selected = os.getenv("R3_SYSTEMONE_PROVIDER") or os.getenv("R3_SYSTEM_ONE_BACKEND")
+    selected = _clean(selected).lower() or None
+    shadow = selected == "shadow"
+    result = _system_one_primary(state, questions, api_key=api_key, model=model,
+                                base_url=base_url, provider="typesafe" if shadow else selected, timeout=timeout)
+    if shadow:
+        result = dict(result)
+        try:
+            from typesafe_sister.r3_clm import compare_answer_sets, system_one_local
+            candidate = system_one_local(state, questions)
+            result["shadow"] = {"candidate_model": candidate.get("model"),
+                                "candidate_provider": candidate.get("provider"),
+                                "comparison": compare_answer_sets(result, candidate),
+                                "candidate_answers": candidate.get("answers"),
+                                "authority": "observation_only"}
+        except Exception as exc:
+            result["shadow"] = {"status": "candidate_unavailable", "error_class": type(exc).__name__,
+                                "authority": "observation_only"}
     return result
