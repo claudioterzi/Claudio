@@ -1,5 +1,5 @@
 {
-  "ts": "2026-11-06T13:44:09.766452",
+  "ts": "2026-11-07T12:26:41.568556",
   "score_sistema": 94,
   "sicurezza": {
     "agente": "CODE_SCANNER",
@@ -17,7 +17,7 @@
     ],
     "pattern_scansionati": 14,
     "ok": true,
-    "tempo_s": 0.114
+    "tempo_s": 0.11
   },
   "qualita": {
     "agente": "CODE_SCANNER",
@@ -50,7 +50,7 @@
     ],
     "pattern_analizzati": 11,
     "file_py_analizzati": 97,
-    "tempo_s": 0.072
+    "tempo_s": 0.071
   },
   "dipendenze": {
     "agente": "CODE_SCANNER",
@@ -114,6 +114,11 @@
       "llm.client": [
         "from .router import LLMRouter"
       ],
+      "voli.__init__": [
+        "from .agenti import CronistaVoli, EsitoScout, ScoutVoli, Val",
+        "from .caccia import Cacciatore, RisultatoCaccia",
+        "from .rotte import ROTTE, Rotta, rotte_per_tag"
+      ],
       "llm.providers.__init__": [
         "from .anthropic_provider import AnthropicProvider",
         "from .base import ProviderBase, RispostaProvider",
@@ -122,10 +127,8 @@
         "from .openai_provider import OpenAIProvider, DeepSeekProvide",
         "from .stub_provider import StubProvider"
       ],
-      "voli.__init__": [
-        "from .agenti import CronistaVoli, EsitoScout, ScoutVoli, Val",
-        "from .caccia import Cacciatore, RisultatoCaccia",
-        "from .rotte import ROTTE, Rotta, rotte_per_tag"
+      "config.__init__": [
+        "from .loader import SDQ1Config, AgenteConfig, carica_config"
       ],
       "llm.providers.openai_provider": [
         "from .base import ProviderBase"
@@ -142,18 +145,14 @@
       "llm.providers.ollama_provider": [
         "from .base import ProviderBase"
       ],
-      "llm.router": [
-        "from .providers import (",
-        "from .specializzazioni import classifica, nodo_per_problema"
-      ],
       "voli.agenti": [
         "from .. import notifiche",
         "from .ambiente import telegram_pronto",
         "from .rotte import Rotta"
       ],
-      "monitoring.__init__": [
-        "from .health import HealthChecker, StatoSalute",
-        "from .metrics import MetricsCollector, MetricaChiamata"
+      "llm.router": [
+        "from .providers import (",
+        "from .specializzazioni import classifica, nodo_per_problema"
       ],
       "voli.caccia": [
         "from . import lowcost, radar",
@@ -164,21 +163,9 @@
       "voli.__main__": [
         "from .caccia import main"
       ],
-      "config.__init__": [
-        "from .loader import SDQ1Config, AgenteConfig, carica_config"
-      ],
-      "monitoring.metrics": [
-        "from ..persistence.store import StatoStore"
-      ],
-      "futures.__init__": [
-        "from .scenari import SCENARI_DEFAULT",
-        "from .simulatore import SimulatoreScenari, RisultatoScenario"
-      ],
-      "monitoring.health": [
-        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
-      ],
-      "futures.simulatore": [
-        "from .scenari import Scenario"
+      "monitoring.__init__": [
+        "from .health import HealthChecker, StatoSalute",
+        "from .metrics import MetricsCollector, MetricaChiamata"
       ],
       "__main__": [
         "from .agents import costruisci_agenti, implementazioni",
@@ -191,17 +178,30 @@
         "from .orchestrator.gerarchico import OrchestratoreGerarchico",
         "from .persistence.store import crea_store"
       ],
+      "futures.__init__": [
+        "from .scenari import SCENARI_DEFAULT",
+        "from .simulatore import SimulatoreScenari, RisultatoScenario"
+      ],
+      "monitoring.metrics": [
+        "from ..persistence.store import StatoStore"
+      ],
       "telegram.__init__": [
         "from .botmanager import BotManager, BotRole, TelegramMessage"
       ],
-      "agents.__init__": [
-        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
-        "from .registry import costruisci_agenti, registra"
+      "futures.simulatore": [
+        "from .scenari import Scenario"
+      ],
+      "monitoring.health": [
+        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
       ],
       "orchestrator.gerarchico": [
         "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
         "from ..config.loader import SDQ1Config",
         "from ..persistence.store import StatoStore"
+      ],
+      "agents.__init__": [
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import costruisci_agenti, registra"
       ],
       "agents.registry": [
         "from ..config.loader import AgenteConfig, SDQ1Config",
@@ -238,14 +238,14 @@
       "xml"
     ],
     "circolari_sospette": [],
-    "tempo_s": 0.025
+    "tempo_s": 0.026
   },
   "metriche": {
     "agente": "CODE_SCANNER",
     "modulo": "metriche",
     "file_analizzati": 97,
-    "totale_righe": 18111,
-    "totale_funzioni": 677,
+    "totale_righe": 18152,
+    "totale_funzioni": 680,
     "totale_classi": 148,
     "top5_per_dimensione": [
       {
@@ -409,13 +409,13 @@
         "complessita": 6.8
       },
       "sdq1/benchmark_controlled.py": {
-        "righe_totali": 218,
-        "righe_codice": 191,
-        "commenti": 1,
-        "vuote": 26,
-        "funzioni": 8,
+        "righe_totali": 259,
+        "righe_codice": 223,
+        "commenti": 4,
+        "vuote": 32,
+        "funzioni": 11,
         "classi": 1,
-        "complessita": 6.1
+        "complessita": 6.4
       },
       "sdq1/benchmark_integrity.py": {
         "righe_totali": 277,
@@ -1174,7 +1174,7 @@
         "complessita": 3.2
       }
     },
-    "tempo_s": 0.048
+    "tempo_s": 0.049
   },
-  "tempo_totale_s": 0.259
+  "tempo_totale_s": 0.256
 }
