@@ -61,7 +61,10 @@ def _chat_id() -> str:
 
 
 def _telegram_disponibile() -> bool:
-    return bool(os.environ.get("TELEGRAM_BOT_TOKEN") and os.environ.get("TELEGRAM_CHAT_ID"))
+    return bool(
+        os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+        and os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+    )
 
 
 def _emoji_livello(livello: str) -> str:
@@ -697,6 +700,12 @@ def _consulta_ai(provider_cls, modello: str, sistema: str, domanda: str, max_tok
 
 def briefing_operativo() -> bool:
     """Briefing operativo 4 blocchi — query multi-AI (Gemini + Claude + DeepSeek + Mistral)."""
+    from agora_runtime import sul_sito
+
+    if not _telegram_disponibile() and not sul_sito():
+        print("[BRIEFING] Telegram non configurato: nessuna query AI o invio eseguito.")
+        return False
+
     import concurrent.futures
     from sdq1.agenda import carica as carica_agenda, prossimi_viaggi
     from sdq1.llm.providers import GeminiProvider, AnthropicProvider, DeepSeekProvider, MistralProvider

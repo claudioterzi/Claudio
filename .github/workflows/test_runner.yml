@@ -82,6 +82,9 @@ jobs:
           python -c "from sdq1.notifiche import invia; print('notifiche OK')"
           python -c "from sdq1.llm.providers import AnthropicProvider; print('providers OK')"
 
+      - name: Test regressioni Daily offline
+        run: python -m unittest discover -s sdq1/tests -p 'test_daily.py' -v
+
       - name: Verifica Flask app
         run: |
           python -c "import tarocchi_web; print('Flask app OK')"
