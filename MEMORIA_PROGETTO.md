@@ -1,5 +1,18 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 05/11/2026 — audit circoscritto Rosso Rosso Rosso (candidato)
+
+Su richiesta «studia in GitHub e agisci», letti bootstrap, priorità e gate R³.
+Base `2346f90788754e180c8f83787a0bf63d73df1042`. Riprodotti un test CI che
+selezionava lo step sbagliato e l'esecuzione di piani benchmark alterati con hash
+obsoleto. Correzione in ramo separato: controlli distinti di audit/build, verifica
+del piano prima dei provider, snapshot privato e dataset letto una sola volta.
+
+Prove e limiti: `docs/R3_FROZEN_PLAN_AUDIT_20261105.md`. R3-020: HOLD per assenza
+di evidenza out-of-sample; nessuna adozione automatica, merge o modifica diretta
+alla produzione. Non è una certificazione dell'intero progetto. Copia Drive non
+aggiornata: collegamento non disponibile in questa sessione.
+
 ## 30/10/2026 — Integrità benchmark, restore e RedFrag
 
 Intervento Codex richiesto da Claudio («Risolvi»), sulla base

@@ -1,7 +1,10 @@
+import copy
+import hashlib
 import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 from sdq1.benchmark_controlled import (
     conditions,
@@ -11,11 +14,87 @@ from sdq1.benchmark_controlled import (
     save_run,
 )
 
-
 DATASET = Path("benchmarks/r3_019_controlled_v1.json")
 
 
 class ControlledBenchmarkTests(unittest.TestCase):
+    def _plan(self):
+        return freeze_plan(compare_model="m1", candidate_model="m2",
+                           dataset_path=DATASET, repeats=2, commit="test")
+
+    def test_changed_or_missing_plan_digest_is_rejected_before_provider_calls(self):
+        mutations = [
+            lambda p: p.update(repeats=1),
+            lambda p: p["conditions"].pop(),
+            lambda p: p["conditions"][0].update(model="other"),
+            lambda p: p.update(commit="other"),
+            lambda p: p.update(gold_sent_to_model=True),
+            lambda p: p.pop("plan_sha256"),
+            lambda p: p.update(plan_sha256="0" * 64),
+        ]
+        for mutate in mutations:
+            with self.subTest(mutate=mutate):
+                plan = self._plan()
+                mutate(plan)
+                factory = Mock()
+                with self.assertRaises(ValueError):
+                    run_controlled(plan=plan, dataset_path=DATASET, llm_factory=factory)
+                factory.assert_not_called()
+
+    def test_invalid_repetitions_are_rejected_during_freeze(self):
+        for repeats in (True, 0, 1, 2.5, "3", None):
+            with self.subTest(repeats=repeats), self.assertRaises(ValueError):
+                freeze_plan(compare_model="m1", candidate_model="m2",
+                            dataset_path=DATASET, repeats=repeats, commit="test")
+
+    def test_rehashing_invalid_plan_does_not_bypass_abcd_contract(self):
+        for changes in ({"repeats": 1}, {"repeats": 2.5}, {"conditions": []},
+                        {"conditions": [vars(conditions("m1", "m2")[0])]},
+                        {"gold_sent_to_model": True}, {"success_gated_efficiency": False},
+                        {"schema": "unknown"}, {"dataset_version": "other"}):
+            with self.subTest(changes=changes):
+                plan = self._plan()
+                plan.update(changes)
+                plan.pop("plan_sha256")
+                plan["plan_sha256"] = hashlib.sha256(json.dumps(
+                    plan, sort_keys=True, separators=(",", ":")
+                ).encode("utf-8")).hexdigest()
+                factory = Mock()
+                with self.assertRaises(ValueError):
+                    run_controlled(plan=plan, dataset_path=DATASET, llm_factory=factory)
+                factory.assert_not_called()
+
+    def test_caller_cannot_mutate_plan_during_or_after_execution(self):
+        plan = self._plan()
+        frozen = copy.deepcopy(plan)
+
+        def factory(*_):
+            plan["repeats"] = 1
+            plan["conditions"][0]["model"] = "other"
+            return lambda _: ""
+
+        result = run_controlled(plan=plan, dataset_path=DATASET, llm_factory=factory)
+        self.assertEqual(result["plan"], frozen)
+        for summary in result["summaries"].values():
+            self.assertEqual(summary["task_runs"], len(load_dataset(DATASET)["tasks"]) * 2)
+        plan["conditions"].clear()
+        self.assertEqual(result["plan"], frozen)
+
+    def test_dataset_digest_and_execution_use_the_same_read(self):
+        for freeze in (True, False):
+            with self.subTest(freeze=freeze):
+                plan = self._plan()
+                with (
+                    patch.object(Path, "read_bytes", return_value=DATASET.read_bytes()) as read,
+                    patch.object(Path, "read_text", side_effect=AssertionError("second read")),
+                ):
+                    if freeze:
+                        self._plan()
+                    else:
+                        run_controlled(plan=plan, dataset_path=DATASET,
+                                       llm_factory=lambda *_: lambda _: "")
+                self.assertEqual(read.call_count, 1)
+
     def test_empty_or_malformed_evaluators_are_rejected_before_execution(self):
         invalid = [
             {"type": "contains_all", "values": []},
