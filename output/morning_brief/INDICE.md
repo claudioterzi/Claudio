@@ -9,5 +9,6 @@ Ogni brief espone i motivi della scelta e i dossier precedenti. [Criteri e limit
 
 ## Brief generati
 
+- [08 November 2026 — Protocollo Scudo — Tasking Satellite Personale](./2026-11-08.md) *(Desiderio #2)*
 - [07 November 2026 — Sistema Minerva — Sicurezza Urbana AI](./2026-11-07.md) *(Desiderio #4)*
 - [06 November 2026 — Protocollo Scudo — Tasking Satellite Personale](./2026-11-06.md) *(Desiderio #2)*
