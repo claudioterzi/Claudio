@@ -166,12 +166,6 @@ def supervise(commands: Sequence[Sequence[str]], *, grace_seconds: float = 5.0,
                 break
         last_tick = time.monotonic()
         while not stopping:
-            now = time.monotonic()
-            if now - last_tick > 1.0:
-                owner = getattr(progress_check, "__self__", None)
-                if owner is not None and hasattr(owner, "resume"):
-                    owner.resume()
-            last_tick = now
             _reap_adopted(children)
             for index, child in enumerate(children):
                 code = child.poll()
@@ -180,6 +174,15 @@ def supervise(commands: Sequence[Sequence[str]], *, grace_seconds: float = 5.0,
                     print(f'R3_CHILD_EXIT child={index} returncode={code}', flush=True)
                     return 1  # even a clean child exit leaves the service incomplete
             if progress_check is not None:
+                # Measure the loop gap immediately before the check: a suspension
+                # that lands during reaping/polling must still grant the resume
+                # budget, or the watchdog sees the whole pause as missing progress.
+                now = time.monotonic()
+                if now - last_tick > 1.0:
+                    owner = getattr(progress_check, "__self__", None)
+                    if owner is not None and hasattr(owner, "resume"):
+                        owner.resume()
+                last_tick = now
                 reason = progress_check()
                 if reason:
                     failed = True

@@ -80,3 +80,35 @@ raise SystemExit(supervise([[sys.executable,'-c','import time; time.sleep(30)']]
         if p.poll() is None:
             p.send_signal(signal.SIGTERM)
             p.wait(timeout=3)
+
+
+def test_suspension_during_reaping_still_grants_resume_budget(tmp_path, monkeypatch):
+    """Deterministic form of the SIGSTOP race: the pause lands inside reaping,
+    after the old top-of-loop gap check, so it must be measured before the check."""
+    import r3.supervise_node as node
+
+    real_reap, calls = node._reap_adopted, []
+
+    def reap_with_one_suspension(children):
+        calls.append(None)
+        if len(calls) == 3:
+            time.sleep(1.3)  # stands in for the whole process being suspended here
+        return real_reap(children)
+
+    monkeypatch.setattr(node, '_reap_adopted', reap_with_one_suspension)
+    watchdog = ProgressWatchdog(tmp_path / 'missing', 'r', startup=1.0, timeout=.3)
+    results = []
+
+    class Probe:
+        resume = watchdog.resume
+
+        def check(self):
+            results.append((len(calls), watchdog.check()))
+            return results[-1][1]
+
+    code = node.supervise([[sys.executable, '-c', 'import time; time.sleep(30)']],
+                          grace_seconds=.1, progress_check=Probe().check)
+    first_after_pause = next(reason for call, reason in results if call == 3)
+    assert first_after_pause is None
+    # Missing progress is still eventually a fault, not permanently masked.
+    assert code == 1 and results[-1][1] == 'progress_missing'
