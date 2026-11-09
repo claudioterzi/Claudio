@@ -1,0 +1,21 @@
+{
+  "schema": "R3-CLM-REDFRAG-BENCH/0.1",
+  "fixture": "redfrag_checkpoint_20260928.json",
+  "cases": 5,
+  "repeats_per_case": 100,
+  "final_decision_passed": 5,
+  "final_decision_accuracy": 1.0,
+  "model_only_semantic_class_agreement": 1.0,
+  "model_only_action_agreement": 0.8,
+  "latency_ms": {"mean": 13.695, "p50": 13.308, "p95": 16.303, "p99": 20.325, "max": 41.346},
+  "network_calls": 0,
+  "physical_deletions": 0,
+  "scope_note": "Local machine-run evidence on a five-case curated regression fixture; not a generalization claim.",
+  "rows": [
+    {"id": "C01", "ok": true, "class": "DUPLICATE", "action": "LINK_TO_CANON", "model_class": "DUPLICATE", "model_action": "LINK_TO_CANON", "model_class_agrees": true, "model_action_agrees": true, "model_dissent": false, "p50_ms": 13.716},
+    {"id": "C02", "ok": true, "class": "DUPLICATE", "action": "LINK_TO_CANON", "model_class": "DUPLICATE", "model_action": "LINK_TO_CANON", "model_class_agrees": true, "model_action_agrees": true, "model_dissent": false, "p50_ms": 13.745},
+    {"id": "C03", "ok": true, "class": "CONFLICT", "action": "KEEP_DISTINCT_POINTERS", "model_class": "CONFLICT", "model_action": "KEEP_DISTINCT_POINTERS", "model_class_agrees": true, "model_action_agrees": true, "model_dissent": false, "p50_ms": 13.453},
+    {"id": "N01", "ok": true, "class": "DUPLICATE", "action": "QUARANTINE_REVIEW", "model_class": "DUPLICATE", "model_action": "QUARANTINE_REVIEW", "model_class_agrees": true, "model_action_agrees": true, "model_dissent": false, "p50_ms": 12.633},
+    {"id": "N02", "ok": true, "class": "CORE", "action": "KEEP_ACTIVE", "model_class": "CORE", "model_action": "QUARANTINE_REVIEW", "model_class_agrees": true, "model_action_agrees": false, "model_dissent": true, "p50_ms": 12.702}
+  ]
+}
