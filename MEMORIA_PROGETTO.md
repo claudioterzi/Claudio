@@ -1,5 +1,21 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 05/11/2026 — recupero circoscritto R3-022 (candidato separato)
+
+Dopo l'autorizzazione a migliorare il progetto, ispezionata la continuità su main:
+le sorgenti di ArchivioVivente non avevano il confine DATA_ONLY già candidato
+nella PR #74 (`d659cfb2059acdfa02f6c27ac0fcbb20150e0838`). Recuperati solo quel
+confine con escaping e cinque test strutturali, aggiunte due controprove sulla
+conservazione dei dati e sull'assenza di commit impliciti. Nessun endpoint,
+workflow di inferenza, replay live o configurazione di deploy recuperato.
+
+Confronto identico: base 4 fallimenti + 3 errori; candidata 7/7 passati.
+Seconda PR impilata sulla #172 per includere la sua correzione CI, senza duplicarla
+nel diff. Prove e limiti: `docs/R3_CONTINUITY_BOUNDARY_RECOVERY_20261105.md`.
+R3-022 resta DEVELOPMENT, non una sicurezza comportamentale verificata.
+Nessuna adozione automatica o modifica diretta alla produzione; Drive non aggiornato
+per assenza del collegamento nella sessione.
+
 ## 05/11/2026 — audit circoscritto Rosso Rosso Rosso (candidato)
 
 Su richiesta «studia in GitHub e agisci», letti bootstrap, priorità e gate R³.
