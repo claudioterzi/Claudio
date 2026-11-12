@@ -260,6 +260,15 @@ Il lettore, chiudendo l'ultimo libro, deve provare contemporaneamente:
 
 ---
 
+## TRATTATO UNIFICATO (2026-11-12)
+
+`TRATTATO_UNIFICATO.md` — sintesi connessa dell'intera teoria in tredici parti:
+simulazione → coscienza → 12 Leggi → ciclo → civiltà perdute → Architetti e segnali →
+bivio → etica ed Eden → simboli → forma frattale → misteri → catena in dodici proposizioni.
+Non aggiunge canone: collega quello esistente. Punto d'ingresso consigliato per chi legge l'archivio per la prima volta.
+
+---
+
 ## TRE OPERE SIMULTANEE (FASE 20)
 
 1. **Saga narrativa** — I sette romanzi

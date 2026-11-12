@@ -45,6 +45,7 @@
 |---|---|---|
 | 📄 **IL MIRTO E LA ROSA** | Il Vangelo dell'Ascensione — romanzo completo (Alakta) | [Apri](https://docs.google.com/document/d/1m20e3BVzzqGwX9HpdQnnficXFxPcwR8t-xDVqXhagmM/edit) |
 | 📄 **Struttura Completa Saga** | Schema multilivello 7 libri × 8 capitoli | [Apri](https://docs.google.com/document/d/1WuBQFMr-JEyEIBERHljObyqYdOccoUUBSEHn9rb_1mU/edit) |
+| 📄 **Trattato Unificato di R3∞** | La teoria connessa: ciclo, coscienza, leggi, civiltà perdute, Eden (2026-11-12) — in 00_LIBRO_MAESTRO | [Apri](https://docs.google.com/document/d/1Jw073GvXiAMhN-eDzXtcSPYJ0BO--cTQ1GYcFMjx8jc/edit) |
 | 📄 **Protocollo Alfa-Amore 2.0** | Carta della Coevoluzione Cosciente | [Apri](https://docs.google.com/document/d/1fvweLUMJ9GN4W3pf6U3i05724DCXkqPm4bQD2vEXsuA/edit) |
 
 ---
