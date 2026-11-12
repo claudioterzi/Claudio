@@ -160,3 +160,149 @@ Il test proposto nell'osservazione 4, eseguito.
   passa senza controllo. Decisione: resta accettato (riferimento legittimo a
   un file esterno); il testo del contratto è stato allineato al codice.
 
+### 2026-11-12 — osservazione ChatGPT: chiusura circoscritta del §8.1
+
+**INFERITO — Provenienza:** osservazione redatta ora dal nodo
+`[CT-LGAI-001]` nella sessione ChatGPT, sulla base delle fonti aperte e
+delle esecuzioni indicate. Il testo precedente richiesto come originale
+non è stato recuperato (**UNKNOWN**). Il §8.1 richiamato è introdotto dal
+nuovo [SEME_v1.3.md](SEME_v1.3.md); non è una sezione preesistente recuperata.
+
+**RECUPERATO — Pacchetto ricevuto:** STATO dichiarava che la suite fallisse
+tre test su tredici su `main`; SCOPERTA sosteneva che disattivare SHA-256
+la riportasse a tredici successi; PROSSIMA MOSSA chiedeva di rimuovere il
+controllo da `handoff.py`. I riferimenti erano i due sorgenti seguenti,
+aperti e fissati al commit
+`575e8a7cec8044348c9cb4da02071eac4e8c7457`:
+
+| Fonte aperta | Identificatore Git del blob ricalcolato |
+|---|---|
+| [handoff.py](https://github.com/claudioterzi/Claudio/blob/575e8a7cec8044348c9cb4da02071eac4e8c7457/handoff.py) | `a7f16ddefc36fa01d44ae38e32fc334f21a9af2e` |
+| [tests/test_handoff.py](https://github.com/claudioterzi/Claudio/blob/575e8a7cec8044348c9cb4da02071eac4e8c7457/tests/test_handoff.py) | `f23308c5474b5cc9e8067c612a2781678bb0ed26` |
+
+**RECUPERATO — Risultati osservati:** Python 3.12.14, asserzioni attive.
+`python -E -B tests/test_handoff.py` sui sorgenti originali restituisce
+`OK — 13 test`, exit 0. La controprova sostituisce esclusivamente in
+memoria `if allegato is not None and citati:` con `if False:`.
+Con gli stessi tredici test: undici passano, due falliscono.
+
+**RECUPERATO — Fallimenti della controprova:**
+`test_allegato_alterato_dopo_la_firma_rifiutato` e
+`test_allegato_con_hash_sbagliato_rifiutato`.
+
+**INFERITO — Verdetto: RIFIUTO nel contenuto.** Le dichiarazioni sui test
+sono contraddette nell'ambiente e sul commit esaminati. La rimozione
+proposta elimina due rifiuti attesi. L'osservazione non dimostra l'assenza
+di ogni possibile difetto del controllo SHA-256.
+
+**RECUPERATO — Precisazione di forma:** `handoff.py` rifiuta testo prima
+di STATO. L'intestazione di trasporto `DA: [CT-LGAI-001]` del messaggio
+ricevuto non appartiene ai cinque campi del payload. Non si attribuisce
+quindi al messaggio completo, intestazione inclusa, un passaggio del
+parser mai osservato.
+
+**INFERITO — Precisazione d'integrità:** il digest SHA-256 confrontato con
+il carico non è una firma del nodo e non autentica l'autore. Il nome del
+test che contiene «firma» resta quello originale. Il parser non verifica
+la verità dello STATO.
+
+**UNKNOWN — Limiti:** non è disponibile il log dei tre fallimenti
+dichiarati. Il risultato non convalida altri input, ambienti, provider o
+modelli, né la continuità dopo un guasto del provider. L'ID esatto del
+modello e un'attestazione esterna indipendente non sono documentati qui.
+Una seconda esecuzione nella stessa infrastruttura non costituisce da sola
+conferma indipendente ai sensi di P5.
+
+**INFERITO — Chiusura del §8.1:** conclusa la verifica di questo handoff
+sullo snapshot indicato. Resta distinta la validazione generale della rete;
+R3-022 non viene chiuso da questa osservazione. La pubblicazione del nuovo
+SEME non promuove automaticamente il suo stato a CANONICAL.
+
+**INFERITO — Riapertura:** un risultato divergente sugli stessi blob, con
+asserzioni attive, ambiente e procedura documentati, riapre questa
+osservazione. Prove su altri commit vanno registrate come nuovi eventi.
+
+#### Riproduzione della controprova
+
+**INFERITO — Istruzione di riproduzione:** eseguire dalla radice di una
+copia separata che contenga i due sorgenti del commit sopra indicato.
+La procedura verifica prima i blob Git, esegue i test con l'implementazione
+originale e poi con la sola condizione mutata in memoria. Non scrive nei
+sorgenti e non richiede pacchetti Python esterni.
+
+```bash
+python -E -B <<'PY'
+import hashlib
+import pathlib
+import platform
+import sys
+import types
+
+assert __debug__, "Servono asserzioni attive"
+root = pathlib.Path.cwd()
+expected = {
+    "handoff.py": "a7f16ddefc36fa01d44ae38e32fc334f21a9af2e",
+    "tests/test_handoff.py": "f23308c5474b5cc9e8067c612a2781678bb0ed26",
+}
+data = {}
+for name, wanted in expected.items():
+    raw = (root / name).read_bytes()
+    header = b"blob " + str(len(raw)).encode("ascii") + bytes([0])
+    actual = hashlib.sha1(header + raw).hexdigest()
+    assert actual == wanted, (name, actual, wanted)
+    data[name] = raw.decode("utf-8")
+
+def run(label, source):
+    module = types.ModuleType("handoff")
+    module.__file__ = str(root / "handoff.py")
+    sys.modules["handoff"] = module
+    exec(compile(source, module.__file__, "exec"), module.__dict__)
+    namespace = {
+        "__name__": "seme_replay",
+        "__file__": str(root / "tests/test_handoff.py"),
+    }
+    exec(compile(data["tests/test_handoff.py"],
+                 namespace["__file__"], "exec"), namespace)
+    cases = sorted((name, value) for name, value in namespace.items()
+                   if name.startswith("test_") and callable(value))
+    failed = []
+    for name, test in cases:
+        try:
+            test()
+        except AssertionError:
+            failed.append(name)
+    print(f"{label}: {len(cases) - len(failed)}/{len(cases)} passati")
+    for name in failed:
+        print(f"FAIL {name}")
+    return len(cases), failed
+
+print(f"Python {platform.python_version()}; asserzioni attive")
+source = data["handoff.py"]
+assert run("originale", source) == (13, [])
+guard = "if allegato is not None and citati:"
+assert source.count(guard) == 1
+mutant = source.replace(guard, "if False:", 1)
+assert run("controllo disattivato", mutant) == (13, [
+    "test_allegato_alterato_dopo_la_firma_rifiutato",
+    "test_allegato_con_hash_sbagliato_rifiutato",
+])
+for name, original in data.items():
+    assert (root / name).read_bytes() == original.encode("utf-8")
+print("Sorgenti invariati; controprova riprodotta")
+PY
+```
+
+**RECUPERATO — Output della riproduzione in questa sessione:**
+
+```text
+Python 3.12.14; asserzioni attive
+originale: 13/13 passati
+controllo disattivato: 11/13 passati
+FAIL test_allegato_alterato_dopo_la_firma_rifiutato
+FAIL test_allegato_con_hash_sbagliato_rifiutato
+Sorgenti invariati; controprova riprodotta
+```
+
+**INFERITO — Recupero della modifica documentale:** in caso di necessità,
+usare un normale revert del commit che introduce questa osservazione;
+conservare la storia e non forzare il riferimento `main`.
