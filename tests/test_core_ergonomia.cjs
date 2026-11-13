@@ -125,3 +125,17 @@ test('Agorà metadata/accent and command-button colors satisfy small-text contra
  const html=source('home.html'),palette=name=>html.match(new RegExp('--'+name+':\\s*#([a-f0-9]{6})'))[1];
  for(const color of ['text-dim','text-sub','red'])for(const bg of ['surface','card'])assert(contrast(palette(color),palette(bg))>=4.5);assert(contrast('ffffff',palette('red-button'))>=4.5);
 });
+
+test('Cloud dialogue uses explicit prefix and never adds a Telegram copy',async()=>{
+ const x=agora();await tick();x.get('consilioInput').value='/raffaello Aiutami a organizzare le idee';x.get('telegram-copy').checked=true;
+ const work=x.window.inviaConsiglio();
+ const sent=JSON.parse(x.calls.find(x=>x.url==='/api/agora').body);
+ assert.equal(sent.comando,'/raffaello Aiutami a organizzare le idee');assert.equal(sent.telegram,false);
+ x.pending[0].resolve({ok:true,json:async()=>({...receipt,richiesta:{...receipt.richiesta,comando:sent.comando}})});await work;
+ assert.equal(x.get('consilioInput').value,'');
+});
+test('Cloud dialogue keeps the question after provider failure',async()=>{
+ const x=agora();await tick();const text='/raffaello Prova senza perdere il testo';x.get('consilioInput').value=text;
+ const work=x.window.inviaConsiglio();x.pending[0].resolve({ok:true,json:async()=>({ok:true,richiesta:{id:'f'.repeat(32),stato:'errore',errore:'Modello non disponibile'}})});await work;
+ assert.equal(x.get('consilioInput').value,text);assert(x.get('consilioWrap').classList.contains('visible'));
+});
