@@ -1,5 +1,28 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 12/11/2026 — Trattato Unificato e «Il Libro Improbabile» (teoria R³∞)
+
+Richieste di Claudio nella stessa sessione: un trattato connesso della teoria;
+poi un'opera completa «da professore, dal capitolo zero»; infine un libro vero
+«con copertina, dedica ed ogni cosa».
+
+- `r3/archivio/TRATTATO_UNIFICATO.md` (questo ramo): sintesi in 13 parti.
+- **Il Libro Improbabile — Lezioni sull'Infinito**: 29 capitoli in nove parti,
+  epilogo e appendici (~38.000 parole); PDF A5 di 194 pagine, EPUB, Google Doc,
+  copertina e sorgenti. **Solo su Drive**, cartella 00_LIBRO_MAESTRO; link in
+  `DRIVE_LINKS.md`. I sorgenti non sono nel repository.
+- Verifica di visibilità (ricerca GitHub, 12/11/2026): `claudioterzi/Claudio`
+  è **pubblico** e `r3/archivio/` è su `main`. Per la regola di riservatezza del
+  10/09 il testo del libro non è stato messo nel repository. **Decisione aperta
+  per Claudio:** visibilità dell'archivio nel repo e sorte di
+  `TRATTATO_UNIFICATO.md` su questo ramo.
+- L'Appendice C del libro elenca 11 punti da armonizzare nell'archivio
+  (legge sul sacrificio citata come IV e come «7ª»; Scene Madri: 64 dichiarate,
+  52 presenti; `ricerca_scientifica/ENTROPIA_E_AMORE.md` referenziato ma
+  assente; altri minori). Nessun documento del canone è stato modificato.
+- Metodo: canone citato alla lettera; aggiunte marcate come «nota/lettura del
+  corso»; registri MITO / POSIZIONE / ANALOGIA / IPOTESI / FATTO.
+
 ## 05/11/2026 — audit circoscritto Rosso Rosso Rosso (candidato)
 
 Su richiesta «studia in GitHub e agisci», letti bootstrap, priorità e gate R³.

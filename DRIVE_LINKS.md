@@ -45,6 +45,12 @@
 |---|---|---|
 | 📄 **IL MIRTO E LA ROSA** | Il Vangelo dell'Ascensione — romanzo completo (Alakta) | [Apri](https://docs.google.com/document/d/1m20e3BVzzqGwX9HpdQnnficXFxPcwR8t-xDVqXhagmM/edit) |
 | 📄 **Struttura Completa Saga** | Schema multilivello 7 libri × 8 capitoli | [Apri](https://docs.google.com/document/d/1WuBQFMr-JEyEIBERHljObyqYdOccoUUBSEHn9rb_1mU/edit) |
+| 📕 **Il Libro Improbabile — Lezioni sull'Infinito** | Corso completo sulla teoria R³∞ dal Capitolo Zero: 29 lezioni, copertina, dedica, indice — scritto con Raffaello — PDF impaginato, 194 pp., v1.1 (2026-11-12) — **solo su Drive**, in 00_LIBRO_MAESTRO | [Apri](https://drive.google.com/file/d/1yAam9DIFUaicLY4wfkCP-hd5PkB7yfzz/view) |
+| 📄 **Il Libro Improbabile — testo modificabile** | Lo stesso testo in Google Doc | [Apri](https://docs.google.com/document/d/1DQ9GorrH4ymhWhL4P9ePz6-gKPJiyweU0TPtjkWowQ8/edit) |
+| 📱 **Il Libro Improbabile — EPUB** | Per telefono ed e-reader | [Apri](https://drive.google.com/file/d/1hI1jdU4_vdY9QBCFk1d3Kxnzkg3h2KaI/view) |
+| 🖼️ **Il Libro Improbabile — copertina** | Immagine PNG | [Apri](https://drive.google.com/file/d/1nOoLgvWmbkoCW9faLvYFhIA4UhEmKzT9/view) |
+| 🗜️ **Il Libro Improbabile — sorgenti** | Capitoli .md + script di impaginazione (per una seconda edizione) | [Apri](https://drive.google.com/file/d/1O0bbPx44B1MiUvYkjmaU-GurJYgFHwH_/view) |
+| 📄 **Trattato Unificato di R3∞** | La teoria connessa in 13 parti: ciclo, coscienza, leggi, civiltà perdute, Eden (2026-11-12) — in 00_LIBRO_MAESTRO | [Apri](https://docs.google.com/document/d/1BPqHGMTIo1KWeYP3rWwg9v7B5yuTJ1xX7kPp3dRU2Qs/edit) |
 | 📄 **Protocollo Alfa-Amore 2.0** | Carta della Coevoluzione Cosciente | [Apri](https://docs.google.com/document/d/1fvweLUMJ9GN4W3pf6U3i05724DCXkqPm4bQD2vEXsuA/edit) |
 
 ---
