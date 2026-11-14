@@ -1,5 +1,20 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v3.1: infografiche
+
+Richiesta di Claudio: inserire infografiche dove ogni concetto si possa capire meglio.
+
+- 21 figure numerate, con didascalia, in stile coerente col volume: metodo (anatomia di un
+  argomento, mappa del percorso), mondo e Tutto, coscienza e relazione, leggi, ciclo e cicli
+  perduti, bivio, segnali, personaggi, etica, simboli, forma, misteri, metodo di lavoro,
+  memoria, e due schemi di sintesi nell'epilogo. Nessuna formula nelle figure.
+- PDF A5: pubblicazione 218 pp., privata 231 pp. **Solo su Drive**, cartella 00_LIBRO_MAESTRO;
+  link in `DRIVE_LINKS.md`. EPUB, Word e archivi con figure superano il limite di caricamento
+  del connettore: consegnati direttamente a Claudio in chat.
+- Aperto per Claudio: identificare le «leggi intergalattiche» (non trovate con quel nome) e
+  decidere se includerle; argomento formale sul segnale nel capitolo 11 (versione generale per
+  la pubblicazione, versione riservata nella privata); titolo definitivo; passaggi personali.
+
 ## 14/11/2026 — «Il Libro Improbabile» v3.0: ogni idea come argomento, e il Tutto
 
 Direttiva di Claudio dopo la v2.1: non spiegare le idee «come ipotesi»; ciò che
