@@ -10,7 +10,7 @@ per questo il simbolo è l'infinito.
   alone) è stata sostituita: una sola fascia continua a quattro righe di tessere bianche e nere
   sfalsate di mezza tessera (il «muro» del Café Wall, stessa famiglia dei bordi sfalsati),
   tessere più corte e righe più spesse (l'asse obliquo ideale delle celle, con la formula del
-  PDF di Gualtiero, sale da circa 12° a circa 26°), tre giunti sottili dello stesso grigio
+  PDF di Gualtiero, sale da circa 11° nella copertina v3.2 a circa 27°; nella fotografia è 12,4°), tre giunti sottili dello stesso grigio
   dello sfondo che corrono senza interruzioni lungo tutta la figura, anche nell'incrocio; i
   due lobi hanno sfasamento di segno opposto (come i due anelli della fotografia).
 - Limite dichiarato: l'effetto percettivo non è stato verificato su osservatori; il PDF di
