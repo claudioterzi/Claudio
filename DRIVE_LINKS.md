@@ -45,7 +45,13 @@
 |---|---|---|
 | 📄 **IL MIRTO E LA ROSA** | Il Vangelo dell'Ascensione — romanzo completo (Alakta) | [Apri](https://docs.google.com/document/d/1m20e3BVzzqGwX9HpdQnnficXFxPcwR8t-xDVqXhagmM/edit) |
 | 📄 **Struttura Completa Saga** | Schema multilivello 7 libri × 8 capitoli | [Apri](https://docs.google.com/document/d/1WuBQFMr-JEyEIBERHljObyqYdOccoUUBSEHn9rb_1mU/edit) |
-| 📕 **Il Libro Improbabile — Lezioni sull'Infinito** | Corso completo sulla teoria R³∞ dal Capitolo Zero: 29 lezioni, copertina, dedica, indice — scritto con Raffaello — PDF impaginato, 195 pp., v1.2 (2026-11-12) — **solo su Drive**, in 00_LIBRO_MAESTRO | [Apri](https://drive.google.com/file/d/1ogUSX0lG0KZYBLUKTt2ynjDUpOcBJ48r/view) |
+| 📘 **Il Libro Improbabile — v2.1, il Libro Maestro (edizione per la pubblicazione)** | Solo il Libro Maestro della teoria R³∞, non la saga: 26 capitoli + Capitolo Zero, voce di Raffaello, PDF A5 196 pp. (2026-11-14) — **solo su Drive**, in 00_LIBRO_MAESTRO | [Apri](https://drive.google.com/file/d/1r-dMqHngh0kv_c4nS3radrUcFAUPaMs2/view) |
+| 🔒 **Il Libro Improbabile — v2.1, edizione privata** | Come sopra, più il capitolo «Le radici» e i passaggi personali (207 pp.) — riservata, solo per l'autore | [Apri](https://drive.google.com/file/d/1MU_9VwlqHUGUYWxvoqCMrlakDvxvgRQ3/view) |
+| 📄 **Il Libro Improbabile — v2.1, testo modificabile** | Google Doc dell'edizione per la pubblicazione | [Apri](https://docs.google.com/document/d/1pi_Sejynob3l4Ud5TaQp34gR5_5GugyCXniz82E-ysc/edit) |
+| 📱 **Il Libro Improbabile — v2.1, EPUB** | Edizione per la pubblicazione, per telefono ed e-reader | [Apri](https://drive.google.com/file/d/10WPkwoetwQ94bjkOXWzpu48VlAWlI4ux/view) |
+| 🖼️ **Il Libro Improbabile — v2.1, copertina** | Immagine PNG («Il Libro Maestro della teoria R³∞») | [Apri](https://drive.google.com/file/d/1TGkZ2nFApWBrsNqfK5WkCs4eyJrHittX/view) |
+| 🗜️ **Il Libro Improbabile — v2.1, sorgenti** | Edizione integrale (33 capitoli), edizione snella, script di cura e impaginazione | [Apri](https://drive.google.com/file/d/1aknEloDCmJvPRLgaNqMPUI2o65N8hFNV/view) |
+| 📕 **Il Libro Improbabile — v1.2 (versione precedente, voce da professore)** | Corso completo sulla teoria R³∞ dal Capitolo Zero: 29 lezioni, copertina, dedica, indice — scritto con Raffaello — PDF impaginato, 195 pp., v1.2 (2026-11-12) — **solo su Drive**, in 00_LIBRO_MAESTRO | [Apri](https://drive.google.com/file/d/1ogUSX0lG0KZYBLUKTt2ynjDUpOcBJ48r/view) |
 | 📄 **Il Libro Improbabile — testo modificabile** | Lo stesso testo in Google Doc | [Apri](https://docs.google.com/document/d/1KR698tBg1iFzX_Q8AM8uKoMZzOEIZEeS8E5VBZr3LO4/edit) |
 | 📱 **Il Libro Improbabile — EPUB** | Per telefono ed e-reader | [Apri](https://drive.google.com/file/d/12dU_QrG2U-kFpPrLRH1sh-1zCl_J-v2Q/view) |
 | 🖼️ **Il Libro Improbabile — copertina** | Immagine PNG | [Apri](https://drive.google.com/file/d/1nOoLgvWmbkoCW9faLvYFhIA4UhEmKzT9/view) |

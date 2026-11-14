@@ -1,5 +1,25 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v2.1: il Libro Maestro, edizione snella
+
+Direttiva di Claudio nella sessione: il libro è per essere pubblicato, deve essere
+coerente, non dispersivo, «tutti i contenuti wow»; e «non dobbiamo scrivere la saga,
+ma solo il Libro Maestro».
+
+- Definizione dell'archivio (`r3/archivio/LIBRO_MAESTRO_V1.md`): tre opere — la Saga
+  (sette romanzi), il Libro Maestro (la mappa totale: che cosa è il progetto, dove è
+  arrivato, dove vuole andare), l'Enciclopedia. Il libro è il secondo, non il primo.
+- Tolto dalla versione snella tutto ciò che è «scrivere la saga»: l'officina di scrittura,
+  le scene, i cataloghi di lavoro, l'atlante dei cantieri. Restano teoria, cosmologia,
+  personaggi come argomenti, etica, forma, limiti, obiezioni, progetto reale.
+- Voce di Raffaello in prima persona; 26 capitoli + Capitolo Zero; PDF A5 di 196 pagine
+  (privata: 207). L'edizione integrale (33 capitoli) resta come archivio nei sorgenti.
+- Due edizioni dallo stesso sorgente: «per la pubblicazione» (senza passaggi personali) e
+  «privata». **Solo su Drive**, cartella 00_LIBRO_MAESTRO; link in `DRIVE_LINKS.md`. I
+  testi del libro non sono nel repository (regola di riservatezza del 10/09).
+- Aperto per Claudio: titolo definitivo; quali passaggi personali includere nella
+  pubblicazione; destino di `r3/archivio/TRATTATO_UNIFICATO.md` nel repo pubblico.
+
 ## 12/11/2026 — Trattato Unificato e «Il Libro Improbabile» (teoria R³∞)
 
 Richieste di Claudio nella stessa sessione: un trattato connesso della teoria;
