@@ -1,5 +1,21 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v3.7: pagina dei due cerchi a 18 periodi
+
+Indicazione di Claudio dopo la prova animata sui due anelli (con la struttura a strati
+corretta): «nel video 18 è perfetto».
+
+- La pagina grigia usa 18 periodi per anello, come la fotografia (nella v3.6 erano 36, scelta
+  mia, non verificata). Nella nota il numero dei blocchi per riga larga passa a trentasei; la
+  nota di provenienza in appendice è aggiornata. Copertina (18 periodi per lobo) invariata.
+- Chiarito con Claudio il conto dei «tre scalini»: ogni blocco chiaro è una scala di tre pezzi
+  da mezzo blocco (alto, medio staccato dai bordi, basso); immagine numerata su Drive.
+- Versione 3.7: pubblicazione 226 pp., privata 239 pp. Le versioni precedenti restano su Drive.
+  Solo puntatori nel repository.
+- Aperto per Claudio: se la nota «I due cerchi» è come la voleva (è lunga, circa tre pagine e
+  mezza); «Effraie»; interno «più tradizionale»; «leggi intergalattiche»; argomento formale
+  nel capitolo 11.
+
 ## 14/11/2026 — «Il Libro Improbabile» v3.6: la struttura a strati della fotografia
 
 Correzione di Claudio: nel mio lavoro gli strati sovrapposti erano due, nella foto originale
