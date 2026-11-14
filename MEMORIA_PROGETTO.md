@@ -1,5 +1,27 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v3.5: la pagina dei due cerchi e la nota
+
+Richiesta di Claudio: nella prima pagina all'interno, i due cerchi della fotografia con l'effetto
+ancora più marcato; una nota importante con l'analisi psicologica dell'effetto della figura.
+
+- Pagina 2 (prima pagina interna): grigio uniforme a piena pagina, i due anelli concentrici con
+  le proporzioni della fotografia (rapporto 0,80, spessore proporzionale ai periodi, sfasamento di
+  un quarto di periodo con verso opposto fra i due anelli) e un piccolo punto dorato di
+  fissazione. Scelti 36 periodi per anello (la fotografia ne ha 18) come ipotesi di effetto più
+  marcato; non verificato su osservatori. Confronto fra 18, 27, 36 e 54 periodi, in foglio e in
+  prova animata sui due anelli veri, su Drive: la scelta definitiva spetta a Claudio.
+- Nota «I due cerchi» (4 pagine, dopo la lettera «Prima di tutto»): analisi psicologica di ciò
+  che la figura fa percepire, collegamento con l'infinito e con gli Architetti secondo la
+  richiesta di Claudio, ciascun passo con il suo terreno dichiarato. Nuove letture di sostegno
+  nell'Appendice C («Percezione e illusioni») e nota di provenienza della figura nell'Appendice A.
+- Il testo del libro non è nel repository (regola di riservatezza del 10/09); solo puntatori.
+- Numero di versione 3.5: pubblicazione 226 pp., privata 239 pp. EPUB e Word includono la pagina
+  grigia; per dimensione non sono su Drive.
+- Aperto per Claudio: quale numero di periodi usare nella pagina (e se anche in copertina);
+  se la nota è come la voleva; «Effraie»; interno «più tradizionale»; «leggi intergalattiche»;
+  argomento formale nel capitolo 11.
+
 ## 14/11/2026 — «Il Libro Improbabile» v3.4: esperimento su periodi e dimensione delle tessere
 
 Richiesta di Claudio: la copertina a proporzioni originali va già bene; provare tessere ancora
