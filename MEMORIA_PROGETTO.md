@@ -1,5 +1,28 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v3.8: correzioni dopo la revisione esterna di v3.7
+
+Claudio ha incollato una revisione esterna (15 correzioni e una tabella di «recuperi letterari»
+dalle parti originali) chiedendo un'analisi obiettiva. Verifica sul testo v3.7, sul canone
+dell'archivio (SCENE_MADRI, DNA_PERSONAGGI, ARCHIVIO_MORTI, COSMO-007, STRUTTURA_FRATTALE) e
+sugli originali su Drive (Parti XI e III per intero).
+
+- Esito: 5 errori veri, 4 punti parzialmente fondati, 4 che non reggono (tra cui un falso
+  positivo: la nota di pag. 10 descrive la pagina grigia interna, non la copertina), 2 scelte
+  d'autore (KAOS, Eden). Valutazione completa su Drive («Valutazione della revisione di v3.7»).
+- La v3.8 applica solo correzioni verificate e coerenti col canone: trilemma di Bostrom,
+  slogan dei quattro terreni, «teorie più solide» nel Punto fermo del Tutto, fisica relazionale
+  non usata come prova, Lila testimone e non misuratore (come nel canone), prima mossa della
+  difesa, falsificabilità, conteggio dei capitoli in quarta, didascalie delle figure 14
+  («fratelli» resta, non «sorelle») e 17. La v3.7 resta intatta.
+- Non toccati: canone dell'Eden, il numero 847 (canone: simbolico), la struttura dei sette atti,
+  le parti private dei «recuperi letterari» (proposte, non canone).
+- Aperto per Claudio: KAOS e «chi ha voce nel decidere»; Eden come «regola di racconto»;
+  «L'ho visto. Era presente.» accanto alla battuta della stanza; «Nota mia» sulla somiglianza
+  trasformata dei sette atti; appendice solo privata con i recuperi letterari. Da riverificare
+  sulla fonte: il riferimento Kitaoka 2007 nella nota dei due cerchi.
+- Versione 3.8: pubblicazione 226 pp., privata 239 pp. Solo puntatori nel repository.
+
 ## 14/11/2026 — «Il Libro Improbabile» v3.7: pagina dei due cerchi a 18 periodi
 
 Indicazione di Claudio dopo la prova animata sui due anelli (con la struttura a strati
