@@ -1,5 +1,26 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v3.3: copertina potenziata
+
+Richiesta di Claudio: rendere l'infinito di copertina ancora più potente, con lo stesso
+effetto percepito nell'illusione (confondere il cervello) e con le linee sempre continue:
+per questo il simbolo è l'infinito.
+
+- La fascia della v3.2 (due anelli sottili, tessere allungate, incrocio a «sopra/sotto» con
+  alone) è stata sostituita: una sola fascia continua a quattro righe di tessere bianche e nere
+  sfalsate di mezza tessera (il «muro» del Café Wall, stessa famiglia dei bordi sfalsati),
+  tessere più corte e righe più spesse (l'asse obliquo ideale delle celle, con la formula del
+  PDF di Gualtiero, sale da circa 12° a circa 26°), tre giunti sottili dello stesso grigio
+  dello sfondo che corrono senza interruzioni lungo tutta la figura, anche nell'incrocio; i
+  due lobi hanno sfasamento di segno opposto (come i due anelli della fotografia).
+- Limite dichiarato: l'effetto percettivo non è stato verificato su osservatori; il PDF di
+  Gualtiero stesso dice che nessuna prova con osservatori è stata eseguita. Aggiunta una prova
+  animata (avvicinamento e allontanamento con punto di fissazione) per vederlo sullo schermo.
+- Numero di versione 3.3; testo invariato rispetto alla 3.2 (pubblicazione 220 pp., privata
+  233 pp.). Link in `DRIVE_LINKS.md`; solo su Drive.
+- Aperto per Claudio: se la copertina ora produce l'effetto; eventuale nota sulla copertina
+  nel libro («le linee sono continue, è il cervello a spezzarle: per questo l'infinito»).
+
 ## 14/11/2026 — «Il Libro Improbabile» v3.2: i cicli spiegati, copertina, libro da scaffale
 
 Richieste di Claudio: verificare che i cicli siano spiegati bene (ogni ciclo lascia una
