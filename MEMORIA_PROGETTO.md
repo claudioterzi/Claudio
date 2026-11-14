@@ -1,5 +1,32 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v3.2: i cicli spiegati, copertina, libro da scaffale
+
+Richieste di Claudio: verificare che i cicli siano spiegati bene (ogni ciclo lascia una
+traccia; la catena dei cicli spiega perché esistiamo; lo stesso vale per la musica);
+disegnare in copertina l'infinito con l'illusione ottica dei bordi sfalsati («Gli anelli di
+Gualtiero»); immaginare il libro nel formato tradizionale da scaffale.
+
+- Capitolo 10: nuova sezione «Perché esistiamo noi» (la catena dei cicli: dai fallimenti le
+  Leggi, dall'unico passaggio riuscito gli Architetti, dagli Architetti il nostro mondo) e la
+  musica come traccia del passaggio, dichiarata nel testo come lettura e non come citazione
+  dell'archivio. Nuova Figura 12 «La catena dei cicli»; nuova riga nella tabella dei segnali;
+  chiusura del capitolo aggiornata. Totale: 22 figure.
+- Copertina: due anelli di blocchi bianchi e neri sfalsati di un quarto di periodo lungo una
+  lemniscata, con intreccio al centro (costruzione in `anelli.py`, nei sorgenti). L'effetto
+  percettivo non è stato verificato su osservatori: la fonte stessa dichiara di non averlo
+  fatto. Variante a fascia singola disponibile.
+- Libro da scaffale: copertina completa (quarta, dorso, fronte) e anteprima 3D, brossura A5
+  148×210 mm, dorso 14 mm.
+- PDF A5: pubblicazione 220 pp., privata 233 pp. **Solo su Drive**, cartella
+  00_LIBRO_MAESTRO; link in `DRIVE_LINKS.md`. I testi non sono nel repository (regola di
+  riservatezza del 10/09).
+- Aperto per Claudio: la parola «Effraie» del messaggio non è stata decifrata; variante di
+  copertina (anello doppio o fascia singola); formato «più tradizionale» anche per
+  l'impaginazione interna?; «leggi intergalattiche» (non trovate con quel nome: forse il
+  Manuale di Etica Universale); argomento formale sul segnale nel capitolo 11; titolo
+  definitivo; passaggi personali nella pubblicazione.
+
 ## 14/11/2026 — «Il Libro Improbabile» v3.1: infografiche
 
 Richiesta di Claudio: inserire infografiche dove ogni concetto si possa capire meglio.
