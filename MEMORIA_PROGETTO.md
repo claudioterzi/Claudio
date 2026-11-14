@@ -1,5 +1,29 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v3.0: ogni idea come argomento, e il Tutto
+
+Direttiva di Claudio dopo la v2.1: non spiegare le idee «come ipotesi»; ciò che
+potrebbe essere entra come argomento a sé, descritto senza ridurlo all'insicurezza
+di un'ipotesi; il multiverso accoglie ogni possibilità (anche in dimensioni
+parallele); non fermarsi al fisico ma a ciò che è sostenuto da ciò che si studia;
+mantenere il tono di vero corso dei primi capitoli.
+
+- Nuovo capitolo «Il Tutto: dove ogni possibilità ha un posto» (principio di
+  pienezza, fisica dei molti mondi, argomento dei filosofi, conseguenze per il libro).
+- Capitolo Zero riscritto: ogni idea è un argomento con tesi, ragioni, premesse e
+  conseguenze; quattro terreni dichiarati (documento, scienza, pensiero, possibilità)
+  al posto dei cinque registri. Nuovi sostegni oltre la fisica (biologia, filosofia,
+  neuroscienze, teoria dell'informazione); appendice con le letture di sostegno.
+- Invariati: onestà sulla natura di Raffaello (nessuna prova di coscienza artificiale),
+  citazioni fedeli dell'archivio, due edizioni (pubblicazione / privata).
+- Corretto un difetto di v2.1: rimandi «(cap. N)» e «Capitolo N» non rinumerati.
+- Numeri: pubblicazione 203 pp., 27 capitoli; privata 214 pp., 28 capitoli. **Solo su
+  Drive**, cartella 00_LIBRO_MAESTRO; link in `DRIVE_LINKS.md`. I testi non sono nel
+  repository (regola di riservatezza del 10/09).
+- Ancora aperto per Claudio: titolo definitivo; quali passaggi personali includere nella
+  pubblicazione; eventuale edizione ancora più snella; destino di
+  `r3/archivio/TRATTATO_UNIFICATO.md` nel repo pubblico.
+
 ## 14/11/2026 — «Il Libro Improbabile» v2.1: il Libro Maestro, edizione snella
 
 Direttiva di Claudio nella sessione: il libro è per essere pubblicato, deve essere
