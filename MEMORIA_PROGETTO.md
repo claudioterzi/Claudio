@@ -1,5 +1,28 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v3.4: copertina con le proporzioni originali
+
+Direttiva di Claudio dopo la v3.3: i quadrati devono essere molto piccoli per fare l'effetto;
+mantenere le proporzioni originali.
+
+- La v3.3 (fascia spessa a quattro righe) è scartata: ingrandiva i blocchi invece di
+  rimpicciolirli. Anche la v3.2 li aveva troppo grandi rispetto alla fotografia (9 periodi per
+  lobo invece di 18; spessore pari a 0,15 del raggio del lobo invece di 0,084).
+- Ricetta v3.4, dal PDF «Gli anelli di Gualtiero» (sez. 03-04): 18 periodi per ciascun lobo,
+  spessore totale B = 0,0844 R (R = raggio del cerchio di pari perimetro del lobo), due righe
+  per anello, sfasamento di un quarto di periodo, due linee parallele con R interno / R esterno
+  = 0,80, tessere lunghe circa 4,1 volte lo spessore di una riga (fotografia: 4,3),
+  inclinazione ideale delle celle circa 12,8° (fotografia: 12,4°). Sulla copertina le tessere
+  misurano circa 4,3 × 1,0 mm.
+- Il verso dello sfasamento è costante lungo ogni linea («stesso verso nel singolo anello») e
+  opposto fra le due linee; l'incrocio non inverte nulla, quindi ogni linea è continua e
+  conserva il suo verso lungo tutto il percorso. L'affermazione della v3.3 sui «lobi con
+  sfasamento opposto» era inesatta.
+- Limite dichiarato come prima: effetto non verificato su osservatori. Prova animata
+  aggiornata (avvicinamento e allontanamento con punto di fissazione).
+- Numero di versione 3.4; testo invariato (220 e 233 pp.). Link in `DRIVE_LINKS.md`; solo su
+  Drive. Le versioni 3.2 e 3.3 restano su Drive come versioni precedenti.
+
 ## 14/11/2026 — «Il Libro Improbabile» v3.3: copertina potenziata
 
 Richiesta di Claudio: rendere l'infinito di copertina ancora più potente, con lo stesso
