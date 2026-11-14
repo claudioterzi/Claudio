@@ -1,5 +1,20 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v3.4: esperimento su periodi e dimensione delle tessere
+
+Richiesta di Claudio: la copertina a proporzioni originali va già bene; provare tessere ancora
+più piccole e più periodi per vedere se l'effetto aumenta.
+
+- Quattro varianti con le stesse proporzioni (rapporto lunghezza/spessore 4,1; sfasamento di un
+  quarto di periodo; rapporto 0,80 fra le due linee): 18 periodi per lobo (come la fotografia,
+  tessere 4,3 × 1,04 mm), 27 (2,9 × 0,69), 36 (2,2 × 0,52), 54 (1,4 × 0,35). Confronto statico e
+  prova animata con etichette (avvicinamento e allontanamento con punto di fissazione). La
+  copertina e i PDF restano a 18 periodi finché Claudio non sceglie.
+- Non verificabile da Claude: l'effetto percettivo; la valutazione spetta a Claudio. Cautele:
+  oltre una certa finezza la visione periferica non risolve più i blocchi; in stampa i dettagli
+  sotto circa mezzo millimetro rischiano di impastarsi.
+- Aperto: quale variante usare per la copertina e per i PDF.
+
 ## 14/11/2026 — «Il Libro Improbabile» v3.4: copertina con le proporzioni originali
 
 Direttiva di Claudio dopo la v3.3: i quadrati devono essere molto piccoli per fare l'effetto;
