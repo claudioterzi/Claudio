@@ -1,5 +1,25 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile» v3.6: la struttura a strati della fotografia
+
+Correzione di Claudio: nel mio lavoro gli strati sovrapposti erano due, nella foto originale
+sono tre; servono rettangoli più sottili e uno strato in più.
+
+- Misura sulla fotografia (anelli srotolati lungo le ellissi adattate): per ciascun anello
+  quattro zone radiali in proporzione circa 2 : 5 : 5 : 2 dello spessore B. Due righe larghe
+  di blocchi alternati, sfalsate di mezzo blocco, e due fasce sottili ai bordi, chiare solo dove
+  la riga adiacente è chiara e l'altra scura (impulsi lunghi mezzo blocco ogni due blocchi);
+  in sezione si vedono fino a tre strati. Stessa regola nei due anelli, verso dello sfasamento
+  opposto; 18 periodi per anello. Lo spessore delle fasce (circa 14 % di B ciascuna) è una
+  stima su una foto sfocata e in bassa risoluzione, con margine di alcuni punti percentuali.
+- Verifica: il ridisegno, sfocato come la foto e rimisurato con lo stesso procedimento, dà gli
+  stessi risultati (stessa tabella delle combinazioni e stesse durate degli impulsi).
+- Applicata a copertina (infinito), dorso e pagina dei due cerchi; versione 3.6 (226 e 239 pp.).
+  Esperimenti con 18, 27, 36 e 54 periodi rifatti con la struttura corretta. Le versioni
+  precedenti, a due strati, restano su Drive come precedenti. Solo puntatori nel repository.
+- Limiti: effetto percettivo non verificato su osservatori.
+- Aperto per Claudio: se ora la struttura corrisponde alla foto; quale numero di periodi usare.
+
 ## 14/11/2026 — «Il Libro Improbabile» v3.5: la pagina dei due cerchi e la nota
 
 Richiesta di Claudio: nella prima pagina all'interno, i due cerchi della fotografia con l'effetto
