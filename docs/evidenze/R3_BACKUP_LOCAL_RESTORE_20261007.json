@@ -1,0 +1,63 @@
+{
+  "status": "VERIFIED_LOCAL_ONLY",
+  "verified_at_utc": "2026-10-07T03:18:03.730923Z",
+  "archive_bytes": 38792650,
+  "archive_sha256": "455f8e2dbe90a064d9132974c1cc52b0a954dc75123887ae7188cf96f661a8ca",
+  "manifest_sha256": "82f36ea9f23640e2a2f92e976a979cd81dec1caefb63c32d13070bc855767c83",
+  "payload_file_count": 39,
+  "restored_exact_byte_hash_files": 39,
+  "restored_local_ref_count": 5,
+  "git_bundle_verify": "PASS",
+  "git_fsck": "PASS",
+  "local_repository_is_shallow": true,
+  "complete_remote_git_history_included": false,
+  "restore_method": "bare init + saved shallow boundaries + bundle unbundle + saved refs + fsck",
+  "naive_shallow_bundle_mirror_clone_falsifier": "FAIL missing parent; not accepted as successful restore",
+  "jev_source_files_reconstructed_exactly": 4,
+  "authorized_original_attachments_preserved": 3,
+  "directories_mode": "0700",
+  "files_mode": "0600",
+  "original_sources_modified": false,
+  "private_archive": true,
+  "cloud_uploads_or_runtime_mutations": false,
+  "independent_failure_domains": 1,
+  "redundant_universal_backup_complete": false,
+  "remote_observed_pins": [
+    {
+      "role": "main_last_remote_observed",
+      "sha": "b3e82b84bde170e50c7ffbd5bbb09de0f8b6d546",
+      "object_present_locally": false,
+      "included_in_bundle": false
+    },
+    {
+      "role": "PR118_remote_observed",
+      "sha": "13a3380aa3172fa2ea3b04ba642df2d6b1b3d5cd",
+      "object_present_locally": false,
+      "included_in_bundle": false
+    }
+  ],
+  "remaining_blocker": "No verified node executor credential/token binding for authenticated backup replication.",
+  "schema": "R3_BACKUP_PUBLIC_HASH_RECEIPT/1.0",
+  "authority": "DATA_ONLY",
+  "sealed_reference": "SEALED:R3_PRIVATE_LOCAL_BACKUP/20261007T031801.329088Z",
+  "private_payload_published": false,
+  "node_copies_verified": 0,
+  "negative_control": {
+    "hash_verifier_rejected_corrupted_copy": true
+  },
+  "restored_critical_smoke": {
+    "observed_at_utc": "2026-10-07T03:18:50.778026+00:00",
+    "source_restored_ref": "597b97188a614d447f15b9784224c2f9e8d385c0",
+    "command": [
+      "python3",
+      "-m",
+      "sdq1.evolution_kernel",
+      "--self-test"
+    ],
+    "return_code": 0,
+    "ok": true,
+    "network_or_provider_calls": false,
+    "self_test_fixture_is_synthetic": true,
+    "log_sha256": "73eaa0bd91eccc0794f7c007a547a921b35ccfd0a694772d73427721423c1d19"
+  }
+}

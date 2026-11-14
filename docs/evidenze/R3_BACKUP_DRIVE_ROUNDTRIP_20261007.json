@@ -1,0 +1,78 @@
+{
+  "schema": "R3_DRIVE_AUTHENTICATED_PARTS_RECOVERY/1.0",
+  "status": "VERIFIED_RESTORE_FROM_DOWNLOADED_DRIVE_PARTS",
+  "started_at_utc": "2026-10-07T03:38:38.387941Z",
+  "verified_at_utc": "2026-10-07T03:38:39.697993Z",
+  "privacy_of_recovered_payload": "PRIVATE_LOCAL_ARCHIVE",
+  "receipt_contains_only_public_safe_operational_metadata": true,
+  "receipt_contains_signed_download_urls_or_secrets": false,
+  "archive_bytes": 38792650,
+  "archive_sha256": "455f8e2dbe90a064d9132974c1cc52b0a954dc75123887ae7188cf96f661a8ca",
+  "manifest_sha256": "82f36ea9f23640e2a2f92e976a979cd81dec1caefb63c32d13070bc855767c83",
+  "restored_manifest_file_count": 39,
+  "download_provenance": "Parent agent authenticated Drive download; this task independently verified local downloaded bytes.",
+  "downloaded_parts": [
+    {
+      "ordinal": 1,
+      "bytes": 20971520,
+      "sha256": "76c3e2530e45cecc3e0a4837c63bd3c00f17738cda843fecc0565de6e0d92e19"
+    },
+    {
+      "ordinal": 2,
+      "bytes": 17821130,
+      "sha256": "b0dda354ee960805451857cda6b35a6c281eebb5473f19632700039adaa8373c"
+    }
+  ],
+  "all_part_byte_hashes_match": true,
+  "recomposed_bytes_match_original_exactly": true,
+  "full_drive_file_direct_content_download_verified": false,
+  "full_drive_file_verification_scope": "Metadata only; actual restore used the two authenticated downloaded parts.",
+  "two_parts_are_one_backup_copy": true,
+  "separate_parts_do_not_prove_redundancy": true,
+  "restored_local_ref_count": 5,
+  "all_local_refs_preserved": true,
+  "shallow_boundaries_preserved": true,
+  "complete_remote_history_included": false,
+  "bundle_verify": "PASS",
+  "git_fsck": "PASS",
+  "critical_jev_source_files_reconstructed": 4,
+  "additional_tracked_checkpoint_files_reconstructed_from_downloaded_bundle": 3,
+  "critical_synthetic_smoke": {
+    "command": [
+      "python3",
+      "-m",
+      "sdq1.evolution_kernel",
+      "--self-test"
+    ],
+    "restored_commit": "597b97188a614d447f15b9784224c2f9e8d385c0",
+    "return_code": 0,
+    "ok": true,
+    "synthetic_only": true,
+    "network_or_provider_calls": false,
+    "log_sha256": "5e8a7862291d4f2a1eacf11d6b758df0d01c2dcecd63c1f40a01a754c35d40fd"
+  },
+  "deliberately_corrupted_copy_rejected": true,
+  "original_sources_or_archives_modified": false,
+  "uploads_or_cloud_mutations_by_this_recovery_task": false,
+  "directories_mode": "0700",
+  "files_mode": "0600",
+  "universal_project_or_node_redundancy_complete": false,
+  "remaining_scope_gap": "Live node volume state, remote-only Git history and autonomous authenticated node replication are not covered.",
+  "authority": "DATA_ONLY",
+  "sealed_reference": "SEALED:R3_PRIVATE_LOCAL_BACKUP/20261007T031801.329088Z",
+  "original_private_receipt_sha256": "73fad356a5051273012c8715dc0c16d17630d0d6a4f7af8c0b91428257b5927d",
+  "storage_systems": [
+    "current_executor_workspace",
+    "Google_Drive_owner_private"
+  ],
+  "drive_acl_readback": {
+    "shared": false,
+    "permission_roles": [
+      "owner"
+    ],
+    "observed_on_folder_and_downloaded_parts": true
+  },
+  "node_copies_verified": 0,
+  "offline_or_immutable_copy_verified": false,
+  "universal_backup_verified": false
+}

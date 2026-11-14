@@ -1,0 +1,9 @@
+{
+  "status": "BLOCKED_MISSING_TOKEN",
+  "gateway": "https://r3-typesafe-sister-production.up.railway.app/jev/judge",
+  "token_present": false,
+  "required_secret": "R3_API_TOKEN",
+  "inference_executed": false,
+  "request_sha256": "a323ba4262d8abed77ecabc51706254645327c2c0bfb00389df78594f4dd6835",
+  "observed_at_utc": "2026-10-07T03:16:01.745293+00:00"
+}
