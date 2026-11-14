@@ -13,8 +13,12 @@ Richiesta di Claudio: trovare il modo di stampare 100 copie di grande qualità.
   pagina grigia per il risguardo, copertina avvolgente per brossura (dorso 14 mm provvisorio).
   La conversione CMYK e il dorso definitivo dipendono dalla tipografia scelta.
 - Nessun file è stato inviato a tipografie o a terzi: ordini e invii solo per decisione di Claudio.
+- Tipografia belga? Non obbligatoria: il deposito legale KBR dipende da dove il libro è pubblicato,
+  non da dove è stampato. Un autore singolo non ha bisogno del numero di editore («D/anno/Nome,
+  publisher»); il deposito vale se le copie sono offerte al pubblico, anche gratis. Unica tipografia
+  belga verificata: Graphius (Gand), legatoria interna, accetta privati; minimi da chiedere.
 - Da decidere da Claudio: tipografia e rilegatura; colophon (a p. 5 c'è ancora «bozza per la
-  revisione dell'autore»); ISBN e deposito legale solo se le copie sono vendute o date al pubblico;
+  revisione dell'autore»); deposito legale solo se le copie sono offerte al pubblico;
   congelamento del testo (cinque scelte d'autore aperte, rilettura finale, fonte Kitaoka 2007);
   budget e data; copia di prova dallo stesso stampatore prima della tiratura.
 - Solo puntatori nel repository.
