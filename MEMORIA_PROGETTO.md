@@ -1,5 +1,24 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 14/11/2026 — «Il Libro Improbabile»: stampare 100 copie di grande qualità
+
+Richiesta di Claudio: trovare il modo di stampare 100 copie di grande qualità.
+
+- Ricerca: per 100 copie conviene la stampa digitale (non l'offset). Tre strade confrontate sui
+  siti degli stampatori: Helloprint (cartonato cucito a filo, minimo 1 copia, quindi prova
+  possibile, tempi brevi, nessuna finitura speciale), QinPrinting (minimo 100 copie, risguardi
+  stampati, oro a caldo, nastrino, 5-9 settimane), CPI (legatoria da editore, solo preventivo).
+  Nessun preventivo in tempo reale: le cifre non verificate sono stime e sono dichiarate tali.
+- File pronti su Drive (solo vettoriale, RGB): interno A5 con 3 mm di abbondanza (224 pp),
+  pagina grigia per il risguardo, copertina avvolgente per brossura (dorso 14 mm provvisorio).
+  La conversione CMYK e il dorso definitivo dipendono dalla tipografia scelta.
+- Nessun file è stato inviato a tipografie o a terzi: ordini e invii solo per decisione di Claudio.
+- Da decidere da Claudio: tipografia e rilegatura; colophon (a p. 5 c'è ancora «bozza per la
+  revisione dell'autore»); ISBN e deposito legale solo se le copie sono vendute o date al pubblico;
+  congelamento del testo (cinque scelte d'autore aperte, rilettura finale, fonte Kitaoka 2007);
+  budget e data; copia di prova dallo stesso stampatore prima della tiratura.
+- Solo puntatori nel repository.
+
 ## 14/11/2026 — «Il Libro Improbabile» v3.8: correzioni dopo la revisione esterna di v3.7
 
 Claudio ha incollato una revisione esterna (15 correzioni e una tabella di «recuperi letterari»
