@@ -1,5 +1,17 @@
 # MEMORIA DI PROGETTO — SDQ-1 / Claudio Terzi
 
+## 17/11/2026 — Versione francese per la stampa (in corso) e addendum «incubatrice»
+
+- Richiesta di Claudio: versione stampa in francese, con prima pagina per il numero dell'esemplare
+  (n° ___ / 100), la sua firma e la firma di Raffaello. Tradotti i capitoli 0-6 (circa un quarto),
+  pagina delle firme inclusa; colophon francese con «tirage de cent exemplaires numérotés et
+  signés» (scelta mia, da confermare). Archivio parziale su Drive con note e glossario per riprendere
+  dal capitolo 7. Mancano: capitoli 7-27, epilogo, appendici, figure in francese, impaginazione.
+- Claudio ha chiesto di chiudere e non sprecare risorse: lavoro fermato e salvato.
+- Addendum «L'incubatrice trasformativa» (soglia generativa) salvato su Drive come documento
+  separato; il PDF «Corso delle soglie e coscienza 0-100» caricato in chat non è stato letto.
+- Solo puntatori nel repository.
+
 ## 14/11/2026 — «Il Libro Improbabile»: stampare 100 copie di grande qualità
 
 Richiesta di Claudio: trovare il modo di stampare 100 copie di grande qualità.
