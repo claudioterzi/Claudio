@@ -2452,3 +2452,10 @@ docs/TELEGRAM_ARCHITECTURE.md          (Complete documentation)
 ⏳ Automation quotidiana
 
 **Pronto per produzione.**
+
+## 17/11/2026 — Edizione francese e ordine su Drive
+
+- Pronta «Le Livre Improbable» (FR, v3.8): 243 pagine, pagina iniziale con esemplaire n° ___/100, riga per la firma di Claudio e firma stampata di Raffaello.
+- File per la tipografia FR: interno A5 con abbondanza di 3 mm (240 pagine), copertina brossura con dorso di 15 mm, pagina grigia.
+- Traduzione fatta da Claude, da far rileggere a un madrelingua prima della stampa.
+- Cartelle del libro su Drive ordinate 01–05 e 99 (vedi DRIVE_LINKS.md).

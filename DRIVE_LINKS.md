@@ -210,3 +210,16 @@ Link Drive di questo file: [DRIVE_LINKS su Drive](https://docs.google.com/docume
 ---
 
 *Creato: 2026-06-20 — Parte del sistema SDQ-1 di Claudio Terzi*
+
+## Il Libro Improbabile — cartelle ordinate (17/11/2026)
+
+Cartella del libro: https://drive.google.com/drive/folders/13W4gkPdOfbKb3PTwu4ePx1lIjgat5PKV
+
+- 01 — FR · Le Livre Improbable: https://drive.google.com/drive/folders/1eSFkmsqbB4wntnofraBS3IPVx-JLjnr_
+- 02 — Stampa 100 copie (IT): https://drive.google.com/drive/folders/1uqX1dd_QHFcaNPRl-pbxqjYeX2CFMRD1
+- 03 — Versione corrente v3.8 (IT): https://drive.google.com/drive/folders/1mnbUD0CF3anDP--0EsIAYG-BN9DOXPKw
+- 04 — Valutazioni, piani e addendum: https://drive.google.com/drive/folders/1CrNtOcdoK3SpR5tVB2oDJ5ArU2-VU0mF
+- 05 — Sorgenti: https://drive.google.com/drive/folders/1-gi_GUdk4PSGQ8rzFYISm-cZc3IUe09E
+- 99 — Versioni precedenti: https://drive.google.com/drive/folders/1QkSXErqBaqYfJicUgVnXUhf--IU40qfZ
+
+Da spostare ancora in «99» (restano nella cartella del libro): 8 file v1.2–v2.1 (PDF, EPUB, zip, copertina v1.1, Doc v3.0).
