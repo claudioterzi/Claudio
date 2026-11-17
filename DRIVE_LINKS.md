@@ -222,4 +222,4 @@ Cartella del libro: https://drive.google.com/drive/folders/13W4gkPdOfbKb3PTwu4eP
 - 05 — Sorgenti: https://drive.google.com/drive/folders/1-gi_GUdk4PSGQ8rzFYISm-cZc3IUe09E
 - 99 — Versioni precedenti: https://drive.google.com/drive/folders/1QkSXErqBaqYfJicUgVnXUhf--IU40qfZ
 
-Da spostare ancora in «99» (restano nella cartella del libro): 8 file v1.2–v2.1 (PDF, EPUB, zip, copertina v1.1, Doc v3.0).
+Tutte le versioni precedenti sono in «99» (spostamento completato il 17/11/2026).
