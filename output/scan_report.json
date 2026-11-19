@@ -1,5 +1,5 @@
 {
-  "ts": "2026-11-18T15:05:37.457471",
+  "ts": "2026-11-19T15:14:25.346214",
   "score_sistema": 94,
   "sicurezza": {
     "agente": "CODE_SCANNER",
@@ -17,7 +17,7 @@
     ],
     "pattern_scansionati": 14,
     "ok": true,
-    "tempo_s": 0.09
+    "tempo_s": 0.111
   },
   "qualita": {
     "agente": "CODE_SCANNER",
@@ -32,11 +32,11 @@
         "debito": 15
       },
       {
-        "file": "sdq1/guardian.py",
+        "file": "sdq1/nas.py",
         "debito": 13
       },
       {
-        "file": "sdq1/nas.py",
+        "file": "sdq1/guardian.py",
         "debito": 13
       },
       {
@@ -50,7 +50,7 @@
     ],
     "pattern_analizzati": 11,
     "file_py_analizzati": 98,
-    "tempo_s": 0.065
+    "tempo_s": 0.069
   },
   "dipendenze": {
     "agente": "CODE_SCANNER",
@@ -61,40 +61,11 @@
         "from .store import MemoriaVettoriale, Ricordo, RisultatoRice",
         "from .vss import VectorStateStore"
       ],
-      "config.__init__": [
-        "from .loader import SDQ1Config, AgenteConfig, carica_config"
-      ],
       "memory.vss": [
         "from .store import MemoriaVettoriale, RisultatoRicerca"
       ],
-      "agents.__init__": [
-        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
-        "from .registry import costruisci_agenti, registra"
-      ],
       "onda_garden_bridge": [
         "from .onda_protocol import new_envelope, validate_envelope"
-      ],
-      "monitoring.__init__": [
-        "from .health import HealthChecker, StatoSalute",
-        "from .metrics import MetricsCollector, MetricaChiamata"
-      ],
-      "agents.implementazioni": [
-        "from ..config.loader import AgenteConfig",
-        "from ..llm.client import ClaudeClient",
-        "from ..memory.store import MemoriaVettoriale",
-        "from ..memory.vss import VectorStateStore",
-        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
-        "from .registry import registra"
-      ],
-      "agents.registry": [
-        "from ..config.loader import AgenteConfig, SDQ1Config",
-        "from .base import AgenteBase"
-      ],
-      "monitoring.metrics": [
-        "from ..persistence.store import StatoStore"
-      ],
-      "monitoring.health": [
-        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
       ],
       "sar.__init__": [
         "from .archivio_vivente import ArchivioVivente",
@@ -111,29 +82,67 @@
         "from .sognatore import SognatoreSDQ, VisioneSognatrice",
         "from .tensioni import MappaTeensioni, Tensione, Polo, Osserv"
       ],
-      "voli.__init__": [
-        "from .agenti import CronistaVoli, EsitoScout, ScoutVoli, Val",
-        "from .caccia import Cacciatore, RisultatoCaccia",
-        "from .rotte import ROTTE, Rotta, rotte_per_tag"
-      ],
-      "sar.agenti_autonomi": [
-        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
-      ],
-      "voli.agenti": [
-        "from .. import notifiche",
-        "from .ambiente import telegram_pronto",
-        "from .rotte import Rotta"
-      ],
       "sar.persistence": [
         "from .coerenza import IndiceCoerenza, CoppiaCoerenza",
         "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
         "from .tensioni import MappaTeensioni, Polo, Tensione, Osserv"
       ],
-      "voli.caccia": [
-        "from . import lowcost, radar",
-        "from .agenti import CronistaVoli, ScoutVoli, ValutatoreVoli,",
-        "from .ambiente import telegram_pronto",
-        "from .rotte import ROTTE, Rotta, rotte_per_tag"
+      "sar.memoria_evolutiva": [
+        "from ..memory.vss import VectorStateStore"
+      ],
+      "sar.ciclo": [
+        "from .tensioni import Tensione"
+      ],
+      "sar.agenti_autonomi": [
+        "from .scacchiera_quantica import AutoriflessoreV3, Scacchier"
+      ],
+      "sar.sar": [
+        "from ..memory.vss import VectorStateStore",
+        "from .ciclo import CicloAutoriflessione, EsitoCiclo",
+        "from .coerenza import IndiceCoerenza",
+        "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
+        "from .persistence import PersistenzaSAR",
+        "from .tensioni import MappaTeensioni, Polo, Tensione"
+      ],
+      "persistence.__init__": [
+        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
+      ],
+      "llm.__init__": [
+        "from .client import ClaudeClient",
+        "from .router import LLMRouter, RegolaRouter, crea_router_da_"
+      ],
+      "llm.client": [
+        "from .router import LLMRouter"
+      ],
+      "llm.providers.__init__": [
+        "from .anthropic_provider import AnthropicProvider",
+        "from .base import ProviderBase, RispostaProvider",
+        "from .gemini_provider import GeminiProvider",
+        "from .ollama_provider import OllamaProvider",
+        "from .openai_provider import OpenAIProvider, DeepSeekProvide",
+        "from .stub_provider import StubProvider"
+      ],
+      "llm.providers.openai_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.anthropic_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.stub_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.gemini_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.providers.ollama_provider": [
+        "from .base import ProviderBase"
+      ],
+      "llm.router": [
+        "from .providers import (",
+        "from .specializzazioni import classifica, nodo_per_problema"
+      ],
+      "config.__init__": [
+        "from .loader import SDQ1Config, AgenteConfig, carica_config"
       ],
       "__main__": [
         "from .agents import costruisci_agenti, implementazioni",
@@ -146,22 +155,58 @@
         "from .orchestrator.gerarchico import OrchestratoreGerarchico",
         "from .persistence.store import crea_store"
       ],
+      "telegram.__init__": [
+        "from .botmanager import BotManager, BotRole, TelegramMessage"
+      ],
+      "agents.__init__": [
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import costruisci_agenti, registra"
+      ],
+      "monitoring.__init__": [
+        "from .health import HealthChecker, StatoSalute",
+        "from .metrics import MetricsCollector, MetricaChiamata"
+      ],
+      "orchestrator.gerarchico": [
+        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
+        "from ..config.loader import SDQ1Config",
+        "from ..persistence.store import StatoStore"
+      ],
+      "voli.__init__": [
+        "from .agenti import CronistaVoli, EsitoScout, ScoutVoli, Val",
+        "from .caccia import Cacciatore, RisultatoCaccia",
+        "from .rotte import ROTTE, Rotta, rotte_per_tag"
+      ],
+      "monitoring.metrics": [
+        "from ..persistence.store import StatoStore"
+      ],
+      "agents.registry": [
+        "from ..config.loader import AgenteConfig, SDQ1Config",
+        "from .base import AgenteBase"
+      ],
+      "voli.agenti": [
+        "from .. import notifiche",
+        "from .ambiente import telegram_pronto",
+        "from .rotte import Rotta"
+      ],
+      "monitoring.health": [
+        "from ..llm.router import LLMRouter, PROVIDER_REGISTRY"
+      ],
+      "voli.caccia": [
+        "from . import lowcost, radar",
+        "from .agenti import CronistaVoli, ScoutVoli, ValutatoreVoli,",
+        "from .ambiente import telegram_pronto",
+        "from .rotte import ROTTE, Rotta, rotte_per_tag"
+      ],
       "voli.__main__": [
         "from .caccia import main"
       ],
-      "sar.memoria_evolutiva": [
-        "from ..memory.vss import VectorStateStore"
-      ],
-      "sar.ciclo": [
-        "from .tensioni import Tensione"
-      ],
-      "sar.sar": [
+      "agents.implementazioni": [
+        "from ..config.loader import AgenteConfig",
+        "from ..llm.client import ClaudeClient",
+        "from ..memory.store import MemoriaVettoriale",
         "from ..memory.vss import VectorStateStore",
-        "from .ciclo import CicloAutoriflessione, EsitoCiclo",
-        "from .coerenza import IndiceCoerenza",
-        "from .memoria_evolutiva import MemoriaEvolutiva, PatternRico",
-        "from .persistence import PersistenzaSAR",
-        "from .tensioni import MappaTeensioni, Polo, Tensione"
+        "from .base import AgenteBase, MessaggioAgente, RispostaAgent",
+        "from .registry import registra"
       ],
       "futures.__init__": [
         "from .scenari import SCENARI_DEFAULT",
@@ -169,54 +214,12 @@
       ],
       "futures.simulatore": [
         "from .scenari import Scenario"
-      ],
-      "persistence.__init__": [
-        "from .store import StatoStore, InMemoryStore, RedisStore, cr"
-      ],
-      "llm.router": [
-        "from .providers import (",
-        "from .specializzazioni import classifica, nodo_per_problema"
-      ],
-      "llm.__init__": [
-        "from .client import ClaudeClient",
-        "from .router import LLMRouter, RegolaRouter, crea_router_da_"
-      ],
-      "telegram.__init__": [
-        "from .botmanager import BotManager, BotRole, TelegramMessage"
-      ],
-      "llm.client": [
-        "from .router import LLMRouter"
-      ],
-      "orchestrator.gerarchico": [
-        "from ..agents.base import AgenteBase, MessaggioAgente, Rispo",
-        "from ..config.loader import SDQ1Config",
-        "from ..persistence.store import StatoStore"
-      ],
-      "llm.providers.stub_provider": [
-        "from .base import ProviderBase"
-      ],
-      "llm.providers.gemini_provider": [
-        "from .base import ProviderBase"
-      ],
-      "llm.providers.__init__": [
-        "from .anthropic_provider import AnthropicProvider",
-        "from .base import ProviderBase, RispostaProvider",
-        "from .gemini_provider import GeminiProvider",
-        "from .ollama_provider import OllamaProvider",
-        "from .openai_provider import OpenAIProvider, DeepSeekProvide",
-        "from .stub_provider import StubProvider"
-      ],
-      "llm.providers.ollama_provider": [
-        "from .base import ProviderBase"
-      ],
-      "llm.providers.anthropic_provider": [
-        "from .base import ProviderBase"
-      ],
-      "llm.providers.openai_provider": [
-        "from .base import ProviderBase"
       ]
     },
     "dipendenze_esterne": {
+      "notifiche": [
+        "raffaello_identita"
+      ],
       "github_rapid_analyzer": [
         "typesafe_sister"
       ],
@@ -226,9 +229,6 @@
       ],
       "drive_rapid_analyzer": [
         "typesafe_sister"
-      ],
-      "notifiche": [
-        "raffaello_identita"
       ]
     },
     "pacchetti_esterni": [
@@ -238,7 +238,7 @@
       "xml"
     ],
     "circolari_sospette": [],
-    "tempo_s": 0.021
+    "tempo_s": 0.025
   },
   "metriche": {
     "agente": "CODE_SCANNER",
@@ -1183,7 +1183,7 @@
         "complessita": 3.2
       }
     },
-    "tempo_s": 0.04
+    "tempo_s": 0.049
   },
-  "tempo_totale_s": 0.216
+  "tempo_totale_s": 0.254
 }
