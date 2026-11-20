@@ -9,6 +9,7 @@ Ogni brief espone i motivi della scelta e i dossier precedenti. [Criteri e limit
 
 ## Brief generati
 
+- [20 November 2026 — Protocollo Scudo — Tasking Satellite Personale](./2026-11-20.md) *(Desiderio #2)*
 - [19 November 2026 — Protocollo Scudo — Tasking Satellite Personale](./2026-11-19.md) *(Desiderio #2)*
 - [18 November 2026 — Protocollo Scudo — Tasking Satellite Personale](./2026-11-18.md) *(Desiderio #2)*
 - [17 November 2026 — Protocollo Scudo — Tasking Satellite Personale](./2026-11-17.md) *(Desiderio #2)*
