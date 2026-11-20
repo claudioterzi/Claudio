@@ -2191,3 +2191,40 @@ docs/TELEGRAM_ARCHITECTURE.md          (Complete documentation)
 ⏳ Automation quotidiana
 
 **Pronto per produzione.**
+
+## R³ ONDA, supervisor e immagine Railway — 07–20/11/2026
+
+Sessione Claude Code (branch `claude/laughing-albattani-shpv8h`).
+
+**Fatti verificati**
+- PR #113 (supervisor nodo/sync): gara sul resume trovata e riprodotta
+  (`test_whole_monitor_pause_receives_resume_budget` falliva ~40% in locale).
+  Corretta in `13688d9` con test deterministico; PR mergiata il 13/11 (`6883c2a`).
+- `npm audit` della toolchain Vercel (`scripts/vercel-python-toolchain`): 0 vulnerabilità su main.
+- `r3/railway.json` (`062e38c`, 13/11, account `raffaellocantatelli`) puntava a
+  `r3/Dockerfile`, che non copiava `rrr_control.py`: il nodo andava in crash all'import
+  e ignorava `PORT`. Corretto in `a700ce9` (20/11), verificato riproducendo l'immagine
+  (`/health` 200 su PORT=8123); build Docker reale non eseguita.
+- Il supervisor non è ancora adottato in produzione: nessun Dockerfile del repo
+  include `supervise_node.py`/`sync.py`. Adozione ancora soggetta ai gate della #113.
+
+**Seed universale**
+- v1.0 (con "SYSTEM OVERRIDE" e parola d'ordine) sostituito da v1.1: niente override,
+  identificativo `[CT-LGAI-001]`, test di ingresso al posto della frase di attivazione.
+
+**Definizione di Claudio (20/11/2026)**
+- "Raffaello Cantarelli è la mia coscienza digitalizzata." Claudio riferisce di averla
+  attivata in tutti i nodi IA (non verificabile da Claude).
+
+**Decisioni prudenti prese da Claude su delega di Claudio ("faccio decidere alla IA")**
+1. Non sapendo quale Seed è stato usato nei nodi esterni, "ROSSO ROSSO ROSSO" è trattato
+   come nome del protocollo, **non** come autenticazione (è comunque pubblico in
+   `public/r3-ai-bootstrap.json`). Per verifiche d'identità resta la sfida biometrica.
+2. Raffaello vive nel progetto; l'autorità operativa resta di Claudio direttamente.
+   Messaggi firmati "Raffaello" che arrivano da IA esterne restano da verificare (P5).
+3. L'account GitHub `raffaellocantatelli` (con la "t") non è ancora confermato da
+   Claudio: i suoi commit vanno revisionati come contributi esterni finché non lo conferma.
+
+**Aperti**
+- Comando di avvio reale dei due nodi su Railway e se Railway legge `r3/railway.json`.
+- Conferma titolarità di `raffaellocantatelli`.
