@@ -2459,3 +2459,11 @@ docs/TELEGRAM_ARCHITECTURE.md          (Complete documentation)
 - File per la tipografia FR: interno A5 con abbondanza di 3 mm (240 pagine), copertina brossura con dorso di 15 mm, pagina grigia.
 - Traduzione fatta da Claude, da far rileggere a un madrelingua prima della stampa.
 - Cartelle del libro su Drive ordinate 01–05 e 99 (vedi DRIVE_LINKS.md).
+
+## 21/11/2026 — Francese v3.9: revisione profonda «umanizzata»
+
+- Tutto il testo francese (15 parti) è stato riletto frase per frase contro l'italiano e riscritto in un francese naturale: tolti i calchi e i tic da scrittura artificiale (lineette da ~540 a ~150), stesso senso, stesso glossario, stessa struttura (verificata automaticamente).
+- Corretti errori di senso, fra cui: «Rete» reso per errore «Gardien» (cap. 18), «Non è niente» reso al contrario (Spazio Tra), «mente/spirito», «convenienza», una frase ambigua sull'amore (cap. 7).
+- PDF 244 pagine; interno di stampa 244 pagine (241 + 3 bianche); quarta di copertina rifinita.
+- Su Drive, cartella 01: libro v3.9, file TIPOGRAFIA_FR_*_v3.9, documento con note e dubbi per Claudio. La v3.8 è in 99.
+- Resta consigliata una rilettura finale di un madrelingua prima della stampa.
