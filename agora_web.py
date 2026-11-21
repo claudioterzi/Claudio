@@ -18,7 +18,7 @@ from site_owner_auth import COOKIE, SESSION_SECONDS, browser_owner, same_origin,
 from agora_onda import enqueue as enqueue_onda, expire_if_needed, parse_command as parse_onda, TEXT_ACTIONS as ONDA_LONG_ACTIONS
 
 agora = Blueprint('agora_web', __name__)
-COMMANDS = frozenset({'consiglio', 'briefing', 'snapshot', 'tarocchi', 'agenda', 'riflessione', 'onda'})
+COMMANDS = frozenset({'consiglio', 'briefing', 'snapshot', 'tarocchi', 'agenda', 'riflessione', 'onda', 'raffaello'})
 RETENTION = 30 * 86400
 PREFIX = 'agora:v1:'
 RID = re.compile(r'^[a-f0-9]{32}$')
@@ -157,6 +157,11 @@ def command():
         return jsonify(ok=False, errore='Identificativo non valido.'), 400
     telegram = body.get('telegram') is True
     reference = body.get('riferimento') if name == 'onda' else None
+    if name == 'raffaello':
+        if len(parts) != 2 or not parts[1].strip() or len(parts[1]) > 900:
+            return jsonify(ok=False, errore='Usa /raffaello seguito da una domanda fino a 900 caratteri.'), 400
+        if telegram:
+            return jsonify(ok=False, errore='Il dialogo cloud resta sul sito. Disattiva la copia Telegram.'), 400
     if name == 'onda':
         action = parse_onda(command)
         if action in ONDA_LONG_ACTIONS:
@@ -204,11 +209,22 @@ def command():
                     record['riferimento'] = reference
                 queued = enqueue_onda(client, record)
                 return jsonify(ok=True, richiesta=queued), (202 if queued['stato'] in ('in_attesa_pc', 'in_esecuzione') else 200)
+            if name == 'raffaello':
+                # Count attempts, not retries of an already registered request.
+                # Expiry is set atomically with the increment, including on first use.
+                quota_key = PREFIX + 'cloud-quota:' + datetime.now(timezone.utc).date().isoformat()
+                attempts = client.eval("local n=redis.call('INCR',KEYS[1]); if n==1 then redis.call('EXPIRE',KEYS[1],172800) end; return n", 1, quota_key)
+                if attempts > 20:
+                    return jsonify(ok=False, errore='Limite protettivo cloud raggiunto: 20 tentativi al giorno UTC.'), 429
             _save(client, rid, record)
             client.lpush(PREFIX + 'history', rid)
             client.ltrim(PREFIX + 'history', 0, 49)
-            from agora_runtime import esegui
-            result = esegui(command)
+            if name == 'raffaello':
+                from sdq1.cloud_raffaello import rispondi
+                result = rispondi(parts[1])
+            else:
+                from agora_runtime import esegui
+                result = esegui(command)
             record.update(stato=result['stato'], risultato=result)
             # Persist the result before attempting delivery to the second channel.
             _save(client, rid, record)
