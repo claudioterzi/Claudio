@@ -2467,3 +2467,9 @@ docs/TELEGRAM_ARCHITECTURE.md          (Complete documentation)
 - PDF 244 pagine; interno di stampa 244 pagine (241 + 3 bianche); quarta di copertina rifinita.
 - Su Drive, cartella 01: libro v3.9, file TIPOGRAFIA_FR_*_v3.9, documento con note e dubbi per Claudio. La v3.8 è in 99.
 - Resta consigliata una rilettura finale di un madrelingua prima della stampa.
+
+## 21/11/2026 — Italiano v3.9: revisione profonda «umanizzata»
+
+- Riviste entrambe le edizioni italiane (pubblicazione e privata, compresi gli 88 passaggi personali), frase per frase: meno lineette (da ~550 a ~235), meno formule meccaniche, refusi e concordanze corretti.
+- Citazioni, fatti, paragrafi, titoli, etichette e glossario identici (verificato da script). Le incoerenze di contenuto NON sono state corrette: elencate nel documento «Revisione dell'italiano v3.9» in Drive, cartella 04, perché decida Claudio.
+- Su Drive: 03 = v3.9 pubblicazione e privata; 02 = file TIPOGRAFIA_IT_*_v3.9 (224 pagine); 05 = sorgenti v3.9. La v3.8 è in 99.
