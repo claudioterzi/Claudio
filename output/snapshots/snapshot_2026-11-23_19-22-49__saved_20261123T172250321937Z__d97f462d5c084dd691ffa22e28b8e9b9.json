@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "timestamp": 1795454569.5956101,
+    "data_ora": "2026-11-23 19:22:49",
+    "tz": "Europe/Brussels",
+    "versione": "1.1.0",
+    "snapshot_id": "d97f462d5c084dd691ffa22e28b8e9b9",
+    "saved_at_utc": "2026-11-23T17:22:50.321937+00:00",
+    "snapshot_storage_version": 2
+  },
+  "git": {
+    "branch": "main",
+    "commit": "3830a7fdcf94c349ce1de10e3a1aa2b177be9496",
+    "commit_short": "3830a7f",
+    "messaggio": "morning brief 2026-11-23 [skip ci]",
+    "autore": "github-actions[bot]",
+    "data_commit": "2026-11-23 09:37:40 +0100",
+    "dirty": true,
+    "file_modificati": [
+      "M output/scan_report.json"
+    ]
+  },
+  "codice": {
+    "file": {
+      "MEMORIA_PROGETTO.md": "c578bc51c5988f72",
+      "CLAUDE.md": "65a4529ec9c4cdf6",
+      "sdq1/__main__.py": "70a8a409173ff5ca",
+      "sdq1/argo.py": "a0450d8adf28641a",
+      "sdq1/backup.py": "197c6075113823be",
+      "sdq1/snapshot.py": "cca54fb720b0e001",
+      "sdq1/sar/scacchiera_quantica.py": "a326c0669a90877e",
+      "sdq1/sar/agenti_autonomi.py": "ad03c13dab26d2e3",
+      "sdq1/llm/router.py": "9f1ad7d5ecf62ef3",
+      "sdq1/orchestrator/gerarchico.py": "c707649fdd5df546",
+      "output/stato_sdq1.json": "8c7ee3c66fb35e6f",
+      "output/agenti_stato.json": "82758f54210b6d5b"
+    },
+    "file_presenti": 12,
+    "file_mancanti": [],
+    "integro": true
+  },
+  "agenti": {
+    "ok": true,
+    "ts": "2026-11-23T17:22:49.842603",
+    "hash_sistema": "6256f46bd10f3819",
+    "guardian_allerta": "VERDE",
+    "scacchiera_score": 8.45,
+    "scacchiera_dir": "META"
+  },
+  "scanner": {
+    "agente": "CODE_SCANNER",
+    "score_sistema": 94,
+    "sicurezza_ok": true,
+    "sicurezza_livello": "VERDE",
+    "qualita_score": 84,
+    "debito_per_1k": 8.1,
+    "file_totali": 98,
+    "righe_totali": 18484,
+    "problemi_critici": 0,
+    "trovati_sicurezza": 0
+  },
+  "output": {
+    "output/stato_sdq1.json": {
+      "dimensione_kb": 1.7,
+      "n_chiavi": 5
+    },
+    "output/agenti_stato.json": {
+      "dimensione_kb": 6.4,
+      "n_chiavi": 4
+    }
+  }
+}

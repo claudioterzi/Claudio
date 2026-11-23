@@ -1,0 +1,10 @@
+R3_DAILY_V1
+date_utc=2026-11-23
+generated_at_utc=2026-11-23T17:22:51Z
+workflow=sdq1_daily
+run_id=45226919684
+commit=3830a7fdcf94c349ce1de10e3a1aa2b177be9496
+job_status=success
+telegram_available=false
+briefing_outcome=skipped
+note=heartbeat records execution; it does not certify multi-node sync or external impact
