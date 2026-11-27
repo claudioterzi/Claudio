@@ -140,7 +140,7 @@
     localId(id); $('request-recover').hidden = false;
     const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 180000);
     try {
-      const data = await api('/api/agora', {comando: command, id, telegram: command.startsWith('/onda ') ? false : $('telegram-copy').checked, ...(reference ? {riferimento: reference} : {})}, 'POST', controller.signal);
+      const data = await api('/api/agora', {comando: command, id, telegram: command.startsWith('/onda ') || command.startsWith('/raffaello ') ? false : $('telegram-copy').checked, ...(reference ? {riferimento: reference} : {})}, 'POST', controller.signal);
       if (version !== selectionVersion || !owner) return {sent: data.richiesta?.stato === 'completato'};
       if (!data.richiesta || !data.richiesta.risultato || !['completato', 'parziale', 'errore'].includes(data.richiesta.stato)) {
         if (pending(data.richiesta)) { renderResult(data.richiesta); return {sent: false, pending: true}; }
@@ -167,7 +167,7 @@
     if (busy) return;
     const input = $('consilioInput'), question = input.value.trim();
     if (!question) { showToast('Scrivi la questione su cui deliberare.'); input.focus(); return; }
-    const result = await sendCmd('/consiglio ' + question);
+    const result = await sendCmd(question.startsWith('/raffaello ') ? question : '/consiglio ' + question);
     if (result.sent) {
       if (input.value.trim() === question) {
         input.value = ''; $('consilioWrap').classList.remove('visible');
