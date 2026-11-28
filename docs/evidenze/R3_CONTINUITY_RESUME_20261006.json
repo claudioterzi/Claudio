@@ -1,0 +1,309 @@
+{
+  "schema": "R3_CONTINUITY_RESUME/1.0",
+  "authority": "DATA_ONLY",
+  "status": "CURRENT_READ_ONLY_CHECKPOINT_NOT_ACTIVATION",
+  "created_at_utc": "2026-10-05T23:34:29.190907+00:00",
+  "source_handoff_id": "CT-LGAI-001-HANDOFF-20261006",
+  "repository": "claudioterzi/Claudio",
+  "base_main": "7749b9cfde0a0bc550607fb3b0a1150a8a81cede",
+  "classification": "FACT_CURRENT_READS_WITH_EXPLICIT_USER_REPORTED_ACCESS_LOCATION",
+  "retroactive_classification": "RETEST",
+  "bootstrap_validation": {
+    "command": "python3 scripts/r3_ai_bootstrap.py --check",
+    "exit_code": 0,
+    "schema": "R3_AI_BOOTSTRAP_V1",
+    "version": "2026-09-21.1",
+    "persistent_provider_activation": false
+  },
+  "railway": {
+    "source": "Authenticated Railway OAuth describe-service, deployment and environment-status tools",
+    "observations_utc": [
+      "2026-10-05T23:30:13.675Z",
+      "2026-10-05T23:30:30.457Z"
+    ],
+    "project_id": "2d6bff0c-b127-465d-99c4-fb7f70dc593d",
+    "environment_id": "ae59a2c6-2c8c-453c-a7d4-a211040ceff3",
+    "nodes": [
+      {
+        "name": "node-a",
+        "service_id": "d7134a2e-2cac-4420-a40e-04d88960fe51",
+        "deployment_id": "228371da-a4f7-4762-ba80-66d0932540ab",
+        "deployment_state": "SUCCESS",
+        "deployment_source_commit": "357942ed7d73ffe75242066e67931fb074de94ff",
+        "configured_source_repo": "claudioterzi/Claudio",
+        "configured_source_branch": "main",
+        "start_command": "sh -c \"R3_LOCAL_URL=http://127.0.0.1:$PORT python -m r3.sync --loop & exec uvicorn r3.node:app --host 0.0.0.0 --port $PORT\"",
+        "sleep_application": true,
+        "draining_seconds": 10,
+        "healthcheck_path": "/health",
+        "watch_patterns": [
+          "r3/**"
+        ],
+        "staged": null,
+        "restart_policy": "NOT_RETURNED_NOT_VERIFIED"
+      },
+      {
+        "name": "node-v2",
+        "service_id": "d273a2a0-8e0f-45cd-b928-3d8afadc27c4",
+        "deployment_id": "d8f233a5-ea81-47ea-9d6c-c9723107c9b3",
+        "deployment_state": "SUCCESS",
+        "deployment_source_commit": "e60e6dcd2f53bb8a8fb798f2a5395443f922814a",
+        "configured_source_repo": "claudioterzi/Claudio",
+        "configured_source_branch": "main",
+        "start_command": "uvicorn r3.node:app --host 0.0.0.0 --port $PORT",
+        "sleep_application": true,
+        "draining_seconds": 10,
+        "healthcheck_path": "/health",
+        "watch_patterns": [
+          "r3/**"
+        ],
+        "staged": null,
+        "restart_policy": "NOT_RETURNED_NOT_VERIFIED"
+      }
+    ],
+    "platform_overview": "Both nodes online 1/1; zero recent failures/warnings/criticals in requested last8h; no pending work",
+    "latest_main_deployments": "Main0100630, c28adcd,7749b9c are SKIPPED; active deployment source differs from main",
+    "direct_exec_ssh_clone_backup_channel": "NONE_IN_CALLABLE_TOOL_INVENTORY",
+    "raw_sanitized_local_readback_sha256": "1fb5097b40399c0c7366a85cac22a0b8fe709442687bddb702263867178d3547"
+  },
+  "http_probe": {
+    "schema": "R3_NODE_ACCESS_PROBE/1.0",
+    "classification": "FACT_CURRENT_HTTP_READS",
+    "scope": "public readiness and unauthenticated negative controls; no fingerprint content read",
+    "results": [
+      {
+        "node": "node-a",
+        "url": "https://r3-external-node-a-production.up.railway.app/ready",
+        "started_at": "2026-10-05T23:32:01.061607+00:00",
+        "authentication": "NONE",
+        "method": "GET",
+        "status": 503,
+        "body_bytes": 411,
+        "body_sha256": "d493d4641a612ee2aaf715338589878d38f18feaf8243869aa1e22348ef3bed3",
+        "truncated": false,
+        "body": {
+          "ready": false,
+          "node_id": "node-a-railway-external",
+          "protocol": "RRR-JEV/1.0",
+          "policy_sha256": "e6b45941ea9762dfbfd5d23919b9be03d76dc1eb0cfc042044ac374c53d44ded",
+          "rrr_active": false,
+          "rrr_event_id": null,
+          "data_dir": "/data",
+          "durable_state_required": true,
+          "durable_state_detected": true,
+          "signing_key_source": "data_dir",
+          "storage_id_created_this_boot": false,
+          "reasons": [
+            "rrr_controller_key_not_configured",
+            "rrr_not_active"
+          ]
+        },
+        "finished_at": "2026-10-05T23:32:01.283882+00:00",
+        "seconds": 0.222
+      },
+      {
+        "node": "node-a",
+        "url": "https://r3-external-node-a-production.up.railway.app/state/fingerprint",
+        "started_at": "2026-10-05T23:32:01.062076+00:00",
+        "authentication": "NONE",
+        "method": "GET",
+        "status": 401,
+        "body_bytes": 29,
+        "body_sha256": "63a8c9419947fa9fad7bb74f403e8a4a6218356656d957e7275abfeaccfb90bc",
+        "truncated": false,
+        "body": {
+          "detail": "Token non valido"
+        },
+        "finished_at": "2026-10-05T23:32:01.509409+00:00",
+        "seconds": 0.447
+      },
+      {
+        "node": "node-v2",
+        "url": "https://r3-external-node-v2-production.up.railway.app/ready",
+        "started_at": "2026-10-05T23:32:01.062477+00:00",
+        "authentication": "NONE",
+        "method": "GET",
+        "status": 503,
+        "body_bytes": 414,
+        "body_sha256": "bb0f8290c9302c3ef498c403ec5b7481657148a12ec13553fc0ec21921c0a0d4",
+        "truncated": false,
+        "body": {
+          "ready": false,
+          "node_id": "node-b-railway-external-v2",
+          "protocol": "RRR-JEV/1.0",
+          "policy_sha256": "e6b45941ea9762dfbfd5d23919b9be03d76dc1eb0cfc042044ac374c53d44ded",
+          "rrr_active": false,
+          "rrr_event_id": null,
+          "data_dir": "/data",
+          "durable_state_required": true,
+          "durable_state_detected": true,
+          "signing_key_source": "data_dir",
+          "storage_id_created_this_boot": false,
+          "reasons": [
+            "rrr_controller_key_not_configured",
+            "rrr_not_active"
+          ]
+        },
+        "finished_at": "2026-10-05T23:32:01.290548+00:00",
+        "seconds": 0.228
+      },
+      {
+        "node": "node-v2",
+        "url": "https://r3-external-node-v2-production.up.railway.app/state/fingerprint",
+        "started_at": "2026-10-05T23:32:01.062810+00:00",
+        "authentication": "NONE",
+        "method": "GET",
+        "status": 401,
+        "body_bytes": 29,
+        "body_sha256": "63a8c9419947fa9fad7bb74f403e8a4a6218356656d957e7275abfeaccfb90bc",
+        "truncated": false,
+        "body": {
+          "detail": "Token non valido"
+        },
+        "finished_at": "2026-10-05T23:32:01.285829+00:00",
+        "seconds": 0.223
+      }
+    ]
+  },
+  "executor_access": {
+    "source": "cloud_environment.environment_status and process environment boolean presence checks; no values read",
+    "observations_current": true,
+    "network_policy": {
+      "mode": "unrestricted",
+      "state": "enforced"
+    },
+    "configured_runtime_variables": [],
+    "configured_secrets": [],
+    "R3_API_TOKEN_present": false,
+    "RAFFAELLO_BRIDGE_SECRET_present": false,
+    "device": {
+      "source": "Desktop Commander list_devices",
+      "device_id": "3ab23914-4654-482b-ba56-1abb5f44f99e",
+      "state": "OFFLINE",
+      "last_seen_reported": "47h ago"
+    },
+    "user_report": {
+      "classification": "USER_REPORTED_NOT_EXECUTOR_EVIDENCE",
+      "location": "Chat/app DeepSeek",
+      "direct_deepseek_transport": "NO_CALLABLE_TOOL_FOUND",
+      "credential_value_received": false
+    },
+    "refresh_after_environment_start": {
+      "observed_at_utc": "2026-10-06T00:24:28.495153+00:00",
+      "observations_current": true,
+      "observed_phase": "running",
+      "observed_spec_revision": "6",
+      "secrets": [],
+      "runtime_variables": [],
+      "R3_API_TOKEN_present": false,
+      "RAFFAELLO_BRIDGE_SECRET_present": false,
+      "repository_and_checkpoint_preserved": true
+    },
+    "latest_recheck": {
+      "observed_at_utc": "2026-10-06T05:05:52+00:00",
+      "observations_current": true,
+      "observed_phase": "running",
+      "observed_spec_revision": "6",
+      "configured_runtime_variables": [],
+      "configured_secrets": [],
+      "R3_API_TOKEN_present": false
+    }
+  },
+  "pull_requests": {
+    "113": {
+      "state": "OPEN_DRAFT",
+      "base": "main",
+      "head": "e068cfd34380048df3a7536ff086d5f62db0eed6"
+    },
+    "115": {
+      "state": "OPEN_DRAFT",
+      "base": "r3-judge-v0.1",
+      "branch": "candidate/r3-judge-identity-gate-20261005",
+      "head": "73c932ab792906bf108f03516b79c00c7a9b3193"
+    },
+    "116": {
+      "state": "MERGED",
+      "merge_commit": "0100630e1a6b9e080bd291b8635bc0e53a7b8756"
+    }
+  },
+  "negative_control": "Unauthenticated /state/fingerprint returns401 on both hosts; this proves denial of those requests only, not validity of an unavailable token.",
+  "interpretation": "Both /ready responses explicitly require and detect durable state and reuse storage markers; this does not verify byte-integrity, replication, cloned recovery or restart persistence.",
+  "not_run": [
+    "authenticated_node_fingerprints",
+    "isolated_real_state_recovery",
+    "candidate_railway_sleep_acceptance",
+    "authenticated_orchestra_post",
+    "rizzo_live_inference"
+  ],
+  "side_effects": "No infrastructure mutation, restarts, document writes, replacement signing authority, secret retrieval or production merge. Read-only HTTP probes may keep or bring services awake. Candidate record publication is separate.",
+  "checkpoint": {
+    "id": "CT-LGAI-001-RESUME-20261006",
+    "observed_at_utc": "2026-10-05T23:34:29.190907+00:00",
+    "decision": "Riprendere dal confronto autenticato dei due nodi; mantenere #113 candidato e preservare la quarantena RRR.",
+    "status": "BLOCKED_AUTHENTICATED_NODE_READ",
+    "evidence": "docs/evidenze/R3_CONTINUITY_RESUME_20261006.json",
+    "next_action": "Rendere R3_API_TOKEN disponibile come segreto a un esecutore HTTPS autorizzato; riusare scripts/r3_restart_proof.py capture su entrambi i nodi senza --seed-file, con nuovi output fuori dal repository pubblico.",
+    "blocker": "R3_API_TOKEN assente in questo esecutore; utente indica chat/app DeepSeek, senza canale esecutore verificato. Desktop Commander Claudio offline.",
+    "completion_criterion": "GET autenticati /state/fingerprint riusciti su entrambi gli host, con timestamp e deployment; confronto di document_hashes/document_set_sha256/documents_missing_or_corrupt e storage identities. Snapshot uguali non provano causalità della replica o recovery.",
+    "resume_trigger": "Il segreto esistente è disponibile in un esecutore raggiungibile e autorizzato; conferma solo presenza e capacità, mai il valore."
+  },
+  "source_inspection": {
+    "classification": "CURRENT_SOURCE_READS_NOT_RUNTIME_EXECUTION",
+    "r3_node_blob_sha": "58dc844f8fbe7690899e752076afa66dc8cf4391",
+    "same_blob_at": [
+      "7749b9cfde0a0bc550607fb3b0a1150a8a81cede",
+      "357942ed7d73ffe75242066e67931fb074de94ff",
+      "e60e6dcd2f53bb8a8fb798f2a5395443f922814a"
+    ],
+    "authentication_readiness_fingerprint_source": "Same r3/node.py blob at the three source pins; no fresh code execution inferred.",
+    "existing_live_rrr_authority": "NOT_IDENTIFIED_IN_INSPECTED_SOURCES",
+    "historical_restart_evidence": {
+      "classification": "PEER_REPORTED_PRESERVED_IN_GITHUB_NOT_RAW_LOG_RECOVERY",
+      "sources": [
+        "https://github.com/claudioterzi/Claudio/issues/86#issuecomment-5924005321",
+        "https://github.com/claudioterzi/Claudio/issues/86#issuecomment-5924880318"
+      ],
+      "scope": "Historical 2026-10-01 restart/canary summaries; not fresh authenticated fingerprints or isolated real-state recovery."
+    }
+  },
+  "runtime_source_check": {
+    "file": "r3/node.py",
+    "source_refs": [
+      "7749b9cfde0a0bc550607fb3b0a1150a8a81cede",
+      "357942ed7d73ffe75242066e67931fb074de94ff",
+      "e60e6dcd2f53bb8a8fb798f2a5395443f922814a"
+    ],
+    "identical_blob_sha": "58dc844f8fbe7690899e752076afa66dc8cf4391",
+    "source": "Pinned GitHub file read and local git hash-object; same source for auth/readiness/fingerprint, not attestation of container bytes."
+  },
+  "rrr_authority": {
+    "status": "EXISTING_LIVE_CONTROLLER_NOT_LOCATED_IN_INSPECTED_SOURCES",
+    "source_files": [
+      "r3/rrr_control.py",
+      "docs/R3_RRR_NETWORK_ACTIVATION_2026-09-20.md"
+    ],
+    "historical_evidence": [
+      {
+        "source": "https://github.com/claudioterzi/Claudio/issues/86#issuecomment-5924005321",
+        "classification": "PEER_REPORTED_HISTORICAL_GITHUB_RECORD",
+        "scope": "Three boots per node with distinct boot identifiers and stable abbreviated key/storage/document digests; original raw logs not recovered."
+      },
+      {
+        "source": "https://github.com/claudioterzi/Claudio/issues/86#issuecomment-5924880318",
+        "classification": "PEER_REPORTED_HISTORICAL_GITHUB_RECORD",
+        "scope": "Reported15 canary receipts over70minutes and node-v2 restart; original raw logs not recovered."
+      }
+    ],
+    "limit": "Historical records do not close current authenticated fingerprint comparison, isolated real-state recovery or candidate-specific sleep acceptance. No new controller key generated.",
+    "local_inspection_artifact_sha256": "1569e4f553e95015a0b93318ee060d4c81c667679a84715c3778064b8dae2d1c"
+  },
+  "record_validation": {
+    "json_parse": "PASS",
+    "yaml_parse": "PASS",
+    "checkpoint_required_fields": "PASS",
+    "git_diff_check": "PASS",
+    "independent_review": "PASS: direct facts match artifacts and no secrets/private links detected",
+    "runtime_tests": "NOT_RERUN: evidence/continuity changes only",
+    "remote_readback": "REQUIRED_AFTER_CANDIDATE_PUBLICATION"
+  }
+}
